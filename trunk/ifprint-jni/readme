@@ -1,0 +1,28 @@
+this folder is for build ARM binary of ifprint under NDK.
+
+step to build it under Android NDK:
+1, go to top folder of your Android NDK.
+2, ln -s <folder where you download these code>/ifprint-jni/ ifprint-jni
+3, make APP=ifprint-jni
+
+step to run ifprint on Android phone:
+1, adb push apps/ifprint-jni/project/libs/armeabi/ifprint /data/
+2, adb shell /data/ifprint
+
+it will show as
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:711 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:711 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:50790 (49.5 KiB)  TX bytes:50790 (49.5 KiB)
+
+tiwlan0   Link encap:Ethernet  HWaddr 00:18:41:BF:3A:D8  
+          inet addr:192.168.2.212  Bcast:192.168.3.255  Mask:255.255.252.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:145219 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:752 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:100 
+          RX bytes:9884396 (9.4 MiB)  TX bytes:172715 (168.6 KiB)
+

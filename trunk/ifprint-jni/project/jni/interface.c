@@ -1021,7 +1021,7 @@ static int hw_null_address(const struct hwtype *hw, void *ap)
 static const char TRext[] ALIGN1 = "\0\0\0Ki\0Mi\0Gi\0Ti";
 
 
-#define BUFSIZE 512
+#define BUFSIZE 1024
 int buflen;
 char print_buf[BUFSIZE];
 static void print_bytes_scaled(unsigned long long ull, const char *end)
@@ -1044,8 +1044,7 @@ static void print_bytes_scaled(unsigned long long ull, const char *end)
 		--i;
 	} while (i);
 
-	//printf("X bytes:%llu (%llu.%u %sB)%s", ull, int_part, frac_part, ext, end);
-	buflen += sprintf(print_buf+buflen, "X bytes:%llu (%llu.%u %sB)%s", ull, int_part, frac_part, ext, end);
+	buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "X bytes:%llu (%llu.%u %sB)%s", ull, int_part, frac_part, ext, end);
 }
 
 
@@ -1146,54 +1145,43 @@ static void ife_print(struct interface *ptr)
 	if (hw == NULL)
 		hw = get_hwntype(-1);
 
-	//printf("%-9.9s Link encap:%s  ", ptr->name, hw->title);
-	buflen += sprintf(print_buf+buflen, "%-9.9s Link encap:%s  ", ptr->name, hw->title);
+	buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "%-9.9s Link encap:%s  ", ptr->name, hw->title);
 
 	/* For some hardware types (eg Ash, ATM) we don't print the
 	   hardware address if it's null.  */
 	if (hw->print != NULL
 	 && !(hw_null_address(hw, ptr->hwaddr) && hw->suppress_null_addr)
 	) {
-		//printf("HWaddr %s  ", hw->print((unsigned char *)ptr->hwaddr));
-		buflen += sprintf(print_buf+buflen, "HWaddr %s  ", hw->print((unsigned char *)ptr->hwaddr));
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "HWaddr %s  ", hw->print((unsigned char *)ptr->hwaddr));
 	}
 #ifdef IFF_PORTSEL
 	if (ptr->flags & IFF_PORTSEL) {
-		//printf("Media:%s", if_port_text[ptr->map.port] /* [0] */);
-		buflen += sprintf(print_buf+buflen, "Media:%s", if_port_text[ptr->map.port] /* [0] */);
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "Media:%s", if_port_text[ptr->map.port] /* [0] */);
 		if (ptr->flags & IFF_AUTOMEDIA)
-			//printf("(auto)");
-			buflen += sprintf(print_buf+buflen, "(auto)");
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "(auto)");
 	}
 #endif
-	//putchar('\n');
-	buflen += sprintf(print_buf+buflen, "\n");
+	buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "\n");
 
 	if (ptr->has_ip) {
-		//printf("          %s addr:%s ", ap->name,
-		buflen += sprintf(print_buf+buflen, "          %s addr:%s ", ap->name,
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "          %s addr:%s ", ap->name,
 			   ap->sprint(&ptr->addr, 1));
 		if (ptr->flags & IFF_POINTOPOINT) {
-			//printf(" P-t-P:%s ", ap->sprint(&ptr->dstaddr, 1));
-			buflen += sprintf(print_buf+buflen, " P-t-P:%s ", ap->sprint(&ptr->dstaddr, 1));
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, " P-t-P:%s ", ap->sprint(&ptr->dstaddr, 1));
 		}
 		if (ptr->flags & IFF_BROADCAST) {
-			//printf(" Bcast:%s ", ap->sprint(&ptr->broadaddr, 1));
-			buflen += sprintf(print_buf+buflen, " Bcast:%s ", ap->sprint(&ptr->broadaddr, 1));
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, " Bcast:%s ", ap->sprint(&ptr->broadaddr, 1));
 		}
-		//printf(" Mask:%s\n", ap->sprint(&ptr->netmask, 1));
-		buflen += sprintf(print_buf+buflen, " Mask:%s\n", ap->sprint(&ptr->netmask, 1));
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, " Mask:%s\n", ap->sprint(&ptr->netmask, 1));
 	}
 
 	ife_print6(ptr);
 
-	//printf("          ");
-	buflen += sprintf(print_buf+buflen, "          ");
+	buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "          ");
 	/* DONT FORGET TO ADD THE FLAGS IN ife_print_short, too */
 
 	if (ptr->flags == 0) {
-		//printf("[NO FLAGS] ");
-		buflen += sprintf(print_buf+buflen, "[NO FLAGS] ");
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "[NO FLAGS] ");
 	} else {
 		static const char ife_print_flags_strs[] ALIGN1 =
 			"UP\0"
@@ -1235,8 +1223,7 @@ static void ife_print(struct interface *ptr)
 		const char *str = ife_print_flags_strs;
 		do {
 			if (ptr->flags & *mask) {
-				//printf("%s ", str);
-				buflen += sprintf(print_buf+buflen, "%s ", str);
+				buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "%s ", str);
 			}
 			mask++;
 			str += strlen(str) + 1;
@@ -1244,15 +1231,12 @@ static void ife_print(struct interface *ptr)
 	}
 
 	/* DONT FORGET TO ADD THE FLAGS IN ife_print_short */
-	//printf(" MTU:%d  Metric:%d", ptr->mtu, ptr->metric ? ptr->metric : 1);
-	buflen += sprintf(print_buf+buflen, " MTU:%d  Metric:%d", ptr->mtu, ptr->metric ? ptr->metric : 1);
+	buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, " MTU:%d  Metric:%d", ptr->mtu, ptr->metric ? ptr->metric : 1);
 #ifdef SIOCSKEEPALIVE
 	if (ptr->outfill || ptr->keepalive)
-		//printf("  Outfill:%d  Keepalive:%d", ptr->outfill, ptr->keepalive);
-		buflen += sprintf(print_buf+buflen, "  Outfill:%d  Keepalive:%d", ptr->outfill, ptr->keepalive);
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "  Outfill:%d  Keepalive:%d", ptr->outfill, ptr->keepalive);
 #endif
-	//putchar('\n');
-	buflen += sprintf(print_buf+buflen, "\n");
+	buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "\n");
 
 	/* If needed, display the interface statistics. */
 
@@ -1261,35 +1245,26 @@ static void ife_print(struct interface *ptr)
 		 *      not for the aliases, although strictly speaking they're shared
 		 *      by all addresses.
 		 */
-		//printf("          ");
-		buflen += sprintf(print_buf+buflen, "          ");
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "          ");
 
-		//printf("RX packets:%llu errors:%lu dropped:%lu overruns:%lu frame:%lu\n",
-		buflen += sprintf(print_buf+buflen, "RX packets:%llu errors:%lu dropped:%lu overruns:%lu frame:%lu\n",
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "RX packets:%llu errors:%lu dropped:%lu overruns:%lu frame:%lu\n",
 			   ptr->stats.rx_packets, ptr->stats.rx_errors,
 			   ptr->stats.rx_dropped, ptr->stats.rx_fifo_errors,
 			   ptr->stats.rx_frame_errors);
 		if (can_compress)
-			//printf("             compressed:%lu\n",
-			buflen += sprintf(print_buf+buflen, "             compressed:%lu\n",
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "             compressed:%lu\n",
 				   ptr->stats.rx_compressed);
-		//printf("          ");
-		buflen += sprintf(print_buf+buflen, "          ");
-		//printf("TX packets:%llu errors:%lu dropped:%lu overruns:%lu carrier:%lu\n",
-		buflen += sprintf(print_buf+buflen, "TX packets:%llu errors:%lu dropped:%lu overruns:%lu carrier:%lu\n",
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "          ");
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "TX packets:%llu errors:%lu dropped:%lu overruns:%lu carrier:%lu\n",
 			   ptr->stats.tx_packets, ptr->stats.tx_errors,
 			   ptr->stats.tx_dropped, ptr->stats.tx_fifo_errors,
 			   ptr->stats.tx_carrier_errors);
-		//printf("          collisions:%lu ", ptr->stats.collisions);
-		buflen += sprintf(print_buf+buflen, "          collisions:%lu ", ptr->stats.collisions);
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "          collisions:%lu ", ptr->stats.collisions);
 		if (can_compress)
-			//printf("compressed:%lu ", ptr->stats.tx_compressed);
-			buflen += sprintf(print_buf+buflen, "compressed:%lu ", ptr->stats.tx_compressed);
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "compressed:%lu ", ptr->stats.tx_compressed);
 		if (ptr->tx_queue_len != -1)
-			//printf("txqueuelen:%d ", ptr->tx_queue_len);
-			buflen += sprintf(print_buf+buflen, "txqueuelen:%d ", ptr->tx_queue_len);
-		//printf("\n          R");
-		buflen += sprintf(print_buf+buflen, "\n          R");
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "txqueuelen:%d ", ptr->tx_queue_len);
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "\n          R");
 		print_bytes_scaled(ptr->stats.rx_bytes, "  T");
 		print_bytes_scaled(ptr->stats.tx_bytes, "\n");
 	}
@@ -1297,29 +1272,22 @@ static void ife_print(struct interface *ptr)
 	if (ptr->map.irq || ptr->map.mem_start
 	 || ptr->map.dma || ptr->map.base_addr
 	) {
-		//printf("          ");
-		buflen += sprintf(print_buf+buflen, "          ");
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "          ");
 		if (ptr->map.irq)
-			//printf("Interrupt:%d ", ptr->map.irq);
-			buflen += sprintf(print_buf+buflen, "Interrupt:%d ", ptr->map.irq);
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "Interrupt:%d ", ptr->map.irq);
 		if (ptr->map.base_addr >= 0x100)	/* Only print devices using it for
 											   I/O maps */
-			//printf("Base address:0x%lx ",
-			buflen += sprintf(print_buf+buflen, "Base address:0x%lx ",
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "Base address:0x%lx ",
 				   (unsigned long) ptr->map.base_addr);
 		if (ptr->map.mem_start) {
-			//printf("Memory:%lx-%lx ", ptr->map.mem_start,
-			buflen += sprintf(print_buf+buflen, "Memory:%lx-%lx ", ptr->map.mem_start,
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "Memory:%lx-%lx ", ptr->map.mem_start,
 				   ptr->map.mem_end);
 		}
 		if (ptr->map.dma)
-			//printf("DMA chan:%x ", ptr->map.dma);
-			buflen += sprintf(print_buf+buflen, "DMA chan:%x ", ptr->map.dma);
-		//putchar('\n');
-		buflen += sprintf(print_buf+buflen, "\n");
+			buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "DMA chan:%x ", ptr->map.dma);
+		buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "\n");
 	}
-	//putchar('\n');
-	buflen += sprintf(print_buf+buflen, "\n");
+	buflen += snprintf(print_buf+buflen, BUFSIZE-buflen-1, "\n");
 }
 
 static int do_if_print(struct interface *ife) /*, int *opt_a)*/
@@ -1452,8 +1420,10 @@ int FAST_FUNC display_interfaces(char *ifname)
 
 int main(void) {
 	buflen = 0;
+	memset(print_buf, 0, BUFSIZE);
+	if (print_buf[BUFSIZE-1]) sprintf(print_buf+BUFSIZE-1, "\n");
         int ret = display_interfaces(0);
-	printf("%s\n", print_buf);
+	printf("%s", print_buf);
 
 	return ret;
 }

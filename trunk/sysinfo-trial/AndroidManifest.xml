@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="sys.info.trial" 
+      android:versionName="1.4.5" android:versionCode="29">
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".sysinfo"
+                  android:configChanges="keyboardHidden|orientation"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <meta-data android:value="a14a8e65a47d51f" android:name="ADMOB_PUBLISHER_ID" />
+    </application>
+<uses-sdk android:targetSdkVersion="4" android:minSdkVersion="3"></uses-sdk>
+</manifest> 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, reader</string>
+    <string name="app_name">system info</string>
+    <string name="wait">Please wait while loading...</string>
+    <string name="about_dialog">about</string>
+    <string name="about_dialog_text1">System Info Viewer\n</string>
+    <string name="about_dialog_text2">\n\njtbuaa@gmail.com\n</string>
+    <string name="resolution">screen resolution:\t</string>
+    <string name="camera">camera:\t</string>
+    <string name="sensors">Sensors list: </string>
+    <string name="pixels">M pixels</string>
+    <string name="nProcess">process number:\t</string>
+    <string name="nService">service number:\t</string>
+    <string name="nTask">task number:\t</string>
+    <string name="nApk">apk installed:\t</string>
+    <string name="wlan">WLAN address:\t</string>
+
+    <string name="processor">Processor:\t</string>
+    <string name="hardware">Hardware:\t</string>
+    <string name="memtotal">MemTotal:\t</string>
+    <string name="memerr">dmesg get memory failed, please try again later</string>
+
+    <string name="brief">Brief</string>
+    <string name="memory">Mem</string>
+    <string name="disk">Disk</string>
+    <string name="process">Process</string>
+    <string name="apps">Apps</string>
+    <string name="online">Online</string>
+
+    <string name="sdk">SDK version: </string>
+    <string name="vendor">vendor:\t</string>
+    
+    <string name="about">about...</string>
+    <string name="exit">exit</string>
+    <string name="upload">upload</string>
+    <string name="refresh">refresh</string>
+    <string name="ok">Ok</string>
+    
+    <string name="url">http://system-info.appspot.com/fullversion.jsp</string>         
+    <string name="url1">http://192.168.3.210:8080/fullversion.jsp</string>         
+    <string name="ulfail">upload system info failed</string>         
+    <string name="ulsuccess">upload system info success, please view in Online tab</string>         
+    <string name="tag">======sysinfo========</string>         
+</resources>

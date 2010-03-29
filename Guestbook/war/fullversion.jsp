@@ -23,7 +23,7 @@
     out.println("<h3>Welcome to find different type of GPhone here.</h3>");
 
     PersistenceManager pm = PMF.get().getPersistenceManager();
-    String query = "select from " + Greeting.class.getName() + " order by vendor asc";
+    String query = "select from " + Greeting.class.getName() + " order by sdkversion desc";
     List<Greeting> greetings = (List<Greeting>) pm.newQuery(query).execute();
 %>
 

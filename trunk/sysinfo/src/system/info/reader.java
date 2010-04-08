@@ -46,6 +46,7 @@ import android.os.Looper;
 import android.os.SystemProperties;
 import android.os.Vibrator;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
 import android.view.Display;
@@ -67,7 +68,7 @@ public class reader extends TabActivity {
     /** Called when the activity is first created. */
 	WebView serverWeb;
 	TextView ServiceText, TaskText, DiskText, ProcessText, AppsText, BriefText;
-	String processor, bogomips, hardware, memtotal="", resolution, sCamera, vendor, product, sensors = "", sdkversion, imei;
+	String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
 	String version, apklist = "", vendingServices = "";
 	TabHost tabHost;
 	ProgressDialog m_dialog;
@@ -200,9 +201,13 @@ public class reader extends TabActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         
-        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();         
-        int width = display.getWidth();  
-        int height = display.getHeight();  
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int height = dm.heightPixels;
+        int width = dm.widthPixels;
+        float f = dm.xdpi;
+        dpi = "dpi: " + (int)f + "\tscale-factor: " + dm.density + "\n";
+        
         if (width > height) {
         	int tmp = width;
         	width = height;
@@ -408,6 +413,7 @@ public class reader extends TabActivity {
         if (tmpsdcard != "") result += tmpsdcard + "\n\n";
        
         result += getString(R.string.resolution) + resolution + "\n";
+        result += dpi;
         
         try {
         	Camera camera = Camera.open();

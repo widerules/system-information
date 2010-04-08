@@ -49,6 +49,7 @@ import android.os.Vibrator;
 import android.os.SystemProperties;
 import android.preference.Preference;
 import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
 import android.view.Display;
@@ -71,7 +72,7 @@ public class sysinfo extends TabActivity {
 	String version;
 	Camera camera;
 	TabHost tabHost;
-	String processor, bogomips, hardware, memtotal="", resolution, sCamera, vendor, product, sensors = "", sdkversion, imei;
+	String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
 	String sdcard, nProcess, nApk;
 	
 	@Override
@@ -222,9 +223,13 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();         
-        int width = display.getWidth();  
-        int height = display.getHeight();
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int height = dm.heightPixels;
+        int width = dm.widthPixels;
+        float f = dm.xdpi;
+        dpi = "dpi: " + (int)f + "\tscale-factor: " + dm.density + "\n";
+        
         if (width > height) {
         	int tmp = width;
         	width = height;
@@ -388,6 +393,7 @@ public class sysinfo extends TabActivity {
         if (tmpsdcard != null) result += tmpsdcard + "\n\n";
         
         result += getString(R.string.resolution) + resolution + "\n";
+        result += dpi;
         
         try {
         	camera = Camera.open();

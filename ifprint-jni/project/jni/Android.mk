@@ -17,7 +17,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := ifprint
-LOCAL_SRC_FILES := inet_common.c \
-		   interface.c
+LOCAL_SRC_FILES := dmesg.c
+#	inet_common.c \
+#	interface.c
 
-include $(BUILD_EXECUTABLE)
+include $(BUILD_SHARED_LIBRARY)

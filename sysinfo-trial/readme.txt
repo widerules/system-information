@@ -6,3 +6,14 @@
     trial version can find full version by Android Market.
 1.4.5 resolve issue of can't full screen on Android 2.1 when use none HVGA resolution. still support Cupcake
 1.5 will add gprs quota check
+
+todo:
+add geo info.
+
+indexOf() is a bottle neck of performance.
+
+add ifprint
+
+camera issue: 3M or 5M?
+
+change view to list view

@@ -66,6 +66,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class sysinfo extends TabActivity {
+	static {
+        System.loadLibrary("ifprint");
+    }
+	
+	public native String stringFromJNI();
+
 	TextView resText;
 	WebView serverWeb;
 	ProgressDialog m_dialog;
@@ -268,10 +274,6 @@ public class sysinfo extends TabActivity {
     		e.printStackTrace();
     	}    
 
-       	//showDialog(0);
-       	
-		//PageTask task = new PageTask();
-		//task.execute("");
     	resText.setText(refresh());
     }
 
@@ -385,8 +387,16 @@ public class sysinfo extends TabActivity {
       
         result = runCmd("cat", "/proc/cpuinfo") + "\n\n";
         
-        String tmpmem = runCmd("dmesg", "");
-        if (tmpmem == null) tmpmem = runCmd("cat", "/proc/meminfo");
+        String tmpmem = stringFromJNI();
+    	String lines[] = tmpmem.split("\n");
+    	boolean found = false;
+    	for (int i = 0; i < lines.length; i++) 
+    		if ((lines[i].indexOf("Memory:") > -1) && (lines[i].indexOf("total") > -1)) {
+    			tmpmem = lines[i];
+    			found = true;
+    			break;
+    		}
+        if (!found) tmpmem = runCmd("cat", "/proc/meminfo");
         result += tmpmem + "\n";
         
         String tmpsdcard = runCmd("df", "");

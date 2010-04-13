@@ -65,6 +65,12 @@ import android.widget.Toast;
 import com.android.internal.util.XmlUtils;
 
 public class reader extends TabActivity {
+	static {
+        System.loadLibrary("ifprint");
+    }
+	
+	public native String stringFromJNI();
+	
     /** Called when the activity is first created. */
 	WebView serverWeb;
 	TextView ServiceText, TaskText, DiskText, ProcessText, AppsText, BriefText;
@@ -401,12 +407,20 @@ public class reader extends TabActivity {
         rets = runCmd("cat", "/proc/cpuinfo");
         result += rets[0] + "\n";
 
-        String tmpmem = runCmd("dmesg", "")[0];
-        if (tmpmem == "")	{
+        String tmpmem = stringFromJNI();
+    	String lines[] = tmpmem.split("\n");
+    	boolean found = false;
+    	for (int i = 0; i < lines.length; i++) 
+    		if ((lines[i].indexOf("Memory:") > -1) && (lines[i].indexOf("total") > -1)) {
+    			tmpmem = lines[i];
+    			found = true;
+    			break;
+    		}
+        if (!found) { 
         	rets = runCmd("cat", "/proc/meminfo");
         	tmpmem = rets[0];
         }
-        if (tmpmem != "") result += tmpmem + "\n";
+        result += tmpmem + "\n";
         
       	rets = runCmd("df", "");
         String tmpsdcard = rets[0];

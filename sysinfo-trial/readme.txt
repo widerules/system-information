@@ -10,7 +10,7 @@
 todo:
 add geo info.
 
-indexOf() is a bottle neck of performance.
+dmesg() should not be the bottle neck, but indexOf() or others codes are bottle neck of performance?
 
 add ifprint
 

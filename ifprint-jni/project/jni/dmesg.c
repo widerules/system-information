@@ -27,7 +27,7 @@ void dmesg()
 	len = klogctl(3, buf, len); /* read ring buffer */
 }
 
-jstring Java_sys_info_trial_sysinfo_stringFromJNI( JNIEnv* env, jobject thiz )
+jstring Java_sys_info_trial_sysinfo_dmesg( JNIEnv* env, jobject thiz )
 {
     dmesg();
     jstring mesg = (*env)->NewStringUTF(env, buf);
@@ -35,7 +35,7 @@ jstring Java_sys_info_trial_sysinfo_stringFromJNI( JNIEnv* env, jobject thiz )
     return mesg;
 }
 
-jstring Java_system_info_reader_stringFromJNI( JNIEnv* env, jobject thiz )
+jstring Java_system_info_reader_dmesg( JNIEnv* env, jobject thiz )
 {
     dmesg();
     jstring mesg = (*env)->NewStringUTF(env, buf);

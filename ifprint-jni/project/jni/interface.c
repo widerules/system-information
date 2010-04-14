@@ -41,7 +41,7 @@
 #include <sys/socket.h>
 #include <linux/sockios.h>
 #include <stdarg.h>
-
+#include <jni.h>
 
 char* FAST_FUNC skip_whitespace(const char *s)
 {
@@ -1418,13 +1418,25 @@ int FAST_FUNC display_interfaces(char *ifname)
 	return (status < 0); /* status < 0 == 1 -- error */
 }
 
-int main(void) {
+int ifprint(void) {
 	buflen = 0;
 	memset(print_buf, 0, BUFSIZE);
 	if (print_buf[BUFSIZE-1]) sprintf(print_buf+BUFSIZE-1, "\n");
         int ret = display_interfaces(0);
-	printf("%s", print_buf);
-
 	return ret;
+}
+
+jstring Java_sys_info_trial_sysinfo_ifprint( JNIEnv* env, jobject thiz )
+{
+    ifprint();
+    jstring mesg = (*env)->NewStringUTF(env, print_buf);
+    return mesg;
+}
+
+jstring Java_system_info_reader_ifprint( JNIEnv* env, jobject thiz )
+{
+    ifprint();
+    jstring mesg = (*env)->NewStringUTF(env, print_buf);
+    return mesg;
 }
 

@@ -39,6 +39,8 @@ import android.hardware.Camera.Size;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -70,7 +72,8 @@ public class sysinfo extends TabActivity {
         System.loadLibrary("ifprint");
     }
 	
-	public native String stringFromJNI();
+	public native String dmesg();
+	public native String ifprint();
 
 	TextView resText;
 	WebView serverWeb;
@@ -387,16 +390,13 @@ public class sysinfo extends TabActivity {
       
         result = runCmd("cat", "/proc/cpuinfo") + "\n\n";
         
-        String tmpmem = stringFromJNI();
-    	String lines[] = tmpmem.split("\n");
-    	boolean found = false;
-    	for (int i = 0; i < lines.length; i++) 
-    		if ((lines[i].indexOf("Memory:") > -1) && (lines[i].indexOf("total") > -1)) {
-    			tmpmem = lines[i];
-    			found = true;
-    			break;
-    		}
-        if (!found) tmpmem = runCmd("cat", "/proc/meminfo");
+        String tmpmem = dmesg();
+    	if (tmpmem.indexOf("MB total") > -1) {
+    		String []tmp = tmpmem.split("MB total")[0].trim().split("=");
+			memtotal = tmp[tmp.length-1].trim() + "MB";
+			tmpmem = getString(R.string.memtotal) + memtotal;
+    	}
+    	else tmpmem = runCmd("cat", "/proc/meminfo");
         result += tmpmem + "\n";
         
         String tmpsdcard = runCmd("df", "");
@@ -415,10 +415,20 @@ public class sysinfo extends TabActivity {
         } catch (Exception e) {e.printStackTrace();}
         result += "\n";
 
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        List ll = lm.getAllProviders();
+    	for (int i = 0; i < ll.size(); i++) {
+    		Location lo = lm.getLastKnownLocation((String) ll.get(i));
+    		if (lo != null) {
+    		    result += getString(R.string.latitude) + lo.getLatitude() + "\n" + getString(R.string.longitude) + lo.getLongitude() + "\n\n";
+    		    break;
+    		}
+    	}
+    	
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        String macAddress = wifiInfo == null ? null : wifiInfo.getMacAddress();
-        result += getString(R.string.wlan) + macAddress + "\n\n";
+        if (wifiInfo != null)
+            result += getString(R.string.wlan) + wifiInfo.getMacAddress() + "\n\n";
         
         result += getString(R.string.sensors) + "\n";
         sdkversion = android.os.Build.VERSION.SDK;
@@ -430,8 +440,6 @@ public class sysinfo extends TabActivity {
     		result += "\t" + sensor.getName() + "\n";
     	}
     	result += "\n";
-    	//sensors = "Can't list sensors on" + sdkversion;
-    	//result += getString(R.string.license) + "\n\n";
         
         result += getString(R.string.nProcess) + runCmd("ps", "") + "\n";//process number
         result += getString(R.string.nApk) + nApk + "\n\n";//apk number
@@ -449,9 +457,10 @@ public class sysinfo extends TabActivity {
        		product = android.os.Build.PRODUCT;
    	        result += getString(R.string.vendor) + vendor + " " + product + "\n\n";
        	}
-	    //result += getString(R.string.vendor) + vendor + " " + product + "\n\n";
         
         result += getString(R.string.sdk) + sdkversion + "\tRELEASE: " + android.os.Build.VERSION.RELEASE;
+        
+        //result += ifprint();
 
         if (m_dialog != null) {
         	Log.d(getString(R.string.tag), m_dialog.toString());

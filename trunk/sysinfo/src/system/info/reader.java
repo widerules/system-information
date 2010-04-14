@@ -37,6 +37,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.http.AndroidHttpClient;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -69,7 +71,8 @@ public class reader extends TabActivity {
         System.loadLibrary("ifprint");
     }
 	
-	public native String stringFromJNI();
+	public native String dmesg();
+	public native String ifprint();
 	
     /** Called when the activity is first created. */
 	WebView serverWeb;
@@ -407,19 +410,16 @@ public class reader extends TabActivity {
         rets = runCmd("cat", "/proc/cpuinfo");
         result += rets[0] + "\n";
 
-        String tmpmem = stringFromJNI();
-    	String lines[] = tmpmem.split("\n");
-    	boolean found = false;
-    	for (int i = 0; i < lines.length; i++) 
-    		if ((lines[i].indexOf("Memory:") > -1) && (lines[i].indexOf("total") > -1)) {
-    			tmpmem = lines[i];
-    			found = true;
-    			break;
-    		}
-        if (!found) { 
-        	rets = runCmd("cat", "/proc/meminfo");
-        	tmpmem = rets[0];
-        }
+        String tmpmem = dmesg();
+    	if (tmpmem.indexOf("MB total") > -1) {
+    		String []tmp = tmpmem.split("MB total")[0].trim().split("=");
+			memtotal = tmp[tmp.length-1].trim() + "MB";
+			tmpmem = getString(R.string.memtotal) + memtotal;
+    	}
+    	else {
+    		rets = runCmd("cat", "/proc/meminfo");
+    		tmpmem = rets[0];
+    	}
         result += tmpmem + "\n";
         
       	rets = runCmd("df", "");
@@ -439,10 +439,20 @@ public class reader extends TabActivity {
         } catch (Exception e) {e.printStackTrace();}
         result += "\n";
                
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        List ll = lm.getAllProviders();
+    	for (int i = 0; i < ll.size(); i++) {
+    		Location lo = lm.getLastKnownLocation((String) ll.get(i));
+    		if (lo != null) {
+    		    result += getString(R.string.latitude) + lo.getLatitude() + "\n" + getString(R.string.longitude) + lo.getLongitude() + "\n\n";
+    		    break;
+    		}
+    	}
+    	
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        String macAddress = wifiInfo == null ? null : wifiInfo.getMacAddress();
-        result += getString(R.string.wlan) + macAddress + "\n\n";
+        if (wifiInfo != null)
+            result += getString(R.string.wlan) + wifiInfo.getMacAddress() + "\n\n";
 
     	result += getString(R.string.sensors) + "\n";
         SensorManager sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);

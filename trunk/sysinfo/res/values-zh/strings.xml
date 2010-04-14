@@ -15,6 +15,8 @@
     <string name="nTask">任务数:\t</string>
     <string name="nApk">已安装apk:\t</string>
     <string name="wlan">WLAN 地址:\t</string>
+    <string name="latitude">纬度:\t</string>
+    <string name="longitude">经度:\t</string>
 
     <string name="processor">处理器:\t</string>
     <string name="hardware">硬件:\t</string>

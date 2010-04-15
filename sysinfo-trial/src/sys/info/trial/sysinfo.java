@@ -36,6 +36,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -49,17 +50,13 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.os.SystemProperties;
-import android.preference.Preference;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Surface;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
@@ -255,10 +252,13 @@ public class sysinfo extends TabActivity {
                 .setIndicator(getString(R.string.online))
                 .setContent(R.id.ViewServer));
         
-        int tabHeight = 30;
-        if (width >= 480) tabHeight = 40;
-        tabHost.getTabWidget().getChildAt(0).setLayoutParams(new LinearLayout.LayoutParams(80, tabHeight));
-        tabHost.getTabWidget().getChildAt(1).setLayoutParams(new LinearLayout.LayoutParams(80, tabHeight));
+        int tabHeight = 30, tabWidth = 80;
+        if (width >= 480) {
+        	tabHeight = 40;
+        	tabWidth = 120;
+        }
+        tabHost.getTabWidget().getChildAt(0).setLayoutParams(new LinearLayout.LayoutParams(tabWidth, tabHeight));
+        tabHost.getTabWidget().getChildAt(1).setLayoutParams(new LinearLayout.LayoutParams(tabWidth, tabHeight));
 
         serverWeb = (WebView)findViewById(R.id.ViewServer);
         serverWeb.getSettings().setJavaScriptEnabled(true);
@@ -391,8 +391,9 @@ public class sysinfo extends TabActivity {
         result = runCmd("cat", "/proc/cpuinfo") + "\n\n";
         
         String tmpmem = dmesg();
-    	if (tmpmem.indexOf("MB total") > -1) {
-    		String []tmp = tmpmem.split("MB total")[0].trim().split("=");
+        int totalIndex = tmpmem.indexOf("MB total"); 
+    	if (totalIndex > -1) {
+    		String []tmp = tmpmem.substring(0, totalIndex).trim().split("=");
 			memtotal = tmp[tmp.length-1].trim() + "MB";
 			tmpmem = getString(R.string.memtotal) + memtotal;
     	}
@@ -410,7 +411,18 @@ public class sysinfo extends TabActivity {
         	Parameters param = camera.getParameters(); 
         	camera.release();
         	Size size = param.getPictureSize();
-    		sCamera = Integer.toString((int)Math.round(size.width*size.height/1000000.0));
+        	int maxWidth = size.width , maxHeight = size.height;
+        	/*if (android.os.Build.VERSION.SDK_INT >= 5) {
+            	List sl = param.getSupportedPictureSizes();
+            	for (int i = 0; i < sl.size(); i++) {
+            		Camera.Size cs = (Camera.Size)sl.get(i);
+            		if (maxWidth < cs.width) {
+            			maxWidth = cs.width;
+            			maxHeight = cs.height;
+            		}
+            	}
+        	}*/
+    		sCamera = Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
     		result += getString(R.string.camera) + sCamera + getString(R.string.pixels) + "\n";
         } catch (Exception e) {e.printStackTrace();}
         result += "\n";
@@ -427,7 +439,7 @@ public class sysinfo extends TabActivity {
     	
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null)
+        if ((wifiInfo != null) && (wifiInfo.getMacAddress() != null))
             result += getString(R.string.wlan) + wifiInfo.getMacAddress() + "\n\n";
         
         result += getString(R.string.sensors) + "\n";

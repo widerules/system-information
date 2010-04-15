@@ -11,9 +11,11 @@ todo:
 add geo info.
 
 dmesg() should not be the bottle neck, but indexOf() or others codes are bottle neck of performance?
+we'd better remove all runcmd() function.
 
 add ifprint
 
-camera issue: 3M or 5M?
+camera issue: 3M or 5M? 
+there is a new api to get size, but only support on SDK level>=5
 
 change view to list view

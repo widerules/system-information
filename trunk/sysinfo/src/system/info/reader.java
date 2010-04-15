@@ -223,8 +223,11 @@ public class reader extends TabActivity {
         	height = tmp;
         }
         resolution = Integer.toString(width) + "*" + Integer.toString(height);
-        int tabHeight = 30;
-        if (width >= 480) tabHeight = 40;
+        int tabHeight = 30, tabWidth = 80;
+        if (width >= 480) {
+        	tabHeight = 40;
+        	tabWidth = 120;
+        }
         
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
@@ -250,7 +253,7 @@ public class reader extends TabActivity {
         //        .setIndicator("Vending")
         //        .setContent(R.id.sViewDisk));
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
-        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(new LinearLayout.LayoutParams(80, tabHeight));
+        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(new LinearLayout.LayoutParams(tabWidth, tabHeight));
 
         ServiceText = (TextView)findViewById(R.id.TextViewCpu);
         TaskText = (TextView)findViewById(R.id.TextViewMem);
@@ -411,8 +414,9 @@ public class reader extends TabActivity {
         result += rets[0] + "\n";
 
         String tmpmem = dmesg();
-    	if (tmpmem.indexOf("MB total") > -1) {
-    		String []tmp = tmpmem.split("MB total")[0].trim().split("=");
+        int totalIndex = tmpmem.indexOf("MB total"); 
+    	if (totalIndex > -1) {
+    		String []tmp = tmpmem.substring(0, totalIndex).trim().split("=");
 			memtotal = tmp[tmp.length-1].trim() + "MB";
 			tmpmem = getString(R.string.memtotal) + memtotal;
     	}
@@ -451,7 +455,7 @@ public class reader extends TabActivity {
     	
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo != null)
+        if ((wifiInfo != null) && (wifiInfo.getMacAddress() != null))
             result += getString(R.string.wlan) + wifiInfo.getMacAddress() + "\n\n";
 
     	result += getString(R.string.sensors) + "\n";

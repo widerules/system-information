@@ -49,7 +49,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
-import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -323,8 +322,11 @@ public class sysinfo extends TabActivity {
     		
             while((line=br.readLine())!=null){
             	count = count + 1;
-            	if ((count > 40) && (cmd == "dmesg")) break;
-        		if (line.indexOf(":") > -1) {
+        		if (cmd == "getprop") {
+        			result = line;
+        			break;
+        		}
+        		else if (line.indexOf(":") > -1) {
             		if (line.indexOf("Processor") > -1) {
             			processor = line.split(":")[1];
             			result = getString(R.string.processor) + processor;
@@ -459,8 +461,8 @@ public class sysinfo extends TabActivity {
         String dr = getPlatFormware();
          
        	if (dr != null) {
-       		vendor = SystemProperties.get("apps.setting.product.vendor", "");
-       		product = SystemProperties.get("apps.setting.product.model", "");
+       		vendor = runCmd("getprop", "apps.setting.product.vendor");
+       		product = runCmd("getprop", "apps.setting.product.model");
   	        result += getString(R.string.vendor) + vendor + " " + product;
        		result += " (dr" + dr + ")\n\n";
        	}

@@ -12,8 +12,10 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -39,13 +41,11 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.http.AndroidHttpClient;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.SystemProperties;
 import android.os.Vibrator;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -63,8 +63,6 @@ import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.internal.util.XmlUtils;
 
 public class reader extends TabActivity {
 	static {
@@ -151,11 +149,10 @@ public class reader extends TabActivity {
 	        	HttpResponse response = null;
 	        	int statusCode = -1;
 	    		try {
-	    			AndroidHttpClient client = AndroidHttpClient.newInstance("");
+	    			HttpClient client = new DefaultHttpClient();
 	    			HttpPost request = new HttpPost(mUri);
 	    			request.setEntity(mEntity);
 	    			response = client.execute(request);
-	    			client.close();
 	    			statusCode = (response == null ? -1 : response.getStatusLine().getStatusCode());
 	    		} catch (Exception e) {e.printStackTrace();}
     			switch (statusCode) {
@@ -341,10 +338,12 @@ public class reader extends TabActivity {
             
             while((line=br.readLine())!=null){
             	count = count + 1;
-            	if ((count > 40) && (cmd == "dmesg")) break;
         		result += line + "\n";
-        		//Log.d(getString(R.string.tag), line);
-        		if (line.indexOf(":") > -1) {
+        		if (cmd == "getprop") {
+        			line1 = line;
+        			break;
+        		}
+        		else if (line.indexOf(":") > -1) {
                     if (line.indexOf("Processor") > -1) {
             			processor = line.split(":")[1];
             			line1 = getString(R.string.processor) + processor;
@@ -501,8 +500,8 @@ public class reader extends TabActivity {
         
         String dr = getPlatFormware();
        	if (dr != null) {
-       		vendor = SystemProperties.get("apps.setting.product.vendor", "");
-       		product = SystemProperties.get("apps.setting.product.model", "");
+       		vendor = runCmd("getprop", "apps.setting.product.vendor")[0];
+       		product = runCmd("getprop", "apps.setting.product.model")[0];
   	        result += getString(R.string.vendor) + vendor + " " + product;
        		result += " (dr" + dr + ")\n\n";
        	}
@@ -554,17 +553,14 @@ public class reader extends TabActivity {
        try {
              XmlPullParser parser = Xml.newPullParser();
              parser.setInput(verReader);
-
-             XmlUtils.beginDocument(parser, "version");
-
+             
              while (parser.getEventType() != parser.END_DOCUMENT) {
-                XmlUtils.nextElement(parser);
-                String name = parser.getName();
-                if ("device".equals(name)) {
-                    return parser.getAttributeValue(null, "version");
-                }
-                else parser.next();
-             }
+                 String name = parser.getName();
+                 if ("device".equals(name)) {
+                     return parser.getAttributeValue(null, "version");
+                 }
+                 else parser.next();
+              }
        } catch (XmlPullParserException e) {
                Log.d(getString(R.string.tag), "Got execption parsing version resource.", e);
        } catch (IOException e) {

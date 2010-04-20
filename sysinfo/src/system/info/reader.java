@@ -437,8 +437,17 @@ public class reader extends TabActivity {
         	Parameters param = camera.getParameters(); 
         	camera.release();
         	Size size = param.getPictureSize();
-        	sCamera = Integer.toString((int)Math.round(size.width*size.height/1000000.0));
-        	result += getString(R.string.camera) + sCamera + getString(R.string.pixels) + " (" + Integer.toString(size.width) + "*" + Integer.toString(size.height) + ")\n";
+        	int maxWidth = size.width , maxHeight = size.height;
+        	List sl = param.getSupportedPictureSizes();
+        	for (int i = 0; i < sl.size(); i++) {
+        		Camera.Size cs = (Camera.Size)sl.get(i);
+        		if (maxWidth < cs.width) {
+        			maxWidth = cs.width;
+        			maxHeight = cs.height;
+        		}
+        	}
+    		sCamera = Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
+        	result += getString(R.string.camera) + sCamera + getString(R.string.pixels) + " (" + maxWidth + "*" + maxHeight + ")\n";
         } catch (Exception e) {e.printStackTrace();}
         result += "\n";
                

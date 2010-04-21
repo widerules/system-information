@@ -452,7 +452,7 @@ public class reader extends TabActivity {
         result += "\n";
                
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        List ll = lm.getAllProviders();
+        List ll = lm.getProviders(true);
     	for (int i = 0; i < ll.size(); i++) {
     		Location lo = lm.getLastKnownLocation((String) ll.get(i));
     		if (lo != null) {

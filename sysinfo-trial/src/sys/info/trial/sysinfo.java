@@ -414,14 +414,14 @@ public class sysinfo extends TabActivity {
         	camera.release();
         	Size size = param.getPictureSize();
         	int maxWidth = size.width , maxHeight = size.height;
-        	List sl = param.getSupportedPictureSizes();
+        	/*List sl = param.getSupportedPictureSizes();
         	for (int i = 0; i < sl.size(); i++) {
         		Camera.Size cs = (Camera.Size)sl.get(i);
         		if (maxWidth < cs.width) {
         			maxWidth = cs.width;
         			maxHeight = cs.height;
         		}
-        	}
+        	}*/
     		sCamera = Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
     		result += getString(R.string.camera) + sCamera + getString(R.string.pixels) + "\n";
         } catch (Exception e) {e.printStackTrace();}

@@ -189,7 +189,7 @@ public class reader extends TabActivity {
 		nameValuePairs.add(new BasicNameValuePair("imei", imei));
 		try {
 			HttpEntity entity = new UrlEncodedFormEntity(nameValuePairs);
-			SendData s = new SendData("http://system-info.appspot.com", entity);
+			SendData s = new SendData(getString(R.string.url), entity);
 	        Thread doSendData = new Thread(s);
 	        doSendData.start();
 		} catch (Exception e) {e.printStackTrace();}

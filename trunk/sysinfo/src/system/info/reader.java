@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -399,6 +401,31 @@ public class reader extends TabActivity {
     	}
     }
     
+	private static Method mDebug_getSupportedPictureSizes;
+
+	static {
+		initCompatibility();
+	};
+
+	   private static void initCompatibility() {
+	       try {
+	    	   Class c = Parameters.class;
+	    	   mDebug_getSupportedPictureSizes = c.getMethod("getSupportedPictureSizes");
+	       } catch (NoSuchMethodException nsme) {
+	       }
+	   }
+
+	   private static Object getSupportedPictureSizes(Parameters param) throws IOException {
+	       try {
+	    	   return mDebug_getSupportedPictureSizes.invoke(param);
+	       } catch (InvocationTargetException ite) {
+	           Throwable cause = ite.getCause();
+	       } catch (IllegalAccessException ie) {
+	           System.err.println("unexpected " + ie);
+	       }
+		return null;
+	   }
+
     public String[] refresh() {
 		String result = "";
 		String []rets;
@@ -438,14 +465,16 @@ public class reader extends TabActivity {
         	camera.release();
         	Size size = param.getPictureSize();
         	int maxWidth = size.width , maxHeight = size.height;
-        	List sl = param.getSupportedPictureSizes();
-        	for (int i = 0; i < sl.size(); i++) {
-        		Camera.Size cs = (Camera.Size)sl.get(i);
-        		if (maxWidth < cs.width) {
-        			maxWidth = cs.width;
-        			maxHeight = cs.height;
-        		}
-        	}
+	    	if (mDebug_getSupportedPictureSizes != null) {
+	    		List sl = (List) getSupportedPictureSizes(param);
+		    	for (int i = 0; i < sl.size(); i++) {
+		    		Camera.Size cs = (Camera.Size)sl.get(i);
+		    		if (maxWidth < cs.width) {
+		    			maxWidth = cs.width;
+		    			maxHeight = cs.height;
+		    		}
+		    	}
+	    	}
     		sCamera = Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
         	result += getString(R.string.camera) + sCamera + getString(R.string.pixels) + " (" + maxWidth + "*" + maxHeight + ")\n";
         } catch (Exception e) {e.printStackTrace();}

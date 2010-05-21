@@ -156,20 +156,20 @@ public class reader extends TabActivity {
 	    			request.setEntity(mEntity);
 	    			response = client.execute(request);
 	    			statusCode = (response == null ? -1 : response.getStatusLine().getStatusCode());
+	    			switch (statusCode) {
+	    			case 200:
+	    			case 301:
+	    			case 302:
+	    				serverWeb.reload();
+						Looper.prepare();
+						Toast.makeText(reader.this, getString(R.string.ulsuccess), Toast.LENGTH_SHORT).show();
+						Looper.loop();
+	    			default:;
+						Looper.prepare();
+						Toast.makeText(reader.this, getString(R.string.ulfail) + "(" + statusCode + ")", Toast.LENGTH_SHORT).show();
+						Looper.loop();
+	    			}
 	    		} catch (Exception e) {e.printStackTrace();}
-    			switch (statusCode) {
-    			case 200:
-    			case 301:
-    			case 302:
-    				serverWeb.reload();
-					Looper.prepare();
-					Toast.makeText(reader.this, getString(R.string.ulsuccess), Toast.LENGTH_SHORT).show();
-					Looper.loop();
-    			default:;
-					Looper.prepare();
-					Toast.makeText(reader.this, getString(R.string.ulfail) + "(" + statusCode + ")", Toast.LENGTH_SHORT).show();
-					Looper.loop();
-    			}
 	        }
 		}
 		

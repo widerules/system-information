@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IP地图</string>
+	<string name="hint">请输入IP地址或网址进行查询</string>
+	<string name="wait_msg">正在查询，请稍候...</string>
+	
+    <string name="about">帮助</string>
+    <string name="exit">退出</string>
+    <string name="map">定位...</string>
+    <string name="street">街景图...</string>
+    
+    <string name="help_text">本程序利用IP地址/网址进行地图定位。地理信息来自</string>
+</resources>

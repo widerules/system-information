@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IPmap</string>
+	<string name="hint">input IP/web address to search</string>
+	<string name="wait_msg">please wait while locating...</string>
+	
+    <string name="about">help</string>
+    <string name="exit">exit</string>
+    <string name="map">locate...</string>
+    <string name="street">street...</string>
+    
+    <string name="help_text">Please input host name or IP address, I will try to locate it in map. Geo info got from</string>
+    <string name="email"><b><i>jtbuaa@gmail.com</i></b></string>
+</resources>

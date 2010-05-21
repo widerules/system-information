@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+<com.admob.android.ads.AdView  
+    android:id="@+id/ad"        
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+/>
+
+<EditText 
+	android:id="@+id/IPadress"
+	android:singleLine="true"
+	android:hint="@string/hint"
+	android:autoText="true"
+	android:imeOptions="actionSearch"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content">
+</EditText>
+
+<com.google.android.maps.MapView
+	android:id="@+id/IPmap"
+	android:layout_width="fill_parent"
+ 	android:layout_height="fill_parent"
+ 	android:enabled="true"
+ 	android:clickable="true"
+ 	android:apiKey="0Kw6a6rXEUp4ZghbCDkTl1EGm8-wf3Tl3qJswWw"
+ />
+
+</LinearLayout>

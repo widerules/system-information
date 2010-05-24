@@ -69,11 +69,13 @@ public class ipmap extends MapActivity {
     
     EditText et;
     ProgressDialog m_dialog;
+    AlertDialog m_msgDialog;
     
     final Handler mHandler = new Handler();
     
     final Runnable mUpdateResults = new Runnable() {
         public void run() {
+            showDialog(2);//show the geo result
             mapView.invalidate();
         }
     };
@@ -98,6 +100,13 @@ public class ipmap extends MapActivity {
 			}
 		});
         
+        Location ml = getMyLocation();
+        p = new GeoPoint(
+	            (int) (ml.getLatitude() * 1E6), 
+	            (int) (ml.getLongitude() * 1E6));
+        mc.animateTo(p);
+        
+        showDialog(2);//show the help info at first.
         //Log.d("==================", getMyIP());
         //Log.d("==================", getLocationFromWIMI("66.249.89.99"));
     }
@@ -110,7 +119,7 @@ public class ipmap extends MapActivity {
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case 0: {
+        case 0: {//wait dialog
             m_dialog = new ProgressDialog(this);
             m_dialog.setTitle(getTitle());
             m_dialog.setMessage(getString(R.string.wait_msg));
@@ -118,7 +127,7 @@ public class ipmap extends MapActivity {
             m_dialog.setCancelable(true);
             return m_dialog;
         }
-        case 1: {
+        case 1: {//about dialog
         	String version = "";
             PackageManager pm = getPackageManager();
             try {
@@ -129,12 +138,23 @@ public class ipmap extends MapActivity {
         	}    
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
-        			+ getString(R.string.help_text) + "\nhttp://www.hostip.info\n\n\njtbuaa@gmail.com").
+        			+ getString(R.string.help_text) + getString(R.string.help_text2) 
+        			+ "\nhttp://www.hostip.info\n\n\njtbuaa@gmail.com").
         	setPositiveButton("Ok",
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
 	          }).create();
-        	}
+        }
+        case 2: {//message dialog
+        	m_msgDialog = new AlertDialog.Builder(this).
+        	setMessage(getString(R.string.help_text)).
+        	setPositiveButton("Ok",
+	          new DialogInterface.OnClickListener() {
+	        	  public void onClick(DialogInterface dialog, int which) {}
+	          }).create();
+        	Log.d("==================", "" + m_msgDialog);
+            return m_msgDialog;
+    	}
         }
         return null;
 	}
@@ -190,13 +210,15 @@ public class ipmap extends MapActivity {
         		BufferedReader er=new BufferedReader(new InputStreamReader(proc.getErrorStream()));
                 while((line=er.readLine())!=null){
                 	//if ((line == "ping: unknown host " + host) || (line == "connect: Invalid argument")) {
-                	Toast.makeText(getBaseContext(), line, Toast.LENGTH_SHORT).show();
+                	//Toast.makeText(getBaseContext(), line, Toast.LENGTH_SHORT).show();
+                	if (m_msgDialog != null) m_msgDialog.setMessage(line);
                 	break;
                 }
     		}
     	} catch (IOException e) {
-    		e.printStackTrace();
-        	Toast.makeText(getBaseContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    		if (m_msgDialog != null) e.printStackTrace();
+        	//Toast.makeText(getBaseContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+        	m_msgDialog.setMessage(e.getLocalizedMessage());
     	}
 		return result;
     }
@@ -251,15 +273,18 @@ public class ipmap extends MapActivity {
                          i++)
                        add += addresses.get(0).getAddressLine(i) + "\n";
                 }
-                Toast.makeText(getBaseContext(), result + add, Toast.LENGTH_SHORT).show();
+                if (m_msgDialog != null) m_msgDialog.setMessage(result + "\n" + add);
+                //Toast.makeText(getBaseContext(), result + add, Toast.LENGTH_SHORT).show();
             }
             catch (IOException e) {                
                 e.printStackTrace();
-		    	Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
+		    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }   
 	    }
 	    else {
-	    	Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
+            if (m_msgDialog != null) m_msgDialog.setMessage(result);
+	    	//Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
 	    }
     	return geo;
     }
@@ -330,20 +355,24 @@ public class ipmap extends MapActivity {
 			case 302:
 				return httpGet(uri);
 			default:;
-				Toast.makeText(getBaseContext(), "(" + statusCode + ")", Toast.LENGTH_SHORT).show();
+                if (m_msgDialog != null) m_msgDialog.setMessage("sever return code: " + statusCode);
+				//Toast.makeText(getBaseContext(), "(" + statusCode + ")", Toast.LENGTH_SHORT).show();
 			}
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-	    	Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
+	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-	    	Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
+	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-	    	Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
+	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		}
     	return result;
     }
@@ -355,16 +384,19 @@ public class ipmap extends MapActivity {
         try {
 			HttpResponse response = httpClient.execute(httpGet);
 			if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {  
-				httpGet.abort();  
-				Toast.makeText(getBaseContext(), response.getStatusLine().getReasonPhrase(), Toast.LENGTH_LONG).show();
+				httpGet.abort();
+	            if (m_msgDialog != null) m_msgDialog.setMessage(response.getStatusLine().getReasonPhrase());
+				//Toast.makeText(getBaseContext(), response.getStatusLine().getReasonPhrase(), Toast.LENGTH_LONG).show();
 			}
 			else {
 			    return EntityUtils.toString(response.getEntity());
 			}
 		} catch (ClientProtocolException e) {
-	    	Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
+	    	//Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
 		} catch (IOException e) {
-	    	Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
+	    	//Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
 		} finally {
 			httpClient.getConnectionManager().shutdown();
 		}
@@ -389,14 +421,14 @@ public class ipmap extends MapActivity {
 		    public void run() {
 		    	Looper.prepare();
 				String geo = getGeo();
+	            if (m_dialog != null) m_dialog.dismiss();
 			    if (geo.length() > 3) {
 				    //sendIntent("geo:" + geo + "?z=17");//launch Google Map
-				    mHandler.post(mUpdateResults);
 				    if (showOnStreet) 
 				    	sendIntent("google.streetview:cbll=" + geo + "&cbp=1,0,,0,5&mz=17");
 			    }
-	            if (m_dialog != null) m_dialog.dismiss();
-			    Looper.loop();//this must put at the end of the thread, otherwise the dialog can't dismiss. why?
+			    mHandler.post(mUpdateResults);
+			    Looper.loop();//this must put at the end of the thread, otherwise UI can't update, why?
 		    }
 		}).start();
     }

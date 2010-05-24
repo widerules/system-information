@@ -9,6 +9,7 @@
     <string name="map">locate...</string>
     <string name="street">street...</string>
     
-    <string name="help_text">Please input host name or IP address, I will try to locate it in map. Geo info got from</string>
+    <string name="help_text">Please input host name or IP address, I will try to locate it in map. </string>
+    <string name="help_text2">Geo info got from</string>
     <string name="email"><b><i>jtbuaa@gmail.com</i></b></string>
 </resources>

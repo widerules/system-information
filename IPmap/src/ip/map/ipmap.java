@@ -10,6 +10,7 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URI;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -34,6 +35,9 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
+import com.google.android.maps.Projection;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,6 +48,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -63,6 +70,35 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class ipmap extends MapActivity {
+	protected class BluePoint extends Overlay {
+		GeoPoint g;
+		public BluePoint(GeoPoint geo) {
+			super();
+			g = geo;
+		}
+		@Override
+		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+			if (shadow ==false) {
+				Projection projection = mapView.getProjection();
+				Point p = new Point();
+				projection.toPixels(g, p);
+				
+				Paint paint = new Paint();
+				paint.setAntiAlias(true);
+				
+				paint.setARGB(255, 0, 0, 0);
+				canvas.drawCircle(p.x, p.y, 9, paint);
+				
+				paint.setARGB(255, 224, 224, 224);
+				canvas.drawCircle(p.x, p.y, 8, paint);
+				
+				paint.setARGB(255, 128, 128, 192);
+				canvas.drawCircle(p.x, p.y, 4, paint);
+			}
+			super.draw(canvas, mapView, shadow);
+		}
+	}
+	
 	MapView mapView; 
     MapController mc;
     GeoPoint p;
@@ -86,8 +122,9 @@ public class ipmap extends MapActivity {
         setContentView(R.layout.main);      
         
         mapView = (MapView) findViewById(R.id.IPmap);
-        mapView.setBuiltInZoomControls(true); 
+        mapView.setBuiltInZoomControls(true);
         mc = mapView.getController();
+        mc.setZoom(17);
         
         et = (EditText)findViewById(R.id.IPadress);
         et.setOnKeyListener(new View.OnKeyListener() {
@@ -104,13 +141,31 @@ public class ipmap extends MapActivity {
         p = new GeoPoint(
 	            (int) (ml.getLatitude() * 1E6), 
 	            (int) (ml.getLongitude() * 1E6));
-        mc.animateTo(p);
+        mc.animateTo(p);//animate map to your own location
+        setMark(p);
         
-        showDialog(2);//show the help info at first.
-        //Log.d("==================", getMyIP());
+        DecimalFormat df = new DecimalFormat();
+        df.setMinimumFractionDigits(3);
+        df.setMaximumFractionDigits(3);
+        String myLati = df.format(ml.getLatitude());
+        String myLongti = df.format(ml.getLongitude());
+        showDialog(2);
+        String myIP = getMyIP();
+        m_msgDialog.setMessage(getString(R.string.help_text) 
+        			+ getString(R.string.lati) + myLati  
+        			+ getString(R.string.longti) + myLongti  
+        			+ getString(R.string.ip) + myIP);
+        m_msgDialog.show();//show the help info at first.
         //Log.d("==================", getLocationFromWIMI("66.249.89.99"));
     }
 
+    private void setMark(GeoPoint p) {
+        BluePoint mark = new BluePoint(p);
+        List<Overlay> overlays = mapView.getOverlays();
+        overlays.clear();
+        overlays.add(mark);
+    }
+    
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
@@ -146,6 +201,7 @@ public class ipmap extends MapActivity {
 	          }).create();
         }
         case 2: {//message dialog
+        	if (m_msgDialog == null) {
         	m_msgDialog = new AlertDialog.Builder(this).
         	setMessage(getString(R.string.help_text)).
         	setPositiveButton("Ok",
@@ -153,6 +209,7 @@ public class ipmap extends MapActivity {
 	        	  public void onClick(DialogInterface dialog, int which) {}
 	          }).create();
         	Log.d("==================", "" + m_msgDialog);
+        	}
             return m_msgDialog;
     	}
         }
@@ -227,7 +284,7 @@ public class ipmap extends MapActivity {
     	String geo = "", result = "";
     	Log.d("===============", "getGeo");
         String host = et.getText().toString();
-        if ((host == null) || (host.trim().equals(""))) host = "www.google.com";//default host is google.
+        if ((host == null) || (host.trim().equals(""))) host = getString(R.string.hint);//default host is google.
         String ip = host;
         
         if (!ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$")) {
@@ -258,7 +315,8 @@ public class ipmap extends MapActivity {
 	            (int) (lng * 1E6));
 	 
 	        mc.animateTo(p);
-	        mc.setZoom(17); 
+	        //if (mapView.getZoomLevel() == 1) mc.setZoom(17);
+	        setMark(p);
 	        
 	        Geocoder geoCoder = new Geocoder(getBaseContext(), Locale.getDefault());
             try {
@@ -359,17 +417,14 @@ public class ipmap extends MapActivity {
 				//Toast.makeText(getBaseContext(), "(" + statusCode + ")", Toast.LENGTH_SHORT).show();
 			}
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
             if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
 	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
             if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
 	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
             if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
 	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();

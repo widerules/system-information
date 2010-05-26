@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IPmap</string>
-	<string name="hint">input IP/web address to search</string>
+	<string name="hint">www.google.com</string>
 	<string name="wait_msg">please wait while locating...</string>
 	
     <string name="about">help</string>
@@ -11,5 +11,8 @@
     
     <string name="help_text">Please input host name or IP address, I will try to locate it in map. </string>
     <string name="help_text2">Geo info got from</string>
+    <string name="lati">\n\nyour Latitude:\t</string>
+    <string name="longti">\nyour Longitude:\t</string>
+    <string name="ip">\n\nyour IP:\t</string>
     <string name="email"><b><i>jtbuaa@gmail.com</i></b></string>
 </resources>

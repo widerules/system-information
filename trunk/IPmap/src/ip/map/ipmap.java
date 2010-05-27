@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -137,26 +138,29 @@ public class ipmap extends MapActivity {
 			}
 		});
         
-        Location ml = getMyLocation();
-        p = new GeoPoint(
-	            (int) (ml.getLatitude() * 1E6), 
-	            (int) (ml.getLongitude() * 1E6));
-        mc.animateTo(p);//animate map to your own location
-        setMark(p);
-        
-        DecimalFormat df = new DecimalFormat();
-        df.setMinimumFractionDigits(3);
-        df.setMaximumFractionDigits(3);
-        String myLati = df.format(ml.getLatitude());
-        String myLongti = df.format(ml.getLongitude());
         showDialog(2);
-        String myIP = getMyIP();
-        m_msgDialog.setMessage(getString(R.string.help_text) 
-        			+ getString(R.string.lati) + myLati  
-        			+ getString(R.string.longti) + myLongti  
-        			+ getString(R.string.ip) + myIP);
-        m_msgDialog.show();//show the help info at first.
-        //Log.d("==================", getLocationFromWIMI("66.249.89.99"));
+        Location ml = getMyLocation();
+        if (ml != null) {
+            p = new GeoPoint(
+    	            (int) (ml.getLatitude() * 1E6), 
+    	            (int) (ml.getLongitude() * 1E6));
+            mc.animateTo(p);//animate map to your own location
+            setMark(p);
+            
+            DecimalFormat df = new DecimalFormat();
+            df.setMinimumFractionDigits(3);
+            df.setMaximumFractionDigits(3);
+            String myLati = df.format(ml.getLatitude());
+            String myLongti = df.format(ml.getLongitude());
+            String myIP = getMyIP();
+            m_msgDialog.setMessage(getString(R.string.help_text) 
+            			+ getString(R.string.lati) + myLati  
+            			+ getString(R.string.longti) + myLongti  
+            			+ getString(R.string.ip) + myIP);
+            m_msgDialog.show();//show the help info at first.
+        }
+        
+        //httpGet("http://www.ip2location.com/demo.aspx?ip=66.249.89.99");
     }
 
     private void setMark(GeoPoint p) {
@@ -444,6 +448,12 @@ public class ipmap extends MapActivity {
 				//Toast.makeText(getBaseContext(), response.getStatusLine().getReasonPhrase(), Toast.LENGTH_LONG).show();
 			}
 			else {
+				Header[] headers = response.getAllHeaders();
+				for (int i = 0; i < headers.length; i++) {
+					Log.d("=================", headers[i].getName() + "=============" + headers[i].getValue());
+				}
+				
+				
 			    return EntityUtils.toString(response.getEntity());
 			}
 		} catch (ClientProtocolException e) {

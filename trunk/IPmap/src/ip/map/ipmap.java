@@ -160,7 +160,6 @@ public class ipmap extends MapActivity {
             m_msgDialog.show();//show the help info at first.
         }
         
-        //httpGet("http://www.ip2location.com/demo.aspx?ip=66.249.89.99");
     }
 
     private void setMark(GeoPoint p) {
@@ -299,6 +298,10 @@ public class ipmap extends MapActivity {
             }
         }
         
+        //must stop use IP2Location after 20 try everyday, to save money for user.
+        result = getLocationFromIP2Location(ip);
+        if (result.length() > 3)  return result;//return if we can get location from IP2Location.
+        
         result = httpGet("http://api.hostip.info/get_html.php?ip=" + ip + "&position=true");
         if (result.length() > 3) {
     	    String [] results = result.split("\n");
@@ -319,7 +322,6 @@ public class ipmap extends MapActivity {
 	            (int) (lng * 1E6));
 	 
 	        mc.animateTo(p);
-	        //if (mapView.getZoomLevel() == 1) mc.setZoom(17);
 	        setMark(p);
 	        
 	        Geocoder geoCoder = new Geocoder(getBaseContext(), Locale.getDefault());
@@ -374,30 +376,21 @@ public class ipmap extends MapActivity {
     	return httpGet("http://whatismyip.com/automation/n09230945NL.asp");
     }
 
-    private String getLocationFromWIMI(String ip) {
-    	//can't work now
-    	//so get it from www.whatismyip.com/tools/ip-address-lookup.asp or www.ip2location.com/demo.aspx
-    	/*POST /tools/ip-address-lookup.asp HTTP/1.1
-    	Host: www.whatismyip.com
-    	User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.10) Gecko/2009042315 Firefox/3.0.10
-    	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*;q=0.8
-    	Accept-Language: en-us,en;q=0.5
-    	Accept-Encoding: gzip,deflate
-    	Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
-    	Keep-Alive: 300
-    	Connection: keep-alive
-    	Referer: http://www.whatismyip.com/tools/ip-address-lookup.asp
-    	Cookie: __utma=18138879.765344629.1273900707.1274164493.1274170372.6; __utmz=18138879.1274152767.3.3.utmcsr=forum.whatismyip.com|utmccn=(referral)|utmcmd=referral|utmcct=/showthread.php; __utmc=18138879; ASPSESSIONIDQQSCRQTD=NGMKONFALFPICIIBHDDFKCJP; ASPSESSIONIDQQTDRRTD=FBNKONFAAAEHEAMIJMBPDFAO; ASPSESSIONIDSADCCAQD=HGIFLBBDNJPFJKDJMILFHKPM; ASPSESSIONIDSADBACQC=EMDELBBDMAALHBCJNCELDFJB; ASPSESSIONIDSABBACRD=DMPDLBBDHHOACDDLJPDNLNAB; ASPSESSIONIDQACBACRC=JAIDLBBDJNLELAFNFJMAEJDK; ASPSESSIONIDQQACTRBC=LEKAPPADPLLPGLONNIEBBBMD; ASPSESSIONIDSQACSQAC=FLMAPPADIKEBIDOEJBHEDGCE; ASPSESSIONIDQSABTQBC=OELAPPADPEKFFJKNIODIBGKG; ASPSESSIONIDQQBCSQAC=BMHAPPADOJBIOADMDNHFFCME; ASPSESSIONIDSQAATQBC=LPIAPPADMPJACHPBDHJPCBHA; ASPSESSIONIDCSATSCCD=EBHOBHKAPLDKNHGAELPJMOPC; ASPSESSIONIDCSATSDCD=BCLBHFIAJNHFIAGOJBFPICDF; ASPSESSIONIDSQRDQQTD=FDPFGAIAGBANNGOMEAAAKFHG; ASPSESSIONIDQQRDQRSD=KCDIPBKAFABHBOEBAPHBHILE; ASPSESSIONIDSCBDQDTT=OINADEKAHGLLIPGHKNOBKJCN; ASPSESSIONIDQAADSDSS=MEFGMAGAHACIEINMCEPBMOKP; ASPSESSIONIDQACCTDTT=JGLEOFMAOOPJGDIONCIOIAEB; ASPSESSIONIDQSTARQSC=LJHKKGABEMLHBOOBIPGPIMIE; ASPSESSIONIDSQACTRBC=DHDKDKABFBOAKGDNODOKIEPP; ASPSESSIONIDQSCDSQBC=IBIKDKABJLCPNFECOIHFFAIA; ASPSESSIONIDQSABRTBC=APPBEKABCJCCGMLDNDGFEKFG; __utmb=18138879.11.10.1274170372; ASPSESSIONIDQQDCSRBC=BNNBEKABMDABAEOOCFJHGCCB; ASPSESSIONIDSSTDTTQD=ENHBNGABINHFEGNHFBMEALBD; ASPSESSIONIDSQRCQQSC=GLGCNGABFKEHEADGJLLEDFJE; ASPSESSIONIDSQRDQRSC=LLKKHICBKMOFONKBPAJHDACO; ASPSESSIONIDCSARTCCD=ONJNAMABCJBNLKPLPPKDNJMH; ASPSESSIONIDCSAQTCDD=AOCPAMABELBMFCAEDFJBLGLC; ASPSESSIONIDASCSSCCC=INNBBMABFLPNJGKPDLEBCAFF
-    	Content-Type: application/x-www-form-urlencoded
-    	Content-Length: 27
-
-    	IP=122.200.68.247&GL=LookupHTTP/1.0 200 OK*/
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(11);
-		nameValuePairs.add(new BasicNameValuePair("txtLookup", ip));
-    	return httpPost("http://www.ip2location.com/demo.aspx", nameValuePairs);
-		//nameValuePairs.add(new BasicNameValuePair("IP", ip));
-		//nameValuePairs.add(new BasicNameValuePair("GL", "Lookup"));
-    	//return httpPost("http://www.whatismyip.com/tools/ip-address-lookup.asp", nameValuePairs);
+    private String getLocationFromIP2Location(String ip) {
+    	String Latitude = "", Longitude = "";
+    	String Country = "", Region = "", City = "", ZIPcode = "", TimeZone = "";
+        String entity = httpGet("http://www.ip2location.com/" + ip);
+        int l1 = entity.indexOf("dgLookup__ctl2_lblILatitude");
+        int l2 = entity.indexOf("dgLookup__ctl2_lblILongitude");
+        if ((l1 > 0) && (l2 > l1)) {
+            int len = l2 - l1;
+            Log.d("=============", "len: " + entity.length() + ", " + l1 + ", " + l2 + ", " + len);
+            Latitude = entity.substring(l1, l1 + 20);
+            Longitude = entity.substring(l2, l2 + 20);
+            Log.d("=============latitude", Latitude);
+            Log.d("=============longtitude", Longitude);
+        }
+        return Latitude + "," + Longitude;
     }
 
     private String httpPost(String uri, List<NameValuePair> nameValuePairs) {
@@ -439,7 +432,7 @@ public class ipmap extends MapActivity {
     private String httpGet(String uri) {
         HttpParams params = new BasicHttpParams();
         HttpClient httpClient = new DefaultHttpClient(params);
-        HttpGet httpGet = new HttpGet(uri);
+        HttpGet httpGet = new HttpGet(uri); 
         try {
 			HttpResponse response = httpClient.execute(httpGet);
 			if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {  
@@ -447,15 +440,7 @@ public class ipmap extends MapActivity {
 	            if (m_msgDialog != null) m_msgDialog.setMessage(response.getStatusLine().getReasonPhrase());
 				//Toast.makeText(getBaseContext(), response.getStatusLine().getReasonPhrase(), Toast.LENGTH_LONG).show();
 			}
-			else {
-				Header[] headers = response.getAllHeaders();
-				for (int i = 0; i < headers.length; i++) {
-					Log.d("=================", headers[i].getName() + "=============" + headers[i].getValue());
-				}
-				
-				
-			    return EntityUtils.toString(response.getEntity());
-			}
+			else return EntityUtils.toString(response.getEntity());
 		} catch (ClientProtocolException e) {
             if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
 	    	//Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_SHORT).show();

@@ -196,7 +196,7 @@ public class ipmap extends MapActivity {
         	}    
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
-        			+ getString(R.string.help_text) + getString(R.string.help_text2) 
+        			+ getString(R.string.help_text) + " " + getString(R.string.help_text2) 
         			+ "\nhttp://www.hostip.info\n\n\njtbuaa@gmail.com").
         	setPositiveButton("Ok",
 	          new DialogInterface.OnClickListener() {
@@ -299,8 +299,8 @@ public class ipmap extends MapActivity {
         }
         
         //must stop use IP2Location after 20 try everyday, to save money for user.
-        result = getLocationFromIP2Location(ip);
-        if (result.length() > 3)  return result;//return if we can get location from IP2Location.
+        //result = getLocationFromIP2Location(ip);//not finish yet.
+        //if (result.length() > 3)  return result;//return if we can get location from IP2Location.
         
         result = httpGet("http://api.hostip.info/get_html.php?ip=" + ip + "&position=true");
         if (result.length() > 3) {

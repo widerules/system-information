@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <meta-data android:value="a14a8e65a47d51f" android:name="ADMOB_PUBLISHER_ID" />
+        <meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
     </application>
 <uses-sdk android:targetSdkVersion="4" android:minSdkVersion="3"></uses-sdk>
 </manifest> 

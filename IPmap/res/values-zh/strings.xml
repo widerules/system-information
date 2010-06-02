@@ -8,10 +8,10 @@
     <string name="map">定位...</string>
     <string name="street">街景图...</string>
     
-    <string name="help_text">本程序利用IP地址/网址进行地图定位。地理信息来自</string>
+    <string name="help_text">本程序利用IP地址/网址进行地图定位。</string>
     <string name="help_text2">地理信息来自</string>
     <string name="lati">\n\n纬度：</string>
-    <string name="longti">\n\n经度：</string>
+    <string name="longti">\n经度：</string>
     <string name="ip">\n\nIP地址：</string>
     
 </resources>

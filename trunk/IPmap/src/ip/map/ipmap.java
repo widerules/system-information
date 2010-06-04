@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -31,6 +33,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -63,6 +67,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.Xml;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -286,11 +291,11 @@ public class ipmap extends MapActivity {
     private String getGeo() {
     	String geo = "", result = "";
     	Log.d("===============", "getGeo");
-        String host = et.getText().toString();
-        if ((host == null) || (host.trim().equals(""))) host = getString(R.string.hint);//default host is google.
+        String host = et.getText().toString().trim();
+        if ((host == null) || (host.equals(""))) host = getString(R.string.hint);//default host is google.
         String ip = host;
         
-        if (!ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$")) {
+        if (!ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$")) {//why ping can't return sometime?
         	//if input host name instead of IP address, use ping to get IP address.
             ip = ping(host);
             if (ip == "error") {
@@ -299,18 +304,18 @@ public class ipmap extends MapActivity {
         }
         
         //must stop use IP2Location after 20 try everyday, to save money for user.
-        //result = getLocationFromIP2Location(ip);//not finish yet.
-        //if (result.length() > 3)  return result;//return if we can get location from IP2Location.
-        
-        result = httpGet("http://api.hostip.info/get_html.php?ip=" + ip + "&position=true");
-        if (result.length() > 3) {
-    	    String [] results = result.split("\n");
-    	    String Latitude = results[3].split(":")[1].trim();
-    	    String Longitude = results[4].split(":")[1].trim();
-    	    geo = Latitude + "," + Longitude;
+        geo = getLocationFromIP2Location(ip);//not finish yet.
+        if (geo.length() < 3) {
+            result = httpGet("http://api.hostip.info/get_html.php?ip=" + ip + "&position=true");
+            if (result.length() > 3) {
+        	    String [] results = result.split("\n");
+        	    String Latitude = results[3].split(":")[1].trim();
+        	    String Longitude = results[4].split(":")[1].trim();
+        	    geo = Latitude + "," + Longitude;
+                if (m_msgDialog != null) m_msgDialog.setMessage(result);//sometime it display nothing?
+            }
+            else return geo;//cant get geo.
         }
-        else return geo;//cant get geo.
-    	Log.d("===============", geo);
         
 	    if (geo.length() > 3) {
 	        String coordinates[] = geo.split(",");
@@ -337,7 +342,7 @@ public class ipmap extends MapActivity {
                          i++)
                        add += addresses.get(0).getAddressLine(i) + "\n";
                 }
-                if (m_msgDialog != null) m_msgDialog.setMessage(result + "\n" + add);
+                //if (m_msgDialog != null) m_msgDialog.setMessage(result + "\n" + add);
                 //Toast.makeText(getBaseContext(), result + add, Toast.LENGTH_SHORT).show();
             }
             catch (IOException e) {                
@@ -378,19 +383,24 @@ public class ipmap extends MapActivity {
 
     private String getLocationFromIP2Location(String ip) {
     	String Latitude = "", Longitude = "";
-    	String Country = "", Region = "", City = "", ZIPcode = "", TimeZone = "";
-        String entity = httpGet("http://www.ip2location.com/" + ip);
-        int l1 = entity.indexOf("dgLookup__ctl2_lblILatitude");
-        int l2 = entity.indexOf("dgLookup__ctl2_lblILongitude");
-        if ((l1 > 0) && (l2 > l1)) {
-            int len = l2 - l1;
-            Log.d("=============", "len: " + entity.length() + ", " + l1 + ", " + l2 + ", " + len);
-            Latitude = entity.substring(l1, l1 + 20);
-            Longitude = entity.substring(l2, l2 + 20);
-            Log.d("=============latitude", Latitude);
-            Log.d("=============longtitude", Longitude);
+    	String result = "", name, value;
+        String entity = httpGet("http://ws.fraudlabs.com/ip2locationwebservice.asmx/IP2Location?IP=" + ip + "&LICENSE=02-T34H-J97K");
+        String []tmp = entity.split("\n");
+        for (int i = 2; i < tmp.length-2; i++) {
+        	if (tmp[i].indexOf("Not available for this package") == -1) {
+        		String [] pair = tmp[i].split(">");
+        		name = pair[0].trim().substring(1);
+        		value = pair[1].split("<")[0];
+        		result += name + ": " + value + "\n";
+            	if (name.indexOf("LATITUDE") > -1) Latitude = value;
+            	else if (name.indexOf("LONGITUDE") > -1) Longitude = value;
+        	}
         }
-        return Latitude + "," + Longitude;
+        	
+        if (m_msgDialog != null) m_msgDialog.setMessage(result);
+        result = Latitude + "," + Longitude;
+        Log.d("==============", result);
+        return result;
     }
 
     private String httpPost(String uri, List<NameValuePair> nameValuePairs) {

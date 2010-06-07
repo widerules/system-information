@@ -305,16 +305,16 @@ public class ipmap extends MapActivity {
         
         //must stop use IP2Location after 20 try everyday, to save money for user.
         geo = getLocationFromIP2Location(ip);//not finish yet.
-        if (geo.length() < 3) {
+        if (geo.length() < 4) {//www.qq.com will get 0,0
             result = httpGet("http://api.hostip.info/get_html.php?ip=" + ip + "&position=true");
             if (result.length() > 3) {
         	    String [] results = result.split("\n");
         	    String Latitude = results[3].split(":")[1].trim();
         	    String Longitude = results[4].split(":")[1].trim();
         	    geo = Latitude + "," + Longitude;
-                if (m_msgDialog != null) m_msgDialog.setMessage(result);//sometime it display nothing?
+                if (m_msgDialog != null) m_msgDialog.setMessage(result);
             }
-            else return geo;//cant get geo.
+            else return geo;//return if can't get geo.
         }
         
 	    if (geo.length() > 3) {

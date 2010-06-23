@@ -79,11 +79,11 @@ class resultHandler(xml.sax.handler.ContentHandler):
 #para input
 def print_useage():
     cmd = sys.argv[0]
-    print "usage: " + cmd + " base target [output-file] [revert-base-target] [compare-header]"
+    print "usage: " + cmd + " <base> <target> [output file] [revert base and target] [list target header]"
     print "example: "
     print "       " + cmd + " dragon-r10000/testResult.xml" + " dragon-r12000/testResult.xml"
     print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv"
-    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv 0 1"
+    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv 0 1 (0 1 means don't revert base and target, but list header of target)"
 
 
 args = sys.argv[1:]

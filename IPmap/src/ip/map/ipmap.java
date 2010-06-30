@@ -293,19 +293,22 @@ public class ipmap extends MapActivity {
     	Log.d("===============", "getGeo");
         String host = et.getText().toString().trim();
         if ((host == null) || (host.equals(""))) host = getString(R.string.hint);//default host is google.
-        String ip = host;
         
-        if (!ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$")) {//why ping can't return sometime?
-        	//if input host name instead of IP address, use ping to get IP address.
-            ip = ping(host);
-            if (ip == "error") {
-            	return geo;
+        geo = getLocationFromIPaddress(host);
+        if (geo.length() < 3) {
+            String ip = host;
+            
+            if (!ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$")) {//why ping can't return sometime?
+            	//if input host name instead of IP address, use ping to get IP address.
+                ip = ping(host);
+                if (ip == "error") {
+                	return geo;
+                }
             }
-        }
-        
-        //must stop use IP2Location after 20 try everyday, to save money for user.
-        geo = getLocationFromIP2Location(ip);//not finish yet.
-        if (geo.length() < 4) {//www.qq.com will get 0,0
+            
+            //must stop use IP2Location after 20 try everyday, to save money for user.
+            //geo = getLocationFromIP2Location(ip);//not finish yet. will not use it in the future.
+            
             result = httpGet("http://api.hostip.info/get_html.php?ip=" + ip + "&position=true");
             if (result.length() > 3) {
         	    String [] results = result.split("\n");
@@ -355,6 +358,7 @@ public class ipmap extends MapActivity {
             if (m_msgDialog != null) m_msgDialog.setMessage(result);
 	    	//Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
 	    }
+	    
     	return geo;
     }
     
@@ -403,6 +407,32 @@ public class ipmap extends MapActivity {
         return result;
     }
 
+    private String getLocationFromIPaddress(String host) {
+    	String Latitude = "", Longitude = "";
+    	String result = "";
+        String entity = httpGet("http://www.ipaddressapi.com/l/d9b5ce9ced7acf0d5d1b5fd016d58ba3fb542b5c334?h=" + host);
+        if ((entity == null) || (entity.length() == 0)) return "";
+        
+        String []tmp = entity.split(",");
+        for (int i = 0; i < tmp.length; i++) {
+        	//Log.d("=============", tmp[i]);
+        	tmp[i] = tmp[i].substring(1, tmp[i].length()-1);
+        	//Log.d("=============", tmp[i]);
+        }
+        Latitude = tmp[8];
+        Longitude = tmp[9];
+        
+        result = "country: " + tmp[3] + "\n";
+        result += "city: " + tmp[6] + "\n";
+        result += "organization: " + tmp[11] + "\n";
+        result += "latitude: " + Latitude + "\n";
+        result += "longitude: " + Longitude;
+        if (m_msgDialog != null) m_msgDialog.setMessage(result);
+        result = Latitude + "," + Longitude;
+        Log.d("==============", result);
+        return result;
+    }
+    
     private String httpPost(String uri, List<NameValuePair> nameValuePairs) {
     	String result = "";
     	HttpResponse response = null;

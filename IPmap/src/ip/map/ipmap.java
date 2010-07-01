@@ -414,11 +414,11 @@ public class ipmap extends MapActivity {
         if ((entity == null) || (entity.length() == 0)) return "";
         
         String []tmp = entity.split(",");
-        for (int i = 0; i < tmp.length; i++) {
-        	//Log.d("=============", tmp[i]);
+        if (tmp.length < 12) return "";//omit invalid result from the server
+        
+        for (int i = 0; i < tmp.length; i++) //remove the quoted "", see http://www.ipaddressapi.com/usage/
         	tmp[i] = tmp[i].substring(1, tmp[i].length()-1);
-        	//Log.d("=============", tmp[i]);
-        }
+        
         Latitude = tmp[8];
         Longitude = tmp[9];
         

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #Filename: parsercts.py
-#Jingtao: 2010-06-23
+#Jingtao: 2010-07-23
 
 import xml.sax
 import csv
@@ -92,7 +92,7 @@ if (len(args) < 2):
 else:
     baseResult = sys.argv[1]
     targetResult = sys.argv[2]
-    if (len(args) >= 4) and (sys.argv[4] == "1"):
+    if (len(args) >= 4) and (sys.argv[4] == "1"): #revert base and target
         baseResult = sys.argv[2]
         targetResult = sys.argv[1]
 
@@ -142,13 +142,13 @@ else:
 
     if len(args) >= 3:
         csvWriter = csv.writer(file(sys.argv[3], 'w'))
-	csvWriter.writerow(['Test Package', 'Test Cases', 'compare to base version\n' + sys.argv[1], 'CTS Error' + '(' + sys.argv[2] + ')'])
+	csvWriter.writerow(['Test Package', 'Test Cases', 'compare to base version\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
         for i in results:
             result = [i[1], i[2], i[0], i[3].encode("utf-8")] # need to convert err msg to utf-8 otherwise it may report exception
             csvWriter.writerow(result)
 
     headers = []
-    if len(args) >= 5 and sys.argv[5] == "1":
+    if len(args) >= 5 and sys.argv[5] == "1": #write head info to result table
         csvWriter.writerow("") 
         csvWriter.writerow("") 
         for i in target_header:

@@ -27,7 +27,7 @@ void dmesg()
 	len = klogctl(3, buf, len); /* read ring buffer */
 }
 
-jstring Java_sys_info_trial_sysinfo_dmesg( JNIEnv* env, jobject thiz )
+jstring Java_sys_info_trial_Properties_dmesg( JNIEnv* env, jobject thiz )
 {
     dmesg();
     jstring mesg = (*env)->NewStringUTF(env, buf);

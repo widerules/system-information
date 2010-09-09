@@ -26,3 +26,5 @@ tiwlan0   Link encap:Ethernet  HWaddr 00:18:41:BF:3A:D8
           collisions:0 txqueuelen:100 
           RX bytes:9884396 (9.4 MiB)  TX bytes:172715 (168.6 KiB)
 
+todo:
+pstree can't work now

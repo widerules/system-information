@@ -1426,7 +1426,7 @@ int ifprint(void) {
 	return ret;
 }
 
-jstring Java_sys_info_trial_sysinfo_ifprint( JNIEnv* env, jobject thiz )
+jstring Java_sys_info_trial_Properties_ifprint( JNIEnv* env, jobject thiz )
 {
     ifprint();
     jstring mesg = (*env)->NewStringUTF(env, print_buf);

@@ -1,8 +1,5 @@
 package sys.info.trial;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +9,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,9 +27,9 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
-import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Debug;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -43,24 +39,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class sysinfo extends TabActivity {
 
 	WebView serverWeb;
-	ListView ViewList;
+	ListView properList, appList;
 	ProgressDialog m_dialog;
 	String version;
 	TabHost tabHost;
-	String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
 	String sdcard, nProcess, nApk;
-	boolean refreshed;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -94,32 +86,38 @@ public class sysinfo extends TabActivity {
     	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
     	menu.add(0, 3, 0, getString(R.string.fullversion));//.setVisible(false);
-    	menu.add(0, 4, 0, getString(R.string.exit));
+    	menu.add(0, 4, 0, getString(R.string.exit)).setVisible(false);//seems not need exit menu
     	return true;
     }
 	
+    UploadHandler mUploadHandler = new UploadHandler();
+
+    class UploadHandler extends Handler {
+
+        public void handleMessage(Message msg) {
+    		Log.d("===========", "upload handle");
+    		Toast.makeText(getBaseContext(), msg.getData().getString("uploadHint"), Toast.LENGTH_SHORT).show();
+        }
+    };
+    
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()) {
 		case 0:
-			serverWeb.reload();
-			refresh();
-			tabHost.setCurrentTab(1);
-			return true;
-		case 1:
-			if (memtotal == "") 
-				Toast.makeText(sysinfo.this, getString(R.string.memerr), Toast.LENGTH_SHORT).show();
-			else {
-				if (!refreshed) {
-					refresh();
-					refreshed = true;
-				}
-				String []paras ={processor, bogomips, hardware, memtotal, resolution, sCamera, sensors, vendor, product, sdkversion, imei};
-				Properties.upload(getString(R.string.url), paras, this.getApplicationContext());
+			switch (tabHost.getCurrentTab()) {
+			case 0:
+				refresh();
+				break;
+			case 1:
+				serverWeb.reload();
+				break;
 			}
-			return true;
+			break;
+		case 1:
+			Properties.upload(getString(R.string.url), this);
+			break;
 		case 2:
 			showDialog(1);
-			return true;
+			break;
 		case 3:
 			Uri uri = android.net.Uri.parse(getString(R.string.url3));
 			Intent i = new Intent();
@@ -130,11 +128,11 @@ public class sysinfo extends TabActivity {
 				e.printStackTrace();
 				Toast.makeText(this, getString(R.string.fvfail), Toast.LENGTH_SHORT).show();
 			}
-			return true;
+			break;
 		case 4:
 			finish();
 			System.exit(0);
-			return true;
+			break;
 		}
 		return true;
 	}
@@ -148,8 +146,13 @@ public class sysinfo extends TabActivity {
 	@Override
 	protected void onResume () {
 		super.onResume();
+    	//register to receive battery intent
 		Properties.BatteryString = getString(R.string.battery);
 		Properties.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+		registerReceiver(Properties.BroadcastReceiver, filter);
+		
         //Debug.stopMethodTracing();
 	}
 	
@@ -160,16 +163,20 @@ public class sysinfo extends TabActivity {
 		super.onPause();
 	}
 	
+	protected void update() {
+		properList.setVisibility(1);
+		properList.invalidateViews();
+		m_dialog.cancel();
+	}
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        refreshed = false;
-        
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int []resolutions = Properties.resolution(dm);
-        resolution = Integer.toString(resolutions[0]) + "*" + Integer.toString(resolutions[1]);
+        Properties.resolution = Integer.toString(resolutions[0]) + "*" + Integer.toString(resolutions[1]);
         
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
@@ -177,27 +184,34 @@ public class sysinfo extends TabActivity {
                 .setIndicator(getString(R.string.brief))
                 .setContent(R.id.PropertyList));
         tabHost.addTab(tabHost.newTabSpec("tab2")
-                .setIndicator(getString(R.string.apps))
-                .setContent(R.id.PropertyList));
-        tabHost.addTab(tabHost.newTabSpec("tab3")
                 .setIndicator(getString(R.string.online))
                 .setContent(R.id.ViewServer));
+        //tabHost.addTab(tabHost.newTabSpec("tab3")
+        //        .setIndicator(getString(R.string.apps))
+        //        .setContent(R.id.AppList));
         
-        ViewList = (ListView)findViewById(R.id.PropertyList);
-        
-        Properties.listItem = new ArrayList<HashMap<String, Object>>();  
-        
-        SimpleAdapter listItemAdapter = new SimpleAdapter(this, Properties.listItem,   
-                     R.layout.list_items,  
+        properList = (ListView)findViewById(R.id.PropertyList);
+        Properties.properListItem = new ArrayList<HashMap<String, Object>>();  
+        SimpleAdapter properListItemAdapter = new SimpleAdapter(this, Properties.properListItem,   
+                     R.layout.property_list,  
                      new String[] {"ItemTitle", "ItemText"},   
                      new int[] {R.id.ItemTitle, R.id.ItemText}  
                  );  
-                  
-        ViewList.setAdapter(listItemAdapter);
+        properList.setAdapter(properListItemAdapter);
+        
+        //will support app list later
+        //appList = (ListView)findViewById(R.id.AppList);
+        //Properties.appListItem = new ArrayList<HashMap<String, Object>>();  
+        //SimpleAdapter appListItemAdapter = new SimpleAdapter(this, Properties.appListItem,   
+        //             R.layout.app_list,  
+        //             new String[] {"ItemTitle", "ItemText"},   
+        //             new int[] {R.id.ItemTitle, R.id.ItemText}  
+        //         );  
+        //appList.setAdapter(appListItemAdapter);
         
         tabHost.getTabWidget().getChildAt(0).setLayoutParams(new LinearLayout.LayoutParams(resolutions[2], resolutions[3]));
         tabHost.getTabWidget().getChildAt(1).setLayoutParams(new LinearLayout.LayoutParams(resolutions[2], resolutions[3]));
-        tabHost.getTabWidget().getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(resolutions[2], resolutions[3]));
+        //tabHost.getTabWidget().getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(resolutions[2], resolutions[3]));
 
         serverWeb = (WebView)findViewById(R.id.ViewServer);
         serverWeb.getSettings().setJavaScriptEnabled(true);
@@ -214,6 +228,7 @@ public class sysinfo extends TabActivity {
     		e.printStackTrace();
     	}    
 
+    	showDialog(0);
     	//refresh();
     	PageTask task = new PageTask();
 		task.execute("");
@@ -223,6 +238,7 @@ public class sysinfo extends TabActivity {
 		String myresult;
 		@Override
 		protected String doInBackground(String... params) {
+			refreshOnce();
 			myresult = refresh();
 			return null;
 		}
@@ -235,6 +251,7 @@ public class sysinfo extends TabActivity {
 		@Override
 		protected void onPostExecute(String result) {
 			//resText.setText(myresult);
+			properList.invalidate();
 		}
 
 		@Override
@@ -248,31 +265,45 @@ public class sysinfo extends TabActivity {
 		}
 	}
 
- 
-    public String refresh() {
+    private RefreshHandler mRedrawHandler = new RefreshHandler();
+
+    class RefreshHandler extends Handler {
+
+        public void handleMessage(Message msg) {
+    		Log.d("===========", "handle message");
+        	sysinfo.this.update();
+        }
+    };
+
+    public void refreshOnce() {//something not change, then put here
+    	Properties.sdkversion = android.os.Build.VERSION.SDK;
+    	
+    	Properties.dr();
+    	
+    	SensorManager sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+    	Properties.sensors = sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + "";
+    	
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        Properties.imei = tm.getDeviceId();
+        
 		try {serverWeb.loadUrl(getString(R.string.url));}
 		catch (Exception e) {}
-		
-    	SensorManager sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        imei = tm.getDeviceId();
-    	
-    	Properties.setInfo(getString(R.string.processor), Properties.processor()[0]);
-    	Properties.setInfo(getString(R.string.screen), resolution);
-    	Properties.setInfo(getString(R.string.storage), "ram: " + Properties.memtotal());
-    	Properties.setInfo(getString(R.string.camera), Properties.camera() + getString(R.string.pixels));
-    	Properties.setInfo(getString(R.string.sensors), sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + " sensors found");
+    }
+    
+    public String refresh() {
+		properList.setVisibility(0);//otherwise it will force close on nexus one.
+        //properties sort by alphabet, the first is battery, add in onresume().
     	Properties.setInfo(getString(R.string.battery), " ");
-    	Properties.setInfo(getString(R.string.networks), " ");
-    	Properties.setInfo(getString(R.string.telephony), "imei: " + imei);
+    	Properties.setInfo(getString(R.string.buildinfo), "SDK version:" + Properties.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE);
+    	Properties.setInfo(getString(R.string.camera), Properties.camera() + getString(R.string.pixels));
     	Properties.setInfo(getString(R.string.location), " ");
-    	Properties.setInfo(getString(R.string.buildinfo), "SDK version:" + android.os.Build.VERSION.SDK + "\tRELEASE:" + android.os.Build.VERSION.RELEASE);
+    	Properties.setInfo(getString(R.string.networks), " ");
+    	Properties.setInfo(getString(R.string.processor), Properties.processor()[0]);//it will block sometime
+    	Properties.setInfo(getString(R.string.screen), Properties.resolution);
+    	Properties.setInfo(getString(R.string.sensors), Properties.sensors + " " + getString(R.string.sensors));
+    	Properties.setInfo(getString(R.string.storage), "ram: " + Properties.memtotal());
+    	Properties.setInfo(getString(R.string.telephony), "imei: " + Properties.imei);
     	
-    	//battery
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-		registerReceiver(Properties.BroadcastReceiver, filter);
-		
 		//wifi
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -306,7 +337,11 @@ public class sysinfo extends TabActivity {
         
 		//setMap(getString(R.string.vendor), Properties.dr()[1]);
         
-
+		//send message to let view redraw.
+		Message msg = mRedrawHandler.obtainMessage();
+		mRedrawHandler.sendMessage(msg);
+		//update();
+		
 		Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(400);
         return "";

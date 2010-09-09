@@ -28,15 +28,24 @@
     <string name="apps">应用</string>        
     <string name="online">联网查看</string>
 
-    <string name="ulfail">上传失败</string>         
+    <string name="ulfail">上传失败，错误码为：</string>         
     <string name="ulsuccess">上传成功, 请联网查看</string>
+    
+    <string name="battery">电池</string>
+    <string name="health">电池健康情况:</string>
+    <string name="level">电池电量:</string>
+    <string name="plugged">充电类型:</string>
+    <string name="scale">最大容量:</string>
+    <string name="status">电池状态:</string>
+    <string name="technology">Technology:</string>
+    <string name="temperature">电池温度:</string>
+    <string name="voltage">电压:</string>
     
     <string name="processor">处理器</string>
     <string name="screen">屏幕</string>        
     <string name="storage">存储空间</string>        
     <string name="camera">相机</string>
     <string name="sensors">传感器</string>
-    <string name="battery">电池</string>        
     <string name="networks">网络</string>        
     <string name="telephony">电话信息</string>        
     <string name="location">位置信息</string>        

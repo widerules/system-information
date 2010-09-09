@@ -20,8 +20,16 @@
         <item>未知</item>
         <item>良好</item>
         <item>过热</item>
-        <item>死了</item>
+        <item>没电</item>
         <item>过电压</item>
         <item>未定义状态</item>
+    </string-array>
+    
+    <string-array name="batteryStatus">
+        <item>未知</item>
+        <item>充电中</item>
+        <item>放电中</item>
+        <item>未充电</item>
+        <item>电池满</item>
     </string-array>
 </resources>

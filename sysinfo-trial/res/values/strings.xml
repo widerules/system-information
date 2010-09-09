@@ -7,7 +7,7 @@
     <string name="fullversion">full version...</string>
 
     <string name="url">http://system-info.appspot.com</string>         
-    <string name="url1">http://192.168.3.210:8080</string>         
+    <string name="url1">http://192.168.0.146:8080</string>         
     <string name="url2">http://android.clients.google.com</string>         
     <string name="url4">market://search?q=pname:system.info.jtbuaa</string>
     <string name="url3">market://search?q=pname:system.info</string>

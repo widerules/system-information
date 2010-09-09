@@ -6,15 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -29,8 +25,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.FeatureInfo;
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -38,7 +32,9 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.BatteryManager;
-import android.os.Debug;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
@@ -51,22 +47,22 @@ public class Properties {
 	public native static String dmesg();
 	public native static String ifprint();
 	
-	//String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
-	//String sdcard, nProcess, nApk;
-	
-	static ArrayList<HashMap<String, Object>> listItem;
+	static String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
+
+	static ArrayList<HashMap<String, Object>> properListItem;
+	static ArrayList<HashMap<String, Object>> appListItem;
 	public static void setInfo(String title, String text) {
         HashMap<String, Object> map = new HashMap<String, Object>();  
         map.put("ItemTitle", title);  
         map.put("ItemText", text);
         boolean found = false;
-		for (int i = 0; i < listItem.size(); i++)
-			if (listItem.get(i).containsValue(title)) {
-				listItem.set(i, map);
+		for (int i = 0; i < properListItem.size(); i++)
+			if (properListItem.get(i).containsValue(title)) {
+				if (text != " ") properListItem.set(i, map);
 				found = true;
 				break;
 			}
-		if (!found) listItem.add(map);
+		if (!found) properListItem.add(map);
 	}
 	
 	public static String sensors(SensorManager sensorMgr){
@@ -80,7 +76,7 @@ public class Properties {
 	};
 	
 	public static String[] dr(){
-        String dr = getPlatFormware(), vendor, product;
+        String dr = getPlatFormware();
         
        	if (dr != null) {
        		vendor = runCmd("getprop", "apps.setting.product.vendor")[0];
@@ -147,11 +143,12 @@ public class Properties {
 		    	}
 	    	}
 	    } catch (Exception e) {e.printStackTrace();}
-		return Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
+		sCamera = Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
+		return sCamera;
 	};
 	
 	public static String [] processor(){
-		return runCmd("cat", "/proc/cpuinfo");
+		return readFileByLine("/proc/cpuinfo");
 	};
 	
 	public static int[] resolution(DisplayMetrics dm){
@@ -180,17 +177,17 @@ public class Properties {
 	};
 	
 	public static String memtotal(){
-        String tmpmem = dmesg();
-        int totalIndex = tmpmem.indexOf("MB total"); 
+		memtotal = dmesg();
+        int totalIndex = memtotal.indexOf("MB total"); 
     	if (totalIndex > -1) {
-    		String []tmp = tmpmem.substring(0, totalIndex).trim().split("=");
-    		tmpmem = tmp[tmp.length-1].trim() + "MB";
+    		String []tmp = memtotal.substring(0, totalIndex).trim().split("=");
+    		memtotal = tmp[tmp.length-1].trim() + "MB";
     	}
-    	else tmpmem = runCmd("cat", "/proc/meminfo")[0];
-    	return tmpmem;
+    	else memtotal = readFileByLine("/proc/meminfo")[0];
+    	return memtotal;
 	};
 	
-    private static String [] runCmd(String cmd, String para) {
+    private static String [] runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. should move to readFileByLine 
 		String [] result = {"", "", ""};
     	try {
         	String []cmds={cmd, para};  
@@ -209,15 +206,38 @@ public class Properties {
         			result[0] = line;
         			break;
         		}
-        		else if (line.indexOf(":") > -1) {
+            }
+            if (cmd == "ps") result[0] = Integer.toString(count); 
+            return result;
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		result[0] = e.toString();
+    		return result;
+    	}
+    }
+
+    private static String [] readFileByLine(String fileName) {
+		String [] result = {"", "", ""};
+		File file = new File(fileName);
+		if (!file.exists()) return result;
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(file));
+			String line = null;
+			int count = 0;
+			while((line=reader.readLine())!=null) {
+        		if (line.indexOf(":") > -1) {
             		if (line.indexOf("Processor") > -1) {
-            			result[0] = line.split(":")[1];
+            			processor = line.split(":")[1];
+            			result[0] = processor;
             		}
             		else if (line.indexOf("BogoMIPS") > -1) {
-            			result[1] = line.split(":")[1];
+            			bogomips = line.split(":")[1];
+            			result[1] = bogomips;
             		}
             		else if (line.indexOf("Hardware") > -1) {
-            			result[2] = line.split(":")[1];
+            			hardware = line.split(":")[1];
+            			result[2] = hardware;
             			break;
             		}
             		else if (line.indexOf("sdcard:") > -1) {
@@ -246,16 +266,25 @@ public class Properties {
             			break;
             		}
         		}
-            }
-            if (cmd == "ps") result[0] = Integer.toString(count); 
-            return result;
-    	} catch (IOException e) {
+				count++;
+			}
+			reader.close();
+		} catch(IOException e) {
+			result[0] = e.toString();
     		e.printStackTrace();
-    		result[0] = e.toString();
-    		return result;
-    	}
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					result[0] = e.toString();					
+		    		e.printStackTrace();
+				}
+			}
+		}
+		return result;
     }
-
+    
     private static String getPlatFormware (){
         FileReader verReader;
 
@@ -285,7 +314,7 @@ public class Properties {
         return null;
      }
 
-	static void upload(String url, String []paras, final Context home) {
+	static void upload(String url, final sysinfo si) {
 		class SendData implements Runnable {
 	        private String mUri;
 	        private HttpEntity mEntity;
@@ -304,34 +333,37 @@ public class Properties {
 	    			response = client.execute(request);
 	    			statusCode = (response == null ? -1 : response.getStatusLine().getStatusCode());
 	    		} catch (Exception e) {e.printStackTrace();}
-	    		Uri uri;
-    			switch (statusCode) {
-    			case 200:
-    			case 301:
-    			case 302:
-    				uri = android.net.Uri.parse("upload success");
-    			default:
-    				uri = android.net.Uri.parse("upload fail:" + statusCode);
-    			}
-				Intent intent = new Intent();
-				intent.setData(uri);
-				//i.setAction("android.intent.action.VIEW");
-				home.sendBroadcast(intent);
+	        	String hint = null;
+				switch (statusCode) {
+				case 200:
+				case 301:
+				case 302:
+					hint = si.getString(R.string.ulsuccess);
+					break;
+				default:
+					hint = si.getString(R.string.ulfail) + statusCode;
+				}
+    			//use handler to tell UI thread to display hint.
+				Bundle bundle = new Bundle();
+				bundle.putString("uploadHint", hint);
+				Message msg = new Message();
+				msg.setData(bundle);
+				si.mUploadHandler.sendMessage(msg);
 	        }
 		}
 		
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(11);
-		nameValuePairs.add(new BasicNameValuePair("processor", paras[0]));
-		nameValuePairs.add(new BasicNameValuePair("bogomips", paras[1]));
-		nameValuePairs.add(new BasicNameValuePair("hardware", paras[2]));
-		nameValuePairs.add(new BasicNameValuePair("memtotal", paras[3]));
-		nameValuePairs.add(new BasicNameValuePair("resolution", paras[4]));
-		nameValuePairs.add(new BasicNameValuePair("camera", paras[5]));
-		nameValuePairs.add(new BasicNameValuePair("sensors", paras[6]));
-		nameValuePairs.add(new BasicNameValuePair("vendor", paras[7]));
-		nameValuePairs.add(new BasicNameValuePair("product", paras[8]));
-		nameValuePairs.add(new BasicNameValuePair("sdkversion", paras[9]));
-		nameValuePairs.add(new BasicNameValuePair("imei", paras[10]));
+		nameValuePairs.add(new BasicNameValuePair("processor", processor));
+		nameValuePairs.add(new BasicNameValuePair("bogomips", bogomips));
+		nameValuePairs.add(new BasicNameValuePair("hardware", hardware));
+		nameValuePairs.add(new BasicNameValuePair("memtotal", memtotal));
+		nameValuePairs.add(new BasicNameValuePair("resolution", resolution));
+		nameValuePairs.add(new BasicNameValuePair("camera", sCamera));
+		nameValuePairs.add(new BasicNameValuePair("sensors", sensors));
+		nameValuePairs.add(new BasicNameValuePair("vendor", vendor));
+		nameValuePairs.add(new BasicNameValuePair("product", product));
+		nameValuePairs.add(new BasicNameValuePair("sdkversion", sdkversion));
+		nameValuePairs.add(new BasicNameValuePair("imei", imei));
 		try {
 			HttpEntity entity = new UrlEncodedFormEntity(nameValuePairs);
 			SendData s = new SendData(url, entity);

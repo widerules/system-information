@@ -24,4 +24,12 @@
         <item>over voltage</item>
         <item>unspecified failure</item>
     </string-array>
+    
+    <string-array name="batteryStatus">
+        <item>unknown</item>
+        <item>charging</item>
+        <item>discharging</item>
+        <item>not charging</item>
+        <item>full</item>
+    </string-array>
 </resources>

@@ -28,16 +28,25 @@
     <string name="apps">App</string>        
     <string name="online">Online</string>
 
-    <string name="ulfail">upload system info failed</string>         
+    <string name="ulfail">upload system info failed with status code: </string>         
     <string name="ulsuccess">upload system info success, please view in Online tab</string>         
     <string name="tag">======sysinfo========</string>
              
+    <string name="battery">Battery</string>
+    <string name="health">Health:</string>
+    <string name="level">Level:</string>
+    <string name="plugged">Plugged:</string>
+    <string name="scale">Scale:</string>
+    <string name="status">Status:</string>
+    <string name="technology">Technology:</string>
+    <string name="temperature">Temperature:</string>
+    <string name="voltage">Voltage:</string>
+            
     <string name="processor">Processor</string>
     <string name="screen">Screen</string>        
     <string name="storage">Storage</string>        
-    <string name="camera">camera</string>
+    <string name="camera">Camera</string>
     <string name="sensors">Sensors</string>
-    <string name="battery">Battery</string>        
     <string name="networks">Networks</string>        
     <string name="telephony">Telephony</string>        
     <string name="location">Location</string>        

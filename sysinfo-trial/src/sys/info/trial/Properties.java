@@ -35,6 +35,8 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemProperties;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
@@ -75,12 +77,20 @@ public class Properties {
     	return sensors;
 	};
 	
+	public static String [] telephonies(TelephonyManager tm){
+		imei = tm.getDeviceId();
+		String [] result = {tm.getNetworkOperatorName(), imei, tm.getSubscriberId(), tm.getLine1Number()};//network, imei, imsi, phone number 
+		return result;
+	};
+	
 	public static String[] dr(){
         String dr = getPlatFormware();
         
        	if (dr != null) {
-       		vendor = runCmd("getprop", "apps.setting.product.vendor")[0];
-       		product = runCmd("getprop", "apps.setting.product.model")[0];
+       		vendor = SystemProperties.get("apps.setting.product.vendor");
+       		product = SystemProperties.get("apps.setting.product.model");
+       		//vendor = runCmd("getprop", "apps.setting.product.vendor")[0];
+       		//product = runCmd("getprop", "apps.setting.product.model")[0];
        	}
        	else {
        		vendor = android.os.Build.MODEL;
@@ -151,7 +161,7 @@ public class Properties {
 		return readFileByLine("/proc/cpuinfo");
 	};
 	
-	public static int[] resolution(DisplayMetrics dm){
+	public static String[] resolution(DisplayMetrics dm){
         int height = dm.heightPixels;
         int width = dm.widthPixels;
         
@@ -167,13 +177,8 @@ public class Properties {
         	tabWidth = 120;
         }
         
-        int []rets = {width, height, tabWidth, tabHeight};
+        String []rets = {width+"", height+"", tabWidth+"", tabHeight+"", dm.density+"", dm.xdpi+"", dm.ydpi+""};
         return rets;
-	};
-	
-	public static String dpi(DisplayMetrics dm){
-        float f = dm.xdpi;
-        return "dpi: " + (int)f + "\tscale-factor: " + dm.density;
 	};
 	
 	public static String memtotal(){
@@ -187,7 +192,7 @@ public class Properties {
     	return memtotal;
 	};
 	
-    private static String [] runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. should move to readFileByLine 
+    private static String [] runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 
 		String [] result = {"", "", ""};
     	try {
         	String []cmds={cmd, para};  

@@ -32,7 +32,6 @@
     <string name="ulsuccess">upload system info success, please view in Online tab</string>         
     <string name="tag">======sysinfo========</string>
              
-    <string name="battery">Battery</string>
     <string name="health">Health:</string>
     <string name="level">Level:</string>
     <string name="plugged">Plugged:</string>
@@ -42,16 +41,5 @@
     <string name="temperature">Temperature:</string>
     <string name="voltage">Voltage:</string>
             
-    <string name="processor">Processor</string>
-    <string name="screen">Screen</string>        
-    <string name="storage">Storage</string>        
-    <string name="camera">Camera</string>
-    <string name="sensors">Sensors</string>
-    <string name="networks">Networks</string>        
-    <string name="telephony">Telephony</string>        
-    <string name="location">Location</string>        
-    <string name="feature">Feature</string>        
-    <string name="buildinfo">Build Info</string>
-       
     <string name="locationHint">please open GPS or Network Location</string>        
 </resources>

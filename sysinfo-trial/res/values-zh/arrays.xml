@@ -16,6 +16,19 @@
  -->
 
 <resources>
+    <string-array name="propertyItem">
+        <item>电池</item>
+        <item>平台版本</item>
+        <item>相机</item>
+        <item>位置信息</item>
+        <item>网络</item>
+        <item>处理器</item>
+        <item>屏幕</item>
+        <item>传感器</item>
+        <item>存储空间</item>
+        <item>电话信息</item>
+    </string-array>
+    
     <string-array name="batteryHealthState">
         <item>未知</item>
         <item>良好</item>

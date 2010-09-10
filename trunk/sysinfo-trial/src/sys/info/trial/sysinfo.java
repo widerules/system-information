@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,19 +32,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceGroup;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class sysinfo extends TabActivity {
 
@@ -53,6 +60,8 @@ public class sysinfo extends TabActivity {
 	String version;
 	TabHost tabHost;
 	String sdcard, nProcess, nApk;
+	CharSequence[] propertyItems;
+	SimpleAdapter properListItemAdapter;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -147,7 +156,7 @@ public class sysinfo extends TabActivity {
 	protected void onResume () {
 		super.onResume();
     	//register to receive battery intent
-		Properties.BatteryString = getString(R.string.battery);
+		Properties.BatteryString = (String) propertyItems[0];
 		Properties.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
@@ -164,19 +173,41 @@ public class sysinfo extends TabActivity {
 	}
 	
 	protected void update() {
-		properList.setVisibility(1);
 		properList.invalidateViews();
+		setPropList();
 		m_dialog.cancel();
 	}
 	
+	OnPropertyItemClickListener mpropertyCL = new OnPropertyItemClickListener();
+
+    class OnPropertyItemClickListener implements OnItemClickListener {
+    	public void onItemClick(AdapterView<?> arg0, 
+    			View arg1, 
+    			int arg2, //index of selected item, start from 0
+    			long arg3) {
+    		switch (arg2) {
+    		case 0://battery
+    			Intent i = new Intent();
+    			ComponentName cn = new ComponentName("com.android.settings", "BatteryInfo");
+    			i.setComponent(cn);
+    			try {
+    				startActivity(i);
+                } catch (ActivityNotFoundException e) {
+    				e.printStackTrace();
+    			}
+                break;
+    		}
+    	}
+    };
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int []resolutions = Properties.resolution(dm);
-        Properties.resolution = Integer.toString(resolutions[0]) + "*" + Integer.toString(resolutions[1]);
+        String []resolutions = Properties.resolution(dm);
+        Properties.resolution = resolutions[0] + "*" + resolutions[1];
         
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
@@ -192,12 +223,13 @@ public class sysinfo extends TabActivity {
         
         properList = (ListView)findViewById(R.id.PropertyList);
         Properties.properListItem = new ArrayList<HashMap<String, Object>>();  
-        SimpleAdapter properListItemAdapter = new SimpleAdapter(this, Properties.properListItem,   
+        properListItemAdapter = new SimpleAdapter(this, Properties.properListItem,   
                      R.layout.property_list,  
                      new String[] {"ItemTitle", "ItemText"},   
                      new int[] {R.id.ItemTitle, R.id.ItemText}  
                  );  
         properList.setAdapter(properListItemAdapter);
+        properList.setOnItemClickListener(mpropertyCL);
         
         //will support app list later
         //appList = (ListView)findViewById(R.id.AppList);
@@ -209,9 +241,10 @@ public class sysinfo extends TabActivity {
         //         );  
         //appList.setAdapter(appListItemAdapter);
         
-        tabHost.getTabWidget().getChildAt(0).setLayoutParams(new LinearLayout.LayoutParams(resolutions[2], resolutions[3]));
-        tabHost.getTabWidget().getChildAt(1).setLayoutParams(new LinearLayout.LayoutParams(resolutions[2], resolutions[3]));
-        //tabHost.getTabWidget().getChildAt(2).setLayoutParams(new LinearLayout.LayoutParams(resolutions[2], resolutions[3]));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(Integer.parseInt(resolutions[2]), Integer.parseInt(resolutions[3]));
+        tabHost.getTabWidget().getChildAt(0).setLayoutParams(lp);
+        tabHost.getTabWidget().getChildAt(1).setLayoutParams(lp);
+        //tabHost.getTabWidget().getChildAt(2).setLayoutParams(lp);
 
         serverWeb = (WebView)findViewById(R.id.ViewServer);
         serverWeb.getSettings().setJavaScriptEnabled(true);
@@ -229,6 +262,7 @@ public class sysinfo extends TabActivity {
     	}    
 
     	showDialog(0);
+    	initPropList();
     	//refresh();
     	PageTask task = new PageTask();
 		task.execute("");
@@ -278,39 +312,49 @@ public class sysinfo extends TabActivity {
     public void refreshOnce() {//something not change, then put here
     	Properties.sdkversion = android.os.Build.VERSION.SDK;
     	
+    	Properties.camera();
+    	
     	Properties.dr();
+    	
+    	Properties.processor();
+    	
+    	Properties.memtotal();
     	
     	SensorManager sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
     	Properties.sensors = sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + "";
     	
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        Properties.imei = tm.getDeviceId();
+        Properties.telephonies(tm);
         
 		try {serverWeb.loadUrl(getString(R.string.url));}
 		catch (Exception e) {}
     }
     
-    public String refresh() {
-		properList.setVisibility(0);//otherwise it will force close on nexus one.
+    public void initPropList() {
+		propertyItems = getResources().getTextArray(R.array.propertyItem);
+    	for (int i = 0; i < propertyItems.length; i++)
+    		Properties.setInfo((String) propertyItems[i], " ");
+    }
+    
+    public void setPropList() {
         //properties sort by alphabet, the first is battery, add in onresume().
-    	Properties.setInfo(getString(R.string.battery), " ");
-    	Properties.setInfo(getString(R.string.buildinfo), "SDK version:" + Properties.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE);
-    	Properties.setInfo(getString(R.string.camera), Properties.camera() + getString(R.string.pixels));
-    	Properties.setInfo(getString(R.string.location), " ");
-    	Properties.setInfo(getString(R.string.networks), " ");
-    	Properties.setInfo(getString(R.string.processor), Properties.processor()[0]);//it will block sometime
-    	Properties.setInfo(getString(R.string.screen), Properties.resolution);
-    	Properties.setInfo(getString(R.string.sensors), Properties.sensors + " " + getString(R.string.sensors));
-    	Properties.setInfo(getString(R.string.storage), "ram: " + Properties.memtotal());
-    	Properties.setInfo(getString(R.string.telephony), "imei: " + Properties.imei);
-    	
+		Properties.setInfo((String) propertyItems[1], "SDK version:" + Properties.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE);
+		Properties.setInfo((String) propertyItems[2], Properties.sCamera + getString(R.string.pixels));
+		Properties.setInfo((String) propertyItems[5], Properties.processor);
+		Properties.setInfo((String) propertyItems[6], Properties.resolution);
+		Properties.setInfo((String) propertyItems[7], Properties.sensors + " " + (String) propertyItems[5]);
+		Properties.setInfo((String) propertyItems[8], "ram: " + Properties.memtotal);
+		Properties.setInfo((String) propertyItems[9], "IMEI: " + Properties.imei);
+    }
+    
+    public String refresh() {
 		//wifi
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if ((wifiInfo != null) && (wifiInfo.getMacAddress() != null))
-        	Properties.setInfo(getString(R.string.networks), wifiInfo.getMacAddress());
+        	Properties.setInfo((String) propertyItems[4], wifiInfo.getMacAddress());
         else
-        	Properties.setInfo(getString(R.string.networks), "not avaiable");
+        	Properties.setInfo((String) propertyItems[4], "not avaiable");
         
         //String tmpsdcard = runCmd("df", "");
         //if (tmpsdcard != null) result += tmpsdcard + "\n\n";
@@ -324,23 +368,21 @@ public class sysinfo extends TabActivity {
     	for (int i = 0; i < ll.size(); i++) {
     		Location lo = lm.getLastKnownLocation((String) ll.get(i));
     		if (lo != null) {
-    			Properties.setInfo(getString(R.string.location), lo.getLatitude() + ":" + lo.getLongitude());
+    			Properties.setInfo((String) propertyItems[3], lo.getLatitude() + ":" + lo.getLongitude());
     			foundLoc = true;
     		    break;
     		}
     	}
-    	if (!foundLoc) Properties.setInfo(getString(R.string.location), getString(R.string.locationHint));
+    	if (!foundLoc) Properties.setInfo((String) propertyItems[3], getString(R.string.locationHint));
     	
         //result += getString(R.string.nProcess) + runCmd("ps", "") + "\n";//process number
         
 		//setMap(getString(R.string.nApk), nApk);
         
-		//setMap(getString(R.string.vendor), Properties.dr()[1]);
-        
 		//send message to let view redraw.
 		Message msg = mRedrawHandler.obtainMessage();
 		mRedrawHandler.sendMessage(msg);
-		//update();
+		//properListItemAdapter.notifyDataSetChanged();//no use?
 		
 		Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(400);

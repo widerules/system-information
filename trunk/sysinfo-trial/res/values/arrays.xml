@@ -16,6 +16,19 @@
  -->
 
 <resources>
+    <string-array name="propertyItem">
+        <item>Battery</item>
+        <item>Build Info</item>
+        <item>Camera</item>
+        <item>Location</item>
+        <item>Networks</item>
+        <item>Processor</item>
+        <item>Screen</item>
+        <item>Sensors</item>
+        <item>Storage</item>
+        <item>Telephony</item>
+    </string-array>
+    
     <string-array name="batteryHealthState">
         <item>unknown</item>
         <item>good</item>

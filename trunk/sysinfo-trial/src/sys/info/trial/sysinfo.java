@@ -91,7 +91,7 @@ public class sysinfo extends TabActivity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.refresh));
+    	menu.add(0, 0, 0, getString(R.string.refresh)).setVisible(false);//no need currently
     	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
     	menu.add(0, 3, 0, getString(R.string.fullversion));//.setVisible(false);

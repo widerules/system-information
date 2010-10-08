@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">시스템 정보 탐색기(체험판)</string>
+    <string name="about_dialog_text1">시스템 정보 탐색기(체험판)\n</string>
+
+    <string name="license">\n Google Market구매 시스템 정보 탐색기 정식 버전은 광고가 없고, 더 많은 유용한 시스템 정보를 얻을 수 있다.\n</string>
+
+    <string name="fullversion">정식버전 구매...</string>
+    <string name="fvfail">Android Market에서 system info 정식 버전을 찾아서 구매</string>         
+</resources>

@@ -79,11 +79,10 @@ class resultHandler(xml.sax.handler.ContentHandler):
 #para input
 def print_useage():
     cmd = sys.argv[0]
-    print "usage: " + cmd + " <base> <target> [output file] [revert base and target] [list target header]"
+    print "usage: " + cmd + " <base> <target> [output file] [revert base and target]"
     print "example: "
-    print "       " + cmd + " dragon-r10000/testResult.xml" + " dragon-r12000/testResult.xml"
     print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv"
-    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv 0 1 (0 1 means don't revert base and target, but list header of target)"
+    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv 1 (1 means revert base and target)"
 
 
 args = sys.argv[1:]
@@ -107,6 +106,7 @@ else:
 
     parser.setContentHandler(handler_base)
     parser.parse(baseResult)
+    base_header = handler_base.header
 
     results = []
     for k in target_mapping:
@@ -119,17 +119,17 @@ else:
         if base_value:
             base_result = base_value[0]
             if base_result == "pass":
-                compareInfo = "pass on base version"
+                compareInfo = "pass on base report"
             elif base_result == "notExecuted":
-                compareInfo = "notExecuted on base version"
+                compareInfo = "notExecuted on base report"
             elif base_result == "timeout":
-                compareInfo = "timeout on base version"
+                compareInfo = "timeout on base report"
             elif base_value == target_value:
-                compareInfo = "same issue of base version"
+                compareInfo = "same issue of base report"
             else:
-                compareInfo = "different error on base version: " + base_value[-1]
+                compareInfo = "different error on base report: " + base_value[-1]
         else:
-            compareInfo = "not found on base version"
+            compareInfo = "not found on base report"
         if target_result == "fail":
             result = [compareInfo, package, case, target_value[-1]]
         else:
@@ -142,17 +142,18 @@ else:
 
     if len(args) >= 3:
         csvWriter = csv.writer(file(sys.argv[3], 'w'))
-	csvWriter.writerow(['Test Package', 'Test Cases', 'compare to base version\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
+	csvWriter.writerow(['Test Package', 'Test Cases', 'compare to base report\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
         for i in results:
             result = [i[1], i[2], i[0], i[3].encode("utf-8")] # need to convert err msg to utf-8 otherwise it may report exception
             csvWriter.writerow(result)
 
+    #write head info to result table
     headers = []
-    if len(args) >= 5 and sys.argv[5] == "1": #write head info to result table
-        csvWriter.writerow("") 
-        csvWriter.writerow("") 
-        for i in target_header:
-            headers.append([i, target_header[i]])
-        headers.sort()
-        for i in headers:
-            csvWriter.writerow(i) 
+    csvWriter.writerow("") 
+    csvWriter.writerow("") 
+    csvWriter.writerow(["", "target report info", "base report info"]) 
+    for i in target_header:
+        headers.append([i, target_header[i], base_header[i]])
+    headers.sort()
+    for i in headers:
+        csvWriter.writerow(i) 

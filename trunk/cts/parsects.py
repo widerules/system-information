@@ -81,7 +81,7 @@ def print_useage():
     cmd = sys.argv[0]
     print "usage: " + cmd + " <base> <target> [output file] [revert base and target]"
     print "example: "
-    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv"
+    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" " //(it will output compare result to nexus-one_dragon-r12000.csv)"
     print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv 1 (1 means revert base and target)"
 
 
@@ -136,16 +136,21 @@ else:
             result = [compareInfo, package, case, target_value[0]]
         results.append(result)
 
-        if len(args) == 2:
-            print result
     results.sort() #sort results by compare info
 
-    if len(args) >= 3:
-        csvWriter = csv.writer(file(sys.argv[3], 'w'))
-	csvWriter.writerow(['Test Package', 'Test Cases', 'compare to base report\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
-        for i in results:
-            result = [i[1], i[2], i[0], i[3].encode("utf-8")] # need to convert err msg to utf-8 otherwise it may report exception
-            csvWriter.writerow(result)
+    baseName = sys.argv[1].split("/")[-2]
+    targetName = sys.argv[2].split("/")[-2]
+    outputFile = baseName + "_" + targetName + ".csv"
+    if (len(args) >= 4) and (sys.argv[4] == "1"): #revert base and target
+        outputFile = targetName + "_" + baseName + ".csv"
+    if len(args) >= 3: #the name is specified by user
+        outputFile = sys.argv[3]
+
+    csvWriter = csv.writer(file(outputFile, 'w'))
+    csvWriter.writerow(['Test Package', 'Test Cases', 'compare to base report\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
+    for i in results:
+        result = [i[1], i[2], i[0], i[3].encode("utf-8")] # need to convert err msg to utf-8 otherwise it may report exception
+        csvWriter.writerow(result)
 
     #write head info to result table
     headers = []

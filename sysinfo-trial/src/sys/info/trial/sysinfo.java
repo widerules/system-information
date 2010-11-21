@@ -161,8 +161,6 @@ public class sysinfo extends TabActivity {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
 		registerReceiver(Properties.BroadcastReceiver, filter);
-		
-        //Debug.stopMethodTracing();
 	}
 	
 	@Override

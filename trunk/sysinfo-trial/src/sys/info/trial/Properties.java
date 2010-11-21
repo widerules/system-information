@@ -33,9 +33,8 @@ import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
-import android.os.SystemProperties;
+import android.os.Process;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -83,15 +82,51 @@ public class Properties {
 		return result;
 	};
 	
+	private static Method mDebug_getSupportedPictureSizes;
+	private static Method mSystemProperties_get;
+
+	static {
+		initCompatibility();
+	};
+	
+	private static void initCompatibility() {
+	    try {
+	        Class c = Parameters.class;
+	    	mDebug_getSupportedPictureSizes = c.getMethod("getSupportedPictureSizes");
+	    	//below is from android doc but sames not work
+	    	//mDebug_getSupportedPictureSizes = Debug.class.getMethod(
+	        //        "getSupportedPictureSizes", new Class[] { Parameters.class } );
+	    } catch (NoSuchMethodException nsme) {
+	       Log.d("===================1", nsme.toString() );
+	    }
+	       
+	    try {
+            Class c = Class.forName("android.os.SystemProperties");
+            try {
+    	   	   mSystemProperties_get = c.getMethod("get");
+            } catch (NoSuchMethodException nsme) {
+          	   Log.d("===================1", nsme.toString() );
+            }
+	    } catch (ClassNotFoundException e) {
+	        Log.d("===================2", e.toString() );
+	    }
+	}
+	
 	public static String[] dr(){
         String dr = getPlatFormware();
-        
-       	if (dr != null) {
-       		vendor = SystemProperties.get("apps.setting.product.vendor");
-       		product = SystemProperties.get("apps.setting.product.model");
-       		//vendor = runCmd("getprop", "apps.setting.product.vendor")[0];
-       		//product = runCmd("getprop", "apps.setting.product.model")[0];
-       	}
+	        
+       	if ((dr != null) & (mSystemProperties_get != null)) {
+       		try {
+				vendor = (String) mSystemProperties_get.invoke("apps.setting.product.vendor");
+				product = (String) mSystemProperties_get.invoke("apps.setting.product.model");
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+   		}
        	else {
        		vendor = android.os.Build.MODEL;
        		product = android.os.Build.PRODUCT;
@@ -99,37 +134,19 @@ public class Properties {
        	String []rets = {vendor, product, dr};
        	return rets;
 	};
-	
-	private static Method mDebug_getSupportedPictureSizes;
-
-	static {
-		initCompatibility();
-	};
-
-	   private static void initCompatibility() {
-	       try {
-	    	   Class c = Parameters.class;
-	    	   mDebug_getSupportedPictureSizes = c.getMethod("getSupportedPictureSizes");
-	    	   //below is from android doc but sames not work
-	    	   //mDebug_getSupportedPictureSizes = Debug.class.getMethod(
-	           //        "getSupportedPictureSizes", new Class[] { Parameters.class } );
-	       } catch (NoSuchMethodException nsme) {
-	    	   Log.d("===================1", nsme.toString() );
-	       }
-	   }
-
-	   private static Object getSupportedPictureSizes(Parameters param) throws IOException {
-	       try {
-	    	   return mDebug_getSupportedPictureSizes.invoke(param);
-	       } catch (InvocationTargetException ite) {
-	           Throwable cause = ite.getCause();
-               Log.d("=================2", ite.toString() );
-	       } catch (IllegalAccessException ie) {
-	           System.err.println("unexpected " + ie);
-	       }
+		
+    private static Object getSupportedPictureSizes(Parameters param) throws IOException {
+	    try {
+		    return mDebug_getSupportedPictureSizes.invoke(param);
+		} catch (InvocationTargetException ite) {
+		    Throwable cause = ite.getCause();
+	        Log.d("=================3", ite.toString() );
+		} catch (IllegalAccessException ie) {
+		    System.err.println("unexpected " + ie);
+		}
 		return null;
-	   }
-
+	}
+		   
 	public static String camera(){
     	int maxWidth = 0 , maxHeight = 0;
 	    try {
@@ -196,7 +213,7 @@ public class Properties {
 		String [] result = {"", "", ""};
     	try {
         	String []cmds={cmd, para};  
-    		Process proc;
+    		java.lang.Process proc;
     		if (para != "")
     			proc = Runtime.getRuntime().exec(cmds);
     		else

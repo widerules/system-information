@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.app.AlertDialog.Builder;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -61,7 +62,9 @@ public class sysinfo extends TabActivity {
 	TabHost tabHost;
 	String sdcard, nProcess, nApk;
 	CharSequence[] propertyItems;
+	CharSequence[] subItems;
 	SimpleAdapter properListItemAdapter;
+	SensorManager sensorMgr;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -83,6 +86,9 @@ public class sysinfo extends TabActivity {
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
 	          }).create();
+        	}
+        case 2: {
+        	return new AlertDialog.Builder(this).setItems(subItems, null).create();
         	}
         }
         return null;
@@ -184,17 +190,50 @@ public class sysinfo extends TabActivity {
     			int arg2, //index of selected item, start from 0
     			long arg3) {
     		switch (arg2) {
-    		case 0://battery
-    			Intent i = new Intent();
-    			ComponentName cn = new ComponentName("com.android.settings", "BatteryInfo");
-    			i.setComponent(cn);
-    			try {
-    				startActivity(i);
-                } catch (ActivityNotFoundException e) {
-    				e.printStackTrace();
-    			}
-                break;
+    		case 0: {//battery
+    			subItems = getResources().getTextArray(R.array.batteryStatus);
+    			break;
     		}
+    		case 1: {//build info
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		case 2: {//camera
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		case 3: {//location
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		case 4: {//networks
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		case 5: {//processor
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		case 6: {//screen
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		case 7: {//sensors
+    			StringBuilder sb = new StringBuilder();
+    			List l = sensorMgr.getSensorList(Sensor.TYPE_ALL);
+    			for (int i = 0; i < l.size(); i++) sb.append(l.get(i)); 
+    			break;
+    		}
+    		case 8: {//storage
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		case 9: {//telephony
+    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			break;
+    		}
+    		}
+			showDialog(2);
     	}
     };
     
@@ -318,7 +357,7 @@ public class sysinfo extends TabActivity {
     	
     	Properties.memtotal();
     	
-    	SensorManager sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+    	sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
     	Properties.sensors = sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + "";
     	
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

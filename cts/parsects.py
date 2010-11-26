@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #Filename: parsercts.py
-#Jingtao: 2010-07-23
+#Jingtao: 2010-11-26
 
 import xml.sax
 import csv
@@ -138,9 +138,18 @@ else:
 
     results.sort() #sort results by compare info
 
-    baseName = sys.argv[1].split("/")[-2]
-    targetName = sys.argv[2].split("/")[-2]
-    outputFile = baseName + "_" + targetName + ".csv"
+    path = sys.argv[1].split("/")
+    if len(path) > 1:
+        baseName = path[-2]
+    else:
+        baseName = path[-1]
+    path = sys.argv[2].split("/")
+    if len(path) > 1:
+        targetName = path[-2]
+    else:
+        targetName = path[-1]
+
+    outputFile = targetName + "_compare_to_" + baseName + ".csv"
     if (len(args) >= 4) and (sys.argv[4] == "1"): #revert base and target
         outputFile = targetName + "_" + baseName + ".csv"
     if len(args) >= 3: #the name is specified by user

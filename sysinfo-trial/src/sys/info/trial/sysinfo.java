@@ -43,9 +43,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -58,13 +60,16 @@ public class sysinfo extends TabActivity {
 	WebView serverWeb;
 	ListView properList, appList;
 	ProgressDialog m_dialog;
+	AlertDialog m_altDialog;
 	String version;
 	TabHost tabHost;
 	String sdcard, nProcess, nApk;
 	CharSequence[] propertyItems;
-	CharSequence[] subItems;
 	SimpleAdapter properListItemAdapter;
 	SensorManager sensorMgr;
+	String[] resolutions;
+	
+	ArrayAdapter itemAdapter;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -88,10 +93,24 @@ public class sysinfo extends TabActivity {
 	          }).create();
         	}
         case 2: {
-        	return new AlertDialog.Builder(this).setItems(subItems, null).create();
+        	//Log.d("=================", (String) subItems[0]);
+        	//itemAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {"ItemTitle", "ItemText"});
+        	//itemView = (ListView) ListView.inflate(this.getBaseContext(), R.id.AppList , null);
+        	//itemView.setAdapter(itemAdapter);
+        	//m_altDialog = new AlertDialog.Builder(this).setView(itemView).create();
+        	return m_altDialog;
         	}
         }
         return null;
+	}
+	
+	public void showMyDialog(String[] valuse) {
+		ArrayAdapter itemAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, valuse);
+		View myView = getLayoutInflater().inflate(R.layout.popup , (ViewGroup) findViewById(R.id.popup_root));
+    	ListView itemView = (ListView) myView.findViewById(R.id.PropertyList);
+    	itemView.setAdapter(itemAdapter);
+    	AlertDialog altDialog = new AlertDialog.Builder(this).setView(myView).create();
+    	altDialog.show();
 	}
 	
 	@Override
@@ -191,49 +210,59 @@ public class sysinfo extends TabActivity {
     			long arg3) {
     		switch (arg2) {
     		case 0: {//battery
-    			subItems = getResources().getTextArray(R.array.batteryStatus);
+    			Log.d("==========", "0, battery");
     			break;
     		}
     		case 1: {//build info
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			Log.d("==========", "1, build");
     			break;
     		}
     		case 2: {//camera
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			Log.d("==========", "2, camera");
     			break;
     		}
     		case 3: {//location
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			Log.d("==========", "3, location");
     			break;
     		}
     		case 4: {//networks
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			Log.d("==========", "4, networks");
     			break;
     		}
     		case 5: {//processor
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			Log.d("==========", "5, processor");
     			break;
     		}
     		case 6: {//screen
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			String[] subItems = new String[3];
+    			subItems[0] = "dpi: " + resolutions[4];
+    			subItems[1] = "xdpi: " + resolutions[5];
+    			subItems[2] = "ydpi: " + resolutions[6];
+    			showMyDialog(subItems);
+    			Log.d("==========", "6, screen");
     			break;
     		}
     		case 7: {//sensors
-    			StringBuilder sb = new StringBuilder();
     			List l = sensorMgr.getSensorList(Sensor.TYPE_ALL);
-    			for (int i = 0; i < l.size(); i++) sb.append(l.get(i)); 
+    			String[] subItems = new String[l.size()];
+    			for (int i = 0; i < l.size(); i++) {
+    				Sensor ss = (Sensor) l.get(i);
+    				subItems[i] = ss.getName() + ": " + ss.getPower() + "mA by " + ss.getVendor();
+    			}
+    			showMyDialog(subItems);
+    			Log.d("==========", "7, sensors");
     			break;
     		}
     		case 8: {//storage
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			Log.d("==========", "8, storage");
     			break;
     		}
     		case 9: {//telephony
-    			subItems = getResources().getTextArray(R.array.batteryHealthState);
+    			Log.d("==========", "9, telephony");
     			break;
     		}
     		}
-			showDialog(2);
+			//showDialog(2);
     	}
     };
     
@@ -243,7 +272,7 @@ public class sysinfo extends TabActivity {
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        String []resolutions = Properties.resolution(dm);
+        resolutions = Properties.resolution(dm);
         Properties.resolution = resolutions[0] + "*" + resolutions[1];
         
         tabHost = getTabHost();

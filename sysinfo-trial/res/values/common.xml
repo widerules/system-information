@@ -10,6 +10,7 @@
     <string name="wlan">WLAN address:\t</string>
     <string name="latitude">Latitude:\t</string>
     <string name="longitude">Longitude:\t</string>
+    <string name="altitude">Altitude:\t</string>
 
     <string name="sdk">SDK version: </string>
     <string name="vendor">vendor:\t</string>

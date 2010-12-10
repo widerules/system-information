@@ -67,7 +67,7 @@ public class sysinfo extends TabActivity {
 	CharSequence[] propertyItems;
 	SimpleAdapter properListItemAdapter;
 	SensorManager sensorMgr;
-	String[] resolutions;
+	String[] resolutions, cameraSizes, processors, teles;
 	
 	ArrayAdapter itemAdapter;
 		
@@ -103,13 +103,26 @@ public class sysinfo extends TabActivity {
         }
         return null;
 	}
+
 	
+	OnPropertyItemClickListener msubitemCL = new OnPropertyItemClickListener();
+    class OnSubItemClickListener implements OnItemClickListener {
+    	public void onItemClick(AdapterView<?> arg0, 
+    			View arg1, 
+    			int arg2, //index of selected item, start from 0
+    			long arg3) {
+    		m_altDialog.show();
+    	}    	
+    };
+    
 	public void showMyDialog(String[] valuse) {
 		ArrayAdapter itemAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, valuse);
 		View myView = getLayoutInflater().inflate(R.layout.popup , (ViewGroup) findViewById(R.id.popup_root));
     	ListView itemView = (ListView) myView.findViewById(R.id.PropertyList);
     	itemView.setAdapter(itemAdapter);
+    	//itemView.setOnItemClickListener(msubitemCL);
     	AlertDialog altDialog = new AlertDialog.Builder(this).setView(myView).create();
+    	m_altDialog = altDialog;
     	altDialog.show();
 	}
 	
@@ -200,68 +213,89 @@ public class sysinfo extends TabActivity {
 		setPropList();
 		m_dialog.cancel();
 	}
+
 	
 	OnPropertyItemClickListener mpropertyCL = new OnPropertyItemClickListener();
-
     class OnPropertyItemClickListener implements OnItemClickListener {
+    	String[] subItems;
     	public void onItemClick(AdapterView<?> arg0, 
     			View arg1, 
     			int arg2, //index of selected item, start from 0
     			long arg3) {
     		switch (arg2) {
     		case 0: {//battery
-    			Log.d("==========", "0, battery");
     			break;
     		}
     		case 1: {//build info
-    			Log.d("==========", "1, build");
+    			subItems = new String[13];
+    	    	subItems[0] = "Board:\t" + android.os.Build.BOARD;
+    	    	subItems[1] = "Brand:\t" + android.os.Build.BRAND;
+    	    	subItems[2] = "Device:\t" + android.os.Build.DEVICE;
+    	    	subItems[3] = "Host:\t" + android.os.Build.HOST;
+    	    	subItems[4] = "ID:\t" + android.os.Build.ID;
+    	    	subItems[5]= "Model:\t" + android.os.Build.MODEL;
+    	    	subItems[6]= "Product:\t" + android.os.Build.PRODUCT;
+    	    	subItems[7] = "Tags:\t" + android.os.Build.TAGS;
+    	    	subItems[8]= "Type:\t" + android.os.Build.TYPE;
+    	    	subItems[9] = "User:\t" + android.os.Build.USER;
+    	    	subItems[10] = "Fingerprint:\t" + android.os.Build.FINGERPRINT;
+    	    	subItems[11] = "INCREMENTAL: " + android.os.Build.VERSION.INCREMENTAL;
+    	    	subItems[12] = Properties.runCmd("cat", "/proc/version")[0];       
     			break;
     		}
     		case 2: {//camera
-    			Log.d("==========", "2, camera");
+    			subItems = cameraSizes;
     			break;
     		}
     		case 3: {//location
-    			Log.d("==========", "3, location");
+    	        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+    	        List ll = lm.getProviders(true);
+    	    	for (int i = 0; i < ll.size(); i++) {
+    	    		Location lo = lm.getLastKnownLocation((String) ll.get(i));
+    	    		if (lo != null) {
+    	    			subItems = new String[3];
+    	    			subItems[0] = getString(R.string.latitude) + " " + lo.getLatitude();
+    	    			subItems[1] = getString(R.string.longitude) + " " + lo.getLongitude();
+    	    			subItems[2] = getString(R.string.altitude) + " " + lo.getAltitude();
+    	    		    break;
+    	    		}
+    	    	}
+    	    	if (subItems.length == 0) return;
     			break;
     		}
     		case 4: {//networks
-    			Log.d("==========", "4, networks");
     			break;
     		}
     		case 5: {//processor
-    			Log.d("==========", "5, processor");
+    			subItems = processors;
     			break;
     		}
     		case 6: {//screen
-    			String[] subItems = new String[3];
+    			subItems = new String[3];
     			subItems[0] = "dpi: " + resolutions[4];
     			subItems[1] = "xdpi: " + resolutions[5];
     			subItems[2] = "ydpi: " + resolutions[6];
-    			showMyDialog(subItems);
-    			Log.d("==========", "6, screen");
     			break;
     		}
     		case 7: {//sensors
     			List l = sensorMgr.getSensorList(Sensor.TYPE_ALL);
-    			String[] subItems = new String[l.size()];
+    			subItems = new String[l.size()];
     			for (int i = 0; i < l.size(); i++) {
     				Sensor ss = (Sensor) l.get(i);
     				subItems[i] = ss.getName() + ": " + ss.getPower() + "mA by " + ss.getVendor();
     			}
-    			showMyDialog(subItems);
-    			Log.d("==========", "7, sensors");
     			break;
     		}
     		case 8: {//storage
-    			Log.d("==========", "8, storage");
+    			subItems = Properties.runCmd("df", "");
     			break;
     		}
     		case 9: {//telephony
-    			Log.d("==========", "9, telephony");
+    			subItems = teles;
     			break;
     		}
     		}
+			showMyDialog(subItems);
 			//showDialog(2);
     	}
     };
@@ -378,11 +412,11 @@ public class sysinfo extends TabActivity {
     public void refreshOnce() {//something not change, then put here
     	Properties.sdkversion = android.os.Build.VERSION.SDK;
     	
-    	Properties.camera();
+    	cameraSizes = Properties.camera();
     	
     	Properties.dr();
     	
-    	Properties.processor();
+    	processors = Properties.processor();
     	
     	Properties.memtotal();
     	
@@ -390,7 +424,7 @@ public class sysinfo extends TabActivity {
     	Properties.sensors = sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + "";
     	
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        Properties.telephonies(tm);
+        teles = Properties.telephonies(tm);
         
 		try {serverWeb.loadUrl(getString(R.string.url));}
 		catch (Exception e) {}

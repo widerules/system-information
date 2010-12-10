@@ -11,6 +11,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -78,7 +80,21 @@ public class Properties {
 	
 	public static String [] telephonies(TelephonyManager tm){
 		imei = tm.getDeviceId();
-		String [] result = {tm.getNetworkOperatorName(), imei, tm.getSubscriberId(), tm.getLine1Number()};//network, imei, imsi, phone number 
+		String [] result = new String[7];
+		result[0] = "Network Operator: " + tm.getNetworkOperator();
+		result[1] = "Operator Name: " + tm.getNetworkOperatorName();
+		result[2] = "Country ISO: " + tm.getNetworkCountryIso();
+		result[3] = "IMSI: " + tm.getSubscriberId();
+		result[4] = "IMEI: " + imei;
+		result[5] = "Line1 Number: " + tm.getLine1Number();
+		result[6] = "Sim Serial Number: " + tm.getSimSerialNumber();
+		//result[7] = "Device Software Version: " + tm.getDeviceSoftwareVersion();
+		//result[8] = "Voice Mail alpha tag: " + tm.getVoiceMailAlphaTag();
+		//result[9] = "Voice Mail Number: " + tm.getVoiceMailNumber();
+		//result[10] = "callstate: " + tm.getCallState();
+		//result[11] = "networkType: " + tm.getNetworkType();
+		//result[12] = "phoneType: " + tm.getPhoneType();
+		//result[13] = "dataState: " + tm.getDataState();
 		return result;
 	};
 	
@@ -147,21 +163,24 @@ public class Properties {
 		return null;
 	}
 		   
-	public static String camera(){
+	public static String[] camera(){
+		String[] sizes = null;
     	int maxWidth = 0 , maxHeight = 0;
 	    try {
 	    	Camera camera = Camera.open();
 	    	Parameters param = camera.getParameters(); 
 	    	camera.release();
+	    	
 	    	Size size = param.getPictureSize();
 	    	maxWidth = size.width;
 	    	maxHeight = size.height;
+	    	
 	    	if (mDebug_getSupportedPictureSizes != null) {
-	    		Log.d("=================", "getSupportedPictureSizes");
 	    		List sl = (List) getSupportedPictureSizes(param);
-	    		Log.d("================", "sl.size: " + sl.size());
+	    		sizes = new String[sl.size()];
 		    	for (int i = 0; i < sl.size(); i++) {
 		    		Camera.Size cs = (Camera.Size)sl.get(i);
+		    		sizes[i] = cs.width + "*" + cs.height;
 		    		Log.d("===============", cs.width + "*" + cs.height);
 		    		if (maxWidth < cs.width) {
 		    			maxWidth = cs.width;
@@ -169,13 +188,17 @@ public class Properties {
 		    		}
 		    	}
 	    	}
+	    	else {
+		    	sizes = new String[1];
+		    	sizes[0] = maxWidth + "*" + maxHeight;
+	    	}
 	    } catch (Exception e) {e.printStackTrace();}
 		sCamera = Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
-		return sCamera;
+		return sizes;
 	};
 	
 	public static String [] processor(){
-		return readFileByLine("/proc/cpuinfo");
+		return readFile("/proc/cpuinfo");
 	};
 	
 	public static String[] resolution(DisplayMetrics dm){
@@ -205,12 +228,69 @@ public class Properties {
     		String []tmp = memtotal.substring(0, totalIndex).trim().split("=");
     		memtotal = tmp[tmp.length-1].trim() + "MB";
     	}
-    	else memtotal = readFileByLine("/proc/meminfo")[0];
+    	else readFile("/proc/meminfo");
     	return memtotal;
 	};
 	
-    private static String [] runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 
-		String [] result = {"", "", ""};
+    private static String [] readFile(String fileName) {
+		String [] result = readFileByLine(fileName);
+		if (result == null) return null;
+		
+		for (int i = 0; i < result.length; i++) {
+    		if (result[i].indexOf(":") > -1) {
+        		if (result[i].indexOf("Processor") > -1) {
+        			processor = result[i].split(":")[1];
+        		}
+        		else if (result[i].indexOf("BogoMIPS") > -1) {
+        			bogomips = result[i].split(":")[1];
+        		}
+        		else if (result[i].indexOf("Hardware") > -1) {
+        			hardware = result[i].split(":")[1];
+        			break;
+        		}
+        		else if (result[i].indexOf("sdcard:") > -1) {
+        			//result[1] = line.split(",")[0];
+        			break;
+        		}
+        		else if (result[i].indexOf("Memory:") > -1) {
+        			if (result[i].indexOf("=") > -1) { 
+        				memtotal = result[i].split("=")[1].trim().split(" ")[0].trim();
+        			}
+        			break;
+        		}
+        		else if (result[i].indexOf("MemTotal:") > -1) {
+		        	int imem = Integer.valueOf(result[i].split(":")[1].split("k")[0].trim()) / 1024;
+		        	if (imem < 90) {}
+		        	else if (imem < 101) memtotal = "101MB";
+		        	else if (imem < 110) memtotal = "110MB";
+		        	else if (imem < 200) memtotal = "198MB";
+		        	else if (imem < 228) memtotal = "228MB";
+		        	else if (imem < 512) memtotal = "512MB";
+		        	else if (imem < 1024) memtotal = "1GB";
+		        	else if (imem < 2048) memtotal = "2GB";
+		        	else if (imem < 3072) memtotal = "3GB";
+		        	else if (imem < 4096) memtotal = "4GB";
+        			break;
+        		}
+    		}
+		}
+		return result;
+    }
+    
+    private static String [] readFileByLine(String fileName) {
+		File file = new File(fileName);
+		if (!file.exists()) return null;
+		
+		try {
+			return readBuffer(new BufferedReader(new FileReader(file)));
+		} catch (FileNotFoundException e) {
+    		String[] result = new String[1];
+    		result[0] = e.toString();
+    		return result;
+		}
+    }
+    
+    static String [] runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 
     	try {
         	String []cmds={cmd, para};  
     		java.lang.Process proc;
@@ -218,92 +298,36 @@ public class Properties {
     			proc = Runtime.getRuntime().exec(cmds);
     		else
     			proc = Runtime.getRuntime().exec(cmd);
-    		BufferedReader br=new BufferedReader(new InputStreamReader(proc.getInputStream()));
-    		String line = null;
-    		int count = 0;
-    		
-            while((line=br.readLine())!=null){
-            	count = count + 1;
-        		if (cmd == "getprop") {
-        			result[0] = line;
-        			break;
-        		}
-            }
-            if (cmd == "ps") result[0] = Integer.toString(count); 
-            return result;
+    		return readBuffer(new BufferedReader(new InputStreamReader(proc.getInputStream())));
     	} catch (IOException e) {
-    		e.printStackTrace();
+    		String[] result = new String[1];
     		result[0] = e.toString();
     		return result;
     	}
     }
 
-    private static String [] readFileByLine(String fileName) {
-		String [] result = {"", "", ""};
-		File file = new File(fileName);
-		if (!file.exists()) return result;
-		BufferedReader reader = null;
+    static String [] readBuffer(BufferedReader br) {
+		String line = null;
+    	Vector vet = new Vector();
 		try {
-			reader = new BufferedReader(new FileReader(file));
-			String line = null;
-			int count = 0;
-			while((line=reader.readLine())!=null) {
-        		if (line.indexOf(":") > -1) {
-            		if (line.indexOf("Processor") > -1) {
-            			processor = line.split(":")[1];
-            			result[0] = processor;
-            		}
-            		else if (line.indexOf("BogoMIPS") > -1) {
-            			bogomips = line.split(":")[1];
-            			result[1] = bogomips;
-            		}
-            		else if (line.indexOf("Hardware") > -1) {
-            			hardware = line.split(":")[1];
-            			result[2] = hardware;
-            			break;
-            		}
-            		else if (line.indexOf("sdcard:") > -1) {
-            			result[1] = line.split(",")[0];
-            			break;
-            		}
-            		else if (line.indexOf("Memory:") > -1) {
-            			if (line.indexOf("=") > -1) { 
-            				result[0] = line.split("=")[1].trim().split(" ")[0].trim();
-            			}
-            			break;
-            		}
-            		else if (line.indexOf("MemTotal:") > -1) {
-        				result[0] = line.split(":")[1].trim();
-    		        	int imem = Integer.valueOf(result[0].split("k")[0].trim()) / 1024;
-    		        	if (imem < 90) {}
-    		        	else if (imem < 101) result[0] = "101MB";
-    		        	else if (imem < 110) result[0] = "110MB";
-    		        	else if (imem < 200) result[0] = "198MB";
-    		        	else if (imem < 228) result[0] = "228MB";
-    		        	else if (imem < 512) result[0] = "512MB";
-    		        	else if (imem < 1024) result[0] = "1GB";
-    		        	else if (imem < 2048) result[0] = "2GB";
-    		        	else if (imem < 3072) result[0] = "3GB";
-    		        	else if (imem < 4096) result[0] = "4GB";
-            			break;
-            		}
-        		}
-				count++;
-			}
-			reader.close();
-		} catch(IOException e) {
-			result[0] = e.toString();
-    		e.printStackTrace();
+			while((line=br.readLine())!=null) vet.add(line);
+			br.close();
+		} catch (IOException e) {
+    		String[] result = new String[1];
+    		result[0] = e.toString();
+    		return result;
 		} finally {
-			if (reader != null) {
+			if (br != null) {
 				try {
-					reader.close();
+					br.close();
 				} catch (IOException e) {
-					result[0] = e.toString();					
 		    		e.printStackTrace();
 				}
 			}
 		}
+		
+		String[] result = new String[vet.size()];
+		for (int i = 0; i < vet.size(); i++) result[i] = (String) vet.get(i);
 		return result;
     }
     

@@ -418,13 +418,19 @@ public class Properties {
 		} catch (Exception e) {e.printStackTrace();}
 	}
 
+	static String[] Batterys;
 	static String BatteryString;
-	static CharSequence[] batteryHealth;
+	static CharSequence[] batteryHealth, batteryStatus;
 	static BroadcastReceiver BroadcastReceiver = new BroadcastReceiver() {  
         @Override  
         public void onReceive(Context context, Intent intent) {  
             String action = intent.getAction();  
             if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
+            	Batterys = new String[7];
+            	
+            	//电池电量，数字
+            	Batterys[0] = intent.getIntExtra("level", 0) + "%";
+            	
                 //电池健康情况，返回也是一个数字  
                 //BatteryManager.BATTERY_HEALTH_GOOD 良好  
                 //BatteryManager.BATTERY_HEALTH_OVERHEAT 过热  
@@ -434,27 +440,27 @@ public class Properties {
                 //Log.d("Battery", "health " + intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN));
             	int healthState = intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN);
             	setInfo(BatteryString, (String) batteryHealth[healthState-1] + "(" + intent.getIntExtra("level", 0) + "%)");
+            	Batterys[1] = (String) batteryHealth[healthState-1];
             	
-                //电池电量，数字  
-            	Log.d(BatteryString, "level " + intent.getIntExtra("level", 0));
-                //电池最大容量  
-                //Log.d(BatteryString, "scale " + intent.getIntExtra("scale", 0));                 
-                //setInfo(BatteryString, "(" + intent.getIntExtra("scale", 0) + "%)");                 
-                //电池伏数  
-                //Log.d("Battery", "voltage " + intent.getIntExtra("voltage", 0));                 
-                //电池温度  
-                //Log.d("Battery", "temperature " + intent.getIntExtra("temperature", 0));  
-                  
                 //电池状态，返回是一个数字  
                 // BatteryManager.BATTERY_STATUS_CHARGING 表示是充电状态  
                 // BatteryManager.BATTERY_STATUS_DISCHARGING 放电中  
                 // BatteryManager.BATTERY_STATUS_NOT_CHARGING 未充电  
                 // BatteryManager.BATTERY_STATUS_FULL 电池满  
-                //Log.d(BatteryString, "status " + intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN));
-                //setInfo(BatteryString, "status " + intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN));
+            	Batterys[2] = (String) batteryStatus[intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN)-1];
                  
+                //电池伏数  
+            	Batterys[3] = intent.getIntExtra("voltage", 0) + "mV";
+
+                //电池温度, 0.1度单位。例如 表示197的时候，意思为19.7度
+            	Batterys[4] = intent.getIntExtra("temperature", 0)/10.0 + "";
+                  
                 //充电类型 BatteryManager.BATTERY_PLUGGED_AC 表示是充电器，不是这个值，表示是 USB  
-                //Log.d("Battery", "plugged " + intent.getIntExtra("plugged", 0));                   
+            	int type = intent.getIntExtra("plugged", 0);
+            	if (type == BatteryManager.BATTERY_PLUGGED_AC) Batterys[5] = "Charger";
+            	else Batterys[5] = "USB";
+            	
+            	Batterys[6] = intent.getStringExtra("technology");
             }  
         }
 	};

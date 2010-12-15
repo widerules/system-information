@@ -105,13 +105,13 @@ public class sysinfo extends TabActivity {
 	}
 
 	
-	OnPropertyItemClickListener msubitemCL = new OnPropertyItemClickListener();
+	OnSubItemClickListener msubitemCL = new OnSubItemClickListener();
     class OnSubItemClickListener implements OnItemClickListener {
     	public void onItemClick(AdapterView<?> arg0, 
     			View arg1, 
     			int arg2, //index of selected item, start from 0
     			long arg3) {
-    		m_altDialog.show();
+    		m_altDialog.dismiss();//dismiss the dialog when click on it.
     	}    	
     };
     
@@ -120,8 +120,9 @@ public class sysinfo extends TabActivity {
 		View myView = getLayoutInflater().inflate(R.layout.popup , (ViewGroup) findViewById(R.id.popup_root));
     	ListView itemView = (ListView) myView.findViewById(R.id.PropertyList);
     	itemView.setAdapter(itemAdapter);
-    	//itemView.setOnItemClickListener(msubitemCL);
+    	itemView.setOnItemClickListener(msubitemCL);
     	AlertDialog altDialog = new AlertDialog.Builder(this).setView(myView).create();
+    	altDialog.setOnKeyListener(null);
     	m_altDialog = altDialog;
     	altDialog.show();
 	}

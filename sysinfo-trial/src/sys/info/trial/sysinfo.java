@@ -196,6 +196,7 @@ public class sysinfo extends TabActivity {
     	//register to receive battery intent
 		Properties.BatteryString = (String) propertyItems[0];
 		Properties.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
+		Properties.batteryStatus = getResources().getTextArray(R.array.batteryStatus);
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
 		registerReceiver(Properties.BroadcastReceiver, filter);
@@ -224,6 +225,14 @@ public class sysinfo extends TabActivity {
     			long arg3) {
     		switch (arg2) {
     		case 0: {//battery
+    			subItems = new String[7];
+    			subItems[0] = getString(R.string.level) + " " + Properties.Batterys[0];
+    			subItems[1] = getString(R.string.health) + " " + Properties.Batterys[1];
+    			subItems[2] = getString(R.string.status) + " " + Properties.Batterys[2];
+    			subItems[3] = getString(R.string.voltage) + " " + Properties.Batterys[3];
+    			subItems[4] = getString(R.string.temperature) + " " + Properties.Batterys[4];
+    			subItems[5] = getString(R.string.plugged) + " " + Properties.Batterys[5];
+    			subItems[6] = getString(R.string.technology) + " " + Properties.Batterys[6];
     			break;
     		}
     		case 1: {//build info
@@ -260,10 +269,16 @@ public class sysinfo extends TabActivity {
     	    		    break;
     	    		}
     	    	}
-    	    	if (subItems.length == 0) return;
+    	    	if (subItems == null) return;
     			break;
     		}
     		case 4: {//networks
+    			subItems = new String[5];
+    			//subItems[0] = "Network Type: " + ;
+    			//subItems[1] = "Roaming State: " + ;
+    			//subItems[2] = "State: " + ;
+    			//subItems[3] = "Local Address: " + ;
+    			//subItems[4] = "Public Address: " + ;
     			break;
     		}
     		case 5: {//processor

@@ -79,21 +79,21 @@ class resultHandler(xml.sax.handler.ContentHandler):
 #para input
 def print_useage():
     cmd = sys.argv[0]
-    print "usage: " + cmd + " <base> <target> [output file] [revert base and target]"
+    print "usage: " + cmd + " <target> <base> [output file] [revert base and target]"
     print "example: "
-    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" " //(it will output compare result to nexus-one_dragon-r12000.csv)"
-    print "       " + cmd + " nexus-one/testResult.xml" + " dragon-r12000/testResult.xml" + " compare.csv 1 (1 means revert base and target)"
+    print "       " + cmd + " dragon-r1234/testResult.xml" + " nexus-one/testResult.xml" " //(it will output compare result to dragon-r1200_nexus-one.csv)"
+    print "       " + cmd + " dragon-r1234/testResult.xml" + " nexus-one/testResult.xml" + " compare.csv 1 (1 means revert base and target)"
 
 
 args = sys.argv[1:]
 if (len(args) < 2):
     print_useage() 
 else:
-    baseResult = sys.argv[1]
-    targetResult = sys.argv[2]
+    baseResult = sys.argv[2]
+    targetResult = sys.argv[1]
     if (len(args) >= 4) and (sys.argv[4] == "1"): #revert base and target
-        baseResult = sys.argv[2]
-        targetResult = sys.argv[1]
+        baseResult = sys.argv[1]
+        targetResult = sys.argv[2]
 
     parser = xml.sax.make_parser()
     handler_base = resultHandler(False)
@@ -138,25 +138,25 @@ else:
 
     results.sort() #sort results by compare info
 
-    path = sys.argv[1].split("/")
+    path = baseResult.split("/")
     if len(path) > 1:
         baseName = path[-2]
     else:
         baseName = path[-1]
-    path = sys.argv[2].split("/")
+    path = targetResult.split("/")
     if len(path) > 1:
         targetName = path[-2]
     else:
         targetName = path[-1]
 
-    outputFile = targetName + "_compare_to_" + baseName + ".csv"
+    outputFile = targetName + "_versus_" + baseName + ".csv"
     if (len(args) >= 4) and (sys.argv[4] == "1"): #revert base and target
         outputFile = targetName + "_" + baseName + ".csv"
     if len(args) >= 3: #the name is specified by user
         outputFile = sys.argv[3]
 
     csvWriter = csv.writer(file(outputFile, 'w'))
-    csvWriter.writerow(['Test Package', 'Test Cases', 'compare to base report\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
+    csvWriter.writerow(['Test Package', 'Test Cases', 'base report\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
     for i in results:
         result = [i[1], i[2], i[0], i[3].encode("utf-8")] # need to convert err msg to utf-8 otherwise it may report exception
         csvWriter.writerow(result)

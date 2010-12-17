@@ -274,13 +274,14 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		case 4: {//networks
-    			subItems = new String[5];
+    			return;
+    			//subItems = new String[5];
     			//subItems[0] = "Network Type: " + ;
     			//subItems[1] = "Roaming State: " + ;
     			//subItems[2] = "State: " + ;
     			//subItems[3] = "Local Address: " + ;
     			//subItems[4] = "Public Address: " + ;
-    			break;
+    			//break;
     		}
     		case 5: {//processor
     			subItems = processors;

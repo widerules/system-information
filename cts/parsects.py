@@ -155,6 +155,7 @@ else:
     if len(args) >= 3: #the name is specified by user
         outputFile = sys.argv[3]
 
+    print "write to " + outputFile
     csvWriter = csv.writer(file(outputFile, 'w'))
     csvWriter.writerow(['Test Package', 'Test Cases', 'base report\n' + baseResult, 'CTS Error' + '(' + targetResult + ')'])
     for i in results:

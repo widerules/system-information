@@ -305,6 +305,8 @@ public class sysinfo extends TabActivity {
     		}
     		case 8: {//storage
     			subItems = Properties.runCmd("df", "");
+    			for (int i = 0; i < subItems.length; i++)
+    				subItems[i] = subItems[i].split("\\(block")[0];
     			break;
     		}
     		case 9: {//telephony

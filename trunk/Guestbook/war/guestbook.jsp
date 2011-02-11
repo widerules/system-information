@@ -18,7 +18,7 @@
     out.println("<h3>Welcome to find kinds of GPhone here.</h3>");
 
     PersistenceManager pm = PMF.get().getPersistenceManager();
-    String query = "select from " + Greeting.class.getName() + " order by sdkversion desc";
+    String query = "select from " + Greeting.class.getName() + " where sdkversion > '6' order by sdkversion desc";
     List<Greeting> greetings = (List<Greeting>) pm.newQuery(query).execute();
 %>
 
@@ -32,9 +32,7 @@
 </tr>
 
 <%
-    int countofphone = 0;
     for (Greeting g : greetings) {
-        countofphone++;
 %>
 <tr>
 <td><%= g.vendor %></td>
@@ -52,7 +50,6 @@
 
 <br/>
 <%
-    out.println("<h4>" + countofphone + " type of phone listed.");
     CounterFactory factory = new CounterFactory();
     ShardedCounter counter = factory.getCounter("user counter");
     if (counter == null) {
@@ -60,7 +57,9 @@
         counter.addShard();
     }
     counter.increment();
-    out.println("<h4>you are the " + counter.getCount() + "th vistor of this site.");
+    out.println("<h4>you are using trial version of system info client.");
+    out.println("<h4>you can get the full version from");
+    out.println("<a href=https://market.android.com/details?id=system.info>here</a>.");
 %>
 
 </center>

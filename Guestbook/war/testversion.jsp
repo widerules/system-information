@@ -36,7 +36,10 @@
 </tr>
 
 <%
+    int countofphone = 0;
     for (Greeting g : greetings) {
+        countofphone++;
+	if (Integer.parseInt(g.sdkversion) > 6) {
 %>
 <tr>
 <td><%= g.vendor %></td>
@@ -47,6 +50,7 @@
 <td><%= g.count %></td>
 </tr>
 <%
+	}
     }
     pm.close();
 %>

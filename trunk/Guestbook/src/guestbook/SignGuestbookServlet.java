@@ -16,9 +16,21 @@ import guestbook.PMF;
 
 public class SignGuestbookServlet extends HttpServlet {
     //private static final Logger log = Logger.getLogger(SignGuestbookServlet.class.getName());
-
+    public void doGet(HttpServletRequest req, HttpServletResponse resp)
+        throws IOException {
+        doPost(req, resp);
+    }
+    
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
-                throws IOException {
+        throws IOException {
+
+        System.out.println("inpost");
+
+        String clientVersion = req.getParameter("versionCode");
+        if ((clientVersion == null) || (clientVersion == "") || (Integer.parseInt(clientVersion) < 28)) {
+       	    resp.sendRedirect("/warning.jsp"); //show warning that the client version is too older. redirect not work?
+            return;
+        }
 
         String sensors = req.getParameter("sensors");
         String memtotal = req.getParameter("memtotal");
@@ -86,9 +98,10 @@ public class SignGuestbookServlet extends HttpServlet {
             }
         }
         
-        if (sensors.contains("trial"))
-        	resp.sendRedirect("/guestbook.jsp");
-        else
+        String versionInfo = req.getParameter("clientVersion");
+        if ((versionInfo != null) && (versionInfo == "full-version"))
         	resp.sendRedirect("/fullversion.jsp");
+        else
+        	resp.sendRedirect("/");
     }
 }

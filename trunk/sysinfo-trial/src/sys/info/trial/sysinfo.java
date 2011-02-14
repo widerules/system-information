@@ -3,6 +3,10 @@ package sys.info.trial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
+
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EncodingUtils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,6 +19,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -46,6 +51,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -62,6 +68,7 @@ public class sysinfo extends TabActivity {
 	ProgressDialog m_dialog;
 	AlertDialog m_altDialog;
 	String version;
+	int versionCode;
 	TabHost tabHost;
 	String sdcard, nProcess, nApk;
 	CharSequence[] propertyItems;
@@ -133,8 +140,8 @@ public class sysinfo extends TabActivity {
     	menu.add(0, 0, 0, getString(R.string.refresh)).setVisible(false);//no need currently
     	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
-    	menu.add(0, 3, 0, getString(R.string.fullversion));//.setVisible(false);
-    	menu.add(0, 4, 0, getString(R.string.exit)).setVisible(false);//seems not need exit menu
+    	menu.add(0, 3, 0, getString(R.string.fullversion)).setVisible(false);
+    	menu.add(0, 4, 0, getString(R.string.exit));//.setVisible(false);//seems not need exit menu
     	return true;
     }
 	
@@ -161,7 +168,26 @@ public class sysinfo extends TabActivity {
 			}
 			break;
 		case 1:
-			Properties.upload(getString(R.string.url), this);
+			serverWeb.setWebViewClient(new WebViewClient() {
+				public boolean shouldOverrideUrlLoading(WebView view, String url) {
+					view.loadUrl(url);
+					return false;//this will not launch browser when redirect.
+				}
+			});
+			String postData = "";
+			postData += "processor=" + Properties.processor + "&";
+			postData += "bogomips=" + Properties.bogomips + "&";
+			postData += "hardware=" + Properties.hardware + "&";
+			postData += "memtotal=" + Properties.memtotal + "&";
+			postData += "resolution=" + Properties.resolution + "&";
+			postData += "sCamera=" + Properties.sCamera + "&";
+			postData += "sensors=" + Properties.sensors + "&";
+			postData += "vendor=" + Properties.vendor + "&";
+			postData += "product=" + Properties.product + "&";
+			postData += "sdkversion=" + Properties.sdkversion + "&";
+			postData += "imei=" + Properties.imei + "&";
+			postData += "versionCode=" + versionCode;
+			serverWeb.postUrl(getString(R.string.url)+"/sign", EncodingUtils.getBytes(postData, "BASE64"));
 			break;
 		case 2:
 			showDialog(1);
@@ -313,6 +339,20 @@ public class sysinfo extends TabActivity {
     			subItems = teles;
     			break;
     		}
+    		case 10: {//debugable
+            	Vector vet = new Vector();
+    	        List<ApplicationInfo> apps = getPackageManager().getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+    	        for (ApplicationInfo app : apps) {
+    	            String appName = app.sourceDir;
+    	            if((app.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+    	            	vet.add(appName + "debugable");
+    	            }//how about version?
+    	            else
+    	            	vet.add(appName);
+    	        }
+    	        subItems = new String[vet.size()];
+    			for (int i = 0; i < vet.size(); i++) subItems[i] = (String) vet.get(i);
+    		}
     		}
 			showMyDialog(subItems);
 			//showDialog(2);
@@ -366,14 +406,16 @@ public class sysinfo extends TabActivity {
         //tabHost.getTabWidget().getChildAt(2).setLayoutParams(lp);
 
         serverWeb = (WebView)findViewById(R.id.ViewServer);
-        serverWeb.getSettings().setJavaScriptEnabled(true);
         WebSettings webSettings = serverWeb.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setUserAgentString("test");
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         
         PackageManager pm = getPackageManager();
         try {
         	PackageInfo pi = pm.getPackageInfo("sys.info.trial", 0);
         	version = "v" + pi.versionName;
+        	versionCode = pi.versionCode;
         	List list = pm.getInstalledApplications(0);
         	nApk = Integer.toString(list.size());
     	} catch (NameNotFoundException e) {

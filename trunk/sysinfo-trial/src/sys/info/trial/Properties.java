@@ -31,6 +31,7 @@ import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.hardware.Camera.Parameters;
+import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -360,63 +361,6 @@ public class Properties {
         return null;
      }
 
-	static void upload(String url, final sysinfo si) {
-		class SendData implements Runnable {
-	        private String mUri;
-	        private HttpEntity mEntity;
-
-	        public SendData(String uri, HttpEntity entity) {
-	            mUri = uri + "/sign";
-	            mEntity = entity;
-	        }
-	        public void run() {
-	        	HttpResponse response = null;
-	        	int statusCode = -1;
-	    		try {
-	    			HttpClient client = new DefaultHttpClient();
-	    			HttpPost request = new HttpPost(mUri);
-	    			request.setEntity(mEntity);
-	    			response = client.execute(request);
-	    			statusCode = (response == null ? -1 : response.getStatusLine().getStatusCode());
-	    		} catch (Exception e) {e.printStackTrace();}
-	        	String hint = null;
-				switch (statusCode) {
-				case 200:
-				case 301:
-				case 302:
-					hint = si.getString(R.string.ulsuccess);
-					break;
-				default:
-					hint = si.getString(R.string.ulfail) + statusCode;
-				}
-    			//use handler to tell UI thread to display hint.
-				Bundle bundle = new Bundle();
-				bundle.putString("uploadHint", hint);
-				Message msg = new Message();
-				msg.setData(bundle);
-				si.mUploadHandler.sendMessage(msg);
-	        }
-		}
-		
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(11);
-		nameValuePairs.add(new BasicNameValuePair("processor", processor));
-		nameValuePairs.add(new BasicNameValuePair("bogomips", bogomips));
-		nameValuePairs.add(new BasicNameValuePair("hardware", hardware));
-		nameValuePairs.add(new BasicNameValuePair("memtotal", memtotal));
-		nameValuePairs.add(new BasicNameValuePair("resolution", resolution));
-		nameValuePairs.add(new BasicNameValuePair("camera", sCamera));
-		nameValuePairs.add(new BasicNameValuePair("sensors", sensors));
-		nameValuePairs.add(new BasicNameValuePair("vendor", vendor));
-		nameValuePairs.add(new BasicNameValuePair("product", product));
-		nameValuePairs.add(new BasicNameValuePair("sdkversion", sdkversion));
-		nameValuePairs.add(new BasicNameValuePair("imei", imei));
-		try {
-			HttpEntity entity = new UrlEncodedFormEntity(nameValuePairs);
-			SendData s = new SendData(url, entity);
-	        Thread doSendData = new Thread(s);
-	        doSendData.start();
-		} catch (Exception e) {e.printStackTrace();}
-	}
 
 	static String[] Batterys;
 	static String BatteryString;

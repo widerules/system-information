@@ -1433,7 +1433,7 @@ jstring Java_sys_info_trial_Properties_ifprint( JNIEnv* env, jobject thiz )
     return mesg;
 }
 
-jstring Java_system_info_reader_ifprint( JNIEnv* env, jobject thiz )
+jstring Java_system_info_Properties_ifprint( JNIEnv* env, jobject thiz )
 {
     ifprint();
     jstring mesg = (*env)->NewStringUTF(env, print_buf);

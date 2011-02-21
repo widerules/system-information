@@ -52,6 +52,8 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.SslErrorHandler;
+import android.net.http.SslError;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -140,8 +142,8 @@ public class sysinfo extends TabActivity {
     	menu.add(0, 0, 0, getString(R.string.refresh)).setVisible(false);//no need currently
     	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
-    	menu.add(0, 3, 0, getString(R.string.fullversion)).setVisible(false);
-    	menu.add(0, 4, 0, getString(R.string.exit));//.setVisible(false);//seems not need exit menu
+    	menu.add(0, 3, 0, getString(R.string.fullversion));//.setVisible(false);
+    	menu.add(0, 4, 0, getString(R.string.exit)).setVisible(false);//seems not need exit menu
     	return true;
     }
 	
@@ -168,12 +170,6 @@ public class sysinfo extends TabActivity {
 			}
 			break;
 		case 1:
-			serverWeb.setWebViewClient(new WebViewClient() {
-				public boolean shouldOverrideUrlLoading(WebView view, String url) {
-					view.loadUrl(url);
-					return false;//this will not launch browser when redirect.
-				}
-			});
 			String postData = "";
 			postData += "processor=" + Properties.processor + "&";
 			postData += "bogomips=" + Properties.bogomips + "&";
@@ -188,6 +184,7 @@ public class sysinfo extends TabActivity {
 			postData += "imei=" + Properties.imei + "&";
 			postData += "versionCode=" + versionCode;
 			serverWeb.postUrl(getString(R.string.url)+"/sign", EncodingUtils.getBytes(postData, "BASE64"));
+			tabHost.setCurrentTab(1);
 			break;
 		case 2:
 			showDialog(1);
@@ -284,6 +281,7 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		case 3: {//location
+    			subItems = null;
     	        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
     	        List ll = lm.getProviders(true);
     	    	for (int i = 0; i < ll.size(); i++) {
@@ -379,7 +377,10 @@ public class sysinfo extends TabActivity {
         //tabHost.addTab(tabHost.newTabSpec("tab3")
         //        .setIndicator(getString(R.string.apps))
         //        .setContent(R.id.AppList));
-        
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(Integer.parseInt(resolutions[2]), Integer.parseInt(resolutions[3]));
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
+        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
+
         properList = (ListView)findViewById(R.id.PropertyList);
         Properties.properListItem = new ArrayList<HashMap<String, Object>>();  
         properListItemAdapter = new SimpleAdapter(this, Properties.properListItem,   
@@ -400,17 +401,21 @@ public class sysinfo extends TabActivity {
         //         );  
         //appList.setAdapter(appListItemAdapter);
         
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(Integer.parseInt(resolutions[2]), Integer.parseInt(resolutions[3]));
-        tabHost.getTabWidget().getChildAt(0).setLayoutParams(lp);
-        tabHost.getTabWidget().getChildAt(1).setLayoutParams(lp);
-        //tabHost.getTabWidget().getChildAt(2).setLayoutParams(lp);
-
         serverWeb = (WebView)findViewById(R.id.ViewServer);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setUserAgentString("test");
+        webSettings.setUserAgentString("sys.info.trial" + versionCode);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-        
+		serverWeb.setWebViewClient(new WebViewClient() {
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				view.loadUrl(url);
+				return false;//this will not launch browser when redirect.
+			}
+			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+				handler.proceed();
+			}
+		});
+
         PackageManager pm = getPackageManager();
         try {
         	PackageInfo pi = pm.getPackageInfo("sys.info.trial", 0);

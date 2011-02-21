@@ -35,7 +35,7 @@ jstring Java_sys_info_trial_Properties_dmesg( JNIEnv* env, jobject thiz )
     return mesg;
 }
 
-jstring Java_system_info_reader_dmesg( JNIEnv* env, jobject thiz )
+jstring Java_system_info_Properties_dmesg( JNIEnv* env, jobject thiz )
 {
     dmesg();
     jstring mesg = (*env)->NewStringUTF(env, buf);

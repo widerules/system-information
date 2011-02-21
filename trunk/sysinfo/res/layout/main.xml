@@ -17,6 +17,12 @@
        	android:layout_width="fill_parent">      
 	</WebView>
 		
+	<ListView 
+		android:id="@+id/PropertyList"  
+		android:layout_width="fill_parent"   
+		android:layout_height="wrap_content">   
+	</ListView>  
+
 	<ScrollView   
 		android:id="@+id/sViewCpu"  
        	android:layout_height="fill_parent"   

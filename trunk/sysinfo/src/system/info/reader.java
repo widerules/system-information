@@ -1,26 +1,12 @@
 package system.info;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.apache.http.util.EncodingUtils;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -30,59 +16,78 @@ import android.app.TabActivity;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.AlertDialog.Builder;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
+
+
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceGroup;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Xml;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.webkit.SslErrorHandler;
+import android.net.http.SslError;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class reader extends TabActivity {
-	static {
-        System.loadLibrary("ifprint");
-    }
-	
-	public native String dmesg();
-	public native String ifprint();
-	
-    /** Called when the activity is first created. */
-	WebView serverWeb;
-	TextView ServiceText, TaskText, DiskText, ProcessText, AppsText, BriefText;
-	String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
-	String version, apklist = "", vendingServices = "";
-	TabHost tabHost;
-	ProgressDialog m_dialog;
-	String sdcard, nProcess, nApk;
 
+	WebView serverWeb;
+	TextView ServiceText, TaskText, ProcessText, AppsText;
+	ListView properList, appList;
+	ProgressDialog m_dialog;
+	AlertDialog m_altDialog;
+	String version;
+	int versionCode;
+	TabHost tabHost;
+	String sdcard, nProcess, nApk, apklist;
+	CharSequence[] propertyItems;
+	SimpleAdapter properListItemAdapter;
+	SensorManager sensorMgr;
+	String[] resolutions, cameraSizes, processors, teles;
+	String serviceInfo, taskInfo, psInfo;
+	
+	ArrayAdapter itemAdapter;
+		
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -98,110 +103,258 @@ public class reader extends TabActivity {
         }
         case 1: {
         	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.about_dialog_text1) + version + getString(R.string.about_dialog_text2)).
+        	setMessage(getString(R.string.about_dialog_text1) + version + "\n" + getString(R.string.about_dialog_text2)).
+//        	setMessage(getString(R.string.about_dialog_text1) + version + "\n" + getString(R.string.license) + getString(R.string.about_dialog_text2)).
         	setPositiveButton(getString(R.string.ok),
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
 	          }).create();
         	}
+        case 2: {
+        	//Log.d("=================", (String) subItems[0]);
+        	//itemAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {"ItemTitle", "ItemText"});
+        	//itemView = (ListView) ListView.inflate(this.getBaseContext(), R.id.AppList , null);
+        	//itemView.setAdapter(itemAdapter);
+        	//m_altDialog = new AlertDialog.Builder(this).setView(itemView).create();
+        	return m_altDialog;
+        	}
         }
         return null;
 	}
 
+	
+	OnSubItemClickListener msubitemCL = new OnSubItemClickListener();
+    class OnSubItemClickListener implements OnItemClickListener {
+    	public void onItemClick(AdapterView<?> arg0, 
+    			View arg1, 
+    			int arg2, //index of selected item, start from 0
+    			long arg3) {
+    		m_altDialog.dismiss();//dismiss the dialog when click on it.
+    	}    	
+    };
+    
+	public void showMyDialog(String[] valuse) {
+		ArrayAdapter itemAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, valuse);
+		View myView = getLayoutInflater().inflate(R.layout.popup , (ViewGroup) findViewById(R.id.popup_root));
+    	ListView itemView = (ListView) myView.findViewById(R.id.PropertyList);
+    	itemView.setAdapter(itemAdapter);
+    	itemView.setOnItemClickListener(msubitemCL);
+    	AlertDialog altDialog = new AlertDialog.Builder(this).setView(myView).create();
+    	altDialog.setOnKeyListener(null);
+    	m_altDialog = altDialog;
+    	altDialog.show();
+	}
+	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.refresh));//.setVisible(false);//disable for mobile market
-    	menu.add(0, 1, 0, getString(R.string.upload));//.setVisible(false);//disable for mobile market
+    	menu.add(0, 0, 0, getString(R.string.refresh));//.setVisible(false);
+    	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
-    	menu.add(0, 3, 0, getString(R.string.exit));
+    	menu.add(0, 3, 0, getString(R.string.exit)).setVisible(false);
     	return true;
     }
 	
+    UploadHandler mUploadHandler = new UploadHandler();
+
+    class UploadHandler extends Handler {
+
+        public void handleMessage(Message msg) {
+    		Log.d("===========", "upload handle");
+    		Toast.makeText(getBaseContext(), msg.getData().getString("uploadHint"), Toast.LENGTH_SHORT).show();
+        }
+    };
+    
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()) {
 		case 0:
-			serverWeb.reload();
-			tabHost.setCurrentTab(1);
-			return true;
+			switch (tabHost.getCurrentTab()) {
+			case 0:
+				refresh();
+				break;
+			case 1:
+				serverWeb.reload();
+				break;
+			}
+			break;
 		case 1:
-			upload();
-			return true;
+			String postData = "";
+			postData += "processor=" + Properties.processor + "&";
+			postData += "bogomips=" + Properties.bogomips + "&";
+			postData += "hardware=" + Properties.hardware + "&";
+			postData += "memtotal=" + Properties.memtotal + "&";
+			postData += "resolution=" + Properties.resolution + "&";
+			postData += "sCamera=" + Properties.sCamera + "&";
+			postData += "sensors=" + Properties.sensors + "&";
+			postData += "vendor=" + Properties.vendor + "&";
+			postData += "product=" + Properties.product + "&";
+			postData += "sdkversion=" + Properties.sdkversion + "&";
+			postData += "imei=" + Properties.imei + "&";
+			postData += "clientVersion=" + "full-version&";
+			postData += "versionCode=" + versionCode;
+			serverWeb.postUrl(getString(R.string.url)+"/sign", EncodingUtils.getBytes(postData, "BASE64"));
+			tabHost.setCurrentTab(1);
+			break;
 		case 2:
 			showDialog(1);
-			return true;
+			break;
 		case 3:
 			finish();
 			System.exit(0);
-			return true;
+			break;
 		}
 		return true;
 	}
 
-	void upload() {
-		class SendData implements Runnable {
-	        private String mUri;
-	        private HttpEntity mEntity;
-
-	        public SendData(String uri, HttpEntity entity) {
-	            mUri = uri + "/sign";
-	            mEntity = entity;
-	        }
-	        public void run() {
-	        	HttpResponse response = null;
-	        	int statusCode = -1;
-	    		try {
-	    			HttpClient client = new DefaultHttpClient();
-	    			HttpPost request = new HttpPost(mUri);
-	    			request.setEntity(mEntity);
-	    			response = client.execute(request);
-	    			statusCode = (response == null ? -1 : response.getStatusLine().getStatusCode());
-	    			switch (statusCode) {
-	    			case 200:
-	    			case 301:
-	    			case 302:
-	    				serverWeb.reload();
-						Looper.prepare();
-						Toast.makeText(reader.this, getString(R.string.ulsuccess), Toast.LENGTH_SHORT).show();
-						Looper.loop();
-	    			default:;
-						Looper.prepare();
-						Toast.makeText(reader.this, getString(R.string.ulfail) + "(" + statusCode + ")", Toast.LENGTH_SHORT).show();
-						Looper.loop();
-	    			}
-	    		} catch (Exception e) {e.printStackTrace();}
-	        }
-		}
-		
-		if (memtotal == "") {
-			Toast.makeText(reader.this, getString(R.string.memerr), Toast.LENGTH_SHORT).show();
-			return;
-		}
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(11);
-		nameValuePairs.add(new BasicNameValuePair("processor", processor));
-		nameValuePairs.add(new BasicNameValuePair("bogomips", bogomips));
-		nameValuePairs.add(new BasicNameValuePair("hardware", hardware));
-		nameValuePairs.add(new BasicNameValuePair("memtotal", memtotal));
-		nameValuePairs.add(new BasicNameValuePair("resolution", resolution));
-		nameValuePairs.add(new BasicNameValuePair("camera", sCamera));
-		nameValuePairs.add(new BasicNameValuePair("sensors", sensors));
-		nameValuePairs.add(new BasicNameValuePair("vendor", vendor));
-		nameValuePairs.add(new BasicNameValuePair("product", product));
-		nameValuePairs.add(new BasicNameValuePair("sdkversion", sdkversion));
-		nameValuePairs.add(new BasicNameValuePair("imei", imei));
-		try {
-			HttpEntity entity = new UrlEncodedFormEntity(nameValuePairs);
-			SendData s = new SendData(getString(R.string.url), entity);
-	        Thread doSendData = new Thread(s);
-	        doSendData.start();
-		} catch (Exception e) {e.printStackTrace();}
-	}
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	  super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
 	}
+
+	@Override
+	protected void onResume () {
+		super.onResume();
+    	//register to receive battery intent
+		Properties.BatteryString = (String) propertyItems[0];
+		Properties.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
+		Properties.batteryStatus = getResources().getTextArray(R.array.batteryStatus);
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+		registerReceiver(Properties.BroadcastReceiver, filter);
+	}
 	
+	@Override
+	protected void onPause() {
+		unregisterReceiver(Properties.BroadcastReceiver);
+		
+		super.onPause();
+	}
+	
+	protected void update() {
+		properList.invalidateViews();
+		setPropList();
+		m_dialog.cancel();
+	}
+
+	
+	OnPropertyItemClickListener mpropertyCL = new OnPropertyItemClickListener();
+    class OnPropertyItemClickListener implements OnItemClickListener {
+    	String[] subItems;
+    	public void onItemClick(AdapterView<?> arg0, 
+    			View arg1, 
+    			int arg2, //index of selected item, start from 0
+    			long arg3) {
+    		switch (arg2) {
+    		case 0: {//battery
+    			subItems = new String[7];
+    			subItems[0] = getString(R.string.level) + " " + Properties.Batterys[0];
+    			subItems[1] = getString(R.string.health) + " " + Properties.Batterys[1];
+    			subItems[2] = getString(R.string.status) + " " + Properties.Batterys[2];
+    			subItems[3] = getString(R.string.voltage) + " " + Properties.Batterys[3];
+    			subItems[4] = getString(R.string.temperature) + " " + Properties.Batterys[4];
+    			subItems[5] = getString(R.string.plugged) + " " + Properties.Batterys[5];
+    			subItems[6] = getString(R.string.technology) + " " + Properties.Batterys[6];
+    			break;
+    		}
+    		case 1: {//build info
+    			subItems = new String[13];
+    	    	subItems[0] = "Board:\t" + android.os.Build.BOARD;
+    	    	subItems[1] = "Brand:\t" + android.os.Build.BRAND;
+    	    	subItems[2] = "Device:\t" + android.os.Build.DEVICE;
+    	    	subItems[3] = "Host:\t" + android.os.Build.HOST;
+    	    	subItems[4] = "ID:\t" + android.os.Build.ID;
+    	    	subItems[5]= "Model:\t" + android.os.Build.MODEL;
+    	    	subItems[6]= "Product:\t" + android.os.Build.PRODUCT;
+    	    	subItems[7] = "Tags:\t" + android.os.Build.TAGS;
+    	    	subItems[8]= "Type:\t" + android.os.Build.TYPE;
+    	    	subItems[9] = "User:\t" + android.os.Build.USER;
+    	    	subItems[10] = "Fingerprint:\t" + android.os.Build.FINGERPRINT;
+    	    	subItems[11] = "INCREMENTAL: " + android.os.Build.VERSION.INCREMENTAL;
+    	    	subItems[12] = Properties.runCmd("cat", "/proc/version")[0];       
+    			break;
+    		}
+    		case 2: {//camera
+    			subItems = cameraSizes;
+    			break;
+    		}
+    		case 3: {//location
+    			subItems = null;
+    	        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+    	        List ll = lm.getProviders(true);
+    	    	for (int i = 0; i < ll.size(); i++) {
+    	    		Location lo = lm.getLastKnownLocation((String) ll.get(i));
+    	    		if (lo != null) {
+    	    			subItems = new String[3];
+    	    			subItems[0] = getString(R.string.latitude) + " " + lo.getLatitude();
+    	    			subItems[1] = getString(R.string.longitude) + " " + lo.getLongitude();
+    	    			subItems[2] = getString(R.string.altitude) + " " + lo.getAltitude();
+    	    		    break;
+    	    		}
+    	    	}
+    	    	if (subItems == null) return;
+    			break;
+    		}
+    		case 4: {//networks
+    			return;
+    			//subItems = new String[5];
+    			//subItems[0] = "Network Type: " + ;
+    			//subItems[1] = "Roaming State: " + ;
+    			//subItems[2] = "State: " + ;
+    			//subItems[3] = "Local Address: " + ;
+    			//subItems[4] = "Public Address: " + ;
+    			//break;
+    		}
+    		case 5: {//processor
+    			subItems = processors;
+    			break;
+    		}
+    		case 6: {//screen
+    			subItems = new String[3];
+    			subItems[0] = "dpi: " + resolutions[4];
+    			subItems[1] = "xdpi: " + resolutions[5];
+    			subItems[2] = "ydpi: " + resolutions[6];
+    			break;
+    		}
+    		case 7: {//sensors
+    			List l = sensorMgr.getSensorList(Sensor.TYPE_ALL);
+    			subItems = new String[l.size()];
+    			for (int i = 0; i < l.size(); i++) {
+    				Sensor ss = (Sensor) l.get(i);
+    				subItems[i] = ss.getName() + ": " + ss.getPower() + "mA by " + ss.getVendor();
+    			}
+    			break;
+    		}
+    		case 8: {//storage
+    			subItems = Properties.runCmd("df", "");
+    			for (int i = 0; i < subItems.length; i++)
+    				subItems[i] = subItems[i].split("\\(block")[0];
+    			break;
+    		}
+    		case 9: {//telephony
+    			subItems = teles;
+    			break;
+    		}
+    		case 10: {//debugable
+            	Vector vet = new Vector();
+    	        List<ApplicationInfo> apps = getPackageManager().getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+    	        for (ApplicationInfo app : apps) {
+    	            String appName = app.sourceDir;
+    	            if((app.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+    	            	vet.add(appName + "debugable");
+    	            }//how about version?
+    	            else
+    	            	vet.add(appName);
+    	        }
+    	        subItems = new String[vet.size()];
+    			for (int i = 0; i < vet.size(); i++) subItems[i] = (String) vet.get(i);
+    		}
+    		}
+			showMyDialog(subItems);
+			//showDialog(2);
+    	}
+    };
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,19 +364,10 @@ public class reader extends TabActivity {
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int height = dm.heightPixels;
-        int width = dm.widthPixels;
-        float f = dm.xdpi;
-        dpi = "dpi: " + (int)f + "\tscale-factor: " + dm.density + "\n";
-        
-        if (width > height) {
-        	int tmp = width;
-        	width = height;
-        	height = tmp;
-        }
-        resolution = Integer.toString(width) + "*" + Integer.toString(height);
+        resolutions = Properties.resolution(dm);
+        Properties.resolution = resolutions[0] + "*" + resolutions[1];
         int tabHeight = 30, tabWidth = 80;
-        if (width >= 480) {
+        if (dm.widthPixels >= 480) {
         	tabHeight = 40;
         	tabWidth = 120;
         }
@@ -232,7 +376,7 @@ public class reader extends TabActivity {
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
         tabHost.addTab(tabHost.newTabSpec("tab1")
                 .setIndicator(getString(R.string.brief))
-                .setContent(R.id.sViewBrief));
+                .setContent(R.id.PropertyList));
         tabHost.addTab(tabHost.newTabSpec("tab2")
                 .setIndicator(getString(R.string.online))
                 .setContent(R.id.ViewServer));
@@ -251,50 +395,78 @@ public class reader extends TabActivity {
         //tabHost.addTab(tabHost.newTabSpec("tab7")
         //        .setIndicator("Vending")
         //        .setContent(R.id.sViewDisk));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, tabHeight);
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
-        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(new LinearLayout.LayoutParams(tabWidth, tabHeight));
-
+        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
+        
+        AppsText = (TextView)findViewById(R.id.TextViewApps);
+        ProcessText = (TextView)findViewById(R.id.TextViewProcess);
         ServiceText = (TextView)findViewById(R.id.TextViewCpu);
         TaskText = (TextView)findViewById(R.id.TextViewMem);
-        //DiskText = (TextView)findViewById(R.id.TextViewDisk);
-        BriefText = (TextView)findViewById(R.id.TextViewBrief);
-        ProcessText = (TextView)findViewById(R.id.TextViewProcess);
-        AppsText = (TextView)findViewById(R.id.TextViewApps);
+        
+        properList = (ListView)findViewById(R.id.PropertyList);
+        Properties.properListItem = new ArrayList<HashMap<String, Object>>();  
+        properListItemAdapter = new SimpleAdapter(this, Properties.properListItem,   
+                     R.layout.property_list,  
+                     new String[] {"ItemTitle", "ItemText"},   
+                     new int[] {R.id.ItemTitle, R.id.ItemText}  
+                 );  
+        properList.setAdapter(properListItemAdapter);
+        properList.setOnItemClickListener(mpropertyCL);
+        
+        //will support app list later
+        //appList = (ListView)findViewById(R.id.AppList);
+        //Properties.appListItem = new ArrayList<HashMap<String, Object>>();  
+        //SimpleAdapter appListItemAdapter = new SimpleAdapter(this, Properties.appListItem,   
+        //             R.layout.app_list,  
+        //             new String[] {"ItemTitle", "ItemText"},   
+        //             new int[] {R.id.ItemTitle, R.id.ItemText}  
+        //         );  
+        //appList.setAdapter(appListItemAdapter);
+        
         serverWeb = (WebView)findViewById(R.id.ViewServer);
-        serverWeb.getSettings().setJavaScriptEnabled(true);
         WebSettings webSettings = serverWeb.getSettings();
-        webSettings.setTextSize( WebSettings.TextSize.SMALLER);
-        
-        
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setUserAgentString("sys.info.trial" + versionCode);
+        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+		serverWeb.setWebViewClient(new WebViewClient() {
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				view.loadUrl(url);
+				return false;//this will not launch browser when redirect.
+			}
+			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+				handler.proceed();
+			}
+		});
+
         PackageManager pm = getPackageManager();
-    	PackageInfo pi;
-		try {
-			pi = pm.getPackageInfo("system.info", 0);
-	    	version = "v" + pi.versionName;
-			pi = pm.getPackageInfo("com.android.vending", PackageManager.GET_SERVICES);
-			for (int i = 0; i < pi.services.length; i++)
-				vendingServices += pi.services[i].name + "\n";
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-    	List list = pm.getInstalledPackages(0);
-    	nApk = Integer.toString(list.size());
-    	for (int i = 0; i < list.size(); i++) {
-    		pi = (PackageInfo) list.get(i);
-    		apklist += pi.packageName + "\t(" + pi.versionName + ")\n";
-    	}
+        try {
+        	PackageInfo pi = pm.getPackageInfo("sys.info.trial", 0);
+        	version = "v" + pi.versionName;
+        	versionCode = pi.versionCode;
+
+	        List<PackageInfo> apps = getPackageManager().getInstalledPackages(0);
+        	nApk = Integer.toString(apps.size());
+        	apklist = "";
+	        for (PackageInfo app : apps) {
+    	    	apklist += app.packageName + "\t(" + app.versionName + ")\n";
+	        }
+    	} catch (NameNotFoundException e) {
+    		e.printStackTrace();
+    	}    
 
     	showDialog(0);
-    	
+    	initPropList();
+    	//refresh();
     	PageTask task = new PageTask();
 		task.execute("");
     }
-    
+
 	class PageTask extends AsyncTask<String, Integer, String> {
-		String[] myresult;
+		String myresult;
 		@Override
 		protected String doInBackground(String... params) {
+			refreshOnce();
 			myresult = refresh();
 			return null;
 		}
@@ -306,304 +478,138 @@ public class reader extends TabActivity {
 
 		@Override
 		protected void onPostExecute(String result) {
-	    	BriefText.setText(myresult[0]);
-	        ProcessText.setText(myresult[1]);
-	        ServiceText.setText(myresult[2]);
-	        TaskText.setText(myresult[3]);
+			//resText.setText(myresult);
+			properList.invalidate();
+	        ProcessText.setText(psInfo);
+	        ServiceText.setText(serviceInfo);
+	        TaskText.setText(taskInfo);
 	        AppsText.setText(apklist);
-	        //DiskText.setText(vendingServices);
 		}
 
 		@Override
 		protected void onPreExecute() {
-			BriefText.setText("task started");
+			//resText.setText("task started");
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-	        Log.d(getString(R.string.tag), "values is " + values[0]);
-			BriefText.setText(values[0]);
+			//resText.setText(values[0]);
 		}
 	}
 
-    public String[] runCmd(String cmd, String para) {
-    	try {
-        	String []cmds ={cmd, para};
-    		Process proc;
-    		if (para != "")
-    			proc = Runtime.getRuntime().exec(cmds);
-    		else
-    			proc = Runtime.getRuntime().exec(cmd);
-    		BufferedReader br=new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            String line, result = "", line1 = "";
-            int count = 0;
-            
-            while((line=br.readLine())!=null){
-            	count = count + 1;
-        		result += line + "\n";
-        		if (cmd == "getprop") {
-        			line1 = line;
-        			break;
-        		}
-        		else if (line.indexOf(":") > -1) {
-                    if (line.indexOf("Processor") > -1) {
-            			processor = line.split(":")[1];
-            			line1 = getString(R.string.processor) + processor;
-            		}
-                    else if (line.indexOf("BogoMIPS") > -1) {
-            			bogomips = line.split(":")[1];
-            			line1 += "\nBogoMIPS:\t" + bogomips;
-            		}
-            		else if (line.indexOf("Hardware") > -1) {
-            			hardware = line.split(":")[1];
-            			line1 += "\n" + getString(R.string.hardware) + hardware;
-            			break;
-            		}
-            		else if (line.indexOf("sdcard:") > -1) {
-            			line1 += line;
-            			break;
-            		}
-            		else if (line.indexOf("Memory:") > -1) {
-            			if (line.indexOf("=") > -1) { 
-            				memtotal = line.split("=")[1].trim().split(" ")[0].trim();
-            				line1 = getString(R.string.memtotal) + memtotal;
-            			}
-            			else line1 += "," + line.split(":")[1];
-            			break;
-            		}
-            		else if (line.indexOf("MemTotal:") > -1) {
-            			if (memtotal != null) { 
-            				memtotal = line.split(":")[1].trim();
-        		        	int imem = Integer.valueOf(memtotal.split("k")[0].trim()) / 1024;
-        		        	if (imem < 90) {}
-        		        	else if (imem < 101) memtotal = "101MB";
-        		        	else if (imem < 110) memtotal = "110MB";
-        		        	else if (imem < 200) memtotal = "198MB";
-        		        	else if (imem < 228) memtotal = "228MB";
-        		        	else if (imem < 512) memtotal = "512MB";
-        		        	else if (imem < 1024) memtotal = "1GB";
-        		        	else if (imem < 2048) memtotal = "2GB";
-        		        	else if (imem < 3072) memtotal = "3GB";
-        		        	else if (imem < 4096) memtotal = "4GB";
-            				line1 = getString(R.string.memtotal) + memtotal;
-            			}
-            			break;
-            		}
-            	}
-            }  
-            if (cmd == "ps") line1 = Integer.toString(count);
-            String []rets = {line1, result}; 
-    		return rets;
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    		String []rets = {"", e.toString()};
-    		return rets;
-    	}
+    private RefreshHandler mRedrawHandler = new RefreshHandler();
+
+    class RefreshHandler extends Handler {
+
+        public void handleMessage(Message msg) {
+    		Log.d("===========", "handle message");
+        	reader.this.update();
+        }
+    };
+
+    public void refreshOnce() {//something not change, then put here
+    	Properties.sdkversion = android.os.Build.VERSION.SDK;
+    	
+    	cameraSizes = Properties.camera();
+    	
+    	Properties.dr();
+    	
+    	processors = Properties.processor();
+    	
+    	Properties.memtotal();
+    	
+    	sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+    	Properties.sensors = sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + "";
+    	
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        teles = Properties.telephonies(tm);
+        
+		try {serverWeb.loadUrl(getString(R.string.url));}
+		catch (Exception e) {}
     }
     
-	private static Method mDebug_getSupportedPictureSizes;
-
-	static {
-		initCompatibility();
-	};
-
-	   private static void initCompatibility() {
-	       try {
-	    	   Class c = Parameters.class;
-	    	   mDebug_getSupportedPictureSizes = c.getMethod("getSupportedPictureSizes");
-	       } catch (NoSuchMethodException nsme) {
-	       }
-	   }
-
-	   private static Object getSupportedPictureSizes(Parameters param) throws IOException {
-	       try {
-	    	   return mDebug_getSupportedPictureSizes.invoke(param);
-	       } catch (InvocationTargetException ite) {
-	           Throwable cause = ite.getCause();
-	       } catch (IllegalAccessException ie) {
-	           System.err.println("unexpected " + ie);
-	       }
-		return null;
-	   }
-
-    public String[] refresh() {
-		String result = "";
-		String []rets;
-		try {serverWeb.loadUrl(getString(R.string.url));} //disable for mobile market
-		catch (Exception e) {}
-		
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        imei = tm.getDeviceId();
-        result = "IMEI: " + imei + "\n\n";
-                         
-        rets = runCmd("cat", "/proc/cpuinfo");
-        result += rets[0] + "\n";
-
-        String tmpmem = dmesg();
-        int totalIndex = tmpmem.indexOf("MB total"); 
-    	if (totalIndex > -1) {
-    		String []tmp = tmpmem.substring(0, totalIndex).trim().split("=");
-			memtotal = tmp[tmp.length-1].trim() + "MB";
-			tmpmem = getString(R.string.memtotal) + memtotal;
-    	}
-    	else {
-    		rets = runCmd("cat", "/proc/meminfo");
-    		tmpmem = rets[0];
-    	}
-        result += tmpmem + "\n";
-        
-      	rets = runCmd("df", "");
-        String tmpsdcard = rets[0];
-        if (tmpsdcard != "") result += tmpsdcard + "\n\n";
-       
-        result += getString(R.string.resolution) + resolution + "\n";
-        result += dpi;
-        
-        try {
-        	Camera camera = Camera.open();
-        	Parameters param = camera.getParameters(); 
-        	camera.release();
-        	Size size = param.getPictureSize();
-        	int maxWidth = size.width , maxHeight = size.height;
-	    	if (mDebug_getSupportedPictureSizes != null) {
-	    		List sl = (List) getSupportedPictureSizes(param);
-		    	for (int i = 0; i < sl.size(); i++) {
-		    		Camera.Size cs = (Camera.Size)sl.get(i);
-		    		if (maxWidth < cs.width) {
-		    			maxWidth = cs.width;
-		    			maxHeight = cs.height;
-		    		}
-		    	}
-	    	}
-    		sCamera = Integer.toString((int)Math.round(maxWidth * maxHeight / 1000000.0));
-        	result += getString(R.string.camera) + sCamera + getString(R.string.pixels) + " (" + maxWidth + "*" + maxHeight + ")\n";
-        } catch (Exception e) {e.printStackTrace();}
-        result += "\n";
-               
-        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-        List ll = lm.getProviders(true);
-    	for (int i = 0; i < ll.size(); i++) {
-    		Location lo = lm.getLastKnownLocation((String) ll.get(i));
-    		if (lo != null) {
-    		    result += getString(R.string.latitude) + lo.getLatitude() + "\n" + getString(R.string.longitude) + lo.getLongitude() + "\n\n";
-    		    break;
-    		}
-    	}
-    	
+    public void initPropList() {
+		propertyItems = getResources().getTextArray(R.array.propertyItem);
+    	for (int i = 0; i < propertyItems.length; i++)
+    		Properties.setInfo((String) propertyItems[i], " ");
+    }
+    
+    public void setPropList() {
+        //properties sort by alphabet, the first is battery, add in onresume().
+		Properties.setInfo((String) propertyItems[1], "SDK version:" + Properties.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE);
+		Properties.setInfo((String) propertyItems[2], Properties.sCamera + getString(R.string.pixels));
+		Properties.setInfo((String) propertyItems[5], Properties.processor);
+		Properties.setInfo((String) propertyItems[6], Properties.resolution);
+		Properties.setInfo((String) propertyItems[7], Properties.sensors + " " + (String) propertyItems[5]);
+		Properties.setInfo((String) propertyItems[8], "ram: " + Properties.memtotal);
+		Properties.setInfo((String) propertyItems[9], "IMEI: " + Properties.imei);
+    }
+    
+    public String refresh() {
+		//wifi
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if ((wifiInfo != null) && (wifiInfo.getMacAddress() != null))
-            result += getString(R.string.wlan) + wifiInfo.getMacAddress() + "\n\n";
+        	Properties.setInfo((String) propertyItems[4], wifiInfo.getMacAddress());
+        else
+        	Properties.setInfo((String) propertyItems[4], "not avaiable");
+        
+        //String tmpsdcard = runCmd("df", "");
+        //if (tmpsdcard != null) result += tmpsdcard + "\n\n";
+        
+		//setMap("dpi", dpi);
 
-    	result += getString(R.string.sensors) + "\n";
-        SensorManager sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-    	List list = sensorMgr.getSensorList(Sensor.TYPE_ALL);
-    	for (int i = 0; i < list.size(); i++) {
-    		Sensor sensor = (Sensor) list.get(i);
-    		sensors += sensor.getName() + "\n";
-    		result += "\t" + sensor.getName() + 
-    			"([0-" + sensor.getMaximumRange() + "], " + 
-    			sensor.getPower() + "mA\n"; 
+        //location
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+        List ll = lm.getProviders(true);
+        Boolean foundLoc = false;
+    	for (int i = 0; i < ll.size(); i++) {
+    		Location lo = lm.getLastKnownLocation((String) ll.get(i));
+    		if (lo != null) {
+    			Properties.setInfo((String) propertyItems[3], lo.getLatitude() + ":" + lo.getLongitude());
+    			foundLoc = true;
+    		    break;
+    		}
     	}
-    	result += "\n";
-        
-        result += getString(R.string.nApk) + nApk + "\n";//apk number
-
-        
+    	if (!foundLoc) Properties.setInfo((String) propertyItems[3], getString(R.string.locationHint));
+    	
     	ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     	List serviceList = am.getRunningServices(10000);
-    	String serviceInfo = "";
+    	serviceInfo = "";
     	for (int i = 0; i < serviceList.size(); i++) {
     		RunningServiceInfo rs = (RunningServiceInfo) serviceList.get(i);
     		serviceInfo += rs.service.flattenToShortString() + "\n";
     	}
-        result += getString(R.string.nService) + serviceList.size() + "\n";//service number
+        //result += getString(R.string.nService) + serviceList.size() + "\n";//service number
         
-        String psinfo = "";
+        psInfo = "";
     	List appList = am.getRunningAppProcesses();
     	for (int i = 0; i < appList.size(); i++) {
     		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-    		psinfo += as.processName + "\n";
+    		psInfo += as.processName + "\n";
     	}
-        result += getString(R.string.nProcess) + appList.size() + "\n";//process number
+        //result += getString(R.string.nProcess) + appList.size() + "\n";//process number
         
-        String taskInfo = "";
+        taskInfo = "";
     	List taskList = am.getRunningTasks(10000);
     	for (int i = 0; i < taskList.size(); i++) {
     		RunningTaskInfo ts = (RunningTaskInfo) taskList.get(i);
     		taskInfo += ts.baseActivity.flattenToShortString() + "\n";
     	}
-        result += getString(R.string.nTask) + taskList.size() + "\n\n";//task number
-        
-        
-        String dr = getPlatFormware();
-       	if (dr != null) {
-       		vendor = runCmd("getprop", "apps.setting.product.vendor")[0];
-       		product = runCmd("getprop", "apps.setting.product.model")[0];
-  	        result += getString(R.string.vendor) + vendor + " " + product;
-       		result += " (dr" + dr + ")\n\n";
-       	}
-       	else {
-       		vendor = android.os.Build.MODEL;
-       		product = android.os.Build.PRODUCT;
-   	        result += getString(R.string.vendor) + vendor + " " + product + "\n\n";
-       	}
-           	
-    	sdkversion = android.os.Build.VERSION.SDK;
-        result += getString(R.string.sdk) + sdkversion + "\tRELEASE: " + android.os.Build.VERSION.RELEASE + "\n";
-        result += "INCREMENTAL: " + android.os.Build.VERSION.INCREMENTAL + "\n\n";
-        
-        result += "Board:\t" + android.os.Build.BOARD + "\n";
-        result += "Brand:\t" + android.os.Build.BRAND + "\n";
-        result += "Device:\t" + android.os.Build.DEVICE + "\n";
-        result += "Fingerprint:\t" + android.os.Build.FINGERPRINT + "\n";
-        result += "Host:\t" + android.os.Build.HOST + "\n";
-        result += "ID:\t" + android.os.Build.ID + "\n";
-        result += "Model:\t" + android.os.Build.MODEL + "\n";
-        result += "Product:\t" + android.os.Build.PRODUCT + "\n";
-        result += "Tags:\t" + android.os.Build.TAGS + "\n";
-        result += "Type:\t" + android.os.Build.TYPE + "\n";
-        result += "User:\t" + android.os.Build.USER + "\n\n";
+        //result += getString(R.string.nTask) + taskList.size() + "\n\n";//task number
 
-        result += runCmd("cat", "/proc/version")[1];       
-
-        if (m_dialog != null) {
-        	Log.d(getString(R.string.tag), m_dialog.toString());
-        	m_dialog.cancel();
-        }
+        //result += getString(R.string.nProcess) + runCmd("ps", "") + "\n";//process number
+        
+		//setMap(getString(R.string.nApk), nApk);
+        
+		//send message to let view redraw.
+		Message msg = mRedrawHandler.obtainMessage();
+		mRedrawHandler.sendMessage(msg);
+		//properListItemAdapter.notifyDataSetChanged();//no use?
+		
 		Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(400);
-        
-        String []ret ={result, psinfo, serviceInfo, taskInfo};
-        return ret;
+        return "";
     }
     
-    private String getPlatFormware () {
-        FileReader verReader;
-
-       final File verFile = new File("/opl/etc/.build_version.xml");
-       try {
-               verReader = new FileReader(verFile);
-       } catch (FileNotFoundException e) {
-               Log.d(getString(R.string.tag), "Couldn't find or open version file " + verFile);
-               return null;
-            }
-       try {
-             XmlPullParser parser = Xml.newPullParser();
-             parser.setInput(verReader);
-             
-             while (parser.getEventType() != parser.END_DOCUMENT) {
-                 String name = parser.getName();
-                 if ("device".equals(name)) {
-                     return parser.getAttributeValue(null, "version");
-                 }
-                 else parser.next();
-              }
-       } catch (XmlPullParserException e) {
-               Log.d(getString(R.string.tag), "Got execption parsing version resource.", e);
-       } catch (IOException e) {
-               Log.d(getString(R.string.tag), "Got execption parsing version resource.", e);
-      }
-       return null;
-    }
 }

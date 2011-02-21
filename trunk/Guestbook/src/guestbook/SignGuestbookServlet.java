@@ -27,7 +27,7 @@ public class SignGuestbookServlet extends HttpServlet {
         System.out.println("inpost");
 
         String clientVersion = req.getParameter("versionCode");
-        if ((clientVersion == null) || (clientVersion == "") || (Integer.parseInt(clientVersion) < 28)) {
+        if ((clientVersion == null) || (clientVersion == "") || (Integer.parseInt(clientVersion) < 40)) {
        	    resp.sendRedirect("/warning.jsp"); //show warning that the client version is too older. redirect not work?
             return;
         }

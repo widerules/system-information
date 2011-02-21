@@ -1,44 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, reader</string>
     <string name="app_name">系统信息</string>
-    <string name="wait">正在读取系统信息...</string>
-    <string name="about_dialog">关于</string>
     <string name="about_dialog_text1">系统信息浏览器(完全版)\n</string>
-    <string name="about_dialog_text2">\n\njtbuaa@gmail.com\n</string>
-    <string name="resolution">屏幕分辨率:\t</string>
-    <string name="camera">相机:\t</string>
-    <string name="sensors">传感器列表: </string>
-    <string name="pixels">百万像素</string>
-    <string name="nProcess">进程数:\t</string>
+
     <string name="nService">服务数:\t</string>    
     <string name="nTask">任务数:\t</string>
-    <string name="nApk">已安装apk:\t</string>
-    <string name="wlan">WLAN 地址:\t</string>
-    <string name="latitude">纬度:\t</string>
-    <string name="longitude">经度:\t</string>
 
-    <string name="processor">处理器:\t</string>
-    <string name="hardware">硬件:\t</string>
-    <string name="memtotal">内存:\t</string>   
-    <string name="memerr">dmesg 读取内存失败，请稍后再试</string>
-
-    <string name="brief">摘要</string>
     <string name="memory">内存</string>
     <string name="disk">硬盘</string>
     <string name="process">进程列表</string>
-    <string name="apps">应用列表</string>
-    <string name="online">联网查看</string>         
-
-    <string name="sdk">SDK版本:\t</string>
-    <string name="vendor">厂商:\t</string>
-    
-    <string name="about">关于...</string>
-    <string name="exit">退出</string>
-    <string name="upload">上传</string>
-    <string name="refresh">刷新</string>
-    <string name="ok">确定</string>
-    
-    <string name="ulfail">上传失败</string>         
-    <string name="ulsuccess">上传成功, 请联网查看</string>         
 </resources>

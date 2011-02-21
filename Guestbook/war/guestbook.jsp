@@ -17,6 +17,13 @@
 <%
     out.println("<h3>Welcome to find kinds of GPhone here.</h3>");
 
+    String userAgent = request.getHeader("User-Agent").toLowerCase();
+    if (userAgent == "") {
+        out.println("<h4>your client is too old.");
+        out.println("<h4>please get latest version from");
+        out.println("<a href=https://market.android.com/details?id=sys.info.trial>here</a>.");
+    }
+
     PersistenceManager pm = PMF.get().getPersistenceManager();
     String query = "select from " + Greeting.class.getName() + " where sdkversion > '6' order by sdkversion desc";
     List<Greeting> greetings = (List<Greeting>) pm.newQuery(query).execute();

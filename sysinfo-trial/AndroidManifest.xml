@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="sys.info.trial" 
-      android:versionName="1.5.2" android:versionCode="40">
+      android:versionName="1.6.0" android:versionCode="41">
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,5 +21,5 @@
         <meta-data android:value="a14a8e65a47d51f" android:name="ADMOB_PUBLISHER_ID" />
         <meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
     </application>
-<uses-sdk android:targetSdkVersion="4" android:minSdkVersion="3"></uses-sdk>
+<uses-sdk android:minSdkVersion="4"></uses-sdk>
 </manifest> 

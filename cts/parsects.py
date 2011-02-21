@@ -148,6 +148,7 @@ else:
         targetName = path[-2]
     else:
         targetName = path[-1]
+    targetName = targetName.split(".")[0]
 
     outputFile = targetName + "_versus_" + baseName + ".csv"
     if (len(args) >= 4) and (sys.argv[4] == "1"): #revert base and target

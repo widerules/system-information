@@ -1,4 +1,4 @@
-package sys.info.trial;
+package sys.info.jtbuaa;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,10 +8,14 @@ import java.util.Vector;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EncodingUtils;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog.Builder;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -60,24 +64,27 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class sysinfo extends TabActivity {
 
 	WebView serverWeb;
+	TextView ServiceText, TaskText, ProcessText, AppsText;
 	ListView properList, appList;
 	ProgressDialog m_dialog;
 	AlertDialog m_altDialog;
 	String version;
 	int versionCode;
 	TabHost tabHost;
-	String sdcard, nProcess, nApk;
+	String sdcard, nProcess, apklist;
 	CharSequence[] propertyItems;
 	SimpleAdapter properListItemAdapter;
 	SensorManager sensorMgr;
 	String[] resolutions, cameraSizes, processors, teles;
-	
+	String serviceInfo, taskInfo, psInfo;
+	boolean fullversion;
 	ArrayAdapter itemAdapter;
 		
 	@Override
@@ -94,8 +101,12 @@ public class sysinfo extends TabActivity {
             return m_dialog;
         }
         case 1: {
+        	String message = getString(R.string.about_dialog_text1) + version + "\n";
+        	if (!fullversion) message += getString(R.string.license);
+        	message += getString(R.string.about_dialog_text2);
+        	
         	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.about_dialog_text1) + version + "\n" + getString(R.string.license) + getString(R.string.about_dialog_text2)).
+        	setMessage(message).
         	setPositiveButton(getString(R.string.ok),
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
@@ -139,11 +150,11 @@ public class sysinfo extends TabActivity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.refresh)).setVisible(false);//no need currently
+    	menu.add(0, 0, 0, getString(R.string.refresh));//.setVisible(false);
     	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
-    	menu.add(0, 3, 0, getString(R.string.fullversion));//.setVisible(false);
-    	menu.add(0, 4, 0, getString(R.string.exit)).setVisible(false);//seems not need exit menu
+    	menu.add(0, 3, 0, getString(R.string.exit)).setVisible(false);
+    	if (!fullversion) menu.add(0, 4, 0, getString(R.string.fullversion));//.setVisible(false);
     	return true;
     }
 	
@@ -182,6 +193,7 @@ public class sysinfo extends TabActivity {
 			postData += "product=" + Properties.product + "&";
 			postData += "sdkversion=" + Properties.sdkversion + "&";
 			postData += "imei=" + Properties.imei + "&";
+			if (fullversion) postData += "clientVersion=" + "full-version&";
 			postData += "versionCode=" + versionCode;
 			serverWeb.postUrl(getString(R.string.url)+"/sign", EncodingUtils.getBytes(postData, "BASE64"));
 			tabHost.setCurrentTab(1);
@@ -190,6 +202,10 @@ public class sysinfo extends TabActivity {
 			showDialog(1);
 			break;
 		case 3:
+			finish();
+			System.exit(0);
+			break;
+		case 4:
 			Uri uri = android.net.Uri.parse(getString(R.string.url3));
 			Intent i = new Intent();
 			i.setData(uri);
@@ -199,10 +215,6 @@ public class sysinfo extends TabActivity {
 				e.printStackTrace();
 				Toast.makeText(this, getString(R.string.fvfail), Toast.LENGTH_SHORT).show();
 			}
-			break;
-		case 4:
-			finish();
-			System.exit(0);
 			break;
 		}
 		return true;
@@ -361,10 +373,17 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        fullversion = false;
+        
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         resolutions = Properties.resolution(dm);
         Properties.resolution = resolutions[0] + "*" + resolutions[1];
+        int tabHeight = 30, tabWidth = 80;
+        if (dm.widthPixels >= 480) {
+        	tabHeight = 40;
+        	tabWidth = 120;
+        }
         
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
@@ -374,13 +393,32 @@ public class sysinfo extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("tab2")
                 .setIndicator(getString(R.string.online))
                 .setContent(R.id.ViewServer));
-        //tabHost.addTab(tabHost.newTabSpec("tab3")
-        //        .setIndicator(getString(R.string.apps))
-        //        .setContent(R.id.AppList));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(Integer.parseInt(resolutions[2]), Integer.parseInt(resolutions[3]));
+        if (fullversion) {
+        tabHost.addTab(tabHost.newTabSpec("tab3")
+                .setIndicator(getString(R.string.apps))
+                .setContent(R.id.sViewApps));
+        tabHost.addTab(tabHost.newTabSpec("tab4")
+                .setIndicator(getString(R.string.process))
+                .setContent(R.id.sViewProcess));
+        tabHost.addTab(tabHost.newTabSpec("tab5")
+                .setIndicator("Services")
+                .setContent(R.id.sViewCpu));
+        tabHost.addTab(tabHost.newTabSpec("tab6")
+                .setIndicator("Tasks")
+                .setContent(R.id.sViewMem));
+        //tabHost.addTab(tabHost.newTabSpec("tab7")
+        //        .setIndicator("Vending")
+        //        .setContent(R.id.sViewDisk));
+        AppsText = (TextView)findViewById(R.id.TextViewApps);
+        ProcessText = (TextView)findViewById(R.id.TextViewProcess);
+        ServiceText = (TextView)findViewById(R.id.TextViewCpu);
+        TaskText = (TextView)findViewById(R.id.TextViewMem);
+        }
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, tabHeight);
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
         	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
-
+        
         properList = (ListView)findViewById(R.id.PropertyList);
         Properties.properListItem = new ArrayList<HashMap<String, Object>>();  
         properListItemAdapter = new SimpleAdapter(this, Properties.properListItem,   
@@ -421,8 +459,14 @@ public class sysinfo extends TabActivity {
         	PackageInfo pi = pm.getPackageInfo("sys.info.trial", 0);
         	version = "v" + pi.versionName;
         	versionCode = pi.versionCode;
-        	List list = pm.getInstalledApplications(0);
-        	nApk = Integer.toString(list.size());
+
+            if (fullversion) {
+	        List<PackageInfo> apps = getPackageManager().getInstalledPackages(0);
+        	apklist = "";
+	        for (PackageInfo app : apps) {
+    	    	apklist += app.packageName + "\t(" + app.versionName + ")\n";
+	        }
+            }
     	} catch (NameNotFoundException e) {
     		e.printStackTrace();
     	}    
@@ -452,6 +496,12 @@ public class sysinfo extends TabActivity {
 		protected void onPostExecute(String result) {
 			//resText.setText(myresult);
 			properList.invalidate();
+            if (fullversion) {
+	        ProcessText.setText(psInfo);
+	        ServiceText.setText(serviceInfo);
+	        TaskText.setText(taskInfo);
+	        AppsText.setText(apklist);
+            }
 		}
 
 		@Override
@@ -492,7 +542,9 @@ public class sysinfo extends TabActivity {
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         teles = Properties.telephonies(tm);
         
-		try {serverWeb.loadUrl(getString(R.string.url));}
+        String url = getString(R.string.url);
+        if (fullversion) url += "fullversion.jsp";
+		try {serverWeb.loadUrl(url);}
 		catch (Exception e) {}
     }
     
@@ -541,6 +593,33 @@ public class sysinfo extends TabActivity {
     	}
     	if (!foundLoc) Properties.setInfo((String) propertyItems[3], getString(R.string.locationHint));
     	
+        if (fullversion) {
+    	ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    	List serviceList = am.getRunningServices(10000);
+    	serviceInfo = "";
+    	for (int i = 0; i < serviceList.size(); i++) {
+    		RunningServiceInfo rs = (RunningServiceInfo) serviceList.get(i);
+    		serviceInfo += rs.service.flattenToShortString() + "\n";
+    	}
+        //result += getString(R.string.nService) + serviceList.size() + "\n";//service number
+        
+        psInfo = "";
+    	List appList = am.getRunningAppProcesses();
+    	for (int i = 0; i < appList.size(); i++) {
+    		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+    		psInfo += as.processName + "\n";
+    	}
+        //result += getString(R.string.nProcess) + appList.size() + "\n";//process number
+        
+        taskInfo = "";
+    	List taskList = am.getRunningTasks(10000);
+    	for (int i = 0; i < taskList.size(); i++) {
+    		RunningTaskInfo ts = (RunningTaskInfo) taskList.get(i);
+    		taskInfo += ts.baseActivity.flattenToShortString() + "\n";
+    	}
+        }
+        //result += getString(R.string.nTask) + taskList.size() + "\n\n";//task number
+
         //result += getString(R.string.nProcess) + runCmd("ps", "") + "\n";//process number
         
 		//setMap(getString(R.string.nApk), nApk);

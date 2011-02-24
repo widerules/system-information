@@ -1,4 +1,4 @@
-package sys.info.trial;
+package sys.info.jtbuaa;
 
 import java.io.BufferedReader;
 import java.io.File;

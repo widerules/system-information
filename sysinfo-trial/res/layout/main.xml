@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sysinfo="http://schemas.android.com/apk/res/sys.info.trial"
+    xmlns:sysinfo="http://schemas.android.com/apk/res/sys.info.jtbuaa"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -25,6 +25,42 @@
 		android:layout_width="fill_parent"   
 		android:layout_height="wrap_content">   
 	</ListView>  
+
+	<ScrollView   
+		android:id="@+id/sViewCpu"  
+       	android:layout_height="fill_parent"   
+       	android:layout_width="fill_parent">      
+    <TextView android:id="@+id/TextViewCpu"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+	</ScrollView>
+	
+	<ScrollView   
+		android:id="@+id/sViewMem"  
+       	android:layout_height="fill_parent"   
+       	android:layout_width="fill_parent">      
+    <TextView android:id="@+id/TextViewMem"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+	</ScrollView>
+
+	<ScrollView
+		android:id="@+id/sViewProcess"  
+       	android:layout_height="fill_parent"   
+       	android:layout_width="fill_parent">      
+    <TextView android:id="@+id/TextViewProcess"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+	</ScrollView>
+	
+	<ScrollView
+		android:id="@+id/sViewApps"  
+       	android:layout_height="fill_parent"   
+       	android:layout_width="fill_parent">      
+    <TextView android:id="@+id/TextViewApps"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+	</ScrollView>
 
 	<ListView 
 		android:id="@+id/AppList"  

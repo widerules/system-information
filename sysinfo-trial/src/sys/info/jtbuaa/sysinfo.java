@@ -373,7 +373,7 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = false;
+        fullversion = true;
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -442,7 +442,7 @@ public class sysinfo extends TabActivity {
         serverWeb = (WebView)findViewById(R.id.ViewServer);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setUserAgentString("sys.info.trial" + versionCode);
+        webSettings.setUserAgentString("sys.info.jtbuaa" + versionCode);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
 		serverWeb.setWebViewClient(new WebViewClient() {
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -456,17 +456,9 @@ public class sysinfo extends TabActivity {
 
         PackageManager pm = getPackageManager();
         try {
-        	PackageInfo pi = pm.getPackageInfo("sys.info.trial", 0);
+        	PackageInfo pi = pm.getPackageInfo("sys.info.jtbuaa", 0);
         	version = "v" + pi.versionName;
         	versionCode = pi.versionCode;
-
-            if (fullversion) {
-	        List<PackageInfo> apps = getPackageManager().getInstalledPackages(0);
-        	apklist = "";
-	        for (PackageInfo app : apps) {
-    	    	apklist += app.packageName + "\t(" + app.versionName + ")\n";
-	        }
-            }
     	} catch (NameNotFoundException e) {
     		e.printStackTrace();
     	}    
@@ -543,7 +535,7 @@ public class sysinfo extends TabActivity {
         teles = Properties.telephonies(tm);
         
         String url = getString(R.string.url);
-        if (fullversion) url += "fullversion.jsp";
+        if (fullversion) url += "/fullversion.jsp";
 		try {serverWeb.loadUrl(url);}
 		catch (Exception e) {}
     }
@@ -594,30 +586,43 @@ public class sysinfo extends TabActivity {
     	if (!foundLoc) Properties.setInfo((String) propertyItems[3], getString(R.string.locationHint));
     	
         if (fullversion) {
-    	ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-    	List serviceList = am.getRunningServices(10000);
-    	serviceInfo = "";
-    	for (int i = 0; i < serviceList.size(); i++) {
-    		RunningServiceInfo rs = (RunningServiceInfo) serviceList.get(i);
-    		serviceInfo += rs.service.flattenToShortString() + "\n";
-    	}
-        //result += getString(R.string.nService) + serviceList.size() + "\n";//service number
-        
-        psInfo = "";
-    	List appList = am.getRunningAppProcesses();
-    	for (int i = 0; i < appList.size(); i++) {
-    		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-    		psInfo += as.processName + "\n";
-    	}
-        //result += getString(R.string.nProcess) + appList.size() + "\n";//process number
-        
-        taskInfo = "";
-    	List taskList = am.getRunningTasks(10000);
-    	for (int i = 0; i < taskList.size(); i++) {
-    		RunningTaskInfo ts = (RunningTaskInfo) taskList.get(i);
-    		taskInfo += ts.baseActivity.flattenToShortString() + "\n";
-    	}
+        	ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        	List serviceList = am.getRunningServices(10000);
+        	serviceInfo = "";
+        	for (int i = 0; i < serviceList.size(); i++) {
+        		RunningServiceInfo rs = (RunningServiceInfo) serviceList.get(i);
+        		serviceInfo += rs.service.flattenToShortString() + "\n";
+        	}
+            //result += getString(R.string.nService) + serviceList.size() + "\n";//service number
+            
+            psInfo = "";
+        	List appList = am.getRunningAppProcesses();
+        	for (int i = 0; i < appList.size(); i++) {
+        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+        		psInfo += as.processName + "\n";
+        	}
+            //result += getString(R.string.nProcess) + appList.size() + "\n";//process number
+            
+            taskInfo = "";
+        	List taskList = am.getRunningTasks(10000);
+        	for (int i = 0; i < taskList.size(); i++) {
+        		RunningTaskInfo ts = (RunningTaskInfo) taskList.get(i);
+        		taskInfo += ts.baseActivity.flattenToShortString() + "\n";
+        	}
+        	
+//	        List<ApplicationInfo> apps = getPackageManager().getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+	        List<PackageInfo> apps = getPackageManager().getInstalledPackages(0);
+        	apklist = "";
+        	String debugableApp = "";
+	        for (PackageInfo app : apps) {
+	            if((app.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) 
+        	    	debugableApp += app.applicationInfo.sourceDir + "->" + app.packageName + "\t(" + app.versionName + ")\tdebugable\n";
+	            else
+        	    	apklist += app.applicationInfo.sourceDir + "\t(" + app.versionName + ")\n";
+	        }
+	        apklist = debugableApp + "\n" + apklist;
         }
+        
         //result += getString(R.string.nTask) + taskList.size() + "\n\n";//task number
 
         //result += getString(R.string.nProcess) + runCmd("ps", "") + "\n";//process number

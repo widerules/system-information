@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sysinfo="http://schemas.android.com/apk/res/sys.info.trial"
+    xmlns:sysinfo="http://schemas.android.com/apk/res/sys.info.jtbuaa"
 	android:id="@+id/popup_root"  
     android:orientation="vertical"
     android:layout_width="fill_parent"

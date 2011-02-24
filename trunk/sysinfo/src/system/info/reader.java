@@ -395,14 +395,14 @@ public class reader extends TabActivity {
         //tabHost.addTab(tabHost.newTabSpec("tab7")
         //        .setIndicator("Vending")
         //        .setContent(R.id.sViewDisk));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, tabHeight);
-        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
-        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
-        
         AppsText = (TextView)findViewById(R.id.TextViewApps);
         ProcessText = (TextView)findViewById(R.id.TextViewProcess);
         ServiceText = (TextView)findViewById(R.id.TextViewCpu);
         TaskText = (TextView)findViewById(R.id.TextViewMem);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, tabHeight);
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
+        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
         
         properList = (ListView)findViewById(R.id.PropertyList);
         Properties.properListItem = new ArrayList<HashMap<String, Object>>();  

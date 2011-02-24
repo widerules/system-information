@@ -41,15 +41,6 @@
         android:layout_height="fill_parent"/>
 	</ScrollView>
 
-	<ScrollView   
-		android:id="@+id/sViewDisk"  
-       	android:layout_height="fill_parent"   
-       	android:layout_width="fill_parent">      
-    <TextView android:id="@+id/TextViewDisk"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
-	</ScrollView>
-
 	<ScrollView
 		android:id="@+id/sViewProcess"  
        	android:layout_height="fill_parent"   
@@ -64,6 +55,15 @@
        	android:layout_height="fill_parent"   
        	android:layout_width="fill_parent">      
     <TextView android:id="@+id/TextViewApps"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+	</ScrollView>
+
+	<ScrollView   
+		android:id="@+id/sViewDisk"  
+       	android:layout_height="fill_parent"   
+       	android:layout_width="fill_parent">      
+    <TextView android:id="@+id/TextViewDisk"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
 	</ScrollView>

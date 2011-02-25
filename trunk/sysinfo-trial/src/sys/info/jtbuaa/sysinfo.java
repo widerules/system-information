@@ -373,17 +373,14 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = true;
+        fullversion = false;
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         resolutions = Properties.resolution(dm);
         Properties.resolution = resolutions[0] + "*" + resolutions[1];
-        int tabHeight = 30, tabWidth = 80;
-        if (dm.widthPixels >= 480) {
-        	tabHeight = 40;
-        	tabWidth = 120;
-        }
+        int tabHeight = 40, tabWidth = 80;
+        if (dm.widthPixels >= 480) tabWidth = 120;
         
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);

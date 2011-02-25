@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="ip.map"
-      android:installLocation="preferExternal" android:versionName="1.4.10" android:versionCode="15">  
+      android:installLocation="preferExternal" android:versionCode="16" android:versionName="1.4.11">  
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -15,9 +15,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.admob.android.ads.AdMobActivity"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:configChanges="keyboard|keyboardHidden|orientation">
+        </activity>
         <meta-data android:value="a14be3f4ec2bb11" android:name="ADMOB_PUBLISHER_ID" />
-        <meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
+        <meta-data android:value="false" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
     </application>
-	<uses-sdk android:targetSdkVersion="4" android:minSdkVersion="3"></uses-sdk>
+	<uses-sdk android:targetSdkVersion="11" android:minSdkVersion="3"></uses-sdk>
 
 </manifest> 

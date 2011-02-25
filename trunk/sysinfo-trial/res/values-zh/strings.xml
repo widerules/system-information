@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">系统信息浏览器(试用版)</string>
-    <string name="about_dialog_text1">系统信息浏览器(试用版)\n</string>
+    <string name="app_name">系统信息浏览器</string>
+    <string name="about_dialog_text1">系统信息浏览器\n</string>
 
     <string name="license">\n请到Google Market购买系统信息浏览器完整版以去掉广告条，并可获得更多有用的系统信息。\n</string>
 

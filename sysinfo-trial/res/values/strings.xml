@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">system info(trial)</string>
-    <string name="about_dialog_text1">System Info Viewer(trial)\n</string>
+    <string name="app_name">system info</string>
+    <string name="about_dialog_text1">System Info Viewer\n</string>
 
     <string name="license">\nPlease buy full version for more useful info and no Ads.\n</string>
     <string name="fullversion">full version...</string>

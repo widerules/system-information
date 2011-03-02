@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.FeatureInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -83,7 +84,7 @@ public class sysinfo extends TabActivity {
 	SimpleAdapter properListItemAdapter;
 	SensorManager sensorMgr;
 	String[] resolutions, cameraSizes, processors, teles;
-	String serviceInfo, taskInfo, psInfo;
+	String serviceInfo, sFeatureInfo, psInfo;
 	boolean fullversion;
 	ArrayAdapter itemAdapter;
 		
@@ -373,7 +374,7 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = false;
+        fullversion = true;
         
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -398,10 +399,10 @@ public class sysinfo extends TabActivity {
                 .setIndicator(getString(R.string.process))
                 .setContent(R.id.sViewProcess));
         tabHost.addTab(tabHost.newTabSpec("tab5")
-                .setIndicator("Services")
+                .setIndicator(getString(R.string.service))
                 .setContent(R.id.sViewCpu));
         tabHost.addTab(tabHost.newTabSpec("tab6")
-                .setIndicator("Tasks")
+                .setIndicator(getString(R.string.feature))
                 .setContent(R.id.sViewMem));
         //tabHost.addTab(tabHost.newTabSpec("tab7")
         //        .setIndicator("Vending")
@@ -488,7 +489,7 @@ public class sysinfo extends TabActivity {
             if (fullversion) {
 	        ProcessText.setText(psInfo);
 	        ServiceText.setText(serviceInfo);
-	        TaskText.setText(taskInfo);
+	        TaskText.setText(sFeatureInfo);
 	        AppsText.setText(apklist);
             }
 		}
@@ -600,12 +601,21 @@ public class sysinfo extends TabActivity {
         	}
             //result += getString(R.string.nProcess) + appList.size() + "\n";//process number
             
-            taskInfo = "";
-        	List taskList = am.getRunningTasks(10000);
+        	sFeatureInfo = "";
+            FeatureInfo[] featureInfos = getPackageManager().getSystemAvailableFeatures();
+            if (featureInfos != null && featureInfos.length > 0) {
+                for (FeatureInfo featureInfo : featureInfos) {
+                	if (featureInfo.name == null) {//opengl es
+                		sFeatureInfo += "Open GL ES " + featureInfo.getGlEsVersion() + "\n";
+                	}
+                	else sFeatureInfo += featureInfo.name + "\n";
+                }
+            }
+        	/*List taskList = am.getRunningTasks(10000);
         	for (int i = 0; i < taskList.size(); i++) {
         		RunningTaskInfo ts = (RunningTaskInfo) taskList.get(i);
         		taskInfo += ts.baseActivity.flattenToShortString() + "\n";
-        	}
+        	}*/
         	
 //	        List<ApplicationInfo> apps = getPackageManager().getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
 	        List<PackageInfo> apps = getPackageManager().getInstalledPackages(0);

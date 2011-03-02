@@ -7,6 +7,8 @@
     <string name="fullversion">full version...</string>
 
     <string name="process">Process</string>
+    <string name="service">Service</string>
+    <string name="feature">Feature</string>
 
     <string name="url">http://system-info.appspot.com</string>         
     <string name="url1">http://192.168.5.136:8080</string>         

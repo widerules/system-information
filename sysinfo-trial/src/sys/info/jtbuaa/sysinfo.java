@@ -49,11 +49,13 @@ import android.preference.PreferenceGroup;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -329,10 +331,10 @@ public class sysinfo extends TabActivity {
     		}
     		case 6: {//screen
     			subItems = new String[4];
-    			subItems[0] = "dpi: " + resolutions[4];
-    			subItems[1] = "xdpi: " + resolutions[5];
-    			subItems[2] = "ydpi: " + resolutions[6];
-    			subItems[3] = "GL_VENDOR: " + glVender;
+    			subItems[0] = "Density: " + resolutions[2];
+    			subItems[1] = "xdpi: " + resolutions[3];
+    			subItems[2] = "ydpi: " + resolutions[4];
+    			subItems[3] = "GPU: " + glVender;
     			break;
     		}
     		case 7: {//sensors
@@ -378,15 +380,40 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = true;
+        fullversion = false;
        	
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        resolutions = Properties.resolution(dm);
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getBaseContext().getSystemService(
+                Context.WINDOW_SERVICE);
+        Display d = wm.getDefaultDisplay();
+        d.getMetrics(metrics);
+        resolutions = new String[5];
+        resolutions[0] = metrics.widthPixels+"";
+        resolutions[1] = metrics.heightPixels+"";
+        resolutions[2] = metrics.density+"";
+        resolutions[3] = metrics.xdpi+"";
+        resolutions[4] = metrics.ydpi+"";
         Properties.resolution = resolutions[0] + "*" + resolutions[1];
         int tabHeight = 40, tabWidth = 80;
-        if (dm.widthPixels >= 480) tabWidth = 120;
+        if (metrics.widthPixels >= 480) tabWidth = 120;
         
+        switch (metrics.densityDpi) {
+        case DisplayMetrics.DENSITY_LOW:
+        	resolutions[2] += " (ldpi)";
+        	break;
+        case DisplayMetrics.DENSITY_MEDIUM:
+        	resolutions[2] += " (mdpi)";
+        	break;
+        case DisplayMetrics.DENSITY_HIGH:
+        	resolutions[2] += " (hdpi)";
+        	break;
+        case 320:
+        	resolutions[2] += " (xdpi)";
+        	break;
+        default:
+        	resolutions[2] += " (" + metrics.densityDpi + ")";
+        }
+
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
         tabHost.addTab(tabHost.newTabSpec("tab1")

@@ -202,26 +202,6 @@ public class Properties {
 		return readFile("/proc/cpuinfo");
 	};
 	
-	public static String[] resolution(DisplayMetrics dm){
-        int height = dm.heightPixels;
-        int width = dm.widthPixels;
-        
-        if (width > height) {
-        	int tmp = width;
-        	width = height;
-        	height = tmp;
-        }
-        
-        int tabHeight = 30, tabWidth = 80;
-        if (width >= 480) {
-        	tabHeight = 40;
-        	tabWidth = 120;
-        }
-        
-        String []rets = {width+"", height+"", tabWidth+"", tabHeight+"", dm.density+"", dm.xdpi+"", dm.ydpi+""};
-        return rets;
-	};
-	
 	public static String memtotal(){
 		memtotal = dmesg();
         int totalIndex = memtotal.indexOf("MB total"); 

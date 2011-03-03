@@ -79,7 +79,8 @@ public class sysinfo extends TabActivity {
 	String version;
 	int versionCode;
 	TabHost tabHost;
-	String sdcard, nProcess, apklist;
+	VortexView _vortexView;
+	String sdcard, nProcess, apklist, glVender;
 	CharSequence[] propertyItems;
 	SimpleAdapter properListItemAdapter;
 	SensorManager sensorMgr;
@@ -250,6 +251,8 @@ public class sysinfo extends TabActivity {
 		properList.invalidateViews();
 		setPropList();
 		m_dialog.cancel();
+        glVender = _vortexView.getGlVender();
+        tabHost.removeView(_vortexView);
 	}
 
 	
@@ -325,10 +328,11 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		case 6: {//screen
-    			subItems = new String[3];
+    			subItems = new String[4];
     			subItems[0] = "dpi: " + resolutions[4];
     			subItems[1] = "xdpi: " + resolutions[5];
     			subItems[2] = "ydpi: " + resolutions[6];
+    			subItems[3] = "GL_VENDOR: " + glVender;
     			break;
     		}
     		case 7: {//sensors
@@ -375,7 +379,7 @@ public class sysinfo extends TabActivity {
         super.onCreate(savedInstanceState);
         
         fullversion = true;
-        
+       	
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         resolutions = Properties.resolution(dm);
@@ -412,6 +416,7 @@ public class sysinfo extends TabActivity {
         ServiceText = (TextView)findViewById(R.id.TextViewCpu);
         TaskText = (TextView)findViewById(R.id.TextViewMem);
         }
+
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, tabHeight);
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
@@ -461,6 +466,10 @@ public class sysinfo extends TabActivity {
     		e.printStackTrace();
     	}    
 
+        //just for get gl vender
+        _vortexView = new VortexView(this);
+        tabHost.addView(_vortexView);
+        
     	showDialog(0);
     	initPropList();
     	//refresh();

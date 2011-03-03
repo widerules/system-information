@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="sys.info.jtbuaa" 
-      android:versionName="1.6.1" android:versionCode="42">
+      android:versionName="1.6.2" android:versionCode="43">
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -37,5 +37,5 @@
         </receiver>
         
     </application>
-<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11" ></uses-sdk>
+<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11" ></uses-sdk>
 </manifest> 

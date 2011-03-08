@@ -54,7 +54,6 @@ public class Properties {
 	static String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
 
 	static ArrayList<HashMap<String, Object>> properListItem;
-	static ArrayList<HashMap<String, Object>> appListItem;
 	public static void setInfo(String title, String text) {
         HashMap<String, Object> map = new HashMap<String, Object>();  
         map.put("ItemTitle", title);  

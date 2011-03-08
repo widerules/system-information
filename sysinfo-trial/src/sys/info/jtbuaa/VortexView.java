@@ -14,6 +14,6 @@ public class VortexView extends GLSurfaceView {
     }
     
 	public String getGlVender() {
-        return _renderer.glVender;
+        return _renderer.glVender.trim();
 	}
 }

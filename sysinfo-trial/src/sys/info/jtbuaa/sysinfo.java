@@ -42,6 +42,8 @@ import android.hardware.SensorManager;
 
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -324,24 +326,15 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		case 4: {//networks
-    			Enumeration<NetworkInterface> nets = null;
-                try {
-                    nets = NetworkInterface.getNetworkInterfaces();
-                } catch (SocketException e) {
-                    subItems = new String[1];
-                    subItems[0] = e.getMessage();
-                    break;
-                }
-
-            	ArrayList list = Collections.list(nets);
-            	int length = list.size();
-                if (length < 1) return;
-                
-                subItems = new String[length];
-                for (int i = 0; i < subItems.length; i++) {
-                	NetworkInterface netIf = (NetworkInterface) list.get(i);
-                    subItems[i] = netIf.toString();
-                }
+   				ConnectivityManager cmg = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+       			NetworkInfo[] nis = cmg.getAllNetworkInfo();
+       			subItems = new String[nis.length];
+       			int i = 0;
+       			for (NetworkInfo ni : nis) {
+       				subItems[i] = ni.toString();
+       				i += 1;
+       			}
+       			if ((subItems == null) || (subItems.length < 1)) return;
     			break;
     			//subItems = new String[5];
     			//subItems[0] = "Network Type: " + ;
@@ -439,7 +432,7 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = true;
+        fullversion = false;
        	
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
@@ -478,7 +471,7 @@ public class sysinfo extends TabActivity {
                          new int[] {R.id.appicon, R.id.appname, R.id.appversion, R.id.appsource}  
                      );  
             appList.setAdapter(appListItemAdapter);
-}
+        }
 
         int tabWidth = getResolution(); 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, 40);
@@ -650,18 +643,16 @@ public class sysinfo extends TabActivity {
     }
     
     public String refresh() {
-		//wifi
-        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if ((wifiInfo != null) && (wifiInfo.getMacAddress() != null))
-        	Properties.setInfo((String) propertyItems[4], wifiInfo.getMacAddress());
-        else
-        	Properties.setInfo((String) propertyItems[4], "not avaiable");
-        
-        //String tmpsdcard = runCmd("df", "");
-        //if (tmpsdcard != null) result += tmpsdcard + "\n\n";
-        
-		//setMap("dpi", dpi);
+		//network
+		Enumeration<NetworkInterface> nets = null;
+		try {
+			nets = NetworkInterface.getNetworkInterfaces();
+			String tmp = "";
+			for (NetworkInterface netIf : Collections.list(nets)) tmp += netIf.toString() + "\n";
+			Properties.setInfo((String) propertyItems[4], tmp.trim());
+		} catch (SocketException e) {
+			Properties.setInfo((String) propertyItems[4], e.toString());
+		}
 
         //location
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);

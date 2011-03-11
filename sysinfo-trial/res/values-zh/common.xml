@@ -41,5 +41,12 @@
     <string name="temperature">电池温度:</string>
     <string name="voltage">电压:</string>
     
+    <string name="ifname">名称:\t</string>        
+    <string name="aptype">ap 类型:\t</string>        
+    <string name="extra">额外信息:\t</string>        
+    <string name="roaming">是否漫游:\t</string>        
+    <string name="state">状态:\t</string>
+    <string name="type">网络类型:\t</string>
+    
     <string name="locationHint">请打开 GPS或者网络定位</string>        
 </resources>

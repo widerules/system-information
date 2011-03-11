@@ -275,6 +275,7 @@ public class sysinfo extends TabActivity {
     			View arg1, 
     			int arg2, //index of selected item, start from 0
     			long arg3) {
+			subItems = null;
     		switch (arg2) {
     		case 0: {//battery
     			subItems = new String[7];
@@ -309,7 +310,6 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		case 3: {//location
-    			subItems = null;
     	        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
     	        List ll = lm.getProviders(true);
     	    	for (int i = 0; i < ll.size(); i++) {
@@ -322,27 +322,28 @@ public class sysinfo extends TabActivity {
     	    		    break;
     	    		}
     	    	}
-    	    	if (subItems == null) return;
     			break;
     		}
     		case 4: {//networks
    				ConnectivityManager cmg = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
        			NetworkInfo[] nis = cmg.getAllNetworkInfo();
-       			subItems = new String[nis.length];
-       			int i = 0;
-       			for (NetworkInfo ni : nis) {
-       				subItems[i] = ni.toString();
-       				i += 1;
-       			}
-       			if ((subItems == null) || (subItems.length < 1)) return;
+       			for (NetworkInfo ni : nis) 
+       				if (ni.isConnectedOrConnecting()) {
+       	       			subItems = new String[6];
+       	       			subItems[0] = getString(R.string.ifname) + ni.toString().split("ifname:")[1].split(",")[0];
+       	       		    subItems[1] = getString(R.string.aptype) + ni.toString().split("aptype:")[1].split(",")[0];
+       	       			subItems[2] = getString(R.string.extra) + ni.getExtraInfo();
+       	       			subItems[3] = getString(R.string.roaming) + ni.isRoaming();
+       	       			subItems[4] = getString(R.string.state) + ni.getDetailedState().name();
+       	       			if (ni.getSubtypeName().length() == 0)
+           	       			subItems[5] = getString(R.string.type) + ni.getTypeName();
+       	       			else
+           	       			subItems[5] = getString(R.string.type) + ni.getTypeName() + " [" + ni.getSubtypeName() + "]";
+       					break;
+       				}
     			break;
-    			//subItems = new String[5];
-    			//subItems[0] = "Network Type: " + ;
-    			//subItems[1] = "Roaming State: " + ;
-    			//subItems[2] = "State: " + ;
     			//subItems[3] = "Local Address: " + ;
     			//subItems[4] = "Public Address: " + ;
-    			//break;
     		}
     		case 5: {//processor
     			subItems = processors;
@@ -364,7 +365,7 @@ public class sysinfo extends TabActivity {
     			subItems = new String[l.size()];
     			for (int i = 0; i < l.size(); i++) {
     				Sensor ss = (Sensor) l.get(i);
-    				subItems[i] = ss.getName() + ": " + ss.getPower() + "mA by " + ss.getVendor();
+    				subItems[i] = ss.getName() + " v(" + ss.getVersion() + "): " + ss.getPower() + "mA by " + ss.getVendor();
     			}
     			break;
     		}
@@ -379,7 +380,7 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		}
-			showMyDialog(subItems);
+   			if (subItems != null) showMyDialog(subItems);
 			//showDialog(2);
     	}
     };

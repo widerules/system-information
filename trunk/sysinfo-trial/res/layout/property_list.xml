@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout 
+<LinearLayout 
 	android:id="@+id/RelativeLayout01" 
-	android:layout_width="fill_parent" 
-	xmlns:android="http://schemas.android.com/apk/res/android" 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" 
 	android:layout_height="wrap_content" 
+	android:layout_width="fill_parent" 
 	android:paddingBottom="4dip" 
 	android:paddingLeft="12dip"
 	android:paddingRight="12dip">
-<TextView 
-    android:text="TextView01" 
-    android:layout_height="wrap_content" 
-    android:layout_width="fill_parent"
-    android:textSize="20dip" 
-	android:textColor="#FFFFFFFF"
-    android:id="@+id/ItemTitle"
-    />
-<TextView 
-	android:text="TextView02" 
-	android:layout_height="wrap_content" 
-	android:layout_width="fill_parent"
-	android:layout_below="@+id/ItemTitle"
-	android:textColor="#CCCCCCCC"
-	android:id="@+id/ItemText"
-	/>
-</RelativeLayout>
+	
+    <LinearLayout android:orientation="vertical"
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent">
+	
+		<TextView android:id="@+id/ItemTitle" 
+    		android:text="TextView01" 
+    		android:layout_height="wrap_content" 
+    		android:layout_width="fill_parent"
+    		android:textSize="20dip" 
+			android:textColor="#FFFFFFFF"/>
+			
+		<TextView android:id="@+id/ItemText" 
+			android:text="TextView02" 
+			android:layout_height="wrap_content" 
+			android:layout_width="fill_parent"
+			android:textColor="#CCCCCCCC"/>
+	</LinearLayout>
+	
+	<ImageView android:id="@+id/ItemIcon"
+        android:layout_height="27px" 
+        android:layout_width="27px"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
+        android:layout_margin="5px"/>
+	
+</LinearLayout>

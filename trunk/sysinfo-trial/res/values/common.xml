@@ -43,11 +43,15 @@
     <string name="voltage">Voltage:</string>
             
     <string name="ifname">Name:\t</string>        
-    <string name="aptype">ap type:\t</string>        
+    <string name="aptype">AP type:\t</string>        
     <string name="extra">Extra:\t</string>        
     <string name="roaming">Roaming:\t</string>        
     <string name="state">State:\t</string>
     <string name="type">Network type:\t</string>
+            
+    <string name="density">Density:\t</string>
+    <string name="refreshRate">Refresh Rate:\t</string>
+    <string name="pixelFormat">Pixel Format:\t</string>
             
     <string name="locationHint">please open GPS or Network Location</string>        
 </resources>

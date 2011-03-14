@@ -350,14 +350,16 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		case 6: {//screen
-    			subItems = new String[4];
-    			subItems[0] = "Density: " + resolutions[2];
+    			subItems = new String[6];
+    			subItems[0] = getString(R.string.density) + resolutions[2];
     			subItems[1] = "xdpi: " + resolutions[3];
     			subItems[2] = "ydpi: " + resolutions[4];
+    			subItems[3] = getString(R.string.refreshRate) + resolutions[5];
+    			subItems[4] = getString(R.string.pixelFormat) + resolutions[6];
     			if (glVender.startsWith("Android"))
-        			subItems[3] = glVender + " Faked GPU";//not real GPU
+        			subItems[5] = glVender + " Faked GPU";//not real GPU
     			else
-        			subItems[3] = "GPU: " + glVender;
+        			subItems[5] = "GPU: " + glVender;
     			break;
     		}
     		case 7: {//sensors
@@ -400,31 +402,92 @@ public class sysinfo extends TabActivity {
         	height = metrics.widthPixels;
         	width = metrics.heightPixels;
         }
-        resolutions = new String[5];
+        resolutions = new String[7];
         resolutions[0] = width+"";
         resolutions[1] = height+"";
         resolutions[2] = metrics.density+"";
         resolutions[3] = metrics.xdpi+"";
         resolutions[4] = metrics.ydpi+"";
-        Properties.resolution = resolutions[0] + "*" + resolutions[1];
+		Properties.resolution = resolutions[0] + "*" + resolutions[1];
+        resolutions[5] = d.getRefreshRate()+"";
         int tabWidth = 80;
         if (width >= 480) tabWidth = 120;
         
         switch (metrics.densityDpi) {
         case DisplayMetrics.DENSITY_LOW:
-        	resolutions[2] += " (ldpi)";
+        	resolutions[2] += " (ldpi-" + metrics.densityDpi + ")";
         	break;
         case DisplayMetrics.DENSITY_MEDIUM:
-        	resolutions[2] += " (mdpi)";
+        	resolutions[2] += " (mdpi-" + metrics.densityDpi + ")";
         	break;
         case DisplayMetrics.DENSITY_HIGH:
-        	resolutions[2] += " (hdpi)";
+        	resolutions[2] += " (hdpi-" + metrics.densityDpi + ")";
         	break;
         case 320:
-        	resolutions[2] += " (xdpi)";
+        	resolutions[2] += " (xdpi-" + metrics.densityDpi + ")";
         	break;
         default:
         	resolutions[2] += " (" + metrics.densityDpi + ")";
+        }
+        
+        resolutions[6] = "";
+        switch (d.getPixelFormat()) {
+        case android.graphics.PixelFormat.A_8:
+            resolutions[6] += "A_8";
+            break;
+        case android.graphics.PixelFormat.JPEG:
+            resolutions[6] += "JPEG";
+            break;
+        case android.graphics.PixelFormat.L_8:
+            resolutions[6] += "L_8";
+            break;
+        case android.graphics.PixelFormat.LA_88:
+            resolutions[6] += "LA_88";
+            break;
+        case android.graphics.PixelFormat.OPAQUE:
+            resolutions[6] += "OPAQUE";
+            break;
+        case android.graphics.PixelFormat.RGB_332:
+            resolutions[6] += "RGB_332";
+            break;
+        case android.graphics.PixelFormat.RGB_565:
+            resolutions[6] += "RGB_565";
+            break;
+        case android.graphics.PixelFormat.RGB_888:
+            resolutions[6] += "RGB_888";
+            break;
+        case android.graphics.PixelFormat.RGBA_4444:
+            resolutions[6] += "RGBA_4444";
+            break;
+        case android.graphics.PixelFormat.RGBA_5551:
+            resolutions[6] += "RGBA_5551";
+            break;
+        case android.graphics.PixelFormat.RGBA_8888:
+            resolutions[6] += "RGBA_8888";
+            break;
+        case android.graphics.PixelFormat.RGBX_8888:
+            resolutions[6] += "RGBX_8888";
+            break;
+        case android.graphics.PixelFormat.TRANSLUCENT:
+            resolutions[6] += "TRANSLUCENT";
+            break;
+        case android.graphics.PixelFormat.TRANSPARENT:
+            resolutions[6] += "TRANSPARENT";
+            break;
+        case android.graphics.PixelFormat.YCbCr_420_SP:
+            resolutions[6] += "YCbCr_420_SP";
+            break;
+        case android.graphics.PixelFormat.YCbCr_422_I:
+            resolutions[6] += "YCbCr_422_I";
+            break;
+        case android.graphics.PixelFormat.YCbCr_422_SP:
+            resolutions[6] += "YCbCr_422_SP";
+            break;
+        case android.graphics.PixelFormat.UNKNOWN:
+            resolutions[6] += "UNKNOWN-" + d.getPixelFormat();
+            break;
+        default:
+            resolutions[6] += "UNKNOWN-" + d.getPixelFormat();
         }
         return tabWidth;
     }
@@ -662,7 +725,7 @@ public class sysinfo extends TabActivity {
     	for (int i = 0; i < ll.size(); i++) {
     		Location lo = lm.getLastKnownLocation((String) ll.get(i));
     		if (lo != null) {
-    			Properties.setInfo((String) propertyItems[3], lo.getLatitude() + ":" + lo.getLongitude());
+    			Properties.setInfo((String) propertyItems[3], lo.getLatitude() + " : " + lo.getLongitude());
     			foundLoc = true;
     		    break;
     		}

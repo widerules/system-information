@@ -48,5 +48,9 @@
     <string name="state">状态:\t</string>
     <string name="type">网络类型:\t</string>
     
+    <string name="density">密度:\t</string>
+    <string name="refreshRate">刷新率:\t</string>
+    <string name="pixelFormat">像素格式:\t</string>
+    
     <string name="locationHint">请打开 GPS或者网络定位</string>        
 </resources>

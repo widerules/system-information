@@ -1,5 +1,6 @@
 package sys.info.jtbuaa;
 
+import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -40,6 +42,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -315,10 +319,11 @@ public class sysinfo extends TabActivity {
     	    	for (int i = 0; i < ll.size(); i++) {
     	    		Location lo = lm.getLastKnownLocation((String) ll.get(i));
     	    		if (lo != null) {
-    	    			subItems = new String[3];
+    	    			subItems = new String[4];
     	    			subItems[0] = getString(R.string.latitude) + " " + lo.getLatitude();
     	    			subItems[1] = getString(R.string.longitude) + " " + lo.getLongitude();
     	    			subItems[2] = getString(R.string.altitude) + " " + lo.getAltitude();
+    	    			subItems[3] = getGeo(lo);
     	    		    break;
     	    		}
     	    	}
@@ -330,8 +335,17 @@ public class sysinfo extends TabActivity {
        			for (NetworkInfo ni : nis) 
        				if (ni.isConnectedOrConnecting()) {
        	       			subItems = new String[6];
-       	       			subItems[0] = getString(R.string.ifname) + ni.toString().split("ifname:")[1].split(",")[0];
-       	       		    subItems[1] = getString(R.string.aptype) + ni.toString().split("aptype:")[1].split(",")[0];
+       	       		    subItems[0] = getString(R.string.ifname);
+       	       			if (ni.toString().contains("ifname"))
+       	       				subItems[0] += ni.toString().split("ifname:")[1].split(",")[0];
+       	       			else
+       	       				subItems[0] += "unknown"; 
+       	       			
+       	       		    subItems[1] = getString(R.string.aptype);
+       	       			if (ni.toString().contains("aptype"))
+       	       				subItems[1] += ni.toString().split("aptype:")[1].split(",")[0];
+       	       			else
+       	       				subItems[1] += "unknown"; 
        	       			subItems[2] = getString(R.string.extra) + ni.getExtraInfo();
        	       			subItems[3] = getString(R.string.roaming) + ni.isRoaming();
        	       			subItems[4] = getString(R.string.state) + ni.getDetailedState().name();
@@ -386,6 +400,27 @@ public class sysinfo extends TabActivity {
 			//showDialog(2);
     	}
     };
+    
+    public String getGeo(Location lo) {
+        Geocoder geoCoder = new Geocoder(getBaseContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geoCoder.getFromLocation(
+                lo.getLatitude(), 
+                lo.getLongitude(), 1);
+
+            String add = "";
+            if (addresses.size() > 0) 
+            {
+                for (int i=0; i<addresses.get(0).getMaxAddressLineIndex(); i++)
+                   add += addresses.get(0).getAddressLine(i) + ", ";
+                add = add.substring(0, add.length()-2);//remote the last comma and space
+            }
+            return add;
+        }
+        catch (IOException e) { 
+        	return e.getMessage();
+        }   
+    }
     
     public int getResolution() {
         DisplayMetrics metrics = new DisplayMetrics();

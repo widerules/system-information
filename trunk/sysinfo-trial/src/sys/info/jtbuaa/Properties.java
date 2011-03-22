@@ -50,6 +50,7 @@ public class Properties {
 	
 	public native static String dmesg();
 	public native static String ifprint();
+	public native static String armv7();
 	
 	static String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
 
@@ -198,6 +199,7 @@ public class Properties {
 	};
 	
 	public static String [] processor(){
+		processor = armv7().trim();
 		return readFile("/proc/cpuinfo");
 	};
 	
@@ -218,10 +220,7 @@ public class Properties {
 		
 		for (int i = 0; i < result.length; i++) {
     		if (result[i].indexOf(":") > -1) {
-        		if (result[i].indexOf("Processor") > -1) {
-        			processor = result[i].split(":")[1];
-        		}
-        		else if (result[i].indexOf("BogoMIPS") > -1) {
+        		if (result[i].indexOf("BogoMIPS") > -1) {
         			bogomips = result[i].split(":")[1];
         		}
         		else if (result[i].indexOf("Hardware") > -1) {

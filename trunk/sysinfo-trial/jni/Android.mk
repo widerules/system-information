@@ -20,7 +20,12 @@ LOCAL_MODULE    := ifprint
 LOCAL_SRC_FILES := dmesg.c \
 		inet_common.c \
 		interface.c \
-                helloneon.c
+		helloneon.c
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+    LOCAL_CFLAGS := -DHAVE_NEON=1
+    LOCAL_SRC_FILES += helloneon-intrinsics.c.neon
+endif
 
 LOCAL_STATIC_LIBRARIES := cpufeatures
 

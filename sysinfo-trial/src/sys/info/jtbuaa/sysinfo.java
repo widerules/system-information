@@ -53,6 +53,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
@@ -334,25 +335,39 @@ public class sysinfo extends TabActivity {
        			NetworkInfo[] nis = cmg.getAllNetworkInfo();
        			for (NetworkInfo ni : nis) 
        				if (ni.isConnectedOrConnecting()) {
-       	       			subItems = new String[6];
-       	       		    subItems[0] = getString(R.string.ifname);
-       	       			if (ni.toString().contains("ifname"))
-       	       				subItems[0] += ni.toString().split("ifname:")[1].split(",")[0];
-       	       			else
-       	       				subItems[0] += "unknown"; 
-       	       			
-       	       		    subItems[1] = getString(R.string.aptype);
-       	       			if (ni.toString().contains("aptype"))
-       	       				subItems[1] += ni.toString().split("aptype:")[1].split(",")[0];
-       	       			else
-       	       				subItems[1] += "unknown"; 
-       	       			subItems[2] = getString(R.string.extra) + ni.getExtraInfo();
-       	       			subItems[3] = getString(R.string.roaming) + ni.isRoaming();
-       	       			subItems[4] = getString(R.string.state) + ni.getDetailedState().name();
-       	       			if (ni.getSubtypeName().length() == 0)
-           	       			subItems[5] = getString(R.string.type) + ni.getTypeName();
-       	       			else
-           	       			subItems[5] = getString(R.string.type) + ni.getTypeName() + " [" + ni.getSubtypeName() + "]";
+       					if (ni.getType() == ConnectivityManager.TYPE_WIFI) {
+           	       			subItems = new String[7];
+       	       				WifiManager mWifiManager = (WifiManager) getBaseContext().getSystemService(Context.WIFI_SERVICE);
+       	       			    WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
+       	       				subItems[0] = "SSID: " + wifiInfo.getSSID();
+       	       				subItems[1] = "BSSID: " + wifiInfo.getBSSID();
+       	       				subItems[2] = "Mac: " + wifiInfo.getMacAddress();
+       	       				subItems[3] = "Supplicant State: " + wifiInfo.getSupplicantState().toString();
+       	       				subItems[4] = "Rssi: " + wifiInfo.getRssi();
+       	       				subItems[5] = "Link Speed: " + wifiInfo.getLinkSpeed() + WifiInfo.LINK_SPEED_UNITS;
+       	       				subItems[6] = "Network Id: " + wifiInfo.getNetworkId();
+       					}
+       					else {
+           	       			subItems = new String[6];
+           	       		    subItems[0] = getString(R.string.ifname);
+           	       			if (ni.toString().contains("ifname"))
+           	       				subItems[0] += ni.toString().split("ifname:")[1].split(",")[0];
+           	       			else
+           	       				subItems[0] += "unknown"; 
+           	       			
+           	       		    subItems[1] = getString(R.string.aptype);
+           	       			if (ni.toString().contains("aptype"))
+           	       				subItems[1] += ni.toString().split("aptype:")[1].split(",")[0];
+           	       			else
+           	       				subItems[1] += "unknown"; 
+           	       			subItems[2] = getString(R.string.extra) + ni.getExtraInfo();
+           	       			subItems[3] = getString(R.string.roaming) + ni.isRoaming();
+           	       			subItems[4] = getString(R.string.state) + ni.getDetailedState().name();
+           	       			if (ni.getSubtypeName().length() == 0)
+               	       			subItems[5] = getString(R.string.type) + ni.getTypeName();
+           	       			else
+               	       			subItems[5] = getString(R.string.type) + ni.getTypeName() + " [" + ni.getSubtypeName() + "]";
+       					}
        					break;
        				}
     			break;

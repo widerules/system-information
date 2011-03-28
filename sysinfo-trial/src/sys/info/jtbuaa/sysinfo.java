@@ -26,6 +26,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog.Builder;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,14 +53,18 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.Vibrator;
+import android.os.PowerManager.WakeLock;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -105,6 +110,7 @@ public class sysinfo extends TabActivity {
 	String serviceInfo, sFeatureInfo, psInfo;
 	boolean fullversion;
 	ArrayAdapter itemAdapter;
+	WakeLock wakeLock;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -248,6 +254,13 @@ public class sysinfo extends TabActivity {
 	@Override
 	protected void onResume () {
 		super.onResume();
+
+		if (wakeLock == null) {
+	        PowerManager powm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+	        wakeLock = powm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getApplication().getPackageName());
+	        wakeLock.acquire();
+		}
+		
     	//register to receive battery intent
 		Properties.BatteryString = (String) propertyItems[0];
 		Properties.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
@@ -260,7 +273,11 @@ public class sysinfo extends TabActivity {
 	@Override
 	protected void onPause() {
 		unregisterReceiver(Properties.BroadcastReceiver);
-		
+		if (wakeLock != null) {
+			wakeLock.release();
+			wakeLock = null;
+		}
+
 		super.onPause();
 	}
 	
@@ -295,19 +312,35 @@ public class sysinfo extends TabActivity {
     		}
     		case 1: {//build info
     			subItems = new String[13];
-    	    	subItems[0] = "Board:\t" + android.os.Build.BOARD;
-    	    	subItems[1] = "Brand:\t" + android.os.Build.BRAND;
-    	    	subItems[2] = "Device:\t" + android.os.Build.DEVICE;
-    	    	subItems[3] = "Host:\t" + android.os.Build.HOST;
-    	    	subItems[4] = "ID:\t" + android.os.Build.ID;
-    	    	subItems[5]= "Model:\t" + android.os.Build.MODEL;
-    	    	subItems[6]= "Product:\t" + android.os.Build.PRODUCT;
-    	    	subItems[7] = "Tags:\t" + android.os.Build.TAGS;
-    	    	subItems[8]= "Type:\t" + android.os.Build.TYPE;
-    	    	subItems[9] = "User:\t" + android.os.Build.USER;
-    	    	subItems[10] = "Fingerprint:\t" + android.os.Build.FINGERPRINT;
-    	    	subItems[11] = "INCREMENTAL: " + android.os.Build.VERSION.INCREMENTAL;
-    	    	subItems[12] = Properties.runCmd("cat", "/proc/version")[0];       
+    	    	subItems[0] = "Brand:\t" + Build.BRAND;
+    	    	subItems[1]= "Product:\t" + Build.PRODUCT;
+    	    	subItems[2] = "Device:\t" + Build.DEVICE;
+    	    	subItems[3] = "Board:\t" + Build.BOARD;
+    	    	subItems[4] = "Release:\t" + Build.VERSION.RELEASE;
+    	    	subItems[5] = "ID:\t" + Build.ID;
+    	    	subItems[6] = "Incremental:\t" + Build.VERSION.INCREMENTAL;
+    	    	subItems[7]= "Type:\t" + Build.TYPE;
+    	    	subItems[8] = "Tags:\t" + Build.TAGS;
+    	    	
+    	    	String CDDrequiredFingerprint = Build.BRAND + "/" + Build.PRODUCT + "/" + Build.DEVICE 
+    			    + "/" + Build.BOARD + ":" + Build.VERSION.RELEASE + "/" + Build.ID + "/" 
+    			    + Build.VERSION.INCREMENTAL + ":" + Build.TYPE + "/" + Build.TAGS;
+    	    	
+    	    	if (Build.FINGERPRINT != CDDrequiredFingerprint) {         
+        	    	subItems[9] =  "current Fingerprint:\t" + Build.FINGERPRINT;
+        	    	subItems[10] = "Fingerprint follow CDD:\t" + CDDrequiredFingerprint;
+    	    	}
+    	    	else {
+        	    	subItems[9] = "Fingerprint:\t" + Build.FINGERPRINT;
+        	    	subItems[10] = "Fingerprint follows CDD requirement";
+    	    	}
+
+    	    	if ((Properties.revision != null) && (Properties.revision.trim().length() > 0))
+        	    	subItems[11] = "Firmware:\t" + Properties.firmware + "(" + Properties.revision + ")";
+    	    	else
+        	    	subItems[11] = "Version.Release:\t" + Build.VERSION.RELEASE;
+    	    	
+    	    	subItems[12] = Properties.runCmd("cat", "/proc/version")[0];
     			break;
     		}
     		case 2: {//camera
@@ -477,7 +510,7 @@ public class sysinfo extends TabActivity {
         	resolutions[2] += " (xdpi-" + metrics.densityDpi + ")";
         	break;
         default:
-        	resolutions[2] += " (" + metrics.densityDpi + ")";
+        	resolutions[2] += " (dpi-" + metrics.densityDpi + ")";
         }
         
         resolutions[6] = "";
@@ -546,8 +579,8 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = false;
-       	
+        fullversion = true;
+        
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
         tabHost.addTab(tabHost.newTabSpec("tab1")
@@ -646,6 +679,7 @@ public class sysinfo extends TabActivity {
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
     	List<ResolveInfo> apps = pm.queryIntentActivities(mainIntent, 0);
+    	int debugableCount = 0;
         for (ResolveInfo app : apps) {
         	Map<String, Object> map = new HashMap<String, Object>();
         	map.put("appicon", app.loadIcon(pm));
@@ -659,6 +693,11 @@ public class sysinfo extends TabActivity {
             if((app.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
             	map.put("appsource", app.activityInfo.applicationInfo.sourceDir + " (debugable) " + app.activityInfo.packageName);
             	list.add(0, map);
+            	debugableCount += 1;
+            }
+            else if((app.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+            	map.put("appsource", app.activityInfo.applicationInfo.sourceDir + " (system) " + app.activityInfo.packageName);
+            	list.add(debugableCount, map);
             }
             else {
             	map.put("appsource", app.activityInfo.applicationInfo.sourceDir);

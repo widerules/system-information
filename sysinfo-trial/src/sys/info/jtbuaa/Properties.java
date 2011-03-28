@@ -38,6 +38,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -49,10 +50,13 @@ public class Properties {
     }
 	
 	public native static String dmesg();
-	public native static String ifprint();
 	public native static String armv7();
+	//public static String dmesg() {return "";}
+	//public static String armv7() {return "";}
+	
 	
 	static String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
+	static String revision, firmware;
 
 	static ArrayList<HashMap<String, Object>> properListItem;
 	public static void setInfo(String title, String text) {
@@ -122,34 +126,32 @@ public class Properties {
             try {
     	   	   mSystemProperties_get = c.getMethod("get");
             } catch (NoSuchMethodException nsme) {
-          	   Log.d("===================1", nsme.toString() );
+          	   Log.d("===================1", nsme.toString() );//always can't find method?
             }
 	    } catch (ClassNotFoundException e) {
 	        Log.d("===================2", e.toString() );
 	    }
 	}
 	
-	public static String[] dr(){
-        String dr = getPlatFormware();
-	        
-       	if ((dr != null) & (mSystemProperties_get != null)) {
+	public static void dr(){
+   		vendor = android.os.Build.MODEL;
+   		product = android.os.Build.PRODUCT;
+       	if (mSystemProperties_get != null) {
        		try {
-				vendor = (String) mSystemProperties_get.invoke("apps.setting.product.vendor");
-				product = (String) mSystemProperties_get.invoke("apps.setting.product.model");
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+				vendor = (String) mSystemProperties_get.invoke("apps.setting.product.vendor", vendor);
+				product = (String) mSystemProperties_get.invoke("apps.setting.product.model", product);
+				firmware = (String) mSystemProperties_get.invoke("apps.setting.platformversion");
+				revision = (String) mSystemProperties_get.invoke("ro.build.revision");
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
    		}
        	else {
-       		vendor = android.os.Build.MODEL;
-       		product = android.os.Build.PRODUCT;
+       		vendor = SystemProperties.get("apps.setting.product.vendor", vendor);
+       		product = SystemProperties.get("apps.setting.product.model", product);
+       		firmware = SystemProperties.get("apps.setting.platformversion");
+       		revision = SystemProperties.get("ro.build.revision");
        	}
-       	String []rets = {vendor, product, dr};
-       	return rets;
 	};
 		
     private static Object getSupportedPictureSizes(Parameters param) throws IOException {
@@ -310,35 +312,6 @@ public class Properties {
 		return result;
     }
     
-    private static String getPlatFormware (){
-        FileReader verReader;
-
-        final File verFile = new File("/opl/etc/.build_version.xml");
-        try {
-                verReader = new FileReader(verFile);
-        } catch (FileNotFoundException e) {
-                //Log.d(getString(R.string.tag), "Couldn't find or open version file " + verFile);
-                return null;
-             }
-        try {
-              XmlPullParser parser = Xml.newPullParser();
-              parser.setInput(verReader);
-
-              while (parser.getEventType() != parser.END_DOCUMENT) {
-                 String name = parser.getName();
-                 if ("device".equals(name)) {
-                     return parser.getAttributeValue(null, "version");
-                 }
-                 else parser.next();
-              }
-        } catch (XmlPullParserException e) {
-            //Log.d(getString(R.string.tag), "Got execption parsing version resource.", e);
-        } catch (IOException e) {
-     		e.printStackTrace();
-    	}
-        return null;
-     }
-
 
 	static String[] Batterys;
 	static String BatteryString;
@@ -350,34 +323,34 @@ public class Properties {
             if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
             	Batterys = new String[7];
             	
-            	//电池电量，数字
+            	//battery electrical amount, return by a number
             	Batterys[0] = intent.getIntExtra("level", 0) + "%";
             	
-                //电池健康情况，返回也是一个数字  
-                //BatteryManager.BATTERY_HEALTH_GOOD 良好  
-                //BatteryManager.BATTERY_HEALTH_OVERHEAT 过热  
-                //BatteryManager.BATTERY_HEALTH_DEAD 没电  
-                //BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE 过电压  
-                //BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE 未知错误  
+                //battery health status, return by a number  
+                //BatteryManager.BATTERY_HEALTH_GOOD 
+                //BatteryManager.BATTERY_HEALTH_OVERHEAT : over heat
+                //BatteryManager.BATTERY_HEALTH_DEAD : no energy
+                //BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE : over voltage
+                //BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE : unknown error  
                 //Log.d("Battery", "health " + intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN));
             	int healthState = intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN);
             	setInfo(BatteryString, (String) batteryHealth[healthState-1] + "(" + intent.getIntExtra("level", 0) + "%)");
             	Batterys[1] = (String) batteryHealth[healthState-1];
             	
-                //电池状态，返回是一个数字  
-                // BatteryManager.BATTERY_STATUS_CHARGING 表示是充电状态  
-                // BatteryManager.BATTERY_STATUS_DISCHARGING 放电中  
-                // BatteryManager.BATTERY_STATUS_NOT_CHARGING 未充电  
-                // BatteryManager.BATTERY_STATUS_FULL 电池满  
+                //battery status, return by a number  
+                // BatteryManager.BATTERY_STATUS_CHARGING : is charging  
+                // BatteryManager.BATTERY_STATUS_DISCHARGING : is discharging
+                // BatteryManager.BATTERY_STATUS_NOT_CHARGING : is not charging
+                // BatteryManager.BATTERY_STATUS_FULL   
             	Batterys[2] = (String) batteryStatus[intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN)-1];
                  
-                //电池伏数  
+                //voltage of battery
             	Batterys[3] = intent.getIntExtra("voltage", 0) + "mV";
 
-                //电池温度, 0.1度单位。例如 表示197的时候，意思为19.7度
+                //temperature of battery, unit is 0.1 degree. 197 means 19.7 CF.
             	Batterys[4] = intent.getIntExtra("temperature", 0)/10.0 + "";
                   
-                //充电类型 BatteryManager.BATTERY_PLUGGED_AC 表示是充电器，不是这个值，表示是 USB  
+                //charging type. BatteryManager.BATTERY_PLUGGED_AC means charger. other value means USB  
             	int type = intent.getIntExtra("plugged", 0);
             	if (type == BatteryManager.BATTERY_PLUGGED_AC) Batterys[5] = "Charger";
             	else Batterys[5] = "USB";

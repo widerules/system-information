@@ -5,8 +5,6 @@
 
     <string name="license">\n请到Google Market购买系统信息浏览器完整版以去掉广告条，并可获得更多有用的系统信息。\n</string>
 
-    <string name="memory">内存</string>
-    <string name="disk">硬盘</string>
     <string name="process">进程</string>
     <string name="service">服务</string>
     <string name="feature">特性</string>

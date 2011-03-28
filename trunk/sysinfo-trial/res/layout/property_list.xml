@@ -14,14 +14,12 @@
         android:layout_width="fill_parent">
 	
 		<TextView android:id="@+id/ItemTitle" 
-    		android:text="TextView01" 
     		android:layout_height="wrap_content" 
     		android:layout_width="fill_parent"
     		android:textSize="20dip" 
 			android:textColor="#FFFFFFFF"/>
 			
 		<TextView android:id="@+id/ItemText" 
-			android:text="TextView02" 
 			android:layout_height="wrap_content" 
 			android:layout_width="fill_parent"
 			android:textColor="#CCCCCCCC"/>

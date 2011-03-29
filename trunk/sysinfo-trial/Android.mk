@@ -14,8 +14,13 @@
 # limitations under the License.
 #
 
-#this file only for make under full source tree of Android source code.
-#it will not generate armv7 lib
+# this file only for make under full source tree of Android source code.
+# it will not generate armv7 lib
+# make under source tree will do extra static check for source and resource file.
+# you can copy this folder to source tree, mm in the folder, or mmm <your folder>,
+# or make <you package>.
+# mm/mmm is fast than make, but will not generate needed libs, such as libc.so
+# refer to http://news.wangmeng.cn/detailNews/2621 for add jni in mk file
 
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
@@ -26,10 +31,16 @@ LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
 LOCAL_PACKAGE_NAME := sysinfo-trial
 
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := admob:libs/admob-sdk-android.jar
+LOCAL_STATIC_JAVA_LIBRARIES := admob
 
-LOCAL_JNI_SHARED_LIBRARIES := ifprint
+LOCAL_JNI_SHARED_LIBRARIES := libifprint
 
 include $(BUILD_PACKAGE)
+
+##################################################
+include $(CLEAR_VARS)
+
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := admob:libs/admob-sdk-android.jar
+include $(BUILD_MULTI_PREBUILT)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))

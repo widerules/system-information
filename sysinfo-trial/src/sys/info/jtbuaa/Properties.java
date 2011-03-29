@@ -44,14 +44,18 @@ import android.util.Log;
 import android.util.Xml;
 
 public class Properties {
+	private static boolean loadFail = false;
 	static {
-        System.loadLibrary("ifprint");
+		try {
+            System.loadLibrary("ifprint");
+		} catch(java.lang.UnsatisfiedLinkError e)
+		{
+			loadFail = true; 
+		}
     }
 	
 	public native static String dmesg();
 	public native static String armv7();
-	//public static String dmesg() {return "";}//for debug
-	//public static String armv7() {return "";}//for debug
 	
 	
 	static String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
@@ -184,12 +188,14 @@ public class Properties {
 	};
 	
 	public static String [] processor(){
-		processor = armv7().trim();
+		if (loadFail) processor = "";
+		else processor = armv7().trim();
 		return readFile("/proc/cpuinfo");
 	};
 	
 	public static String memtotal(){
-		memtotal = dmesg();
+		if (loadFail) memtotal = "";
+		else memtotal = dmesg();
         int totalIndex = memtotal.indexOf("MB total"); 
     	if (totalIndex > -1) {
     		String []tmp = memtotal.substring(0, totalIndex).trim().split("=");

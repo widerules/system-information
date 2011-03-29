@@ -16,7 +16,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := ifprint
+LOCAL_MODULE    := libifprint
 LOCAL_SRC_FILES := dmesg.c \
 	inet_common.c \
 	interface.c \

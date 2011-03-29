@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+#this file only for make under full source tree of Android source code.
+#it will not generate armv7 lib
+
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
@@ -23,30 +26,10 @@ LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
 LOCAL_PACKAGE_NAME := sysinfo-trial
 
-LOCAL_STATIC_JAVA_LIBRARIES := admob
-#LOCAL_SHARED_LIBRARIES := ifprint ifprint-v7a
-#LOCAL_PREBUILT_LIBS := ifprint ifprint-v7a
-LOCAL_STATIC_LIBRARIES := ifprint ifprint-v7a
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := admob:libs/admob-sdk-android.jar
 
-LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard.flags
+LOCAL_JNI_SHARED_LIBRARIES := ifprint
 
 include $(BUILD_PACKAGE)
 
-##################################################
-include $(CLEAR_VARS)
-
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := admob:libs/admob-sdk-android.jar
-include $(BUILD_MULTI_PREBUILT)
-
-##################################################
-include $(CLEAR_VARS)
-
-#LOCAL_PREBUILT_STATIC_LIBRARIES := ifprint:libs/armeabi/libifprint.so
-include $(BUILD_MULTI_PREBUILT)
-
-##################################################
-include $(CLEAR_VARS)
-
-#LOCAL_PREBUILT_STATIC_LIBRARIES := ifprint-v7a:libs/armeabi-v7a/libifprint.so
-include $(BUILD_MULTI_PREBUILT)
-
+include $(call all-makefiles-under,$(LOCAL_PATH))

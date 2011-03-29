@@ -257,7 +257,7 @@ public class sysinfo extends TabActivity {
 
 		if (wakeLock == null) {
 	        PowerManager powm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
-	        wakeLock = powm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getApplication().getPackageName());
+	        wakeLock = powm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getApplication().getPackageName());//keep screen on
 	        wakeLock.acquire();
 		}
 		

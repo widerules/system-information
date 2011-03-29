@@ -18,17 +18,21 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := ifprint
 LOCAL_SRC_FILES := dmesg.c \
-		inet_common.c \
-		interface.c \
-		helloneon.c
+	inet_common.c \
+	interface.c \
+	helloneon.c \
+	cpu-features.c
 
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
     LOCAL_CFLAGS := -DHAVE_NEON=1
     LOCAL_SRC_FILES += helloneon-intrinsics.c.neon
 endif
 
-LOCAL_STATIC_LIBRARIES := cpufeatures
+LOCAL_C_INCLUDES += $(JNI_H_INCLUDE)
+LOCAL_PRELINK_MODULE := false
+
+#LOCAL_STATIC_LIBRARIES := cpufeatures #cp cpu-features source code here, so not use static library
 
 include $(BUILD_SHARED_LIBRARY)
 
-$(call import-module,cpufeatures)
+#$(call import-module,cpufeatures)

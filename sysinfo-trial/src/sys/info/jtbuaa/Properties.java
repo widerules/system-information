@@ -38,7 +38,6 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Process;
-import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -51,8 +50,8 @@ public class Properties {
 	
 	public native static String dmesg();
 	public native static String armv7();
-	//public static String dmesg() {return "";}
-	//public static String armv7() {return "";}
+	//public static String dmesg() {return "";}//for debug
+	//public static String armv7() {return "";}//for debug
 	
 	
 	static String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
@@ -104,7 +103,6 @@ public class Properties {
 	};
 	
 	private static Method mDebug_getSupportedPictureSizes;
-	private static Method mSystemProperties_get;
 
 	static {
 		initCompatibility();
@@ -120,38 +118,23 @@ public class Properties {
 	    } catch (NoSuchMethodException nsme) {
 	       Log.d("===================1", nsme.toString() );
 	    }
-	       
-	    try {
-            Class c = Class.forName("android.os.SystemProperties");
-            try {
-    	   	   mSystemProperties_get = c.getMethod("get");
-            } catch (NoSuchMethodException nsme) {
-          	   Log.d("===================1", nsme.toString() );//always can't find method?
-            }
-	    } catch (ClassNotFoundException e) {
-	        Log.d("===================2", e.toString() );
-	    }
 	}
 	
 	public static void dr(){
    		vendor = android.os.Build.MODEL;
    		product = android.os.Build.PRODUCT;
-       	if (mSystemProperties_get != null) {
-       		try {
-				vendor = (String) mSystemProperties_get.invoke("apps.setting.product.vendor", vendor);
-				product = (String) mSystemProperties_get.invoke("apps.setting.product.model", product);
-				firmware = (String) mSystemProperties_get.invoke("apps.setting.platformversion");
-				revision = (String) mSystemProperties_get.invoke("ro.build.revision");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-   		}
-       	else {
-       		vendor = SystemProperties.get("apps.setting.product.vendor", vendor);
-       		product = SystemProperties.get("apps.setting.product.model", product);
-       		firmware = SystemProperties.get("apps.setting.platformversion");
-       		revision = SystemProperties.get("ro.build.revision");
-       	}
+   		firmware = "";
+   		revision = "";
+   		try {
+   			Class c = Class.forName("android.os.SystemProperties");
+   			Method mSystemProperties_get = c.getMethods()[1];//may cause error if SystemProperties add new method.
+			vendor = (String) mSystemProperties_get.invoke(c, "apps.setting.product.vendor", vendor);
+			product = (String) mSystemProperties_get.invoke(c, "apps.setting.product.model", product);
+			firmware = (String) mSystemProperties_get.invoke(c, "apps.setting.platformversion", firmware);
+			revision = (String) mSystemProperties_get.invoke(c, "ro.build.revision", revision);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	};
 		
     private static Object getSupportedPictureSizes(Parameters param) throws IOException {

@@ -1,6 +1,7 @@
 package sys.info.jtbuaa;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -85,11 +87,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RelativeLayout.LayoutParams;
+
+import com.paypal.android.MEP.*;
 
 public class sysinfo extends TabActivity {
 
@@ -111,6 +117,7 @@ public class sysinfo extends TabActivity {
 	boolean fullversion;
 	ArrayAdapter itemAdapter;
 	WakeLock wakeLock;
+	PayPal ppObj = null;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -231,15 +238,16 @@ public class sysinfo extends TabActivity {
 			System.exit(0);
 			break;
 		case 4:
-			Uri uri = android.net.Uri.parse(getString(R.string.url3));
-			Intent i = new Intent();
-			i.setData(uri);
-			try {
-				startActivity(i);
-            } catch (ActivityNotFoundException e) {
-				e.printStackTrace();
-				Toast.makeText(this, getString(R.string.fvfail), Toast.LENGTH_SHORT).show();
-			}
+			if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
+			PayPalPayment newPayment = new PayPalPayment();
+			BigDecimal bd = new BigDecimal(3);
+			newPayment.setSubtotal(bd);
+			newPayment.setPaymentSubtype(1);
+			newPayment.setCurrencyType("USD");
+			newPayment.setRecipient("jtbuaa@gmail.com");
+			
+			Intent paypalIntent = ppObj.getInstance().checkout(newPayment, this);
+			this.startActivityForResult(paypalIntent, 1);
 			break;
 		}
 		return true;
@@ -326,13 +334,13 @@ public class sysinfo extends TabActivity {
     			    + "/" + Build.BOARD + ":" + Build.VERSION.RELEASE + "/" + Build.ID + "/" 
     			    + Build.VERSION.INCREMENTAL + ":" + Build.TYPE + "/" + Build.TAGS;
     	    	
-    	    	if (Build.FINGERPRINT != CDDrequiredFingerprint) {         
-        	    	subItems[9] =  "current Fingerprint:\t" + Build.FINGERPRINT;
-        	    	subItems[10] = "Fingerprint follow CDD:\t" + CDDrequiredFingerprint;
+    	    	if (!Build.FINGERPRINT.trim().equals(CDDrequiredFingerprint.trim())) {         
+        	    	subItems[9] =  "current  Fingerprint: " + Build.FINGERPRINT;
+        	    	subItems[10] = "required Fingerprint: " + CDDrequiredFingerprint;
     	    	}
     	    	else {
         	    	subItems[9] = "Fingerprint:\t" + Build.FINGERPRINT;
-        	    	subItems[10] = "Fingerprint follows CDD requirement";
+        	    	subItems[10] = " ";
     	    	}
 
     	    	if ((Properties.revision != null) && (Properties.revision.trim().length() > 0))
@@ -445,7 +453,6 @@ public class sysinfo extends TabActivity {
     		}
     		}
    			if (subItems != null) showMyDialog(subItems);
-			//showDialog(2);
     	}
     };
     
@@ -579,8 +586,8 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = true;
-        
+        fullversion = false;
+
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
         tabHost.addTab(tabHost.newTabSpec("tab1")

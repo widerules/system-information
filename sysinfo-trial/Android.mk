@@ -21,6 +21,7 @@
 # or make <you package>.
 # mm/mmm is fast than make, but will not generate needed libs, such as libc.so
 # refer to http://news.wangmeng.cn/detailNews/2621 for add jni in mk file
+# and http://blogold.chinaunix.net/u3/108695/showart_2286103.html
 
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
@@ -42,5 +43,8 @@ include $(CLEAR_VARS)
 
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := admob:libs/admob-sdk-android.jar
 include $(BUILD_MULTI_PREBUILT)
+
+##################################################
+include $(CLEAR_VARS)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))

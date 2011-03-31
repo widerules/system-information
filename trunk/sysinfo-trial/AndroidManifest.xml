@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="sys.info.jtbuaa" 
-      android:versionCode="48" android:versionName="1.6.7">
+      android:versionCode="49" android:versionName="1.6.8">
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -22,14 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!--
         <activity android:name="com.admob.android.ads.AdMobActivity"
                   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                   android:configChanges="keyboard|keyboardHidden|orientation">
         </activity>
-        
-        <!-- meta-data android:value="a14d662bba1e443" android:name="ADMOB_PUBLISHER_ID" /-->
         <meta-data android:value="a14d662bba1e443" android:name="ADMOB_PUBLISHER_ID" />
-		<!-- Track Market installs from AdMob ads -->		
+		Track Market installs from AdMob ads 		
         <receiver
             android:name="com.admob.android.ads.analytics.InstallReceiver"
             android:exported="true">
@@ -39,6 +39,11 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name="com.paypal.android.MEP.PayPalActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+                  android:configChanges="keyboardHidden|orientation">
+        </activity> -->
+        
     </application>
 <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11" ></uses-sdk>
 </manifest> 

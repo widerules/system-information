@@ -59,7 +59,7 @@
 		android:layout_height="wrap_content">   
 	</ListView>
 	  
-    <RelativeLayout
+    <!--<RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >	
     <com.admob.android.ads.AdView  
@@ -69,6 +69,6 @@
         android:layout_alignParentBottom="true"
         sysinfo:refreshInterval="60"
     />
-    </RelativeLayout>
+    </RelativeLayout>-->
     
 </merge>

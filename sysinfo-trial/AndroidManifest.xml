@@ -37,12 +37,12 @@
                 <action android:name="com.android.vending.INSTALL_REFERRER">
                 </action>
             </intent-filter>
-        </receiver>
+        </receiver> -->
 
         <activity android:name="com.paypal.android.MEP.PayPalActivity"
                   android:theme="@android:style/Theme.Translucent.NoTitleBar"
                   android:configChanges="keyboardHidden|orientation">
-        </activity> -->
+        </activity>
         
     </application>
 <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11" ></uses-sdk>

@@ -39,6 +39,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -116,8 +117,9 @@ public class sysinfo extends TabActivity {
 	String serviceInfo, sFeatureInfo, psInfo;
 	boolean fullversion;
 	ArrayAdapter itemAdapter;
+	List<ResolveInfo> mAllApps;
 	WakeLock wakeLock;
-	PayPal ppObj = null;
+	PayPal ppObj;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -186,7 +188,8 @@ public class sysinfo extends TabActivity {
     	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
     	menu.add(0, 3, 0, getString(R.string.exit)).setVisible(false);
-    	if (!fullversion) menu.add(0, 4, 0, getString(R.string.fullversion));//.setVisible(false);
+    	menu.add(0, 4, 0, "paypal Sandbox");
+    	menu.add(0, 5, 0, "paypal Live");
     	return true;
     }
 	
@@ -237,7 +240,20 @@ public class sysinfo extends TabActivity {
 			finish();
 			System.exit(0);
 			break;
-		case 4:
+		case 4: {
+			//if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
+			if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-80W284485P519543T", PayPal.ENV_SANDBOX);
+			PayPalPayment newPayment = new PayPalPayment();
+			BigDecimal bd = new BigDecimal(3);
+			newPayment.setSubtotal(bd);
+			newPayment.setPaymentSubtype(1);
+			newPayment.setCurrencyType("USD");
+			newPayment.setRecipient("jtbuaa@gmail.com");
+			
+			Intent paypalIntent = ppObj.getInstance().checkout(newPayment, this);
+			this.startActivityForResult(paypalIntent, 1);
+			break;}
+		case 5: {//for paypal site test
 			if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
 			PayPalPayment newPayment = new PayPalPayment();
 			BigDecimal bd = new BigDecimal(3);
@@ -248,7 +264,7 @@ public class sysinfo extends TabActivity {
 			
 			Intent paypalIntent = ppObj.getInstance().checkout(newPayment, this);
 			this.startActivityForResult(paypalIntent, 1);
-			break;
+			break;}
 		}
 		return true;
 	}
@@ -586,7 +602,8 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = false;
+        fullversion = true;
+    	PackageManager pm = getPackageManager();
 
         tabHost = getTabHost();
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
@@ -619,12 +636,10 @@ public class sysinfo extends TabActivity {
             
             //app tab
             appList = (ListView)findViewById(R.id.AppList);
-            SimpleAdapter appListItemAdapter = new SimpleAdapter(this, getApp(),   
-                         R.layout.app_list,  
-                         new String[] {"appicon", "appname", "appversion", "appsource"},   
-                         new int[] {R.id.appicon, R.id.appname, R.id.appversion, R.id.appsource}  
-                     );  
-            appList.setAdapter(appListItemAdapter);
+        	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+            appList.setAdapter(new ApplicationsAdapter(this, mAllApps));
         }
 
         int tabWidth = getResolution(); 
@@ -659,7 +674,6 @@ public class sysinfo extends TabActivity {
 			}
 		});
 
-        PackageManager pm = getPackageManager();
         try {
         	PackageInfo pi = pm.getPackageInfo("sys.info.jtbuaa", 0);
         	version = "v" + pi.versionName;
@@ -679,6 +693,46 @@ public class sysinfo extends TabActivity {
 		task.execute("");
     }
     
+    private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
+        public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {
+            super(context, 0, apps);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final ResolveInfo info = mAllApps.get(position);
+
+            if (convertView == null) {
+                final LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.app_list, parent, false);
+            }
+
+            final ImageView imageView = (ImageView) convertView.findViewById(R.id.appicon);
+            PackageManager pm = getPackageManager();
+            imageView.setImageDrawable(info.loadIcon(pm));
+
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);	
+            textView1.setText(info.loadLabel(pm));
+
+            final TextView textView2 = (TextView) convertView.findViewById(R.id.appversion);	
+            try {
+				textView2.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
+			} catch (NameNotFoundException e) {
+				textView2.setText("unknown");
+			}
+            
+            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
+            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            	textView3.setText(info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName);
+            }
+            else {
+            	textView3.setText(info.activityInfo.applicationInfo.sourceDir);// + " (" + info.activityInfo.packageName + ")");
+            }
+            
+            return convertView;
+        }
+    }
+
     private List<Map<String, Object>> getApp() {
     	List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
     	
@@ -689,8 +743,6 @@ public class sysinfo extends TabActivity {
     	int debugableCount = 0;
         for (ResolveInfo app : apps) {
         	Map<String, Object> map = new HashMap<String, Object>();
-        	map.put("appicon", app.loadIcon(pm));
-        	//map.put("appicon", R.drawable.icon);
         	map.put("appname", app.loadLabel(pm));
         	try {
 				map.put("appversion", pm.getPackageInfo(app.activityInfo.packageName, 0).versionName);

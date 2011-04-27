@@ -10,10 +10,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Vector;
 
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EncodingUtils;
 
 import android.app.ActivityManager;
@@ -23,11 +20,6 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.app.ActivityManager.RunningTaskInfo;
-import android.app.AlertDialog.Builder;
-import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,8 +31,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
@@ -51,22 +41,16 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.os.PowerManager.WakeLock;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceGroup;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -77,7 +61,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -88,13 +71,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.RelativeLayout.LayoutParams;
 
 import com.paypal.android.MEP.*;
 
@@ -146,14 +127,6 @@ public class sysinfo extends TabActivity {
 	        	  public void onClick(DialogInterface dialog, int which) {}
 	          }).create();
         	}
-        case 2: {
-        	//Log.d("=================", (String) subItems[0]);
-        	//itemAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {"ItemTitle", "ItemText"});
-        	//itemView = (ListView) ListView.inflate(this.getBaseContext(), R.id.AppList , null);
-        	//itemView.setAdapter(itemAdapter);
-        	//m_altDialog = new AlertDialog.Builder(this).setView(itemView).create();
-        	return m_altDialog;
-        	}
         }
         return null;
 	}
@@ -188,8 +161,6 @@ public class sysinfo extends TabActivity {
     	menu.add(0, 1, 0, getString(R.string.upload));
     	menu.add(0, 2, 0, getString(R.string.about));
     	menu.add(0, 3, 0, getString(R.string.exit)).setVisible(false);
-    	menu.add(0, 4, 0, "paypal Sandbox");
-    	menu.add(0, 5, 0, "paypal Live");
     	return true;
     }
 	
@@ -234,37 +205,20 @@ public class sysinfo extends TabActivity {
 			tabHost.setCurrentTab(1);
 			break;
 		case 2:
-			showDialog(1);
+			ppObj = PayPal.getInstance();
+			if (ppObj == null) {
+				ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
+				//if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-80W284485P519543T", PayPal.ENV_SANDBOX);
+			}
+
+			Intent i = new Intent(this, About.class);
+			i.putExtra("version", version);
+			startActivity(i);
 			break;
 		case 3:
 			finish();
 			System.exit(0);
 			break;
-		case 4: {
-			//if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
-			if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-80W284485P519543T", PayPal.ENV_SANDBOX);
-			PayPalPayment newPayment = new PayPalPayment();
-			BigDecimal bd = new BigDecimal(3);
-			newPayment.setSubtotal(bd);
-			newPayment.setPaymentSubtype(1);
-			newPayment.setCurrencyType("USD");
-			newPayment.setRecipient("jtbuaa@gmail.com");
-			
-			Intent paypalIntent = ppObj.getInstance().checkout(newPayment, this);
-			this.startActivityForResult(paypalIntent, 1);
-			break;}
-		case 5: {//for paypal site test
-			if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
-			PayPalPayment newPayment = new PayPalPayment();
-			BigDecimal bd = new BigDecimal(3);
-			newPayment.setSubtotal(bd);
-			newPayment.setPaymentSubtype(1);
-			newPayment.setCurrencyType("USD");
-			newPayment.setRecipient("jtbuaa@gmail.com");
-			
-			Intent paypalIntent = ppObj.getInstance().checkout(newPayment, this);
-			this.startActivityForResult(paypalIntent, 1);
-			break;}
 		}
 		return true;
 	}
@@ -499,6 +453,8 @@ public class sysinfo extends TabActivity {
                 Context.WINDOW_SERVICE);
         Display d = wm.getDefaultDisplay();
         d.getMetrics(metrics);
+        int tabWidth = metrics.widthPixels / 6;//make sure display all 6 tabs
+        
         int width, height;
         if (metrics.widthPixels > metrics.heightPixels) {
         	width = metrics.widthPixels;
@@ -516,8 +472,6 @@ public class sysinfo extends TabActivity {
         resolutions[4] = metrics.ydpi+"";
 		Properties.resolution = resolutions[0] + "*" + resolutions[1];
         resolutions[5] = d.getRefreshRate()+"";
-        int tabWidth = 80;
-        if (width >= 480) tabWidth = 120;
         
         switch (metrics.densityDpi) {
         case DisplayMetrics.DENSITY_LOW:
@@ -639,6 +593,8 @@ public class sysinfo extends TabActivity {
         	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
         	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+        	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+        	
             appList.setAdapter(new ApplicationsAdapter(this, mAllApps));
         }
 
@@ -707,6 +663,11 @@ public class sysinfo extends TabActivity {
                 convertView = inflater.inflate(R.layout.app_list, parent, false);
             }
 
+            if (position % 2 == 1)
+            	convertView.setBackgroundColor(0xFFFFFFFF);
+            else
+            	convertView.setBackgroundColor(0xFFEEEEEE);
+            
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.appicon);
             PackageManager pm = getPackageManager();
             imageView.setImageDrawable(info.loadIcon(pm));
@@ -722,49 +683,21 @@ public class sysinfo extends TabActivity {
 			}
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
-            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {//red for debugable
             	textView3.setText(info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName);
+            	textView1.setTextColor(0xFFFF7777);
             }
-            else {
+            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {//black for system
+            	textView3.setText(info.activityInfo.applicationInfo.sourceDir);
+            	textView1.setTextColor(0xFF000000);
+            }
+            else {//green for data
             	textView3.setText(info.activityInfo.applicationInfo.sourceDir);// + " (" + info.activityInfo.packageName + ")");
+            	textView1.setTextColor(0xFF77CC77);
             }
             
             return convertView;
         }
-    }
-
-    private List<Map<String, Object>> getApp() {
-    	List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-    	
-    	PackageManager pm = getPackageManager();
-    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-    	List<ResolveInfo> apps = pm.queryIntentActivities(mainIntent, 0);
-    	int debugableCount = 0;
-        for (ResolveInfo app : apps) {
-        	Map<String, Object> map = new HashMap<String, Object>();
-        	map.put("appname", app.loadLabel(pm));
-        	try {
-				map.put("appversion", pm.getPackageInfo(app.activityInfo.packageName, 0).versionName);
-			} catch (NameNotFoundException e) {
-				map.put("appversion", "unknown");
-			} 
-            if((app.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
-            	map.put("appsource", app.activityInfo.applicationInfo.sourceDir + " (debugable) " + app.activityInfo.packageName);
-            	list.add(0, map);
-            	debugableCount += 1;
-            }
-            else if((app.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-            	map.put("appsource", app.activityInfo.applicationInfo.sourceDir + " (system) " + app.activityInfo.packageName);
-            	list.add(debugableCount, map);
-            }
-            else {
-            	map.put("appsource", app.activityInfo.applicationInfo.sourceDir);
-            	list.add(map);
-            }
-        }
-    	Log.d("===============", R.drawable.icon+"");
-    	return list;
     }
 
 	class PageTask extends AsyncTask<String, Integer, String> {

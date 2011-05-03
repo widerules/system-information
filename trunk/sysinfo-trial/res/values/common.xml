@@ -3,6 +3,7 @@
     <string name="wait">Please wait while loading...</string>
     <string name="about_dialog">about</string>
     <string name="about_dialog_text2">\njtbuaa@gmail.com\n</string>
+    <string name="about_dialog_notes">\nThank you for use this application. If you want support my work, please input the amount you want to donate and click "Pay with PayPal" button. Otherwise please click back key. thanks.\n</string>
     <string name="resolution">screen resolution:\t</string>
     <string name="pixels">M pixels</string>
     <string name="nProcess">process number:\t</string>
@@ -20,6 +21,7 @@
     <string name="upload">upload</string>
     <string name="refresh">refresh</string>
     <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
     
     <string name="hardware">Hardware:\t</string>
     <string name="memtotal">MemTotal:\t</string>

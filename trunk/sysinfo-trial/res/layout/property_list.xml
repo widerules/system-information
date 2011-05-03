@@ -5,6 +5,7 @@
 	android:orientation="horizontal" 
 	android:layout_height="wrap_content" 
 	android:layout_width="fill_parent" 
+	android:background="#FFEEEEEE" 
 	android:paddingBottom="4dip" 
 	android:paddingLeft="12dip"
 	android:paddingRight="12dip">
@@ -17,12 +18,12 @@
     		android:layout_height="wrap_content" 
     		android:layout_width="fill_parent"
     		android:textSize="20dip" 
-			android:textColor="#FFFFFFFF"/>
+			android:textColor="#FF222222"/>
 			
 		<TextView android:id="@+id/ItemText" 
 			android:layout_height="wrap_content" 
 			android:layout_width="fill_parent"
-			android:textColor="#CCCCCCCC"/>
+			android:textColor="#FF666666"/>
 	</LinearLayout>
 	
 	<ImageView android:id="@+id/ItemIcon"

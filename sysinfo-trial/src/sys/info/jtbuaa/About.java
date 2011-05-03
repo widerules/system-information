@@ -1,6 +1,7 @@
 package sys.info.jtbuaa;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import com.paypal.android.MEP.CheckoutButton;
 import com.paypal.android.MEP.PayPal;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +40,8 @@ public class About extends Activity implements OnClickListener{
 
 	public void onClick(View arg0) {
 		PayPalPayment newPayment = new PayPalPayment();
-		BigDecimal bd = new BigDecimal(3);
+		EditText et = (EditText)findViewById(R.id.themoney);
+		BigDecimal bd = new BigDecimal(Integer.parseInt(et.getText().toString())); 
 		newPayment.setSubtotal(bd);
 		newPayment.setPaymentSubtype(1);
 		newPayment.setCurrencyType("USD");

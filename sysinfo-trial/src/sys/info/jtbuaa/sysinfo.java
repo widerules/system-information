@@ -47,6 +47,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -101,12 +102,13 @@ public class sysinfo extends TabActivity {
 	List<ResolveInfo> mAllApps;
 	WakeLock wakeLock;
 	PayPal ppObj;
+	Context mContext;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
         case 0: {
-            if (m_dialog != null ) m_dialog.cancel();
+            //if (m_dialog != null ) m_dialog.cancel();
             m_dialog = new ProgressDialog(this);
             m_dialog.setTitle(getString(R.string.app_name));
             m_dialog.setMessage(getString(R.string.wait));
@@ -115,18 +117,6 @@ public class sysinfo extends TabActivity {
             Log.e(getString(R.string.tag), m_dialog.toString());
             return m_dialog;
         }
-        case 1: {
-        	String message = getString(R.string.about_dialog_text1) + version + "\n";
-        	if (!fullversion) message += getString(R.string.license);
-        	message += getString(R.string.about_dialog_text2);
-        	
-        	return new AlertDialog.Builder(this).
-        	setMessage(message).
-        	setPositiveButton(getString(R.string.ok),
-	          new DialogInterface.OnClickListener() {
-	        	  public void onClick(DialogInterface dialog, int which) {}
-	          }).create();
-        	}
         }
         return null;
 	}
@@ -205,15 +195,10 @@ public class sysinfo extends TabActivity {
 			tabHost.setCurrentTab(1);
 			break;
 		case 2:
-			ppObj = PayPal.getInstance();
-			if (ppObj == null) {
-				ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
-				//if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-80W284485P519543T", PayPal.ENV_SANDBOX);
-			}
-
-			Intent i = new Intent(this, About.class);
-			i.putExtra("version", version);
-			startActivity(i);
+			mContext = this;
+			showDialog(0);
+			paypalTask task = new paypalTask();
+			task.execute("");
 			break;
 		case 3:
 			finish();
@@ -223,6 +208,28 @@ public class sysinfo extends TabActivity {
 		return true;
 	}
 
+	class paypalTask extends AsyncTask<String, Integer, String> {
+		@Override
+		protected String doInBackground(String... params) {
+			ppObj = PayPal.getInstance();
+			if (ppObj == null) {
+				ppObj = PayPal.initWithAppID(mContext, "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
+				//if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-80W284485P519543T", PayPal.ENV_SANDBOX);
+			}
+			Intent i = new Intent(mContext, About.class);
+			i.putExtra("version", version);
+			startActivity(i);
+			Looper.prepare();
+			m_dialog.cancel();
+			
+			return null;
+		}
+
+		@Override
+		protected void onCancelled() {
+			super.onCancelled();
+		}
+	}
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
@@ -453,7 +460,9 @@ public class sysinfo extends TabActivity {
                 Context.WINDOW_SERVICE);
         Display d = wm.getDefaultDisplay();
         d.getMetrics(metrics);
-        int tabWidth = metrics.widthPixels / 6;//make sure display all 6 tabs
+        int tabWidth;
+        if (fullversion) tabWidth = metrics.widthPixels / 6;//make sure display all 6 tabs
+        else tabWidth = metrics.widthPixels / 4;
         
         int width, height;
         if (metrics.widthPixels > metrics.heightPixels) {
@@ -556,7 +565,7 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        fullversion = true;
+        fullversion = false;
     	PackageManager pm = getPackageManager();
 
         tabHost = getTabHost();
@@ -567,11 +576,10 @@ public class sysinfo extends TabActivity {
         tabHost.addTab(tabHost.newTabSpec("tab2")
                 .setIndicator(getString(R.string.online))
                 .setContent(R.id.ViewServer));
+        tabHost.addTab(tabHost.newTabSpec("tab3")
+                .setIndicator(getString(R.string.apps))
+                .setContent(R.id.AppList));
         if (fullversion) {
-            tabHost.addTab(tabHost.newTabSpec("tab3")
-                    .setIndicator(getString(R.string.apps))
-                    .setContent(R.id.AppList));
-                    //.setContent(R.id.sViewApps));
             tabHost.addTab(tabHost.newTabSpec("tab4")
                     .setIndicator(getString(R.string.process))
                     .setContent(R.id.sViewProcess));
@@ -587,17 +595,16 @@ public class sysinfo extends TabActivity {
             ProcessText = (TextView)findViewById(R.id.TextViewProcess);
             ServiceText = (TextView)findViewById(R.id.TextViewCpu);
             TaskText = (TextView)findViewById(R.id.TextViewMem);
-            
-            //app tab
-            appList = (ListView)findViewById(R.id.AppList);
-        	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-        	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-        	
-            appList.setAdapter(new ApplicationsAdapter(this, mAllApps));
         }
 
+        //app tab
+        appList = (ListView)findViewById(R.id.AppList);
+    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+        appList.setAdapter(new ApplicationsAdapter(this, mAllApps));
+        
         int tabWidth = getResolution(); 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, 40);
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
@@ -688,11 +695,11 @@ public class sysinfo extends TabActivity {
             	textView1.setTextColor(0xFFFF7777);
             }
             else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {//black for system
-            	textView3.setText(info.activityInfo.applicationInfo.sourceDir);
+            	textView3.setText(info.activityInfo.applicationInfo.sourceDir);//we can use source dir to remove it.
             	textView1.setTextColor(0xFF000000);
             }
             else {//green for data
-            	textView3.setText(info.activityInfo.applicationInfo.sourceDir);// + " (" + info.activityInfo.packageName + ")");
+            	textView3.setText(info.activityInfo.packageName);//we can use package name to uninstall it.
             	textView1.setTextColor(0xFF77CC77);
             }
             

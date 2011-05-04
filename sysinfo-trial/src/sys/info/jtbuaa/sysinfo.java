@@ -460,9 +460,6 @@ public class sysinfo extends TabActivity {
                 Context.WINDOW_SERVICE);
         Display d = wm.getDefaultDisplay();
         d.getMetrics(metrics);
-        int tabWidth;
-        if (fullversion) tabWidth = metrics.widthPixels / 6;//make sure display all 6 tabs
-        else tabWidth = metrics.widthPixels / 4;
         
         int width, height;
         if (metrics.widthPixels > metrics.heightPixels) {
@@ -473,6 +470,10 @@ public class sysinfo extends TabActivity {
         	height = metrics.widthPixels;
         	width = metrics.heightPixels;
         }
+        int tabWidth;
+        if (fullversion) tabWidth = height / 6;//make sure display all 6 tabs
+        else tabWidth = height / 4;
+        
         resolutions = new String[7];
         resolutions[0] = width+"";
         resolutions[1] = height+"";

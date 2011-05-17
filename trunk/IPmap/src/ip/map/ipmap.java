@@ -36,6 +36,12 @@ import org.apache.http.util.EntityUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.google.ads.Ad;
+import com.google.ads.AdListener;
+import com.google.ads.AdRequest;
+import com.google.ads.AdRequest.ErrorCode;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -73,9 +79,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-public class ipmap extends MapActivity {
+public class ipmap extends MapActivity implements AdListener{
 	protected class BluePoint extends Overlay {
 		GeoPoint g;
 		public BluePoint(GeoPoint geo) {
@@ -127,10 +134,15 @@ public class ipmap extends MapActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);      
         
+     // Look up the AdView as a resource and load a request.
+        AdView adView = (AdView)this.findViewById(R.id.adView);
+        adView.loadAd(new AdRequest());
+
+
         mapView = (MapView) findViewById(R.id.IPmap);
         mapView.setBuiltInZoomControls(true);
         mc = mapView.getController();
-        mc.setZoom(17);
+        mc.setZoom(15);
         
         et = (EditText)findViewById(R.id.IPadress);
         et.setOnKeyListener(new View.OnKeyListener() {
@@ -159,9 +171,9 @@ public class ipmap extends MapActivity {
             String myLongti = df.format(ml.getLongitude());
             String myIP = getMyIP();
             m_msgDialog.setMessage(getString(R.string.help_text) 
-            			+ getString(R.string.lati) + myLati  
-            			+ getString(R.string.longti) + myLongti  
-            			+ getString(R.string.ip) + myIP);
+            			+ "\n\n" + getString(R.string.lati) + myLati  
+            			+ "\n" + getString(R.string.longti) + myLongti  
+            			+ "\n\n" + getString(R.string.ip) + myIP);
             m_msgDialog.show();//show the help info at first.
         }
         
@@ -202,7 +214,7 @@ public class ipmap extends MapActivity {
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
         			+ getString(R.string.help_text) + " " + getString(R.string.help_text2) 
-        			+ "\nhttp://www.hostip.info\n\n\njtbuaa@gmail.com").
+        			+ "\nhttp://www.geoiptool.com\n\n\njtbuaa@gmail.com").
         	setPositiveButton("Ok",
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
@@ -289,54 +301,31 @@ public class ipmap extends MapActivity {
     }
 
     private String getGeo() {
-    	String geo = "", result = "";
     	Log.d("===============", "getGeo");
         String host = et.getText().toString().trim();
         if ((host == null) || (host.equals(""))) host = getString(R.string.hint);//default host is google.
         
-        geo = getLocationFromIPaddress(host);
-        if (geo.length() < 3) {
-            String ip = host;
-            
-            if (!ip.matches("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$")) {//why ping can't return sometime?
-            	//if input host name instead of IP address, use ping to get IP address.
-                ip = ping(host);
-                if (ip == "error") {
-                	return geo;
-                }
-            }
-            
-            //must stop use IP2Location after 20 try everyday, to save money for user.
-            //geo = getLocationFromIP2Location(ip);//not finish yet. will not use it in the future.
-            
-            result = httpGet("http://api.hostip.info/get_html.php?ip=" + ip + "&position=true");
-            if (result.length() > 3) {
-        	    String [] results = result.split("\n");
-        	    String Latitude = results[3].split(":")[1].trim();
-        	    String Longitude = results[4].split(":")[1].trim();
-        	    geo = Latitude + "," + Longitude;
-                if (m_msgDialog != null) m_msgDialog.setMessage(result);
-            }
-            else return geo;//return if can't get geo.
-        }
-        
-	    if (geo.length() > 3) {
-	        String coordinates[] = geo.split(",");
-	        double lat = Double.parseDouble(coordinates[0]);
-	        double lng = Double.parseDouble(coordinates[1]);
+        String[] geoResult = getLocationFromIPaddress(host);
+	    if ((geoResult != null) && (!geoResult[0].equals(""))) {
+	        double lat = Double.parseDouble(geoResult[0]);
+	        double lng = Double.parseDouble(geoResult[1]);
 	 
 	        p = new GeoPoint(
 	            (int) (lat * 1E6), 
 	            (int) (lng * 1E6));
 	 
+	        mc.setZoom(mapView.getZoomLevel());
 	        mc.animateTo(p);
 	        setMark(p);
-	        
+	    
+	        String info = getString(R.string.lati) + geoResult[0] + "\n";
+	        info += getString(R.string.longti) + geoResult[1] + "\n";
+	        info += getString(R.string.country) + geoResult[2] + "\n";
+	        info += getString(R.string.city) + geoResult[3];
+	        	
 	        Geocoder geoCoder = new Geocoder(getBaseContext(), Locale.getDefault());
             try {
-                List<Address> addresses = geoCoder.getFromLocation(
-                    p.getLatitudeE6()  / 1E6, 
-                    p.getLongitudeE6() / 1E6, 1);
+                List<Address> addresses = geoCoder.getFromLocation(lat, lng, 1);
 
                 String add = "";
                 if (addresses.size() > 0) 
@@ -345,21 +334,21 @@ public class ipmap extends MapActivity {
                          i++)
                        add += addresses.get(0).getAddressLine(i) + "\n";
                 }
-                //if (m_msgDialog != null) m_msgDialog.setMessage(result + "\n" + add);
-                //Toast.makeText(getBaseContext(), result + add, Toast.LENGTH_SHORT).show();
+                info += "\n" + getString(R.string.address) + add;
             }
             catch (IOException e) {                
                 e.printStackTrace();
-                if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
 		    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-            }   
+            }
+            
+            if (m_msgDialog != null) m_msgDialog.setMessage(info);
+    	    return geoResult[0]+","+geoResult[1]; 
 	    }
 	    else {
-            if (m_msgDialog != null) m_msgDialog.setMessage(result);
-	    	//Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
+	    	Log.d("===============", "unknown address");
+            if (m_msgDialog != null) m_msgDialog.setMessage(getString(R.string.unknownaddress));
+            return "";
 	    }
-	    
-    	return geo;
     }
     
     private Location getMyLocation() {
@@ -385,51 +374,46 @@ public class ipmap extends MapActivity {
     	return httpGet("http://whatismyip.com/automation/n09230945NL.asp");
     }
 
-    private String getLocationFromIP2Location(String ip) {
-    	String Latitude = "", Longitude = "";
-    	String result = "", name, value;
-        String entity = httpGet("http://ws.fraudlabs.com/ip2locationwebservice.asmx/IP2Location?IP=" + ip + "&LICENSE=02-T34H-J97K");
+    private String[] getLocationFromIPaddress(String host) {
+        String entity = httpGet("http://www.geoiptool.com/en/?IP=" + host);
+        if ((entity == null) || (entity.length() == 0)) return null;
+        
         String []tmp = entity.split("\n");
-        for (int i = 2; i < tmp.length-2; i++) {
-        	if (tmp[i].indexOf("Not available for this package") == -1) {
-        		String [] pair = tmp[i].split(">");
-        		name = pair[0].trim().substring(1);
-        		value = pair[1].split("<")[0];
-        		result += name + ": " + value + "\n";
-            	if (name.indexOf("LATITUDE") > -1) Latitude = value;
-            	else if (name.indexOf("LONGITUDE") > -1) Longitude = value;
+        Log.d("==============", tmp.length+"");
+        
+        int latitudeLine = 0, longitudeLine = 0, countryLine = 0, cityLine = 0;
+        for (int i = 0; i < tmp.length; i++) {
+        	if (tmp[i].contains("Latitude:")) {
+                //Log.d("=============="+i, tmp[i]);
+                //Log.d("=============="+i+1, tmp[i+1]);
+                latitudeLine = i+1;
+        	}
+        	else if (tmp[i].contains("Longitude:")) {
+                //Log.d("=============="+i, tmp[i]);
+                //Log.d("=============="+i+1, tmp[i+1]);
+                longitudeLine = i+1;
+        	}
+        	else if (tmp[i].contains("Country:")) {
+                //Log.d("=============="+i, tmp[i]);
+                //Log.d("=============="+i+1, tmp[i+1]);
+                countryLine = i+1;
+        	}
+        	else if (tmp[i].contains("City:")) {
+                //Log.d("=============="+i, tmp[i]);
+                //Log.d("=============="+i+1, tmp[i+1]);
+                cityLine = i+1;
         	}
         }
-        	
-        if (m_msgDialog != null) m_msgDialog.setMessage(result);
-        result = Latitude + "," + Longitude;
-        Log.d("==============", result);
-        return result;
-    }
-
-    private String getLocationFromIPaddress(String host) {
-    	String Latitude = "", Longitude = "";
-    	String result = "";
-        String entity = httpGet("http://www.ipaddressapi.com/l/d9b5ce9ced7acf0d5d1b5fd016d58ba3fb542b5c334?h=" + host);
-        if ((entity == null) || (entity.length() == 0)) return "";
         
-        String []tmp = entity.split(",");
-        if (tmp.length < 12) return "";//omit invalid result from the server
+    	String[] result = new String[4];
+        if (latitudeLine > 0) {
+            result[0] = tmp[latitudeLine].split(">")[1].split("<")[0];
+            result[1] = tmp[longitudeLine].split(">")[1].split("<")[0];
+            result[2] = tmp[countryLine].split(">")[2].split("<")[0];
+            result[3] = tmp[cityLine].split(">")[1].split("<")[0];
+        }
+        else return null;
         
-        for (int i = 0; i < tmp.length; i++) //remove the quoted "", see http://www.ipaddressapi.com/usage/
-        	tmp[i] = tmp[i].substring(1, tmp[i].length()-1);
-        
-        Latitude = tmp[8];
-        Longitude = tmp[9];
-        
-        result = "country: " + tmp[3] + "\n";
-        result += "city: " + tmp[6] + "\n";
-        result += "organization: " + tmp[11] + "\n";
-        result += "latitude: " + Latitude + "\n";
-        result += "longitude: " + Longitude;
-        if (m_msgDialog != null) m_msgDialog.setMessage(result);
-        result = Latitude + "," + Longitude;
-        Log.d("==============", result);
         return result;
     }
     
@@ -523,4 +507,31 @@ public class ipmap extends MapActivity {
 		}).start();
     }
     
+    @Override
+    public void onReceiveAd(Ad arg0) {
+      Log.d("================jingtao", "Did Receive Ad");
+    }
+
+    @Override
+    public void onFailedToReceiveAd(Ad arg0, ErrorCode errorCode) {
+      Log.d("================jingtao", "failed to receive ad (" + errorCode + ")");
+    }
+
+	@Override
+	public void onDismissScreen(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLeaveApplication(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPresentScreen(Ad arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -3,15 +3,19 @@
     <string name="app_name">IP地图</string>
 	<string name="wait_msg">正在查询，请稍候...</string>
 	
-    <string name="about">帮助</string>
+    <string name="about">关于</string>
     <string name="exit">退出</string>
     <string name="map">定位...</string>
     <string name="street">街景图...</string>
     
     <string name="help_text">本程序利用IP地址/网址进行地图定位。</string>
     <string name="help_text2">地理信息来自</string>
-    <string name="lati">\n\n纬度：</string>
-    <string name="longti">\n经度：</string>
-    <string name="ip">\n\nIP地址：</string>
+    <string name="lati">纬度:\t</string>
+    <string name="longti">经度:\t</string>
+    <string name="country">国家:\t</string>
+    <string name="city">城市:\t</string>
+    <string name="address">地址:\t</string>
+    <string name="ip">IP地址:\t</string>
     
+    <string name="unknownaddress">查询不到地址</string>
 </resources>

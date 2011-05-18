@@ -120,6 +120,8 @@ public class ipmap extends MapActivity implements AdListener{
     ProgressDialog m_dialog;
     AlertDialog m_msgDialog;
     
+    String errmsg;
+    
     final Handler mHandler = new Handler();
     
     final Runnable mUpdateResults = new Runnable() {
@@ -213,8 +215,8 @@ public class ipmap extends MapActivity implements AdListener{
         	}    
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
-        			+ getString(R.string.help_text) + " " + getString(R.string.help_text2) 
-        			+ "\nhttp://www.geoiptool.com\n\n\njtbuaa@gmail.com").
+        			+ getString(R.string.help_text) + "\n" + getString(R.string.help_text2) 
+        			+ " http://www.geoiptool.com\n\n\njtbuaa@gmail.com").
         	setPositiveButton("Ok",
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
@@ -287,15 +289,13 @@ public class ipmap extends MapActivity implements AdListener{
         		BufferedReader er=new BufferedReader(new InputStreamReader(proc.getErrorStream()));
                 while((line=er.readLine())!=null){
                 	//if ((line == "ping: unknown host " + host) || (line == "connect: Invalid argument")) {
-                	//Toast.makeText(getBaseContext(), line, Toast.LENGTH_SHORT).show();
-                	if (m_msgDialog != null) m_msgDialog.setMessage(line);
+                	errmsg = line;
                 	break;
                 }
     		}
     	} catch (IOException e) {
     		if (m_msgDialog != null) e.printStackTrace();
-        	//Toast.makeText(getBaseContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        	m_msgDialog.setMessage(e.getLocalizedMessage());
+    		errmsg = e.getLocalizedMessage();
     	}
 		return result;
     }
@@ -304,6 +304,7 @@ public class ipmap extends MapActivity implements AdListener{
     	Log.d("===============", "getGeo");
         String host = et.getText().toString().trim();
         if ((host == null) || (host.equals(""))) host = getString(R.string.hint);//default host is google.
+    	Log.d("===============", host);
         
         String[] geoResult = getLocationFromIPaddress(host);
 	    if ((geoResult != null) && (!geoResult[0].equals(""))) {
@@ -344,11 +345,15 @@ public class ipmap extends MapActivity implements AdListener{
             if (m_msgDialog != null) m_msgDialog.setMessage(info);
     	    return geoResult[0]+","+geoResult[1]; 
 	    }
-	    else {
-	    	Log.d("===============", "unknown address");
-            if (m_msgDialog != null) m_msgDialog.setMessage(getString(R.string.unknownaddress));
-            return "";
-	    }
+	    
+        if (m_msgDialog != null) {
+        	if (errmsg.equals(""))
+        	    m_msgDialog.setMessage(getString(R.string.unknownaddress));
+        	else 
+        	    m_msgDialog.setMessage(errmsg);
+        }
+        
+	    return null;
     }
     
     private Location getMyLocation() {
@@ -434,21 +439,19 @@ public class ipmap extends MapActivity implements AdListener{
 			case 302:
 				return httpGet(uri);
 			default:;
-                if (m_msgDialog != null) m_msgDialog.setMessage("sever return code: " + statusCode);
-				//Toast.makeText(getBaseContext(), "(" + statusCode + ")", Toast.LENGTH_SHORT).show();
+                errmsg = "sever return code: " + statusCode;
 			}
+        } catch (IllegalArgumentException e) {
+			errmsg = e.getMessage();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
-	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+			errmsg = e.getMessage();
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
-            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
-	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+			errmsg = e.getMessage();
 		} catch (IOException e) {
 			e.printStackTrace();
-            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
-	    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+			errmsg = e.getMessage();
 		}
     	return result;
     }
@@ -456,21 +459,20 @@ public class ipmap extends MapActivity implements AdListener{
     private String httpGet(String uri) {
         HttpParams params = new BasicHttpParams();
         HttpClient httpClient = new DefaultHttpClient(params);
-        HttpGet httpGet = new HttpGet(uri); 
         try {
+            HttpGet httpGet = new HttpGet(uri); 
 			HttpResponse response = httpClient.execute(httpGet);
 			if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {  
 				httpGet.abort();
-	            if (m_msgDialog != null) m_msgDialog.setMessage(response.getStatusLine().getReasonPhrase());
-				//Toast.makeText(getBaseContext(), response.getStatusLine().getReasonPhrase(), Toast.LENGTH_LONG).show();
+				errmsg = response.getStatusLine().getReasonPhrase();
 			}
 			else return EntityUtils.toString(response.getEntity());
+        } catch (IllegalArgumentException e) {
+			errmsg = e.getMessage();
 		} catch (ClientProtocolException e) {
-            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
-	    	//Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+			errmsg = e.getMessage();
 		} catch (IOException e) {
-            if (m_msgDialog != null) m_msgDialog.setMessage(e.getMessage());
-	    	//Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+			errmsg = e.getMessage();
 		} finally {
 			httpClient.getConnectionManager().shutdown();
 		}
@@ -491,12 +493,13 @@ public class ipmap extends MapActivity implements AdListener{
     
     private void showOnMap(final boolean showOnStreet) {
     	showDialog(0);
+    	errmsg = "";
 		new Thread(new Runnable() {
 		    public void run() {
 		    	Looper.prepare();
 				String geo = getGeo();
 	            if (m_dialog != null) m_dialog.dismiss();
-			    if (geo.length() > 3) {
+			    if ((geo != null) && (geo.length() > 3)) {
 				    //sendIntent("geo:" + geo + "?z=17");//launch Google Map
 				    if (showOnStreet) 
 				    	sendIntent("google.streetview:cbll=" + geo + "&cbp=1,0,,0,5&mz=17");

@@ -8,7 +8,7 @@
     <string name="map">定位...</string>
     <string name="street">街景图...</string>
     
-    <string name="help_text">本程序利用IP地址/网址进行地图定位。</string>
+    <string name="help_text">本程序利用IP地址/网址进行地图定位。定位前请打开网络连接。注意如果使用GPRS数据连接可能产生流量费用。</string>
     <string name="help_text2">地理信息来自</string>
     <string name="lati">纬度:\t</string>
     <string name="longti">经度:\t</string>

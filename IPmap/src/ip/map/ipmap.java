@@ -337,9 +337,8 @@ public class ipmap extends MapActivity implements AdListener{
                 }
                 info += "\n" + getString(R.string.address) + add;
             }
-            catch (IOException e) {                
+            catch (IOException e) {//just print log if geoservice error                
                 e.printStackTrace();
-		    	//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
             }
             
             if (m_msgDialog != null) m_msgDialog.setMessage(info);
@@ -442,16 +441,16 @@ public class ipmap extends MapActivity implements AdListener{
                 errmsg = "sever return code: " + statusCode;
 			}
         } catch (IllegalArgumentException e) {
-			errmsg = e.getMessage();
+			errmsg = e.toString();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
-			errmsg = e.getMessage();
+			errmsg = e.toString();
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
-			errmsg = e.getMessage();
+			errmsg = e.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
-			errmsg = e.getMessage();
+			errmsg = e.toString();
 		}
     	return result;
     }
@@ -468,11 +467,11 @@ public class ipmap extends MapActivity implements AdListener{
 			}
 			else return EntityUtils.toString(response.getEntity());
         } catch (IllegalArgumentException e) {
-			errmsg = e.getMessage();
+			errmsg = e.toString();
 		} catch (ClientProtocolException e) {
-			errmsg = e.getMessage();
+			errmsg = e.toString();
 		} catch (IOException e) {
-			errmsg = e.getMessage();
+			errmsg = e.toString();
 		} finally {
 			httpClient.getConnectionManager().shutdown();
 		}

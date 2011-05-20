@@ -138,7 +138,9 @@ public class ipmap extends MapActivity implements AdListener{
         
      // Look up the AdView as a resource and load a request.
         AdView adView = (AdView)this.findViewById(R.id.adView);
-        adView.loadAd(new AdRequest());
+        AdRequest adRequest = new AdRequest();
+        //adRequest.addTestDevice("224902DD10187A82256A507A0007230D");
+        adView.loadAd(adRequest);
 
 
         mapView = (MapView) findViewById(R.id.IPmap);

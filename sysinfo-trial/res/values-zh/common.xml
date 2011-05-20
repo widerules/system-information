@@ -27,7 +27,8 @@
     <string name="memerr">dmesg 读取内存失败，请稍后再试</string>
     
     <string name="brief">摘要</string>
-    <string name="apps">应用</string>        
+    <string name="systemapps">内置应用</string>        
+    <string name="userapps">个人应用</string>        
     <string name="online">联网查看</string>
 
     <string name="ulfail">上传失败，错误码为：</string>         

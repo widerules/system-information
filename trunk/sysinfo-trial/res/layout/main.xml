@@ -59,6 +59,20 @@
 		android:layout_height="wrap_content">   
 	</ListView>
 	  
+	<RelativeLayout
+	    android:id="@+id/sysapp" 
+	    android:orientation="horizontal" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent">
+    </RelativeLayout>
+    
+	<RelativeLayout 
+	    android:id="@+id/userapp" 
+	    android:orientation="horizontal" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent">
+    </RelativeLayout>
+	  
     <!--<RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >	

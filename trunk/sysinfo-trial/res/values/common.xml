@@ -28,7 +28,8 @@
     <string name="memerr">dmesg get memory failed, please try again later</string>
 
     <string name="brief">Brief</string>        
-    <string name="apps">App</string>        
+    <string name="systemapps">System Apps</string>        
+    <string name="userapps">User Apps</string>        
     <string name="online">Online</string>
 
     <string name="ulfail">upload system info failed with status code: </string>         

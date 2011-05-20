@@ -1,6 +1,7 @@
 package sys.info.jtbuaa;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -72,8 +73,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -84,7 +87,7 @@ public class sysinfo extends TabActivity {
 
 	WebView serverWeb;
 	TextView ServiceText, TaskText, ProcessText;//, AppsText;
-	ListView properList, appList;
+	ListView properList, appList, userAppList;
 	ProgressDialog m_dialog;
 	AlertDialog m_altDialog;
 	String version;
@@ -100,6 +103,7 @@ public class sysinfo extends TabActivity {
 	boolean fullversion;
 	ArrayAdapter itemAdapter;
 	List<ResolveInfo> mAllApps;
+	ArrayList mUserApps, mSysApps;
 	WakeLock wakeLock;
 	PayPal ppObj;
 	Context mContext;
@@ -578,8 +582,11 @@ public class sysinfo extends TabActivity {
                 .setIndicator(getString(R.string.online))
                 .setContent(R.id.ViewServer));
         tabHost.addTab(tabHost.newTabSpec("tab3")
-                .setIndicator(getString(R.string.apps))
-                .setContent(R.id.AppList));
+                .setIndicator(getString(R.string.systemapps))
+                .setContent(R.id.sysapp));
+        tabHost.addTab(tabHost.newTabSpec("tab4")
+                .setIndicator(getString(R.string.userapps))
+                .setContent(R.id.userapp));
         if (fullversion) {
             tabHost.addTab(tabHost.newTabSpec("tab4")
                     .setIndicator(getString(R.string.process))
@@ -598,13 +605,33 @@ public class sysinfo extends TabActivity {
             TaskText = (TextView)findViewById(R.id.TextViewMem);
         }
 
-        //app tab
-        appList = (ListView)findViewById(R.id.AppList);
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
     	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-        appList.setAdapter(new ApplicationsAdapter(this, mAllApps));
+    	mSysApps = new ArrayList();
+    	mUserApps = new ArrayList();
+    	for (int i = 0; i < mAllApps.size(); i++) {
+    		if ((mAllApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) 
+    			mSysApps.add(mAllApps.get(i));
+    		else mUserApps.add(mAllApps.get(i));
+    	}
+    	Collections.sort(mSysApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    	Collections.sort(mUserApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    	
+    	//system app tab
+    	appList = new ListView(this);
+    	appList.inflate(this, R.layout.app_list, null);
+        //appList = (ListView)findViewById(R.id.AppList);
+        appList.setAdapter(new ApplicationsAdapter(this, mSysApps));
+        RelativeLayout syslayout = (RelativeLayout)findViewById(R.id.sysapp);
+        syslayout.addView(appList);
+        
+    	//user app tab
+        userAppList = new ListView(this);
+        userAppList.inflate(this, R.layout.app_list, null);
+        userAppList.setAdapter(new ApplicationsAdapter(this, mUserApps));
+        RelativeLayout userlayout = (RelativeLayout)findViewById(R.id.userapp);
+        userlayout.addView(userAppList);
         
         int tabWidth = getResolution(); 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, 40);
@@ -658,13 +685,17 @@ public class sysinfo extends TabActivity {
     }
     
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
+    	ArrayList mApplist;
         public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {
             super(context, 0, apps);
+            mApplist = (ArrayList) apps;
+            Log.d("===============", mApplist+"");
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            final ResolveInfo info = mAllApps.get(position);
+            final ResolveInfo info;
+            info = (ResolveInfo) mApplist.get(position);
 
             if (convertView == null) {
                 final LayoutInflater inflater = getLayoutInflater();
@@ -675,6 +706,7 @@ public class sysinfo extends TabActivity {
             	convertView.setBackgroundColor(0xFFFFFFFF);
             else
             	convertView.setBackgroundColor(0xFFEEEEEE);
+            
             
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.appicon);
             PackageManager pm = getPackageManager();
@@ -691,24 +723,25 @@ public class sysinfo extends TabActivity {
 			}
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
-            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
             	textView3.setText(info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName);
             	textView1.setTextColor(0xFFEECC77); //brown for debuggable apk
             }
-            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             	textView3.setText(info.activityInfo.applicationInfo.sourceDir);//we can use source dir to remove it.
             	textView1.setTextColor(0xFF000000); //black for system apk
             }
             else {
             	textView3.setText(info.activityInfo.packageName);//we can use package name to uninstall it.
-            	textView1.setTextColor(0xFF77CC77); //green for user apk
+            	textView1.setTextColor(0xFF000000); //black for user apk
             }
             
 			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         	List appList = am.getRunningAppProcesses();
         	for (int i = 0; i < appList.size(); i++) {
         		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-        		if (info.activityInfo.packageName.toLowerCase().equals(as.processName)) {
+        		//if ((info.activityInfo.packageName.toLowerCase().contains(as.processName)) && (!as.processName.equals("sys.info.jtbuaa"))) {
+            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals("sys.info.jtbuaa"))) {
                 	textView1.setTextColor(0xFFFF7777); //red for running apk
         			break;
         		}

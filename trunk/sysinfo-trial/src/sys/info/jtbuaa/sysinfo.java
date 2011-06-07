@@ -723,18 +723,19 @@ public class sysinfo extends TabActivity {
 			}
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
+            String source = "";
+            int color = 0xFF000000;//black for normal apk
             if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-            	textView3.setText(info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName);
-            	textView1.setTextColor(0xFFEECC77); //brown for debuggable apk
+            	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
+            	color = 0xFFEECC77;//brown for debuggable apk
             }
             else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-            	textView3.setText(info.activityInfo.applicationInfo.sourceDir);//we can use source dir to remove it.
-            	textView1.setTextColor(0xFF000000); //black for system apk
+            	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
             }
             else {
-            	textView3.setText(info.activityInfo.packageName);//we can use package name to uninstall it.
-            	textView1.setTextColor(0xFF000000); //black for user apk
+            	source = info.activityInfo.packageName;//we can use package name to uninstall it.
             }
+        	textView3.setText(source);
             
 			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         	List appList = am.getRunningAppProcesses();
@@ -742,10 +743,11 @@ public class sysinfo extends TabActivity {
         		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
         		//if ((info.activityInfo.packageName.toLowerCase().contains(as.processName)) && (!as.processName.equals("sys.info.jtbuaa"))) {
             	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals("sys.info.jtbuaa"))) {
-                	textView1.setTextColor(0xFFFF7777); //red for running apk
+            		color = 0xFFFF7777;//red for running apk
         			break;
         		}
         	}
+        	textView1.setTextColor(color); 
             
             return convertView;
         }

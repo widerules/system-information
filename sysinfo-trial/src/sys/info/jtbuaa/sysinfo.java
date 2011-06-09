@@ -14,6 +14,9 @@ import java.util.Locale;
 
 import org.apache.http.util.EncodingUtils;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -81,8 +84,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.paypal.android.MEP.*;
-
 public class sysinfo extends TabActivity {
 
 	WebView serverWeb;
@@ -105,8 +106,6 @@ public class sysinfo extends TabActivity {
 	List<ResolveInfo> mAllApps;
 	ArrayList mUserApps, mSysApps;
 	WakeLock wakeLock;
-	PayPal ppObj;
-	Context mContext;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -120,6 +119,16 @@ public class sysinfo extends TabActivity {
             m_dialog.setCancelable(true);
             Log.e(getString(R.string.tag), m_dialog.toString());
             return m_dialog;
+        }
+        case 1: {
+        	return new AlertDialog.Builder(this).
+        	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
+        			+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)). 
+        			//+ " \n\njtbuaa@gmail.com").
+        	setPositiveButton("Ok",
+	          new DialogInterface.OnClickListener() {
+	        	  public void onClick(DialogInterface dialog, int which) {}
+	          }).create();
         }
         }
         return null;
@@ -199,10 +208,7 @@ public class sysinfo extends TabActivity {
 			tabHost.setCurrentTab(1);
 			break;
 		case 2:
-			mContext = this;
-			showDialog(0);
-			paypalTask task = new paypalTask();
-			task.execute("");
+			showDialog(1);
 			break;
 		case 3:
 			finish();
@@ -212,29 +218,6 @@ public class sysinfo extends TabActivity {
 		return true;
 	}
 
-	class paypalTask extends AsyncTask<String, Integer, String> {
-		@Override
-		protected String doInBackground(String... params) {
-			ppObj = PayPal.getInstance();
-			if (ppObj == null) {
-				ppObj = PayPal.initWithAppID(mContext, "APP-0UH20368BU458643J", PayPal.ENV_LIVE);
-				//if (ppObj == null) ppObj = PayPal.initWithAppID(this.getBaseContext(), "APP-80W284485P519543T", PayPal.ENV_SANDBOX);
-			}
-			Intent i = new Intent(mContext, About.class);
-			i.putExtra("version", version);
-			startActivity(i);
-			Looper.prepare();
-			m_dialog.cancel();
-			
-			return null;
-		}
-
-		@Override
-		protected void onCancelled() {
-			super.onCancelled();
-		}
-	}
-	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	  super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
@@ -573,7 +556,9 @@ public class sysinfo extends TabActivity {
         fullversion = false;
     	PackageManager pm = getPackageManager();
 
+    	setContentView(R.layout.ads);
         tabHost = getTabHost();
+        
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
         tabHost.addTab(tabHost.newTabSpec("tab1")
                 .setIndicator(getString(R.string.brief))
@@ -689,7 +674,6 @@ public class sysinfo extends TabActivity {
         public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {
             super(context, 0, apps);
             mApplist = (ArrayList) apps;
-            Log.d("===============", mApplist+"");
         }
 
         @Override

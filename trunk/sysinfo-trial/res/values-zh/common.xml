@@ -3,6 +3,7 @@
     <string name="wait">正在读取系统信息...</string>
     <string name="about_dialog">关于</string>
     <string name="about_dialog_text2">\njtbuaa@gmail.com\n</string>
+    <string name="about_dialog_notes">\n感谢使用system info。如果觉得这个应用对您有帮助，请给我打5颗星，多谢！\n</string>
     <string name="resolution">屏幕分辨率:\t</string>
     <string name="pixels">百万像素</string>
     <string name="nProcess">进程数:\t</string>

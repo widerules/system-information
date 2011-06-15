@@ -24,6 +24,7 @@ import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -549,7 +550,29 @@ public class sysinfo extends TabActivity {
         return tabWidth;
     }
     
-    @Override
+    OnAppClickListener mAppsCL = new OnAppClickListener();
+    class OnAppClickListener implements OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			ResolveInfo ri;
+			if (getTabHost().getCurrentTab() == 3) //user tab. 
+				ri = (ResolveInfo) mUserApps.get(arg2);
+			else
+				ri = (ResolveInfo) mSysApps.get(arg2);
+			Intent i = new Intent(Intent.ACTION_MAIN);
+			i.setComponent(new ComponentName(
+					ri.activityInfo.applicationInfo.packageName,
+					ri.activityInfo.name));
+			try {
+			startActivity(i);
+			} catch(Exception e) {
+				Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+			}
+		}
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
@@ -608,6 +631,7 @@ public class sysinfo extends TabActivity {
     	appList.inflate(this, R.layout.app_list, null);
         //appList = (ListView)findViewById(R.id.AppList);
         appList.setAdapter(new ApplicationsAdapter(this, mSysApps));
+        appList.setOnItemClickListener(mAppsCL);
         RelativeLayout syslayout = (RelativeLayout)findViewById(R.id.sysapp);
         syslayout.addView(appList);
         
@@ -615,6 +639,7 @@ public class sysinfo extends TabActivity {
         userAppList = new ListView(this);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setAdapter(new ApplicationsAdapter(this, mUserApps));
+        userAppList.setOnItemClickListener(mAppsCL);
         RelativeLayout userlayout = (RelativeLayout)findViewById(R.id.userapp);
         userlayout.addView(userAppList);
         

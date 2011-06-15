@@ -11,7 +11,7 @@
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
     ads:loadAdOnCreate="true"
-    ads:adUnitId="a14be3f4ec2bb11"
+    ads:adUnitId="a14d662bba1e443"
     ads:adSize="BANNER"/>
     
 <TabHost  

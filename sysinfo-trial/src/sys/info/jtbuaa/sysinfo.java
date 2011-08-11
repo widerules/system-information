@@ -92,7 +92,7 @@ public class sysinfo extends TabActivity {
 	ListView properList, appList, userAppList;
 	ProgressDialog m_dialog;
 	AlertDialog m_altDialog;
-	String version;
+	String version, myPackageName;
 	int versionCode;
 	TabHost tabHost;
 	VortexView _vortexView;
@@ -559,6 +559,8 @@ public class sysinfo extends TabActivity {
 				ri = (ResolveInfo) mUserApps.get(arg2);
 			else
 				ri = (ResolveInfo) mSysApps.get(arg2);
+			if (ri.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
+			
 			Intent i = new Intent(Intent.ACTION_MAIN);
 			i.setComponent(new ComponentName(
 					ri.activityInfo.applicationInfo.packageName,
@@ -576,6 +578,8 @@ public class sysinfo extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        myPackageName = this.getApplicationInfo().packageName;
+
         fullversion = false;
     	PackageManager pm = getPackageManager();
 
@@ -663,7 +667,7 @@ public class sysinfo extends TabActivity {
         serverWeb = (WebView)findViewById(R.id.ViewServer);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setUserAgentString("sys.info.jtbuaa" + versionCode);
+        webSettings.setUserAgentString(myPackageName + versionCode);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
 		serverWeb.setWebViewClient(new WebViewClient() {
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -676,7 +680,7 @@ public class sysinfo extends TabActivity {
 		});
 
         try {
-        	PackageInfo pi = pm.getPackageInfo("sys.info.jtbuaa", 0);
+        	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
         	version = "v" + pi.versionName;
         	versionCode = pi.versionCode;
     	} catch (NameNotFoundException e) {
@@ -750,8 +754,7 @@ public class sysinfo extends TabActivity {
         	List appList = am.getRunningAppProcesses();
         	for (int i = 0; i < appList.size(); i++) {
         		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-        		//if ((info.activityInfo.packageName.toLowerCase().contains(as.processName)) && (!as.processName.equals("sys.info.jtbuaa"))) {
-            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals("sys.info.jtbuaa"))) {
+            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
             		color = 0xFFFF7777;//red for running apk
         			break;
         		}

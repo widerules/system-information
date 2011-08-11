@@ -188,9 +188,17 @@ public class Properties {
 	};
 	
 	public static String [] processor(){
-		if (loadFail) processor = "";
-		else processor = armv7().trim();
-		return readFile("/proc/cpuinfo");
+		String [] result = readFile("/proc/cpuinfo");
+		if (!loadFail) {
+			String [] s = new String [result.length+2];//stupid?
+			for (int i = 0; i < result.length; i++)	{
+				s[i] = result[i];
+			}
+			s[result.length] = "";
+			s[result.length+1] = armv7().trim();
+			return s;
+		}
+		else return result;
 	};
 	
 	public static String memtotal(){
@@ -216,6 +224,13 @@ public class Properties {
         		}
         		else if (result[i].indexOf("Hardware") > -1) {
         			hardware = result[i].split(":")[1];
+        			break;
+        		}
+        		else if (result[i].indexOf("Processor") > -1) {
+        			processor = result[i].split(":")[1];
+        		}
+        		else if (result[i].indexOf("model name") > -1) {
+        			processor = result[i].split(":")[1];
         			break;
         		}
         		else if (result[i].indexOf("sdcard:") > -1) {
@@ -323,15 +338,18 @@ public class Properties {
                 //BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE : unknown error  
                 //Log.d("Battery", "health " + intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN));
             	int healthState = intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN);
-            	setInfo(BatteryString, (String) batteryHealth[healthState-1] + "(" + intent.getIntExtra("level", 0) + "%)");
-            	Batterys[1] = (String) batteryHealth[healthState-1];
+            	if (healthState > 0) healthState = healthState-1;//for intel pad, it will return 0 for the healthState.
+            	setInfo(BatteryString, (String) batteryHealth[healthState] + "(" + intent.getIntExtra("level", 0) + "%)");
+            	Batterys[1] = (String) batteryHealth[healthState];
             	
                 //battery status, return by a number  
                 // BatteryManager.BATTERY_STATUS_CHARGING : is charging  
                 // BatteryManager.BATTERY_STATUS_DISCHARGING : is discharging
                 // BatteryManager.BATTERY_STATUS_NOT_CHARGING : is not charging
-                // BatteryManager.BATTERY_STATUS_FULL   
-            	Batterys[2] = (String) batteryStatus[intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN)-1];
+                // BatteryManager.BATTERY_STATUS_FULL
+            	int status = intent.getIntExtra("status", BatteryManager.BATTERY_STATUS_UNKNOWN);
+            	if (status > 0) status = status-1;//for intel pad
+            	Batterys[2] = (String) batteryStatus[status];
                  
                 //voltage of battery
             	Batterys[3] = intent.getIntExtra("voltage", 0) + "mV";

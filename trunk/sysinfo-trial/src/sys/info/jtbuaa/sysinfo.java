@@ -605,16 +605,16 @@ public class sysinfo extends TabActivity {
                     .setContent(R.id.sViewProcess));
             tabHost.addTab(tabHost.newTabSpec("tab5")
                     .setIndicator(getString(R.string.service))
-                    .setContent(R.id.sViewCpu));
+                    .setContent(R.id.sViewService));
             tabHost.addTab(tabHost.newTabSpec("tab6")
                     .setIndicator(getString(R.string.feature))
-                    .setContent(R.id.sViewMem));
+                    .setContent(R.id.sViewFeature));
             //tabHost.addTab(tabHost.newTabSpec("tab7")
             //        .setIndicator("icon")
             //        .setContent(R.id.appicontest));
             ProcessText = (TextView)findViewById(R.id.TextViewProcess);
-            ServiceText = (TextView)findViewById(R.id.TextViewCpu);
-            TaskText = (TextView)findViewById(R.id.TextViewMem);
+            ServiceText = (TextView)findViewById(R.id.TextViewService);
+            TaskText = (TextView)findViewById(R.id.TextViewFeature);
         }
 
         int tabWidth = getResolution(); 

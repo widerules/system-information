@@ -97,7 +97,7 @@ public class sysinfo extends TabActivity {
 	TabHost tabHost;
 	VortexView _vortexView;
 	String sdcard, nProcess, glVender;//apklist;
-	CharSequence[] propertyItems;
+	CharSequence[] propertyTitles;
 	SimpleAdapter properListItemAdapter;
 	SensorManager sensorMgr;
 	String[] resolutions, cameraSizes, processors, teles;
@@ -235,7 +235,6 @@ public class sysinfo extends TabActivity {
 		}
 		
     	//register to receive battery intent
-		Properties.BatteryString = (String) propertyItems[0];
 		Properties.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
 		Properties.batteryStatus = getResources().getTextArray(R.array.batteryStatus);
 		IntentFilter filter = new IntentFilter();
@@ -270,6 +269,7 @@ public class sysinfo extends TabActivity {
     			View arg1, 
     			int arg2, //index of selected item, start from 0
     			long arg3) {
+    		Log.d("=======================", "list item clicked");
 			subItems = null;
     		switch (arg2) {
     		case 0: {//battery
@@ -589,7 +589,7 @@ public class sysinfo extends TabActivity {
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
         tabHost.addTab(tabHost.newTabSpec("tab1")
                 .setIndicator(getString(R.string.brief))
-                .setContent(R.id.PropertyList));
+                .setContent(R.id.PropertyList1));
         tabHost.addTab(tabHost.newTabSpec("tab2")
                 .setIndicator(getString(R.string.online))
                 .setContent(R.id.ViewServer));
@@ -617,6 +617,11 @@ public class sysinfo extends TabActivity {
             TaskText = (TextView)findViewById(R.id.TextViewMem);
         }
 
+        int tabWidth = getResolution(); 
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, 40);
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
+        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
+        
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
     	mAllApps = pm.queryIntentActivities(mainIntent, 0);
@@ -633,7 +638,6 @@ public class sysinfo extends TabActivity {
     	//system app tab
     	appList = new ListView(this);
     	appList.inflate(this, R.layout.app_list, null);
-        //appList = (ListView)findViewById(R.id.AppList);
         appList.setAdapter(new ApplicationsAdapter(this, mSysApps));
         appList.setOnItemClickListener(mAppsCL);
         RelativeLayout syslayout = (RelativeLayout)findViewById(R.id.sysapp);
@@ -647,21 +651,15 @@ public class sysinfo extends TabActivity {
         RelativeLayout userlayout = (RelativeLayout)findViewById(R.id.userapp);
         userlayout.addView(userAppList);
         
-        int tabWidth = getResolution(); 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, 40);
-        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
-        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
-        
+        propertyTitles = getResources().getTextArray(R.array.propertyItem);
+        Properties.propertyContents = new String[propertyTitles.length];
         //brief tab
-        properList = (ListView)findViewById(R.id.PropertyList);
-        Properties.properListItem = new ArrayList<HashMap<String, Object>>();  
-        properListItemAdapter = new SimpleAdapter(this, Properties.properListItem,   
-                     R.layout.property_list,  
-                     new String[] {"ItemTitle", "ItemText"},   
-                     new int[] {R.id.ItemTitle, R.id.ItemText}  
-                 );  
-        properList.setAdapter(properListItemAdapter);
+        properList = new ListView(this);
+        properList.inflate(this, R.layout.property_list , null);
+        properList.setAdapter(new PropertyAdapter(this, Properties.propertyContents));
         properList.setOnItemClickListener(mpropertyCL);
+        RelativeLayout propertylayout = (RelativeLayout)findViewById(R.id.PropertyList1);
+        propertylayout.addView(properList);
         
         //online tab
         serverWeb = (WebView)findViewById(R.id.ViewServer);
@@ -692,23 +690,44 @@ public class sysinfo extends TabActivity {
         tabHost.addView(_vortexView);
         
     	showDialog(0);
-    	initPropList();
     	//refresh();
     	PageTask task = new PageTask();
 		task.execute("");
     }
     
+    private class PropertyAdapter extends ArrayAdapter<String> {
+        public PropertyAdapter(Context context, String[] propertyContents) {
+            super(context, 0, propertyContents);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                final LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.property_list , parent, false);
+            }
+            
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.ItemTitle);	
+            textView1.setText(propertyTitles[position]);
+
+            final TextView textView2 = (TextView) convertView.findViewById(R.id.ItemText);	
+            textView2.setText(Properties.propertyContents[position]);
+            
+            return convertView;
+        }
+    }
+
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
-    	ArrayList mApplist;
+    	ArrayList localApplist;
         public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {
             super(context, 0, apps);
-            mApplist = (ArrayList) apps;
+            localApplist = (ArrayList) apps;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             final ResolveInfo info;
-            info = (ResolveInfo) mApplist.get(position);
+            info = (ResolveInfo) localApplist.get(position);
 
             if (convertView == null) {
                 final LayoutInflater inflater = getLayoutInflater();
@@ -835,21 +854,15 @@ public class sysinfo extends TabActivity {
 		catch (Exception e) {}
     }
     
-    public void initPropList() {
-		propertyItems = getResources().getTextArray(R.array.propertyItem);
-    	for (int i = 0; i < propertyItems.length; i++)
-    		Properties.setInfo((String) propertyItems[i], " ");
-    }
-    
     public void setPropList() {
         //properties sort by alphabet, the first is battery, add in onresume().
-		Properties.setInfo((String) propertyItems[1], "SDK version:" + Properties.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE);
-		Properties.setInfo((String) propertyItems[2], Properties.sCamera + getString(R.string.pixels));
-		Properties.setInfo((String) propertyItems[5], Properties.processor);
-		Properties.setInfo((String) propertyItems[6], Properties.resolution);
-		Properties.setInfo((String) propertyItems[7], Properties.sensors + " " + (String) propertyItems[5]);
-		Properties.setInfo((String) propertyItems[8], "ram: " + Properties.memtotal);
-		Properties.setInfo((String) propertyItems[9], "IMEI: " + Properties.imei);
+    	Properties.propertyContents[1] = "SDK version:" + Properties.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE;
+    	Properties.propertyContents[2] = Properties.sCamera + getString(R.string.pixels);
+    	Properties.propertyContents[5] = Properties.processor;
+    	Properties.propertyContents[6] = Properties.resolution;
+    	Properties.propertyContents[7] = Properties.sensors + " " + (String) propertyTitles[7];
+    	Properties.propertyContents[8] = "ram: " + Properties.memtotal;
+    	Properties.propertyContents[9] = "IMEI: " + Properties.imei;
     }
     
     public String refresh() {
@@ -859,9 +872,9 @@ public class sysinfo extends TabActivity {
 			nets = NetworkInterface.getNetworkInterfaces();
 			String tmp = "";
 			for (NetworkInterface netIf : Collections.list(nets)) tmp += netIf.toString() + "\n";
-			Properties.setInfo((String) propertyItems[4], tmp.trim());
+			Properties.propertyContents[4] = tmp.trim();
 		} catch (SocketException e) {
-			Properties.setInfo((String) propertyItems[4], e.toString());
+			Properties.propertyContents[4] = e.toString();
 		}
 
         //location
@@ -871,12 +884,12 @@ public class sysinfo extends TabActivity {
     	for (int i = 0; i < ll.size(); i++) {
     		Location lo = lm.getLastKnownLocation((String) ll.get(i));
     		if (lo != null) {
-    			Properties.setInfo((String) propertyItems[3], lo.getLatitude() + " : " + lo.getLongitude());
+    			Properties.propertyContents[3] = lo.getLatitude() + " : " + lo.getLongitude();
     			foundLoc = true;
     		    break;
     		}
     	}
-    	if (!foundLoc) Properties.setInfo((String) propertyItems[3], getString(R.string.locationHint));
+    	if (!foundLoc) Properties.propertyContents[3] = getString(R.string.locationHint);
     	
         if (fullversion) {
         	ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

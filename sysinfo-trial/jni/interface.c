@@ -1426,14 +1426,14 @@ int ifprint(void) {
 	return ret;
 }
 
-jstring Java_sys_info_jtbuaa_Properties_ifprint( JNIEnv* env, jobject thiz )
+jstring Java_sys_info_jtbuaa_util_ifprint( JNIEnv* env, jobject thiz )
 {
     ifprint();
     jstring mesg = (*env)->NewStringUTF(env, print_buf);
     return mesg;
 }
 
-jstring Java_system_info_Properties_ifprint( JNIEnv* env, jobject thiz )
+jstring Java_system_info_util_ifprint( JNIEnv* env, jobject thiz )
 {
     ifprint();
     jstring mesg = (*env)->NewStringUTF(env, print_buf);

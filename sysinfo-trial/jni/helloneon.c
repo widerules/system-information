@@ -77,7 +77,7 @@ static short        fir_output_expected[FIR_OUTPUT_SIZE];
  *   apps/samples/hello-neon/project/src/com/example/neon/HelloNeon.java
  */
 jstring
-Java_sys_info_jtbuaa_Properties_armv7( JNIEnv* env,
+Java_sys_info_jtbuaa_util_armv7( JNIEnv* env,
                                        jobject thiz )
 {
     char*  str;

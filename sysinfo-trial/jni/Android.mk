@@ -18,8 +18,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libifprint
 LOCAL_SRC_FILES := dmesg.c \
-	inet_common.c \
-	interface.c \
 	helloneon.c \
 	cpu-features.c
 

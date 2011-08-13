@@ -57,25 +57,11 @@ public class Properties {
 	public native static String dmesg();
 	public native static String armv7();
 	
-	
+	static String[] propertyContents;
+
 	static String processor, bogomips, hardware, memtotal="", resolution, dpi, sCamera, vendor, product, sensors = "", sdkversion, imei;
 	static String revision, firmware;
 
-	static ArrayList<HashMap<String, Object>> properListItem;
-	public static void setInfo(String title, String text) {
-        HashMap<String, Object> map = new HashMap<String, Object>();  
-        map.put("ItemTitle", title);  
-        map.put("ItemText", text);
-        boolean found = false;
-		for (int i = 0; i < properListItem.size(); i++)
-			if (properListItem.get(i).containsValue(title)) {
-				if (text != " ") properListItem.set(i, map);
-				found = true;
-				break;
-			}
-		if (!found) properListItem.add(map);
-	}
-	
 	public static String sensors(SensorManager sensorMgr){
 		String sensors = "";
     	List list = sensorMgr.getSensorList(Sensor.TYPE_ALL);
@@ -318,7 +304,6 @@ public class Properties {
     
 
 	static String[] Batterys;
-	static String BatteryString;
 	static CharSequence[] batteryHealth, batteryStatus;
 	static BroadcastReceiver BroadcastReceiver = new BroadcastReceiver() {  
         @Override  
@@ -339,7 +324,7 @@ public class Properties {
                 //Log.d("Battery", "health " + intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN));
             	int healthState = intent.getIntExtra("health", BatteryManager.BATTERY_HEALTH_UNKNOWN);
             	if (healthState > 0) healthState = healthState-1;//for intel pad, it will return 0 for the healthState.
-            	setInfo(BatteryString, (String) batteryHealth[healthState] + "(" + intent.getIntExtra("level", 0) + "%)");
+            	propertyContents[0] = (String) batteryHealth[healthState] + "(" + intent.getIntExtra("level", 0) + "%)";
             	Batterys[1] = (String) batteryHealth[healthState];
             	
                 //battery status, return by a number  

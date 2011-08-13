@@ -20,12 +20,6 @@
        	android:layout_width="fill_parent">      
 	</WebView>	
 	
-	<ListView 
-		android:id="@+id/PropertyList"  
-		android:layout_width="fill_parent"   
-		android:layout_height="wrap_content">   
-	</ListView>  
-
 	<ScrollView   
 		android:id="@+id/sViewCpu"  
        	android:layout_height="fill_parent"   
@@ -59,6 +53,13 @@
 		android:layout_height="wrap_content">   
 	</ListView>
 	  
+	<RelativeLayout 
+		android:id="@+id/PropertyList1"  
+	    android:orientation="horizontal" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent">
+	</RelativeLayout>  
+
 	<RelativeLayout
 	    android:id="@+id/sysapp" 
 	    android:orientation="horizontal" 

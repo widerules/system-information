@@ -43,7 +43,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Xml;
 
-public class Properties {
+public class util {
 	private static boolean loadFail = false;
 	static {
 		try {

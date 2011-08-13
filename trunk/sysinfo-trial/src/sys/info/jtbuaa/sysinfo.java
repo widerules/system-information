@@ -192,17 +192,17 @@ public class sysinfo extends TabActivity {
 			break;
 		case 1:
 			String postData = "";
-			postData += "processor=" + Properties.processor + "&";
-			postData += "bogomips=" + Properties.bogomips + "&";
-			postData += "hardware=" + Properties.hardware + "&";
-			postData += "memtotal=" + Properties.memtotal + "&";
-			postData += "resolution=" + Properties.resolution + "&";
-			postData += "sCamera=" + Properties.sCamera + "&";
-			postData += "sensors=" + Properties.sensors + "&";
-			postData += "vendor=" + Properties.vendor + "&";
-			postData += "product=" + Properties.product + "&";
-			postData += "sdkversion=" + Properties.sdkversion + "&";
-			postData += "imei=" + Properties.imei + "&";
+			postData += "processor=" + util.processor + "&";
+			postData += "bogomips=" + util.bogomips + "&";
+			postData += "hardware=" + util.hardware + "&";
+			postData += "memtotal=" + util.memtotal + "&";
+			postData += "resolution=" + util.resolution + "&";
+			postData += "sCamera=" + util.sCamera + "&";
+			postData += "sensors=" + util.sensors + "&";
+			postData += "vendor=" + util.vendor + "&";
+			postData += "product=" + util.product + "&";
+			postData += "sdkversion=" + util.sdkversion + "&";
+			postData += "imei=" + util.imei + "&";
 			if (fullversion) postData += "clientVersion=" + "full-version&";
 			postData += "versionCode=" + versionCode;
 			serverWeb.postUrl(getString(R.string.url)+"/sign", EncodingUtils.getBytes(postData, "BASE64"));
@@ -235,16 +235,16 @@ public class sysinfo extends TabActivity {
 		}
 		
     	//register to receive battery intent
-		Properties.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
-		Properties.batteryStatus = getResources().getTextArray(R.array.batteryStatus);
+		util.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
+		util.batteryStatus = getResources().getTextArray(R.array.batteryStatus);
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-		registerReceiver(Properties.BroadcastReceiver, filter);
+		registerReceiver(util.BroadcastReceiver, filter);
 	}
 	
 	@Override
 	protected void onPause() {
-		unregisterReceiver(Properties.BroadcastReceiver);
+		unregisterReceiver(util.BroadcastReceiver);
 		if (wakeLock != null) {
 			wakeLock.release();
 			wakeLock = null;
@@ -274,13 +274,13 @@ public class sysinfo extends TabActivity {
     		switch (arg2) {
     		case 0: {//battery
     			subItems = new String[7];
-    			subItems[0] = getString(R.string.level) + " " + Properties.Batterys[0];
-    			subItems[1] = getString(R.string.health) + " " + Properties.Batterys[1];
-    			subItems[2] = getString(R.string.status) + " " + Properties.Batterys[2];
-    			subItems[3] = getString(R.string.voltage) + " " + Properties.Batterys[3];
-    			subItems[4] = getString(R.string.temperature) + " " + Properties.Batterys[4];
-    			subItems[5] = getString(R.string.plugged) + " " + Properties.Batterys[5];
-    			subItems[6] = getString(R.string.technology) + " " + Properties.Batterys[6];
+    			subItems[0] = getString(R.string.level) + " " + util.Batterys[0];
+    			subItems[1] = getString(R.string.health) + " " + util.Batterys[1];
+    			subItems[2] = getString(R.string.status) + " " + util.Batterys[2];
+    			subItems[3] = getString(R.string.voltage) + " " + util.Batterys[3];
+    			subItems[4] = getString(R.string.temperature) + " " + util.Batterys[4];
+    			subItems[5] = getString(R.string.plugged) + " " + util.Batterys[5];
+    			subItems[6] = getString(R.string.technology) + " " + util.Batterys[6];
     			break;
     		}
     		case 1: {//build info
@@ -308,12 +308,12 @@ public class sysinfo extends TabActivity {
         	    	subItems[10] = " ";
     	    	}
 
-    	    	if ((Properties.revision != null) && (Properties.revision.trim().length() > 0))
-        	    	subItems[11] = "Firmware:\t" + Properties.firmware + "(" + Properties.revision + ")";
+    	    	if ((util.revision != null) && (util.revision.trim().length() > 0))
+        	    	subItems[11] = "Firmware:\t" + util.firmware + "(" + util.revision + ")";
     	    	else
         	    	subItems[11] = "Version.Release:\t" + Build.VERSION.RELEASE;
     	    	
-    	    	subItems[12] = Properties.runCmd("cat", "/proc/version")[0];
+    	    	subItems[12] = util.runCmd("cat", "/proc/version")[0];
     			break;
     		}
     		case 2: {//camera
@@ -407,7 +407,7 @@ public class sysinfo extends TabActivity {
     			break;
     		}
     		case 8: {//storage
-    			subItems = Properties.runCmd("df", "");
+    			subItems = util.runCmd("df", "");
     			for (int i = 0; i < subItems.length; i++)
     				subItems[i] = subItems[i].split("\\(block")[0];
     			break;
@@ -468,7 +468,7 @@ public class sysinfo extends TabActivity {
         resolutions[2] = metrics.density+"";
         resolutions[3] = metrics.xdpi+"";
         resolutions[4] = metrics.ydpi+"";
-		Properties.resolution = resolutions[0] + "*" + resolutions[1];
+        util.resolution = resolutions[0] + "*" + resolutions[1];
         resolutions[5] = d.getRefreshRate()+"";
         
         switch (metrics.densityDpi) {
@@ -652,11 +652,11 @@ public class sysinfo extends TabActivity {
         userlayout.addView(userAppList);
         
         propertyTitles = getResources().getTextArray(R.array.propertyItem);
-        Properties.propertyContents = new String[propertyTitles.length];
+        util.propertyContents = new String[propertyTitles.length];
         //brief tab
         properList = new ListView(this);
         properList.inflate(this, R.layout.property_list , null);
-        properList.setAdapter(new PropertyAdapter(this, Properties.propertyContents));
+        properList.setAdapter(new PropertyAdapter(this, util.propertyContents));
         properList.setOnItemClickListener(mpropertyCL);
         RelativeLayout propertylayout = (RelativeLayout)findViewById(R.id.PropertyList1);
         propertylayout.addView(properList);
@@ -707,11 +707,16 @@ public class sysinfo extends TabActivity {
                 convertView = inflater.inflate(R.layout.property_list , parent, false);
             }
             
+            if (position % 2 == 1)
+            	convertView.setBackgroundColor(0xFFFFFFFF);
+            else
+            	convertView.setBackgroundColor(0xFFEEEEEE);
+            
             final TextView textView1 = (TextView) convertView.findViewById(R.id.ItemTitle);	
             textView1.setText(propertyTitles[position]);
 
             final TextView textView2 = (TextView) convertView.findViewById(R.id.ItemText);	
-            textView2.setText(Properties.propertyContents[position]);
+            textView2.setText(util.propertyContents[position]);
             
             return convertView;
         }
@@ -832,21 +837,21 @@ public class sysinfo extends TabActivity {
     };
 
     public void refreshOnce() {//something not change, then put here
-    	Properties.sdkversion = android.os.Build.VERSION.SDK;
+    	util.sdkversion = android.os.Build.VERSION.SDK;
     	
-    	cameraSizes = Properties.camera();
+    	cameraSizes = util.camera();
     	
-    	Properties.dr();
+    	util.dr();
     	
-    	processors = Properties.processor();
+    	processors = util.processor();
     	
-    	Properties.memtotal();
+    	util.memtotal();
     	
     	sensorMgr = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-    	Properties.sensors = sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + "";
+    	util.sensors = sensorMgr.getSensorList(Sensor.TYPE_ALL).size() + "";
     	
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        teles = Properties.telephonies(tm);
+        teles = util.telephonies(tm);
         
         String url = getString(R.string.url);
         if (fullversion) url += "/fullversion.jsp";
@@ -856,13 +861,13 @@ public class sysinfo extends TabActivity {
     
     public void setPropList() {
         //properties sort by alphabet, the first is battery, add in onresume().
-    	Properties.propertyContents[1] = "SDK version:" + Properties.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE;
-    	Properties.propertyContents[2] = Properties.sCamera + getString(R.string.pixels);
-    	Properties.propertyContents[5] = Properties.processor;
-    	Properties.propertyContents[6] = Properties.resolution;
-    	Properties.propertyContents[7] = Properties.sensors + " " + (String) propertyTitles[7];
-    	Properties.propertyContents[8] = "ram: " + Properties.memtotal;
-    	Properties.propertyContents[9] = "IMEI: " + Properties.imei;
+    	util.propertyContents[1] = "SDK version:" + util.sdkversion + "\tRELEASE:" + android.os.Build.VERSION.RELEASE;
+    	util.propertyContents[2] = util.sCamera + getString(R.string.pixels);
+    	util.propertyContents[5] = util.processor;
+    	util.propertyContents[6] = util.resolution;
+    	util.propertyContents[7] = util.sensors + " " + (String) propertyTitles[7];
+    	util.propertyContents[8] = "ram: " + util.memtotal;
+    	util.propertyContents[9] = "IMEI: " + util.imei;
     }
     
     public String refresh() {
@@ -872,9 +877,9 @@ public class sysinfo extends TabActivity {
 			nets = NetworkInterface.getNetworkInterfaces();
 			String tmp = "";
 			for (NetworkInterface netIf : Collections.list(nets)) tmp += netIf.toString() + "\n";
-			Properties.propertyContents[4] = tmp.trim();
+			util.propertyContents[4] = tmp.trim();
 		} catch (SocketException e) {
-			Properties.propertyContents[4] = e.toString();
+			util.propertyContents[4] = e.toString();
 		}
 
         //location
@@ -884,12 +889,12 @@ public class sysinfo extends TabActivity {
     	for (int i = 0; i < ll.size(); i++) {
     		Location lo = lm.getLastKnownLocation((String) ll.get(i));
     		if (lo != null) {
-    			Properties.propertyContents[3] = lo.getLatitude() + " : " + lo.getLongitude();
+    			util.propertyContents[3] = lo.getLatitude() + " : " + lo.getLongitude();
     			foundLoc = true;
     		    break;
     		}
     	}
-    	if (!foundLoc) Properties.propertyContents[3] = getString(R.string.locationHint);
+    	if (!foundLoc) util.propertyContents[3] = getString(R.string.locationHint);
     	
         if (fullversion) {
         	ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

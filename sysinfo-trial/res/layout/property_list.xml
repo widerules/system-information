@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<TableLayout 
 	android:id="@+id/RelativeLayout02" 
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="horizontal" 
 	android:layout_height="wrap_content" 
 	android:layout_width="fill_parent" 
-	android:background="#FFEEEEEE" 
+	android:stretchColumns="0"
+	android:background="#FFFFFFFF" 
+	android:paddingTop="4dip" 
 	android:paddingBottom="4dip" 
-	android:paddingLeft="12dip"
-	android:paddingRight="12dip">
+	android:paddingLeft="10dip"
+	android:paddingRight="10dip">
 	
-    <LinearLayout android:orientation="vertical"
-        android:layout_height="wrap_content" 
-        android:layout_width="fill_parent">
-	
+    <TableRow>
+        
+    <LinearLayout android:orientation="vertical">
 		<TextView android:id="@+id/ItemTitle" 
     		android:layout_height="wrap_content" 
     		android:layout_width="fill_parent"
-    		android:textSize="20dip" 
+    		android:textSize="18dip" 
 			android:textColor="#FF222222"/>
 			
 		<TextView android:id="@+id/ItemText" 
 			android:layout_height="wrap_content" 
 			android:layout_width="fill_parent"
+    		android:textSize="14dip" 
 			android:textColor="#FF666666"/>
 	</LinearLayout>
 	
 	<ImageView android:id="@+id/ItemIcon"
-        android:layout_height="27px" 
-        android:layout_width="27px"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:layout_height="14dip" 
+        android:layout_width="14dip"
+        android:layout_gravity="center"
+        android:src="@drawable/downwindow_1"
         android:scaleType="fitCenter"
-        android:layout_margin="5px"/>
-	
-</LinearLayout>
+        android:layout_margin="5dip"/>
+        
+	</TableRow>
+</TableLayout>

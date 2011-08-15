@@ -334,6 +334,10 @@ public class sysinfo extends TabActivity {
     	    		    break;
     	    		}
     	    	}
+    	    	if (subItems == null) {
+    	    		subItems = new String[1];
+    	    		subItems[0] = util.propertyContents[3];
+    	    	}
     			break;
     		}
     		case 4: {//networks
@@ -376,6 +380,10 @@ public class sysinfo extends TabActivity {
        					}
        					break;
        				}
+    	    	if (subItems == null) {
+    	    		subItems = new String[1];
+    	    		subItems[0] = util.propertyContents[4];
+    	    	}
     			break;
     			//subItems[3] = "Local Address: " + ;
     			//subItems[4] = "Public Address: " + ;

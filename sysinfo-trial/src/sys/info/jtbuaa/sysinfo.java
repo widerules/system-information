@@ -269,7 +269,6 @@ public class sysinfo extends TabActivity {
     			View arg1, 
     			int arg2, //index of selected item, start from 0
     			long arg3) {
-    		Log.d("=======================", "list item clicked");
 			subItems = null;
     		switch (arg2) {
     		case 0: {//battery
@@ -562,6 +561,9 @@ public class sysinfo extends TabActivity {
     class OnAppClickListener implements OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			Log.d("===============", arg0.toString());
+			Log.d("===============", arg1.toString());
+			Log.d("===============", "" + arg2);
 			ResolveInfo ri;
 			if (getTabHost().getCurrentTab() == 3) //user tab. 
 				ri = (ResolveInfo) mUserApps.get(arg2);

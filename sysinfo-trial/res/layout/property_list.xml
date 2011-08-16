@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout 
-	android:id="@+id/RelativeLayout02" 
+	android:id="@+id/TableLayout01" 
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="horizontal" 
 	android:layout_height="wrap_content" 
@@ -11,9 +11,8 @@
 	android:paddingBottom="4dip" 
 	android:paddingLeft="10dip"
 	android:paddingRight="10dip">
-	
     <TableRow>
-        
+    
     <LinearLayout android:orientation="vertical">
 		<TextView android:id="@+id/ItemTitle" 
     		android:layout_height="wrap_content" 

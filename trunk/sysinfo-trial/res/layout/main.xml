@@ -5,35 +5,21 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     
-	<RelativeLayout 
-		android:id="@+id/PropertyList1"  
-	    android:orientation="horizontal" 
-	    android:layout_height="wrap_content" 
-	    android:layout_width="fill_parent">
-	</RelativeLayout>  
-
+    <ScrollView   
+		android:id="@+id/sViewBrief"  
+       	android:layout_height="fill_parent"   
+       	android:layout_width="fill_parent">      
+    <TextView android:id="@+id/TextViewBrief"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+	</ScrollView>
+	
 	<WebView   
 		android:id="@+id/ViewServer"  
        	android:layout_height="fill_parent"   
        	android:layout_width="fill_parent">      
 	</WebView>	
 	
-	<RelativeLayout
-	    android:id="@+id/sysapp" 
-	    android:orientation="horizontal" 
-	    android:layout_height="wrap_content" 
-	    android:layout_width="fill_parent">
-    </RelativeLayout>
-    
-	<RelativeLayout 
-	    android:id="@+id/userapp" 
-	    android:orientation="horizontal" 
-	    android:layout_height="wrap_content" 
-	    android:layout_width="fill_parent">
-    </RelativeLayout>
-	  
-	  
-	  
 	<ScrollView   
 		android:id="@+id/sViewService"  
        	android:layout_height="fill_parent"   
@@ -61,4 +47,31 @@
         android:layout_height="fill_parent"/>
 	</ScrollView>
 	
+	<ListView 
+		android:id="@+id/AppList"  
+		android:layout_width="fill_parent"   
+		android:layout_height="wrap_content">   
+	</ListView>
+	  
+	<RelativeLayout 
+		android:id="@+id/PropertyList1"  
+	    android:orientation="horizontal" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent">
+	</RelativeLayout>  
+
+	<RelativeLayout
+	    android:id="@+id/sysapp" 
+	    android:orientation="horizontal" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent">
+    </RelativeLayout>
+    
+	<RelativeLayout 
+	    android:id="@+id/userapp" 
+	    android:orientation="horizontal" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent">
+    </RelativeLayout>
+	  
 </RelativeLayout>

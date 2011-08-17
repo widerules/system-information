@@ -575,8 +575,9 @@ public class sysinfo extends TabActivity {
 			i.setComponent(new ComponentName(
 					ri.activityInfo.applicationInfo.packageName,
 					ri.activityInfo.name));
+			i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
 			try {
-			startActivity(i);
+				startActivity(i);
 			} catch(Exception e) {
 				Toast.makeText(getBaseContext(), e.toString(), 3500).show();
 			}

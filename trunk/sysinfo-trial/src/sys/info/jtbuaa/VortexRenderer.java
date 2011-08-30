@@ -11,9 +11,9 @@ public class VortexRenderer implements GLSurfaceView.Renderer {
 
     private static final String LOG_TAG = VortexRenderer.class.getSimpleName();
     
-    private float _red = 0.9f;
-    private float _green = 0.2f;
-    private float _blue = 0.2f;
+    private float _red = 0.0f;
+    private float _green = 0.0f;
+    private float _blue = 0.0f;
     
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         //show vendor of GPU. if vendor is "android", then no real GPU. otherwise it has real GPU

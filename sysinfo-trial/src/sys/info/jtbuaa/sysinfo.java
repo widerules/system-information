@@ -17,6 +17,7 @@ import org.apache.http.util.EncodingUtils;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -66,6 +67,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -74,6 +76,8 @@ import android.webkit.SslErrorHandler;
 import android.net.http.SslError;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -85,16 +89,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class sysinfo extends TabActivity {
+public class sysinfo extends Activity {
 
 	WebView serverWeb;
 	TextView ServiceText, TaskText, ProcessText;//, AppsText;
-	ListView properList, appList, userAppList;
+	ListView properList, sysAppList, userAppList;
 	ProgressDialog m_dialog;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	int versionCode;
-	TabHost tabHost;
+	FrameLayout mainlayout;
 	VortexView _vortexView;
 	String sdcard, nProcess, glVender;//apklist;
 	CharSequence[] propertyTitles;
@@ -105,8 +109,9 @@ public class sysinfo extends TabActivity {
 	boolean fullversion;
 	ArrayAdapter itemAdapter;
 	List<ResolveInfo> mAllApps;
-	ArrayList mUserApps, mSysApps;
 	WakeLock wakeLock;
+	private Button btnBrief, btnWeb, btnSys, btnUser;
+	int currentTab;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -181,12 +186,16 @@ public class sysinfo extends TabActivity {
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()) {
 		case 0:
-			switch (tabHost.getCurrentTab()) {
-			case 0:
+			switch (currentTab) {
+			case 0://property
 				refresh();
 				break;
-			case 1:
-				serverWeb.reload();
+			case 1://system app
+			case 2://user app
+				break;
+			case 3://server web
+				if (btnWeb.getVisibility() == View.VISIBLE)
+					serverWeb.reload();
 				break;
 			}
 			break;
@@ -206,7 +215,8 @@ public class sysinfo extends TabActivity {
 			if (fullversion) postData += "clientVersion=" + "full-version&";
 			postData += "versionCode=" + versionCode;
 			serverWeb.postUrl(getString(R.string.url)+"/sign", EncodingUtils.getBytes(postData, "BASE64"));
-			tabHost.setCurrentTab(1);
+			if (btnWeb.getVisibility() == View.VISIBLE)
+				mainlayout.bringChildToFront(serverWeb);
 			break;
 		case 2:
 			showDialog(1);
@@ -258,7 +268,6 @@ public class sysinfo extends TabActivity {
 		setPropList();
 		m_dialog.cancel();
         glVender = _vortexView.getGlVender();
-        tabHost.removeView(_vortexView);
 	}
 
 	
@@ -564,11 +573,8 @@ public class sysinfo extends TabActivity {
 			Log.d("===============", arg0.toString());
 			Log.d("===============", arg1.toString());
 			Log.d("===============", "" + arg2);
-			ResolveInfo ri;
-			if (getTabHost().getCurrentTab() == 3) //user tab. 
-				ri = (ResolveInfo) mUserApps.get(arg2);
-			else
-				ri = (ResolveInfo) mSysApps.get(arg2);
+			Log.d("===============", "" + arg3);
+			ResolveInfo ri = (ResolveInfo) arg0.getItemAtPosition(arg2);
 			if (ri.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
 			
 			Intent i = new Intent(Intent.ACTION_MAIN);
@@ -595,7 +601,150 @@ public class sysinfo extends TabActivity {
     	PackageManager pm = getPackageManager();
 
     	setContentView(R.layout.ads);
-        tabHost = getTabHost();
+    	
+        mainlayout = (FrameLayout)findViewById(R.id.mainFrame);
+        
+        propertyTitles = getResources().getTextArray(R.array.propertyItem);
+        util.propertyContents = new String[propertyTitles.length];
+        
+        //brief tab
+        properList = new ListView(this);
+        properList.inflate(this, R.layout.property_list , null);
+        properList.setAdapter(new PropertyAdapter(this, util.propertyContents));
+        properList.setOnItemClickListener(mpropertyCL);
+        mainlayout.addView(properList);
+        
+		
+    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+    	ArrayList mSysApps = new ArrayList();
+    	ArrayList mUserApps = new ArrayList();
+    	for (int i = 0; i < mAllApps.size(); i++) {
+    		if ((mAllApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) 
+    			mSysApps.add(mAllApps.get(i));
+    		else mUserApps.add(mAllApps.get(i));
+    	}
+    	Collections.sort(mSysApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    	Collections.sort(mUserApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    	
+    	//system app tab
+    	sysAppList = new ListView(this);
+    	sysAppList.inflate(this, R.layout.app_list, null);
+    	sysAppList.setAdapter(new ApplicationsAdapter(this, mSysApps));
+    	sysAppList.setOnItemClickListener(mAppsCL);
+        mainlayout.addView(sysAppList);
+        
+    	//user app tab
+        userAppList = new ListView(this);
+        userAppList.inflate(this, R.layout.app_list, null);
+        userAppList.setAdapter(new ApplicationsAdapter(this, mUserApps));
+        userAppList.setOnItemClickListener(mAppsCL);
+        mainlayout.addView(userAppList);
+        
+        //online tab
+        btnWeb = (Button) findViewById(R.id.btnOnline);
+        serverWeb = new WebView(this);
+        WebSettings webSettings = serverWeb.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setUserAgentString(myPackageName + versionCode);
+        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+		serverWeb.setWebViewClient(new WebViewClient() {
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				view.loadUrl(url);
+				return false;//this will not launch browser when redirect.
+			}
+			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+				handler.proceed();
+			}
+			public void onPageFinished(WebView view, String url) {
+				//btnWeb.setVisibility(view.VISIBLE);
+				//serverWeb.setVisibility(view.VISIBLE);
+			}
+			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+				btnWeb.setVisibility(view.INVISIBLE);
+				serverWeb.setVisibility(view.INVISIBLE);
+			}
+		});
+		mainlayout.addView(serverWeb);
+        btnWeb.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				_vortexView.bringToFront();
+				serverWeb.bringToFront();
+				mainlayout.invalidate();
+				currentTab = 3;
+			}
+        }
+        );
+        
+        try {
+        	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
+        	version = "v" + pi.versionName;
+        	versionCode = pi.versionCode;
+    	} catch (NameNotFoundException e) {
+    		e.printStackTrace();
+    	}    
+
+        //just for get gl vender
+        _vortexView = new VortexView(this);
+        mainlayout.addView(_vortexView);
+        
+    	showDialog(0);
+    	//refresh();
+    	PageTask task = new PageTask();
+		task.execute("");
+		
+		getResolution();
+        properList.bringToFront();
+        currentTab = 0;
+
+        
+        btnBrief = (Button) findViewById(R.id.btnBrief);
+        btnBrief.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				_vortexView.bringToFront();
+				properList.bringToFront();
+				mainlayout.invalidate();
+				currentTab = 0;
+			}
+        }
+        );
+        
+        btnSys = (Button) findViewById(R.id.btnSystemApp);
+        btnSys.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				_vortexView.bringToFront();
+				sysAppList.bringToFront();
+				mainlayout.invalidate();
+				currentTab = 1;
+			}
+        }
+        );
+        
+        btnUser = (Button) findViewById(R.id.btnUserApp);
+        btnUser.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				_vortexView.bringToFront();
+				userAppList.bringToFront();
+				mainlayout.invalidate();
+				currentTab = 2;
+			}
+        }
+        );
+        
+/*        tabHost = getTabHost();
         
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
         tabHost.addTab(tabHost.newTabSpec("tab1")
@@ -631,80 +780,9 @@ public class sysinfo extends TabActivity {
         int tabWidth = getResolution(); 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(tabWidth, 40);
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++)
-        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);
-        
-    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-    	mSysApps = new ArrayList();
-    	mUserApps = new ArrayList();
-    	for (int i = 0; i < mAllApps.size(); i++) {
-    		if ((mAllApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) 
-    			mSysApps.add(mAllApps.get(i));
-    		else mUserApps.add(mAllApps.get(i));
-    	}
-    	Collections.sort(mSysApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-    	Collections.sort(mUserApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-    	
-    	//system app tab
-    	appList = new ListView(this);
-    	appList.inflate(this, R.layout.app_list, null);
-        appList.setAdapter(new ApplicationsAdapter(this, mSysApps));
-        appList.setOnItemClickListener(mAppsCL);
-        RelativeLayout syslayout = (RelativeLayout)findViewById(R.id.sysapp);
-        syslayout.addView(appList);
-        
-    	//user app tab
-        userAppList = new ListView(this);
-        userAppList.inflate(this, R.layout.app_list, null);
-        userAppList.setAdapter(new ApplicationsAdapter(this, mUserApps));
-        userAppList.setOnItemClickListener(mAppsCL);
-        RelativeLayout userlayout = (RelativeLayout)findViewById(R.id.userapp);
-        userlayout.addView(userAppList);
-        
-        propertyTitles = getResources().getTextArray(R.array.propertyItem);
-        util.propertyContents = new String[propertyTitles.length];
-        //brief tab
-        properList = new ListView(this);
-        properList.inflate(this, R.layout.property_list , null);
-        properList.setAdapter(new PropertyAdapter(this, util.propertyContents));
-        properList.setOnItemClickListener(mpropertyCL);
-        RelativeLayout propertylayout = (RelativeLayout)findViewById(R.id.PropertyList1);
-        propertylayout.addView(properList);
-        
-        //online tab
-        serverWeb = (WebView)findViewById(R.id.ViewServer);
-        WebSettings webSettings = serverWeb.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setUserAgentString(myPackageName + versionCode);
-        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-		serverWeb.setWebViewClient(new WebViewClient() {
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				view.loadUrl(url);
-				return false;//this will not launch browser when redirect.
-			}
-			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-				handler.proceed();
-			}
-		});
-
-        try {
-        	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
-        	version = "v" + pi.versionName;
-        	versionCode = pi.versionCode;
-    	} catch (NameNotFoundException e) {
-    		e.printStackTrace();
-    	}    
-
-        //just for get gl vender
-        _vortexView = new VortexView(this);
-        tabHost.addView(_vortexView);
-        
-    	showDialog(0);
-    	//refresh();
-    	PageTask task = new PageTask();
-		task.execute("");
+        	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);*/
     }
+    
     
     private class PropertyAdapter extends ArrayAdapter<String> {
         public PropertyAdapter(Context context, String[] propertyContents) {

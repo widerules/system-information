@@ -3,6 +3,7 @@
     xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:id="@+id/adsParent"
     android:orientation="vertical"
+    android:background="#FFEEEEEE"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     
@@ -14,25 +15,46 @@
     ads:adUnitId="a14d662bba1e443"
     ads:adSize="BANNER"/>
     
-<TabHost  
-    android:id="@android:id/tabhost" 
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content"> 
-    <LinearLayout 
-        android:orientation="vertical" 
-        android:layout_width="fill_parent" 
-        android:layout_height="fill_parent"> 
-        <TabWidget 
-            android:id="@android:id/tabs" 
-            android:layout_width="fill_parent" 
-            android:layout_height="wrap_content" /> 
-        <FrameLayout 
-            android:id="@android:id/tabcontent" 
-            android:layout_width="fill_parent" 
-            android:layout_height="fill_parent"> 
-            
-        </FrameLayout> 
-    </LinearLayout> 
-</TabHost>  
+	<LinearLayout 
+  		android:orientation="horizontal"
+  		android:background="#FFEEEEEE"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content">
     
+	    <Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/btnBrief"
+			android:text="@string/brief"
+			android:textSize="14dip"
+		></Button>
+	    <Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/btnSystemApp"
+			android:text="@string/systemapps"
+			android:textSize="14dip"
+		></Button>
+	    <Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/btnUserApp"
+			android:text="@string/userapps"
+			android:textSize="14dip"
+		></Button>
+	    <Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/btnOnline"
+			android:text="@string/online"
+			android:textSize="14dip"
+		></Button>
+	</LinearLayout>
+    
+    <FrameLayout
+    	android:id="@+id/mainFrame"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		
+    </FrameLayout>
 </LinearLayout>

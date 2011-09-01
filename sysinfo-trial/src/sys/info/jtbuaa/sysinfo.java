@@ -615,22 +615,22 @@ public class sysinfo extends Activity {
 
 			String text = (String) ((Button) v).getText();
 			if (text.equals(getString(R.string.brief))) {
-				btnBrief.setBackgroundColor(0xFFCCCCCC);
+				btnBrief.setBackgroundColor(0xFFCCCCEE);
 				properList.bringToFront();
 				currentTab = 0;
 			}
 			else if (text.equals(getString(R.string.systemapps))) {
-				btnSys.setBackgroundColor(0xFFCCCCCC);
+				btnSys.setBackgroundColor(0xFFCCCCEE);
 				sysAppList.bringToFront();
 				currentTab = 1;
 			}
 			else if (text.equals(getString(R.string.userapps))) {
-				btnUser.setBackgroundColor(0xFFCCCCCC);
+				btnUser.setBackgroundColor(0xFFCCCCEE);
 				userAppList.bringToFront();
 				currentTab = 2;
 			}
 			else if (text.equals(getString(R.string.online))) {
-				btnWeb.setBackgroundColor(0xFFCCCCCC);
+				btnWeb.setBackgroundColor(0xFFCCCCEE);
 				serverWeb.bringToFront();
 				currentTab = 3;
 			}
@@ -658,6 +658,7 @@ public class sysinfo extends Activity {
         
         //brief tab
         properList = new ListView(this);
+        properList.setFadingEdgeLength(0);//no shadow when scroll
         properList.inflate(this, R.layout.property_list , null);
         properList.setAdapter(new PropertyAdapter(this, util.propertyContents));
         properList.setOnItemClickListener(mpropertyCL);
@@ -679,6 +680,7 @@ public class sysinfo extends Activity {
     	
     	//system app tab
     	sysAppList = new ListView(this);
+    	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setAdapter(new ApplicationsAdapter(this, mSysApps));
     	sysAppList.setOnItemClickListener(mAppsCL);
@@ -686,6 +688,7 @@ public class sysinfo extends Activity {
         
     	//user app tab
         userAppList = new ListView(this);
+        userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setAdapter(new ApplicationsAdapter(this, mUserApps));
         userAppList.setOnItemClickListener(mAppsCL);

@@ -65,7 +65,10 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
@@ -78,6 +81,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -123,14 +127,12 @@ public class sysinfo extends Activity {
             m_dialog.setMessage(getString(R.string.wait));
             m_dialog.setIndeterminate(true);
             m_dialog.setCancelable(true);
-            Log.e(getString(R.string.tag), m_dialog.toString());
             return m_dialog;
         }
         case 1: {
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
         			+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)). 
-        			//+ " \n\njtbuaa@gmail.com").
         	setPositiveButton("Ok",
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
@@ -590,6 +592,53 @@ public class sysinfo extends Activity {
 		}
     }
     
+	OnBtnClickListener mBtnCL = new OnBtnClickListener();
+	class OnBtnClickListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			_vortexView.bringToFront();
+			
+			switch(currentTab) {
+			case 0:
+				btnBrief.setBackgroundColor(0xFFEEEEEE);
+				break;
+			case 1:
+				btnSys.setBackgroundColor(0xFFEEEEEE);
+				break;
+			case 2:
+				btnUser.setBackgroundColor(0xFFEEEEEE);
+				break;
+			case 3:
+				btnWeb.setBackgroundColor(0xFFEEEEEE);
+				break;
+			}
+
+			String text = (String) ((Button) v).getText();
+			if (text.equals(getString(R.string.brief))) {
+				btnBrief.setBackgroundColor(0xFFCCCCCC);
+				properList.bringToFront();
+				currentTab = 0;
+			}
+			else if (text.equals(getString(R.string.systemapps))) {
+				btnSys.setBackgroundColor(0xFFCCCCCC);
+				sysAppList.bringToFront();
+				currentTab = 1;
+			}
+			else if (text.equals(getString(R.string.userapps))) {
+				btnUser.setBackgroundColor(0xFFCCCCCC);
+				userAppList.bringToFront();
+				currentTab = 2;
+			}
+			else if (text.equals(getString(R.string.online))) {
+				btnWeb.setBackgroundColor(0xFFCCCCCC);
+				serverWeb.bringToFront();
+				currentTab = 3;
+			}
+			
+			mainlayout.invalidate();
+		}
+	}
+	
     @SuppressWarnings("unchecked")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -643,7 +692,6 @@ public class sysinfo extends Activity {
         mainlayout.addView(userAppList);
         
         //online tab
-        btnWeb = (Button) findViewById(R.id.btnOnline);
         serverWeb = new WebView(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -664,21 +712,14 @@ public class sysinfo extends Activity {
 			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 				btnWeb.setVisibility(view.INVISIBLE);
 				serverWeb.setVisibility(view.INVISIBLE);
+				if (currentTab == 3) {
+					btnBrief.setBackgroundColor(0xFFCCCCCC);
+					properList.bringToFront();
+					currentTab = 0;
+				}
 			}
 		});
 		mainlayout.addView(serverWeb);
-        btnWeb.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				_vortexView.bringToFront();
-				serverWeb.bringToFront();
-				mainlayout.invalidate();
-				currentTab = 3;
-			}
-        }
-        );
         
         try {
         	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
@@ -703,47 +744,17 @@ public class sysinfo extends Activity {
 
         
         btnBrief = (Button) findViewById(R.id.btnBrief);
-        btnBrief.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				_vortexView.bringToFront();
-				properList.bringToFront();
-				mainlayout.invalidate();
-				currentTab = 0;
-			}
-        }
-        );
+        btnBrief.setOnClickListener(mBtnCL);
         
         btnSys = (Button) findViewById(R.id.btnSystemApp);
-        btnSys.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				_vortexView.bringToFront();
-				sysAppList.bringToFront();
-				mainlayout.invalidate();
-				currentTab = 1;
-			}
-        }
-        );
+        btnSys.setOnClickListener(mBtnCL);
         
         btnUser = (Button) findViewById(R.id.btnUserApp);
-        btnUser.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				_vortexView.bringToFront();
-				userAppList.bringToFront();
-				mainlayout.invalidate();
-				currentTab = 2;
-			}
-        }
-        );
+        btnUser.setOnClickListener(mBtnCL);
         
+        btnWeb = (Button) findViewById(R.id.btnOnline);
+		btnWeb.setOnClickListener(mBtnCL);
+
 /*        tabHost = getTabHost();
         
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);

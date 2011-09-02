@@ -116,6 +116,8 @@ public class sysinfo extends Activity {
 	WakeLock wakeLock;
 	private Button btnBrief, btnWeb, btnSys, btnUser;
 	int currentTab;
+	static int grayColor = 0xFFEEEEEE;
+	static int whiteColor = 0xFFFFFFFF;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -600,37 +602,37 @@ public class sysinfo extends Activity {
 			
 			switch(currentTab) {
 			case 0:
-				btnBrief.setBackgroundColor(0xFFEEEEEE);
+				btnBrief.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			case 1:
-				btnSys.setBackgroundColor(0xFFEEEEEE);
+				btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			case 2:
-				btnUser.setBackgroundColor(0xFFEEEEEE);
+				btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			case 3:
-				btnWeb.setBackgroundColor(0xFFEEEEEE);
+				btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			}
 
 			String text = (String) ((Button) v).getText();
 			if (text.equals(getString(R.string.brief))) {
-				btnBrief.setBackgroundColor(0xFFCCCCEE);
+				btnBrief.setBackgroundResource(R.drawable.button_layout_selected);
 				properList.bringToFront();
 				currentTab = 0;
 			}
 			else if (text.equals(getString(R.string.systemapps))) {
-				btnSys.setBackgroundColor(0xFFCCCCEE);
+				btnSys.setBackgroundResource(R.drawable.button_layout_selected);
 				sysAppList.bringToFront();
 				currentTab = 1;
 			}
 			else if (text.equals(getString(R.string.userapps))) {
-				btnUser.setBackgroundColor(0xFFCCCCEE);
+				btnUser.setBackgroundResource(R.drawable.button_layout_selected);
 				userAppList.bringToFront();
 				currentTab = 2;
 			}
 			else if (text.equals(getString(R.string.online))) {
-				btnWeb.setBackgroundColor(0xFFCCCCEE);
+				btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
 				serverWeb.bringToFront();
 				currentTab = 3;
 			}
@@ -716,7 +718,7 @@ public class sysinfo extends Activity {
 				btnWeb.setVisibility(view.INVISIBLE);
 				serverWeb.setVisibility(view.INVISIBLE);
 				if (currentTab == 3) {
-					btnBrief.setBackgroundColor(0xFFCCCCCC);
+					btnBrief.setBackgroundResource(R.drawable.button_layout_selected);
 					properList.bringToFront();
 					currentTab = 0;
 				}
@@ -811,9 +813,9 @@ public class sysinfo extends Activity {
             }
             
             if (position % 2 == 1)
-            	convertView.setBackgroundColor(0xFFFFFFFF);
+            	convertView.setBackgroundColor(whiteColor);
             else
-            	convertView.setBackgroundColor(0xFFEEEEEE);
+            	convertView.setBackgroundColor(grayColor);
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.ItemTitle);	
             textView1.setText(propertyTitles[position]);
@@ -843,9 +845,9 @@ public class sysinfo extends Activity {
             }
 
             if (position % 2 == 1)
-            	convertView.setBackgroundColor(0xFFFFFFFF);
+            	convertView.setBackgroundColor(whiteColor);
             else
-            	convertView.setBackgroundColor(0xFFEEEEEE);
+            	convertView.setBackgroundColor(grayColor);
             
             
             final ImageView imageView = (ImageView) convertView.findViewById(R.id.appicon);

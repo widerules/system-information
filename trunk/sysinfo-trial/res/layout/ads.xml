@@ -23,11 +23,11 @@
   		android:background="#FFEEEEEE"
   		android:orientation="horizontal"
   		android:layout_width="fill_parent"
-  		android:layout_height="40dip">
+  		android:layout_height="35dip">
     
 	    <Button
 			android:layout_width="75dip"
-			android:layout_height="40dip"
+			android:layout_height="35dip"
 			android:id="@+id/btnBrief"
 			android:text="@string/brief"
 			android:background="@drawable/button_layout_selected"
@@ -36,7 +36,7 @@
 		
 	    <Button
 			android:layout_width="85dip"
-			android:layout_height="40dip"
+			android:layout_height="35dip"
 			android:id="@+id/btnSystemApp"
 			android:text="@string/systemapps"
 			android:background="@drawable/button_layout_unselected"
@@ -45,7 +45,7 @@
 			 
 	    <Button
 			android:layout_width="80dip"
-			android:layout_height="40dip"
+			android:layout_height="35dip"
 			android:id="@+id/btnUserApp"
 			android:text="@string/userapps"
 			android:background="@drawable/button_layout_unselected"
@@ -54,7 +54,7 @@
 			 
 	    <Button
 			android:layout_width="80dip"
-			android:layout_height="40dip"
+			android:layout_height="35dip"
 			android:id="@+id/btnOnline"
 			android:text="@string/online"
 			android:background="@drawable/button_layout_unselected"

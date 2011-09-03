@@ -37,6 +37,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
@@ -850,18 +851,18 @@ public class sysinfo extends Activity {
             	convertView.setBackgroundColor(grayColor);
             
             
-            final ImageView imageView = (ImageView) convertView.findViewById(R.id.appicon);
+            final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.appicon);
             PackageManager pm = getPackageManager();
-            imageView.setImageDrawable(info.loadIcon(pm));
+            btnIcon.setImageDrawable(info.loadIcon(pm));
 
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);	
             textView1.setText(info.loadLabel(pm));
 
-            final TextView textView2 = (TextView) convertView.findViewById(R.id.appversion);	
+            final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);	
             try {
-				textView2.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
+            	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
 			} catch (NameNotFoundException e) {
-				textView2.setText("unknown");
+				btnVersion.setText("unknown");
 			}
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);

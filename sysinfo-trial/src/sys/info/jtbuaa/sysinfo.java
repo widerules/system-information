@@ -2,6 +2,7 @@ package sys.info.jtbuaa;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -48,6 +49,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -864,6 +866,15 @@ public class sysinfo extends Activity {
 			} catch (NameNotFoundException e) {
 				btnVersion.setText("unknown");
 			}
+			btnVersion.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
+					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+					startActivity(intent);
+				}
+			});
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
             String source = "";

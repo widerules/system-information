@@ -74,6 +74,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -561,26 +562,6 @@ public class sysinfo extends Activity {
         return tabWidth;
     }
     
-    OnAppClickListener mAppsCL = new OnAppClickListener();
-    class OnAppClickListener implements OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-			ResolveInfo ri = (ResolveInfo) arg0.getItemAtPosition(arg2);
-			if (ri.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
-			
-			Intent i = new Intent(Intent.ACTION_MAIN);
-			i.setComponent(new ComponentName(
-					ri.activityInfo.applicationInfo.packageName,
-					ri.activityInfo.name));
-			i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-			try {
-				startActivity(i);
-			} catch(Exception e) {
-				Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-			}
-		}
-    }
-    
 	OnBtnClickListener mBtnCL = new OnBtnClickListener();
 	class OnBtnClickListener implements OnClickListener {
 		@Override
@@ -675,7 +656,6 @@ public class sysinfo extends Activity {
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAdapter = new ApplicationsAdapter(this, mSysApps);
     	sysAppList.setAdapter(sysAdapter);
-    	sysAppList.setOnItemClickListener(mAppsCL);
         mainlayout.addView(sysAppList);
         
     	//user app tab
@@ -684,7 +664,6 @@ public class sysinfo extends Activity {
         userAppList.inflate(this, R.layout.app_list, null);
         userAdapter = new ApplicationsAdapter(this, mUserApps);
         userAppList.setAdapter(userAdapter);
-        userAppList.setOnItemClickListener(mAppsCL);
         mainlayout.addView(userAppList);
         
         //online tab
@@ -901,6 +880,27 @@ public class sysinfo extends Activity {
             final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.appicon);
             btnIcon.setImageDrawable(info.loadIcon(pm));
             btnIcon.setEnabled(false);
+
+            LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
+            lapp.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
+					
+					Intent i = new Intent(Intent.ACTION_MAIN);
+					i.setComponent(new ComponentName(
+							info.activityInfo.applicationInfo.packageName,
+							info.activityInfo.name));
+					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
+					try {
+						startActivity(i);
+					} catch(Exception e) {
+						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+					}
+				}
+            	
+            });
 
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);	
             textView1.setText(info.loadLabel(pm));

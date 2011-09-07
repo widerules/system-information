@@ -108,6 +108,7 @@ public class sysinfo extends Activity {
 	static int whiteColor = 0xFFFFFFFF;
 	Context mContact;
 	PackageManager pm;
+	ApplicationsAdapter sysAdapter, userAdapter;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -672,7 +673,8 @@ public class sysinfo extends Activity {
     	sysAppList = new ListView(this);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.inflate(this, R.layout.app_list, null);
-    	sysAppList.setAdapter(new ApplicationsAdapter(this, mSysApps));
+    	sysAdapter = new ApplicationsAdapter(this, mSysApps);
+    	sysAppList.setAdapter(sysAdapter);
     	sysAppList.setOnItemClickListener(mAppsCL);
         mainlayout.addView(sysAppList);
         
@@ -680,7 +682,8 @@ public class sysinfo extends Activity {
         userAppList = new ListView(this);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.inflate(this, R.layout.app_list, null);
-        userAppList.setAdapter(new ApplicationsAdapter(this, mUserApps));
+        userAdapter = new ApplicationsAdapter(this, mUserApps);
+        userAppList.setAdapter(userAdapter);
         userAppList.setOnItemClickListener(mAppsCL);
         mainlayout.addView(userAppList);
         
@@ -807,8 +810,8 @@ public class sysinfo extends Activity {
             		for (int i = 0; i < mSysApps.size(); i++) {
             			ResolveInfo info = (ResolveInfo) mSysApps.get(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
-            				mSysApps.remove(i);
-            		        sysAppList.setAdapter(new ApplicationsAdapter(mContact, mSysApps));
+            				sysAdapter.remove(info);
+            				sysAdapter.notifyDataSetChanged();
             				break;
             			}
             		}
@@ -817,8 +820,8 @@ public class sysinfo extends Activity {
             		for (int i = 0; i < mUserApps.size(); i++) {
             			ResolveInfo info = (ResolveInfo) mUserApps.get(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
-            				mUserApps.remove(i);
-            		        userAppList.setAdapter(new ApplicationsAdapter(mContact, mUserApps));
+            				userAdapter.remove(info);
+            				userAdapter.notifyDataSetChanged();
             				break;
             			}
             		}
@@ -831,14 +834,14 @@ public class sysinfo extends Activity {
             	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
 
             	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-    				mSysApps.add(targetApps.get(0));
-    		    	Collections.sort(mSysApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-    		        sysAppList.setAdapter(new ApplicationsAdapter(mContact, mSysApps));
+    				sysAdapter.add(targetApps.get(0));
+    		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    				sysAdapter.notifyDataSetChanged();
             	}
             	else {
-    				mUserApps.add(targetApps.get(0));
-    		    	Collections.sort(mUserApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-    		        userAppList.setAdapter(new ApplicationsAdapter(mContact, mUserApps));
+    				userAdapter.add(targetApps.get(0));
+    		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    				userAdapter.notifyDataSetChanged();
             	}
             }
 		}

@@ -1,31 +1,24 @@
 package sys.info.jtbuaa;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.http.util.EncodingUtils;
-
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.app.TabActivity;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,7 +31,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.graphics.Matrix;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
@@ -53,10 +45,10 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -68,12 +60,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -85,13 +74,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
-import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -116,11 +100,14 @@ public class sysinfo extends Activity {
 	boolean fullversion;
 	ArrayAdapter itemAdapter;
 	List<ResolveInfo> mAllApps;
+	ArrayList mSysApps, mUserApps;
 	WakeLock wakeLock;
 	private Button btnBrief, btnWeb, btnSys, btnUser;
 	int currentTab;
 	static int grayColor = 0xFFEEEEEE;
 	static int whiteColor = 0xFFFFFFFF;
+	Context mContact;
+	PackageManager pm;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -577,10 +564,6 @@ public class sysinfo extends Activity {
     class OnAppClickListener implements OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-			Log.d("===============", arg0.toString());
-			Log.d("===============", arg1.toString());
-			Log.d("===============", "" + arg2);
-			Log.d("===============", "" + arg3);
 			ResolveInfo ri = (ResolveInfo) arg0.getItemAtPosition(arg2);
 			if (ri.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
 			
@@ -649,10 +632,12 @@ public class sysinfo extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        mContact = this.getBaseContext();
+        
         myPackageName = this.getApplicationInfo().packageName;
 
         fullversion = false;
-    	PackageManager pm = getPackageManager();
+    	pm = getPackageManager();
 
     	setContentView(R.layout.ads);
     	
@@ -673,8 +658,8 @@ public class sysinfo extends Activity {
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
     	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-    	ArrayList mSysApps = new ArrayList();
-    	ArrayList mUserApps = new ArrayList();
+    	mSysApps = new ArrayList();
+    	mUserApps = new ArrayList();
     	for (int i = 0; i < mAllApps.size(); i++) {
     		if ((mAllApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) 
     			mSysApps.add(mAllApps.get(i));
@@ -763,6 +748,13 @@ public class sysinfo extends Activity {
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
 
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+		//filter.addAction(Intent.ACTION_PACKAGE_REPLACED);//not needed
+		filter.addDataScheme("package");
+		registerReceiver(packageReceiver, filter);
+
 /*        tabHost = getTabHost();
         
         LayoutInflater.from(this).inflate(R.layout.main, tabHost.getTabContentView(), true);
@@ -802,7 +794,57 @@ public class sysinfo extends Activity {
         	tabHost.getTabWidget().getChildAt(i).setLayoutParams(lp);*/
     }
     
-    
+	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+            String action = intent.getAction();
+            String packageName = intent.getDataString().split(":")[1];
+    		Log.d("==============", packageName);
+            if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
+            	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+            		for (int i = 0; i < mSysApps.size(); i++) {
+            			ResolveInfo info = (ResolveInfo) mSysApps.get(i);
+            			if (info.activityInfo.packageName.equals(packageName)) {
+            				mSysApps.remove(i);
+            		        sysAppList.setAdapter(new ApplicationsAdapter(mContact, mSysApps));
+            				break;
+            			}
+            		}
+            	}
+            	else {
+            		for (int i = 0; i < mUserApps.size(); i++) {
+            			ResolveInfo info = (ResolveInfo) mUserApps.get(i);
+            			if (info.activityInfo.packageName.equals(packageName)) {
+            				mUserApps.remove(i);
+            		        userAppList.setAdapter(new ApplicationsAdapter(mContact, mUserApps));
+            				break;
+            			}
+            		}
+            	}
+            }
+            else if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
+            	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+            	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            	mainIntent.setPackage(packageName);
+            	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
+
+            	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+    				mSysApps.add(targetApps.get(0));
+    		    	Collections.sort(mSysApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    		        sysAppList.setAdapter(new ApplicationsAdapter(mContact, mSysApps));
+            	}
+            	else {
+    				mUserApps.add(targetApps.get(0));
+    		    	Collections.sort(mUserApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    		        userAppList.setAdapter(new ApplicationsAdapter(mContact, mUserApps));
+            	}
+            }
+		}
+		
+	};
+	
     private class PropertyAdapter extends ArrayAdapter<String> {
         public PropertyAdapter(Context context, String[] propertyContents) {
             super(context, 0, propertyContents);
@@ -854,8 +896,8 @@ public class sysinfo extends Activity {
             
             
             final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.appicon);
-            PackageManager pm = getPackageManager();
             btnIcon.setImageDrawable(info.loadIcon(pm));
+            btnIcon.setEnabled(false);
 
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);	
             textView1.setText(info.loadLabel(pm));
@@ -866,6 +908,7 @@ public class sysinfo extends Activity {
 			} catch (NameNotFoundException e) {
 				btnVersion.setText("unknown");
 			}
+			btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
 			btnVersion.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -1032,7 +1075,7 @@ public class sysinfo extends Activity {
             //result += getString(R.string.nProcess) + appList.size() + "\n";//process number
             
         	sFeatureInfo = "";
-            FeatureInfo[] featureInfos = getPackageManager().getSystemAvailableFeatures();
+            FeatureInfo[] featureInfos = pm.getSystemAvailableFeatures();
             if (featureInfos != null && featureInfos.length > 0) {
                 for (FeatureInfo featureInfo : featureInfos) {
                 	if (featureInfo.name == null) {//opengl es

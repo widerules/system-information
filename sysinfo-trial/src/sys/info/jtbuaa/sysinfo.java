@@ -924,10 +924,9 @@ public class sysinfo extends Activity {
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
             String source = "";
-            int color = 0xFF000000;//black for normal apk
             if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
             	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
-            	color = 0xFFEECC77;//brown for debuggable apk
+            	textView3.setTextColor(0xFFEECC77);//brown for debuggable apk
             }
             else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
@@ -937,17 +936,26 @@ public class sysinfo extends Activity {
             }
         	textView3.setText(source);
             
-			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         	List appList = am.getRunningAppProcesses();
         	for (int i = 0; i < appList.size(); i++) {
         		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
             	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
-            		color = 0xFFFF7777;//red for running apk
+                	textView1.setTextColor(0xFFFF7777);//red for running apk
+            		btnIcon.setEnabled(true);
         			break;
         		}
         	}
-        	textView1.setTextColor(color); 
             
+    		btnIcon.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					am.restartPackage(info.activityInfo.packageName);
+		        	textView1.setTextColor(0xFF000000);//set color back to black after kill it. 
+		        	btnIcon.setEnabled(false);
+				}
+    		});
+    		
             return convertView;
         }
     }

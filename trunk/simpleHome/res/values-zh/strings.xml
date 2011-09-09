@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">系统信息浏览器</string>
+    <string name="about_dialog_text1">系统信息浏览器\n</string>
+
+    <string name="license">\n请到Google Market购买系统信息浏览器完整版以去掉广告条，并可获得更多有用的系统信息。\n</string>
+    <string name="donate">捐赠...</string>
+
+    <string name="process">进程</string>
+    <string name="service">服务</string>
+    <string name="feature">特性</string>
+</resources>

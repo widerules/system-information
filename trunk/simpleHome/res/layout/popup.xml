@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sysinfo="http://schemas.android.com/apk/res/sys.info.jtbuaa"
+	android:id="@+id/popup_root"  
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+	<ListView 
+		android:id="@+id/PropertyList"  
+		android:fadingEdge="none"
+		android:scrollingCache="false"
+		android:layout_width="fill_parent"   
+		android:layout_height="wrap_content">   
+	</ListView>  
+</RelativeLayout>

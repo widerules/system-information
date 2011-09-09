@@ -52,7 +52,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.os.PowerManager.WakeLock;
+//import android.os.PowerManager.WakeLock;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -63,6 +63,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -102,7 +103,7 @@ public class sysinfo extends Activity {
 	ArrayAdapter itemAdapter;
 	List<ResolveInfo> mAllApps;
 	ArrayList mSysApps, mUserApps;
-	WakeLock wakeLock;
+	//WakeLock wakeLock;
 	private Button btnBrief, btnWeb, btnSys, btnUser;
 	int currentTab;
 	static int grayColor = 0xFFEEEEEE;
@@ -234,11 +235,11 @@ public class sysinfo extends Activity {
 	protected void onResume () {
 		super.onResume();
 
-		if (wakeLock == null) {
+		/*if (wakeLock == null) {
 	        PowerManager powm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
 	        wakeLock = powm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getApplication().getPackageName());//keep screen on
 	        wakeLock.acquire();
-		}
+		}//don't use wakeLock now*/
 		
     	//register to receive battery intent
 		util.batteryHealth = getResources().getTextArray(R.array.batteryHealthState);
@@ -251,10 +252,10 @@ public class sysinfo extends Activity {
 	@Override
 	protected void onPause() {
 		unregisterReceiver(util.BroadcastReceiver);
-		if (wakeLock != null) {
+		/*if (wakeLock != null) {
 			wakeLock.release();
 			wakeLock = null;
-		}
+		}*/
 
 		super.onPause();
 	}
@@ -620,7 +621,8 @@ public class sysinfo extends Activity {
 
         fullversion = false;
     	pm = getPackageManager();
-
+    	
+    	requestWindowFeature(Window.FEATURE_NO_TITLE); // hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
     	
         mainlayout = (FrameLayout)findViewById(R.id.mainFrame);
@@ -733,7 +735,6 @@ public class sysinfo extends Activity {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-		//filter.addAction(Intent.ACTION_PACKAGE_REPLACED);//not needed
 		filter.addDataScheme("package");
 		registerReceiver(packageReceiver, filter);
 
@@ -878,11 +879,23 @@ public class sysinfo extends Activity {
             
             
             final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.appicon);
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
+			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            
             btnIcon.setImageDrawable(info.loadIcon(pm));
             btnIcon.setEnabled(false);
+    		btnIcon.setOnClickListener(new OnClickListener() {//kill app
+				@Override
+				public void onClick(View arg0) {
+					am.restartPackage(info.activityInfo.packageName);
+		        	textView1.setTextColor(0xFF000000);//set color back to black after kill it. 
+		        	btnIcon.setEnabled(false);
+				}
+    		});
+    		
 
             LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
-            lapp.setOnClickListener(new OnClickListener() {
+            lapp.setOnClickListener(new OnClickListener() {//start app
 
 				@Override
 				public void onClick(View arg0) {
@@ -895,6 +908,8 @@ public class sysinfo extends Activity {
 					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
 					try {
 						startActivity(i);
+	            		btnIcon.setEnabled(true);
+	                	textView1.setTextColor(0xFFFF7777);//red for running apk
 					} catch(Exception e) {
 						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
 					}
@@ -902,9 +917,18 @@ public class sysinfo extends Activity {
             	
             });
 
-            final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);	
             textView1.setText(info.loadLabel(pm));
-
+            textView1.setTextColor(0xFF000000);
+        	List appList = am.getRunningAppProcesses();
+        	for (int i = 0; i < appList.size(); i++) {
+        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
+            		btnIcon.setEnabled(true);
+                	textView1.setTextColor(0xFFFF7777);//red for running apk
+        			break;
+        		}
+        	}
+            
             final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);	
             try {
             	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
@@ -912,7 +936,7 @@ public class sysinfo extends Activity {
 				btnVersion.setText("unknown");
 			}
 			btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
-			btnVersion.setOnClickListener(new OnClickListener() {
+			btnVersion.setOnClickListener(new OnClickListener() {//delete app
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
@@ -924,9 +948,10 @@ public class sysinfo extends Activity {
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
             String source = "";
+            int textColor = 0xFF000000;
             if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
             	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
-            	textView3.setTextColor(0xFFEECC77);//brown for debuggable apk
+            	textColor = 0xFFEECC77;//brown for debuggable apk
             }
             else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
@@ -935,27 +960,8 @@ public class sysinfo extends Activity {
             	source = info.activityInfo.packageName;//we can use package name to uninstall it.
             }
         	textView3.setText(source);
+        	textView3.setTextColor(textColor);//must set color here, otherwise it will be wrong for some item.
             
-			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        	List appList = am.getRunningAppProcesses();
-        	for (int i = 0; i < appList.size(); i++) {
-        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
-                	textView1.setTextColor(0xFFFF7777);//red for running apk
-            		btnIcon.setEnabled(true);
-        			break;
-        		}
-        	}
-            
-    		btnIcon.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					am.restartPackage(info.activityInfo.packageName);
-		        	textView1.setTextColor(0xFF000000);//set color back to black after kill it. 
-		        	btnIcon.setEnabled(false);
-				}
-    		});
-    		
             return convertView;
         }
     }

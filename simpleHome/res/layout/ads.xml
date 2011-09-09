@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:id="@+id/adsParent"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+    <com.google.ads.AdView  
+    android:id="@+id/adView"        
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    ads:loadAdOnCreate="true"
+    ads:adUnitId="a14d662bba1e443"
+    ads:adSize="BANNER"/>
+    
+	<View 
+		android:layout_height="6dip" 
+		android:layout_width="fill_parent"
+		android:background ="#FFEEEEEE" /> 
+    
+	<LinearLayout 
+  		android:background="#FFEEEEEE"
+  		android:orientation="horizontal"
+  		android:layout_width="fill_parent"
+  		android:layout_height="30dip">
+    
+	    <Button
+			android:layout_width="85dip"
+			android:layout_height="30dip"
+			android:id="@+id/btnSystemApp"
+			android:text="@string/systemapps"
+			android:background="@drawable/button_layout_selected"
+			android:textSize="14dip"
+		></Button>
+			 
+	    <Button
+			android:layout_width="85dip"
+			android:layout_height="30dip"
+			android:id="@+id/btnUserApp"
+			android:text="@string/userapps"
+			android:background="@drawable/button_layout_unselected"
+			android:textSize="14dip"
+		></Button>
+			 
+	    <Button
+			android:layout_width="85dip"
+			android:layout_height="30dip"
+			android:id="@+id/btnOnline"
+			android:text="@string/online"
+			android:background="@drawable/button_layout_unselected"
+			android:textSize="14dip"
+		></Button>
+	</LinearLayout>
+    
+	<View 
+		android:layout_height="6dip" 
+		android:layout_width="fill_parent"
+		android:background ="@drawable/bar_layout" /> 
+    
+    <FrameLayout
+    	android:id="@+id/mainFrame"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		
+    </FrameLayout>
+</LinearLayout>

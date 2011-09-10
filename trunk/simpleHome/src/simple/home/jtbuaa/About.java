@@ -1,4 +1,4 @@
-package sys.info.jtbuaa;
+package simple.home.jtbuaa;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

@@ -50,7 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class sysinfo extends Activity {
+public class simpleHome extends Activity {
 
 	WebView serverWeb;
 	ListView favoAppList, sysAppList, userAppList;
@@ -160,7 +160,6 @@ public class sysinfo extends Activity {
 				}
 				
 				currentTab = newTab;
-				//mainlayout.invalidate();
 			}
 		}
 	}
@@ -211,7 +210,6 @@ public class sysinfo extends Activity {
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAdapter = new ApplicationsAdapter(this, mFavoApps);
     	favoAppList.setAdapter(favoAdapter);
-        mainlayout.addView(favoAppList);
         
     	//system app tab
     	sysAppList = new ListView(this);
@@ -219,7 +217,6 @@ public class sysinfo extends Activity {
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAdapter = new ApplicationsAdapter(this, mSysApps);
     	sysAppList.setAdapter(sysAdapter);
-        mainlayout.addView(sysAppList);
         
     	//user app tab
         userAppList = new ListView(this);
@@ -227,7 +224,6 @@ public class sysinfo extends Activity {
         userAppList.inflate(this, R.layout.app_list, null);
         userAdapter = new ApplicationsAdapter(this, mUserApps);
         userAppList.setAdapter(userAdapter);
-        mainlayout.addView(userAppList);
         
         //online tab
         serverWeb = new WebView(this);
@@ -240,7 +236,6 @@ public class sysinfo extends Activity {
 				return false;//this will not launch browser when redirect.
 			}
 		});
-		mainlayout.addView(serverWeb);
         
         try {
         	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
@@ -250,9 +245,13 @@ public class sysinfo extends Activity {
     	}    
 
         currentTab = 0;
-    	sysAppList.setVisibility(View.VISIBLE);
-        userAppList.setVisibility(View.VISIBLE);
-		serverWeb.setVisibility(View.VISIBLE);
+    	sysAppList.setVisibility(View.INVISIBLE);
+        userAppList.setVisibility(View.INVISIBLE);
+		serverWeb.setVisibility(View.INVISIBLE);
+		mainlayout.addView(serverWeb);
+        mainlayout.addView(userAppList);
+        mainlayout.addView(sysAppList);
+        mainlayout.addView(favoAppList);
         
         btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
         btnFavo.setOnClickListener(mBtnCL);

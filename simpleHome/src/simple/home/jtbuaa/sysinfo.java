@@ -1,4 +1,4 @@
-package sys.info.jtbuaa;
+package simple.home.jtbuaa;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,44 +112,56 @@ public class sysinfo extends Activity {
 	class OnBtnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			switch(currentTab) {
-			case 0:
-				btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			case 1:
-				btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			case 2:
-				btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			case 3:
-				btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			}
+			int newTab = 0;
 
 			String text = (String) ((Button) v).getText();
-			if (text.equals(getString(R.string.favoriteapps))) {
-				btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
-				favoAppList.bringToFront();
-				currentTab = 0;
-			}
-			else if (text.equals(getString(R.string.systemapps))) {
-				btnSys.setBackgroundResource(R.drawable.button_layout_selected);
-				sysAppList.bringToFront();
-				currentTab = 1;
-			}
-			else if (text.equals(getString(R.string.userapps))) {
-				btnUser.setBackgroundResource(R.drawable.button_layout_selected);
-				userAppList.bringToFront();
-				currentTab = 2;
-			}
-			else if (text.equals(getString(R.string.online))) {
-				btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
-				serverWeb.bringToFront();
-				currentTab = 3;
-			}
+			if (text.equals(getString(R.string.favoriteapps))) newTab = 0;
+			else if (text.equals(getString(R.string.systemapps))) newTab = 1;
+			else if (text.equals(getString(R.string.userapps))) newTab = 2;
+			else if (text.equals(getString(R.string.online))) newTab = 3;
 			
-			mainlayout.invalidate();
+			if (currentTab != newTab) {
+				switch(currentTab) {
+				case 0:
+					btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
+					favoAppList.setVisibility(View.INVISIBLE);
+					break;
+				case 1:
+					btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
+					sysAppList.setVisibility(View.INVISIBLE);
+					break;
+				case 2:
+					btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
+					userAppList.setVisibility(View.INVISIBLE);
+					break;
+				case 3:
+					btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
+					serverWeb.setVisibility(View.INVISIBLE);
+					break;
+				}
+				
+				switch(newTab) {
+				case 0:
+					btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
+					favoAppList.setVisibility(View.VISIBLE);
+					break;
+				case 1:
+					btnSys.setBackgroundResource(R.drawable.button_layout_selected);
+					sysAppList.setVisibility(View.VISIBLE);
+					break;
+				case 2:
+					btnUser.setBackgroundResource(R.drawable.button_layout_selected);
+					userAppList.setVisibility(View.VISIBLE);
+					break;
+				case 3:
+					btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
+					serverWeb.setVisibility(View.VISIBLE);
+					break;
+				}
+				
+				currentTab = newTab;
+				//mainlayout.invalidate();
+			}
 		}
 	}
 	
@@ -238,7 +250,9 @@ public class sysinfo extends Activity {
     	}    
 
         currentTab = 0;
-        favoAppList.bringToFront();
+    	sysAppList.setVisibility(View.VISIBLE);
+        userAppList.setVisibility(View.VISIBLE);
+		serverWeb.setVisibility(View.VISIBLE);
         
         btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
         btnFavo.setOnClickListener(mBtnCL);

@@ -29,6 +29,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -488,5 +489,12 @@ public class simpleHome extends Activity {
 			catch (Exception e) {}
 			return null;
 		}
+	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0)
+			if (currentTab == 3)
+				serverWeb.goBack();
+		return true;
 	}
 }

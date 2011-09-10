@@ -92,8 +92,9 @@ public class simpleHome extends Activity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.help));
-    	menu.add(0, 1, 0, getString(R.string.about));
+    	menu.add(0, 0, 0, "change back");
+    	menu.add(0, 1, 0, getString(R.string.help));
+    	menu.add(0, 2, 0, getString(R.string.about));
     	return true;
     }
 	
@@ -102,6 +103,8 @@ public class simpleHome extends Activity {
 		case 0:
 			break;
 		case 1:
+			break;
+		case 2:
 			showDialog(1);
 			break;
 		}
@@ -245,22 +248,25 @@ public class simpleHome extends Activity {
     	
     	//favorite app tab
     	favoAppList = new ListView(this);
-    	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.inflate(this, R.layout.app_list, null);
+    	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
+    	favoAppList.setScrollingCacheEnabled(false);
     	favoAdapter = new ApplicationsAdapter(this, mFavoApps);
     	favoAppList.setAdapter(favoAdapter);
         
     	//system app tab
     	sysAppList = new ListView(this);
-    	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.inflate(this, R.layout.app_list, null);
+    	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
+    	sysAppList.setScrollingCacheEnabled(false);
     	sysAdapter = new ApplicationsAdapter(this, mSysApps);
     	sysAppList.setAdapter(sysAdapter);
         
     	//user app tab
         userAppList = new ListView(this);
-        userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.inflate(this, R.layout.app_list, null);
+        userAppList.setFadingEdgeLength(0);//no shadow when scroll
+        userAppList.setScrollingCacheEnabled(false);
         userAdapter = new ApplicationsAdapter(this, mUserApps);
         userAppList.setAdapter(userAdapter);
         
@@ -291,6 +297,7 @@ public class simpleHome extends Activity {
         mainlayout.addView(userAppList);
         mainlayout.addView(sysAppList);
         mainlayout.addView(favoAppList);
+        mainlayout.setBackgroundDrawable(getWallpaper());
         
         btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
         btnFavo.setOnClickListener(mBtnCL);
@@ -392,7 +399,7 @@ public class simpleHome extends Activity {
             	convertView.setBackgroundColor(whiteColor);
             else
             	convertView.setBackgroundColor(grayColor);
-            
+        	//convertView.setBackgroundColor(0x00000000);
             
             final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.appicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
@@ -492,9 +499,11 @@ public class simpleHome extends Activity {
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0)
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			if (currentTab == 3)
 				serverWeb.goBack();
-		return true;
+			return true;
+		}
+		else return false;
 	}
 }

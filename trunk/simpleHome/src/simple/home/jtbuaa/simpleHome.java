@@ -484,7 +484,7 @@ public class simpleHome extends Activity {
 	class PageTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {
-			try {serverWeb.loadUrl("online.html");}
+			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
 			return null;
 		}

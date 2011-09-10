@@ -1,59 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="wait">正在读取系统信息...</string>
+    <string name="app_name">简洁主屏</string>
+    
     <string name="about_dialog">关于</string>
     <string name="about_dialog_text2">\njtbuaa@gmail.com\n</string>
-    <string name="about_dialog_notes">\n感谢使用system info。如果觉得这个应用对您有帮助，请给我打5颗星，多谢！\n</string>
-    <string name="resolution">屏幕分辨率:\t</string>
-    <string name="pixels">百万像素</string>
-    <string name="nProcess">进程数:\t</string>
-    <string name="nApk">已安装apk:\t</string>
-    <string name="wlan">WLAN 地址:\t</string>
-    <string name="latitude">纬度:\t</string>
-    <string name="longitude">经度:\t</string>
-    <string name="altitude">海拔:\t</string>
-
-    <string name="sdk">SDK版本: </string>
-    <string name="vendor">厂商:\t</string>
+    <string name="about_dialog_notes">\n感谢使用简洁主屏。如果觉得这个应用对您有帮助，请给我打5颗星，多谢！\n</string>
 
     <string name="about">关于...</string>
-    <string name="upload">上传</string>
-    <string name="refresh">刷新</string>
-    <string name="exit">退出</string>
+    <string name="help">帮助</string>
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     
-    <string name="hardware">硬件:\t</string>
-    <string name="memtotal">内存:\t</string>   
-    <string name="memerr">dmesg 读取内存失败，请稍后再试</string>
-    
-    <string name="brief">摘要</string>
+    <string name="favoriteapps">日常应用</string>        
     <string name="systemapps">内置应用</string>        
     <string name="userapps">个人应用</string>        
-    <string name="online">联网查看</string>
-
-    <string name="ulfail">上传失败，错误码为：</string>         
-    <string name="ulsuccess">上传成功, 请联网查看</string>
-    
-    <string name="health">电池健康情况:</string>
-    <string name="level">电池电量:</string>
-    <string name="plugged">充电类型:</string>
-    <string name="scale">最大容量:</string>
-    <string name="status">电池状态:</string>
-    <string name="technology">Technology:</string>
-    <string name="temperature">电池温度:</string>
-    <string name="voltage">电压:</string>
-    
-    <string name="ifname">名称:\t</string>        
-    <string name="aptype">ap 类型:\t</string>        
-    <string name="extra">额外信息:\t</string>        
-    <string name="roaming">是否漫游:\t</string>        
-    <string name="state">状态:\t</string>
-    <string name="type">网络类型:\t</string>
-    
-    <string name="density">密度:\t</string>
-    <string name="refreshRate">刷新率:\t</string>
-    <string name="pixelFormat">像素格式:\t</string>
-    
-    <string name="locationHint">请打开 GPS或者网络定位</string>        
+    <string name="online">网上应用</string>
 </resources>

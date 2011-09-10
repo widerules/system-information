@@ -26,16 +26,25 @@
   		android:layout_height="30dip">
     
 	    <Button
-			android:layout_width="85dip"
+			android:layout_width="80dip"
 			android:layout_height="30dip"
-			android:id="@+id/btnSystemApp"
-			android:text="@string/systemapps"
+			android:id="@+id/btnFavoriteApp"
+			android:text="@string/favoriteapps"
 			android:background="@drawable/button_layout_selected"
 			android:textSize="14dip"
 		></Button>
 			 
 	    <Button
-			android:layout_width="85dip"
+			android:layout_width="80dip"
+			android:layout_height="30dip"
+			android:id="@+id/btnSystemApp"
+			android:text="@string/systemapps"
+			android:background="@drawable/button_layout_unselected"
+			android:textSize="14dip"
+		></Button>
+			 
+	    <Button
+			android:layout_width="80dip"
 			android:layout_height="30dip"
 			android:id="@+id/btnUserApp"
 			android:text="@string/userapps"
@@ -44,7 +53,7 @@
 		></Button>
 			 
 	    <Button
-			android:layout_width="85dip"
+			android:layout_width="80dip"
 			android:layout_height="30dip"
 			android:id="@+id/btnOnline"
 			android:text="@string/online"

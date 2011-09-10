@@ -1,60 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="wait">Please wait while loading...</string>
+    <string name="app_name">Simple Home</string>
+    
     <string name="about_dialog">about</string>
     <string name="about_dialog_text2">\njtbuaa@gmail.com\n</string>
-    <string name="about_dialog_notes">\nThank you for use this application. If you like this app, please vote me 5 stars. thanks.\n</string>
-    <string name="resolution">screen resolution:\t</string>
-    <string name="pixels">M pixels</string>
-    <string name="nProcess">process number:\t</string>
-    <string name="nApk">apk installed:\t</string>
-    <string name="wlan">WLAN address:\t</string>
-    <string name="latitude">Latitude:\t</string>
-    <string name="longitude">Longitude:\t</string>
-    <string name="altitude">Altitude:\t</string>
-
-    <string name="sdk">SDK version: </string>
-    <string name="vendor">vendor:\t</string>
+    <string name="about_dialog_notes">\nThank you for use SIMPLE HOME. If you like this app, please vote me 5 stars. thanks.\n</string>
 
     <string name="about">about...</string>
-    <string name="exit">exit</string>
-    <string name="upload">upload</string>
-    <string name="refresh">refresh</string>
+    <string name="help">help...</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
     
-    <string name="hardware">Hardware:\t</string>
-    <string name="memtotal">MemTotal:\t</string>
-    <string name="memerr">dmesg get memory failed, please try again later</string>
-
-    <string name="brief">Brief</string>        
-    <string name="systemapps">System Apps</string>        
-    <string name="userapps">User Apps</string>        
+    <string name="favoriteapps">Favorite</string>        
+    <string name="systemapps">System</string>        
+    <string name="userapps">User</string>        
     <string name="online">Online</string>
 
-    <string name="ulfail">upload system info failed with status code: </string>         
-    <string name="ulsuccess">upload system info success, please view in Online tab</string>         
     <string name="tag">======sysinfo========</string>
-             
-    <string name="health">Health:</string>
-    <string name="level">Level:</string>
-    <string name="plugged">Plugged:</string>
-    <string name="scale">Scale:</string>
-    <string name="status">Status:</string>
-    <string name="technology">Technology:</string>
-    <string name="temperature">Temperature:</string>
-    <string name="voltage">Voltage:</string>
-            
-    <string name="ifname">Name:\t</string>        
-    <string name="aptype">AP type:\t</string>        
-    <string name="extra">Extra:\t</string>        
-    <string name="roaming">Roaming:\t</string>        
-    <string name="state">State:\t</string>
-    <string name="type">Network type:\t</string>
-            
-    <string name="density">Density:\t</string>
-    <string name="refreshRate">Refresh Rate:\t</string>
-    <string name="pixelFormat">Pixel Format:\t</string>
-            
-    <string name="locationHint">please open GPS or Network Location</string>        
 </resources>

@@ -53,41 +53,23 @@ import android.widget.AdapterView.OnItemClickListener;
 public class sysinfo extends Activity {
 
 	WebView serverWeb;
-	TextView ServiceText, TaskText, ProcessText;//, AppsText;
-	ListView sysAppList, userAppList;
-	ProgressDialog m_dialog;
+	ListView favoAppList, sysAppList, userAppList;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
-	int versionCode;
 	FrameLayout mainlayout;
-	String sdcard, nProcess, glVender;//apklist;
-	CharSequence[] propertyTitles;
-	String[] resolutions, cameraSizes, processors, teles;
-	String serviceInfo, sFeatureInfo, psInfo;
-	boolean fullversion;
 	List<ResolveInfo> mAllApps;
-	ArrayList mSysApps, mUserApps;
-	//WakeLock wakeLock;
-	private Button btnWeb, btnSys, btnUser;
+	ArrayList mFavoApps, mSysApps, mUserApps;
+	private Button btnFavo, btnSys, btnUser, btnWeb;
 	int currentTab;
 	static int grayColor = 0xFFEEEEEE;
 	static int whiteColor = 0xFFFFFFFF;
 	Context mContact;
 	PackageManager pm;
-	ApplicationsAdapter sysAdapter, userAdapter;
+	ApplicationsAdapter favoAdapter, sysAdapter, userAdapter;
 		
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case 0: {
-            //if (m_dialog != null ) m_dialog.cancel();
-            m_dialog = new ProgressDialog(this);
-            m_dialog.setTitle(getString(R.string.app_name));
-            m_dialog.setMessage(getString(R.string.wait));
-            m_dialog.setIndeterminate(true);
-            m_dialog.setCancelable(true);
-            return m_dialog;
-        }
         case 1: {
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
@@ -102,71 +84,20 @@ public class sysinfo extends Activity {
 	}
 
 	
-	OnSubItemClickListener msubitemCL = new OnSubItemClickListener();
-    class OnSubItemClickListener implements OnItemClickListener {
-    	public void onItemClick(AdapterView<?> arg0, 
-    			View arg1, 
-    			int arg2, //index of selected item, start from 0
-    			long arg3) {
-    		m_altDialog.dismiss();//dismiss the dialog when click on it.
-    	}    	
-    };
-    
-	public void showMyDialog(String[] valuse) {
-		ArrayAdapter itemAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, valuse);
-		View myView = getLayoutInflater().inflate(R.layout.popup , (ViewGroup) findViewById(R.id.popup_root));
-    	ListView itemView = (ListView) myView.findViewById(R.id.PropertyList);
-    	itemView.setAdapter(itemAdapter);
-    	itemView.setOnItemClickListener(msubitemCL);
-    	AlertDialog altDialog = new AlertDialog.Builder(this).setView(myView).create();
-    	altDialog.setOnKeyListener(null);
-    	m_altDialog = altDialog;
-    	altDialog.show();
-	}
-	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.refresh));//.setVisible(false);
-    	menu.add(0, 1, 0, getString(R.string.upload));
-    	menu.add(0, 2, 0, getString(R.string.about));
-    	menu.add(0, 3, 0, getString(R.string.exit)).setVisible(false);
+    	menu.add(0, 0, 0, getString(R.string.help));
+    	menu.add(0, 1, 0, getString(R.string.about));
     	return true;
     }
 	
-    UploadHandler mUploadHandler = new UploadHandler();
-
-    class UploadHandler extends Handler {
-
-        public void handleMessage(Message msg) {
-    		Log.d("===========", "upload handle");
-    		Toast.makeText(getBaseContext(), msg.getData().getString("uploadHint"), Toast.LENGTH_SHORT).show();
-        }
-    };
-    
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()) {
 		case 0:
-			switch (currentTab) {
-			case 0://property
-				break;
-			case 1://system app
-			case 2://user app
-				break;
-			case 3://server web
-				if (btnWeb.getVisibility() == View.VISIBLE)
-					serverWeb.reload();
-				break;
-			}
 			break;
 		case 1:
-			break;
-		case 2:
 			showDialog(1);
-			break;
-		case 3:
-			finish();
-			System.exit(0);
 			break;
 		}
 		return true;
@@ -177,51 +108,45 @@ public class sysinfo extends Activity {
 	  super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
 	}
 
-	@Override
-	protected void onResume () {
-		super.onResume();
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-	
-	protected void update() {
-	}
-
-	
 	OnBtnClickListener mBtnCL = new OnBtnClickListener();
 	class OnBtnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
 			switch(currentTab) {
 			case 0:
-				btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
+				btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			case 1:
-				btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
+				btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			case 2:
+				btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
+				break;
+			case 3:
 				btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			}
 
 			String text = (String) ((Button) v).getText();
-			if (text.equals(getString(R.string.systemapps))) {
+			if (text.equals(getString(R.string.favoriteapps))) {
+				btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
+				favoAppList.bringToFront();
+				currentTab = 0;
+			}
+			else if (text.equals(getString(R.string.systemapps))) {
 				btnSys.setBackgroundResource(R.drawable.button_layout_selected);
 				sysAppList.bringToFront();
-				currentTab = 0;
+				currentTab = 1;
 			}
 			else if (text.equals(getString(R.string.userapps))) {
 				btnUser.setBackgroundResource(R.drawable.button_layout_selected);
 				userAppList.bringToFront();
-				currentTab = 1;
+				currentTab = 2;
 			}
 			else if (text.equals(getString(R.string.online))) {
 				btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
 				serverWeb.bringToFront();
-				currentTab = 2;
+				currentTab = 3;
 			}
 			
 			mainlayout.invalidate();
@@ -237,7 +162,6 @@ public class sysinfo extends Activity {
         
         myPackageName = this.getApplicationInfo().packageName;
 
-        fullversion = false;
     	pm = getPackageManager();
     	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); // hide titlebar of application, must be before setting the layout
@@ -247,17 +171,36 @@ public class sysinfo extends Activity {
         
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+    	//mainIntent.addCategory(Intent.CATEGORY_HOME); 
+    	//mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
+    	//mainIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+    	//mainIntent.addCategory(Intent.CATEGORY_FRAMEWORK_INSTRUMENTATION_TEST);
+    	//mainIntent.addCategory(Intent.CATEGORY_INFO);
+    	//mainIntent.addCategory(Intent.CATEGORY_MONKEY);
     	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+    	mFavoApps = new ArrayList();
     	mSysApps = new ArrayList();
     	mUserApps = new ArrayList();
     	for (int i = 0; i < mAllApps.size(); i++) {
-    		if ((mAllApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) 
-    			mSysApps.add(mAllApps.get(i));
-    		else mUserApps.add(mAllApps.get(i));
+    		ResolveInfo ri = mAllApps.get(i);
+    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) 
+    			mSysApps.add(ri);
+    		else mUserApps.add(ri);
+    		
+    		//if (ri.filter.hasAction(Intent.ACTION_DIAL)) //phone, message, contact, ... should add to favorite
+    			//mFavoApps.add(ri);
     	}
     	Collections.sort(mSysApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
     	Collections.sort(mUserApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
     	
+    	//favorite app tab
+    	favoAppList = new ListView(this);
+    	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
+    	favoAppList.inflate(this, R.layout.app_list, null);
+    	favoAdapter = new ApplicationsAdapter(this, mFavoApps);
+    	favoAppList.setAdapter(favoAdapter);
+        mainlayout.addView(favoAppList);
+        
     	//system app tab
     	sysAppList = new ListView(this);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
@@ -278,15 +221,11 @@ public class sysinfo extends Activity {
         serverWeb = new WebView(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setUserAgentString(myPackageName + versionCode);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
 		serverWeb.setWebViewClient(new WebViewClient() {
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				view.loadUrl(url);
 				return false;//this will not launch browser when redirect.
-			}
-			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-				handler.proceed();
 			}
 		});
 		mainlayout.addView(serverWeb);
@@ -294,12 +233,15 @@ public class sysinfo extends Activity {
         try {
         	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
         	version = "v" + pi.versionName;
-        	versionCode = pi.versionCode;
     	} catch (NameNotFoundException e) {
     		e.printStackTrace();
     	}    
 
         currentTab = 0;
+        favoAppList.bringToFront();
+        
+        btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
+        btnFavo.setOnClickListener(mBtnCL);
         
         btnSys = (Button) findViewById(R.id.btnSystemApp);
         btnSys.setOnClickListener(mBtnCL);
@@ -327,7 +269,6 @@ public class sysinfo extends Activity {
 			// TODO Auto-generated method stub
             String action = intent.getAction();
             String packageName = intent.getDataString().split(":")[1];
-    		Log.d("==============", packageName);
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
             	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             		for (int i = 0; i < mSysApps.size(); i++) {
@@ -349,6 +290,14 @@ public class sysinfo extends Activity {
             			}
             		}
             	}
+        		for (int i = 0; i < mFavoApps.size(); i++) {
+        			ResolveInfo info = (ResolveInfo) mFavoApps.get(i);
+        			if (info.activityInfo.packageName.equals(packageName)) {
+        				favoAdapter.remove(info);
+        				favoAdapter.notifyDataSetChanged();
+        				break;
+        			}
+        		}
             }
             else if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
             	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
@@ -483,43 +432,11 @@ public class sysinfo extends Activity {
     }
 
 	class PageTask extends AsyncTask<String, Integer, String> {
-		String myresult;
 		@Override
 		protected String doInBackground(String... params) {
-	        String url = getString(R.string.url);
-			try {serverWeb.loadUrl(url);}
+			try {serverWeb.loadUrl("online.html");}
 			catch (Exception e) {}
 			return null;
 		}
-
-		@Override
-		protected void onCancelled() {
-			super.onCancelled();
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-		}
-
-		@Override
-		protected void onPreExecute() {
-			//resText.setText("task started");
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			//resText.setText(values[0]);
-		}
 	}
-
-    private RefreshHandler mRedrawHandler = new RefreshHandler();
-
-    class RefreshHandler extends Handler {
-
-        public void handleMessage(Message msg) {
-    		Log.d("===========", "handle message");
-        	sysinfo.this.update();
-        }
-    };
-
 }

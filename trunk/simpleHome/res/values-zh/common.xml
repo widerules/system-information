@@ -15,4 +15,8 @@
     <string name="systemapps">内置应用</string>        
     <string name="userapps">个人应用</string>        
     <string name="online">网上应用</string>
+
+    <string name="addtoFavo">添加到日常应用</string>
+    <string name="removeFromFavo">删除快捷方式</string>
+    <string name="backup">备份到SD卡...</string>
 </resources>

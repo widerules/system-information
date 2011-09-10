@@ -27,11 +27,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebSettings;
@@ -66,7 +69,8 @@ public class simpleHome extends Activity {
 	Context mContact;
 	PackageManager pm;
 	ApplicationsAdapter favoAdapter, sysAdapter, userAdapter;
-		
+	ResolveInfo ri;
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -103,6 +107,40 @@ public class simpleHome extends Activity {
 		return true;
 	}
 
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		ri = (ResolveInfo) v.getTag();
+		if (currentTab == 0)
+			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
+		else {
+			menu.add(0, 0, 0, getString(R.string.addtoFavo));
+			menu.add(0, 1, 0, getString(R.string.backup)).setEnabled(false);
+		}
+	}
+	
+	public boolean onContextItemSelected(MenuItem item){
+		super.onContextItemSelected(item);
+		switch (item.getItemId()) {
+		case 0:
+			if (currentTab ==0) {
+				favoAdapter.remove(ri);
+				favoAdapter.notifyDataSetChanged();
+			}
+			else {
+				if (favoAdapter.getPosition(ri) < 0) {
+					favoAdapter.add(ri);
+					favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
+					favoAdapter.notifyDataSetChanged();
+					}
+			}
+			break;
+		case 1://not implement now
+			break;
+		}
+		return false;
+	}
+	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	  super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
@@ -342,8 +380,7 @@ public class simpleHome extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            final ResolveInfo info;
-            info = (ResolveInfo) localApplist.get(position);
+            final ResolveInfo info = (ResolveInfo) localApplist.get(position);
 
             if (convertView == null) {
                 final LayoutInflater inflater = getLayoutInflater();
@@ -374,7 +411,6 @@ public class simpleHome extends Activity {
 
             LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
             lapp.setOnClickListener(new OnClickListener() {//start app
-
 				@Override
 				public void onClick(View arg0) {
 					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
@@ -392,9 +428,10 @@ public class simpleHome extends Activity {
 						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
 					}
 				}
-            	
             });
-
+            lapp.setTag(info);
+            registerForContextMenu(lapp);
+            
             textView1.setText(info.loadLabel(pm));
             textView1.setTextColor(0xFF000000);
         	List appList = am.getRunningAppProcesses();

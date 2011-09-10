@@ -15,4 +15,8 @@
     <string name="systemapps">System</string>        
     <string name="userapps">User</string>        
     <string name="online">Online</string>
+    
+    <string name="addtoFavo">Add to Favorite</string>
+    <string name="removeFromFavo">Delete this short cut</string>
+    <string name="backup">Back up to SDcard...</string>
 </resources>

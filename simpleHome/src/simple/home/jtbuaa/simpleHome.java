@@ -7,10 +7,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +41,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.DownloadListener;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -218,6 +223,7 @@ public class simpleHome extends Activity {
     	pm = getPackageManager();
     	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); // hide titlebar of application, must be before setting the layout
+    	//getWindow().requestFeature(Window.FEATURE_PROGRESS);
     	setContentView(R.layout.ads);
     	
         mainlayout = (FrameLayout)findViewById(R.id.mainFrame);
@@ -271,14 +277,37 @@ public class simpleHome extends Activity {
         userAppList.setAdapter(userAdapter);
         
         //online tab
+        final Activity activity = this;
         serverWeb = new WebView(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+        serverWeb.setWebChromeClient(new WebChromeClient() {
+			public void onProgressChanged(WebView view, int progress) {
+			     // Activities and WebViews measure progress with different scales.
+			     // The progress meter will automatically disappear when we reach 100%
+			     activity.setProgress(progress * 1000);
+			   }
+		});
 		serverWeb.setWebViewClient(new WebViewClient() {
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				view.loadUrl(url);
 				return false;//this will not launch browser when redirect.
+			}
+		});
+		serverWeb.setDownloadListener(new DownloadListener() {
+			@Override
+			public void onDownloadStart(String url, String ua, String contentDisposition,
+					String mimetype, long contentLength) {//need Download Manager
+				ContentValues values = new ContentValues();
+		        /*values.put(Downloads.URI, url);//指定下载地址
+		        values.put(Downloads.COOKIE_DATA, cookie);//如果下载Server需要cookie,设置cookie
+		        values.put(Downloads.VISIBILITY,Downloads.VISIBILITY_HIDDEN);//设置下载提示是否在屏幕顶部显示 
+		        values.put(Downloads.NOTIFICATION_PACKAGE, getPackageName());//设置下载完成之后回调的包名 
+		        values.put(Downloads.NOTIFICATION_CLASS, DownloadCompleteReceiver.class.getName());//设置下载完成之后负责接收的Receiver，这个类要继承BroadcastReceiver      
+		        values.put(Downloads.DESTINATION,save_path);//设置下载到的路径，这个需要在Receiver里自行处理
+		        values.put(Downloads.TITLE,title);//设置下载任务的名称
+		        this.getContentResolver().insert(Downloads.CONTENT_URI, values);*/
 			}
 		});
         

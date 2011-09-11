@@ -134,13 +134,11 @@ public class simpleHome extends Activity {
 		case 0:
 			if (currentTab ==0) {
 				favoAdapter.remove(ri);
-				favoAdapter.notifyDataSetChanged();
 			}
 			else {
 				if (favoAdapter.getPosition(ri) < 0) {
 					favoAdapter.add(ri);
 					favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
-					favoAdapter.notifyDataSetChanged();
 					}
 			}
 			break;
@@ -368,7 +366,6 @@ public class simpleHome extends Activity {
             			ResolveInfo info = (ResolveInfo) mSysApps.get(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				sysAdapter.remove(info);
-            				sysAdapter.notifyDataSetChanged();
             				break;
             			}
             		}
@@ -378,7 +375,6 @@ public class simpleHome extends Activity {
             			ResolveInfo info = (ResolveInfo) mUserApps.get(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				userAdapter.remove(info);
-            				userAdapter.notifyDataSetChanged();
             				break;
             			}
             		}
@@ -387,7 +383,6 @@ public class simpleHome extends Activity {
         			ResolveInfo info = (ResolveInfo) mFavoApps.get(i);
         			if (info.activityInfo.packageName.equals(packageName)) {
         				favoAdapter.remove(info);
-        				favoAdapter.notifyDataSetChanged();
         				break;
         			}
         		}
@@ -401,12 +396,10 @@ public class simpleHome extends Activity {
             	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
     				sysAdapter.add(targetApps.get(0));
     		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-    				sysAdapter.notifyDataSetChanged();
             	}
             	else {
     				userAdapter.add(targetApps.get(0));
     		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-    				userAdapter.notifyDataSetChanged();
             	}
             }
 		}

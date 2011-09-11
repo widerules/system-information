@@ -1,5 +1,11 @@
 package simple.home.jtbuaa;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -141,6 +148,21 @@ public class simpleHome extends Activity {
 					favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
 					}
 			}
+			try {
+				FileOutputStream fo = this.openFileOutput("favo", 0);
+				ObjectOutputStream oos = new ObjectOutputStream(fo);
+				for (int i = 0; i < favoAdapter.getCount(); i++) {
+					oos.writeObject(((ResolveInfo)favoAdapter.localApplist.get(i)).activityInfo.packageName);
+					//oos.writeChar(0x0a);
+					//oos.writeChar(0x0d);
+				}
+				oos.flush();
+				oos.close();
+				fo.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		case 1://not implement now
 			break;
@@ -234,7 +256,6 @@ public class simpleHome extends Activity {
     	mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));
     	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
 
-    	mFavoApps = new ArrayList();
     	mSysApps = new ArrayList();
     	mUserApps = new ArrayList();
     	for (int i = 0; i < mAllApps.size(); i++) {
@@ -254,6 +275,26 @@ public class simpleHome extends Activity {
     		if (intent == null) {//no Launcher activity
     		}
     	}*/
+
+		FileInputStream fi;
+		mFavoApps = new ArrayList();
+		try {
+			fi = this.openFileInput("favo");
+			ObjectInputStream ois = new ObjectInputStream(fi);
+			String packageName;
+			while ((packageName = (String) ois.readObject()) != null) {
+				for (int i = 0; i < mAllApps.size(); i++)
+					if (mAllApps.get(i).activityInfo.packageName.equals(packageName)) {
+						mFavoApps.add(mAllApps.get(i));
+						break;
+					}
+			}
+			ois.close();
+			fi.close();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
     	//favorite app tab
     	favoAppList = new ListView(this);

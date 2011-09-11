@@ -386,6 +386,7 @@ public class simpleHome extends Activity {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		filter.addDataScheme("package");
 		registerReceiver(packageReceiver, filter);
 		
@@ -442,6 +443,8 @@ public class simpleHome extends Activity {
     		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
             	}
             }
+            else if (action.equals(Intent.ACTION_WALLPAPER_CHANGED))
+            	favoAppList.setBackgroundDrawable(getWallpaper());
 		}
 		
 	};

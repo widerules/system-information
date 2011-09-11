@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -66,7 +67,6 @@ public class simpleHome extends Activity {
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	FrameLayout mainlayout;
-	List<ResolveInfo> mAllApps;
 	ArrayList mFavoApps, mSysApps, mUserApps;
 	private Button btnFavo, btnSys, btnUser, btnWeb;
 	int currentTab;
@@ -230,13 +230,12 @@ public class simpleHome extends Activity {
         
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-    	//mainIntent.addCategory(Intent.CATEGORY_HOME); 
-    	//mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
-    	//mainIntent.addCategory(Intent.CATEGORY_BROWSABLE);
-    	//mainIntent.addCategory(Intent.CATEGORY_FRAMEWORK_INSTRUMENTATION_TEST);
-    	//mainIntent.addCategory(Intent.CATEGORY_INFO);
-    	//mainIntent.addCategory(Intent.CATEGORY_MONKEY);
-    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+    	List<ResolveInfo> mAllApps = pm.queryIntentActivities(mainIntent, 0);
+    	mainIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+    	mainIntent.addCategory(Intent.CATEGORY_HOME);
+    	mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));
+    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+
     	mFavoApps = new ArrayList();
     	mSysApps = new ArrayList();
     	mUserApps = new ArrayList();
@@ -249,9 +248,15 @@ public class simpleHome extends Activity {
     		//if (ri.filter.hasAction(Intent.ACTION_DIAL)) //phone, message, contact, ... should add to favorite
     			//mFavoApps.add(ri);
     	}
-    	Collections.sort(mSysApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-    	Collections.sort(mUserApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
     	
+    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
+    	for (int i = 0; i < packages.size(); i++) {
+    		PackageInfo pi = (PackageInfo) packages.get(i);
+    		Intent intent = pm.getLaunchIntentForPackage(pi.packageName);
+    		if (intent == null) {//no Launcher activity
+    		}
+    	}*/
+
     	//favorite app tab
     	favoAppList = new ListView(this);
     	favoAppList.inflate(this, R.layout.app_list, null);
@@ -326,7 +331,7 @@ public class simpleHome extends Activity {
         mainlayout.addView(userAppList);
         mainlayout.addView(sysAppList);
         mainlayout.addView(favoAppList);
-        mainlayout.setBackgroundDrawable(getWallpaper());
+        //mainlayout.setBackgroundDrawable(getWallpaper());
         
         btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
         btnFavo.setOnClickListener(mBtnCL);

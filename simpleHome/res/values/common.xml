@@ -6,8 +6,9 @@
     <string name="about_dialog_text2">\njtbuaa@gmail.com\n</string>
     <string name="about_dialog_notes">\nThank you for use SIMPLE HOME. If you like this app, please vote me 5 stars. thanks.\n</string>
 
-    <string name="about">about...</string>
-    <string name="help">help...</string>
+    <string name="changeback">Background...</string>
+    <string name="about">About...</string>
+    <string name="help">Help...</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
     

@@ -105,7 +105,7 @@ public class simpleHome extends Activity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, "change back");
+    	menu.add(0, 0, 0, getString(R.string.changeback));
     	menu.add(0, 1, 0, getString(R.string.help));
     	menu.add(0, 2, 0, getString(R.string.about));
     	return true;
@@ -250,9 +250,9 @@ public class simpleHome extends Activity {
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
     	List<ResolveInfo> mAllApps = pm.queryIntentActivities(mainIntent, 0);
-    	mainIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
-    	mainIntent.addCategory(Intent.CATEGORY_HOME);
-    	mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));
+    	//mainIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+    	//mainIntent.addCategory(Intent.CATEGORY_HOME);
+    	//mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));//may add some strange activity.
     	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
 
     	mSysApps = new ArrayList();
@@ -369,7 +369,7 @@ public class simpleHome extends Activity {
         mainlayout.addView(userAppList);
         mainlayout.addView(sysAppList);
         mainlayout.addView(favoAppList);
-        //mainlayout.setBackgroundDrawable(getWallpaper());
+        favoAppList.setBackgroundDrawable(getWallpaper());
         
         btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
         btnFavo.setOnClickListener(mBtnCL);
@@ -573,10 +573,7 @@ public class simpleHome extends Activity {
                 convertView = inflater.inflate(R.layout.favo_list, parent, false);
             }
 
-            if (position % 2 == 1)
-            	convertView.setBackgroundColor(whiteColor);
-            else
-            	convertView.setBackgroundColor(grayColor);
+            convertView.setBackgroundColor(0);
             
             final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.favoappicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.favoappname);

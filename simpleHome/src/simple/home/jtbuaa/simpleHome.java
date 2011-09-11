@@ -520,39 +520,43 @@ public class simpleHome extends Activity {
         		}
         	}
             
-            final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);	
-            try {
-            	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
-			} catch (NameNotFoundException e) {
-				btnVersion.setText("unknown");
-			}
-			btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
-			btnVersion.setOnClickListener(new OnClickListener() {//delete app
-				@Override
-				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
-					Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
-					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-					startActivity(intent);
+            final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
+            btnVersion.setVisibility(View.VISIBLE);
+			if (currentTab != 0) {
+	            try {
+	            	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
+				} catch (NameNotFoundException e) {
+					btnVersion.setText("unknown");
 				}
-			});
-            
-            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
-            String source = "";
-            int textColor = 0xFF000000;
-            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-            	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
-            	textColor = 0xFFEECC77;//brown for debuggable apk
-            }
-            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-            	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
-            }
-            else {
-            	source = info.activityInfo.packageName;//we can use package name to uninstall it.
-            }
-        	textView3.setText(source);
-        	textView3.setTextColor(textColor);//must set color here, otherwise it will be wrong for some item.
-            
+				btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
+				btnVersion.setOnClickListener(new OnClickListener() {//delete app
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
+						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+						startActivity(intent);
+					}
+				});
+	            
+	            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
+	            String source = "";
+	            int textColor = 0xFF000000;
+	            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
+	            	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
+	            	textColor = 0xFFEECC77;//brown for debuggable apk
+	            }
+	            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+	            	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
+	            }
+	            else {
+	            	source = info.activityInfo.packageName;//we can use package name to uninstall it.
+	            }
+	        	textView3.setText(source);
+	        	textView3.setTextColor(textColor);//must set color here, otherwise it will be wrong for some item.
+			}
+			else btnVersion.setVisibility(View.INVISIBLE);
+			
             return convertView;
         }
     }

@@ -81,7 +81,8 @@ public class simpleHome extends Activity {
 	static int whiteColor = 0xFFFFFFFF;
 	Context mContact;
 	PackageManager pm;
-	ApplicationsAdapter favoAdapter, sysAdapter, userAdapter;
+	favoAppAdapter favoAdapter;
+	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo ri;
 
 	@Override
@@ -152,9 +153,7 @@ public class simpleHome extends Activity {
 				FileOutputStream fo = this.openFileOutput("favo", 0);
 				ObjectOutputStream oos = new ObjectOutputStream(fo);
 				for (int i = 0; i < favoAdapter.getCount(); i++) {
-					oos.writeObject(((ResolveInfo)favoAdapter.localApplist.get(i)).activityInfo.packageName);
-					//oos.writeChar(0x0a);
-					//oos.writeChar(0x0d);
+					oos.writeObject(((ResolveInfo)favoAdapter.localApplist.get(i)).activityInfo.name);
 				}
 				oos.flush();
 				oos.close();
@@ -281,10 +280,10 @@ public class simpleHome extends Activity {
 		try {
 			fi = this.openFileInput("favo");
 			ObjectInputStream ois = new ObjectInputStream(fi);
-			String packageName;
-			while ((packageName = (String) ois.readObject()) != null) {
+			String activityName;
+			while ((activityName = (String) ois.readObject()) != null) {
 				for (int i = 0; i < mAllApps.size(); i++)
-					if (mAllApps.get(i).activityInfo.packageName.equals(packageName)) {
+					if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
 						mFavoApps.add(mAllApps.get(i));
 						break;
 					}
@@ -301,7 +300,7 @@ public class simpleHome extends Activity {
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	favoAdapter = new ApplicationsAdapter(this, mFavoApps);
+    	favoAdapter = new favoAppAdapter(this, mFavoApps);
     	favoAppList.setAdapter(favoAdapter);
         
     	//system app tab
@@ -522,45 +521,117 @@ public class simpleHome extends Activity {
             
             final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
             btnVersion.setVisibility(View.VISIBLE);
-			if (currentTab != 0) {
-	            try {
-	            	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
-				} catch (NameNotFoundException e) {
-					btnVersion.setText("unknown");
-				}
-				btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
-				btnVersion.setOnClickListener(new OnClickListener() {//delete app
-					@Override
-					public void onClick(View arg0) {
-						// TODO Auto-generated method stub
-						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
-						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-						startActivity(intent);
-					}
-				});
-	            
-	            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
-	            String source = "";
-	            int textColor = 0xFF000000;
-	            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-	            	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
-	            	textColor = 0xFFEECC77;//brown for debuggable apk
-	            }
-	            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-	            	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
-	            }
-	            else {
-	            	source = info.activityInfo.packageName;//we can use package name to uninstall it.
-	            }
-	        	textView3.setText(source);
-	        	textView3.setTextColor(textColor);//must set color here, otherwise it will be wrong for some item.
+            try {
+            	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
+			} catch (NameNotFoundException e) {
+				btnVersion.setText("unknown");
 			}
-			else btnVersion.setVisibility(View.INVISIBLE);
+			btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
+			btnVersion.setOnClickListener(new OnClickListener() {//delete app
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
+					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+					startActivity(intent);
+				}
+			});
+            
+            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
+            String source = "";
+            int textColor = 0xFF000000;
+            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
+            	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
+            	textColor = 0xFFEECC77;//brown for debuggable apk
+            }
+            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+            	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
+            }
+            else {
+            	source = info.activityInfo.packageName;//we can use package name to uninstall it.
+            }
+        	textView3.setText(source);
+        	textView3.setTextColor(textColor);//must set color here, otherwise it will be wrong for some item.
 			
             return convertView;
         }
     }
 
+    private class favoAppAdapter extends ArrayAdapter<ResolveInfo> {
+    	ArrayList localApplist;
+        public favoAppAdapter(Context context, List<ResolveInfo> apps) {
+            super(context, 0, apps);
+            localApplist = (ArrayList) apps;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final ResolveInfo info = (ResolveInfo) localApplist.get(position);
+
+            if (convertView == null) {
+                final LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.favo_list, parent, false);
+            }
+
+            if (position % 2 == 1)
+            	convertView.setBackgroundColor(whiteColor);
+            else
+            	convertView.setBackgroundColor(grayColor);
+            
+            final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.favoappicon);
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.favoappname);
+			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            
+            btnIcon.setImageDrawable(info.loadIcon(pm));
+            btnIcon.setEnabled(false);
+    		btnIcon.setOnClickListener(new OnClickListener() {//kill app
+				@Override
+				public void onClick(View arg0) {
+					am.restartPackage(info.activityInfo.packageName);
+		        	textView1.setTextColor(0xFF000000);//set color back to black after kill it. 
+		        	btnIcon.setEnabled(false);
+				}
+    		});
+    		
+
+            textView1.setOnClickListener(new OnClickListener() {//start app
+				@Override
+				public void onClick(View arg0) {
+					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
+					
+					Intent i = new Intent(Intent.ACTION_MAIN);
+					i.setComponent(new ComponentName(
+							info.activityInfo.applicationInfo.packageName,
+							info.activityInfo.name));
+					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
+					try {
+						startActivity(i);
+	            		btnIcon.setEnabled(true);
+	                	textView1.setTextColor(0xFFFF7777);//red for running apk
+					} catch(Exception e) {
+						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+					}
+				}
+            });
+            textView1.setTag(info);
+            registerForContextMenu(textView1);
+            
+            textView1.setText(info.loadLabel(pm));
+            textView1.setTextColor(0xFF000000);
+        	List appList = am.getRunningAppProcesses();
+        	for (int i = 0; i < appList.size(); i++) {
+        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
+            		btnIcon.setEnabled(true);
+                	textView1.setTextColor(0xFFFF7777);//red for running apk
+        			break;
+        		}
+        	}
+            
+            return convertView;
+        }
+    }
+    
 	class PageTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {

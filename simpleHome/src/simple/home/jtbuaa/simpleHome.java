@@ -383,12 +383,17 @@ public class simpleHome extends Activity {
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
 
+		//for package add/remove
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		filter.addDataScheme("package");
 		registerReceiver(packageReceiver, filter);
+		
+		//for wall paper changed
+		filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+		registerReceiver(wallpaperReceiver, filter);
 		
 		PageTask task = new PageTask();
         task.execute("");
@@ -443,10 +448,16 @@ public class simpleHome extends Activity {
     		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
             	}
             }
-            else if (action.equals(Intent.ACTION_WALLPAPER_CHANGED))
-            	favoAppList.setBackgroundDrawable(getWallpaper());
 		}
 		
+	};
+
+	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+        	favoAppList.setBackgroundDrawable(getWallpaper());
+		}
 	};
 	
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {

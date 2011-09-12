@@ -1,11 +1,15 @@
 package simple.home.jtbuaa;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +20,7 @@ import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -43,6 +48,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -380,7 +386,9 @@ public class simpleHome extends Activity {
         serverWeb = new WebView(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+        serverWeb.setScrollBarStyle(0);
         serverWeb.setWebChromeClient(new WebChromeClient() {
 			public void onProgressChanged(WebView view, int progress) {
 			     // Activities and WebViews measure progress with different scales.
@@ -389,27 +397,22 @@ public class simpleHome extends Activity {
 			   }
 		});
 		serverWeb.setWebViewClient(new WebViewClient() {
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				view.loadUrl(url);
-				return false;//this will not launch browser when redirect.
-			}
-		});
-		serverWeb.setDownloadListener(new DownloadListener() {
+
 			@Override
-			public void onDownloadStart(String url, String ua, String contentDisposition,
-					String mimetype, long contentLength) {//need Download Manager
-				ContentValues values = new ContentValues();
-		        /*values.put(Downloads.URI, url);//指定下载地址
-		        values.put(Downloads.COOKIE_DATA, cookie);//如果下载Server需要cookie,设置cookie
-		        values.put(Downloads.VISIBILITY,Downloads.VISIBILITY_HIDDEN);//设置下载提示是否在屏幕顶部显示 
-		        values.put(Downloads.NOTIFICATION_PACKAGE, getPackageName());//设置下载完成之后回调的包名 
-		        values.put(Downloads.NOTIFICATION_CLASS, DownloadCompleteReceiver.class.getName());//设置下载完成之后负责接收的Receiver，这个类要继承BroadcastReceiver      
-		        values.put(Downloads.DESTINATION,save_path);//设置下载到的路径，这个需要在Receiver里自行处理
-		        values.put(Downloads.TITLE,title);//设置下载任务的名称
-		        this.getContentResolver().insert(Downloads.CONTENT_URI, values);*/
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				if (url.substring(url.length()-4).equals(".apk")){
+					String ss[] = url.split("/");
+					String apkName = ss[ss.length-1]; //得到音乐文件的全名(包括后缀)
+					Intent intent = new Intent(getBaseContext(), DownloadService.class);
+					intent.putExtra("url", url);
+					intent.putExtra("apk", apkName);
+					getBaseContext().startService(intent);
+					return true;
+				}
+				return false;
 			}
 		});
-        
+		
         try {
         	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
         	version = "v" + pi.versionName;
@@ -450,10 +453,30 @@ public class simpleHome extends Activity {
 		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
+		//for download apk completed
+		filter = new IntentFilter();
+		filter.addAction("simple.home.downloadcompleted");
+		registerReceiver(downloadedReceiver, filter);
+
 		PageTask task = new PageTask();
         task.execute("");
     }
     
+	BroadcastReceiver downloadedReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+			// TODO Auto-generated method stub
+			String apkname = arg1.getExtras().getString("apk");
+			Log.d("=====================apk: ", apkname);
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_VIEW);
+			intent.setDataAndType(Uri.fromFile(new File(apkname)), "application/vnd.android.package-archive"); 
+			startActivity(intent); 
+		}
+	
+	};
+	
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 		@Override

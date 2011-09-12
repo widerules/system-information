@@ -5,8 +5,8 @@
 	android:orientation="horizontal" 
 	android:layout_height="fill_parent" 
 	android:layout_width="fill_parent"
-	android:stretchColumns="2"
-	android:shrinkColumns="2"
+	android:stretchColumns="1"
+	android:shrinkColumns="1"
 	android:background="#FFFFFFFF" 
 	android:paddingLeft="5dip"
 	android:paddingRight="5dip">
@@ -21,11 +21,6 @@
 	    android:scaleType="centerCrop"
         android:layout_margin="5dip"/>
     
-	<TextView android:id="@+id/test"
-		android:layout_height="fill_parent" 
-		android:width="1dip"
-		android:background ="#FFbbbbbb" /> 
-	
     <TextView android:id="@+id/favoappname" 
         android:layout_height="fill_parent" 
         android:layout_width="fill_parent"

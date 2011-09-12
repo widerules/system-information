@@ -113,7 +113,7 @@ public class simpleHome extends Activity {
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.changeback));
+    	menu.add(0, 0, 0, getString(R.string.changeback)).setVisible(false);
     	menu.add(0, 1, 0, getString(R.string.help));
     	menu.add(0, 2, 0, getString(R.string.about));
     	return true;
@@ -324,7 +324,7 @@ public class simpleHome extends Activity {
 
 		FileInputStream fi;
 		mFavoApps = new ArrayList();
-		try {
+		try {//read favorite data
 			fi = this.openFileInput("favo");
 			ObjectInputStream ois = new ObjectInputStream(fi);
 			String activityName;
@@ -343,6 +343,7 @@ public class simpleHome extends Activity {
 
     	//favorite app tab
     	favoAppList = new myListView(this);
+    	favoAppList.setDividerHeight(0);
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);

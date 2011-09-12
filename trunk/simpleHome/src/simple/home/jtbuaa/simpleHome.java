@@ -198,14 +198,22 @@ public class simpleHome extends Activity {
 			int w = getWidth();
 			int h = getHeight();
 			if ((w <= 0) || (h <= 0)) return;
+	        Log.d("================", "w: " + w + " h: " + h);
 			
+			int x = 0, y = 0;
 	        Bitmap oldbmp = ((BitmapDrawable) getWallpaper()).getBitmap();
-	        Matrix matrix = new Matrix();   // 创建操作图片用的Matrix对象
+	        Log.d("================", "dw: " + oldbmp.getWidth() + " dh: " + oldbmp.getHeight());
+	        Matrix matrix = new Matrix();   
 	        float scalew = ((float)w) / oldbmp.getWidth();
 	        float scaleh = ((float)h) / oldbmp.getHeight();
-	        if (scalew > scaleh) scalew = scaleh;
-	        Log.d("================", "scale: " + scalew);
-	        matrix.postScale(scalew, scalew);         // 设置缩放比例
+	        Log.d("================", "scalew: " + scalew + " scaleh: " + scaleh);
+	        if (scalew > scaleh) {
+	        	scalew = scaleh;
+	        	if (scalew < 1) y = (oldbmp.getHeight() - h) / 2;
+	        }
+	        else if ((scalew < scaleh) && (scalew < 1)) x = (oldbmp.getWidth() - w) / 2;//centerize the pic.
+	        matrix.postScale(scalew, scalew);
+	        //Bitmap newbmp = Bitmap.createBitmap(oldbmp, x, y, w, h, matrix, true);//wrong for some pic?
 	        Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, w, h, matrix, true);
 	        BitmapDrawable bd = new BitmapDrawable(newbmp);
 	        

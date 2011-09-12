@@ -32,6 +32,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -70,7 +77,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class simpleHome extends Activity {
 
 	WebView serverWeb;
-	ListView favoAppList, sysAppList, userAppList;
+	myListView favoAppList;
+	ListView sysAppList, userAppList;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	FrameLayout mainlayout;
@@ -160,7 +168,6 @@ public class simpleHome extends Activity {
 				fo.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			break;
 		case 1://not implement now
@@ -169,11 +176,59 @@ public class simpleHome extends Activity {
 		return false;
 	}
 	
-	@Override
+	/*@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	  super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
-	}
+	}*/
 
+	class myListView extends ListView {
+
+		public myListView(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+		}
+		
+		@Override
+		protected final void onSizeChanged(final int w, final int h,  
+	            final int oldw, final int oldh) {  
+			if ((w <= 0) || (h <= 0)) return;
+			
+	        Bitmap oldbmp = ((BitmapDrawable) getWallpaper()).getBitmap();
+	        Matrix matrix = new Matrix();   // 创建操作图片用的Matrix对象
+	        float scalew = ((float)w) / oldbmp.getWidth();
+	        float scaleh = ((float)h) / oldbmp.getHeight();
+	        if (scalew > scaleh) scalew = scaleh;
+	        Log.d("================", "scale: " + scalew);
+	        matrix.postScale(scalew, scalew);         // 设置缩放比例
+	        Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, w, h, matrix, true);
+	        BitmapDrawable bd = new BitmapDrawable(newbmp);
+	        
+			setBackgroundDrawable(bd);
+	    }  
+	};
+	
+	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+			int w = favoAppList.getWidth();
+			int h = favoAppList.getHeight();
+			if ((w <= 0) || (h <= 0)) return;
+			
+	        Bitmap oldbmp = ((BitmapDrawable) getWallpaper()).getBitmap();
+	        Matrix matrix = new Matrix();   // 创建操作图片用的Matrix对象
+	        float scalew = ((float)w) / oldbmp.getWidth();
+	        float scaleh = ((float)h) / oldbmp.getHeight();
+	        if (scalew > scaleh) scalew = scaleh;
+	        Log.d("================", "scale: " + scalew);
+	        matrix.postScale(scalew, scalew);         // 设置缩放比例
+	        Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, w, h, matrix, true);
+	        BitmapDrawable bd = new BitmapDrawable(newbmp);
+	        
+	        favoAppList.setBackgroundDrawable(bd);
+		}
+	};
+	
 	OnBtnClickListener mBtnCL = new OnBtnClickListener();
 	class OnBtnClickListener implements OnClickListener {
 		@Override
@@ -292,11 +347,10 @@ public class simpleHome extends Activity {
 			fi.close();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 
     	//favorite app tab
-    	favoAppList = new ListView(this);
+    	favoAppList = new myListView(this);
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
@@ -369,7 +423,6 @@ public class simpleHome extends Activity {
         mainlayout.addView(userAppList);
         mainlayout.addView(sysAppList);
         mainlayout.addView(favoAppList);
-        favoAppList.setBackgroundDrawable(getWallpaper());
         
         btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
         btnFavo.setOnClickListener(mBtnCL);
@@ -452,14 +505,6 @@ public class simpleHome extends Activity {
 		
 	};
 
-	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context arg0, Intent arg1) {
-        	favoAppList.setBackgroundDrawable(getWallpaper());
-		}
-	};
-	
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
     	ArrayList localApplist;
         public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {

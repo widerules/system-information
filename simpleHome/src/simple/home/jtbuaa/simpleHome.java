@@ -190,7 +190,13 @@ public class simpleHome extends Activity {
 		
 		@Override
 		protected final void onSizeChanged(final int w, final int h,  
-	            final int oldw, final int oldh) {  
+	            final int oldw, final int oldh) {
+			setBackground();
+	    }  
+		
+		public void setBackground() {
+			int w = getWidth();
+			int h = getHeight();
 			if ((w <= 0) || (h <= 0)) return;
 			
 	        Bitmap oldbmp = ((BitmapDrawable) getWallpaper()).getBitmap();
@@ -204,28 +210,14 @@ public class simpleHome extends Activity {
 	        BitmapDrawable bd = new BitmapDrawable(newbmp);
 	        
 			setBackgroundDrawable(bd);
-	    }  
+		}
 	};
 	
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			int w = favoAppList.getWidth();
-			int h = favoAppList.getHeight();
-			if ((w <= 0) || (h <= 0)) return;
-			
-	        Bitmap oldbmp = ((BitmapDrawable) getWallpaper()).getBitmap();
-	        Matrix matrix = new Matrix();   // 创建操作图片用的Matrix对象
-	        float scalew = ((float)w) / oldbmp.getWidth();
-	        float scaleh = ((float)h) / oldbmp.getHeight();
-	        if (scalew > scaleh) scalew = scaleh;
-	        Log.d("================", "scale: " + scalew);
-	        matrix.postScale(scalew, scalew);         // 设置缩放比例
-	        Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, w, h, matrix, true);
-	        BitmapDrawable bd = new BitmapDrawable(newbmp);
-	        
-	        favoAppList.setBackgroundDrawable(bd);
+			favoAppList.setBackground();
 		}
 	};
 	

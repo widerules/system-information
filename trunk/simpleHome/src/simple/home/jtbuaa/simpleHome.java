@@ -344,6 +344,7 @@ public class simpleHome extends Activity {
     	//favorite app tab
     	favoAppList = new myListView(this);
     	favoAppList.setDividerHeight(0);
+    	favoAppList.setVerticalScrollBarEnabled(false);
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);

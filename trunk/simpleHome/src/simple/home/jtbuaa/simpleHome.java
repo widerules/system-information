@@ -397,8 +397,18 @@ public class simpleHome extends Activity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+        webSettings.setSupportZoom(true); //设置可以支持缩放         
+        // webSettings.setDefaultZoom(.ZoomDensity.FAR); //设置默认缩放方式尺寸是far  
+        webSettings.setBuiltInZoomControls(true);//设置出现缩放工具 
         serverWeb.setScrollBarStyle(0);
         serverWeb.setWebChromeClient(new WebChromeClient() {
+        	@Override
+        	public void onProgressChanged(WebView view, int progress) {
+				mProgressDialog.setProgress(progress);
+				if (progress >= MAX_PROGRESS) {
+					mProgressDialog.dismiss();
+				}
+        	}
 		});
 		serverWeb.setWebViewClient(new WebViewClient() {
 
@@ -419,13 +429,6 @@ public class simpleHome extends Activity {
 					mProgressDialog.dismiss();
 	            }
 			}         
-			
-			public void onProgressChanged(WebView view, int progress) {
-				mProgressDialog.setProgress(progress);
-				if (progress >= MAX_PROGRESS) {
-					mProgressDialog.dismiss();
-				}
-			}
 			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {

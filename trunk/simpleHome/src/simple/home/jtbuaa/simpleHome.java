@@ -18,6 +18,9 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Service;
@@ -95,13 +98,15 @@ public class simpleHome extends Activity {
 	int currentTab;
 	static int grayColor = 0xFFEEEEEE;
 	static int whiteColor = 0xFFFFFFFF;
-	Context mContact;
+	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo ri;
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
+	NotificationManager nManager;
+	private static final int NOTIFICATION_ID = 0x12;
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -307,14 +312,15 @@ public class simpleHome extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        mContact = this.getBaseContext();
+        mContext = this.getBaseContext();
         
         myPackageName = this.getApplicationInfo().packageName;
 
     	pm = getPackageManager();
     	
-    	//requestWindowFeature(Window.FEATURE_NO_TITLE); // hide titlebar of application, must be before setting the layout
-    	getWindow().requestFeature(Window.FEATURE_PROGRESS);
+    	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    	
+    	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
     	
         mainlayout = (FrameLayout)findViewById(R.id.mainFrame);
@@ -708,7 +714,7 @@ public class simpleHome extends Activity {
 
 			FileInputStream fi;
 			try {//read favorite data
-				fi = mContact.openFileInput("favo");
+				fi = mContext.openFileInput("favo");
 				ObjectInputStream ois = new ObjectInputStream(fi);
 				String activityName;
 				while ((activityName = (String) ois.readObject()) != null) {
@@ -764,6 +770,11 @@ public class simpleHome extends Activity {
 	    	URL_str = params[0]; //获取下载链接的url
 	    	apkName = params[1]; //获取下载链接的url
 
+	    	Notification notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
+	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, getIntent(), 0);  
+	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);  
+	        nManager.notify(NOTIFICATION_ID, notification);
+	        
 	    	FileOutputStream fos = null; //文件输出流
 	    	FileInputStream fis = null; //文件输出流
 	    	InputStream is = null; //网络文件输入流
@@ -776,10 +787,11 @@ public class simpleHome extends Activity {
 	        	fis = new FileInputStream(download_file); //初始化文件输入流
 	        	total_read = fis.available(); //初始化“已下载部分”的长度，此处应为0
 	        	apk_length = httpConnection.getContentLength(); //要下载的文件的总长度
-	        	Log.d("==============", "apk length" + apk_length);
 	        	is = httpConnection.getInputStream();
 	        	if (is == null) { //如果下载失败则打印日志，并返回
-	            	Log.i("===============", "download failed...");
+                	notification.icon = android.R.drawable.stat_notify_error;
+	    	        notification.setLatestEventInfo(mContext, apkName, "download failed", contentIntent);  
+	    	        nManager.notify(NOTIFICATION_ID, notification);
 	            	return "download failed";
 	        	}
 
@@ -800,26 +812,23 @@ public class simpleHome extends Activity {
 	            	if (total_read == apk_length) { //当已下载的长度等于网络文件的长度，则下载完成
 	                	flag = false;
 	                	Log.i("info", "download complete...");
-	                	//向前台发送下载完成广播
-	                	Intent completeIntent = new Intent();
-	                	completeIntent.setAction("simple.home.downloadcompleted");
-	                	completeIntent.putExtra("apk", download_file.getPath());
-	                	sendBroadcast(completeIntent);
 	                	//关闭输入输出流
 	                	fos.close();
 	                	is.close();
 	                	fis.close();
 	                	httpConnection.disconnect();
+	                	
+	                	notification.icon = android.R.drawable.stat_sys_download_done;
+		    	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);  
+		    	        nManager.notify(NOTIFICATION_ID, notification);
 	            	}
-
-	            	//Thread.sleep(50); //当前现在休眠50毫秒 why?
 
 	            	Log.i("info", "download process : " //打印下载进度
 	            	+ ((total_read+0.0)/apk_length*100+"").substring(0, 4)+"%");
 	        	}
 				Intent intent = new Intent();
 				intent.setAction(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory()+ "/" + apkName)), "application/vnd.android.package-archive"); 
+				intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive"); 
 				startActivity(intent); 
 
 		} catch (Exception e) {

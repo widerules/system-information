@@ -462,7 +462,7 @@ public class simpleHome extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
             String action = intent.getAction();
-            String packageName = intent.getDataString().split(":")[1];
+            String packageName = intent.getDataString().split(":")[1];//if always in the format of package:x.y.z
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
             	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             		for (int i = 0; i < sysAdapter.getCount(); i++) {
@@ -496,13 +496,15 @@ public class simpleHome extends Activity {
             	mainIntent.setPackage(packageName);
             	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
 
-            	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-    				sysAdapter.add(targetApps.get(0));
-    		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-            	}
-            	else {
-    				userAdapter.add(targetApps.get(0));
-    		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+            	if (targetApps.size() > 0) {//the new package may not support Launcher category, we will omit it.
+                	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+        				sysAdapter.add(targetApps.get(0));
+        		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+                	}
+                	else {
+        				userAdapter.add(targetApps.get(0));
+        		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+                	}
             	}
             }
 		}

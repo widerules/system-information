@@ -88,6 +88,7 @@ public class simpleHome extends Activity {
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	FrameLayout mainlayout;
+	List<ResolveInfo> mAllApps;
 	ArrayList mFavoApps, mSysApps, mUserApps;
 	private Button btnFavo, btnSys, btnUser, btnWeb;
 	int currentTab;
@@ -317,53 +318,6 @@ public class simpleHome extends Activity {
     	
         mainlayout = (FrameLayout)findViewById(R.id.mainFrame);
         
-    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-    	List<ResolveInfo> mAllApps = pm.queryIntentActivities(mainIntent, 0);
-    	//mainIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
-    	//mainIntent.addCategory(Intent.CATEGORY_HOME);
-    	//mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));//may add some strange activity.
-    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-
-    	mSysApps = new ArrayList();
-    	mUserApps = new ArrayList();
-    	for (int i = 0; i < mAllApps.size(); i++) {
-    		ResolveInfo ri = mAllApps.get(i);
-    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) 
-    			mSysApps.add(ri);
-    		else mUserApps.add(ri);
-    		
-    		//if (ri.filter.hasAction(Intent.ACTION_DIAL)) //phone, message, contact, ... should add to favorite
-    			//mFavoApps.add(ri);
-    	}
-    	
-    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
-    	for (int i = 0; i < packages.size(); i++) {
-    		PackageInfo pi = (PackageInfo) packages.get(i);
-    		Intent intent = pm.getLaunchIntentForPackage(pi.packageName);
-    		if (intent == null) {//no Launcher activity
-    		}
-    	}*/
-
-		FileInputStream fi;
-		mFavoApps = new ArrayList();
-		try {//read favorite data
-			fi = this.openFileInput("favo");
-			ObjectInputStream ois = new ObjectInputStream(fi);
-			String activityName;
-			while ((activityName = (String) ois.readObject()) != null) {
-				for (int i = 0; i < mAllApps.size(); i++)
-					if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
-						mFavoApps.add(mAllApps.get(i));
-						break;
-					}
-			}
-			ois.close();
-			fi.close();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-		}
-
     	//favorite app tab
     	favoAppList = new myListView(this);
     	favoAppList.setDividerHeight(0);
@@ -371,27 +325,20 @@ public class simpleHome extends Activity {
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	favoAdapter = new favoAppAdapter(this, mFavoApps);
-    	favoAppList.setAdapter(favoAdapter);
         
     	//system app tab
     	sysAppList = new ListView(this);
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.setScrollingCacheEnabled(false);
-    	sysAdapter = new ApplicationsAdapter(this, mSysApps);
-    	sysAppList.setAdapter(sysAdapter);
         
     	//user app tab
         userAppList = new ListView(this);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.setScrollingCacheEnabled(false);
-        userAdapter = new ApplicationsAdapter(this, mUserApps);
-        userAppList.setAdapter(userAdapter);
         
         //online tab
-        final Activity activity = this;
         serverWeb = new WebView(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -518,8 +465,8 @@ public class simpleHome extends Activity {
             String packageName = intent.getDataString().split(":")[1];
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
             	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-            		for (int i = 0; i < mSysApps.size(); i++) {
-            			ResolveInfo info = (ResolveInfo) mSysApps.get(i);
+            		for (int i = 0; i < sysAdapter.getCount(); i++) {
+            			ResolveInfo info = sysAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				sysAdapter.remove(info);
             				break;
@@ -527,16 +474,16 @@ public class simpleHome extends Activity {
             		}
             	}
             	else {
-            		for (int i = 0; i < mUserApps.size(); i++) {
-            			ResolveInfo info = (ResolveInfo) mUserApps.get(i);
+            		for (int i = 0; i < userAdapter.getCount(); i++) {
+            			ResolveInfo info = userAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				userAdapter.remove(info);
             				break;
             			}
             		}
             	}
-        		for (int i = 0; i < mFavoApps.size(); i++) {
-        			ResolveInfo info = (ResolveInfo) mFavoApps.get(i);
+        		for (int i = 0; i < favoAdapter.getCount(); i++) {
+        			ResolveInfo info = favoAdapter.getItem(i);
         			if (info.activityInfo.packageName.equals(packageName)) {
         				favoAdapter.remove(info);
         				break;
@@ -674,10 +621,10 @@ public class simpleHome extends Activity {
     }
 
     private class favoAppAdapter extends ArrayAdapter<ResolveInfo> {
-    	ArrayList localApplist;
+    	ArrayList<ResolveInfo> localApplist;
         public favoAppAdapter(Context context, List<ResolveInfo> apps) {
             super(context, 0, apps);
-            localApplist = (ArrayList) apps;
+            localApplist = (ArrayList<ResolveInfo>) apps;
         }
 
         @Override
@@ -747,13 +694,81 @@ public class simpleHome extends Activity {
     
 	class PageTask extends AsyncTask<String, Integer, String> {
 		@Override
-		protected String doInBackground(String... params) {
+		protected String doInBackground(String... params) {//do all time consuming work here
+			mSysApps = new ArrayList<ResolveInfo>();
+			mUserApps = new ArrayList<ResolveInfo>();
+			mFavoApps = new ArrayList<ResolveInfo>();
+			
+	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+	    	//mainIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+	    	//mainIntent.addCategory(Intent.CATEGORY_HOME);
+	    	//mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));//may add some strange activity.
+	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+
+	    	for (int i = 0; i < mAllApps.size(); i++) {
+	    		ResolveInfo ri = mAllApps.get(i);
+	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM)
+	    			mSysApps.add(ri);
+	    		else mUserApps.add(ri);
+	    		
+	    		//if (ri.filter.hasAction(Intent.ACTION_DIAL)) //phone, message, contact, ... should add to favorite
+	    			//mFavoApps.add(ri);
+	    	}
+	    	
+	    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
+	    	for (int i = 0; i < packages.size(); i++) {
+	    		PackageInfo pi = (PackageInfo) packages.get(i);
+	    		Intent intent = pm.getLaunchIntentForPackage(pi.packageName);
+	    		if (intent == null) {//no Launcher activity
+	    		}
+	    	}*/
+
+			FileInputStream fi;
+			try {//read favorite data
+				fi = mContact.openFileInput("favo");
+				ObjectInputStream ois = new ObjectInputStream(fi);
+				String activityName;
+				while ((activityName = (String) ois.readObject()) != null) {
+					for (int i = 0; i < mAllApps.size(); i++)
+						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
+							mFavoApps.add(mAllApps.get(i));
+							break;
+						}
+				}
+				ois.close();
+				fi.close();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+			}
+
 			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
+			
+        	Message msg = mAppHandler.obtainMessage();
+        	mAppHandler.sendMessage(msg);//inform UI thread to update UI.
+            
 			return null;
 		}
 	}
 	
+    appHandler mAppHandler = new appHandler();
+
+    class appHandler extends Handler {
+
+        public void handleMessage(Message msg) {
+        	sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
+        	sysAppList.setAdapter(sysAdapter);
+        	
+            userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
+            userAppList.setAdapter(userAdapter);
+
+        	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
+        	favoAppList.setAdapter(favoAdapter);
+        }
+    };
+
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			if (currentTab == 3)

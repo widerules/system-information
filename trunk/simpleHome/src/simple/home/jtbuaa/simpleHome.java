@@ -47,6 +47,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -382,10 +383,8 @@ public class simpleHome extends Activity {
 				if (url.substring(url.length()-4).equals(".apk")){
 					String ss[] = url.split("/");
 					String apkName = ss[ss.length-1]; //得到音乐文件的全名(包括后缀)
-					Intent intent = new Intent(getBaseContext(), DownloadService.class);
-					intent.putExtra("url", url);
-					intent.putExtra("apk", apkName);
-					getBaseContext().startService(intent);
+					DownloadTask dltask = new DownloadTask();
+					dltask.execute(url, apkName);
 					return true;
 				}
 				return false;
@@ -432,37 +431,17 @@ public class simpleHome extends Activity {
 		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
-		//for download apk completed
-		filter = new IntentFilter();
-		filter.addAction("simple.home.downloadcompleted");
-		registerReceiver(downloadedReceiver, filter);
-
-		PageTask task = new PageTask();
-        task.execute("");
+		InitTask initTask = new InitTask();
+        initTask.execute("");
     }
     
-	BroadcastReceiver downloadedReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context arg0, Intent arg1) {
-			// TODO Auto-generated method stub
-			String apkname = arg1.getExtras().getString("apk");
-			Log.d("=====================apk: ", apkname);
-			Intent intent = new Intent();
-			intent.setAction(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.fromFile(new File(apkname)), "application/vnd.android.package-archive"); 
-			startActivity(intent); 
-		}
-	
-	};
-	
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
             String action = intent.getAction();
-            String packageName = intent.getDataString().split(":")[1];//if always in the format of package:x.y.z
+            String packageName = intent.getDataString().split(":")[1];//it always in the format of package:x.y.z
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
             	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             		for (int i = 0; i < sysAdapter.getCount(); i++) {
@@ -694,7 +673,7 @@ public class simpleHome extends Activity {
         }
     }
     
-	class PageTask extends AsyncTask<String, Integer, String> {
+	class InitTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {//do all time consuming work here
 			mSysApps = new ArrayList<ResolveInfo>();
@@ -771,6 +750,90 @@ public class simpleHome extends Activity {
         }
     };
 
+	class DownloadTask extends AsyncTask<String, Integer, String> {
+		private String URL_str; //网络歌曲的路径
+		private File download_file; //下载的文件
+		private int total_read = 0; //已经下载文件的长度(以字节为单位)
+		private int readLength = 0; //一次性下载的长度(以字节为单位)
+		private int apk_length = 0; //音乐文件的长度(以字节为单位)
+		private boolean flag = false; //是否停止下载，停止下载为true
+		private Thread downThread; //下载线程
+		private String apkName; //下载的文件名
+		@Override
+		protected String doInBackground(String... params) {//download here
+	    	URL_str = params[0]; //获取下载链接的url
+	    	apkName = params[1]; //获取下载链接的url
+
+	    	FileOutputStream fos = null; //文件输出流
+	    	FileInputStream fis = null; //文件输出流
+	    	InputStream is = null; //网络文件输入流
+	    	URL url = null;
+	    	try {
+	        	url = new URL(URL_str); //网络歌曲的url
+	        	HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection(); //打开网络连接
+	        	download_file = new File(Environment.getExternalStorageDirectory()+ "/" + apkName);
+	        	fos = new FileOutputStream(download_file, false); //初始化文件输出流
+	        	fis = new FileInputStream(download_file); //初始化文件输入流
+	        	total_read = fis.available(); //初始化“已下载部分”的长度，此处应为0
+	        	apk_length = httpConnection.getContentLength(); //要下载的文件的总长度
+	        	Log.d("==============", "apk length" + apk_length);
+	        	is = httpConnection.getInputStream();
+	        	if (is == null) { //如果下载失败则打印日志，并返回
+	            	Log.i("===============", "download failed...");
+	            	return "download failed";
+	        	}
+
+	        	byte buf[] = new byte[1024]; //定义下载缓冲区
+	        	readLength = 0; //一次性下载的长度
+	        	Log.i("info", "download start...");
+	        	//向前台发送开始下载广播
+	        	Intent startIntent = new Intent();
+	        	startIntent.setAction("simple.home.downloadstart");
+	        	sendBroadcast(startIntent);
+	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
+	        	while (readLength != -1 && !flag) {
+	            	if((readLength = is.read(buf))>0){
+	                	fos.write(buf, 0, readLength);
+	                	total_read += readLength; //已下载文件的长度增加
+	            	}
+
+	            	if (total_read == apk_length) { //当已下载的长度等于网络文件的长度，则下载完成
+	                	flag = false;
+	                	Log.i("info", "download complete...");
+	                	//向前台发送下载完成广播
+	                	Intent completeIntent = new Intent();
+	                	completeIntent.setAction("simple.home.downloadcompleted");
+	                	completeIntent.putExtra("apk", download_file.getPath());
+	                	sendBroadcast(completeIntent);
+	                	//关闭输入输出流
+	                	fos.close();
+	                	is.close();
+	                	fis.close();
+	                	httpConnection.disconnect();
+	            	}
+
+	            	//Thread.sleep(50); //当前现在休眠50毫秒 why?
+
+	            	Log.i("info", "download process : " //打印下载进度
+	            	+ ((total_read+0.0)/apk_length*100+"").substring(0, 4)+"%");
+	        	}
+				Intent intent = new Intent();
+				intent.setAction(Intent.ACTION_VIEW);
+				intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory()+ "/" + apkName)), "application/vnd.android.package-archive"); 
+				startActivity(intent); 
+
+		} catch (Exception e) {
+	    	Intent errorIntent = new Intent();
+	    	errorIntent.setAction("simple.home.downloaderror");
+	    	sendBroadcast(errorIntent);
+	    	Log.d("=============", e.toString());
+	    	e.printStackTrace();
+		}
+
+		return null;
+		}
+	}
+	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			if (currentTab == 3)

@@ -38,6 +38,7 @@ public class DownloadService extends Service implements Runnable{ //实现Runabl
 	public void onStart(Intent intent, int startId) {
     	URL_str = intent.getExtras().getString("url"); //获取下载链接的url
     	apkName = intent.getExtras().getString("apk"); //获取下载链接的url
+    	Log.d("==============", "apk: " + apkName);
 	}
 
 	@Override
@@ -48,6 +49,7 @@ public class DownloadService extends Service implements Runnable{ //实现Runabl
 
 	@Override
 	public void run() {
+    	Log.d("==============", "apk2: " + apkName);
     	FileOutputStream fos = null; //文件输出流
     	FileInputStream fis = null; //文件输出流
     	InputStream is = null; //网络文件输入流
@@ -93,9 +95,10 @@ public class DownloadService extends Service implements Runnable{ //实现Runabl
                 	fos.close();
                 	is.close();
                 	fis.close();
+                	httpConnection.disconnect();
             	}
 
-            	Thread.sleep(50); //当前现在休眠50毫秒 why?
+            	//Thread.sleep(50); //当前现在休眠50毫秒 why?
 
             	Log.i("info", "download process : " //打印下载进度
             	+ ((total_read+0.0)/apk_length*100+"").substring(0, 4)+"%");
@@ -104,6 +107,7 @@ public class DownloadService extends Service implements Runnable{ //实现Runabl
     	Intent errorIntent = new Intent();
     	errorIntent.setAction("simple.home.downloaderror");
     	sendBroadcast(errorIntent);
+    	Log.d("=============", e.toString());
     	e.printStackTrace();
 	}
 

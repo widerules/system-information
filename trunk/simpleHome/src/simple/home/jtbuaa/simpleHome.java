@@ -98,10 +98,19 @@ public class simpleHome extends Activity {
 	favoAppAdapter favoAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo ri;
+	ProgressDialog mProgressDialog;
+	private static final int MAX_PROGRESS = 100;
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
+        case 0:
+        {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setMax(MAX_PROGRESS);
+            return mProgressDialog;
+    	}
         case 1: {
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
@@ -302,8 +311,8 @@ public class simpleHome extends Activity {
 
     	pm = getPackageManager();
     	
-    	requestWindowFeature(Window.FEATURE_NO_TITLE); // hide titlebar of application, must be before setting the layout
-    	//getWindow().requestFeature(Window.FEATURE_PROGRESS);
+    	//requestWindowFeature(Window.FEATURE_NO_TITLE); // hide titlebar of application, must be before setting the layout
+    	getWindow().requestFeature(Window.FEATURE_PROGRESS);
     	setContentView(R.layout.ads);
     	
         mainlayout = (FrameLayout)findViewById(R.id.mainFrame);
@@ -390,14 +399,34 @@ public class simpleHome extends Activity {
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         serverWeb.setScrollBarStyle(0);
         serverWeb.setWebChromeClient(new WebChromeClient() {
-			public void onProgressChanged(WebView view, int progress) {
-			     // Activities and WebViews measure progress with different scales.
-			     // The progress meter will automatically disappear when we reach 100%
-			     activity.setProgress(progress * 1000);
-			   }
 		});
 		serverWeb.setWebViewClient(new WebViewClient() {
 
+			@Override
+			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error){
+		        handler.proceed();//接受证书
+			}
+			
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				showDialog(0);
+				super.onPageStarted(view, url, favicon);
+			}
+			 
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				if(mProgressDialog.isShowing()){
+					mProgressDialog.dismiss();
+	            }
+			}         
+			
+			public void onProgressChanged(WebView view, int progress) {
+				mProgressDialog.setProgress(progress);
+				if (progress >= MAX_PROGRESS) {
+					mProgressDialog.dismiss();
+				}
+			}
+			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				if (url.substring(url.length()-4).equals(".apk")){

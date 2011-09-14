@@ -13,6 +13,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -106,7 +108,6 @@ public class simpleHome extends Activity {
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
 	NotificationManager nManager;
-	private static final int NOTIFICATION_ID = 0x12;
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -441,6 +442,14 @@ public class simpleHome extends Activity {
         initTask.execute("");
     }
     
+    @Override 
+    protected void onDestroy() {
+    	unregisterReceiver(packageReceiver);
+    	unregisterReceiver(wallpaperReceiver);
+    	
+    	super.onDestroy();
+    }
+    
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -762,13 +771,18 @@ public class simpleHome extends Activity {
 		private int total_read = 0; //已经下载文件的长度(以字节为单位)
 		private int readLength = 0; //一次性下载的长度(以字节为单位)
 		private int apk_length = 0; //音乐文件的长度(以字节为单位)
-		private boolean flag = false; //是否停止下载，停止下载为true
+		private boolean stopDownload = false; //是否停止下载，停止下载为true
 		private Thread downThread; //下载线程
 		private String apkName; //下载的文件名
+		private int NOTIFICATION_ID;
+
 		@Override
 		protected String doInBackground(String... params) {//download here
 	    	URL_str = params[0]; //获取下载链接的url
 	    	apkName = params[1]; //获取下载链接的url
+	    	
+	    	Random random = new Random();
+	    	NOTIFICATION_ID = random.nextInt() + 1000;
 
 	    	Notification notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
 	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, getIntent(), 0);  
@@ -803,45 +817,55 @@ public class simpleHome extends Activity {
 	        	startIntent.setAction("simple.home.downloadstart");
 	        	sendBroadcast(startIntent);
 	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
-	        	while (readLength != -1 && !flag) {
+	        	while (readLength != -1 && !stopDownload) {
 	            	if((readLength = is.read(buf))>0){
 	                	fos.write(buf, 0, readLength);
 	                	total_read += readLength; //已下载文件的长度增加
 	            	}
 
+	            	Log.i("info", "download process : " //打印下载进度
+	    	            	+ ((total_read+0.0)/apk_length*100+"").substring(0, 4)+"%");
+	            	
 	            	if (total_read == apk_length) { //当已下载的长度等于网络文件的长度，则下载完成
-	                	flag = false;
+	                	stopDownload = true;
 	                	Log.i("info", "download complete...");
 	                	//关闭输入输出流
 	                	fos.close();
-	                	is.close();
 	                	fis.close();
+	                	is.close();
 	                	httpConnection.disconnect();
-	                	
-	                	notification.icon = android.R.drawable.stat_sys_download_done;
-		    	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);  
-		    	        nManager.notify(NOTIFICATION_ID, notification);
+	                	break;
 	            	}
 
-	            	Log.i("info", "download process : " //打印下载进度
-	            	+ ((total_read+0.0)/apk_length*100+"").substring(0, 4)+"%");
 	        	}
+            	notification.icon = android.R.drawable.stat_sys_download_done;
+    	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);  
+    	        nManager.notify(NOTIFICATION_ID, notification);
+    	        
 				Intent intent = new Intent();
 				intent.setAction(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive"); 
-				startActivity(intent); 
-
+				intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive");
+				intent.putExtra("id", NOTIFICATION_ID);
+				startActivityForResult(intent, 0);
+				
 		} catch (Exception e) {
-	    	Intent errorIntent = new Intent();
-	    	errorIntent.setAction("simple.home.downloaderror");
-	    	sendBroadcast(errorIntent);
-	    	Log.d("=============", e.toString());
-	    	e.printStackTrace();
+        	notification.icon = android.R.drawable.stat_notify_error;
+	        notification.setLatestEventInfo(mContext, apkName, "download fail: " + e.getMessage(), contentIntent);  
+	        nManager.notify(NOTIFICATION_ID, notification);
+	        e.printStackTrace();
 		}
 
 		return null;
 		}
+
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {//remove notification after install download app
+		Log.d("==================", ""+resultCode);
+        if (resultCode == RESULT_OK) 
+ 	        nManager.cancel(data.getIntExtra("id", 1000));
+    }
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {

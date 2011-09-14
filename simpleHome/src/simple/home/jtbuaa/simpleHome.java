@@ -821,7 +821,8 @@ public class simpleHome extends Activity {
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
 	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
 	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
-	        //notification.contentView.setTextViewText(R.id.tv, "进度" + progress + "%");
+	        notification.contentView.setTextViewText(R.id.progress, "0%");
+	        notification.contentView.setTextViewText(R.id.title, apkName);
 	        nManager.notify(NOTIFICATION_ID, notification);
 	        
 	    	FileOutputStream fos = null; //文件输出流
@@ -864,8 +865,8 @@ public class simpleHome extends Activity {
                 	int progress = (int) ((total_read+0.0)/apk_length*100);
                 	if (oldProgress != progress) {//the device will get no response if update too often
                 		oldProgress = progress;
-                		Log.d("=============", "" + progress);
                 		notification.contentView.setProgressBar(R.id.progress_bar, 100, progress, false);//update download progress
+            	        notification.contentView.setTextViewText(R.id.progress, progress + "%");
                 		nManager.notify(NOTIFICATION_ID, notification);
                 	}
 	            	

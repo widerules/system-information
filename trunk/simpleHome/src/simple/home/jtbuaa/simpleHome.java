@@ -355,9 +355,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-        webSettings.setSupportZoom(true); //设置可以支持缩放         
+        //webSettings.setSupportZoom(true); //设置可以支持缩放         
         // webSettings.setDefaultZoom(.ZoomDensity.FAR); //设置默认缩放方式尺寸是far  
-        webSettings.setBuiltInZoomControls(true);//设置出现缩放工具 
+        //webSettings.setBuiltInZoomControls(true);//设置出现缩放工具 
         serverWeb.setScrollBarStyle(0);
         serverWeb.setWebChromeClient(new WebChromeClient() {
         	@Override
@@ -909,6 +909,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
 		// TODO Auto-generated method stub
+		if (e1.getX() == e2.getX()) return false;
+		else if ((e1.getX() < e2.getX()) && (mainlayout.getDisplayedChild() == 0)) return false;//don't show previous for first view
+		else if ((e1.getX() > e2.getX()) && (mainlayout.getDisplayedChild() == mainlayout.getChildCount()-1)) return false;//don't show next for the last view
+		
 		switch(mainlayout.getDisplayedChild()) {
 		case 0:
 			btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
@@ -924,23 +928,23 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			break;
 		}
 		
-		if(e1.getX() > e2.getX()) {
-			// 设置切入动画
-            mainlayout.setInAnimation(AnimationUtils.loadAnimation(
-                    getApplicationContext(), R.anim.slide_in_right));
-            // 设置切出动画
-            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
-                    getApplicationContext(), R.anim.slide_out_left));
-			mainlayout.showPrevious(); //move to left?  
-		}
-		else if(e1.getX() < e2.getX()) {
+		if(e1.getX() < e2.getX()) {
 			// 设置切入动画
 			mainlayout.setInAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), android.R.anim.slide_in_left));
             // 设置切出动画
             mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), android.R.anim.slide_out_right));
-			mainlayout.showNext(); //move to right?
+			mainlayout.showPrevious(); //move to left
+		}
+		else if(e1.getX() > e2.getX()) {
+			// 设置切入动画
+            mainlayout.setInAnimation(AnimationUtils.loadAnimation(
+                    getApplicationContext(), R.anim.slide_in_right));
+            // 设置切出动画
+            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
+                    getApplicationContext(), R.anim.slide_out_left));
+			mainlayout.showNext(); //move to right
 		}
 
 		switch(mainlayout.getDisplayedChild()) {

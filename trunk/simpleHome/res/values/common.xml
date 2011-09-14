@@ -20,4 +20,6 @@
     <string name="addtoFavo">Add to Favorite</string>
     <string name="removeFromFavo">Delete this short cut</string>
     <string name="backup">Back up to SDcard...</string>
+    
+    <string name="loading">Loading...</string>
 </resources>

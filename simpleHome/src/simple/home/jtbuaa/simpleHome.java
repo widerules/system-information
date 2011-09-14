@@ -83,6 +83,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -130,6 +131,8 @@ public class simpleHome extends Activity {
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 mProgressDialog.setMax(MAX_PROGRESS);
+                //mProgressDialog.setTitle(getString(R.string.loading));//android.content.res.Resources$NotFoundException: String resource ID #0x7f050010
+                mProgressDialog.setTitle("loading...");
         	}
             return mProgressDialog;
     	}
@@ -801,6 +804,9 @@ public class simpleHome extends Activity {
 		private Thread downThread; //下载线程
 		private String apkName; //下载的文件名
 		private int NOTIFICATION_ID;
+		private Handler mHandler = new Handler();
+		private Notification notification;
+		private int oldProgress;
 
 		@Override
 		protected String doInBackground(String... params) {//download here
@@ -810,9 +816,12 @@ public class simpleHome extends Activity {
 	    	Random random = new Random();
 	    	NOTIFICATION_ID = random.nextInt() + 1000;
 
-	    	Notification notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
+	    	notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
 	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, getIntent(), 0);  
-	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);  
+	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
+	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
+	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
+	        //notification.contentView.setTextViewText(R.id.tv, "进度" + progress + "%");
 	        nManager.notify(NOTIFICATION_ID, notification);
 	        
 	    	FileOutputStream fos = null; //文件输出流
@@ -838,10 +847,8 @@ public class simpleHome extends Activity {
 	        	byte buf[] = new byte[1024]; //定义下载缓冲区
 	        	readLength = 0; //一次性下载的长度
 	        	Log.i("info", "download start...");
-	        	//向前台发送开始下载广播
-	        	Intent startIntent = new Intent();
-	        	startIntent.setAction("simple.home.downloadstart");
-	        	sendBroadcast(startIntent);
+	        	
+	        	oldProgress = 0;
 	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
 	        	while (readLength != -1 && !stopDownload) {
 	        		if (pauseDownload) {
@@ -854,8 +861,13 @@ public class simpleHome extends Activity {
 	                	total_read += readLength; //已下载文件的长度增加
 	            	}
 
-	            	Log.i("info", "download process : " //打印下载进度
-	    	            	+ ((total_read+0.0)/apk_length*100+"").substring(0, 4)+"%");
+                	int progress = (int) ((total_read+0.0)/apk_length*100);
+                	if (oldProgress != progress) {//the device will get no response if update too often
+                		oldProgress = progress;
+                		Log.d("=============", "" + progress);
+                		notification.contentView.setProgressBar(R.id.progress_bar, 100, progress, false);//update download progress
+                		nManager.notify(NOTIFICATION_ID, notification);
+                	}
 	            	
 	            	if (total_read == apk_length) { //当已下载的长度等于网络文件的长度，则下载完成
 	                	stopDownload = true;
@@ -870,7 +882,7 @@ public class simpleHome extends Activity {
 
 	        	}
             	notification.icon = android.R.drawable.stat_sys_download_done;
-    	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);  
+    	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);
     	        nManager.notify(NOTIFICATION_ID, notification);
     	        
 				Intent intent = new Intent();

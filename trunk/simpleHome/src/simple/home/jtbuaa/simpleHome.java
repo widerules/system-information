@@ -216,12 +216,7 @@ public class simpleHome extends Activity {
 		return false;
 	}
 	
-	/*@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-	  super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
-	}*/
-
-	class myListView extends ListView {
+	class myListView extends ListView {//just for reset the back ground. otherwise we can use ListView directly.
 
 		public myListView(Context context) {
 			super(context);

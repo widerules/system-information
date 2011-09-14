@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout 
+<LinearLayout 
 	android:id="@+id/favolist" 
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="horizontal" 
-	android:layout_height="fill_parent" 
-	android:layout_width="fill_parent"
-	android:stretchColumns="1"
-	android:shrinkColumns="1"
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content"
 	android:background="#FFFFFFFF" 
 	android:paddingLeft="5dip"
 	android:paddingRight="5dip">
-	
-    <TableRow>
 	
 	<ImageButton android:id="@+id/favoappicon"
 	    android:focusable="false" 
@@ -23,11 +19,9 @@
     
     <TextView android:id="@+id/favoappname" 
         android:layout_height="fill_parent" 
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:gravity="center_vertical"
         android:textSize="18dip"
-        android:padding="4dip" 
 	    android:textColor="#FF000000"/>
 	
-	</TableRow>
-</TableLayout>
+</LinearLayout>

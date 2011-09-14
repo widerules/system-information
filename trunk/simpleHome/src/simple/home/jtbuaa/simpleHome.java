@@ -114,9 +114,11 @@ public class simpleHome extends Activity {
         switch (id) {
         case 0:
         {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setMax(MAX_PROGRESS);
+        	if (mProgressDialog == null) {
+                mProgressDialog = new ProgressDialog(this);
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setMax(MAX_PROGRESS);
+        	}
             return mProgressDialog;
     	}
         case 1: {
@@ -359,10 +361,12 @@ public class simpleHome extends Activity {
         serverWeb.setWebChromeClient(new WebChromeClient() {
         	@Override
         	public void onProgressChanged(WebView view, int progress) {
-				mProgressDialog.setProgress(progress);
-				if (progress >= MAX_PROGRESS) {
-					mProgressDialog.dismiss();
-				}
+        		if (mProgressDialog != null) {
+    				mProgressDialog.setProgress(progress);
+    				if (progress >= MAX_PROGRESS) {
+    					mProgressDialog.dismiss();
+    				}
+        		}
         	}
 		});
 		serverWeb.setWebViewClient(new WebViewClient() {
@@ -374,15 +378,15 @@ public class simpleHome extends Activity {
 			
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				showDialog(0);
+				if (!url.equals("file:///android_asset/online.html")) showDialog(0);
 				super.onPageStarted(view, url, favicon);
 			}
 			 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				if(mProgressDialog.isShowing()){
-					mProgressDialog.dismiss();
-	            }
+        		if (mProgressDialog != null) {
+    				if(mProgressDialog.isShowing())	mProgressDialog.dismiss();
+        		}
 			}         
 			
 			@Override

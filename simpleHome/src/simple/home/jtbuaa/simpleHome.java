@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -108,7 +109,18 @@ public class simpleHome extends Activity {
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
 	NotificationManager nManager;
+	ArrayList<packageIDpair> downloadAppID;
 
+	class packageIDpair {
+		String packageName;
+		int notificationID;
+		
+		packageIDpair(String name, int id) {
+			packageName = name;
+			notificationID = id;
+		}
+	}
+	
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -322,6 +334,7 @@ public class simpleHome extends Activity {
     	pm = getPackageManager();
     	
     	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    	downloadAppID = new ArrayList();
     	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
@@ -503,6 +516,14 @@ public class simpleHome extends Activity {
         				userAdapter.add(targetApps.get(0));
         		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
                 	}
+            	}
+            	
+            	for (int i = 0; i < downloadAppID.size(); i++) {
+            		if (downloadAppID.get(i).packageName.startsWith(packageName.toLowerCase()))
+            		{
+                		nManager.cancel(downloadAppID.get(i).notificationID);
+                		downloadAppID.remove(i);
+            		}
             	}
             }
 		}
@@ -776,6 +797,7 @@ public class simpleHome extends Activity {
 		private int readLength = 0; //一次性下载的长度(以字节为单位)
 		private int apk_length = 0; //音乐文件的长度(以字节为单位)
 		private boolean stopDownload = false; //是否停止下载，停止下载为true
+		private boolean pauseDownload = false;
 		private Thread downThread; //下载线程
 		private String apkName; //下载的文件名
 		private int NOTIFICATION_ID;
@@ -822,6 +844,11 @@ public class simpleHome extends Activity {
 	        	sendBroadcast(startIntent);
 	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
 	        	while (readLength != -1 && !stopDownload) {
+	        		if (pauseDownload) {
+	        			Thread.sleep(5000);//wait for 5 seconds to check again.
+	        			continue;
+	        		}
+	        		
 	            	if((readLength = is.read(buf))>0){
 	                	fos.write(buf, 0, readLength);
 	                	total_read += readLength; //已下载文件的长度增加
@@ -849,34 +876,31 @@ public class simpleHome extends Activity {
 				Intent intent = new Intent();
 				intent.setAction(Intent.ACTION_VIEW);
 				intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive");
-				intent.putExtra("id", NOTIFICATION_ID);
-				startActivityForResult(intent, 0);
+				downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
+				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
 				
-		} catch (Exception e) {
-        	notification.icon = android.R.drawable.stat_notify_error;
-	        notification.setLatestEventInfo(mContext, apkName, "download fail: " + e.getMessage(), contentIntent);  
-	        nManager.notify(NOTIFICATION_ID, notification);
-	        e.printStackTrace();
-		}
+	    	} catch (Exception e) {
+	    		notification.icon = android.R.drawable.stat_notify_error;
+	    		notification.setLatestEventInfo(mContext, apkName, "download fail: " + e.getMessage(), contentIntent);  
+	    		nManager.notify(NOTIFICATION_ID, notification);
+	    		e.printStackTrace();
+	    	}
 
-		return null;
+	    	return null;
 		}
 
 	}
 	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {//remove notification after install download app
-		Log.d("==================", ""+resultCode);
-        if (resultCode == RESULT_OK) 
- 	        nManager.cancel(data.getIntExtra("id", 1000));
-    }
-	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			if (currentTab == 3)
-				serverWeb.goBack();
+			if (currentTab == 3) serverWeb.goBack();
 			return true;
 		}
 		else return false;
 	}
+	
+	@Override
+    public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
+    }
 }

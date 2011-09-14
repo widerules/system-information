@@ -46,15 +46,20 @@ import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -71,19 +76,20 @@ import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
-public class simpleHome extends Activity {
+public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
 	WebView serverWeb;
 	myGridView favoAppList;
 	ListView sysAppList, userAppList;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
-	FrameLayout mainlayout;
+	ViewFlipper mainlayout;
+	GestureDetector mGestureDetector;
 	List<ResolveInfo> mAllApps;
 	ArrayList mFavoApps, mSysApps, mUserApps;
 	private Button btnFavo, btnSys, btnUser, btnWeb;
-	int currentTab;
 	static int grayColor = 0xFFEEEEEE;
 	static int whiteColor = 0xFFFFFFFF;
 	Context mContext;
@@ -160,7 +166,7 @@ public class simpleHome extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		ri = (ResolveInfo) v.getTag();
-		if (currentTab == 0)
+		if (mainlayout.getDisplayedChild() == 0)
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
@@ -172,7 +178,7 @@ public class simpleHome extends Activity {
 		super.onContextItemSelected(item);
 		switch (item.getItemId()) {
 		case 0:
-			if (currentTab ==0) {
+			if (mainlayout.getDisplayedChild() ==0) {
 				favoAdapter.remove(ri);
 			}
 			else {
@@ -260,46 +266,39 @@ public class simpleHome extends Activity {
 			else if (text.equals(getString(R.string.userapps))) newTab = 2;
 			else if (text.equals(getString(R.string.online))) newTab = 3;
 			
-			if (currentTab != newTab) {
-				switch(currentTab) {
+			if (mainlayout.getDisplayedChild() != newTab) {
+				switch(mainlayout.getDisplayedChild()) {
 				case 0:
 					btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
-					favoAppList.setVisibility(View.INVISIBLE);
 					break;
 				case 1:
 					btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
-					sysAppList.setVisibility(View.INVISIBLE);
 					break;
 				case 2:
 					btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
-					userAppList.setVisibility(View.INVISIBLE);
 					break;
 				case 3:
 					btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
-					serverWeb.setVisibility(View.INVISIBLE);
 					break;
 				}
 				
 				switch(newTab) {
 				case 0:
 					btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
-					favoAppList.setVisibility(View.VISIBLE);
 					break;
 				case 1:
 					btnSys.setBackgroundResource(R.drawable.button_layout_selected);
-					sysAppList.setVisibility(View.VISIBLE);
 					break;
 				case 2:
 					btnUser.setBackgroundResource(R.drawable.button_layout_selected);
-					userAppList.setVisibility(View.VISIBLE);
 					break;
 				case 3:
 					btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
-					serverWeb.setVisibility(View.VISIBLE);
 					break;
 				}
 				
-				currentTab = newTab;
+				while(mainlayout.getDisplayedChild() != newTab)
+					mainlayout.showNext();
 			}
 		}
 	}
@@ -321,7 +320,10 @@ public class simpleHome extends Activity {
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
     	
-        mainlayout = (FrameLayout)findViewById(R.id.mainFrame);
+        mainlayout = (ViewFlipper)findViewById(R.id.mainFrame);
+        mainlayout.setOnTouchListener(this);
+        mainlayout.setLongClickable(true);
+        mGestureDetector = new GestureDetector(this);
         
     	//favorite app tab
     	favoAppList = new myGridView(this);
@@ -330,21 +332,25 @@ public class simpleHome extends Activity {
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
+    	favoAppList.setOnTouchListener(this);
         
     	//system app tab
     	sysAppList = new ListView(this);
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.setScrollingCacheEnabled(false);
+    	sysAppList.setOnTouchListener(this);
         
     	//user app tab
         userAppList = new ListView(this);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.setScrollingCacheEnabled(false);
+        userAppList.setOnTouchListener(this);
         
         //online tab
         serverWeb = new WebView(this);
+        serverWeb.setOnTouchListener(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
@@ -404,14 +410,10 @@ public class simpleHome extends Activity {
     		e.printStackTrace();
     	}    
 
-        currentTab = 0;
-    	sysAppList.setVisibility(View.INVISIBLE);
-        userAppList.setVisibility(View.INVISIBLE);
-		serverWeb.setVisibility(View.INVISIBLE);
-		mainlayout.addView(serverWeb);
-        mainlayout.addView(userAppList);
-        mainlayout.addView(sysAppList);
         mainlayout.addView(favoAppList);
+        mainlayout.addView(sysAppList);
+        mainlayout.addView(userAppList);
+		mainlayout.addView(serverWeb);
         
         btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
         btnFavo.setOnClickListener(mBtnCL);
@@ -885,7 +887,7 @@ public class simpleHome extends Activity {
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			if (currentTab == 3) serverWeb.goBack();
+			if (mainlayout.getDisplayedChild() == 3) serverWeb.goBack();
 			return true;
 		}
 		else return false;
@@ -895,4 +897,102 @@ public class simpleHome extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
     }
+
+
+	@Override
+	public boolean onDown(MotionEvent arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
+		// TODO Auto-generated method stub
+		switch(mainlayout.getDisplayedChild()) {
+		case 0:
+			btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
+			break;
+		case 1:
+			btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
+			break;
+		case 2:
+			btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
+			break;
+		case 3:
+			btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
+			break;
+		}
+		
+		if(e1.getX() > e2.getX()) {
+			// 设置切入动画
+            mainlayout.setInAnimation(AnimationUtils.loadAnimation(
+                    getApplicationContext(), R.anim.slide_in_right));
+            // 设置切出动画
+            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
+                    getApplicationContext(), R.anim.slide_out_left));
+			mainlayout.showPrevious(); //move to left?  
+		}
+		else if(e1.getX() < e2.getX()) {
+			// 设置切入动画
+			mainlayout.setInAnimation(AnimationUtils.loadAnimation(
+                    getApplicationContext(), android.R.anim.slide_in_left));
+            // 设置切出动画
+            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
+                    getApplicationContext(), android.R.anim.slide_out_right));
+			mainlayout.showNext(); //move to right?
+		}
+
+		switch(mainlayout.getDisplayedChild()) {
+		case 0:
+			btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
+			break;
+		case 1:
+			btnSys.setBackgroundResource(R.drawable.button_layout_selected);
+			break;
+		case 2:
+			btnUser.setBackgroundResource(R.drawable.button_layout_selected);
+			break;
+		case 3:
+			btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
+			break;
+		}
+		return true;
+	}
+
+
+	@Override
+	public void onLongPress(MotionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
+			float arg3) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public void onShowPress(MotionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean onTouch(View arg0, MotionEvent event) {
+		// TODO Auto-generated method stub
+		return mGestureDetector.onTouchEvent(event);
+	}
 }

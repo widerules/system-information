@@ -374,25 +374,25 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	//favoAppList.setOnTouchListener(this);
+    	favoAppList.setOnTouchListener(this);
         
     	//system app tab
     	sysAppList = new ListView(this);
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.setScrollingCacheEnabled(false);
-    	//sysAppList.setOnTouchListener(this);
+    	sysAppList.setOnTouchListener(this);
         
     	//user app tab
         userAppList = new ListView(this);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.setScrollingCacheEnabled(false);
-        //userAppList.setOnTouchListener(this);
+        userAppList.setOnTouchListener(this);
         
         //online tab
         serverWeb = new WebView(this);
-        //serverWeb.setOnTouchListener(this);
+        serverWeb.setOnTouchListener(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
@@ -576,7 +576,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	convertView.setBackgroundColor(whiteColor);
             else
             	convertView.setBackgroundColor(grayColor);
-        	//convertView.setBackgroundColor(0x00000000);
             
             final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.appicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
@@ -964,7 +963,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		int oldIndex = mainlayout.getDisplayedChild(); 
 		boolean scroll = false;
 		
-		if(e1.getX() < e2.getX() + 50) {//draw horizontal at least 50 dips
+		if(e2.getX() - e1.getX() > Math.abs(e2.getY() - e1.getY())) {//the finger move on x direction more than y direction, from left to right
 			// 设置切入动画
 			mainlayout.setInAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), android.R.anim.slide_in_left));
@@ -974,7 +973,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			mainlayout.showPrevious(); //move to left
 			scroll = true;
 		}
-		else if(e1.getX() > e2.getX()) {//draw horizontal at least 50 dips
+		else if(e1.getX() - e2.getX() > Math.abs(e1.getY() - e2.getY())) {//the finger move on x direction more than y direction, from right to left
 			// 设置切入动画
             mainlayout.setInAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), R.anim.slide_in_right));

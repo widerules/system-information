@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,8 +31,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.IPackageStatsObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageStats;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -43,6 +47,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -101,6 +106,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	private static final int MAX_PROGRESS = 100;
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
+
+	Method getPackageSizeInfo;
+	IPackageStatsObserver sizeObserver;
 
 	class packageIDpair {
 		String packageName;
@@ -328,9 +336,25 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         
         mContext = this.getBaseContext();
         
-        myPackageName = this.getApplicationInfo().packageName;
+        myPackageName = this.getPackageName();
 
     	pm = getPackageManager();
+    	
+        try {
+        	getPackageSizeInfo = PackageManager.class.getMethod(
+        		    "getPackageSizeInfo", String.class, IPackageStatsObserver.class);
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+        
+    	sizeObserver = new IPackageStatsObserver.Stub() {
+			@Override
+			public void onGetStatsCompleted(PackageStats pStats,
+					boolean succeeded) throws RemoteException {
+				// TODO Auto-generated method stub
+				Log.d("=================", "codeSize: " + pStats.codeSize);
+			}
+		};
     	
     	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     	downloadAppID = new ArrayList();
@@ -736,6 +760,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    			mSysApps.add(ri);
 	    		else mUserApps.add(ri);
 	    		
+	    		try {
+					getPackageSizeInfo.invoke(pm, ri.activityInfo.packageName, sizeObserver);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 	    		//if (ri.filter.hasAction(Intent.ACTION_DIAL)) //phone, message, contact, ... should add to favorite
 	    			//mFavoApps.add(ri);
 	    	}

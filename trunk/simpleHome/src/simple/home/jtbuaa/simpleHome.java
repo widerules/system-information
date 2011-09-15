@@ -238,8 +238,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        }
 	        else if ((scalew < scaleh) && (scalew < 1)) x = (oldbmp.getWidth() - w) / 2;//centerize the pic.
 	        matrix.postScale(scalew, scalew);
-	        //Bitmap newbmp = Bitmap.createBitmap(oldbmp, x, y, w, h, matrix, true);//wrong for some pic?
-	        Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, w, h, matrix, true);
+	        Bitmap newbmp = Bitmap.createBitmap(oldbmp, x, y, w, h, matrix, true);//wrong for some pic?
+	        //Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, w, h, matrix, true);
 	        BitmapDrawable bd = new BitmapDrawable(newbmp);
 	        
 			setBackgroundDrawable(bd);
@@ -339,7 +339,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	setContentView(R.layout.ads);
     	
         mainlayout = (ViewFlipper)findViewById(R.id.mainFrame);
-        //mainlayout.setOnTouchListener(this);
+        mainlayout.setOnTouchListener(this);
         mainlayout.setLongClickable(true);
         mGestureDetector = new GestureDetector(this);
         

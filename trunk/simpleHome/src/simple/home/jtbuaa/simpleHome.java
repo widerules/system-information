@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -106,9 +107,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	private static final int MAX_PROGRESS = 100;
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
+	HashMap<String, Object> packagesSize;
 
 	Method getPackageSizeInfo;
 	IPackageStatsObserver sizeObserver;
+	static int sizeM = 1024*1024; 
 
 	class packageIDpair {
 		String packageName;
@@ -351,10 +354,17 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onGetStatsCompleted(PackageStats pStats,
 					boolean succeeded) throws RemoteException {
-				// TODO Auto-generated method stub
-				Log.d("=================", "codeSize: " + pStats.codeSize);
+				
+				long size = pStats.codeSize + pStats.cacheSize + pStats.dataSize;
+		        String ssize = new String();
+		        if (size > 10 * sizeM) 		ssize = " (" + size / sizeM + "M)";
+		        else if (size > 10 * 1024)	ssize = " (" + size / 1024 + "K)";
+		        else if (size > 0)			ssize = " (" + size + "B)";
+		        else 						ssize = "";
+				packagesSize.put(pStats.packageName, ssize);
 			}
 		};
+		packagesSize = new HashMap<String, Object>();
     	
     	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     	downloadAppID = new ArrayList();
@@ -528,6 +538,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		}
             }
             else if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
+	    		try {//get size of new installed package
+					getPackageSizeInfo.invoke(pm, packageName, sizeObserver);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
             	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
             	mainIntent.setPackage(packageName);
@@ -544,7 +560,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 	}
             	}
             	
-            	for (int i = 0; i < downloadAppID.size(); i++) {
+            	for (int i = 0; i < downloadAppID.size(); i++) {//cancel download notification if install succeed
             		if (downloadAppID.get(i).packageName.startsWith(packageName.toLowerCase()))
             		{
                 		nManager.cancel(downloadAppID.get(i).notificationID);
@@ -615,8 +631,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             });
             lapp.setTag(info);
             registerForContextMenu(lapp);
+            lapp.setOnTouchListener(simpleHome.this);
             
-            textView1.setText(info.loadLabel(pm));
+            Object o = packagesSize.get(info.activityInfo.packageName);
+            if (o != null)
+           		textView1.setText(info.loadLabel(pm) + o.toString());//not very precise
+            else 
+            	textView1.setText(info.loadLabel(pm));
+            
             textView1.setTextColor(0xFF000000);
         	List appList = am.getRunningAppProcesses();
         	for (int i = 0; i < appList.size(); i++) {

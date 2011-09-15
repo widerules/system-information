@@ -297,8 +297,26 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					break;
 				}
 				
-				while(mainlayout.getDisplayedChild() != newTab)
-					mainlayout.showNext();
+				if (mainlayout.getDisplayedChild() > newTab) {//move to left if newTab is on the left
+					// 设置切入动画
+					mainlayout.setInAnimation(AnimationUtils.loadAnimation(
+		                    getApplicationContext(), android.R.anim.slide_in_left));
+		            // 设置切出动画
+		            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
+		                    getApplicationContext(), android.R.anim.slide_out_right));
+					while(mainlayout.getDisplayedChild() != newTab)
+						mainlayout.showPrevious();
+				}
+				else {//move to right if newTab is on the right
+					// 设置切入动画
+		            mainlayout.setInAnimation(AnimationUtils.loadAnimation(
+		                    getApplicationContext(), R.anim.slide_in_right));
+		            // 设置切出动画
+		            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
+		                    getApplicationContext(), R.anim.slide_out_left));
+					while(mainlayout.getDisplayedChild() != newTab)
+						mainlayout.showNext();
+				}
 			}
 		}
 	}
@@ -321,7 +339,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	setContentView(R.layout.ads);
     	
         mainlayout = (ViewFlipper)findViewById(R.id.mainFrame);
-        mainlayout.setOnTouchListener(this);
+        //mainlayout.setOnTouchListener(this);
         mainlayout.setLongClickable(true);
         mGestureDetector = new GestureDetector(this);
         
@@ -332,25 +350,25 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	favoAppList.setOnTouchListener(this);
+    	//favoAppList.setOnTouchListener(this);
         
     	//system app tab
     	sysAppList = new ListView(this);
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.setScrollingCacheEnabled(false);
-    	sysAppList.setOnTouchListener(this);
+    	//sysAppList.setOnTouchListener(this);
         
     	//user app tab
         userAppList = new ListView(this);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.setScrollingCacheEnabled(false);
-        userAppList.setOnTouchListener(this);
+        //userAppList.setOnTouchListener(this);
         
         //online tab
         serverWeb = new WebView(this);
-        serverWeb.setOnTouchListener(this);
+        //serverWeb.setOnTouchListener(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
@@ -912,23 +930,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if (e1.getX() == e2.getX()) return false;
 		else if ((e1.getX() < e2.getX()) && (mainlayout.getDisplayedChild() == 0)) return false;//don't show previous for first view
 		else if ((e1.getX() > e2.getX()) && (mainlayout.getDisplayedChild() == mainlayout.getChildCount()-1)) return false;//don't show next for the last view
+
+		int oldIndex = mainlayout.getDisplayedChild(); 
+		boolean scroll = false;
 		
-		switch(mainlayout.getDisplayedChild()) {
-		case 0:
-			btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
-			break;
-		case 1:
-			btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
-			break;
-		case 2:
-			btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
-			break;
-		case 3:
-			btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
-			break;
-		}
-		
-		if(e1.getX() < e2.getX()) {
+		if(e1.getX() < e2.getX() + 50) {//draw horizontal at least 50 dips
 			// 设置切入动画
 			mainlayout.setInAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), android.R.anim.slide_in_left));
@@ -936,8 +942,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), android.R.anim.slide_out_right));
 			mainlayout.showPrevious(); //move to left
+			scroll = true;
 		}
-		else if(e1.getX() > e2.getX()) {
+		else if(e1.getX() > e2.getX()) {//draw horizontal at least 50 dips
 			// 设置切入动画
             mainlayout.setInAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), R.anim.slide_in_right));
@@ -945,23 +952,42 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), R.anim.slide_out_left));
 			mainlayout.showNext(); //move to right
+			scroll = true;
 		}
 
-		switch(mainlayout.getDisplayedChild()) {
-		case 0:
-			btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
-			break;
-		case 1:
-			btnSys.setBackgroundResource(R.drawable.button_layout_selected);
-			break;
-		case 2:
-			btnUser.setBackgroundResource(R.drawable.button_layout_selected);
-			break;
-		case 3:
-			btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
-			break;
+		if (scroll) {
+			switch(oldIndex) {
+			case 0:
+				btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
+				break;
+			case 1:
+				btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
+				break;
+			case 2:
+				btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
+				break;
+			case 3:
+				btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
+				break;
+			}
+			
+			switch(mainlayout.getDisplayedChild()) {
+			case 0:
+				btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
+				break;
+			case 1:
+				btnSys.setBackgroundResource(R.drawable.button_layout_selected);
+				break;
+			case 2:
+				btnUser.setBackgroundResource(R.drawable.button_layout_selected);
+				break;
+			case 3:
+				btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
+				break;
+			}
+			return true;
 		}
-		return true;
+		else return false;
 	}
 
 

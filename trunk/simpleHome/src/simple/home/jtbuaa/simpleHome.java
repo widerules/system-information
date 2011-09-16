@@ -103,12 +103,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	favoAppAdapter favoAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo ri;
+	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
+	
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
+	
 	HashMap<String, Object> packagesSize;
-
 	Method getPackageSizeInfo;
 	IPackageStatsObserver sizeObserver;
 	static int sizeM = 1024*1024; 
@@ -630,13 +632,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					}
 				}
             });
-            lapp.setTag(info);
-            registerForContextMenu(lapp);
             lapp.setOnTouchListener(simpleHome.this);
             
             Object o = packagesSize.get(info.activityInfo.packageName);
             if (o != null)
-           		textView1.setText(info.loadLabel(pm) + o.toString());//not very precise
+           		textView1.setText(info.loadLabel(pm) + o.toString());//the size is not very precise
             else 
             	textView1.setText(info.loadLabel(pm));
             
@@ -650,6 +650,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         			break;
         		}
         	}
+        	textView1.setTag(info);
+            registerForContextMenu(textView1);
             
             final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
             btnVersion.setVisibility(View.VISIBLE);

@@ -407,6 +407,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+        webSettings.setDefaultTextEncodingName("utf-8");
         //webSettings.setSupportZoom(true); //设置可以支持缩放         
         // webSettings.setDefaultZoom(.ZoomDensity.FAR); //设置默认缩放方式尺寸是far  
         //webSettings.setBuiltInZoomControls(true);//设置出现缩放工具 
@@ -743,6 +744,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             });
             textView1.setTag(info);
             registerForContextMenu(textView1);
+            textView1.setOnTouchListener(simpleHome.this);
             
             textView1.setText(info.loadLabel(pm));
             textView1.setTextColor(0xFF000000);
@@ -985,7 +987,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		int oldIndex = mainlayout.getDisplayedChild(); 
 		boolean scroll = false;
 		
-		if(e2.getX() - e1.getX() > Math.abs(e2.getY() - e1.getY())) {//the finger move on x direction more than y direction, from left to right
+		if(e2.getX() - e1.getX() > 100 + Math.abs(e2.getY() - e1.getY())) {//the finger move on x direction more than y direction, from left to right
 			// 设置切入动画
 			mainlayout.setInAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), android.R.anim.slide_in_left));
@@ -995,7 +997,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			mainlayout.showPrevious(); //move to left
 			scroll = true;
 		}
-		else if(e1.getX() - e2.getX() > Math.abs(e1.getY() - e2.getY())) {//the finger move on x direction more than y direction, from right to left
+		else if(e1.getX() - e2.getX() > 100 + Math.abs(e1.getY() - e2.getY())) {//the finger move on x direction more than y direction, from right to left
 			// 设置切入动画
             mainlayout.setInAnimation(AnimationUtils.loadAnimation(
                     getApplicationContext(), R.anim.slide_in_right));

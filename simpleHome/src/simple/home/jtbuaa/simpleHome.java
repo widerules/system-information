@@ -311,22 +311,22 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 				
 				if (mainlayout.getDisplayedChild() > newTab) {//move to left if newTab is on the left
-					// 设置切入动画
+					/*// 设置切入动画
 					mainlayout.setInAnimation(AnimationUtils.loadAnimation(
 		                    getApplicationContext(), android.R.anim.slide_in_left));
 		            // 设置切出动画
 		            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
-		                    getApplicationContext(), android.R.anim.slide_out_right));
+		                    getApplicationContext(), android.R.anim.slide_out_right));*/
 					while(mainlayout.getDisplayedChild() != newTab)
 						mainlayout.showPrevious();
 				}
 				else {//move to right if newTab is on the right
-					// 设置切入动画
+					/*// 设置切入动画
 		            mainlayout.setInAnimation(AnimationUtils.loadAnimation(
 		                    getApplicationContext(), R.anim.slide_in_right));
 		            // 设置切出动画
 		            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
-		                    getApplicationContext(), R.anim.slide_out_left));
+		                    getApplicationContext(), R.anim.slide_out_left));*/
 					while(mainlayout.getDisplayedChild() != newTab)
 						mainlayout.showNext();
 				}
@@ -375,7 +375,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	setContentView(R.layout.ads);
     	
         mainlayout = (ViewFlipper)findViewById(R.id.mainFrame);
-        mainlayout.setOnTouchListener(this);
+        //mainlayout.setOnTouchListener(this);
         mainlayout.setLongClickable(true);
         mGestureDetector = new GestureDetector(this);
         
@@ -386,25 +386,25 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	favoAppList.setOnTouchListener(this);
+    	//favoAppList.setOnTouchListener(this);
         
     	//system app tab
     	sysAppList = new ListView(this);
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.setScrollingCacheEnabled(false);
-    	sysAppList.setOnTouchListener(this);
+    	//sysAppList.setOnTouchListener(this);
         
     	//user app tab
         userAppList = new ListView(this);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.setScrollingCacheEnabled(false);
-        userAppList.setOnTouchListener(this);
+        //userAppList.setOnTouchListener(this);
         
         //online tab
         serverWeb = new WebView(this);
-        serverWeb.setOnTouchListener(this);
+        //serverWeb.setOnTouchListener(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
@@ -632,7 +632,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					}
 				}
             });
-            lapp.setOnTouchListener(simpleHome.this);
+        	lapp.setTag(info);
+            registerForContextMenu(lapp);
+            //lapp.setOnTouchListener(simpleHome.this);
             
             Object o = packagesSize.get(info.activityInfo.packageName);
             if (o != null)
@@ -650,8 +652,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         			break;
         		}
         	}
-        	textView1.setTag(info);
-            registerForContextMenu(textView1);
             
             final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
             btnVersion.setVisibility(View.VISIBLE);
@@ -746,7 +746,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             });
             textView1.setTag(info);
             registerForContextMenu(textView1);
-            textView1.setOnTouchListener(simpleHome.this);
+            //textView1.setOnTouchListener(simpleHome.this);
             
             textView1.setText(info.loadLabel(pm));
             textView1.setTextColor(0xFF000000);

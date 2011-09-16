@@ -181,7 +181,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
-			menu.add(0, 1, 0, getString(R.string.backup)).setEnabled(false);
+			menu.add(0, 1, 0, getString(R.string.backup)).setVisible(false);
 		}
 	}
 	

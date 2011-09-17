@@ -382,6 +382,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	//favorite app tab
     	favoAppList = new myGridView(this);
     	favoAppList.setNumColumns(GridView.AUTO_FIT);
+    	//favoAppList.setColumnWidth(180);
     	favoAppList.setVerticalScrollBarEnabled(false);
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
@@ -821,6 +822,17 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				// TODO Auto-generated catch block
 			}
 
+			String filePath = Environment.getExternalStorageDirectory() + "/simpleHome";   
+			java.io.File myFilePath = new java.io.File(filePath);
+			try
+			{
+			    if(myFilePath.isDirectory()) ;//folder exist
+			    else myFilePath.mkdir();//create folder
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+			   
 			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
 			
@@ -886,7 +898,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	try {
 	        	url = new URL(URL_str); //网络歌曲的url
 	        	HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection(); //打开网络连接
-	        	download_file = new File(Environment.getExternalStorageDirectory()+ "/" + apkName);
+	        	download_file = new File(Environment.getExternalStorageDirectory() + "/simpleHome/" + apkName);
 	        	fos = new FileOutputStream(download_file, false); //初始化文件输出流
 	        	fis = new FileInputStream(download_file); //初始化文件输入流
 	        	total_read = fis.available(); //初始化“已下载部分”的长度，此处应为0

@@ -883,7 +883,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	NOTIFICATION_ID = random.nextInt() + 1000;
 
 	    	notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
-	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, getIntent(), 0);  
+			
+	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, null, 0);  
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
 	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
 	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
@@ -949,13 +950,16 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	        	}
             	notification.icon = android.R.drawable.stat_sys_download_done;
+    	        
+    			Intent intent = new Intent();
+    			intent.setAction(Intent.ACTION_VIEW);
+    			intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive");
+    	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
+    	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
     	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);
     	        nManager.notify(NOTIFICATION_ID, notification);
     	        
-				Intent intent = new Intent();
-				intent.setAction(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive");
-				downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
+    			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
 				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
 				
 	    	} catch (Exception e) {

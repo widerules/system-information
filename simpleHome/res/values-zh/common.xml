@@ -25,5 +25,6 @@
     <string name="pause">暂停下载</string>
     <string name="resume">恢复下载</string>
     <string name="stop">取消下载</string>
-    <string name="download_hint">what do you want for the download</string>
+    <string name="download_hint">您现在可以选择\n\n</string>
+    <string name="sorry">抱歉，目前不支持同时下载多个文件。请等待或取消上一个下载任务</string>
 </resources>

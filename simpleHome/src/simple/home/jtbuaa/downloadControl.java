@@ -1,5 +1,6 @@
 package simple.home.jtbuaa;
 
+import simple.home.jtbuaa.simpleHome.DownloadTask;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +11,11 @@ import android.widget.Button;
 
 public class downloadControl extends Activity{
 	Button btnPause, btnStop;
-	boolean pause, stop;
+	boolean pause = false, stop = false;
 	Intent intent;
 	MyApp appstate;
 	int id;
+	DownloadTask dlt;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,9 +27,12 @@ public class downloadControl extends Activity{
         intent = getIntent();
         id = intent.getIntExtra("id", 0);
         Log.d("==============", "id: " + id);
+        dlt = appstate.downloadState.get(id);
         
-        pause = appstate.downloadState.get(id).pauseDownload;
-        stop = appstate.downloadState.get(id).stopDownload;
+        if (dlt != null) {
+        	pause = dlt.pauseDownload;
+        	stop = dlt.stopDownload;
+        }
         
         btnPause = (Button) findViewById(R.id.pause);
 		if (pause) {
@@ -41,8 +46,7 @@ public class downloadControl extends Activity{
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				appstate.downloadState.get(id).pauseDownload = !pause;
+				if (dlt != null) dlt.pauseDownload = !pause;
 				finish();
 			}
         });
@@ -52,7 +56,7 @@ public class downloadControl extends Activity{
 
 			@Override
 			public void onClick(View arg0) {
-				appstate.downloadState.get(id).stopDownload = !stop;
+				if (dlt != null) dlt.stopDownload = !stop;
 				finish();
 			}
         });

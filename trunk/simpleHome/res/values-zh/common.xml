@@ -22,4 +22,8 @@
     <string name="backup">备份到SD卡...</string>
     
     <string name="loading">读取网页...</string>
+    <string name="pause">暂停下载</string>
+    <string name="resume">恢复下载</string>
+    <string name="stop">停止下载</string>
+    <string name="download_hint">what do you want for the download</string>
 </resources>

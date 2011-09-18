@@ -128,8 +128,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case 0:
-        {
+        case 0: {
         	if (mProgressDialog == null) {
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -139,14 +138,22 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	}
             return mProgressDialog;
     	}
-        case 1: {
+        case 1: {//about dialog
         	return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
         			+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)). 
-        	setPositiveButton("Ok",
+        	setPositiveButton(getString(R.string.ok),
 	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
 	          }).create();
+        }
+        case 2: {//sorry dialog
+        	return new AlertDialog.Builder(this).
+        	setMessage("sorry, please wait for last download finished or cancel it before download a new one.").
+        	setPositiveButton(getString(R.string.ok), 
+        	          new DialogInterface.OnClickListener() {
+	        	  public void onClick(DialogInterface dialog, int which) {}
+        	}).create();
         }
         }
         return null;
@@ -448,16 +455,21 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				if (url.substring(url.length()-4).equals(".apk")){
-					String ss[] = url.split("/");
-					String apkName = ss[ss.length-1]; //得到音乐文件的全名(包括后缀)
-					
-			    	Random random = new Random();
-			    	int id = random.nextInt() + 1000;
-			    	
-					DownloadTask dltask = new DownloadTask();
-					dltask.NOTIFICATION_ID = id;
-					appstate.downloadState.put(id, dltask);
-					dltask.execute(url, apkName);
+					if (appstate.downloadState.isEmpty()) {
+						String ss[] = url.split("/");
+						String apkName = ss[ss.length-1]; //得到音乐文件的全名(包括后缀)
+						
+				    	Random random = new Random();
+				    	int id = random.nextInt() + 1000;
+				    	
+						DownloadTask dltask = new DownloadTask();
+						dltask.NOTIFICATION_ID = id;
+						appstate.downloadState.put(id, dltask);
+						dltask.execute(url, apkName);
+					}
+					else {//only support one download a time, for we can't control the pending intent
+						showDialog(2);
+					}
 					return true;
 				}
 				return false;
@@ -891,7 +903,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY);
 	        Log.d("==============", "id: " + NOTIFICATION_ID);
 
-	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
+	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);  
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
 	        
 	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);

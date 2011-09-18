@@ -6,10 +6,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +18,6 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -65,7 +62,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebChromeClient;
@@ -76,7 +72,6 @@ import android.webkit.SslErrorHandler;
 import android.net.http.SslError;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -85,7 +80,6 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-
 
 public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
@@ -113,7 +107,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	//download related
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
-	HashMap<Integer, DownloadTask> downloadState;
+	MyApp appstate;
 	
 	//package size related
 	HashMap<String, Object> packagesSize;
@@ -374,7 +368,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	
     	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     	downloadAppID = new ArrayList();
-    	downloadState = new HashMap<Integer, DownloadTask>();
+    	appstate = ((MyApp) getApplicationContext());
 
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
@@ -462,7 +456,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			    	
 					DownloadTask dltask = new DownloadTask();
 					dltask.NOTIFICATION_ID = id;
-					downloadState.put(id, dltask);
+					appstate.downloadState.put(id, dltask);
 					dltask.execute(url, apkName);
 					return true;
 				}
@@ -506,11 +500,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
-		//for download control
-		filter = new IntentFilter();
-		filter.addAction("simple.home.jtbuaa.downloadBack");
-		registerReceiver(downloadReceiver, filter);
-		
 		//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
@@ -520,31 +509,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     protected void onDestroy() {
     	unregisterReceiver(packageReceiver);
     	unregisterReceiver(wallpaperReceiver);
-    	unregisterReceiver(downloadReceiver);
     	
     	super.onDestroy();
     }
     
-	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-			// TODO Auto-generated method stub
-			try {
-				DownloadTask dt = downloadState.get(intent.getIntent("id"));
-				if (dt != null) {
-					Log.d("================", "id" + dt.NOTIFICATION_ID);
-					dt.pauseDownload = intent.getBooleanExtra("pause", true);
-					dt.stopDownload = intent.getBooleanExtra("stop", true);
-				}
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	
-	};
-	
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -920,10 +888,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			Intent intent = new Intent();
 			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
 			intent.putExtra("id", NOTIFICATION_ID);
-			intent.putExtra("stop", stopDownload);
-			intent.putExtra("pause", pauseDownload);
 	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
+	        
 	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
 	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
 	        notification.contentView.setTextViewText(R.id.progress, "0%");
@@ -958,7 +925,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
 	        	while (readLength != -1 && !stopDownload) {
 	        		if (pauseDownload) {
-	        			Thread.sleep(5000);//wait for 5 seconds to check again.
+	        			//Thread.sleep(5000);//wait for 5 seconds to check again.
 	        			continue;
 	        		}
 	        		
@@ -976,7 +943,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 	}
 	            	
 	            	if (total_read == apk_length) { //当已下载的长度等于网络文件的长度，则下载完成
-	            		stopDownload = true;
 	                	Log.i("info", "download complete...");
 	            	}
 
@@ -987,18 +953,23 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	is.close();
             	httpConnection.disconnect();
             	
-            	notification.icon = android.R.drawable.stat_sys_download_done;
-    	        
-    			intent = new Intent();
-    			intent.setAction(Intent.ACTION_VIEW);
-    			intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive");
-    	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
-    	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
-    	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);//click listener for download progress bar
-    	        nManager.notify(NOTIFICATION_ID, notification);
-    	        
-    			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
-				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
+            	if (stopDownload) {//stop download by user. clear notification
+            		nManager.cancel(NOTIFICATION_ID);
+            	}
+            	else {//download success. change notification, start package manager to install package
+                	notification.icon = android.R.drawable.stat_sys_download_done;
+        	        
+        			intent = new Intent();
+        			intent.setAction(Intent.ACTION_VIEW);
+        			intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive");
+        	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
+        	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
+        	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);//click listener for download progress bar
+        	        nManager.notify(NOTIFICATION_ID, notification);
+        	        
+        			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
+    				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
+            	}
 				
 	    	} catch (Exception e) {
 	    		notification.icon = android.R.drawable.stat_notify_error;

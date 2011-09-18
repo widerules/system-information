@@ -888,6 +888,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			Intent intent = new Intent();
 			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
 			intent.putExtra("id", NOTIFICATION_ID);
+			intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY);
+	        Log.d("==============", "id: " + NOTIFICATION_ID);
+
 	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
 	        
@@ -953,6 +956,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	is.close();
             	httpConnection.disconnect();
             	
+            	appstate.downloadState.remove(NOTIFICATION_ID);
             	if (stopDownload) {//stop download by user. clear notification
             		nManager.cancel(NOTIFICATION_ID);
             	}

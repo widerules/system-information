@@ -24,6 +24,6 @@
     <string name="loading">Loading...</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
-    <string name="stop">Stop</string>
+    <string name="stop">Cancel</string>
     <string name="download_hint">what do you want for the download</string>
 </resources>

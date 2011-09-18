@@ -24,6 +24,7 @@ public class downloadControl extends Activity{
         
         intent = getIntent();
         id = intent.getIntExtra("id", 0);
+        Log.d("==============", "id: " + id);
         
         pause = appstate.downloadState.get(id).pauseDownload;
         stop = appstate.downloadState.get(id).stopDownload;
@@ -57,4 +58,5 @@ public class downloadControl extends Activity{
         });
 
 	}
+	
 }

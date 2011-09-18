@@ -26,6 +26,14 @@
                   android:label="@string/app_name">
         </activity>
                   
+        <activity android:name=".downloadControl"
+                  android:label="@string/app_name">
+            <intent-filter>
+            	<action android:name="simple.home.jtbuaa.downloadControl"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
         <activity android:name="com.google.ads.AdActivity"
                   android:configChanges="keyboard|keyboardHidden">
         </activity>

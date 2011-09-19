@@ -100,7 +100,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
-	ResolveInfo ri;
+	ResolveInfo selected_ri, phone_ri, sms_ri, contact_ri;
+	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
+
 	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
@@ -186,7 +188,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		ri = (ResolveInfo) v.getTag();
+		selected_ri = (ResolveInfo) v.getTag();
 		if (mainlayout.getDisplayedChild() == 0)
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
@@ -200,11 +202,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		switch (item.getItemId()) {
 		case 0:
 			if (mainlayout.getDisplayedChild() ==0) {
-				favoAdapter.remove(ri);
+				favoAdapter.remove(selected_ri);
 			}
 			else {
-				if (favoAdapter.getPosition(ri) < 0) {
-					favoAdapter.add(ri);
+				if (favoAdapter.getPosition(selected_ri) < 0) {
+					favoAdapter.add(selected_ri);
 					favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
 					}
 			}
@@ -501,14 +503,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
 
-		ImageView shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
-		shortcut_phone.setImageDrawable(pi.applicationInfo.loadIcon(pm));
-		
-		ImageView shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
-		shortcut_sms.setImageDrawable(pi.applicationInfo.loadIcon(pm));
-		
-		ImageView shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
-		shortcut_contact.setImageDrawable(pi.applicationInfo.loadIcon(pm));
+		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
+		shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
+		shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
 		
 		//for package add/remove
 		IntentFilter filter = new IntentFilter();
@@ -810,8 +807,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
-	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM)
+	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 	    			mSysApps.add(ri);
+	    			String name = ri.activityInfo.name.toLowerCase(); 
+	    			Log.d("==============", name);
+	    			if (name.contains("mms")) sms_ri = ri;
+	    			else if (name.contains("dial") || name.contains("phone")) phone_ri = ri;
+	    			else if (name.contains("contact")) contact_ri = ri;
+	    		}
 	    		else mUserApps.add(ri);
 	    		
 	    		try {
@@ -820,8 +823,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					e.printStackTrace();
 				}
 				
-	    		//if (ri.filter.hasAction(Intent.ACTION_DIAL)) //phone, message, contact, ... should add to favorite
-	    			//mFavoApps.add(ri);
 	    	}
 	    	
 	    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
@@ -884,6 +885,63 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
         	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
         	favoAppList.setAdapter(favoAdapter);
+        	
+    		if (phone_ri != null) {
+    			shortcut_phone.setImageDrawable(phone_ri.loadIcon(pm));
+    			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
+    				@Override
+    				public void onClick(View arg0) {
+    					Intent i = new Intent(Intent.ACTION_MAIN);
+    					i.setComponent(new ComponentName(
+    							phone_ri.activityInfo.applicationInfo.packageName,
+    							phone_ri.activityInfo.name));
+    					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
+    					try {
+    						startActivity(i);
+    					} catch(Exception e) {
+    						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+    					}
+    				}
+    			});
+    		}
+    		
+    		if (sms_ri != null) {
+    			shortcut_sms.setImageDrawable(sms_ri.loadIcon(pm));
+    			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
+    				@Override
+    				public void onClick(View arg0) {
+    					Intent i = new Intent(Intent.ACTION_MAIN);
+    					i.setComponent(new ComponentName(
+    							sms_ri.activityInfo.applicationInfo.packageName,
+    							sms_ri.activityInfo.name));
+    					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
+    					try {
+    						startActivity(i);
+    					} catch(Exception e) {
+    						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+    					}
+    				}
+    			});
+    		}
+    		
+    		if (contact_ri != null) {
+    			shortcut_contact.setImageDrawable(contact_ri.loadIcon(pm));
+    			shortcut_contact.setOnClickListener(new OnClickListener() {//start app
+    				@Override
+    				public void onClick(View arg0) {
+    					Intent i = new Intent(Intent.ACTION_MAIN);
+    					i.setComponent(new ComponentName(
+    							contact_ri.activityInfo.applicationInfo.packageName,
+    							contact_ri.activityInfo.name));
+    					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
+    					try {
+    						startActivity(i);
+    					} catch(Exception e) {
+    						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+    					}
+    				}
+    			});
+    		}
         }
     };
 

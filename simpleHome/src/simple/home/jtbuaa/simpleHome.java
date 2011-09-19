@@ -805,9 +805,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
 
 	    	//read all resolveinfo
-	    	String label_sms = "簡訊 Messaging 信息 消息 메시지"; //use label name to get short cut
-	    	String label_phone = "電話 Phone 电话 拨号 키패드";
-	    	String label_contact = "聯絡人 Contacts 通讯录 전화번호부";
+	    	String label_sms = "簡訊 Messaging メッセージ 信息 消息 메시지  SMS a MMS SMS/MMS Mensajes Messaggi Berichten"; //use label name to get short cut
+	    	String label_phone = "電話 Phone 电话 拨号 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화";
+	    	String label_contact = "聯絡人 Contacts 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {

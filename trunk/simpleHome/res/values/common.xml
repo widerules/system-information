@@ -5,6 +5,7 @@
     <string name="about_dialog">about</string>
     <string name="about_dialog_text2">\njtbuaa@gmail.com\n</string>
     <string name="about_dialog_notes">\nThank you for use SIMPLE HOME. If you like this app, please vote me 5 stars. thanks.\n</string>
+    <string name="help_message">click app name to launch;\n\nclick app icon to kill;\n\nclick app version to uninstall;\n\nlong click app name to add/remove Shortcut.</string>
 
     <string name="changeback">Background...</string>
     <string name="about">About...</string>
@@ -12,13 +13,13 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     
-    <string name="favoriteapps">Favorite</string>        
+    <string name="favoriteapps">Shortcut</string>        
     <string name="systemapps">System</string>        
     <string name="userapps">User</string>        
     <string name="online">Online</string>
     
-    <string name="addtoFavo">Add to Favorite</string>
-    <string name="removeFromFavo">Delete this short cut</string>
+    <string name="addtoFavo">Add to shortcut</string>
+    <string name="removeFromFavo">Delete this shortcut</string>
     <string name="backup">Back up to SDcard...</string>
     
     <string name="loading">Loading...</string>

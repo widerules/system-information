@@ -157,6 +157,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        	  public void onClick(DialogInterface dialog, int which) {}
         	}).create();
         }
+        case 3: {//help dialog
+        	return new AlertDialog.Builder(this).
+        	setMessage(getString(R.string.help_message)).
+        	setPositiveButton(getString(R.string.ok), 
+        	          new DialogInterface.OnClickListener() {
+	        	  public void onClick(DialogInterface dialog, int which) {}
+        	}).create();
+        }
         }
         return null;
 	}
@@ -176,9 +184,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		case 0:
 			break;
 		case 1:
+			showDialog(3);//help dialog
 			break;
 		case 2:
-			showDialog(1);
+			showDialog(1);//about dialog
 			break;
 		}
 		return true;

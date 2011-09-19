@@ -74,6 +74,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RemoteViews;
@@ -349,7 +350,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         mContext = this.getBaseContext();
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
-    	
+    	PackageInfo pi = null;
+        try {
+        	pi = pm.getPackageInfo(myPackageName, 0);
+        	version = "v" + pi.versionName;
+    	} catch (NameNotFoundException e) {
+    		e.printStackTrace();
+    	}    
+
         try {
         	getPackageSizeInfo = PackageManager.class.getMethod(
         		    "getPackageSizeInfo", String.class, IPackageStatsObserver.class);
@@ -476,13 +484,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 		});
 		
-        try {
-        	PackageInfo pi = pm.getPackageInfo(myPackageName, 0);
-        	version = "v" + pi.versionName;
-    	} catch (NameNotFoundException e) {
-    		e.printStackTrace();
-    	}    
-
         mainlayout.addView(favoAppList);
         mainlayout.addView(sysAppList);
         mainlayout.addView(userAppList);
@@ -500,6 +501,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
 
+		ImageView shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
+		shortcut_phone.setImageDrawable(pi.applicationInfo.loadIcon(pm));
+		
+		ImageView shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
+		shortcut_sms.setImageDrawable(pi.applicationInfo.loadIcon(pm));
+		
+		ImageView shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
+		shortcut_contact.setImageDrawable(pi.applicationInfo.loadIcon(pm));
+		
 		//for package add/remove
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);

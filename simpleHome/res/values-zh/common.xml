@@ -21,7 +21,7 @@
     <string name="removeFromFavo">删除快捷方式</string>
     <string name="backup">备份到SD卡...</string>
     
-    <string name="loading">读取网页...</string>
+    <string name="loading">正在读取...</string>
     <string name="pause">暂停下载</string>
     <string name="resume">恢复下载</string>
     <string name="stop">取消下载</string>

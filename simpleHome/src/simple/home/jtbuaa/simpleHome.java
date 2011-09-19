@@ -100,7 +100,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
-	ResolveInfo selected_ri, phone_ri, sms_ri, contact_ri;
+	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 
 	
@@ -136,8 +136,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 mProgressDialog.setMax(MAX_PROGRESS);
-                //mProgressDialog.setTitle(getString(R.string.loading));//android.content.res.Resources$NotFoundException: String resource ID #0x7f050010
-                mProgressDialog.setTitle("loading...");
+                mProgressDialog.setTitle(getString(R.string.loading));//android.content.res.Resources$NotFoundException: String resource ID #0x7f050010
         	}
             return mProgressDialog;
     	}
@@ -152,7 +151,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         }
         case 2: {//sorry dialog
         	return new AlertDialog.Builder(this).
-        	setMessage("sorry, please wait for last download finished or cancel it before download a new one.").
+        	setMessage(getString(R.string.sorry)).
         	setPositiveButton(getString(R.string.ok), 
         	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
@@ -805,15 +804,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	//mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));//may add some strange activity.
 	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
 
+	    	//read all resolveinfo
+	    	String label_sms = "簡訊 Messaging 信息 消息 메시지"; //use label name to get short cut
+	    	String label_phone = "電話 Phone 电话 拨号 키패드";
+	    	String label_contact = "聯絡人 Contacts 通讯录 전화번호부";
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 	    			mSysApps.add(ri);
-	    			String name = ri.activityInfo.name.toLowerCase(); 
-	    			Log.d("==============", name);
-	    			if (name.contains("mms")) sms_ri = ri;
-	    			else if (name.contains("dial") || name.contains("phone")) phone_ri = ri;
-	    			else if (name.contains("contact")) contact_ri = ri;
+	    			String name = ri.loadLabel(pm).toString() ; 
+	    			Log.d("===============", name);
+	    			if (label_sms.contains(name)) ri_sms = ri;
+	    			else if (label_phone.contains(name)) ri_phone = ri;
+	    			else if (label_contact.contains(name)) ri_contact = ri;
 	    		}
 	    		else mUserApps.add(ri);
 	    		
@@ -886,15 +889,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
         	favoAppList.setAdapter(favoAdapter);
         	
-    		if (phone_ri != null) {
-    			shortcut_phone.setImageDrawable(phone_ri.loadIcon(pm));
+    		if (ri_phone != null) {
+    			shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
     					Intent i = new Intent(Intent.ACTION_MAIN);
     					i.setComponent(new ComponentName(
-    							phone_ri.activityInfo.applicationInfo.packageName,
-    							phone_ri.activityInfo.name));
+    							ri_phone.activityInfo.applicationInfo.packageName,
+    							ri_phone.activityInfo.name));
     					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
     					try {
     						startActivity(i);
@@ -905,15 +908,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			});
     		}
     		
-    		if (sms_ri != null) {
-    			shortcut_sms.setImageDrawable(sms_ri.loadIcon(pm));
+    		if (ri_sms != null) {
+    			shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
     					Intent i = new Intent(Intent.ACTION_MAIN);
     					i.setComponent(new ComponentName(
-    							sms_ri.activityInfo.applicationInfo.packageName,
-    							sms_ri.activityInfo.name));
+    							ri_sms.activityInfo.applicationInfo.packageName,
+    							ri_sms.activityInfo.name));
     					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
     					try {
     						startActivity(i);
@@ -924,15 +927,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			});
     		}
     		
-    		if (contact_ri != null) {
-    			shortcut_contact.setImageDrawable(contact_ri.loadIcon(pm));
+    		if (ri_contact != null) {
+    			shortcut_contact.setImageDrawable(ri_contact.loadIcon(pm));
     			shortcut_contact.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
     					Intent i = new Intent(Intent.ACTION_MAIN);
     					i.setComponent(new ComponentName(
-    							contact_ri.activityInfo.applicationInfo.packageName,
-    							contact_ri.activityInfo.name));
+    							ri_contact.activityInfo.applicationInfo.packageName,
+    							ri_contact.activityInfo.name));
     					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
     					try {
     						startActivity(i);

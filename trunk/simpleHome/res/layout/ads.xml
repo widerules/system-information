@@ -82,6 +82,7 @@
 			android:layout_width="35dip"
 			android:layout_alignParentLeft="true"
 			android:scaleType="fitCenter"
+			android:paddingLeft="5dip"
   		/>
 		<ImageView android:id="@+id/shortcut_phone"
 			android:layout_height="35dip" 

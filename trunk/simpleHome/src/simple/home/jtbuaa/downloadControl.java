@@ -10,7 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class downloadControl extends Activity{
-	Button btnPause, btnStop;
+	Button btnPause, btnStop, btnReturn;
 	boolean pause = false, stop = false;
 	Intent intent;
 	MyApp appstate;
@@ -61,6 +61,14 @@ public class downloadControl extends Activity{
 			}
         });
 
+        btnReturn = (Button) findViewById(R.id.just_return);
+        btnReturn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				finish();
+			}
+        });
 	}
 	
 }

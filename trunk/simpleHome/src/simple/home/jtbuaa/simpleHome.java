@@ -814,8 +814,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
 
 	    	//read all resolveinfo
-	    	String label_sms = "簡訊 Messaging メッセージ 信息 消息 메시지  SMS a MMS SMS/MMS Mensajes Messaggi Berichten"; //use label name to get short cut
-	    	String label_phone = "電話 Phone 电话 拨号 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화";
+	    	String label_sms = "簡訊 Messaging メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
+	    	String label_phone = "電話 Phone 电话 拨号 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
 	    	String label_contact = "聯絡人 Contacts 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
@@ -823,9 +823,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    			mSysApps.add(ri);
 	    			String name = ri.loadLabel(pm).toString() ; 
 	    			Log.d("===============", name);
-	    			if (label_sms.contains(name)) ri_sms = ri;
-	    			else if (label_phone.contains(name)) ri_phone = ri;
-	    			else if (label_contact.contains(name)) ri_contact = ri;
+	    			if (label_sms.contains(name)) {
+	    				if ((ri_sms == null) && (!name.equals("MM"))) ri_sms = ri;
+	    			}
+	    			else if (label_phone.contains(name)) {
+	    				if (ri_phone == null) ri_phone = ri;
+	    			}
+	    			else if (label_contact.contains(name)) {
+	    				if (ri_contact == null) ri_contact = ri;
+	    			}
 	    		}
 	    		else mUserApps.add(ri);
 	    		

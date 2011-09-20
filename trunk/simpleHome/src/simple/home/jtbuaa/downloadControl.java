@@ -26,7 +26,7 @@ public class downloadControl extends Activity{
         
         intent = getIntent();
         id = intent.getIntExtra("id", 0);
-        Log.d("==============", "id: " + id);
+        //Log.d("==============", "id: " + id);
         dlt = appstate.downloadState.get(id);
         
         if (dlt != null) {

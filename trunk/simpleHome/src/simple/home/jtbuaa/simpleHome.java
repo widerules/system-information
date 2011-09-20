@@ -822,7 +822,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 	    			mSysApps.add(ri);
 	    			String name = ri.loadLabel(pm).toString() ; 
-	    			Log.d("===============", name);
+	    			//Log.d("===============", name);
 	    			if (label_sms.contains(name)) {
 	    				if ((ri_sms == null) && (!name.equals("MM"))) ri_sms = ri;
 	    			}
@@ -987,7 +987,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
 			intent.putExtra("id", NOTIFICATION_ID);
 			intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY);
-	        Log.d("==============", "id: " + NOTIFICATION_ID);
+	        //Log.d("==============", "id: " + NOTIFICATION_ID);
 
 	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);  
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);

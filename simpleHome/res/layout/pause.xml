@@ -7,6 +7,7 @@
   
     <TextView 
     	android:layout_centerInParent="true"
+    	android:textSize="16dip"
         android:layout_height="wrap_content" 
         android:layout_width="wrap_content"
         android:text="@string/download_hint"/>
@@ -18,14 +19,18 @@
   	android:layout_width="fill_parent"
   	android:layout_height="wrap_content">
   
-      <Button android:id="@+id/stop"
-        android:text="@string/stop"
-        android:layout_height="wrap_content" 
-        android:layout_width="wrap_content"/>
       <Button android:id="@+id/pause"
         android:text="@string/pause"
         android:layout_height="wrap_content" 
-        android:layout_width="wrap_content"/>
+        android:layout_width="140dip"/>
+      <Button android:id="@+id/stop"
+        android:text="@string/stop"
+        android:layout_height="wrap_content" 
+        android:layout_width="140dip"/>
+      <Button android:id="@+id/just_return"
+        android:text="@string/justreturn"
+        android:layout_height="wrap_content" 
+        android:layout_width="140dip"/>
         
 	</LinearLayout>
 	

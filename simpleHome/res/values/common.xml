@@ -24,6 +24,7 @@
     
     <string name="loading">Loading...</string>
     <string name="pause">Pause download</string>
+    <string name="justreturn">Just Return</string>
     <string name="resume">Resume download</string>
     <string name="stop">Cancel download</string>
     <string name="download_hint">what do you want for this download file?\n\n</string>

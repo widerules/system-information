@@ -11,7 +11,7 @@
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
     ads:loadAdOnCreate="true"
-    ads:adUnitId="a14d662bba1e443"
+    ads:adUnitId="a14e79197567476"
     ads:adSize="BANNER"/>
     
 	<View android:id="@+id/white_bar"

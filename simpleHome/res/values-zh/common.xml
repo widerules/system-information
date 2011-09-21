@@ -7,7 +7,7 @@
     <string name="about_dialog_notes">\n感谢使用简洁主屏。如果觉得这个应用对您有帮助，请给我打5颗星，多谢！\n</string>
     <string name="help_message">单击应用名称：启动应用;\n\n单击应用图标：关闭应用;\n\n单击应用版本号：删除应用;\n\n长按应用名称：添加或删除快捷方式.</string>
 
-    <string name="changeback">更换背景</string>
+    <string name="wallpaper">墙纸...</string>
     <string name="about">关于...</string>
     <string name="help">帮助</string>
     <string name="ok">确定</string>

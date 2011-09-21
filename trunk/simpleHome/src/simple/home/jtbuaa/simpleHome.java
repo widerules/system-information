@@ -1,8 +1,10 @@
 package simple.home.jtbuaa;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -568,13 +570,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             			}
             		}
             	}
-        		for (int i = 0; i < favoAdapter.getCount(); i++) {
-        			ResolveInfo info = favoAdapter.getItem(i);
-        			if (info.activityInfo.packageName.equals(packageName)) {
-        				favoAdapter.remove(info);
-        				break;
-        			}
-        		}
+            	if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {//not remove shortcut if it is just replace 
+            		for (int i = 0; i < favoAdapter.getCount(); i++) {
+            			ResolveInfo info = favoAdapter.getItem(i);
+            			if (info.activityInfo.packageName.equals(packageName)) {
+            				favoAdapter.remove(info);
+            				break;
+            			}
+            		}
+            	}
             }
             else if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
 	    		try {//get size of new installed package
@@ -807,35 +811,40 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			mUserApps = new ArrayList<ResolveInfo>();
 			mFavoApps = new ArrayList<ResolveInfo>();
 			
-			FileInputStream fi;
+	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
+	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+
+	    	FileInputStream fi = null;
+	    	ObjectInputStream ois = null;
 			try {//read favorite data
 				fi = mContext.openFileInput("favo");
-				ObjectInputStream ois = new ObjectInputStream(fi);
+				ois = new ObjectInputStream(fi);
 				String activityName;
 				while ((activityName = (String) ois.readObject()) != null) {
+					Log.d("=============", activityName);
 					for (int i = 0; i < mAllApps.size(); i++)
 						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
 							mFavoApps.add(mAllApps.get(i));
 							break;
 						}
 				}
-				ois.close();
-				fi.close();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
+			} catch (EOFException e) {//only when read eof need send out msg.
+				try {
+					ois.close();
+					fi.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	        	Message msgfavo = mAppHandler.obtainMessage();
+	        	msgfavo.what = UPDATE_FAVO;
+	        	mAppHandler.sendMessage(msgfavo);//inform UI thread to update UI.
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-        	Message msgfavo = mAppHandler.obtainMessage();
-        	msgfavo.what = UPDATE_FAVO;
-        	mAppHandler.sendMessage(msgfavo);//inform UI thread to update UI.
             
-	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-	    	//mainIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
-	    	//mainIntent.addCategory(Intent.CATEGORY_HOME);
-	    	//mAllApps.addAll(pm.queryIntentActivities(mainIntent, 0));//may add some strange activity.
-	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
 	    	String label_phone = "電話 Phone 电话 拨号 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";

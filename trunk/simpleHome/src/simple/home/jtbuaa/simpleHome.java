@@ -63,6 +63,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -102,6 +103,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
+	final static int UPDATE_FAVO = 0, UPDATE_USER = 1, UPDATE_RI_PHONE = 2, UPDATE_RI_SMS = 3, UPDATE_RI_CONTACT = 4; 
 
 	
 	ProgressDialog mProgressDialog;
@@ -805,6 +807,27 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			mUserApps = new ArrayList<ResolveInfo>();
 			mFavoApps = new ArrayList<ResolveInfo>();
 			
+			FileInputStream fi;
+			try {//read favorite data
+				fi = mContext.openFileInput("favo");
+				ObjectInputStream ois = new ObjectInputStream(fi);
+				String activityName;
+				while ((activityName = (String) ois.readObject()) != null) {
+					for (int i = 0; i < mAllApps.size(); i++)
+						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
+							mFavoApps.add(mAllApps.get(i));
+							break;
+						}
+				}
+				ois.close();
+				fi.close();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+			}
+        	Message msgfavo = mAppHandler.obtainMessage();
+        	msgfavo.what = UPDATE_FAVO;
+        	mAppHandler.sendMessage(msgfavo);//inform UI thread to update UI.
+            
 	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
@@ -824,13 +847,28 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    			String name = ri.loadLabel(pm).toString() ; 
 	    			//Log.d("===============", name);
 	    			if (label_sms.contains(name)) {
-	    				if ((ri_sms == null) && (!name.equals("MM"))) ri_sms = ri;
+	    				if ((ri_sms == null) && (!name.equals("MM"))) {
+	    					ri_sms = ri;
+	    		        	Message msgsms = mAppHandler.obtainMessage();
+	    		        	msgsms.what = UPDATE_RI_SMS;
+	    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.
+	    				}
 	    			}
 	    			else if (label_phone.contains(name)) {
-	    				if (ri_phone == null) ri_phone = ri;
+	    				if (ri_phone == null) {
+	    					ri_phone = ri;
+	    		        	Message msgphone = mAppHandler.obtainMessage();
+	    		        	msgphone.what = UPDATE_RI_PHONE;
+	    		        	mAppHandler.sendMessage(msgphone);//inform UI thread to update UI.
+	    				}
 	    			}
 	    			else if (label_contact.contains(name)) {
-	    				if (ri_contact == null) ri_contact = ri;
+	    				if (ri_contact == null) {
+	    					ri_contact = ri;
+	    		        	Message msgcontact = mAppHandler.obtainMessage();
+	    		        	msgcontact.what = UPDATE_RI_CONTACT;
+	    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.
+	    				}
 	    			}
 	    		}
 	    		else mUserApps.add(ri);
@@ -842,6 +880,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 				
 	    	}
+        	Message msguser = mAppHandler.obtainMessage();
+        	msguser.what = UPDATE_USER;
+        	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.
 	    	
 	    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
 	    	for (int i = 0; i < packages.size(); i++) {
@@ -850,24 +891,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    		if (intent == null) {//no Launcher activity
 	    		}
 	    	}*/
-
-			FileInputStream fi;
-			try {//read favorite data
-				fi = mContext.openFileInput("favo");
-				ObjectInputStream ois = new ObjectInputStream(fi);
-				String activityName;
-				while ((activityName = (String) ois.readObject()) != null) {
-					for (int i = 0; i < mAllApps.size(); i++)
-						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
-							mFavoApps.add(mAllApps.get(i));
-							break;
-						}
-				}
-				ois.close();
-				fi.close();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-			}
 
 			String filePath = Environment.getExternalStorageDirectory() + "/simpleHome";   
 			java.io.File myFilePath = new java.io.File(filePath);
@@ -883,9 +906,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
 			
-        	Message msg = mAppHandler.obtainMessage();
-        	mAppHandler.sendMessage(msg);//inform UI thread to update UI.
-            
 			return null;
 		}
 	}
@@ -895,16 +915,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     class appHandler extends Handler {
 
         public void handleMessage(Message msg) {
-        	sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
-        	sysAppList.setAdapter(sysAdapter);
-        	
-            userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
-            userAppList.setAdapter(userAdapter);
-
-        	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
-        	favoAppList.setAdapter(favoAdapter);
-        	
-    		if (ri_phone != null) {
+        	switch (msg.what) {
+        	case UPDATE_FAVO:
+            	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
+            	favoAppList.setAdapter(favoAdapter);
+        		break;
+        	case UPDATE_USER:
+            	sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
+            	sysAppList.setAdapter(sysAdapter);
+            	
+                userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
+                userAppList.setAdapter(userAdapter);
+        		break;
+        	case UPDATE_RI_PHONE:
     			shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
     				@Override
@@ -921,9 +944,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     					}
     				}
     			});
-    		}
-    		
-    		if (ri_sms != null) {
+        		break;
+        	case UPDATE_RI_SMS:
     			shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
     				@Override
@@ -940,9 +962,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     					}
     				}
     			});
-    		}
-    		
-    		if (ri_contact != null) {
+        		break;
+        	case UPDATE_RI_CONTACT:
     			shortcut_contact.setImageDrawable(ri_contact.loadIcon(pm));
     			shortcut_contact.setOnClickListener(new OnClickListener() {//start app
     				@Override
@@ -959,7 +980,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     					}
     				}
     			});
-    		}
+        		break;
+        	}
         }
     };
 
@@ -1085,13 +1107,29 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	}
 	
+	/*@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			if (mainlayout.getDisplayedChild() == 3) serverWeb.goBack();
-			return true;
+		if (event.getRepeatCount() == 0) {
+			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
+				if (mainlayout.getDisplayedChild() == 3) serverWeb.goBack();
+				return true;
+			}	
+			//else if ((keyCode == KeyEvent.KEYCODE_HOME)  && !event.isLongPress()) {//press Home key will goto the favorite tab.
+			//	Log.d("==============", "home key");
+			//	btnFavo.performClick();
+			//	return true;
+			//}
 		}
-		else return false;
-	}
+		
+		return false;
+	}*/
+	
+	/*@Override
+	public void onAttachedToWindow()
+	{
+	    this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);//help to get Home key.  
+	    super.onAttachedToWindow();
+	}*/
 	
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {

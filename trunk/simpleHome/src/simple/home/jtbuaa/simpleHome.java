@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -106,7 +109,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	final static int UPDATE_FAVO = 0, UPDATE_USER = 1, UPDATE_RI_PHONE = 2, UPDATE_RI_SMS = 3, UPDATE_RI_CONTACT = 4; 
-
+	AdView adview;
 	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
@@ -293,6 +296,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	class OnBtnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
+			AdRequest adRequest = new AdRequest();
+			adview.loadAd(adRequest);
+			
 			int newTab = 0;
 
 			String text = (String) ((Button) v).getText();
@@ -406,6 +412,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         //mainlayout.setOnTouchListener(this);
         mainlayout.setLongClickable(true);
         mGestureDetector = new GestureDetector(this);
+        
+        adview = (AdView) this.findViewById(R.id.adView);
         
     	//favorite app tab
     	favoAppList = new myGridView(this);

@@ -7,7 +7,7 @@
     <string name="about_dialog_notes">\nThank you for use SIMPLE HOME. If you like this app, please vote me 5 stars. thanks.\n</string>
     <string name="help_message">click app name to launch;\n\nclick app icon to kill;\n\nclick app version to uninstall;\n\nlong click app name to add/remove Shortcut.</string>
 
-    <string name="changeback">Background...</string>
+    <string name="wallpaper">Wallpaper...</string>
     <string name="about">About...</string>
     <string name="help">Help...</string>
     <string name="ok">OK</string>

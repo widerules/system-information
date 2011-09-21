@@ -180,15 +180,17 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.changeback)).setVisible(false);
-    	menu.add(0, 1, 0, getString(R.string.help));
-    	menu.add(0, 2, 0, getString(R.string.about));
+    	menu.add(0, 0, 0, getString(R.string.wallpaper)).setIcon(android.R.drawable.ic_menu_gallery).setAlphabeticShortcut('W');
+    	menu.add(0, 1, 0, getString(R.string.help)).setIcon(android.R.drawable.ic_menu_help).setAlphabeticShortcut('H');
+    	menu.add(0, 2, 0, getString(R.string.about)).setIcon(android.R.drawable.ic_menu_info_details).setAlphabeticShortcut('I');
     	return true;
     }
 	
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()) {
 		case 0:
+	        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
+	        startActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)));
 			break;
 		case 1:
 			showDialog(3);//help dialog

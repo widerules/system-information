@@ -44,8 +44,11 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -260,29 +263,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    }  
 		
 		public void setBackground() {
-			int w = getWidth();
-			int h = getHeight();
-			if ((w <= 0) || (h <= 0)) return;
-	        Log.d("================", "w: " + w + " h: " + h);
-			
-			int x = 0, y = 0;
-	        Bitmap oldbmp = ((BitmapDrawable) getWallpaper()).getBitmap();
-	        Log.d("================", "dw: " + oldbmp.getWidth() + " dh: " + oldbmp.getHeight());
-	        Matrix matrix = new Matrix();   
-	        float scalew = ((float)w) / oldbmp.getWidth();
-	        float scaleh = ((float)h) / oldbmp.getHeight();
-	        Log.d("================", "scalew: " + scalew + " scaleh: " + scaleh);
-	        if (scalew > scaleh) {
-	        	scalew = scaleh;
-	        	if (scalew < 1) y = (oldbmp.getHeight() - h) / 2;
-	        }
-	        else if ((scalew < scaleh) && (scalew < 1)) x = (oldbmp.getWidth() - w) / 2;//centerize the pic.
-	        matrix.postScale(scalew, scalew);
-	        Bitmap newbmp = Bitmap.createBitmap(oldbmp, x, y, w, h, matrix, true);//wrong for some pic?
-	        //Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, w, h, matrix, true);
-	        BitmapDrawable bd = new BitmapDrawable(newbmp);
-	        
-			setBackgroundDrawable(bd);
+			setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
 		}
 	};
 	
@@ -1264,4 +1245,47 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		// TODO Auto-generated method stub
 		return mGestureDetector.onTouchEvent(event);
 	}
+}
+
+/** from Android Home sample
+ * When a drawable is attached to a View, the View gives the Drawable its dimensions
+ * by calling Drawable.setBounds(). In this application, the View that draws the
+ * wallpaper has the same size as the screen. However, the wallpaper might be larger
+ * that the screen which means it will be automatically stretched. Because stretching
+ * a bitmap while drawing it is very expensive, we use a ClippedDrawable instead.
+ * This drawable simply draws another wallpaper but makes sure it is not stretched
+ * by always giving it its intrinsic dimensions. If the wallpaper is larger than the
+ * screen, it will simply get clipped but it won't impact performance.
+ */
+class ClippedDrawable extends Drawable {
+    private final Drawable mWallpaper;
+
+    public ClippedDrawable(Drawable wallpaper) {
+        mWallpaper = wallpaper;
+    }
+
+    @Override
+    public void setBounds(int left, int top, int right, int bottom) {
+        super.setBounds(left, top, right, bottom);
+        // Ensure the wallpaper is as large as it really is, to avoid stretching it
+        // at drawing time
+        mWallpaper.setBounds(left, top, left + mWallpaper.getIntrinsicWidth(),
+                top + mWallpaper.getIntrinsicHeight());
+    }
+
+    public void draw(Canvas canvas) {
+        mWallpaper.draw(canvas);
+    }
+
+    public void setAlpha(int alpha) {
+        mWallpaper.setAlpha(alpha);
+    }
+
+    public void setColorFilter(ColorFilter cf) {
+        mWallpaper.setColorFilter(cf);
+    }
+
+    public int getOpacity() {
+        return mWallpaper.getOpacity();
+    }
 }

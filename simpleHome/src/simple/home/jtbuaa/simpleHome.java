@@ -259,19 +259,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		@Override
 		protected final void onSizeChanged(final int w, final int h,  
 	            final int oldw, final int oldh) {
-			setBackground();
-	    }  
-		
-		public void setBackground() {
 			setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
-		}
+	    }  
 	};
 	
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			favoAppList.setBackground();
+			favoAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
 		}
 	};
 	
@@ -814,7 +810,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				ois = new ObjectInputStream(fi);
 				String activityName;
 				while ((activityName = (String) ois.readObject()) != null) {
-					Log.d("=============", activityName);
+					//Log.d("=============", activityName);
 					for (int i = 0; i < mAllApps.size(); i++)
 						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
 							mFavoApps.add(mAllApps.get(i));
@@ -1107,7 +1103,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	}
 	
-	/*@Override
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
@@ -1122,7 +1118,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		}
 		
 		return false;
-	}*/
+	}
 	
 	/*@Override
 	public void onAttachedToWindow()

@@ -114,7 +114,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	RelativeLayout shortcutBar, adsParent;
-	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
 	AdView adview;
 	
 	ProgressDialog mProgressDialog;
@@ -461,7 +461,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				if (url.substring(url.length()-4).equals(".apk")){
 					if (appstate.downloadState.isEmpty()) {
 						String ss[] = url.split("/");
-						String apkName = ss[ss.length-1]; //得到音乐文件的全名(包括后缀)
+						String apkName = ss[ss.length-1]; //得到apk文件的全名(包括后缀)
 						
 				    	Random random = new Random();
 				    	int id = random.nextInt() + 1000;
@@ -496,16 +496,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
 		mFavoApps = new ArrayList<ResolveInfo>();
+		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
+		favoAppList.setAdapter(favoAdapter);
 		
-    	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
-    	favoAppList.setAdapter(favoAdapter);
-    	
-    	sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
-    	sysAppList.setAdapter(sysAdapter);
-    	
-        userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
-        userAppList.setAdapter(userAdapter);
-
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
         shortcutBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
@@ -891,6 +884,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 				
 	    	}
+        	Message msguser = mAppHandler.obtainMessage();
+        	msguser.what = UPDATE_USER;
+        	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.
 	    	
 	    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
 	    	for (int i = 0; i < packages.size(); i++) {
@@ -933,6 +929,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
         public void handleMessage(Message msg) {
         	switch (msg.what) {
+        	case UPDATE_USER:
+        		sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
+        		sysAppList.setAdapter(sysAdapter);
+        	
+        		userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
+        		userAppList.setAdapter(userAdapter);
+        		break;
         	case UPDATE_RI_PHONE:
     			shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app

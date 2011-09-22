@@ -100,6 +100,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	String version, myPackageName;
 	ViewFlipper mainlayout;
 	GestureDetector mGestureDetector;
+	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList mFavoApps, mSysApps, mUserApps;
 	private Button btnFavo, btnSys, btnUser, btnWeb;
@@ -206,7 +207,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
-			menu.add(0, 1, 0, getString(R.string.backup));
+			menu.add(0, 1, 0, getString(R.string.appdetail));
 		}
 	}
 	
@@ -236,11 +237,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			break;
 		case 1://not implement now
 			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setClassName("com.android.settings", ".InstalledAppDetails");
+			intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
 	        intent.putExtra("pkg", selected_ri.activityInfo.packageName);
-	        // start new activity to display extended information
-	        startActivity(intent);
-
+	        try {
+	        	startActivity(intent);
+	        } catch (Exception e) {
+	        	Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
+	        }
 			break;
 		}
 		return false;
@@ -903,6 +906,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
 			
+	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
+	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
+	    	List<ResolveInfo> viewApps = pm.queryIntentActivities(mainIntent, 0);
+	    	Collections.sort(viewApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+	    	for (int i = 0; i < viewApps.size(); i++) {
+	    		appDetail = viewApps.get(i);
+	    		if (appDetail.activityInfo.name.contains("InstalledAppDetails")) break;//get the activity for app detail setting
+	    	}
+	    	
 			return null;
 		}
 	}

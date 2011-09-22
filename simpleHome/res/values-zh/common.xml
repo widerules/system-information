@@ -21,6 +21,7 @@
     <string name="addtoFavo">添加到快捷方式</string>
     <string name="removeFromFavo">删除快捷方式</string>
     <string name="backup">备份到SD卡...</string>
+    <string name="appdetail">详细信息...</string>
     
     <string name="loading">正在读取...</string>
     <string name="pause">暂停下载</string>

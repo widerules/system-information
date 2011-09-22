@@ -86,6 +86,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,7 +95,7 @@ import android.widget.ViewFlipper;
 public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
 	WebView serverWeb;
-	myGridView favoAppList;
+	GridView favoAppList;
 	ListView sysAppList, userAppList;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
@@ -103,7 +104,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList mFavoApps, mSysApps, mUserApps;
-	private Button btnFavo, btnSys, btnUser, btnWeb;
+	private Button btnSys, btnUser, btnWeb;
 	static int grayColor = 0xFFEEEEEE;
 	static int whiteColor = 0xFFFFFFFF;
 	Context mContext;
@@ -112,6 +113,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
+	RelativeLayout shortcutBar, adsParent;
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2; 
 	AdView adview;
 	
@@ -203,7 +205,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		selected_ri = (ResolveInfo) v.getTag();
-		if (mainlayout.getDisplayedChild() == 0)
+		if (favoAppList.getVisibility() == View.VISIBLE)
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
@@ -215,7 +217,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		super.onContextItemSelected(item);
 		switch (item.getItemId()) {
 		case 0:
-			if (mainlayout.getDisplayedChild() ==0) {
+			if (favoAppList.getVisibility() == View.VISIBLE) {
 				favoAdapter.remove(selected_ri);
 			}
 			else {
@@ -281,38 +283,31 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			int newTab = 0;
 
 			String text = (String) ((Button) v).getText();
-			if (text.equals(getString(R.string.favoriteapps))) newTab = 0;
-			else if (text.equals(getString(R.string.systemapps))) newTab = 1;
-			else if (text.equals(getString(R.string.userapps))) newTab = 2;
-			else if (text.equals(getString(R.string.online))) newTab = 3;
+			if (text.equals(getString(R.string.systemapps))) newTab = 0;
+			else if (text.equals(getString(R.string.userapps))) newTab = 1;
+			else if (text.equals(getString(R.string.online))) newTab = 2;
 			
 			if (mainlayout.getDisplayedChild() != newTab) {
 				switch(mainlayout.getDisplayedChild()) {
 				case 0:
-					btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
-					break;
-				case 1:
 					btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
 					break;
-				case 2:
+				case 1:
 					btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
 					break;
-				case 3:
+				case 2:
 					btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
 					break;
 				}
 				
 				switch(newTab) {
 				case 0:
-					btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
-					break;
-				case 1:
 					btnSys.setBackgroundResource(R.drawable.button_layout_selected);
 					break;
-				case 2:
+				case 1:
 					btnUser.setBackgroundResource(R.drawable.button_layout_selected);
 					break;
-				case 3:
+				case 2:
 					btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
 					break;
 				}
@@ -395,13 +390,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         adview = (AdView) this.findViewById(R.id.adView);
         
     	//favorite app tab
-    	favoAppList = new myGridView(this);
+    	favoAppList = (GridView) findViewById(R.id.favos);
     	favoAppList.setNumColumns(GridView.AUTO_FIT);
-    	//favoAppList.setColumnWidth(180);
     	favoAppList.setVerticalScrollBarEnabled(false);
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
+    	favoAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
     	//favoAppList.setOnTouchListener(this);
         
     	//system app tab
@@ -485,13 +480,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 		});
 		
-        mainlayout.addView(favoAppList);
         mainlayout.addView(sysAppList);
         mainlayout.addView(userAppList);
 		mainlayout.addView(serverWeb);
-        
-        btnFavo = (Button) findViewById(R.id.btnFavoriteApp);
-        btnFavo.setOnClickListener(mBtnCL);
         
         btnSys = (Button) findViewById(R.id.btnSystemApp);
         btnSys.setOnClickListener(mBtnCL);
@@ -515,6 +506,23 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
         userAppList.setAdapter(userAdapter);
 
+        adsParent = (RelativeLayout) findViewById(R.id.adsParent);
+        shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
+        shortcutBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				if (adsParent.getVisibility() == View.VISIBLE) {
+					adsParent.setVisibility(View.INVISIBLE);
+					favoAppList.setVisibility(View.VISIBLE);
+				}
+				else {
+					adsParent.setVisibility(View.VISIBLE);
+					favoAppList.setVisibility(View.INVISIBLE);
+				}
+			}
+        });
+        
 		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
 		shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
 		shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
@@ -1109,7 +1117,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-				if (mainlayout.getDisplayedChild() == 3) serverWeb.goBack();
+				if (mainlayout.getDisplayedChild() == 2) serverWeb.goBack();
 				return true;
 			}	
 			//else if ((keyCode == KeyEvent.KEYCODE_HOME)  && !event.isLongPress()) {//press Home key will goto the favorite tab.
@@ -1176,30 +1184,24 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if (scroll) {
 			switch(oldIndex) {
 			case 0:
-				btnFavo.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			case 1:
 				btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
-			case 2:
+			case 1:
 				btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
-			case 3:
+			case 2:
 				btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
 				break;
 			}
 			
 			switch(mainlayout.getDisplayedChild()) {
 			case 0:
-				btnFavo.setBackgroundResource(R.drawable.button_layout_selected);
-				break;
-			case 1:
 				btnSys.setBackgroundResource(R.drawable.button_layout_selected);
 				break;
-			case 2:
+			case 1:
 				btnUser.setBackgroundResource(R.drawable.button_layout_selected);
 				break;
-			case 3:
+			case 2:
 				btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
 				break;
 			}

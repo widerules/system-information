@@ -111,7 +111,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
-	final static int UPDATE_FAVO = 0, UPDATE_USER = 1, UPDATE_RI_PHONE = 2, UPDATE_RI_SMS = 3, UPDATE_RI_CONTACT = 4; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2; 
 	AdView adview;
 	
 	ProgressDialog mProgressDialog;
@@ -225,10 +225,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				favoAdapter.remove(selected_ri);
 			}
 			else {
-				if (favoAdapter.getPosition(selected_ri) < 0) {
-					favoAdapter.add(selected_ri);
-					favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
-					}
+				favoAdapter.add(selected_ri);
+				favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
 			}
 			try {
 				FileOutputStream fo = this.openFileOutput("favo", 0);
@@ -501,6 +499,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
+
+		mSysApps = new ArrayList<ResolveInfo>();
+		mUserApps = new ArrayList<ResolveInfo>();
+		mFavoApps = new ArrayList<ResolveInfo>();
+		
+    	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
+    	favoAppList.setAdapter(favoAdapter);
+    	
+    	sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
+    	sysAppList.setAdapter(sysAdapter);
+    	
+        userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
+        userAppList.setAdapter(userAdapter);
 
 		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
 		shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
@@ -794,9 +805,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	class InitTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {//do all time consuming work here
-			mSysApps = new ArrayList<ResolveInfo>();
-			mUserApps = new ArrayList<ResolveInfo>();
-			mFavoApps = new ArrayList<ResolveInfo>();
 			
 	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -825,17 +833,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-	        	Message msgfavo = mAppHandler.obtainMessage();
-	        	msgfavo.what = UPDATE_FAVO;
-	        	mAppHandler.sendMessage(msgfavo);//inform UI thread to update UI.
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
             
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
-	    	String label_phone = "電話 Phone 电话 拨号 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
-	    	String label_contact = "聯絡人 Contacts 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
+	    	String label_phone = "電話 Phone 电话 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
+	    	String label_contact = "聯絡人 联系人 Contacts 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
@@ -876,9 +881,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 				
 	    	}
-        	Message msguser = mAppHandler.obtainMessage();
-        	msguser.what = UPDATE_USER;
-        	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.
 	    	
 	    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
 	    	for (int i = 0; i < packages.size(); i++) {
@@ -912,17 +914,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
         public void handleMessage(Message msg) {
         	switch (msg.what) {
-        	case UPDATE_FAVO:
-            	favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
-            	favoAppList.setAdapter(favoAdapter);
-        		break;
-        	case UPDATE_USER:
-            	sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
-            	sysAppList.setAdapter(sysAdapter);
-            	
-                userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
-                userAppList.setAdapter(userAdapter);
-        		break;
         	case UPDATE_RI_PHONE:
     			shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app

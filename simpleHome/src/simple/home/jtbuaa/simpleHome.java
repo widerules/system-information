@@ -141,7 +141,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case 0: {
+        case 0: {//progress dialog
         	if (mProgressDialog == null) {
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -150,26 +150,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	}
             return mProgressDialog;
     	}
-        case 1: {//about dialog
+        case 1: {//help dialog
         	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
+        	setMessage(getString(R.string.app_name) + " " + version + "\n\n"
+        			+ getString(R.string.help_message)
         			+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)). 
-        	setPositiveButton(getString(R.string.ok),
-	          new DialogInterface.OnClickListener() {
-	        	  public void onClick(DialogInterface dialog, int which) {}
-	          }).create();
-        }
-        case 2: {//sorry dialog
-        	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.sorry)).
         	setPositiveButton(getString(R.string.ok), 
         	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
         	}).create();
         }
-        case 3: {//help dialog
+        case 2: {//sorry dialog
         	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.help_message)).
+        	setMessage(getString(R.string.sorry)).
         	setPositiveButton(getString(R.string.ok), 
         	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
@@ -183,9 +176,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
-    	menu.add(0, 0, 0, getString(R.string.wallpaper)).setIcon(android.R.drawable.ic_menu_gallery).setAlphabeticShortcut('W');
-    	menu.add(0, 1, 0, getString(R.string.help)).setIcon(android.R.drawable.ic_menu_help).setAlphabeticShortcut('H');
-    	menu.add(0, 2, 0, getString(R.string.about)).setIcon(android.R.drawable.ic_menu_info_details).setAlphabeticShortcut('I');
+    	menu.add(0, 0, 0, R.string.wallpaper).setIcon(android.R.drawable.ic_menu_gallery).setAlphabeticShortcut('W');
+    	menu.add(0, 1, 0, R.string.settings).setIcon(android.R.drawable.ic_menu_preferences)
+    		.setIntent(new Intent(android.provider.Settings.ACTION_SETTINGS));
+    	menu.add(0, 2, 0, R.string.help).setIcon(android.R.drawable.ic_menu_help).setAlphabeticShortcut('H');
     	return true;
     }
 	
@@ -196,10 +190,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        startActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)));
 			break;
 		case 1:
-			showDialog(3);//help dialog
-			break;
+			return super.onOptionsItemSelected(item);
 		case 2:
-			showDialog(1);//about dialog
+			showDialog(1);
 			break;
 		}
 		return true;
@@ -213,7 +206,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
-			menu.add(0, 1, 0, getString(R.string.backup)).setVisible(false);
+			menu.add(0, 1, 0, getString(R.string.backup));
 		}
 	}
 	
@@ -242,6 +235,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 			break;
 		case 1://not implement now
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setClassName("com.android.settings", ".InstalledAppDetails");
+	        intent.putExtra("pkg", selected_ri.activityInfo.packageName);
+	        // start new activity to display extended information
+	        startActivity(intent);
+
 			break;
 		}
 		return false;

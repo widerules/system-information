@@ -639,7 +639,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             else
             	convertView.setBackgroundColor(grayColor);
             
-            final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.appicon);
+            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
 			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             

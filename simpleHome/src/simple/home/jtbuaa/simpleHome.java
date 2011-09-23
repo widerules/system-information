@@ -121,6 +121,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	private static final int MAX_PROGRESS = 100;
 
 	//download related
+	String downloadPath;
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
@@ -898,16 +899,20 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    		}
 	    	}*/
 
-			String filePath = Environment.getExternalStorageDirectory() + "/simpleHome";   
-			java.io.File myFilePath = new java.io.File(filePath);
-			try
-			{
-			    if(myFilePath.isDirectory()) ;//folder exist
-			    else myFilePath.mkdir();//create folder
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
+        	String status = Environment.getExternalStorageState();
+        	if (status.equals(Environment.MEDIA_MOUNTED)) {
+        		downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/";   
+    			java.io.File myFilePath = new java.io.File(downloadPath);
+    			try
+    			{
+    			    if(myFilePath.isDirectory()) ;//folder exist
+    			    else myFilePath.mkdir();//create folder
+    			}
+    			catch(Exception e) {
+    				e.printStackTrace();
+    			}
+        	} 
+        	else downloadPath = getFilesDir().getPath() + "/";
 			   
 			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
@@ -1032,16 +1037,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        nManager.notify(NOTIFICATION_ID, notification);
 	        
 	    	FileOutputStream fos = null; //文件输出流
-	    	FileInputStream fis = null; //文件输出流
 	    	InputStream is = null; //网络文件输入流
 	    	URL url = null;
 	    	try {
 	        	url = new URL(URL_str); //网络歌曲的url
 	        	HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection(); //打开网络连接
-	        	download_file = new File(Environment.getExternalStorageDirectory() + "/simpleHome/" + apkName);
-	        	fos = new FileOutputStream(download_file, false); //初始化文件输出流
-	        	fis = new FileInputStream(download_file); //初始化文件输入流
-	        	total_read = fis.available(); //初始化“已下载部分”的长度，此处应为0
+        		download_file = new File(downloadPath + apkName);
+        		fos = new FileOutputStream(download_file, false);
+	        	total_read = 0; //初始化“已下载部分”的长度，此处应为0
 	        	apk_length = httpConnection.getContentLength(); //要下载的文件的总长度
 	        	is = httpConnection.getInputStream();
 	        	if (is == null) { //如果下载失败则打印日志，并返回
@@ -1083,7 +1086,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        	}
             	//关闭输入输出流
             	fos.close();
-            	fis.close();
             	is.close();
             	httpConnection.disconnect();
             	
@@ -1096,13 +1098,16 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	        
         			intent = new Intent();
         			intent.setAction(Intent.ACTION_VIEW);
-        			intent.setDataAndType(Uri.fromFile(new File(download_file.getPath())), "application/vnd.android.package-archive");
+        			intent.setDataAndType(Uri.fromFile(download_file), "application/vnd.android.package-archive");
         	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
         	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
         	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);//click listener for download progress bar
         	        nManager.notify(NOTIFICATION_ID, notification);
         	        
         			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
+        			
+   	        		Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//try to change file property     
+   	        		p.waitFor(); 
     				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
             	}
 				

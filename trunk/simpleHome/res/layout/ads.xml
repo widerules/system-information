@@ -5,7 +5,7 @@
     android:layout_height="fill_parent">
     
 	<RelativeLayout android:id="@+id/shortcut_bar"
-  		android:background="@drawable/bar_layout"
+  		android:background="@drawable/bar_layout_revert"
   		android:orientation="horizontal"
   		android:layout_alignParentBottom="true"
   		android:layout_width="fill_parent"

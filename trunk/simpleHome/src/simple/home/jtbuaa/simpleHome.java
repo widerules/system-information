@@ -217,15 +217,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
 		switch (item.getItemId()) {
-		case 0:
+		case 0://add/remove shortcut
 			if (favoAppList.getVisibility() == View.VISIBLE) {
 				favoAdapter.remove(selected_ri);
 			}
-			else {
+			else if (favoAdapter.getPosition(selected_ri) < 0) {
 				favoAdapter.add(selected_ri);
 				favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
 			}
-			try {
+			try {//save shortcut to file
 				FileOutputStream fo = this.openFileOutput("favo", 0);
 				ObjectOutputStream oos = new ObjectOutputStream(fo);
 				for (int i = 0; i < favoAdapter.getCount(); i++) {
@@ -234,9 +234,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				oos.flush();
 				oos.close();
 				fo.close();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-			}
+			} catch (Exception e) {}
 			break;
 		case 1://get app detail info
 			Intent intent;

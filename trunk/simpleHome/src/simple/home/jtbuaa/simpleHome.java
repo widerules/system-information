@@ -752,7 +752,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
             convertView.setBackgroundColor(0);
             
-            final ImageButton btnIcon = (ImageButton) convertView.findViewById(R.id.favoappicon);
+            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.favoappname);
 			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
@@ -915,9 +915,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
 	    	List<ResolveInfo> viewApps = pm.queryIntentActivities(mainIntent, 0);
-	    	Collections.sort(viewApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
 	    	for (int i = 0; i < viewApps.size(); i++) {
 	    		appDetail = viewApps.get(i);
+	    		Log.d("===================", appDetail.activityInfo.name);
 	    		if (appDetail.activityInfo.name.contains("InstalledAppDetails")) break;//get the activity for app detail setting
 	    	}
 	    	
@@ -1122,7 +1122,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-				if (mainlayout.getDisplayedChild() == 2) serverWeb.goBack();
+				if (adsParent.getVisibility() == View.VISIBLE) shortcutBar.performClick();
+				else if (mainlayout.getDisplayedChild() == 2) serverWeb.goBack();
+				
 				return true;
 			}	
 			//else if ((keyCode == KeyEvent.KEYCODE_HOME)  && !event.isLongPress()) {//press Home key will goto the favorite tab.

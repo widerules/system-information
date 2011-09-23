@@ -238,15 +238,24 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				// TODO Auto-generated catch block
 			}
 			break;
-		case 1://not implement now
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
-	        intent.putExtra("pkg", selected_ri.activityInfo.packageName);
-	        try {
+		case 1://get app detail info
+			Intent intent;
+			if (appDetail != null) {
+				intent = new Intent(Intent.ACTION_VIEW);
+				intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
+				intent.putExtra("pkg", selected_ri.activityInfo.packageName);
+				intent.putExtra("com.android.settings.ApplicationPkgName", selected_ri.activityInfo.packageName);
+			}
+			else {//2.6 tahiti change the action.
+				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_ri.activityInfo.packageName, null));
 	        	startActivity(intent);
-	        } catch (Exception e) {
-	        	Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
-	        }
+			}
+			try {
+				startActivity(intent);
+			} catch (Exception e) {
+				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
+			}
+			
 			break;
 		}
 		return false;
@@ -920,10 +929,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
 	    	List<ResolveInfo> viewApps = pm.queryIntentActivities(mainIntent, 0);
+	    	appDetail = null;
 	    	for (int i = 0; i < viewApps.size(); i++) {
-	    		appDetail = viewApps.get(i);
-	    		Log.d("===================", appDetail.activityInfo.name);
-	    		if (appDetail.activityInfo.name.contains("InstalledAppDetails")) break;//get the activity for app detail setting
+	    		if (viewApps.get(i).activityInfo.name.contains("InstalledAppDetails")) {
+	    			appDetail = viewApps.get(i);
+	    			return null;//get the activity for app detail setting
+	    		}
 	    	}
 	    	
 			return null;

@@ -430,7 +430,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	public void onProgressChanged(WebView view, int progress) {
         		if (mProgressDialog != null) {
     				mProgressDialog.setProgress(progress);
-    				if (progress >= MAX_PROGRESS) {
+    				if (progress >= 50) {//50% is ok
     					mProgressDialog.dismiss();
     				}
         		}
@@ -1122,9 +1122,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-				if (adsParent.getVisibility() == View.VISIBLE) shortcutBar.performClick();
-				else if (mainlayout.getDisplayedChild() == 2) serverWeb.goBack();
-				
+				if (adsParent.getVisibility() == View.VISIBLE) { 
+					if ((mainlayout.getDisplayedChild() == 2) && (serverWeb.canGoBack())) serverWeb.goBack();
+					else shortcutBar.performClick();
+				}
 				return true;
 			}	
 			//else if ((keyCode == KeyEvent.KEYCODE_HOME)  && !event.isLongPress()) {//press Home key will goto the favorite tab.

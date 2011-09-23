@@ -9,7 +9,7 @@
 	android:paddingLeft="5dip"
 	android:paddingRight="5dip">
 	
-	<ImageButton android:id="@+id/favoappicon"
+	<ImageView android:id="@+id/favoappicon"
 	    android:focusable="false" 
         android:layout_height="45dip" 
         android:layout_width="45dip"

@@ -113,7 +113,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
-	RelativeLayout shortcutBar, adsParent;
+	RelativeLayout shortcutBar, adsParent, base;
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
 	AdView adview;
 	
@@ -259,25 +259,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		return false;
 	}
 	
-	class myGridView extends GridView {//just for reset the back ground. otherwise we can use ListView directly.
-
-		public myGridView(Context context) {
-			super(context);
-			// TODO Auto-generated constructor stub
-		}
-		
-		@Override
-		protected final void onSizeChanged(final int w, final int h,  
-	            final int oldw, final int oldh) {
-			setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
-	    }  
-	};
-	
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			favoAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
+			base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
 		}
 	};
 	
@@ -404,7 +390,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	favoAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
+    	//favoAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
     	//favoAppList.setOnTouchListener(this);
         
     	//system app tab
@@ -508,6 +494,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		favoAppList.setAdapter(favoAdapter);
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
+        base = (RelativeLayout) findViewById(R.id.base);
+        base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
         shortcutBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override

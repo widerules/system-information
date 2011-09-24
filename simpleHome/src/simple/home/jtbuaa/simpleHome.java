@@ -452,7 +452,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (url.substring(url.length()-4).equals(".apk")){
+				String[] tmp = url.split("\\.");
+				if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
 					if (appstate.downloadState.isEmpty()) {
 						String ss[] = url.split("/");
 						String apkName = ss[ss.length-1]; //得到apk文件的全名(包括后缀)
@@ -909,6 +910,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	} 
         	else downloadPath = getFilesDir().getPath() + "/";
 			   
+        	FileType.initMimeMap();//init the file type map
 			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
 			
@@ -1092,10 +1094,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	}
             	else {//download success. change notification, start package manager to install package
                 	notification.icon = android.R.drawable.stat_sys_download_done;
-        	        
+
+                	String[] tmp = apkName.split("\\.");
         			intent = new Intent();
         			intent.setAction(Intent.ACTION_VIEW);
-        			intent.setDataAndType(Uri.fromFile(download_file), "application/vnd.android.package-archive");
+        			intent.setDataAndType(Uri.fromFile(download_file), FileType.MIMEMAP.get(tmp[tmp.length-1].toUpperCase()));
         	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
         	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
         	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);//click listener for download progress bar

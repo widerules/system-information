@@ -516,12 +516,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				if (adsParent.getVisibility() == View.VISIBLE) {
 					adsParent.setVisibility(View.INVISIBLE);
 					favoAppList.setVisibility(View.VISIBLE);
-					shortcutBar.setBackgroundResource(R.drawable.bar_layout_revert);
+					shortcutBar.setBackgroundResource(R.drawable.shortcut_bar_layout_revert);
 				}
 				else {
 					adsParent.setVisibility(View.VISIBLE);
 					favoAppList.setVisibility(View.INVISIBLE);
-					shortcutBar.setBackgroundResource(R.drawable.bar_layout);
+					shortcutBar.setBackgroundResource(R.drawable.shortcut_bar_layout);
 				}
 			}
         });

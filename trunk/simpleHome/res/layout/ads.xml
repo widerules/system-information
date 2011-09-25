@@ -33,6 +33,14 @@
   		/>
 	</RelativeLayout>
 	
+	<ListView android:id="@+id/business"
+		android:layout_alignParentRight="true"
+		android:layout_width="200dip"
+		android:layout_height="wrap_content"
+		android:layout_above="@id/shortcut_bar"
+		android:scrollingCache="false"
+		android:fadingEdge="none"/>
+	 
 <FrameLayout android:id="@+id/apps"
 	android:layout_above="@id/shortcut_bar"
 	android:layout_width="fill_parent"

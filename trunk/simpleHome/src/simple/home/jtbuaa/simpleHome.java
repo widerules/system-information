@@ -97,7 +97,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	final boolean durtyMode = false;
 	WebView serverWeb;
 	GridView favoAppList;
-	ListView sysAppList, userAppList;
+	ListView sysAppList, userAppList, shortAppList;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	ViewFlipper mainlayout;
@@ -111,6 +111,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
+	shortAppAdapter shortAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
@@ -395,9 +396,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	//favoAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
     	//favoAppList.setOnTouchListener(this);
         
+    	shortAppList = (ListView) findViewById(R.id.business);
+    	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
+    	
     	//system app tab
     	sysAppList = new ListView(this);
     	sysAppList.inflate(this, R.layout.app_list, null);
@@ -498,6 +501,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		mFavoApps = new ArrayList<ResolveInfo>();
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
+		shortAdapter = new shortAppAdapter(getBaseContext(), mFavoApps);
+		shortAppList.setAdapter(shortAdapter);
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (RelativeLayout) findViewById(R.id.base);
@@ -737,7 +742,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             convertView.setBackgroundColor(0);
             
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
-			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
             btnIcon.setImageDrawable(info.loadIcon(pm));
     		btnIcon.setOnClickListener(new OnClickListener() {//kill app
@@ -759,6 +763,52 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     		});
     		btnIcon.setTag(info);
             registerForContextMenu(btnIcon);
+            
+            return convertView;
+        }
+    }
+    
+    private class shortAppAdapter extends ArrayAdapter<ResolveInfo> {
+    	ArrayList<ResolveInfo> localApplist;
+        public shortAppAdapter(Context context, List<ResolveInfo> apps) {
+            super(context, 0, apps);
+            localApplist = (ArrayList<ResolveInfo>) apps;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final ResolveInfo info = (ResolveInfo) localApplist.get(position);
+
+            if (convertView == null) {
+                final LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.favo_list, parent, false);
+            }
+
+            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
+            TextView appname = (TextView) convertView.findViewById(R.id.favoappname);
+            
+            btnIcon.setImageDrawable(info.loadIcon(pm));
+    		btnIcon.setOnClickListener(new OnClickListener() {//kill app
+				@Override
+				public void onClick(View arg0) {
+					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
+					
+					Intent i = new Intent(Intent.ACTION_MAIN);
+					i.setComponent(new ComponentName(
+							info.activityInfo.applicationInfo.packageName,
+							info.activityInfo.name));
+					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
+					try {
+						startActivity(i);
+					} catch(Exception e) {
+						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+					}
+				}
+    		});
+    		btnIcon.setTag(info);
+            registerForContextMenu(btnIcon);
+            
+            appname.setText(info.loadLabel(pm));
             
             return convertView;
         }
@@ -847,14 +897,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	msguser.what = UPDATE_USER;
         	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.
 	    	
-	    	/*ArrayList packages = (ArrayList) pm.getInstalledPackages(0);
-	    	for (int i = 0; i < packages.size(); i++) {
-	    		PackageInfo pi = (PackageInfo) packages.get(i);
-	    		Intent intent = pm.getLaunchIntentForPackage(pi.packageName);
-	    		if (intent == null) {//no Launcher activity
-	    		}
-	    	}*/
-
         	String status = Environment.getExternalStorageState();
         	if (status.equals(Environment.MEDIA_MOUNTED)) {
         		downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/";   

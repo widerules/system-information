@@ -94,6 +94,7 @@ import android.widget.ViewFlipper;
 
 public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
+	final boolean durtyMode = false;
 	WebView serverWeb;
 	GridView favoAppList;
 	ListView sysAppList, userAppList;
@@ -150,7 +151,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 mProgressDialog.setMax(MAX_PROGRESS);
-                mProgressDialog.setTitle(getString(R.string.loading));//android.content.res.Resources$NotFoundException: String resource ID #0x7f050010
+                mProgressDialog.setTitle(getString(R.string.loading));
         	}
             return mProgressDialog;
     	}
@@ -360,9 +361,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				
 				long size = pStats.codeSize + pStats.cacheSize + pStats.dataSize;
 		        String ssize = new String();
-		        if (size > 10 * sizeM) 		ssize = " (" + size / sizeM + "M)";
-		        else if (size > 10 * 1024)	ssize = " (" + size / 1024 + "K)";
-		        else if (size > 0)			ssize = " (" + size + "B)";
+		        if (size > 10 * sizeM) 		ssize = size / sizeM + "M";
+		        else if (size > 10 * 1024)	ssize = size / 1024 + "K";
+		        else if (size > 0)			ssize = size + "B";
 		        else 						ssize = "";
 				packagesSize.put(pStats.packageName, ssize);
 			}
@@ -677,8 +678,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             //lapp.setOnTouchListener(simpleHome.this);
             
             Object o = packagesSize.get(info.activityInfo.packageName);
-            if (o != null)
-           		textView1.setText(info.loadLabel(pm) + o.toString());//the size is not very precise
+            if ((o != null) && durtyMode)
+           		textView1.setText(info.loadLabel(pm) + " (" + o.toString() + ")");//the size is not very precise
             else 
             	textView1.setText(info.loadLabel(pm));
             
@@ -713,17 +714,20 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
             String source = "";
-            int textColor = 0xFF000000;
-            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-            	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
-            	textColor = 0xFFEECC77;//brown for debuggable apk
+            int textColor = 0xFF888888;
+            if (durtyMode) {
+                if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
+                	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
+                	textColor = 0xFFEECC77;//brown for debuggable apk
+                }
+                else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+                	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
+                }
+                else {
+                	source = info.activityInfo.packageName;//we can use package name to uninstall it.
+                }
             }
-            else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-            	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
-            }
-            else {
-            	source = info.activityInfo.packageName;//we can use package name to uninstall it.
-            }
+            else if(o != null) source = o.toString();
         	textView3.setText(source);
         	textView3.setTextColor(textColor);//must set color here, otherwise it will be wrong for some item.
 			

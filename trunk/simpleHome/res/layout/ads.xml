@@ -40,6 +40,8 @@
 	
 	<GridView android:id="@+id/favos"
 		android:stackFromBottom="true"
+		android:columnWidth="55dip"
+		android:numColumns="auto_fit"
 		android:background="@android:color/transparent"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"/>

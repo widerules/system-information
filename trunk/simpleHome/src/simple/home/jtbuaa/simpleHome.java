@@ -212,6 +212,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		else {
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
 			menu.add(0, 1, 0, getString(R.string.appdetail));
+			menu.add(0, 2, 0, getString(R.string.killapp));
 		}
 	}
 	
@@ -255,6 +256,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
 			}
 			
+			break;
+		case 2://kill app
+			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+			am.restartPackage(selected_ri.activityInfo.packageName);
 			break;
 		}
 		return false;
@@ -386,7 +391,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         
     	//favorite app tab
     	favoAppList = (GridView) findViewById(R.id.favos);
-    	favoAppList.setNumColumns(GridView.AUTO_FIT);
     	favoAppList.setVerticalScrollBarEnabled(false);
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
@@ -639,22 +643,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
-			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
-            btnIcon.setImageDrawable(info.loadIcon(pm));
-            btnIcon.setEnabled(false);
-    		btnIcon.setOnClickListener(new OnClickListener() {//kill app
-				@Override
-				public void onClick(View arg0) {
-					am.restartPackage(info.activityInfo.packageName);
-		        	textView1.setTextColor(0xFF000000);//set color back to black after kill it. 
-		        	btnIcon.setEnabled(false);
-				}
-    		});
-    		
-
-            LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
-            lapp.setOnClickListener(new OnClickListener() {//start app
+    		OnClickListener startListener = new OnClickListener() {//start app
 				@Override
 				public void onClick(View arg0) {
 					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
@@ -666,13 +656,17 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
 					try {
 						startActivity(i);
-	            		btnIcon.setEnabled(true);
-	                	textView1.setTextColor(0xFFFF7777);//red for running apk
 					} catch(Exception e) {
 						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
 					}
 				}
-            });
+            };
+            
+            btnIcon.setImageDrawable(info.loadIcon(pm));
+            btnIcon.setOnClickListener(startListener);
+            
+            LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
+            lapp.setOnClickListener(startListener);
         	lapp.setTag(info);
             registerForContextMenu(lapp);
             //lapp.setOnTouchListener(simpleHome.this);
@@ -682,17 +676,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
            		textView1.setText(info.loadLabel(pm) + " (" + o.toString() + ")");//the size is not very precise
             else 
             	textView1.setText(info.loadLabel(pm));
-            
-            textView1.setTextColor(0xFF000000);
-        	List appList = am.getRunningAppProcesses();
-        	for (int i = 0; i < appList.size(); i++) {
-        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
-            		btnIcon.setEnabled(true);
-                	textView1.setTextColor(0xFFFF7777);//red for running apk
-        			break;
-        		}
-        	}
             
             final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
             btnVersion.setVisibility(View.VISIBLE);
@@ -754,22 +737,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             convertView.setBackgroundColor(0);
             
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
-            final TextView textView1 = (TextView) convertView.findViewById(R.id.favoappname);
 			final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
             btnIcon.setImageDrawable(info.loadIcon(pm));
-            btnIcon.setEnabled(false);
     		btnIcon.setOnClickListener(new OnClickListener() {//kill app
-				@Override
-				public void onClick(View arg0) {
-					am.restartPackage(info.activityInfo.packageName);
-		        	textView1.setTextColor(0xFF000000);//set color back to black after kill it. 
-		        	btnIcon.setEnabled(false);
-				}
-    		});
-    		
-
-            textView1.setOnClickListener(new OnClickListener() {//start app
 				@Override
 				public void onClick(View arg0) {
 					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
@@ -781,28 +752,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
 					try {
 						startActivity(i);
-	            		btnIcon.setEnabled(true);
-	                	textView1.setTextColor(0xFFFF7777);//red for running apk
 					} catch(Exception e) {
 						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
 					}
 				}
-            });
-            textView1.setTag(info);
-            registerForContextMenu(textView1);
-            //textView1.setOnTouchListener(simpleHome.this);
-            
-            textView1.setText(info.loadLabel(pm));
-            textView1.setTextColor(0xFF000000);
-        	List appList = am.getRunningAppProcesses();
-        	for (int i = 0; i < appList.size(); i++) {
-        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
-            		btnIcon.setEnabled(true);
-                	textView1.setTextColor(0xFFFF7777);//red for running apk
-        			break;
-        		}
-        	}
+    		});
+    		btnIcon.setTag(info);
+            registerForContextMenu(btnIcon);
             
             return convertView;
         }

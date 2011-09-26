@@ -98,7 +98,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	WebView serverWeb;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList;
-	TextView homeBar, shortBar;
+	TextView homeBar, shortBar, currentAppLabel;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	ViewFlipper mainlayout;
@@ -209,6 +209,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		selected_ri = (ResolveInfo) v.getTag();
+		
+		LinearLayout lapp = (LinearLayout) v;
+		currentAppLabel = (TextView) lapp.getChildAt(0);
+		
 		if (shortAppList.getVisibility() == View.VISIBLE)
 			menu.add(0, 0, 0, getString(R.string.removeFromShort));
 		else if (favoAppList.getVisibility() == View.VISIBLE)
@@ -291,6 +295,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		case 3://kill app
 			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 			am.restartPackage(selected_ri.activityInfo.packageName);
+			//but we need to know when will it restart by itself?
+			currentAppLabel.setTextColor(0xFF000000);//set color back to black after kill it.
 			break;
 		}
 		return false;
@@ -711,14 +717,27 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
+            final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
     		OnClickListener startListener = new OnClickListener() {//start app
 				@Override
 				public void onClick(View arg0) {
 					startApp(info);
+					textView1.setTextColor(0xFFFF7777);//red for running apk
 				}
             };
             
+            textView1.setTextColor(0xFF000000);
+            List appList = am.getRunningAppProcesses();
+            for (int i = 0; i < appList.size(); i++) {
+        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
+            		btnIcon.setEnabled(true);
+                	textView1.setTextColor(0xFFFF7777);//red for running apk
+        			break;
+        		}
+            }
+
             btnIcon.setImageDrawable(info.loadIcon(pm));
             btnIcon.setOnClickListener(startListener);
             

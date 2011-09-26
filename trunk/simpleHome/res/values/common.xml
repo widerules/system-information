@@ -19,8 +19,10 @@
     <string name="userapps">User</string>        
     <string name="online">Online</string>
     
-    <string name="addtoFavo">Add to shortcut</string>
-    <string name="removeFromFavo">Delete this shortcut</string>
+    <string name="addtoFavo">Add to home</string>
+    <string name="removeFromFavo">Delete</string>
+    <string name="addtoShort">Add to shortcut</string>
+    <string name="removeFromShort">Delete this shortcut</string>
     <string name="backup">Back up to SDcard...</string>
     <string name="appdetail">Detail...</string>
     <string name="killapp">Stop...</string>

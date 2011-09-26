@@ -473,7 +473,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 			@Override
 			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error){
-		        handler.proceed();//接受证书
+		        handler.proceed();//accept ssl certification when never needed.
 			}
 			
 			@Override
@@ -495,7 +495,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
 					if (appstate.downloadState.isEmpty()) {
 						String ss[] = url.split("/");
-						String apkName = ss[ss.length-1]; //得到apk文件的全名(包括后缀)
+						String apkName = ss[ss.length-1]; //get download file name
 						
 				    	Random random = new Random();
 				    	int id = random.nextInt() + 1000;
@@ -545,7 +545,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				Log.d("==============", "user list");
 				if (adsParent.getVisibility() == View.VISIBLE) {
 					adsParent.setVisibility(View.INVISIBLE);
 					favoAppList.setVisibility(View.VISIBLE);
@@ -563,7 +562,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         shortBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
-				Log.d("==============", "business list");
 				// TODO Auto-generated method stub
 				if ((shortAppList.getVisibility() == View.INVISIBLE) && !mShortApps.isEmpty()) {
 					shortAppList.setVisibility(View.VISIBLE);
@@ -634,6 +632,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             			ResolveInfo info = favoAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				favoAdapter.remove(info);
+            				shortAdapter.remove(info);
             				break;
             			}
             		}
@@ -827,9 +826,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             }
 
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
-            TextView appname = (TextView) convertView.findViewById(R.id.favoappname);
-            
             btnIcon.setImageDrawable(info.loadIcon(pm));
+            
+            TextView appname = (TextView) convertView.findViewById(R.id.favoappname);
+            appname.setText(info.loadLabel(pm));
+            
             convertView.setOnClickListener(new OnClickListener() {//launch app
 				@Override
 				public void onClick(View arg0) {
@@ -840,10 +841,37 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     		convertView.setTag(info);
             registerForContextMenu(convertView);
             
-            appname.setText(info.loadLabel(pm));
-            
             return convertView;
         }
+    }
+    
+    void readFile(String name) 
+    {
+    	FileInputStream fi = null;
+    	ObjectInputStream ois = null;
+		try {//read favorite or shortcut data
+			fi = mContext.openFileInput(name);
+			ois = new ObjectInputStream(fi);
+			String activityName;
+			while ((activityName = (String) ois.readObject()) != null) {
+				for (int i = 0; i < mAllApps.size(); i++)
+					if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
+						if (name.equals("favo")) mFavoApps.add(mAllApps.get(i));
+						else if (name.equals("short")) mShortApps.add(mAllApps.get(i));
+						break;
+					}
+			}
+		} catch (EOFException e) {//only when read eof need send out msg.
+			try {
+				ois.close();
+				fi.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
     
 	class InitTask extends AsyncTask<String, Integer, String> {
@@ -855,55 +883,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
 	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
 
-	    	FileInputStream fi = null;
-	    	ObjectInputStream ois = null;
-			try {//read favorite data
-				fi = mContext.openFileInput("favo");
-				ois = new ObjectInputStream(fi);
-				String activityName;
-				while ((activityName = (String) ois.readObject()) != null) {
-					//Log.d("=============", activityName);
-					for (int i = 0; i < mAllApps.size(); i++)
-						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
-							mFavoApps.add(mAllApps.get(i));
-							break;
-						}
-				}
-			} catch (EOFException e) {//only when read eof need send out msg.
-				try {
-					ois.close();
-					fi.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-            
-			try {//read shortcut data
-				fi = mContext.openFileInput("short");
-				ois = new ObjectInputStream(fi);
-				String activityName;
-				while ((activityName = (String) ois.readObject()) != null) {
-					//Log.d("=============", activityName);
-					for (int i = 0; i < mAllApps.size(); i++)
-						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
-							mShortApps.add(mAllApps.get(i));
-							break;
-						}
-				}
-			} catch (EOFException e) {//only when read eof need send out msg.
-				try {
-					ois.close();
-					fi.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+            readFile("favo");
+            readFile("short");
 			
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
@@ -1158,9 +1139,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-				if (adsParent.getVisibility() == View.VISIBLE) { 
+				if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
+				else if (adsParent.getVisibility() == View.VISIBLE) { 
 					if ((mainlayout.getDisplayedChild() == 2) && (serverWeb.canGoBack())) serverWeb.goBack();
-					else shortcutBar.performClick();
+					else homeBar.performClick();
 				}
 				return true;
 			}	

@@ -25,7 +25,7 @@
     <string name="removeFromShort">Delete this shortcut</string>
     <string name="backup">Back up to SDcard...</string>
     <string name="appdetail">Detail...</string>
-    <string name="killapp">Stop...</string>
+    <string name="killapp">Stop</string>
     
     <string name="loading">Loading...</string>
     <string name="pause">Pause download</string>

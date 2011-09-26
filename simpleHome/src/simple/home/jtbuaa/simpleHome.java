@@ -210,14 +210,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		super.onCreateContextMenu(menu, v, menuInfo);
 		selected_ri = (ResolveInfo) v.getTag();
 		
-		LinearLayout lapp = (LinearLayout) v;
-		currentAppLabel = (TextView) lapp.getChildAt(0);
-		
 		if (shortAppList.getVisibility() == View.VISIBLE)
 			menu.add(0, 0, 0, getString(R.string.removeFromShort));
 		else if (favoAppList.getVisibility() == View.VISIBLE)
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
+			LinearLayout lapp = (LinearLayout) v;
+			currentAppLabel = (TextView) lapp.getChildAt(0);
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
 			menu.add(0, 1, 0, getString(R.string.addtoShort));
 			menu.add(0, 2, 0, getString(R.string.appdetail));

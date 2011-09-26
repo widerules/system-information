@@ -98,13 +98,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	WebView serverWeb;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList;
+	TextView homeBar, shortBar;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	ViewFlipper mainlayout;
 	GestureDetector mGestureDetector;
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
-	ArrayList mFavoApps, mSysApps, mUserApps;
+	ArrayList mFavoApps, mSysApps, mUserApps, mShortApps;
 	private Button btnSys, btnUser, btnWeb;
 	static int grayColor = 0xFFEEEEEE;
 	static int whiteColor = 0xFFFFFFFF;
@@ -208,38 +209,68 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		selected_ri = (ResolveInfo) v.getTag();
-		if (favoAppList.getVisibility() == View.VISIBLE)
+		if (shortAppList.getVisibility() == View.VISIBLE)
+			menu.add(0, 0, 0, getString(R.string.removeFromShort));
+		else if (favoAppList.getVisibility() == View.VISIBLE)
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
 		else {
 			menu.add(0, 0, 0, getString(R.string.addtoFavo));
-			menu.add(0, 1, 0, getString(R.string.appdetail));
-			menu.add(0, 2, 0, getString(R.string.killapp));
+			menu.add(0, 1, 0, getString(R.string.addtoShort));
+			menu.add(0, 2, 0, getString(R.string.appdetail));
+			menu.add(0, 3, 0, getString(R.string.killapp));
 		}
 	}
 	
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
 		switch (item.getItemId()) {
-		case 0://add/remove shortcut
-			if (favoAppList.getVisibility() == View.VISIBLE) {
-				favoAdapter.remove(selected_ri);
+		case 0://add/remove shortcut on home
+			if (shortAppList.getVisibility() == View.VISIBLE) {
+				shortAdapter.remove(selected_ri);
+				try {//save shortcut to file
+					FileOutputStream fo = this.openFileOutput("short", 0);
+					ObjectOutputStream oos = new ObjectOutputStream(fo);
+					for (int i = 0; i < shortAdapter.getCount(); i++) {
+						oos.writeObject(((ResolveInfo)shortAdapter.localApplist.get(i)).activityInfo.name);
+					}
+					oos.flush();
+					oos.close();
+					fo.close();
+				} catch (Exception e) {}
 			}
-			else if (favoAdapter.getPosition(selected_ri) < 0) {
-				favoAdapter.add(selected_ri);
-				favoAdapter.sort(new ResolveInfo.DisplayNameComparator(pm));
+			else {
+				if (favoAppList.getVisibility() == View.VISIBLE) 
+					favoAdapter.remove(selected_ri);
+				else if (favoAdapter.getPosition(selected_ri) < 0) 
+					favoAdapter.add(selected_ri);
+				try {//save shortcut to file
+					FileOutputStream fo = this.openFileOutput("favo", 0);
+					ObjectOutputStream oos = new ObjectOutputStream(fo);
+					for (int i = 0; i < favoAdapter.getCount(); i++) {
+						oos.writeObject(((ResolveInfo)favoAdapter.localApplist.get(i)).activityInfo.name);
+					}
+					oos.flush();
+					oos.close();
+					fo.close();
+				} catch (Exception e) {}
 			}
-			try {//save shortcut to file
-				FileOutputStream fo = this.openFileOutput("favo", 0);
-				ObjectOutputStream oos = new ObjectOutputStream(fo);
-				for (int i = 0; i < favoAdapter.getCount(); i++) {
-					oos.writeObject(((ResolveInfo)favoAdapter.localApplist.get(i)).activityInfo.name);
-				}
-				oos.flush();
-				oos.close();
-				fo.close();
-			} catch (Exception e) {}
 			break;
-		case 1://get app detail info
+		case 1://add shortcut in drawer
+			if (shortAdapter.getPosition(selected_ri) < 0) {
+				shortAdapter.add(selected_ri);
+				try {//save shortcut to file
+					FileOutputStream fo = this.openFileOutput("short", 0);
+					ObjectOutputStream oos = new ObjectOutputStream(fo);
+					for (int i = 0; i < favoAdapter.getCount(); i++) {
+						oos.writeObject(((ResolveInfo)shortAdapter.localApplist.get(i)).activityInfo.name);
+					}
+					oos.flush();
+					oos.close();
+					fo.close();
+				} catch (Exception e) {}
+			}
+			break;
+		case 2://get app detail info
 			Intent intent;
 			if (appDetail != null) {
 				intent = new Intent(Intent.ACTION_VIEW);
@@ -258,7 +289,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 			
 			break;
-		case 2://kill app
+		case 3://kill app
 			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 			am.restartPackage(selected_ri.activityInfo.packageName);
 			break;
@@ -399,6 +430,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	//favoAppList.setOnTouchListener(this);
         
     	shortAppList = (ListView) findViewById(R.id.business);
+    	shortAppList.bringToFront();
     	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
     	
     	//system app tab
@@ -499,19 +531,22 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
 		mFavoApps = new ArrayList<ResolveInfo>();
+		mShortApps = new ArrayList<ResolveInfo>();
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
-		shortAdapter = new shortAppAdapter(getBaseContext(), mFavoApps);
+		shortAdapter = new shortAppAdapter(getBaseContext(), mShortApps);
 		shortAppList.setAdapter(shortAdapter);
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (RelativeLayout) findViewById(R.id.base);
         base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
-        shortcutBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
+        homeBar = (TextView) findViewById(R.id.home_bar);
+        homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
+				Log.d("==============", "user list");
 				if (adsParent.getVisibility() == View.VISIBLE) {
 					adsParent.setVisibility(View.INVISIBLE);
 					favoAppList.setVisibility(View.VISIBLE);
@@ -521,6 +556,21 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					adsParent.setVisibility(View.VISIBLE);
 					favoAppList.setVisibility(View.INVISIBLE);
 					shortcutBar.setBackgroundResource(R.drawable.shortcut_bar_layout);
+				}
+			}
+        });
+        
+        shortBar = (TextView) findViewById(R.id.business_bar);
+        shortBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
+			@Override
+			public void onClick(View arg0) {
+				Log.d("==============", "business list");
+				// TODO Auto-generated method stub
+				if ((shortAppList.getVisibility() == View.INVISIBLE) && !mShortApps.isEmpty()) {
+					shortAppList.setVisibility(View.VISIBLE);
+				}
+				else {
+					shortAppList.setVisibility(View.INVISIBLE);
 				}
 			}
         });
@@ -788,7 +838,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             TextView appname = (TextView) convertView.findViewById(R.id.favoappname);
             
             btnIcon.setImageDrawable(info.loadIcon(pm));
-    		btnIcon.setOnClickListener(new OnClickListener() {//kill app
+            convertView.setOnClickListener(new OnClickListener() {//launch app
 				@Override
 				public void onClick(View arg0) {
 					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
@@ -803,10 +853,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					} catch(Exception e) {
 						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
 					}
+					shortAppList.setVisibility(View.INVISIBLE);
 				}
     		});
-    		btnIcon.setTag(info);
-            registerForContextMenu(btnIcon);
+    		convertView.setTag(info);
+            registerForContextMenu(convertView);
             
             appname.setText(info.loadLabel(pm));
             
@@ -849,6 +900,30 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				e.printStackTrace();
 			}
             
+			try {//read shortcut data
+				fi = mContext.openFileInput("short");
+				ois = new ObjectInputStream(fi);
+				String activityName;
+				while ((activityName = (String) ois.readObject()) != null) {
+					//Log.d("=============", activityName);
+					for (int i = 0; i < mAllApps.size(); i++)
+						if (mAllApps.get(i).activityInfo.name.equals(activityName)) {
+							mShortApps.add(mAllApps.get(i));
+							break;
+						}
+				}
+			} catch (EOFException e) {//only when read eof need send out msg.
+				try {
+					ois.close();
+					fi.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
 	    	String label_phone = "電話 Phone 电话 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";

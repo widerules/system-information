@@ -5,7 +5,7 @@
 	android:orientation="horizontal" 
 	android:layout_height="wrap_content" 
 	android:layout_width="wrap_content"
-	android:background="#FFFFFFFF" 
+    android:background="#FF222222"
 	android:paddingLeft="5dip"
 	android:paddingRight="5dip">
 	
@@ -19,9 +19,9 @@
     
     <TextView android:id="@+id/favoappname" 
         android:layout_height="fill_parent" 
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:gravity="center_vertical"
         android:textSize="18dip"
-	    android:textColor="#FF000000"/>
+	    android:textColor="#FFFFFFFF"/>
 	
 </LinearLayout>

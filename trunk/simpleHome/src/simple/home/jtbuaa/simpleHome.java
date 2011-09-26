@@ -94,7 +94,7 @@ import android.widget.ViewFlipper;
 
 public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
-	final boolean durtyMode = false;
+	final boolean dirtyMode = false;
 	WebView serverWeb;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList;
@@ -280,7 +280,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 			else {//2.6 tahiti change the action.
 				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_ri.activityInfo.packageName, null));
-	        	startActivity(intent);
 			}
 			try {
 				startActivity(intent);
@@ -675,6 +674,21 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		
 	};
 
+	void startApp(ResolveInfo info) {
+		if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start myself again.
+		
+		Intent i = new Intent(Intent.ACTION_MAIN);
+		i.setComponent(new ComponentName(
+				info.activityInfo.applicationInfo.packageName,
+				info.activityInfo.name));
+		i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
+		try {
+			startActivity(i);
+		} catch(Exception e) {
+			Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+		}
+	}
+	
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
     	ArrayList localApplist;
         public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {
@@ -702,18 +716,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     		OnClickListener startListener = new OnClickListener() {//start app
 				@Override
 				public void onClick(View arg0) {
-					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
-					
-					Intent i = new Intent(Intent.ACTION_MAIN);
-					i.setComponent(new ComponentName(
-							info.activityInfo.applicationInfo.packageName,
-							info.activityInfo.name));
-					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-					try {
-						startActivity(i);
-					} catch(Exception e) {
-						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-					}
+					startApp(info);
 				}
             };
             
@@ -727,7 +730,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             //lapp.setOnTouchListener(simpleHome.this);
             
             Object o = packagesSize.get(info.activityInfo.packageName);
-            if ((o != null) && durtyMode)
+            if ((o != null) && dirtyMode)
            		textView1.setText(info.loadLabel(pm) + " (" + o.toString() + ")");//the size is not very precise
             else 
             	textView1.setText(info.loadLabel(pm));
@@ -753,7 +756,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
             String source = "";
             int textColor = 0xFF888888;
-            if (durtyMode) {
+            if (dirtyMode) {
                 if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
                 	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
                 	textColor = 0xFFEECC77;//brown for debuggable apk
@@ -797,18 +800,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     		btnIcon.setOnClickListener(new OnClickListener() {//kill app
 				@Override
 				public void onClick(View arg0) {
-					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
-					
-					Intent i = new Intent(Intent.ACTION_MAIN);
-					i.setComponent(new ComponentName(
-							info.activityInfo.applicationInfo.packageName,
-							info.activityInfo.name));
-					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-					try {
-						startActivity(i);
-					} catch(Exception e) {
-						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-					}
+					startApp(info);
 				}
     		});
     		btnIcon.setTag(info);
@@ -841,18 +833,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             convertView.setOnClickListener(new OnClickListener() {//launch app
 				@Override
 				public void onClick(View arg0) {
-					if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start system info again.
-					
-					Intent i = new Intent(Intent.ACTION_MAIN);
-					i.setComponent(new ComponentName(
-							info.activityInfo.applicationInfo.packageName,
-							info.activityInfo.name));
-					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-					try {
-						startActivity(i);
-					} catch(Exception e) {
-						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-					}
+					startApp(info);
 					shortAppList.setVisibility(View.INVISIBLE);
 				}
     		});
@@ -1024,16 +1005,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
-    					Intent i = new Intent(Intent.ACTION_MAIN);
-    					i.setComponent(new ComponentName(
-    							ri_phone.activityInfo.applicationInfo.packageName,
-    							ri_phone.activityInfo.name));
-    					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-    					try {
-    						startActivity(i);
-    					} catch(Exception e) {
-    						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-    					}
+    					startApp(ri_phone);
     				}
     			});
         		break;
@@ -1042,16 +1014,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
-    					Intent i = new Intent(Intent.ACTION_MAIN);
-    					i.setComponent(new ComponentName(
-    							ri_sms.activityInfo.applicationInfo.packageName,
-    							ri_sms.activityInfo.name));
-    					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-    					try {
-    						startActivity(i);
-    					} catch(Exception e) {
-    						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-    					}
+    					startApp(ri_sms);
     				}
     			});
         		break;
@@ -1060,16 +1023,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			shortcut_contact.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
-    					Intent i = new Intent(Intent.ACTION_MAIN);
-    					i.setComponent(new ComponentName(
-    							ri_contact.activityInfo.applicationInfo.packageName,
-    							ri_contact.activityInfo.name));
-    					i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-    					try {
-    						startActivity(i);
-    					} catch(Exception e) {
-    						Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-    					}
+    					startApp(ri_contact);
     				}
     			});
         		break;

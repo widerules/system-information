@@ -444,7 +444,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         
         //online tab
         serverWeb = new WebView(this);
-        serverWeb.requestFocus();
+        serverWeb.requestFocusFromTouch();
         //serverWeb.setOnTouchListener(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);

@@ -224,53 +224,44 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		}
 	}
 	
+	void writeFile(String name) {
+		try {
+			FileOutputStream fo = this.openFileOutput(name, 0);
+			ObjectOutputStream oos = new ObjectOutputStream(fo);
+			if (name.equals("short")) {
+				for (int i = 0; i < mShortApps.size(); i++)
+					oos.writeObject(((ResolveInfo)mShortApps.get(i)).activityInfo.name);
+			}
+			else if (name.equals("favo")) {
+				for (int i = 0; i < mFavoApps.size(); i++)
+					oos.writeObject(((ResolveInfo)mFavoApps.get(i)).activityInfo.name);
+			}
+			oos.flush();
+			oos.close();
+			fo.close();
+		} catch (Exception e) {}
+	}
+	
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
 		switch (item.getItemId()) {
 		case 0://add/remove shortcut on home
 			if (shortAppList.getVisibility() == View.VISIBLE) {
 				shortAdapter.remove(selected_ri);
-				try {//save shortcut to file
-					FileOutputStream fo = this.openFileOutput("short", 0);
-					ObjectOutputStream oos = new ObjectOutputStream(fo);
-					for (int i = 0; i < shortAdapter.getCount(); i++) {
-						oos.writeObject(((ResolveInfo)shortAdapter.localApplist.get(i)).activityInfo.name);
-					}
-					oos.flush();
-					oos.close();
-					fo.close();
-				} catch (Exception e) {}
+				writeFile("short");	//save shortcut to file
 			}
 			else {
 				if (favoAppList.getVisibility() == View.VISIBLE) 
 					favoAdapter.remove(selected_ri);
 				else if (favoAdapter.getPosition(selected_ri) < 0) 
 					favoAdapter.add(selected_ri);
-				try {//save shortcut to file
-					FileOutputStream fo = this.openFileOutput("favo", 0);
-					ObjectOutputStream oos = new ObjectOutputStream(fo);
-					for (int i = 0; i < favoAdapter.getCount(); i++) {
-						oos.writeObject(((ResolveInfo)favoAdapter.localApplist.get(i)).activityInfo.name);
-					}
-					oos.flush();
-					oos.close();
-					fo.close();
-				} catch (Exception e) {}
+				writeFile("favo");
 			}
 			break;
 		case 1://add shortcut in drawer
 			if (shortAdapter.getPosition(selected_ri) < 0) {
 				shortAdapter.add(selected_ri);
-				try {//save shortcut to file
-					FileOutputStream fo = this.openFileOutput("short", 0);
-					ObjectOutputStream oos = new ObjectOutputStream(fo);
-					for (int i = 0; i < favoAdapter.getCount(); i++) {
-						oos.writeObject(((ResolveInfo)shortAdapter.localApplist.get(i)).activityInfo.name);
-					}
-					oos.flush();
-					oos.close();
-					fo.close();
-				} catch (Exception e) {}
+				writeFile("short");	//save shortcut to file
 			}
 			break;
 		case 2://get app detail info

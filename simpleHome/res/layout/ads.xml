@@ -34,12 +34,16 @@
   		<TextView android:id="@+id/home_bar"
   			android:layout_width="80dip"
   			android:layout_height="40dip"
-  			android:text="@string/userapps"
+  			android:text="@string/appdetail"
+  			android:textSize="16dip"
+  			android:gravity="center"
   			android:layout_toLeftOf="@id/shortcut_phone"/>
   		<TextView android:id="@+id/business_bar"
   			android:layout_width="80dip"
   			android:layout_height="40dip"
   			android:text="@string/favoriteapps"
+  			android:textSize="16dip"
+  			android:gravity="center"
   			android:layout_toRightOf="@id/shortcut_phone"/>
 	</RelativeLayout>
 	

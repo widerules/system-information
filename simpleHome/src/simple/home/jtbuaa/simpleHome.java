@@ -359,6 +359,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					while(mainlayout.getDisplayedChild() != newTab)
 						mainlayout.showNext();
 				}
+
+				if (mainlayout.getDisplayedChild() == 2) serverWeb.requestFocus();
 			}
 		}
 	}
@@ -1155,14 +1157,17 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 				return true;
 			}	
-			//else if ((keyCode == KeyEvent.KEYCODE_HOME)  && !event.isLongPress()) {//press Home key will goto the favorite tab.
-			//	Log.d("==============", "home key");
-			//	btnFavo.performClick();
-			//	return true;
-			//}
+			else if ((keyCode == KeyEvent.KEYCODE_HOME)  && !event.isLongPress()) {//press Home key will goto the home screen
+				Log.d("==============", "home key");
+				if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
+				if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
+				return true;
+			}
+			else if (keyCode == KeyEvent.KEYCODE_MENU) return false;
 		}
 		
-		return false;
+		//return false;
+		return super.onKeyDown(keyCode, event);
 	}
 	
 	/*@Override

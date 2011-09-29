@@ -37,18 +37,21 @@
   			android:text="@string/appdetail"
   			android:textSize="16dip"
   			android:gravity="center"
-  			android:layout_toLeftOf="@id/shortcut_phone"/>
+  			android:layout_marginLeft="8dip"
+  			android:layout_toRightOf="@id/shortcut_sms"/>
   		<TextView android:id="@+id/business_bar"
   			android:layout_width="80dip"
   			android:layout_height="40dip"
   			android:text="@string/favoriteapps"
   			android:textSize="16dip"
   			android:gravity="center"
-  			android:layout_toRightOf="@id/shortcut_phone"/>
+  			android:layout_marginRight="8dip"
+  			android:layout_toLeftOf="@id/shortcut_contact"/>
 	</RelativeLayout>
 	
 	<ListView android:id="@+id/business"
-		android:layout_centerInParent="true"
+		android:layout_alignParentRight="true"
+		android:layout_marginRight="10dip"
 		android:layout_above="@id/shortcut_bar"
 		android:background="#AA222222"
 		android:layout_width="300dip"

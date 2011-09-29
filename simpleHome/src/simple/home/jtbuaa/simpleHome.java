@@ -722,8 +722,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             List appList = am.getRunningAppProcesses();
             for (int i = 0; i < appList.size(); i++) {
         		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-            	if ((info.activityInfo.processName.equals(as.processName)) && (!as.processName.equals(myPackageName))) {
-            		btnIcon.setEnabled(true);
+            	if (info.activityInfo.processName.equals(as.processName)) {
                 	textView1.setTextColor(0xFFFF7777);//red for running apk
         			break;
         		}
@@ -806,7 +805,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
             
             btnIcon.setImageDrawable(info.loadIcon(pm));
-    		btnIcon.setOnClickListener(new OnClickListener() {//kill app
+    		btnIcon.setOnClickListener(new OnClickListener() {//start app
 				@Override
 				public void onClick(View arg0) {
 					startApp(info);

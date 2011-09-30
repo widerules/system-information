@@ -5,7 +5,7 @@
     <string name="about_dialog">about</string>
     <string name="about_dialog_text2">jtbuaa@gmail.com</string>
     <string name="about_dialog_notes">\n\nIf you like this app, please vote me 5 stars, thanks.\n</string>
-    <string name="help_message">Click green bar to show/hide shortcut.\nClick app name to launch; click app icon to kill; click app version to uninstall; long click app name to add/remove shortcut.</string>
+    <string name="help_message">Click green bar to show/hide shortcut.\nClick app name to launch; click app version to uninstall; long click app name to add/remove shortcut.</string>
 
     <string name="wallpaper">Wallpaper...</string>
     <string name="about">About...</string>

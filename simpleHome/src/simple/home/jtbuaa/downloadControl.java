@@ -19,8 +19,8 @@ public class downloadControl extends Activity{
 	
 	@Override
 	protected void onNewIntent(Intent intent) {
-		Log.d("=============", intent.toString());
-		super.onNewIntent(intent); 
+		super.onNewIntent(intent);
+		init(intent);
 	}
 
 	@Override
@@ -28,11 +28,15 @@ public class downloadControl extends Activity{
         super.onCreate(savedInstanceState);
         
         this.setContentView(R.layout.pause);
-        appstate = (MyApp) getApplicationContext();
         
-        intent = getIntent();
+        init(getIntent());
+	}
+	
+	private void init(Intent intent) {
         id = intent.getIntExtra("id", 0);
-        Log.d("==============", "id: " + id);
+        //Log.d("==============", "id: " + id);
+        
+        appstate = (MyApp) getApplicationContext();
         dlt = appstate.downloadState.get(id);
         
         if (dlt != null) {

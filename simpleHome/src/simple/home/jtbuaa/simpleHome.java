@@ -492,21 +492,16 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				String[] tmp = url.split("\\.");
 				if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
-					if (appstate.downloadState.isEmpty()) {
-						String ss[] = url.split("/");
-						String apkName = ss[ss.length-1]; //get download file name
-						
-				    	Random random = new Random();
-				    	int id = random.nextInt() + 1000;
-				    	
-						DownloadTask dltask = new DownloadTask();
-						dltask.NOTIFICATION_ID = id;
-						appstate.downloadState.put(id, dltask);
-						dltask.execute(url, apkName);
-					}
-					else {//only support one download a time, for we can't control the pending intent
-						showDialog(2);
-					}
+					String ss[] = url.split("/");
+					String apkName = ss[ss.length-1]; //get download file name
+					
+			    	Random random = new Random();
+			    	int id = random.nextInt() + 1000;
+			    	
+					DownloadTask dltask = new DownloadTask();
+					dltask.NOTIFICATION_ID = id;
+					appstate.downloadState.put(id, dltask);
+					dltask.execute(url, apkName);
 					return true;
 				}
 				return false;
@@ -1046,10 +1041,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			Intent intent = new Intent();
 			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
 			intent.putExtra("id", NOTIFICATION_ID);
-			intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY);
 	        //Log.d("==============", "id: " + NOTIFICATION_ID);
 
-	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);  
+	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread  
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
 	        
 	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
@@ -1147,7 +1141,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
 	
 	@Override
-	protected void onNewIntent(Intent intent) {
+	protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 		if ((intent.getAction().equals(Intent.ACTION_MAIN)) && (intent.hasCategory(Intent.CATEGORY_HOME))) {
 			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
@@ -1170,13 +1164,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		
 		return false;
 	}
-	
-	/*@Override
-	public void onAttachedToWindow()
-	{
-	    this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD);//help to get Home key.  
-	    super.onAttachedToWindow();
-	}*/
 	
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {

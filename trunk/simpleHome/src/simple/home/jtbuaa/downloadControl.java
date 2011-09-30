@@ -18,6 +18,12 @@ public class downloadControl extends Activity{
 	DownloadTask dlt;
 	
 	@Override
+	protected void onNewIntent(Intent intent) {
+		Log.d("=============", intent.toString());
+		super.onNewIntent(intent); 
+	}
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
@@ -26,7 +32,7 @@ public class downloadControl extends Activity{
         
         intent = getIntent();
         id = intent.getIntExtra("id", 0);
-        //Log.d("==============", "id: " + id);
+        Log.d("==============", "id: " + id);
         dlt = appstate.downloadState.get(id);
         
         if (dlt != null) {

@@ -1147,6 +1147,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
 	
 	@Override
+	protected void onNewIntent(Intent intent) {
+		if ((intent.getAction().equals(Intent.ACTION_MAIN)) && (intent.hasCategory(Intent.CATEGORY_HOME))) {
+			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
+			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
+		}
+		super.onNewIntent(intent); 
+	}
+	
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
@@ -1157,17 +1166,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 				return true;
 			}	
-			else if ((keyCode == KeyEvent.KEYCODE_HOME)  && !event.isLongPress()) {//press Home key will goto the home screen
-				Log.d("==============", "home key");
-				if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
-				if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
-				return true;
-			}
-			else if (keyCode == KeyEvent.KEYCODE_MENU) return false;
 		}
 		
-		//return false;
-		return super.onKeyDown(keyCode, event);
+		return false;
 	}
 	
 	/*@Override

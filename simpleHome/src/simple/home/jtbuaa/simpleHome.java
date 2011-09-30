@@ -73,6 +73,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -1145,6 +1146,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if ((intent.getAction().equals(Intent.ACTION_MAIN)) && (intent.hasCategory(Intent.CATEGORY_HOME))) {
 			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
+			 InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+			 imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 		}
 		super.onNewIntent(intent); 
 	}

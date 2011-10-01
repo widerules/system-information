@@ -1034,15 +1034,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 		@Override
 		protected String doInBackground(String... params) {//download here
-	    	URL_str = params[0]; //获取下载链接的url
-	    	apkName = params[1]; //获取下载链接的url
+	    	URL_str = params[0]; //get download url
+	    	apkName = params[1]; //get download file name
 	    	
 	    	notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
 			
 			Intent intent = new Intent();
 			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
 			intent.putExtra("id", NOTIFICATION_ID);
-	        //Log.d("==============", "id: " + NOTIFICATION_ID);
+			intent.putExtra("name", apkName);
 
 	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread  
 	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
@@ -1146,8 +1146,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if ((intent.getAction().equals(Intent.ACTION_MAIN)) && (intent.hasCategory(Intent.CATEGORY_HOME))) {
 			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
-			 InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-			 imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
+			if (mProgressDialog != null) mProgressDialog.dismiss();
+			InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 		}
 		super.onNewIntent(intent); 
 	}

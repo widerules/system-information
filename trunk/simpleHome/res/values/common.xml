@@ -32,6 +32,6 @@
     <string name="justreturn">Just Return</string>
     <string name="resume">Resume download</string>
     <string name="stop">Cancel download</string>
-    <string name="download_hint">what do you want for this download file?\n\n</string>
+    <string name="download_hint">what do you want for </string>
     <string name="sorry">sorry, please wait for last download finished or cancel it before download a new one.</string>
 </resources>

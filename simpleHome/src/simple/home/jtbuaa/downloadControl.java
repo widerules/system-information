@@ -8,10 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class downloadControl extends Activity{
 	Button btnPause, btnStop, btnReturn;
 	boolean pause = false, stop = false;
+	TextView tv;
 	Intent intent;
 	MyApp appstate;
 	int id;
@@ -34,7 +36,6 @@ public class downloadControl extends Activity{
 	
 	private void init(Intent intent) {
         id = intent.getIntExtra("id", 0);
-        //Log.d("==============", "id: " + id);
         
         appstate = (MyApp) getApplicationContext();
         dlt = appstate.downloadState.get(id);
@@ -44,6 +45,9 @@ public class downloadControl extends Activity{
         	stop = dlt.stopDownload;
         }
         
+        tv = (TextView) findViewById(R.id.download_name);
+    	tv.setText(getString(R.string.download_hint) + intent.getStringExtra("name"));
+    	
         btnPause = (Button) findViewById(R.id.pause);
 		if (pause) {
 			btnPause.setText(getString(R.string.resume));

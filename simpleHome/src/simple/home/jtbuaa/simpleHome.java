@@ -115,7 +115,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	favoAppAdapter favoAdapter;
 	shortAppAdapter shortAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
-	ResolveInfo selected_ri, ri_phone, ri_sms, ri_contact;
+	ResolveInfo ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	RelativeLayout shortcutBar, adsParent, base;
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
@@ -145,6 +145,17 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			notificationID = id;
 		}
 	}
+	
+	class ricase {
+		ResolveInfo mRi;
+		int mCase;
+		
+		ricase(ResolveInfo ri, int thecase) {
+			mRi = ri;
+			mCase = thecase;
+		}
+	}
+	ricase selected_case;
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -209,19 +220,23 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		selected_ri = (ResolveInfo) v.getTag();
+		selected_case = (ricase) v.getTag();
 		
-		if (shortAppList.getVisibility() == View.VISIBLE)
-			menu.add(0, 0, 0, getString(R.string.removeFromShort));
-		else if (favoAppList.getVisibility() == View.VISIBLE)
+		switch (selected_case.mCase) {
+		case 0://on home
 			menu.add(0, 0, 0, getString(R.string.removeFromFavo));
-		else {
+			break;
+		case 1://on shortcut
+			menu.add(0, 1, 0, getString(R.string.removeFromShort));
+			break;
+		case 2://on app list
 			LinearLayout lapp = (LinearLayout) v;
 			currentAppLabel = (TextView) lapp.getChildAt(0);
-			menu.add(0, 0, 0, getString(R.string.addtoFavo));
-			menu.add(0, 1, 0, getString(R.string.addtoShort));
-			menu.add(0, 2, 0, getString(R.string.appdetail));
-			menu.add(0, 3, 0, getString(R.string.killapp));
+			menu.add(0, 2, 0, getString(R.string.addtoFavo));
+			menu.add(0, 3, 0, getString(R.string.addtoShort));
+			menu.add(0, 4, 0, getString(R.string.appdetail));
+			menu.add(0, 5, 0, getString(R.string.killapp));
+			break;
 		}
 	}
 	
@@ -246,35 +261,36 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
 		switch (item.getItemId()) {
-		case 0://add/remove shortcut on home
-			if (shortAppList.getVisibility() == View.VISIBLE) {
-				shortAdapter.remove(selected_ri);
-				writeFile("short");	//save shortcut to file
-			}
-			else {
-				if (favoAppList.getVisibility() == View.VISIBLE) 
-					favoAdapter.remove(selected_ri);
-				else if (favoAdapter.getPosition(selected_ri) < 0) 
-					favoAdapter.add(selected_ri);
+		case 0://remove from home
+			favoAdapter.remove(selected_case.mRi);
+			writeFile("favo");
+			break;
+		case 1://remove from shortcut
+			shortAdapter.remove(selected_case.mRi);
+			writeFile("short");	//save shortcut to file
+			break;
+		case 2://add to home
+			if (favoAdapter.getPosition(selected_case.mRi) < 0) { 
+				favoAdapter.add(selected_case.mRi);
 				writeFile("favo");
 			}
 			break;
-		case 1://add shortcut in drawer
-			if (shortAdapter.getPosition(selected_ri) < 0) {
-				shortAdapter.add(selected_ri);
+		case 3://add to shortcut
+			if (shortAdapter.getPosition(selected_case.mRi) < 0) {
+				shortAdapter.add(selected_case.mRi);
 				writeFile("short");	//save shortcut to file
 			}
 			break;
-		case 2://get app detail info
+		case 4://get app detail info
 			Intent intent;
 			if (appDetail != null) {
 				intent = new Intent(Intent.ACTION_VIEW);
 				intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
-				intent.putExtra("pkg", selected_ri.activityInfo.packageName);
-				intent.putExtra("com.android.settings.ApplicationPkgName", selected_ri.activityInfo.packageName);
+				intent.putExtra("pkg", selected_case.mRi.activityInfo.packageName);
+				intent.putExtra("com.android.settings.ApplicationPkgName", selected_case.mRi.activityInfo.packageName);
 			}
 			else {//2.6 tahiti change the action.
-				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_ri.activityInfo.packageName, null));
+				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_case.mRi.activityInfo.packageName, null));
 			}
 			try {
 				startActivity(intent);
@@ -283,9 +299,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 			
 			break;
-		case 3://kill app
+		case 5://kill app
 			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-			am.restartPackage(selected_ri.activityInfo.packageName);
+			am.restartPackage(selected_case.mRi.activityInfo.packageName);
 			//but we need to know when will it restart by itself?
 			currentAppLabel.setTextColor(0xFF000000);//set color back to black after kill it.
 			break;
@@ -731,7 +747,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             
             LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
             lapp.setOnClickListener(startListener);
-        	lapp.setTag(info);
+        	lapp.setTag(new ricase(info, 2));
             registerForContextMenu(lapp);
             //lapp.setOnTouchListener(simpleHome.this);
             
@@ -809,7 +825,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					startApp(info);
 				}
     		});
-    		btnIcon.setTag(info);
+    		btnIcon.setTag(new ricase(info, 0));
             registerForContextMenu(btnIcon);
             
             return convertView;
@@ -845,7 +861,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					shortAppList.setVisibility(View.INVISIBLE);
 				}
     		});
-    		convertView.setTag(info);
+    		convertView.setTag(new ricase(info, 1));
             registerForContextMenu(convertView);
             
             return convertView;

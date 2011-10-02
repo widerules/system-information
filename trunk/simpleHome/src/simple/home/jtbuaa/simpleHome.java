@@ -164,7 +164,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	if (mProgressDialog == null) {
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.setMax(MAX_PROGRESS);
                 mProgressDialog.setIndeterminate(true);
                 mProgressDialog.setMessage(getString(R.string.wait));
                 mProgressDialog.setTitle(getString(R.string.loading));

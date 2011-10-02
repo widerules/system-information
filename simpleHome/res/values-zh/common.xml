@@ -27,10 +27,10 @@
     <string name="killapp">停止</string>
     
     <string name="loading">正在读取...</string>
+    <string name="wait">网页加载中，请稍后...</string>
     <string name="pause">暂停下载</string>
     <string name="justreturn">返回上页</string>
     <string name="resume">恢复下载</string>
     <string name="stop">取消下载</string>
     <string name="download_hint">正在下载 </string>
-    <string name="sorry">抱歉，目前不支持同时下载多个文件。请等待或取消上一个下载任务</string>
 </resources>

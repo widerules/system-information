@@ -163,8 +163,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         case 0: {//progress dialog
         	if (mProgressDialog == null) {
                 mProgressDialog = new ProgressDialog(this);
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 mProgressDialog.setMax(MAX_PROGRESS);
+                mProgressDialog.setMessage(getString(R.string.wait));
                 mProgressDialog.setTitle(getString(R.string.loading));
         	}
             return mProgressDialog;
@@ -174,14 +175,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	setMessage(getString(R.string.app_name) + " " + version + "\n\n"
         			+ getString(R.string.help_message)
         			+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)). 
-        	setPositiveButton(getString(R.string.ok), 
-        	          new DialogInterface.OnClickListener() {
-	        	  public void onClick(DialogInterface dialog, int which) {}
-        	}).create();
-        }
-        case 2: {//sorry dialog
-        	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.sorry)).
         	setPositiveButton(getString(R.string.ok), 
         	          new DialogInterface.OnClickListener() {
 	        	  public void onClick(DialogInterface dialog, int which) {}
@@ -478,9 +471,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	@Override
         	public void onProgressChanged(WebView view, int progress) {
         		if (mProgressDialog != null) {
-    				mProgressDialog.setProgress(progress);
+    				//mProgressDialog.setProgress(progress);
+    				mProgressDialog.incrementProgressBy(1);
     				if (progress >= 50) {//50% is ok
-    					mProgressDialog.dismiss();
+    					mProgressDialog.hide();
     				}
         		}
         	}
@@ -501,7 +495,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onPageFinished(WebView view, String url) {
         		if (mProgressDialog != null) {
-    				if(mProgressDialog.isShowing())	mProgressDialog.dismiss();
+    				if(mProgressDialog.isShowing())	mProgressDialog.hide();
         		}
 			}         
 			
@@ -1162,7 +1156,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if ((intent.getAction().equals(Intent.ACTION_MAIN)) && (intent.hasCategory(Intent.CATEGORY_HOME))) {
 			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
-			if (mProgressDialog != null) mProgressDialog.dismiss();
+			if (mProgressDialog != null) mProgressDialog.hide();
 			InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 		}

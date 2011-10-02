@@ -165,6 +165,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 mProgressDialog.setMax(MAX_PROGRESS);
+                mProgressDialog.setIndeterminate(true);
                 mProgressDialog.setMessage(getString(R.string.wait));
                 mProgressDialog.setTitle(getString(R.string.loading));
         	}
@@ -471,9 +472,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	@Override
         	public void onProgressChanged(WebView view, int progress) {
         		if (mProgressDialog != null) {
-    				//mProgressDialog.setProgress(progress);
-    				mProgressDialog.incrementProgressBy(1);
-    				if (progress >= 50) {//50% is ok
+    				mProgressDialog.setProgress(progress);
+    				if (progress >= 50) {//50% is enough
     					mProgressDialog.hide();
     				}
         		}

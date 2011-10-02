@@ -370,7 +370,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						mainlayout.showNext();
 				}
 
-				if (mainlayout.getDisplayedChild() == 2) serverWeb.requestFocus();
+				if (mainlayout.getDisplayedChild() == 2) serverWeb.requestFocusFromTouch();
 			}
 		}
 	}
@@ -460,6 +460,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         //serverWeb.setOnTouchListener(this);
         WebSettings webSettings = serverWeb.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setDefaultTextEncodingName("utf-8");
@@ -496,6 +497,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		if (mProgressDialog != null) {
     				if(mProgressDialog.isShowing())	mProgressDialog.hide();
         		}
+				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 			}         
 			
 			@Override
@@ -1159,6 +1161,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 		}
+		else if (intent.getAction().equals(Intent.ACTION_VIEW)) {//view webpages
+			serverWeb.loadUrl(intent.getDataString());
+			if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
+			btnWeb.performClick();
+		}
 		super.onNewIntent(intent); 
 	}
 	
@@ -1168,7 +1175,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 				if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 				else if (adsParent.getVisibility() == View.VISIBLE) { 
-					if ((mainlayout.getDisplayedChild() == 2) && (serverWeb.canGoBack())) serverWeb.goBack();
+					if ((mainlayout.getDisplayedChild() == 2) && (serverWeb.canGoBack())) {
+						//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+						serverWeb.goBack();
+					}
 					else homeBar.performClick();
 				}
 				return true;

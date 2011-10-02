@@ -68,6 +68,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -369,8 +370,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					while(mainlayout.getDisplayedChild() != newTab)
 						mainlayout.showNext();
 				}
-
-				if (mainlayout.getDisplayedChild() == 2) serverWeb.requestFocusFromTouch();
+			}
+			if (mainlayout.getDisplayedChild() == 2) serverWeb.requestFocusFromTouch();
+			else {
+				InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 			}
 		}
 	}
@@ -555,6 +559,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					adsParent.setVisibility(View.INVISIBLE);
 					favoAppList.setVisibility(View.VISIBLE);
 					shortcutBar.setBackgroundResource(R.drawable.shortcut_bar_layout_revert);
+					InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 				}
 				else {
 					adsParent.setVisibility(View.VISIBLE);
@@ -1158,8 +1164,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
 			if (mProgressDialog != null) mProgressDialog.hide();
-			InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 		}
 		else if (intent.getAction().equals(Intent.ACTION_VIEW)) {//view webpages
 			serverWeb.loadUrl(intent.getDataString());

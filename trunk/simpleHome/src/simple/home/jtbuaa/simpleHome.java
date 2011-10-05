@@ -167,7 +167,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 mProgressDialog.setIndeterminate(true);
                 mProgressDialog.setMessage(getString(R.string.wait));
-                mProgressDialog.setTitle(getString(R.string.loading));
         	}
             return mProgressDialog;
     	}
@@ -467,10 +466,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-        webSettings.setDefaultTextEncodingName("utf-8");
-        //webSettings.setSupportZoom(true); //设置可以支持缩放         
-        // webSettings.setDefaultZoom(.ZoomDensity.FAR); //设置默认缩放方式尺寸是far  
-        //webSettings.setBuiltInZoomControls(true);//设置出现缩放工具 
         serverWeb.setScrollBarStyle(0);
         serverWeb.setWebChromeClient(new WebChromeClient() {
         	@Override
@@ -974,6 +969,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	else downloadPath = getFilesDir().getPath() + "/";
 			   
         	FileType.initMimeMap();//init the file type map
+        	
 			try {serverWeb.loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
 			

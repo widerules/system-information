@@ -27,7 +27,7 @@
     <string name="killapp">停止</string>
     
     <string name="loading">正在读取...</string>
-    <string name="wait">网页加载中，请稍后...</string>
+    <string name="wait">网页加载中，请稍候...</string>
     <string name="pause">暂停下载</string>
     <string name="justreturn">返回上页</string>
     <string name="resume">恢复下载</string>

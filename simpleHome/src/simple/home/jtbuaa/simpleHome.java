@@ -77,6 +77,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.SslErrorHandler;
@@ -165,7 +166,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	if (mProgressDialog == null) {
                 mProgressDialog = new ProgressDialog(this);
                 mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.setIndeterminate(true);
+                mProgressDialog.setIndeterminate(false);
                 mProgressDialog.setMessage(getString(R.string.wait));
         	}
             return mProgressDialog;
@@ -466,6 +467,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+        webSettings.setSupportZoom(true);
+        webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
         serverWeb.setScrollBarStyle(0);
         serverWeb.setWebChromeClient(new WebChromeClient() {
         	@Override
@@ -474,6 +477,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     				mProgressDialog.setProgress(progress);
     				if (progress >= 50) {//50% is enough
     					mProgressDialog.hide();
+    					mProgressDialog.setProgress(0);
     				}
         		}
         	}
@@ -494,7 +498,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onPageFinished(WebView view, String url) {
         		if (mProgressDialog != null) {
-    				if(mProgressDialog.isShowing())	mProgressDialog.hide();
+    				//if(mProgressDialog.isShowing())	mProgressDialog.hide();//not necessary?
         		}
 				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 			}         

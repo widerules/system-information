@@ -34,7 +34,7 @@
   		<TextView android:id="@+id/home_bar"
   			android:layout_width="80dip"
   			android:layout_height="40dip"
-  			android:text="@string/appdetail"
+  			android:text="@string/more"
   			android:textSize="16dip"
   			android:gravity="center"
   			android:layout_marginLeft="8dip"

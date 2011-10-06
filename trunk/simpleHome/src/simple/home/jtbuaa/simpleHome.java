@@ -75,6 +75,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.ZoomDensity;
@@ -371,8 +372,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						mainlayout.showNext();
 				}
 			}
-			if (mainlayout.getDisplayedChild() == 2) serverWeb.requestFocusFromTouch();
-			else {
+			if (mainlayout.getDisplayedChild() != 2) { 
 				InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 			}
@@ -470,6 +470,24 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         webSettings.setSupportZoom(true);
         webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
         serverWeb.setScrollBarStyle(0);
+        
+        serverWeb.setDownloadListener(new DownloadListener() {
+			@Override
+			public void onDownloadStart(String url, String ua, String contentDisposition,
+					String mimetype, long contentLength) {
+				startDownload(url);
+			}
+        });
+        
+        serverWeb.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				if (serverWeb.getHitTestResult().getType() == WebView.HitTestResult.EDIT_TEXT_TYPE) {//no use?
+					serverWeb.requestFocus();
+				}
+				return false;
+			}
+        });
         serverWeb.setWebChromeClient(new WebChromeClient() {
         	@Override
         	public void onProgressChanged(WebView view, int progress) {
@@ -505,21 +523,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				String[] tmp = url.split("\\.");
-				if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
-					String ss[] = url.split("/");
-					String apkName = ss[ss.length-1]; //get download file name
-					
-			    	Random random = new Random();
-			    	int id = random.nextInt() + 1000;
-			    	
-					DownloadTask dltask = new DownloadTask();
-					dltask.NOTIFICATION_ID = id;
-					appstate.downloadState.put(id, dltask);
-					dltask.execute(url, apkName);
-					return true;
-				}
-				return false;
+				return startDownload(url);
 			}
 		});
 		
@@ -1036,6 +1040,24 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         }
     };
 
+    boolean startDownload(String url) {
+		String[] tmp = url.split("\\.");
+		if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
+			String ss[] = url.split("/");
+			String apkName = ss[ss.length-1]; //get download file name
+			
+	    	Random random = new Random();
+	    	int id = random.nextInt() + 1000;
+	    	
+			DownloadTask dltask = new DownloadTask();
+			dltask.NOTIFICATION_ID = id;
+			appstate.downloadState.put(id, dltask);
+			dltask.execute(url, apkName);
+			return true;
+		}
+		else return false;
+    }
+    
 	class DownloadTask extends AsyncTask<String, Integer, String> {
 		private String URL_str; //网络歌曲的路径
 		private File download_file; //下载的文件

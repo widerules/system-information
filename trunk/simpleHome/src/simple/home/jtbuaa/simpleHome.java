@@ -98,7 +98,6 @@ import android.widget.ViewFlipper;
 
 public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
-	final boolean dirtyMode = false;
 	WebView serverWeb;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList;
@@ -277,6 +276,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 			break;
 		case 4://get app detail info
+			String source = selected_case.mRi.activityInfo.applicationInfo.sourceDir 
+				+ "\n\n" 
+				+ selected_case.mRi.activityInfo.packageName;
+        	Toast.makeText(getBaseContext(), source, Toast.LENGTH_LONG).show();
+
 			Intent intent;
 			if (appDetail != null) {
 				intent = new Intent(Intent.ACTION_VIEW);
@@ -756,10 +760,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             //lapp.setOnTouchListener(simpleHome.this);
             
             Object o = packagesSize.get(info.activityInfo.packageName);
-            if ((o != null) && dirtyMode)
-           		textView1.setText(info.loadLabel(pm) + " (" + o.toString() + ")");//the size is not very precise
-            else 
-            	textView1.setText(info.loadLabel(pm));
+           	textView1.setText(info.loadLabel(pm));
             
             final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
             btnVersion.setVisibility(View.VISIBLE);
@@ -781,22 +782,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
             String source = "";
-            int textColor = 0xFF888888;
-            if (dirtyMode) {
-                if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-                	source = info.activityInfo.applicationInfo.sourceDir + " (debugable) " + info.activityInfo.packageName;
-                	textColor = 0xFFEECC77;//brown for debuggable apk
-                }
-                else if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-                	source = info.activityInfo.applicationInfo.sourceDir;//we can use source dir to remove it.
-                }
-                else {
-                	source = info.activityInfo.packageName;//we can use package name to uninstall it.
-                }
+            if(o != null) source = o.toString();
+            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
+            	textView3.setTextColor(0xFFEECC77);//brown for debuggable apk
+            	source += " (debuggable)";
             }
-            else if(o != null) source = o.toString();
+            else textView3.setTextColor(0xFF888888);//gray for normal
         	textView3.setText(source);
-        	textView3.setTextColor(textColor);//must set color here, otherwise it will be wrong for some item.
 			
             return convertView;
         }

@@ -110,8 +110,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	List<ResolveInfo> mAllApps;
 	ArrayList mFavoApps, mSysApps, mUserApps, mShortApps;
 	private Button btnSys, btnUser, btnWeb;
-	static int grayColor = 0xFFEEEEEE;
-	static int whiteColor = 0xFFFFFFFF;
+	static int grayColor = 0xCCEEEEEE;
+	static int whiteColor = 0xDDFFFFFF;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;

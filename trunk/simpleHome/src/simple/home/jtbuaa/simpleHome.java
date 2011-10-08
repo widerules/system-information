@@ -784,7 +784,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             String source = "";
             if(o != null) source = o.toString();
             if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-            	textView3.setTextColor(0xFFEECC77);//brown for debuggable apk
+            	textView3.setTextColor(0xFFF8BF00);//brown for debuggable apk
             	source += " (debuggable)";
             }
             else textView3.setTextColor(0xFF888888);//gray for normal

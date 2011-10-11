@@ -99,7 +99,7 @@ import android.widget.ViewFlipper;
 public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
 	WebView serverWeb;
-	ImageView imgNext, imgPrev, imgHome;
+	ImageView imgNext, imgPrev, imgHome, imgRefresh;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList;
 	TextView homeBar, shortBar, currentAppLabel;
@@ -544,6 +544,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onClick(View arg0) {
 				if (serverWeb.canGoBack()) serverWeb.goBack();
+			}
+		});
+		imgRefresh = (ImageView) findViewById(R.id.refresh);
+		imgRefresh.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				serverWeb.reload();
 			}
 		});
 		imgHome = (ImageView) findViewById(R.id.home);

@@ -22,10 +22,12 @@
     <string name="removeFromFavo">从主屏删除</string>
     <string name="addtoShort">添加到快捷方式</string>
     <string name="removeFromShort">删除快捷方式</string>
-    <string name="backup">备份到SD卡...</string>
     <string name="appdetail">详细信息...</string>
     <string name="killapp">终止该应用</string>
     <string name="more">更多...</string>
+    
+    <string name="back">前一页</string>
+    <string name="next">下一页</string>
     
     <string name="loading">正在读取...</string>
     <string name="wait">网页加载中，请稍候...</string>

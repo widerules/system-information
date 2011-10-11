@@ -23,10 +23,12 @@
     <string name="removeFromFavo">Delete</string>
     <string name="addtoShort">Add to shortcut</string>
     <string name="removeFromShort">Delete this shortcut</string>
-    <string name="backup">Back up to SDcard...</string>
     <string name="appdetail">Detail...</string>
     <string name="killapp">Stop it</string>
     <string name="more">More...</string>
+    
+    <string name="back">Back</string>
+    <string name="next">Next</string>
     
     <string name="loading">Loading...</string>
     <string name="wait">Please wait while loading...</string>

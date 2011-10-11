@@ -449,21 +449,21 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
     	
     	//system app tab
-    	sysAppList = new ListView(this);
+    	sysAppList = (ListView) findViewById(R.id.sysapp);
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.setScrollingCacheEnabled(false);
     	//sysAppList.setOnTouchListener(this);
         
     	//user app tab
-        userAppList = new ListView(this);
+    	userAppList = (ListView) findViewById(R.id.userapp);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.setScrollingCacheEnabled(false);
         //userAppList.setOnTouchListener(this);
         
         //online tab
-        serverWeb = new WebView(this);
+        serverWeb = (WebView) findViewById(R.id.webpage);
         serverWeb.requestFocusFromTouch();
         //serverWeb.setOnTouchListener(this);
         WebSettings webSettings = serverWeb.getSettings();
@@ -531,10 +531,29 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 		});
 		
-        mainlayout.addView(sysAppList);
-        mainlayout.addView(userAppList);
-		mainlayout.addView(serverWeb);
-        
+		ImageView imgNext = (ImageView) findViewById(R.id.next);
+		imgNext.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Log.d("============", "web next");
+				if (serverWeb.canGoForward()) serverWeb.goForward();
+			}
+		});
+		ImageView imgPrev = (ImageView) findViewById(R.id.prev);
+		imgNext.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (serverWeb.canGoBack()) serverWeb.goBack();
+			}
+		});
+		ImageView imgHome = (ImageView) findViewById(R.id.home);
+		imgNext.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				serverWeb.loadUrl("file:///android_asset/online.html");
+			}
+		});
+		
         btnSys = (Button) findViewById(R.id.btnSystemApp);
         btnSys.setOnClickListener(mBtnCL);
         

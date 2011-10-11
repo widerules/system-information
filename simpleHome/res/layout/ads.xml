@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/apps"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	
+<RelativeLayout 
 	android:id="@+id/base"
 	android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -51,6 +56,18 @@
   			android:layout_toLeftOf="@id/shortcut_contact"/>
 	</RelativeLayout>
 	
+	<GridView android:id="@+id/favos"
+		android:layout_above="@id/shortcut_bar"
+		android:stackFromBottom="true"
+		android:verticalSpacing="10dip"
+		android:horizontalSpacing="10dip"
+		android:paddingBottom="15dip"
+		android:columnWidth="55dip"
+		android:numColumns="auto_fit"
+		android:background="@android:color/transparent"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"/>
+		
 	<ListView android:id="@+id/business"
 		android:layout_alignParentRight="true"
 		android:layout_marginRight="10dip"
@@ -62,21 +79,7 @@
 		android:scrollingCache="false"
 		android:fadingEdge="none"/>
 	 
-<FrameLayout android:id="@+id/apps"
-	android:layout_above="@id/shortcut_bar"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	
-	<GridView android:id="@+id/favos"
-		android:stackFromBottom="true"
-		android:verticalSpacing="10dip"
-		android:horizontalSpacing="10dip"
-		android:paddingBottom="15dip"
-		android:columnWidth="55dip"
-		android:numColumns="auto_fit"
-		android:background="@android:color/transparent"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"/>
+</RelativeLayout>
 	
 <RelativeLayout 
     android:id="@+id/adsParent"
@@ -150,5 +153,4 @@
     
 </RelativeLayout>
 </FrameLayout>
-</RelativeLayout>
 	

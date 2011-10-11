@@ -561,18 +561,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				if (adsParent.getVisibility() == View.VISIBLE) {
 					adsParent.setVisibility(View.INVISIBLE);
 					favoAppList.setVisibility(View.VISIBLE);
-					shortcutBar.setBackgroundResource(R.drawable.shortcut_bar_layout_revert);
+					shortcutBar.setVisibility(View.VISIBLE);
 					InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
 				}
 				else {
 					adsParent.setVisibility(View.VISIBLE);
 					favoAppList.setVisibility(View.INVISIBLE);
-					shortcutBar.setBackgroundResource(R.drawable.shortcut_bar_layout);
+					if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
+					shortcutBar.setVisibility(View.INVISIBLE);
 				}
 			}
         });

@@ -107,11 +107,11 @@
   		android:orientation="horizontal"
   		android:layout_below="@id/white_bar"
   		android:layout_width="fill_parent"
-  		android:layout_height="35dip">
+  		android:layout_height="wrap_content">
     
 	    <Button
 			android:layout_width="105dip"
-			android:layout_height="35dip"
+			android:layout_height="32dip"
 			android:id="@+id/btnSystemApp"
 			android:text="@string/systemapps"
 			android:background="@drawable/button_layout_selected"
@@ -120,7 +120,7 @@
 			 
 	    <Button
 			android:layout_width="105dip"
-			android:layout_height="35dip"
+			android:layout_height="32dip"
 			android:id="@+id/btnUserApp"
 			android:text="@string/userapps"
 			android:background="@drawable/button_layout_unselected"
@@ -129,7 +129,7 @@
 			 
 	    <Button
 			android:layout_width="105dip"
-			android:layout_height="35dip"
+			android:layout_height="32dip"
 			android:id="@+id/btnOnline"
 			android:text="@string/online"
 			android:background="@drawable/button_layout_unselected"
@@ -166,7 +166,7 @@
   			android:layout_height="match_parent">
   
   			<RelativeLayout android:id="@+id/webtools"
-  				android:background="@drawable/shortcut_bar_layout_revert"
+  				android:background="@drawable/shortcut_bar_layout"
   				android:layout_alignParentBottom="true" 
   				android:orientation="horizontal" 
   				android:layout_width="fill_parent"
@@ -202,9 +202,10 @@
 				android:layout_alignParentRight="true"
 			/>
 			<ImageView android:id="@+id/refresh"
-				android:layout_height="35dip" 
-				android:layout_width="35dip"
-				android:layout_marginRight="30dip"
+				android:layout_height="28dip" 
+				android:layout_width="28dip"
+				android:layout_marginRight="35dip"
+				android:layout_marginTop="3dip"
 				android:scaleType="fitCenter"
 				android:src="@drawable/refresh"
 				android:layout_toLeftOf="@id/home"

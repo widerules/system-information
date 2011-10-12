@@ -1218,13 +1218,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 				if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
-				else if (adsParent.getVisibility() == View.VISIBLE) { 
-					if ((mainlayout.getDisplayedChild() == 2) && (serverWeb.canGoBack())) {
-						//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
-						serverWeb.goBack();
-					}
-					else homeBar.performClick();
-				}
+				if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
+				if (mProgressDialog != null) mProgressDialog.hide();
 				return true;
 			}	
 		}

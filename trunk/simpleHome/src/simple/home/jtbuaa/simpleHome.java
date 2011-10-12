@@ -484,15 +484,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
         });
         
-        serverWeb.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				if (serverWeb.getHitTestResult().getType() == WebView.HitTestResult.EDIT_TEXT_TYPE) {//no use?
-					serverWeb.requestFocus();
-				}
-				return false;
-			}
-        });
         serverWeb.setWebChromeClient(new WebChromeClient() {
         	@Override
         	public void onProgressChanged(WebView view, int progress) {

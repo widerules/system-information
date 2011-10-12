@@ -85,6 +85,7 @@ import android.webkit.SslErrorHandler;
 import android.net.http.SslError;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -98,7 +99,9 @@ import android.widget.ViewFlipper;
 
 public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
 
-	WebView serverWeb;
+	ArrayList<MyWebview> serverWebs;
+	int webIndex;
+	FrameLayout webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList;
@@ -159,6 +162,71 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		}
 	}
 	ricase selected_case;
+	
+	class MyWebview extends WebView {
+
+		public MyWebview(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+	        requestFocusFromTouch();
+	        setScrollBarStyle(0);
+	        //serverWeb.setOnTouchListener(this);
+	        WebSettings webSettings = getSettings();
+	        webSettings.setJavaScriptEnabled(true);
+	        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+	        webSettings.setSaveFormData(true);
+	        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
+	        webSettings.setSupportZoom(true);
+	        webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
+
+	        setDownloadListener(new DownloadListener() {
+				@Override
+				public void onDownloadStart(String url, String ua, String contentDisposition,
+						String mimetype, long contentLength) {
+					startDownload(url);
+				}
+	        });
+	        
+	        setWebChromeClient(new WebChromeClient() {
+	        	@Override
+	        	public void onProgressChanged(WebView view, int progress) {
+	        		if (mProgressDialog != null) {
+	    				mProgressDialog.setProgress(progress);
+	    				if (progress >= 50) {//50% is enough
+	    					mProgressDialog.hide();
+	    					mProgressDialog.setProgress(0);
+	    				}
+	        		}
+	        	}
+			});
+	        
+			setWebViewClient(new WebViewClient() {
+				@Override
+				public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error){
+			        handler.proceed();//accept ssl certification when never needed.
+				}
+				
+				@Override
+				public void onPageStarted(WebView view, String url, Bitmap favicon) {
+					if (!url.equals("file:///android_asset/online.html")) showDialog(0);
+					super.onPageStarted(view, url, favicon);
+				}
+				 
+				@Override
+				public void onPageFinished(WebView view, String url) {
+	        		if (mProgressDialog != null) {
+	    				//if(mProgressDialog.isShowing())	mProgressDialog.hide();//not necessary?
+	        		}
+					//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+				}         
+				
+				@Override
+				public boolean shouldOverrideUrlLoading(WebView view, String url) {
+					return startDownload(url);
+				}
+			});
+		}
+	}
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
@@ -379,7 +447,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 			if (mainlayout.getDisplayedChild() != 2) { 
 				InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
+				imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
 			}
 		}
 	}
@@ -464,91 +532,38 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         //userAppList.setOnTouchListener(this);
         
         //online tab
-        serverWeb = (WebView) findViewById(R.id.webpage);
-        serverWeb.requestFocusFromTouch();
-        //serverWeb.setOnTouchListener(this);
-        WebSettings webSettings = serverWeb.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webSettings.setSaveFormData(true);
-        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-        webSettings.setSupportZoom(true);
-        webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
-        serverWeb.setScrollBarStyle(0);
-        
-        serverWeb.setDownloadListener(new DownloadListener() {
-			@Override
-			public void onDownloadStart(String url, String ua, String contentDisposition,
-					String mimetype, long contentLength) {
-				startDownload(url);
-			}
-        });
-        
-        serverWeb.setWebChromeClient(new WebChromeClient() {
-        	@Override
-        	public void onProgressChanged(WebView view, int progress) {
-        		if (mProgressDialog != null) {
-    				mProgressDialog.setProgress(progress);
-    				if (progress >= 50) {//50% is enough
-    					mProgressDialog.hide();
-    					mProgressDialog.setProgress(0);
-    				}
-        		}
-        	}
-		});
-		serverWeb.setWebViewClient(new WebViewClient() {
-
-			@Override
-			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error){
-		        handler.proceed();//accept ssl certification when never needed.
-			}
-			
-			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				if (!url.equals("file:///android_asset/online.html")) showDialog(0);
-				super.onPageStarted(view, url, favicon);
-			}
-			 
-			@Override
-			public void onPageFinished(WebView view, String url) {
-        		if (mProgressDialog != null) {
-    				//if(mProgressDialog.isShowing())	mProgressDialog.hide();//not necessary?
-        		}
-				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-			}         
-			
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				return startDownload(url);
-			}
-		});
+        webIndex = 0;
+        serverWebs = new ArrayList<MyWebview>();
+        serverWebs.add(new MyWebview(this));
+        webpages = (FrameLayout)findViewById(R.id.webpages);
+        webpages.addView(serverWebs.get(webIndex));
 		
 		imgNext = (ImageView) findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (serverWeb.canGoForward()) serverWeb.goForward();
+				if (serverWebs.get(webIndex).canGoForward()) serverWebs.get(webIndex).goForward();
 			}
 		});
 		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (serverWeb.canGoBack()) serverWeb.goBack();
+				if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
 			}
 		});
 		imgRefresh = (ImageView) findViewById(R.id.refresh);
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				serverWeb.reload();
+				serverWebs.get(webIndex).reload();
 			}
 		});
 		imgHome = (ImageView) findViewById(R.id.home);
 		imgHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				serverWeb.loadUrl("file:///android_asset/online.html");
+				serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 			}
 		});
 		
@@ -583,7 +598,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					favoAppList.setVisibility(View.VISIBLE);
 					shortcutBar.setVisibility(View.VISIBLE);
 					InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(serverWeb.getWindowToken(), 0);//hide input method
+					imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
 				}
 				else {
 					adsParent.setVisibility(View.VISIBLE);
@@ -987,7 +1002,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			   
         	FileType.initMimeMap();//init the file type map
         	
-			try {serverWeb.loadUrl("file:///android_asset/online.html");}
+			try {serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
 			
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
@@ -1197,7 +1212,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			if (mProgressDialog != null) mProgressDialog.hide();
 		}
 		else if (intent.getAction().equals(Intent.ACTION_VIEW)) {//view webpages
-			serverWeb.loadUrl(intent.getDataString());
+			serverWebs.get(webIndex).loadUrl(intent.getDataString());
 			if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
 			btnWeb.performClick();
 		}

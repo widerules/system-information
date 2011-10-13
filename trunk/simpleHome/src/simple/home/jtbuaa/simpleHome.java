@@ -218,9 +218,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				 
 				@Override
 				public void onPageFinished(WebView view, String url) {
-	        		if (mProgressDialog != null) {
-	    				//if(mProgressDialog.isShowing())	mProgressDialog.hide();//not necessary?
-	        		}
+					webAdapter.notifyDataSetChanged();
 					//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 				}         
 				

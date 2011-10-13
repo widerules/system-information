@@ -225,8 +225,9 @@
 				android:layout_alignParentBottom="true"
 				android:gravity="center"
 				android:textSize="20dip"
-				android:background="#88222222"
+				android:background="#CC222222"
 				android:textColor="#FF96c732"
+				android:textStyle="bold"
 				android:layout_width="250dip"
 				android:layout_height="35dip"/>
 				

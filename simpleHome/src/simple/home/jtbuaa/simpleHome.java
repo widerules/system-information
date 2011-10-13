@@ -257,9 +257,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					webControl.setVisibility(View.INVISIBLE);
 					webIndex = position;
 					while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-					webControl.setVisibility(View.INVISIBLE);
+					webpages.getChildAt(webIndex).requestFocus();
 				}
     		});
             
@@ -267,13 +268,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					webControl.setVisibility(View.INVISIBLE);
 					if (webAdapter.getCount() > 1) {
 						((MyWebview) webpages.getChildAt(position)).destroy();
 						webAdapter.remove((MyWebview) webpages.getChildAt(position));
 						webpages.removeViewAt(position);
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
-					webControl.setVisibility(View.INVISIBLE);
+					webpages.getChildAt(webIndex).requestFocus();
 				}
             });
             
@@ -629,6 +631,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 				else {
 					webControl.setVisibility(View.INVISIBLE);
+					webpages.getChildAt(webIndex).requestFocus();
 				}
 			}
 		});
@@ -641,12 +644,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
+		        webControl.setVisibility(View.INVISIBLE);
 				webAdapter.add(new MyWebview(mContext));
 				webIndex = webAdapter.getCount() - 1;
 		        webpages.addView(webAdapter.getItem(webIndex));
 		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		        imgHome.performClick();
-		        webControl.setVisibility(View.INVISIBLE);
+				webpages.getChildAt(webIndex).requestFocus();
 			}
 		});
     	//web list

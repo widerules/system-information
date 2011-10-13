@@ -233,13 +233,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     private class WebAdapter extends ArrayAdapter<MyWebview> {
     	ArrayList localWeblist;
     	public WebAdapter(Context context, List<MyWebview> webs) {
-            super(context, 0);
+            super(context, 0, webs);
             localWeblist = (ArrayList) webs;
         }
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-        	Log.d("===============", "" + "position" + position);
             final MyWebview wv = (MyWebview) localWeblist.get(position);
 
             if (convertView == null) {
@@ -622,6 +621,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	webList.setFadingEdgeLength(0);//no shadow when scroll
     	webList.setScrollingCacheEnabled(false);
     	webList.setAdapter(webAdapter);
+    	webpages.bringChildToFront(webList);
     	
         btnSys = (Button) findViewById(R.id.btnSystemApp);
         btnSys.setOnClickListener(mBtnCL);

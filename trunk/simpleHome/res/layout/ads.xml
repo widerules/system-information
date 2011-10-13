@@ -202,10 +202,9 @@
 				android:layout_alignParentRight="true"
 			/>
 			<ImageView android:id="@+id/refresh"
-				android:layout_height="28dip" 
-				android:layout_width="28dip"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
 				android:layout_marginRight="35dip"
-				android:layout_marginTop="3dip"
 				android:scaleType="fitCenter"
 				android:src="@drawable/refresh"
 				android:layout_toLeftOf="@id/home"

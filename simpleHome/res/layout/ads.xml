@@ -212,7 +212,12 @@
 			/>
   		</RelativeLayout>
   
-		<FrameLayout
+		<ListView android:id="@+id/weblist"
+			android:layout_above="@id/webtools"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"/>
+		
+		<ViewFlipper
 			android:id="@+id/webpages"
 			android:layout_above="@id/webtools"
 			android:layout_width="fill_parent"

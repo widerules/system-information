@@ -104,6 +104,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
+	RelativeLayout webControl;
+	TextView btnNewpage;
 	
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
@@ -256,9 +258,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				@Override
 				public void onClick(View arg0) {
 					webIndex = position;
-					while (webpages.getDisplayedChild() != webIndex)
-						webpages.showNext();
-					webpages.bringToFront();
+					while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
+					webControl.setVisibility(View.INVISIBLE);
 				}
     		});
             
@@ -272,7 +273,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						webpages.removeViewAt(position);
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
-					webpages.bringToFront();
+					webControl.setVisibility(View.INVISIBLE);
 				}
             });
             
@@ -622,14 +623,32 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				webAdapter.add(new MyWebview(mContext));
-				webIndex = webAdapter.getCount() - 1;
-		        webpages.addView(webAdapter.getItem(webIndex));
-		        imgHome.performClick();
-		        webList.bringToFront();
+				if (webControl.getVisibility() == View.INVISIBLE) {
+			        webControl.setVisibility(View.VISIBLE);
+			        webControl.bringToFront();
+				}
+				else {
+					webControl.setVisibility(View.INVISIBLE);
+				}
 			}
 		});
 		
+		//web control
+		webControl = (RelativeLayout) findViewById(R.id.webcontrol);
+		
+		btnNewpage = (TextView) findViewById(R.id.opennewpage);
+		btnNewpage.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				webAdapter.add(new MyWebview(mContext));
+				webIndex = webAdapter.getCount() - 1;
+		        webpages.addView(webAdapter.getItem(webIndex));
+		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
+		        imgHome.performClick();
+		        webControl.setVisibility(View.INVISIBLE);
+			}
+		});
     	//web list
 		webAdapter = new WebAdapter(this, serverWebs);
     	webList = (ListView) findViewById(R.id.weblist);

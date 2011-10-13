@@ -29,6 +29,7 @@
     
     <string name="back">Back</string>
     <string name="next">Next</string>
+    <string name="newpage">new</string>
     
     <string name="loading">Loading...</string>
     <string name="wait">Please wait while loading...</string>

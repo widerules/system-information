@@ -224,8 +224,9 @@
 				android:layout_centerHorizontal="true"
 				android:layout_alignParentBottom="true"
 				android:gravity="center"
-				android:textSize="18dip"
+				android:textSize="20dip"
 				android:background="#88222222"
+				android:textColor="#FF96c732"
 				android:layout_width="250dip"
 				android:layout_height="35dip"/>
 				

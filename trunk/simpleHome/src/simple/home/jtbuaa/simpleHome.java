@@ -101,10 +101,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	ArrayList<MyWebview> serverWebs;
 	int webIndex;
-	FrameLayout webpages;
-	ImageView imgNext, imgPrev, imgHome, imgRefresh;
+	ViewFlipper webpages;
+	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
+	WebAdapter webAdapter;
+	
 	GridView favoAppList;
-	ListView sysAppList, userAppList, shortAppList;
+	ListView sysAppList, userAppList, shortAppList, webList;
 	TextView homeBar, shortBar, currentAppLabel;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
@@ -112,7 +114,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	GestureDetector mGestureDetector;
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
-	ArrayList mFavoApps, mSysApps, mUserApps, mShortApps;
+	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
 	private Button btnSys, btnUser, btnWeb;
 	static int grayColor = 0xCCEEEEEE;
 	static int whiteColor = 0xDDFFFFFF;
@@ -228,6 +230,42 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		}
 	}
 	
+    private class WebAdapter extends ArrayAdapter<MyWebview> {
+    	ArrayList localWeblist;
+    	public WebAdapter(Context context, List<MyWebview> webs) {
+            super(context, 0);
+            localWeblist = (ArrayList) webs;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+        	Log.d("===============", "" + "position" + position);
+            final MyWebview wv = (MyWebview) localWeblist.get(position);
+
+            if (convertView == null) {
+                final LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.web_list, parent, false);
+            }
+
+            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
+            btnIcon.setImageBitmap(wv.getFavicon());
+            
+            TextView webname = (TextView) convertView.findViewById(R.id.webname);
+            webname.setText(wv.getUrl());
+            
+            convertView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					webIndex = position;
+					while (webpages.getDisplayedChild() != webIndex)
+						webpages.showNext();
+				}
+    		});
+            
+            return convertView;
+        }
+    }
+    
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -535,7 +573,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         webIndex = 0;
         serverWebs = new ArrayList<MyWebview>();
         serverWebs.add(new MyWebview(this));
-        webpages = (FrameLayout)findViewById(R.id.webpages);
+        webpages = (ViewFlipper)findViewById(R.id.webpages);
         webpages.addView(serverWebs.get(webIndex));
 		
 		imgNext = (ImageView) findViewById(R.id.next);
@@ -566,7 +604,25 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 			}
 		});
+		imgNew = (ImageView) findViewById(R.id.newpage);
+		imgNew.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				webAdapter.add(new MyWebview(mContext));
+				webIndex = webAdapter.getCount() - 1;
+		        webpages.addView(webAdapter.getItem(webIndex));
+		        webpages.bringChildToFront(webList);
+			}
+		});
 		
+    	//web list
+		webAdapter = new WebAdapter(this, serverWebs);
+    	webList = (ListView) findViewById(R.id.weblist);
+    	webList.inflate(this, R.layout.web_list, null);
+    	webList.setFadingEdgeLength(0);//no shadow when scroll
+    	webList.setScrollingCacheEnabled(false);
+    	webList.setAdapter(webAdapter);
+    	
         btnSys = (Button) findViewById(R.id.btnSystemApp);
         btnSys.setOnClickListener(mBtnCL);
         

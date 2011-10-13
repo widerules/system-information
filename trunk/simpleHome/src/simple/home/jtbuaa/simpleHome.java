@@ -252,14 +252,29 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             TextView webname = (TextView) convertView.findViewById(R.id.webname);
             webname.setText(wv.getUrl());
             
-            convertView.setOnClickListener(new OnClickListener() {
+            webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
 					webIndex = position;
 					while (webpages.getDisplayedChild() != webIndex)
 						webpages.showNext();
+					webpages.bringToFront();
 				}
     		});
+            
+            ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
+            btnStop.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					if (webAdapter.getCount() > 1) {
+						((MyWebview) webpages.getChildAt(position)).destroy();
+						webAdapter.remove((MyWebview) webpages.getChildAt(position));
+						webpages.removeViewAt(position);
+						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
+					}
+					webpages.bringToFront();
+				}
+            });
             
             return convertView;
         }
@@ -572,7 +587,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         webIndex = 0;
         serverWebs = new ArrayList<MyWebview>();
         serverWebs.add(new MyWebview(this));
-        webpages = (ViewFlipper)findViewById(R.id.webpages);
+        webpages = (ViewFlipper) findViewById(R.id.webpages);
         webpages.addView(serverWebs.get(webIndex));
 		
 		imgNext = (ImageView) findViewById(R.id.next);
@@ -610,7 +625,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				webAdapter.add(new MyWebview(mContext));
 				webIndex = webAdapter.getCount() - 1;
 		        webpages.addView(webAdapter.getItem(webIndex));
-		        webpages.bringChildToFront(webList);
+		        imgHome.performClick();
+		        webList.bringToFront();
 			}
 		});
 		
@@ -621,7 +637,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	webList.setFadingEdgeLength(0);//no shadow when scroll
     	webList.setScrollingCacheEnabled(false);
     	webList.setAdapter(webAdapter);
-    	webpages.bringChildToFront(webList);
     	
         btnSys = (Button) findViewById(R.id.btnSystemApp);
         btnSys.setOnClickListener(mBtnCL);

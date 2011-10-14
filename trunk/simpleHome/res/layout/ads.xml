@@ -15,7 +15,7 @@
   		android:orientation="horizontal"
   		android:layout_alignParentBottom="true"
   		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content">
+  		android:layout_height="35dip">
   		
 		<ImageView android:id="@+id/shortcut_sms"
 			android:layout_height="35dip" 
@@ -232,6 +232,7 @@
 				android:layout_height="35dip"/>
 				
 			<ListView android:id="@+id/weblist"
+				android:layout_centerHorizontal="true"
 				android:layout_above="@id/opennewpage"
 				android:layout_width="250dip"
 				android:layout_height="wrap_content"/>

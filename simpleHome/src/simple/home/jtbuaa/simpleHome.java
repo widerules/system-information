@@ -77,6 +77,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
+import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
@@ -250,7 +251,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             btnIcon.setImageBitmap(wv.getFavicon());
             
             TextView webname = (TextView) convertView.findViewById(R.id.webname);
-            webname.setText(wv.getUrl());
+            webname.setText(wv.getTitle());
             
             webname.setOnClickListener(new OnClickListener() {
 				@Override
@@ -585,6 +586,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         //userAppList.setOnTouchListener(this);
         
         //online tab
+        WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
         webIndex = 0;
         serverWebs = new ArrayList<MyWebview>();
         serverWebs.add(new MyWebview(this));

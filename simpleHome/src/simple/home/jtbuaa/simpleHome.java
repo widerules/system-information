@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -147,6 +148,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	IPackageStatsObserver sizeObserver;
 	static int sizeM = 1024*1024; 
 
+	private static Method setPackage;
+	
 	class packageIDpair {
 		String packageName;
 		int notificationID;
@@ -182,7 +185,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        webSettings.setSaveFormData(true);
 	        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
 	        webSettings.setSupportZoom(true);
-	        webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
+	        //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
 
 	        setDownloadListener(new DownloadListener() {
 				@Override
@@ -792,17 +795,24 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
             	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            	mainIntent.setPackage(packageName);
-            	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
+            	if (setPackage != null) {
+            		try {
+						setPackage.invoke(mainIntent, packageName);//for 1.5 which do not have this method
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+                	//mainIntent.setPackage(packageName);
+                	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
 
-            	if (targetApps.size() > 0) {//the new package may not support Launcher category, we will omit it.
-                	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-        				sysAdapter.add(targetApps.get(0));
-        		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-                	}
-                	else {
-        				userAdapter.add(targetApps.get(0));
-        		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+                	if (targetApps.size() > 0) {//the new package may not support Launcher category, we will omit it.
+                    	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+            				sysAdapter.add(targetApps.get(0));
+            		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+                    	}
+                    	else {
+            				userAdapter.add(targetApps.get(0));
+            		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+                    	}
                 	}
             	}
             	
@@ -1098,6 +1108,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	
 			try {serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");}
 			catch (Exception e) {}
+			
+			try {//for 1.5 which do not have this method
+				setPackage = Intent.class.getMethod("setPackage", new Class[] {String.class});
+			} catch (Exception e) {
+				setPackage = null;
+				e.printStackTrace();
+			}
 			
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);

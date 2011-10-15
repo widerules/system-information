@@ -37,5 +37,5 @@
     <string name="justreturn">Just Return</string>
     <string name="resume">Resume download</string>
     <string name="stop">Cancel download</string>
-    <string name="download_hint">what do you want for </string>
+    <string name="download_hint">what do you want for\n\n</string>
 </resources>

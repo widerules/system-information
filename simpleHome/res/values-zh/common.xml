@@ -36,5 +36,5 @@
     <string name="justreturn">返回上页</string>
     <string name="resume">恢复下载</string>
     <string name="stop">取消下载</string>
-    <string name="download_hint">正在下载 </string>
+    <string name="download_hint">正在下载\n\n</string>
 </resources>

@@ -152,11 +152,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	
 	class packageIDpair {
 		String packageName;
+		File downloadedfile;
 		int notificationID;
 		
-		packageIDpair(String name, int id) {
+		packageIDpair(String name, int id, File file) {
 			packageName = name;
 			notificationID = id;
+			downloadedfile = file;
 		}
 	}
 	
@@ -795,9 +797,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
             	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            	if (setPackage != null) {
+            	if (setPackage != null) {//for 1.5 which do not have this method, we can't get new installed apk in user applist intime
             		try {
-						setPackage.invoke(mainIntent, packageName);//for 1.5 which do not have this method
+						setPackage.invoke(mainIntent, packageName);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -820,6 +822,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             		if (downloadAppID.get(i).packageName.startsWith(packageName.toLowerCase()))
             		{
                 		nManager.cancel(downloadAppID.get(i).notificationID);
+                		try {
+                			downloadAppID.get(i).downloadedfile.delete();
+                		} catch(Exception e) {};
                 		downloadAppID.remove(i);
             		}
             	}
@@ -1296,7 +1301,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);//click listener for download progress bar
         	        nManager.notify(NOTIFICATION_ID, notification);
         	        
-        			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
+        			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID, download_file));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
         			
    	        		Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//try to change file property     
    	        		p.waitFor(); 

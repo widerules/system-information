@@ -1243,7 +1243,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		else //need overwrite
         			fos = new FileOutputStream(download_file, false);
         		
-    	    	notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
+    	    	notification = new Notification(android.R.drawable.stat_sys_download, getString(R.string.start_download), System.currentTimeMillis());   
     			
     			intent = new Intent();
     			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
@@ -1251,7 +1251,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			intent.putExtra("name", apkName);
 
     	        contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread  
-    	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
+    	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
     	        
     	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
     	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
@@ -1261,16 +1261,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	        
 	        	total_read = 0; //初始化“已下载部分”的长度，此处应为0
 	        	is = httpConnection.getInputStream();
-	        	if (is == null) { //如果下载失败则打印日志，并返回
-                	notification.icon = android.R.drawable.stat_notify_error;
-	    	        notification.setLatestEventInfo(mContext, apkName, "download failed", contentIntent);  
-	    	        nManager.notify(NOTIFICATION_ID, notification);
-	            	return "download failed";
-	        	}
 
 	        	byte buf[] = new byte[10240]; //download buffer
 	        	readLength = 0; //一次性下载的长度
-	        	Log.i("info", "download start...");
 	        	
 	        	oldProgress = 0;
 	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
@@ -1298,13 +1291,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	        notification.contentView.setTextViewText(R.id.progress, progress + "%");
                 		nManager.notify(NOTIFICATION_ID, notification);
                 	}
-	            	
-	            	if (total_read == apk_length) { //当已下载的长度等于网络文件的长度，则下载完成
-	                	Log.i("info", "download complete...");
-	            	}
-
 	        	}
-            	//关闭输入输出流
             	fos.close();
             	is.close();
             	httpConnection.disconnect();
@@ -1322,7 +1309,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         			intent.setDataAndType(Uri.fromFile(download_file), FileType.MIMEMAP.get(tmp[tmp.length-1].toUpperCase()));
         	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
         	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
-        	        notification.setLatestEventInfo(mContext, apkName, "download finished", contentIntent);//click listener for download progress bar
+        	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_finish), contentIntent);//click listener for download progress bar
         	        nManager.notify(NOTIFICATION_ID, notification);
         	        
         			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID, download_file));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
@@ -1334,10 +1321,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				
 	    	} catch (Exception e) {
 	    		notification.icon = android.R.drawable.stat_notify_error;
-	    		notification.setLatestEventInfo(mContext, apkName, "download fail: " + e.getMessage(), contentIntent);  
+	    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail) + e.getMessage(), contentIntent);  
 	    		nManager.notify(NOTIFICATION_ID, notification);
 	    		e.printStackTrace();
 	    		
+    	        if (download_file.length() == 0) download_file.delete();//delete empty file
             	appstate.downloadState.remove(NOTIFICATION_ID);//remove download notification control if download fail
 	    	}
 

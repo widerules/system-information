@@ -826,6 +826,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 			downloadAppID.get(i).downloadedfile.delete();
                 		} catch(Exception e) {};
                 		downloadAppID.remove(i);
+                		break;
             		}
             	}
             }
@@ -1201,9 +1202,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	class DownloadTask extends AsyncTask<String, Integer, String> {
 		private String URL_str; //网络歌曲的路径
 		private File download_file; //下载的文件
-		private int total_read = 0; //已经下载文件的长度(以字节为单位)
+		private long total_read = 0; //已经下载文件的长度(以字节为单位)
 		private int readLength = 0; //一次性下载的长度(以字节为单位)
-		private int apk_length = 0; //音乐文件的长度(以字节为单位)
+		private long apk_length = 0; //音乐文件的长度(以字节为单位)
+		private long skip_length = 0;//if found local file not download finished last time, need continue to download
 		private String apkName; //下载的文件名
 		int NOTIFICATION_ID;
 		private Notification notification;
@@ -1216,22 +1218,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	URL_str = params[0]; //get download url
 	    	apkName = params[1]; //get download file name
 	    	
-	    	notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
-			
-			Intent intent = new Intent();
-			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
-			intent.putExtra("id", NOTIFICATION_ID);
-			intent.putExtra("name", apkName);
-
-	        PendingIntent contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread  
-	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
-	        
-	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
-	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
-	        notification.contentView.setTextViewText(R.id.progress, "0%");
-	        notification.contentView.setTextViewText(R.id.title, apkName);
-	        nManager.notify(NOTIFICATION_ID, notification);
-	        
+	    	Intent intent = new Intent();
+	    	PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+	    	
 	    	FileOutputStream fos = null; //文件输出流
 	    	InputStream is = null; //网络文件输入流
 	    	URL url = null;
@@ -1239,9 +1228,38 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        	url = new URL(URL_str); //网络歌曲的url
 	        	HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection(); //打开网络连接
         		download_file = new File(downloadPath + apkName);
-        		fos = new FileOutputStream(download_file, false);
+	        	apk_length = httpConnection.getContentLength(); //file size need to download
+        		if (download_file.length() == apk_length) {//found local file with same name and length, no need to download, just send intent to view it
+                	String[] tmp = apkName.split("\\.");
+        			intent.setAction(Intent.ACTION_VIEW);
+        			intent.setDataAndType(Uri.fromFile(download_file), FileType.MIMEMAP.get(tmp[tmp.length-1].toUpperCase()));
+    				startActivity(intent);
+    				return "";
+        		}
+        		else if (download_file.length() < apk_length) {//local file size < need to download, need continue to download
+        			fos = new FileOutputStream(download_file, true);
+        			skip_length = download_file.length();
+        		}
+        		else //need overwrite
+        			fos = new FileOutputStream(download_file, false);
+        		
+    	    	notification = new Notification(android.R.drawable.stat_sys_download, "start download", System.currentTimeMillis());   
+    			
+    			intent = new Intent();
+    			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
+    			intent.putExtra("id", NOTIFICATION_ID);
+    			intent.putExtra("name", apkName);
+
+    	        contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread  
+    	        notification.setLatestEventInfo(mContext, apkName, "downloading...", contentIntent);
+    	        
+    	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
+    	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
+    	        notification.contentView.setTextViewText(R.id.progress, "0%");
+    	        notification.contentView.setTextViewText(R.id.title, apkName);
+    	        nManager.notify(NOTIFICATION_ID, notification);
+    	        
 	        	total_read = 0; //初始化“已下载部分”的长度，此处应为0
-	        	apk_length = httpConnection.getContentLength(); //要下载的文件的总长度
 	        	is = httpConnection.getInputStream();
 	        	if (is == null) { //如果下载失败则打印日志，并返回
                 	notification.icon = android.R.drawable.stat_notify_error;
@@ -1250,7 +1268,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	            	return "download failed";
 	        	}
 
-	        	byte buf[] = new byte[1024]; //定义下载缓冲区
+	        	byte buf[] = new byte[10240]; //download buffer
 	        	readLength = 0; //一次性下载的长度
 	        	Log.i("info", "download start...");
 	        	
@@ -1258,13 +1276,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
 	        	while (readLength != -1 && !stopDownload) {
 	        		if (pauseDownload) {
-	        			//Thread.sleep(5000);//wait for 5 seconds to check again.
 	        			continue;
 	        		}
 	        		
 	            	if((readLength = is.read(buf))>0){
-	                	fos.write(buf, 0, readLength);
-	                	total_read += readLength; //已下载文件的长度增加
+	            		if (skip_length == 0)
+	            			fos.write(buf, 0, readLength);
+	            		else if (skip_length < readLength) {
+	            			fos.write(buf, (int) skip_length, (int) (readLength - skip_length));
+	            			skip_length = 0;
+	            		}
+	            		else skip_length -= readLength;//just read and skip, not write if need skip
+	            		
+	                	total_read += readLength; //increase the download size
 	            	}
 
                 	int progress = (int) ((total_read+0.0)/apk_length*100);
@@ -1313,6 +1337,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    		notification.setLatestEventInfo(mContext, apkName, "download fail: " + e.getMessage(), contentIntent);  
 	    		nManager.notify(NOTIFICATION_ID, notification);
 	    		e.printStackTrace();
+	    		
+            	appstate.downloadState.remove(NOTIFICATION_ID);//remove download notification control if download fail
 	    	}
 
 	    	return null;

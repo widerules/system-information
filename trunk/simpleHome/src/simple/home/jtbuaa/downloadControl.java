@@ -44,6 +44,10 @@ public class downloadControl extends Activity{
         	pause = dlt.pauseDownload;
         	stop = dlt.stopDownload;
         }
+        else {//the corresponding download state is deleted, so can't control it.
+        	finish();
+        	return;
+        }
         
         tv = (TextView) findViewById(R.id.download_name);
     	tv.setText(getString(R.string.download_hint) + intent.getStringExtra("name"));

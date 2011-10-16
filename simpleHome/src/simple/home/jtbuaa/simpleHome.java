@@ -797,23 +797,26 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
             	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            	if (setPackage != null) {//for 1.5 which do not have this method, we can't get new installed apk in user applist intime
+            	if (setPackage != null) {
             		try {
 						setPackage.invoke(mainIntent, packageName);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-                	//mainIntent.setPackage(packageName);
-                	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
+            	}
+            	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
 
-                	if (targetApps.size() > 0) {//the new package may not support Launcher category, we will omit it.
+            	for (int i = 0; i < targetApps.size(); i++) {
+                	if (targetApps.get(i).activityInfo.packageName.equals(packageName) ) {//the new package may not support Launcher category, we will omit it.
                     	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             				sysAdapter.add(targetApps.get(0));
             		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+            		    	break;
                     	}
                     	else {
             				userAdapter.add(targetApps.get(0));
             		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+            		    	break;
                     	}
                 	}
             	}

@@ -26,7 +26,8 @@
     <string name="removeFromShort">Delete this shortcut</string>
     <string name="appdetail">Detail...</string>
     <string name="killapp">Stop it</string>
-    <string name="backapp">Copy to sdcard</string>
+    <string name="backapp">Backup</string>
+    <string name="to">to</string>
     <string name="more">More...</string>
     <string name="delete">Delete</string>
     

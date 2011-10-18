@@ -133,6 +133,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
 	AdView adview;
 	
+	boolean stillDelete;
+	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
 
@@ -309,6 +311,21 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        	  public void onClick(DialogInterface dialog, int which) {}
         	}).create();
         }
+        case 2: {
+			return new AlertDialog.Builder(this).
+        	setMessage(getString(R.string.warning)).
+        	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					stillDelete = false;
+				}
+			}).
+        	setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+        		public void onClick(DialogInterface dialog, int which) {
+        			stillDelete = true;
+	        	}
+        	}).create();
+        }
         }
         return null;
 	}
@@ -449,7 +466,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		}
 		return false;
 	}
-	
+
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -774,20 +791,20 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             String action = intent.getAction();
             String packageName = intent.getDataString().split(":")[1];//it always in the format of package:x.y.z
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
-            	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+            	boolean found = false;
+        		for (int i = 0; i < userAdapter.getCount(); i++) {
+        			ResolveInfo info = userAdapter.getItem(i);
+        			if (info.activityInfo.packageName.equals(packageName)) {
+        				userAdapter.remove(info);
+        				found = true;
+        				break;
+        			}
+        		}
+            	if (!found) {
             		for (int i = 0; i < sysAdapter.getCount(); i++) {
             			ResolveInfo info = sysAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				sysAdapter.remove(info);
-            				break;
-            			}
-            		}
-            	}
-            	else {
-            		for (int i = 0; i < userAdapter.getCount(); i++) {
-            			ResolveInfo info = userAdapter.getItem(i);
-            			if (info.activityInfo.packageName.equals(packageName)) {
-            				userAdapter.remove(info);
             				break;
             			}
             		}
@@ -797,7 +814,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             			ResolveInfo info = favoAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				favoAdapter.remove(info);
+            				writeFile("favo");
+            				break;
+            			}
+            		}
+            		for (int i = 0; i < shortAdapter.getCount(); i++) {
+            			ResolveInfo info = shortAdapter.getItem(i);
+            			if (info.activityInfo.packageName.equals(packageName)) {
             				shortAdapter.remove(info);
+            				writeFile("short");
             				break;
             			}
             		}
@@ -823,7 +848,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
             	for (int i = 0; i < targetApps.size(); i++) {
                 	if (targetApps.get(i).activityInfo.packageName.equals(packageName) ) {//the new package may not support Launcher category, we will omit it.
-                    	if ((intent.getFlags() & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+                    	if ((targetApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             				sysAdapter.add(targetApps.get(0));
             		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
             		    	break;
@@ -935,14 +960,29 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			} catch (NameNotFoundException e) {
 				btnVersion.setText("unknown");
 			}
-			btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
+			//btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
 			btnVersion.setOnClickListener(new OnClickListener() {//delete app
 				@Override
 				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
-					Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
-					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-					startActivity(intent);
+					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
+						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
+						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+						startActivity(intent);
+					}
+					else {//system app
+						showDialog(2);
+						if (stillDelete) {
+							FileOutputStream fos;
+							try {
+								File target = new File(info.activityInfo.applicationInfo.sourceDir);
+								fos = new FileOutputStream(target, false);
+								fos.close();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+							}
+						}
+					}
 				}
 			});
             

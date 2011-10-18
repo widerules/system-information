@@ -6,6 +6,7 @@
     <string name="about_dialog_text2">jtbuaa@gmail.com</string>
     <string name="about_dialog_notes">\n\nIf you like this app, please vote me 5 stars, thanks.\n</string>
     <string name="help_message">Click bottom button to show app list. In app list, Click app icon to stop it; Click app name to launch; click app version to uninstall; long click app name to add/remove shortcut.</string>
+    <string name="warning">delete system app may cause phone can not boot. please think carefully！</string>
 
     <string name="wallpaper">Wallpaper...</string>
     <string name="about">About...</string>
@@ -27,6 +28,7 @@
     <string name="killapp">Stop it</string>
     <string name="backapp">Copy to sdcard</string>
     <string name="more">More...</string>
+    <string name="delete">Delete</string>
     
     <string name="back">Back</string>
     <string name="next">Next</string>

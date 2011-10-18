@@ -423,7 +423,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
 			FileOutputStream fos;
 			FileInputStream fis;
-			String filename = Environment.getExternalStorageState() + "/simpleHome/" + apk;
+			String filename = downloadPath + apk;
 			try {
 				File target = new File(filename);
 				fos = new FileOutputStream(target, false);
@@ -435,7 +435,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	}
 				fos.close();
 				fis.close();
-				Toast.makeText(this, "backup to " + filename, Toast.LENGTH_LONG).show();
+				Toast.makeText(this, getString(R.string.backapp) + " " + getString(R.string.to) + " " + filename, Toast.LENGTH_LONG).show();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
@@ -975,7 +975,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 							FileOutputStream fos;
 							try {
 								File target = new File(info.activityInfo.applicationInfo.sourceDir);
-								fos = new FileOutputStream(target, false);
+								fos = new FileOutputStream(target, false);//try to overwrite with 0 byte file. but seems need root
 								fos.close();
 							} catch (Exception e) {
 								// TODO Auto-generated catch block

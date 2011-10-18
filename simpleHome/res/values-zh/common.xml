@@ -4,7 +4,7 @@
     
     <string name="about_dialog">关于</string>
     <string name="about_dialog_notes">\n\n如果觉得这个应用对您有帮助，请给我打5颗星，多谢！\n</string>
-    <string name="help_message">单击状态条隐藏/显示桌面。单击应用名称：启动应用；单击应用版本号：删除应用；长按应用名称：添加或删除快捷方式。</string>
+    <string name="help_message">单击列表图标显示应用列表。列表中单击应用图标：结束应用。\n单击应用名称：启动应用。\n单击应用版本号：删除应用。\n长按应用名称：添加或删除快捷方式。</string>
 
     <string name="wallpaper">墙纸...</string>
     <string name="about">关于...</string>
@@ -24,6 +24,7 @@
     <string name="removeFromShort">删除快捷方式</string>
     <string name="appdetail">详细信息...</string>
     <string name="killapp">终止该应用</string>
+    <string name="backapp">复制到SDcard</string>
     <string name="more">更多...</string>
     
     <string name="back">前一页</string>

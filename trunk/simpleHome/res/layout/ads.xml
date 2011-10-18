@@ -15,7 +15,7 @@
   		android:orientation="horizontal"
   		android:layout_alignParentBottom="true"
   		android:layout_width="fill_parent"
-  		android:layout_height="40dip">
+  		android:layout_height="wrap_content">
   		
 		<ImageView android:id="@+id/shortcut_sms"
 			android:layout_height="40dip" 

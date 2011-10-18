@@ -111,7 +111,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
-	TextView currentAppLabel;
 	ImageView homeBar, shortBar;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
@@ -353,12 +352,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			menu.add(0, 1, 0, getString(R.string.removeFromShort));
 			break;
 		case 2://on app list
-			LinearLayout lapp = (LinearLayout) v;
-			currentAppLabel = (TextView) lapp.getChildAt(0);
 			menu.add(0, 2, 0, getString(R.string.addtoFavo));
 			menu.add(0, 3, 0, getString(R.string.addtoShort));
-			menu.add(0, 4, 0, getString(R.string.appdetail));
-			menu.add(0, 5, 0, getString(R.string.killapp));
+			menu.add(0, 4, 0, getString(R.string.backapp));
+			menu.add(0, 5, 0, getString(R.string.appdetail));
 			break;
 		}
 	}
@@ -404,7 +401,30 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				writeFile("short");	//save shortcut to file
 			}
 			break;
-		case 4://get app detail info
+		case 4://back up app
+			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
+			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
+			FileOutputStream fos;
+			FileInputStream fis;
+			String filename = Environment.getExternalStorageState() + "/simpleHome/" + apk;
+			try {
+				File target = new File(filename);
+				fos = new FileOutputStream(target, false);
+				fis = new FileInputStream(sourceDir);
+				byte buf[] = new byte[10240];
+				int readLength = 0;
+            	while((readLength = fis.read(buf))>0){
+           			fos.write(buf, 0, readLength);
+            	}
+				fos.close();
+				fis.close();
+				Toast.makeText(this, "backup to " + filename, Toast.LENGTH_LONG).show();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+			}
+			break;
+		case 5://get app detail info
 			String source = selected_case.mRi.activityInfo.applicationInfo.sourceDir 
 				+ "\n\n" 
 				+ selected_case.mRi.activityInfo.packageName;
@@ -425,13 +445,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			} catch (Exception e) {
 				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
 			}
-			
-			break;
-		case 5://kill app
-			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-			am.restartPackage(selected_case.mRi.activityInfo.packageName);
-			//but we need to know when will it restart by itself?
-			currentAppLabel.setTextColor(0xFF000000);//set color back to black after kill it.
 			break;
 		}
 		return false;
@@ -879,14 +892,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
             final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
-    		OnClickListener startListener = new OnClickListener() {//start app
-				@Override
-				public void onClick(View arg0) {
-					startApp(info);
-					textView1.setTextColor(0xFFFF7777);//red for running apk
-				}
-            };
-            
             textView1.setTextColor(0xFF000000);
             List appList = am.getRunningAppProcesses();
             for (int i = 0; i < appList.size(); i++) {
@@ -898,10 +903,24 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             }
 
             btnIcon.setImageDrawable(info.loadIcon(pm));
-            btnIcon.setOnClickListener(startListener);
+            btnIcon.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {//kill app
+					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+					am.restartPackage(info.activityInfo.packageName);
+					//but we need to know when will it restart by itself?
+					textView1.setTextColor(0xFF000000);//set color back to black after kill it.
+				}
+            });
             
             LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
-            lapp.setOnClickListener(startListener);
+            lapp.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {//start app
+					startApp(info);
+					textView1.setTextColor(0xFFFF7777);//red for running apk
+				}
+            });
         	lapp.setTag(new ricase(info, 2));
             registerForContextMenu(lapp);
             //lapp.setOnTouchListener(simpleHome.this);
@@ -1318,9 +1337,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	        nManager.notify(NOTIFICATION_ID, notification);
         	        
         			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID, download_file));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
-        			
-   	        		Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//try to change file property     
-   	        		p.waitFor(); 
     				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
             	}
 				

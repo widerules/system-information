@@ -111,7 +111,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
-	TextView homeBar, shortBar, currentAppLabel;
+	TextView currentAppLabel;
+	ImageView homeBar, shortBar;
 	AlertDialog m_altDialog;
 	String version, myPackageName;
 	ViewFlipper mainlayout;
@@ -688,7 +689,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         base = (RelativeLayout) findViewById(R.id.base);
         base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
-        homeBar = (TextView) findViewById(R.id.home_bar);
+        homeBar = (ImageView) findViewById(R.id.home_bar);
         homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
@@ -709,7 +710,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
         });
         
-        shortBar = (TextView) findViewById(R.id.business_bar);
+        shortBar = (ImageView) findViewById(R.id.business_bar);
         shortBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {

@@ -698,6 +698,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					shortcutBar.setVisibility(View.VISIBLE);
 					InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
+					if (mProgressDialog != null) mProgressDialog.hide();
 				}
 				else {
 					adsParent.setVisibility(View.VISIBLE);
@@ -1357,8 +1358,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 				if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
-				if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
-				if (mProgressDialog != null) mProgressDialog.hide();
+				else homeBar.performClick();
 				return true;
 			}	
 		}

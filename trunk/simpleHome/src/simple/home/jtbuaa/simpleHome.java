@@ -755,8 +755,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         });
         
 		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
-		shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
-		shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
+		//shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
+		//shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
 		
 		//for package add/remove
 		IntentFilter filter = new IntentFilter();
@@ -1110,6 +1110,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
             readFile("favo");
             readFile("short");
+            boolean shortEmpty = mShortApps.isEmpty();
 			
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging Messages メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
@@ -1121,29 +1122,32 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    			mSysApps.add(ri);
 	    			String name = ri.loadLabel(pm).toString() ; 
 	    			//Log.d("===============", name);
-	    			if (label_sms.contains(name)) {
-	    				if ((ri_sms == null) && (!name.equals("MM"))) {
-	    					ri_sms = ri;
-	    		        	Message msgsms = mAppHandler.obtainMessage();
-	    		        	msgsms.what = UPDATE_RI_SMS;
-	    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.
-	    				}
-	    			}
-	    			else if (label_phone.contains(name)) {
+	    			if (label_phone.contains(name)) {
 	    				if (ri_phone == null) {
 	    					ri_phone = ri;
 	    		        	Message msgphone = mAppHandler.obtainMessage();
 	    		        	msgphone.what = UPDATE_RI_PHONE;
 	    		        	mAppHandler.sendMessage(msgphone);//inform UI thread to update UI.
 	    				}
-	    			}
-	    			else if (label_contact.contains(name)) {
-	    				if (ri_contact == null) {
-	    					ri_contact = ri;
-	    		        	Message msgcontact = mAppHandler.obtainMessage();
-	    		        	msgcontact.what = UPDATE_RI_CONTACT;
-	    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.
-	    				}
+	    			} else if (shortEmpty) {//only add sms and contact if shortcut is empty.
+		    			if (label_sms.contains(name)) {
+		    				if ((ri_sms == null) && (!name.equals("MM"))) {
+		    					mShortApps.add(ri);
+		    					/*ri_sms = ri;
+		    		        	Message msgsms = mAppHandler.obtainMessage();
+		    		        	msgsms.what = UPDATE_RI_SMS;
+		    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.*/
+		    				}
+		    			}
+		    			else if (label_contact.contains(name)) {
+		    				if (ri_contact == null) {
+		    					mShortApps.add(ri);
+		    					/*ri_contact = ri;
+		    		        	Message msgcontact = mAppHandler.obtainMessage();
+		    		        	msgcontact.what = UPDATE_RI_CONTACT;
+		    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.*/
+		    				}
+		    			}
 	    			}
 	    		}
 	    		else mUserApps.add(ri);

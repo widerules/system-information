@@ -712,8 +712,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		mShortApps = new ArrayList<ResolveInfo>();
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
-		shortAdapter = new shortAppAdapter(getBaseContext(), mShortApps);
-		shortAppList.setAdapter(shortAdapter);
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (RelativeLayout) findViewById(R.id.base);
@@ -1217,6 +1215,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	
         		userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
         		userAppList.setAdapter(userAdapter);
+        		
+        		shortAdapter = new shortAppAdapter(getBaseContext(), mShortApps);
+        		shortAppList.setAdapter(shortAdapter);
         		break;
         	case UPDATE_RI_PHONE:
     			shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));

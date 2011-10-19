@@ -414,7 +414,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			break;
 		case 3://add to shortcut
 			if (shortAdapter.getPosition(selected_case.mRi) < 0) {
-				shortAdapter.add(selected_case.mRi);
+				shortAdapter.insert(selected_case.mRi, 0);
 				writeFile("short");	//save shortcut to file
 			}
 			break;

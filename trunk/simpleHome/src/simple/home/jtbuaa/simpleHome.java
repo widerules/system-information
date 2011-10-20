@@ -125,7 +125,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
 	AdView adview;
 	
-	String apkToDel;
+	String apkToDel, pkgToDel;
 	boolean canRoot;
 	
 	ProgressDialog mProgressDialog;
@@ -316,7 +316,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		public void onClick(DialogInterface dialog, int which) {//rm system app
 					String[] cmds = {
 							"rm " + apkToDel,
-							"rm " + apkToDel.replace(".apk", ".odex")};
+							"rm " + apkToDel.replace(".apk", ".odex"),
+							"am start -a android.intent.action.DELETE -d " + pkgToDel};
 					ShellInterface.doExec(cmds, true);
 	        	}
         	}).create();
@@ -967,6 +968,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					}
 					else {//system app
 						apkToDel = info.activityInfo.applicationInfo.sourceDir;
+						pkgToDel = Uri.fromParts("package", info.activityInfo.packageName, null).toString();
 						showDialog(2);
 					}
 				}

@@ -27,16 +27,15 @@ public class ShellInterface {
 			os = new DataOutputStream(process.getOutputStream());
 			osRes = new DataInputStream(process.getInputStream());
 			
-			String line = "";
-			// Doing Stuff ;)
 			for (String single : commands) {
 				os.writeBytes(single + "\n");
 				os.flush();
-				//Thread.sleep(200);
 			}
 			
 			os.writeBytes("exit\n");
 			os.flush();
+			
+			String line = "";
 			while((line = osRes.readLine()) != null) {
 				res += line + "\n";
 				Log.d("============", line);

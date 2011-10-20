@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -47,8 +46,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -69,27 +66,22 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.SslErrorHandler;
 import android.net.http.SslError;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -133,7 +125,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
 	AdView adview;
 	
-	boolean stillDelete;
+	String apkToDel;
+	boolean canRoot;
 	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
@@ -317,12 +310,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface arg0, int arg1) {
-					stillDelete = false;
 				}
 			}).
         	setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-        		public void onClick(DialogInterface dialog, int which) {
-        			stillDelete = true;
+        		public void onClick(DialogInterface dialog, int which) {//rm system app
+					String[] cmds = {
+							"rm " + apkToDel,
+							"rm " + apkToDel.replace(".apk", ".odex")};
+					ShellInterface.doExec(cmds, true);
 	        	}
         	}).create();
         }
@@ -462,6 +457,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			} catch (Exception e) {
 				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
 			}
+			
 			break;
 		}
 		return false;
@@ -768,7 +764,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
-		//task for init, such as load webview, load package list
+    	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
     }
@@ -958,7 +954,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			} catch (NameNotFoundException e) {
 				btnVersion.setText("unknown");
 			}
-			//btnVersion.setEnabled((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0);//disable for system app now.
+			
+			if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM)
+				btnVersion.setEnabled(canRoot);//for system app, need judge whether can uninstall
 			btnVersion.setOnClickListener(new OnClickListener() {//delete app
 				@Override
 				public void onClick(View arg0) {
@@ -968,18 +966,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						startActivity(intent);
 					}
 					else {//system app
+						apkToDel = info.activityInfo.applicationInfo.sourceDir;
 						showDialog(2);
-						if (stillDelete) {
-							FileOutputStream fos;
-							try {
-								File target = new File(info.activityInfo.applicationInfo.sourceDir);
-								fos = new FileOutputStream(target, false);//try to overwrite with 0 byte file. but seems need root
-								fos.close();
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
-							}
-						}
 					}
 				}
 			});
@@ -1101,6 +1089,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		@Override
 		protected String doInBackground(String... params) {//do all time consuming work here
 			
+			canRoot = false;
+	    	String res = ShellInterface.doExec(new String[] {"id"}, true);
+	    	if (res.contains("root")) {
+	    		res = ShellInterface.doExec(new String[] {"mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /system"}, true);
+	    		if (res.contains("Error")) canRoot = false;
+	    		else canRoot = true;
+	    	}
+
 	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);

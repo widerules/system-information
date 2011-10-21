@@ -126,7 +126,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	AdView adview;
 	
 	String apkToDel, pkgToDel;
-	boolean canRoot;
+	boolean canRoot, afterRemove;
 	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
@@ -313,12 +313,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 			}).
         	setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+        		@Override
         		public void onClick(DialogInterface dialog, int which) {//rm system app
-					String[] cmds = {
-							"rm " + apkToDel,
-							"rm " + apkToDel.replace(".apk", ".odex"),
-							"am start -a android.intent.action.DELETE -d " + pkgToDel};
-					ShellInterface.doExec(cmds, true);
+					String[] cmds = {//backup before realy delete
+							//"mv " + apkToDel + " " + apkToDel + ".bak",
+							//"mv " + apkToDel.replace(".apk", ".odex") + " " + apkToDel.replace(".apk", ".odex") + ".bak",
+							"am start -a android.intent.action.DELETE -n simple.home.jtbuaa/.UninstallerActivity -d package:" + pkgToDel};
+					ShellInterface.doExec(cmds, true, false);
+					/*Uri uri = Uri.fromParts("package", pkgToDel, null);
+					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+					intent.setClass(mContext, UninstallerActivity.class);
+					startActivity(intent);*/
+
+					afterRemove = true;
 	        	}
         	}).create();
         }
@@ -771,6 +778,28 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     }
     
     @Override 
+    protected void onResume() {
+    	if (afterRemove) {
+    		afterRemove = false;
+
+        	if (true) {//restore apk and odex if not uninstalled
+    			String[] cmds = {
+    					"mv " + apkToDel + ".bak " + apkToDel,
+    					"mv " + apkToDel.replace(".apk", ".odex") + ".bak " + apkToDel.replace(".apk", ".odex")};
+    			//ShellInterface.doExec(cmds, true, false);
+    		}
+    		else {//really delete after uninstalled
+    			String[] cmds = {
+    					"rm " + apkToDel + ".bak",
+    					"rm " + apkToDel.replace(".apk", ".odex") + ".bak"};
+    			ShellInterface.doExec(cmds, true, false);
+    		}
+    	}
+    	
+    	super.onResume();
+    }
+    
+    @Override 
     protected void onDestroy() {
     	unregisterReceiver(packageReceiver);
     	unregisterReceiver(wallpaperReceiver);
@@ -968,7 +997,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					}
 					else {//system app
 						apkToDel = info.activityInfo.applicationInfo.sourceDir;
-						pkgToDel = Uri.fromParts("package", info.activityInfo.packageName, null).toString();
+						pkgToDel = info.activityInfo.packageName;
 						showDialog(2);
 					}
 				}
@@ -1090,11 +1119,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	class InitTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {//do all time consuming work here
-			
+			afterRemove = false;
 			canRoot = false;
-	    	String res = ShellInterface.doExec(new String[] {"id"}, true);
+	    	String res = ShellInterface.doExec(new String[] {"id"}, true, true);
 	    	if (res.contains("root")) {
-	    		res = ShellInterface.doExec(new String[] {"mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /system"}, true);
+	    		res = ShellInterface.doExec(new String[] {"mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /system"}, true, true);
 	    		if (res.contains("Error")) canRoot = false;
 	    		else canRoot = true;
 	    	}

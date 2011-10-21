@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">简洁主屏</string>
     
     <string name="about_dialog">关于</string>
@@ -45,4 +45,16 @@
     <string name="downloading">正在下载...</string>
     <string name="download_finish">下载完成</string>
     <string name="download_fail">下载失败 :</string>
+    
+    <string name="dlg_ok">确定</string>
+    <string name="app_not_found_dlg_title">找不到应用程序</string>
+    <string name="app_not_found_dlg_text">在已安装应用程序的列表中找不到该应用程序。</string>
+    <string name="uninstall_application_question">是否卸载应用程序？</string>
+    <string name="uninstall_update_question">是否卸载更新？</string>
+    <string name="uninstall_application_text">将卸载此应用程序。</string>
+    <string name="uninstall_update_text">此时将卸载该应用程序更新。仍可使用该应用程序的出厂版。</string>
+    <string name="uninstalling">正在卸载...</string>
+    <string name="uninstall_done">卸载完成</string>
+    <string name="uninstall_failed">卸载失败</string>
+    <string name="uninstall_failed_msg">"无法卸载<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
 </resources>

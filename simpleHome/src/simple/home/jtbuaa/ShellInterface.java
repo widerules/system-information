@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class ShellInterface {
 
-	public static String doExec(String[] commands, boolean suNeeded) {
+	public static String doExec(String[] commands, boolean suNeeded, boolean resNeeded) {
 		Process process = null;
 		DataOutputStream os = null;
 		DataInputStream osRes = null;
@@ -27,19 +27,21 @@ public class ShellInterface {
 			os = new DataOutputStream(process.getOutputStream());
 			osRes = new DataInputStream(process.getInputStream());
 			
+			String line = "";
 			for (String single : commands) {
 				os.writeBytes(single + "\n");
 				os.flush();
+				Log.d("============", single);
 			}
 			
 			os.writeBytes("exit\n");
 			os.flush();
 			
-			String line = "";
-			while((line = osRes.readLine()) != null) {
-				res += line + "\n";
-				Log.d("============", line);
-			}
+			if (resNeeded)
+				while((line = osRes.readLine()) != null) {
+					res += line + "\n";
+					Log.d("============", line);
+				}
 
 			process.waitFor();
 

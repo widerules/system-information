@@ -11,21 +11,18 @@ import android.util.Log;
 
 public class ShellInterface {
 
-	public static String doExec(String[] commands, boolean suNeeded, boolean resNeeded) {
+	public static String doExec(String[] commands, boolean resNeeded) {
 		Process process = null;
 		DataOutputStream os = null;
 		DataInputStream osRes = null;
+		DataInputStream osErr = null;
 		String res = "";
 
 		try {
-			if (suNeeded) {// Getting Root
-				process = Runtime.getRuntime().exec("su");
-			} else {
-				process = Runtime.getRuntime().exec("sh");
-			}
-
+			process = Runtime.getRuntime().exec("su");
 			os = new DataOutputStream(process.getOutputStream());
 			osRes = new DataInputStream(process.getInputStream());
+			osErr = new DataInputStream(process.getErrorStream());
 			
 			String line = "";
 			for (String single : commands) {
@@ -37,11 +34,16 @@ public class ShellInterface {
 			os.writeBytes("exit\n");
 			os.flush();
 			
-			if (resNeeded)
+			if (resNeeded) {
 				while((line = osRes.readLine()) != null) {
 					res += line + "\n";
 					Log.d("============", line);
 				}
+				while((line = osErr.readLine()) != null) {
+					res += line + "\n";
+					Log.d("============", line);
+				}
+			}
 
 			process.waitFor();
 
@@ -56,6 +58,9 @@ public class ShellInterface {
 				}
 				if (osRes != null) {
 					osRes.close();
+				}
+				if (osErr != null) {
+					osErr.close();
 				}
 				process.destroy();
 			} catch (Exception e) {

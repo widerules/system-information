@@ -316,14 +316,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		@Override
         		public void onClick(DialogInterface dialog, int which) {//rm system app
 					String[] cmds = {//backup before realy delete
-							//"mv " + apkToDel + " " + apkToDel + ".bak",
-							//"mv " + apkToDel.replace(".apk", ".odex") + " " + apkToDel.replace(".apk", ".odex") + ".bak",
-							"am start -a android.intent.action.DELETE -n simple.home.jtbuaa/.UninstallerActivity -d package:" + pkgToDel};
+							"mv " + apkToDel + " " + apkToDel + ".bak",
+							"mv " + apkToDel.replace(".apk", ".odex") + " " + apkToDel.replace(".apk", ".odex") + ".bak",
+							//"am start -a android.intent.action.DELETE -n simple.home.jtbuaa/.UninstallerActivity -d package:" + pkgToDel
+							};
 					ShellInterface.doExec(cmds, true, false);
-					/*Uri uri = Uri.fromParts("package", pkgToDel, null);
+					Uri uri = Uri.fromParts("package", pkgToDel, null);
 					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
 					intent.setClass(mContext, UninstallerActivity.class);
-					startActivity(intent);*/
+					startActivityForResult(intent, 1);
 
 					afterRemove = true;
 	        	}
@@ -333,6 +334,23 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         return null;
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (resultCode) {
+		case RESULT_OK://really delete after uninstalled
+			String[] cmdsRm = {
+					"rm " + apkToDel + ".bak",
+					"rm " + apkToDel.replace(".apk", ".odex") + ".bak"};
+			ShellInterface.doExec(cmdsRm, true, false);
+			break;
+		case RESULT_CANCELED://restore apk and odex if not uninstalled
+			String[] cmdsRestore = {
+					"mv " + apkToDel + ".bak " + apkToDel,
+					"mv " + apkToDel.replace(".apk", ".odex") + ".bak " + apkToDel.replace(".apk", ".odex")};
+			ShellInterface.doExec(cmdsRestore, true, false);
+			break;
+		}
+	}
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -775,28 +793,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
-    }
-    
-    @Override 
-    protected void onResume() {
-    	if (afterRemove) {
-    		afterRemove = false;
-
-        	if (true) {//restore apk and odex if not uninstalled
-    			String[] cmds = {
-    					"mv " + apkToDel + ".bak " + apkToDel,
-    					"mv " + apkToDel.replace(".apk", ".odex") + ".bak " + apkToDel.replace(".apk", ".odex")};
-    			//ShellInterface.doExec(cmds, true, false);
-    		}
-    		else {//really delete after uninstalled
-    			String[] cmds = {
-    					"rm " + apkToDel + ".bak",
-    					"rm " + apkToDel.replace(".apk", ".odex") + ".bak"};
-    			ShellInterface.doExec(cmds, true, false);
-    		}
-    	}
-    	
-    	super.onResume();
     }
     
     @Override 

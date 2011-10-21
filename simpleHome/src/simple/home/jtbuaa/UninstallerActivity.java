@@ -91,6 +91,7 @@ public class UninstallerActivity extends Activity implements OnClickListener,
         newIntent.putExtra("appinfo", mAppInfo);
         newIntent.setClass(this, UninstallAppProgress.class);
         startActivity(newIntent);
+        setResult(RESULT_OK, null);
         finish();
     }
 
@@ -144,6 +145,7 @@ public class UninstallerActivity extends Activity implements OnClickListener,
             //initiate next screen
             startUninstallProgress();
         } else if(v == mCancel) {
+        	setResult(RESULT_CANCELED, null);
             finish();
         }
     }

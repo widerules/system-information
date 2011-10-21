@@ -126,7 +126,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	AdView adview;
 	
 	String apkToDel, pkgToDel;
-	boolean canRoot, afterRemove;
+	boolean canRoot;
 	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
@@ -317,16 +317,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		public void onClick(DialogInterface dialog, int which) {//rm system app
 					String[] cmds = {//backup before realy delete
 							"mv " + apkToDel + " " + apkToDel + ".bak",
-							"mv " + apkToDel.replace(".apk", ".odex") + " " + apkToDel.replace(".apk", ".odex") + ".bak",
 							//"am start -a android.intent.action.DELETE -n simple.home.jtbuaa/.UninstallerActivity -d package:" + pkgToDel
 							};
-					ShellInterface.doExec(cmds, true, false);
+					ShellInterface.doExec(cmds, false);
 					Uri uri = Uri.fromParts("package", pkgToDel, null);
 					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-					intent.setClass(mContext, UninstallerActivity.class);
+					//intent.setClass(mContext, UninstallerActivity.class);
 					startActivityForResult(intent, 1);
-
-					afterRemove = true;
 	        	}
         	}).create();
         }
@@ -335,22 +332,37 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
 
 	@Override
+	protected void onResume() {
+		if (!pkgToDel.equals("")) {
+			String res = ShellInterface.doExec(new String[] {"ls /data/data/" + pkgToDel}, true);
+			if (res.contains("No such file or directory")) {//uninstalled
+				String[] cmds = {
+						"rm " + apkToDel + ".bak",
+						"rm " + apkToDel.replace(".apk", ".odex")};
+				ShellInterface.doExec(cmds, false);
+			}
+			else ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel}, false);
+			
+			pkgToDel = "";
+		}
+		
+		super.onResume();
+	}
+	
+	/*@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (resultCode) {
 		case RESULT_OK://really delete after uninstalled
-			String[] cmdsRm = {
+			String[] cmds = {
 					"rm " + apkToDel + ".bak",
-					"rm " + apkToDel.replace(".apk", ".odex") + ".bak"};
-			ShellInterface.doExec(cmdsRm, true, false);
+					"rm " + apkToDel.replace(".apk", ".odex")};
+			ShellInterface.doExec(cmds, false);
 			break;
 		case RESULT_CANCELED://restore apk and odex if not uninstalled
-			String[] cmdsRestore = {
-					"mv " + apkToDel + ".bak " + apkToDel,
-					"mv " + apkToDel.replace(".apk", ".odex") + ".bak " + apkToDel.replace(".apk", ".odex")};
-			ShellInterface.doExec(cmdsRestore, true, false);
+			ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel}, false);
 			break;
 		}
-	}
+	}*/
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -439,7 +451,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				writeFile("short");	//save shortcut to file
 			}
 			break;
-		case 4://back up app
+		case 4://backup app
 			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
 			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
 			FileOutputStream fos;
@@ -790,6 +802,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
+		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
@@ -1115,11 +1128,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	class InitTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {//do all time consuming work here
-			afterRemove = false;
 			canRoot = false;
-	    	String res = ShellInterface.doExec(new String[] {"id"}, true, true);
+	    	String res = ShellInterface.doExec(new String[] {"id"}, true);
 	    	if (res.contains("root")) {
-	    		res = ShellInterface.doExec(new String[] {"mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /system"}, true, true);
+	    		res = ShellInterface.doExec(new String[] {"mount -o rw,remount -t yaffs2 /dev/block/mtdblock3 /system"}, true);
 	    		if (res.contains("Error")) canRoot = false;
 	    		else canRoot = true;
 	    	}

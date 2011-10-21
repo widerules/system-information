@@ -135,14 +135,14 @@ public class UninstallAppProgress extends Activity implements OnClickListener {
         mOkButton.setOnClickListener(this);
         mOkPanel.setVisibility(View.INVISIBLE);
         PackageDeleteObserver observer = new PackageDeleteObserver();
-    	/*if (deletePackage != null) {
+    	if (deletePackage != null) {
     		try {
     			deletePackage.invoke(getPackageManager(), mAppInfo.packageName, observer, 0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-    	}*/
-        getPackageManager().deletePackage(mAppInfo.packageName, observer, 0);
+    	}
+        //getPackageManager().deletePackage(mAppInfo.packageName, observer, 0);
     }
 
     public void onClick(View v) {

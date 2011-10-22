@@ -408,6 +408,30 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		} catch (Exception e) {}
 	}
 	
+	boolean backup(String sourceDir) {//copy file to sdcard
+		String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
+		FileOutputStream fos;
+		FileInputStream fis;
+		String filename = downloadPath + apk;
+		try {
+			File target = new File(filename);
+			fos = new FileOutputStream(target, false);
+			fis = new FileInputStream(sourceDir);
+			byte buf[] = new byte[10240];
+			int readLength = 0;
+        	while((readLength = fis.read(buf))>0){
+       			fos.write(buf, 0, readLength);
+        	}
+			fos.close();
+			fis.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
 		switch (item.getItemId()) {
@@ -434,24 +458,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		case 4://backup app
 			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
 			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
-			FileOutputStream fos;
-			FileInputStream fis;
-			String filename = downloadPath + apk;
-			try {
-				File target = new File(filename);
-				fos = new FileOutputStream(target, false);
-				fis = new FileInputStream(sourceDir);
-				byte buf[] = new byte[10240];
-				int readLength = 0;
-            	while((readLength = fis.read(buf))>0){
-           			fos.write(buf, 0, readLength);
-            	}
-				fos.close();
-				fis.close();
-				Toast.makeText(this, getString(R.string.backapp) + " " + getString(R.string.to) + " " + filename, Toast.LENGTH_LONG).show();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+			if (backup(sourceDir)) {
+				Toast.makeText(this, 
+						getString(R.string.backapp) + " " + getString(R.string.to) + " " + 
+						downloadPath + apk, Toast.LENGTH_LONG).show();
+				
+				String odex = sourceDir.replace(".apk", ".odex");
+				File target = new File(odex);
+				if (target.exists()) backup(odex);//backup odex if any
 			}
 			break;
 		case 5://get app detail info

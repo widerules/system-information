@@ -315,14 +315,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
         		@Override
         		public void onClick(DialogInterface dialog, int which) {//rm system app
-					String[] cmds = {//backup before realy delete
-							"mv " + apkToDel + " " + apkToDel + ".bak",
-							//"am start -a android.intent.action.DELETE -n simple.home.jtbuaa/.UninstallerActivity -d package:" + pkgToDel
-							};
-					ShellInterface.doExec(cmds, false);
+					ShellInterface.doExec(new String[] {"mv " + apkToDel + " " + apkToDel + ".bak"}, false);
 					Uri uri = Uri.fromParts("package", pkgToDel, null);
 					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-					//intent.setClass(mContext, UninstallerActivity.class);
 					startActivityForResult(intent, 1);
 	        	}
         	}).create();
@@ -348,21 +343,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		
 		super.onResume();
 	}
-	
-	/*@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (resultCode) {
-		case RESULT_OK://really delete after uninstalled
-			String[] cmds = {
-					"rm " + apkToDel + ".bak",
-					"rm " + apkToDel.replace(".apk", ".odex")};
-			ShellInterface.doExec(cmds, false);
-			break;
-		case RESULT_CANCELED://restore apk and odex if not uninstalled
-			ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel}, false);
-			break;
-		}
-	}*/
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {

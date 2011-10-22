@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
-    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
     
     <application android:icon="@drawable/icon"
     	android:name=".MyApp" 
@@ -64,18 +63,6 @@
             	<action android:name="simple.home.jtbuaa.downloadControl"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-        
-        <activity android:name=".UninstallerActivity"
-                android:configChanges="orientation|keyboardHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="package" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".UninstallAppProgress"
-                android:configChanges="orientation|keyboardHidden">
         </activity>
         
         <activity android:name="com.google.ads.AdActivity"

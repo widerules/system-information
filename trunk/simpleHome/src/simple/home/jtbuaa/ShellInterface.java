@@ -28,7 +28,6 @@ public class ShellInterface {
 			for (String single : commands) {
 				os.writeBytes(single + "\n");
 				os.flush();
-				Log.d("============", single);
 			}
 			
 			os.writeBytes("exit\n");
@@ -37,11 +36,9 @@ public class ShellInterface {
 			if (resNeeded) {
 				while((line = osRes.readLine()) != null) {
 					res += line + "\n";
-					Log.d("============", line);
 				}
 				while((line = osErr.readLine()) != null) {
 					res += line + "\n";
-					Log.d("============", line);
 				}
 			}
 

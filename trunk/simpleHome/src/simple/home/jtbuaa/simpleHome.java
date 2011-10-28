@@ -1317,6 +1317,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		protected String doInBackground(String... params) {//download here
 	    	URL_str = params[0]; //get download url
 	    	apkName = params[1]; //get download file name
+	    	if (apkName.contains("%")) apkName = apkName.split("%")[apkName.split("%").length-1];//for some filename contain % will cause error
 	    	
 	    	Intent intent = new Intent();
 	    	PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
@@ -1417,10 +1418,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	}
 				
 	    	} catch (Exception e) {
-	    		notification.icon = android.R.drawable.stat_notify_error;
-	    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail) + e.getMessage(), contentIntent);  
-	    		nManager.notify(NOTIFICATION_ID, notification);
 	    		e.printStackTrace();
+	    		if (notification == null) //in some special case, the notification is null;
+	    			notification = new Notification(android.R.drawable.stat_notify_error, getString(R.string.download_fail), System.currentTimeMillis());
+	    		else 
+		    		notification.icon = android.R.drawable.stat_notify_error;
+	    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail) + e.getMessage(), contentIntent);
+	    		nManager.notify(NOTIFICATION_ID, notification);
 	    		
     	        if (download_file.length() == 0) download_file.delete();//delete empty file
             	appstate.downloadState.remove(NOTIFICATION_ID);//remove download notification control if download fail

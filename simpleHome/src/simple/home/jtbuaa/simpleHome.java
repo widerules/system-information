@@ -1417,7 +1417,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_finish), contentIntent);//click listener for download progress bar
         	        nManager.notify(NOTIFICATION_ID, notification);
         	        
-        			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID, download_file));//apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
+        	        //apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
+        			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID, download_file));
+        			
+        			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//change file property, for on some device the property is wrong
+        			p.waitFor();
     				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
             	}
 				

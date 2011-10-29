@@ -168,13 +168,6 @@
 				android:src="@drawable/refresh"
 				android:layout_alignParentLeft="true"
 			/>
-			<ImageView android:id="@+id/newpage"
-				android:layout_height="35dip" 
-				android:layout_width="35dip"
-				android:scaleType="fitCenter"
-				android:src="@drawable/newpage"
-				android:layout_centerHorizontal="true"
-			/>
 			<ImageView android:id="@+id/home"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
@@ -182,22 +175,36 @@
 				android:src="@drawable/home"
 				android:layout_alignParentRight="true"
 			/>
+			
+  			<RelativeLayout android:id="@+id/webtools_center"
+  				android:background="@drawable/shortcut_bar_layout"
+  				android:orientation="horizontal" 
+				android:layout_centerHorizontal="true"
+  				android:layout_width="180dip"
+  				android:layout_height="wrap_content"
+  			>
+			<ImageView android:id="@+id/newpage"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
+				android:scaleType="fitCenter"
+				android:src="@drawable/newpage"
+				android:layout_centerHorizontal="true"
+			/>
 			<ImageView android:id="@+id/prev"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
-				android:layout_marginRight="35dip"
 				android:scaleType="fitCenter"
 				android:src="@drawable/prev"
-				android:layout_toLeftOf="@id/newpage"
+				android:layout_alignParentLeft="true"
 			/>
 			<ImageView android:id="@+id/next"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
-				android:layout_marginLeft="35dip"
 				android:scaleType="fitCenter"
 				android:src="@drawable/next"
-				android:layout_toRightOf="@id/newpage"
+				android:layout_alignParentRight="true"
 			/>
+  		</RelativeLayout>
   		</RelativeLayout>
   
   		<RelativeLayout android:id="@+id/webcontrol"

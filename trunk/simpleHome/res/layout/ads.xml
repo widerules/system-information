@@ -88,7 +88,7 @@
 		android:layout_below="@id/adView"
 		android:background ="#FFEEEEEE" /> 
     
-	<LinearLayout android:id="@+id/buttons"
+	<RelativeLayout android:id="@+id/buttons"
   		android:background="#FFEEEEEE"
   		android:orientation="horizontal"
   		android:layout_below="@id/white_bar"
@@ -102,6 +102,7 @@
 			android:text="@string/systemapps"
 			android:background="@drawable/button_layout_selected"
 			android:textSize="14dip"
+			android:layout_alignParentLeft="true"
 		></Button>
 			 
 	    <Button
@@ -111,6 +112,7 @@
 			android:text="@string/userapps"
 			android:background="@drawable/button_layout_unselected"
 			android:textSize="14dip"
+			android:layout_centerHorizontal="true"
 		></Button>
 			 
 	    <Button
@@ -120,8 +122,9 @@
 			android:text="@string/online"
 			android:background="@drawable/button_layout_unselected"
 			android:textSize="14dip"
+			android:layout_alignParentRight="true"
 		></Button>
-	</LinearLayout>
+	</RelativeLayout>
     
 	<View android:id="@+id/blue_bar"
 		android:layout_below="@id/buttons"

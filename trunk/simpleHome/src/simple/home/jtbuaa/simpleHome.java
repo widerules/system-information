@@ -352,7 +352,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					InetAddress local = ips.nextElement();
 					if (!local.isLoopbackAddress()) {
 						sb.append(local.getHostAddress());
-						sb.append("\n");
+						break;
 					}
 				}
 			}
@@ -370,7 +370,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		return getString(R.string.app_name) + " " + version + "\n\n"
 		+ getString(R.string.help_message)
 		+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)
-		+ "\n*****************\nAndroid " + android.os.Build.VERSION.RELEASE
+		+ "\n=================\nAndroid " + android.os.Build.VERSION.RELEASE
 		+ "\n" + dm.widthPixels+" * "+dm.heightPixels
 		+ "\n" + ip();
     }

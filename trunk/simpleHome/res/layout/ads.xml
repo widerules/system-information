@@ -98,6 +98,7 @@
 	    <Button
 			android:layout_width="105dip"
 			android:layout_height="32dip"
+			android:layout_marginLeft="5dip"
 			android:id="@+id/btnSystemApp"
 			android:text="@string/systemapps"
 			android:background="@drawable/button_layout_selected"
@@ -118,6 +119,7 @@
 	    <Button
 			android:layout_width="105dip"
 			android:layout_height="32dip"
+			android:layout_marginRight="5dip"
 			android:id="@+id/btnOnline"
 			android:text="@string/online"
 			android:background="@drawable/button_layout_unselected"

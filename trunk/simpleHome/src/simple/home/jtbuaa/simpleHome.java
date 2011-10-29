@@ -179,7 +179,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		public MyWebview(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
-	        requestFocusFromTouch();
 	        setScrollBarStyle(0);
 	        //serverWeb.setOnTouchListener(this);
 	        WebSettings webSettings = getSettings();
@@ -606,6 +605,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
 			}
+			else webpages.getChildAt(webIndex).requestFocus();
 		}
 	}
 	

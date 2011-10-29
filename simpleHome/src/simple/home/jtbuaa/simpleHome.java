@@ -74,6 +74,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -105,6 +106,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	RelativeLayout webControl;
+	RelativeLayout webtools_center;
 	TextView btnNewpage;
 	
 	GridView favoAppList;
@@ -136,7 +138,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
-
+	DisplayMetrics dm;
+	
 	//download related
 	String downloadPath;
 	NotificationManager nManager;
@@ -363,9 +366,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
     
     String aboutMsg() {
-    	DisplayMetrics dm = new DisplayMetrics();  
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        
 		return getString(R.string.app_name) + " " + version + "\n\n"
 		+ getString(R.string.help_message)
 		+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)
@@ -700,6 +700,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         serverWebs.add(new MyWebview(this));
         webpages = (ViewFlipper) findViewById(R.id.webpages);
         webpages.addView(serverWebs.get(webIndex));
+		
+		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
+		dm = new DisplayMetrics();  
+		setLayout();
 		
 		imgNext = (ImageView) findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -1509,9 +1513,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		return false;
 	}
 	
+	void setLayout() {
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        LayoutParams lp = webtools_center.getLayoutParams();
+        lp.width = dm.widthPixels/2;
+        webtools_center.setLayoutParams(lp);
+	}
+	
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
+		setLayout();
     }
 
 

@@ -10,9 +10,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -55,6 +59,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -105,7 +110,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
 	ImageView homeBar, shortBar;
-	AlertDialog m_altDialog;
+	AlertDialog m_aboutDialog;
 	String version, myPackageName;
 	ViewFlipper mainlayout;
 	GestureDetector mGestureDetector;
@@ -282,7 +287,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             return convertView;
         }
     }
-    
+
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -295,17 +300,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	}
             return mProgressDialog;
     	}
-        case 1: {//help dialog
-        	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.app_name) + " " + version + "\n\n"
-        			+ getString(R.string.help_message)
-        			+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)). 
-        	setPositiveButton(getString(R.string.ok), 
-        	          new DialogInterface.OnClickListener() {
-	        	  public void onClick(DialogInterface dialog, int which) {}
-        	}).create();
-        }
-        case 2: {
+        case 2: {//delete system app dialog
 			return new AlertDialog.Builder(this).
         	setMessage(getString(R.string.warning)).
         	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -345,6 +340,41 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		super.onResume();
 	}
 	
+    String ip() {
+        //network
+    	StringBuffer sb = new StringBuffer("");
+		try {
+			Enumeration<NetworkInterface> enumNI = NetworkInterface.getNetworkInterfaces();
+			while (enumNI.hasMoreElements()) {
+				NetworkInterface ni = enumNI.nextElement();
+				Enumeration<InetAddress> ips = ni.getInetAddresses();
+				while (ips.hasMoreElements()) {
+					InetAddress local = ips.nextElement();
+					if (!local.isLoopbackAddress()) {
+						sb.append(local.getHostAddress());
+						sb.append("\n");
+					}
+				}
+			}
+			return sb.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+    
+    String aboutMsg() {
+    	DisplayMetrics dm = new DisplayMetrics();  
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        
+		return getString(R.string.app_name) + " " + version + "\n\n"
+		+ getString(R.string.help_message)
+		+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)
+		+ "\n*****************\nAndroid " + android.os.Build.VERSION.RELEASE
+		+ "\n" + dm.widthPixels+" * "+dm.heightPixels
+		+ "\n" + ip();
+    }
+
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
@@ -357,14 +387,22 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()) {
-		case 0:
+		case 0://wallpaper
 	        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
 	        startActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)));
 			break;
-		case 1:
+		case 1://settings
 			return super.onOptionsItemSelected(item);
-		case 2:
-			showDialog(1);
+		case 2://help dialog
+        	if (m_aboutDialog == null) {
+            	m_aboutDialog = new AlertDialog.Builder(this).
+            	setPositiveButton(getString(R.string.ok), 
+            	          new DialogInterface.OnClickListener() {
+    	        	  public void onClick(DialogInterface dialog, int which) {}
+            	}).create();
+        	}
+			m_aboutDialog.setMessage(aboutMsg());
+			m_aboutDialog.show();
 			break;
 		}
 		return true;

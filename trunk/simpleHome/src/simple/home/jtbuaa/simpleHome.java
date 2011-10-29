@@ -703,7 +703,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		
 		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 		dm = new DisplayMetrics();  
-		setLayout();
 		
 		imgNext = (ImageView) findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -781,6 +780,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
+		setLayout();
 
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
@@ -1517,8 +1517,20 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         LayoutParams lp = webtools_center.getLayoutParams();
-        lp.width = dm.widthPixels/2;
+        lp.width = dm.widthPixels/2 + 40;
         webtools_center.setLayoutParams(lp);
+        
+        lp = btnSys.getLayoutParams();
+        lp.width = dm.widthPixels/3 - 10;
+        btnSys.setLayoutParams(lp);
+        
+        lp = btnUser.getLayoutParams();
+        lp.width = dm.widthPixels/3 - 10;
+        btnUser.setLayoutParams(lp);
+        
+        lp = btnWeb.getLayoutParams();
+        lp.width = dm.widthPixels/3 - 10;
+        btnWeb.setLayoutParams(lp);
 	}
 	
 	@Override

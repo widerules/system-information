@@ -158,20 +158,12 @@
   				android:layout_width="fill_parent"
   				android:layout_height="wrap_content">
   	
-			<ImageView android:id="@+id/next"
+			<ImageView android:id="@+id/refresh"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
 				android:scaleType="fitCenter"
-				android:src="@drawable/next"
+				android:src="@drawable/refresh"
 				android:layout_alignParentLeft="true"
-			/>
-			<ImageView android:id="@+id/prev"
-				android:layout_height="35dip" 
-				android:layout_width="35dip"
-				android:layout_marginLeft="30dip"
-				android:scaleType="fitCenter"
-				android:src="@drawable/prev"
-				android:layout_toRightOf="@id/next"
 			/>
 			<ImageView android:id="@+id/newpage"
 				android:layout_height="35dip" 
@@ -187,13 +179,21 @@
 				android:src="@drawable/home"
 				android:layout_alignParentRight="true"
 			/>
-			<ImageView android:id="@+id/refresh"
+			<ImageView android:id="@+id/prev"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
 				android:layout_marginRight="35dip"
 				android:scaleType="fitCenter"
-				android:src="@drawable/refresh"
-				android:layout_toLeftOf="@id/home"
+				android:src="@drawable/prev"
+				android:layout_toLeftOf="@id/newpage"
+			/>
+			<ImageView android:id="@+id/next"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
+				android:layout_marginLeft="35dip"
+				android:scaleType="fitCenter"
+				android:src="@drawable/next"
+				android:layout_toRightOf="@id/newpage"
 			/>
   		</RelativeLayout>
   

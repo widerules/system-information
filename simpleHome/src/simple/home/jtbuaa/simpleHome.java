@@ -1564,6 +1564,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         lp = btnWeb.getLayoutParams();
         lp.width = dm.widthPixels/3 - 10;
         btnWeb.setLayoutParams(lp);
+        
+        lp = shortAppList.getLayoutParams();
+       	lp.width = dm.widthPixels/2 - 60;
+       	if (lp.width > 200) shortAppList.setLayoutParams(lp);
 	}
 	
 	@Override

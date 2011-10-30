@@ -1,11 +1,13 @@
 package simple.home.jtbuaa;
 
+import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
@@ -139,6 +141,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ProgressDialog mProgressDialog;
 	private static final int MAX_PROGRESS = 100;
 	DisplayMetrics dm;
+	String processor, memory;
 	
 	//download related
 	String downloadPath;
@@ -369,9 +372,36 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		return getString(R.string.app_name) + " " + version + "\n\n"
 		+ getString(R.string.help_message)
 		+ getString(R.string.about_dialog_notes) + "\n" + getString(R.string.about_dialog_text2)
-		+ "\n=================\nAndroid " + android.os.Build.VERSION.RELEASE
+		+ "\n======================="
+		+ "\n" + processor
+		+ "\nAndroid " + android.os.Build.VERSION.RELEASE
+		+ "\n" + memory
 		+ "\n" + dm.widthPixels+" * "+dm.heightPixels
 		+ "\n" + ip();
+    }
+
+    String runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 
+        String line = "";
+        try {
+            String []cmds={cmd, para};
+            java.lang.Process proc;
+            if (para != "")
+                proc = Runtime.getRuntime().exec(cmds);
+            else
+                proc = Runtime.getRuntime().exec(cmd);
+            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            while((line=br.readLine())!=null) {
+            	if ((line.contains("Processor")) || (line.contains("model name")) || (line.contains("MemTotal:"))) {
+            		if (line.contains("processor	: 1")) continue;
+            		line = line.split(":")[1].trim();
+            		break;
+            	}
+            }
+        	br.close();
+        } catch (IOException e) {
+            return e.toString();
+        }
+        return line;
     }
 
 	@Override
@@ -1264,6 +1294,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				setPackage = null;
 				e.printStackTrace();
 			}
+			
+			processor = runCmd("cat", "/proc/cpuinfo");
+			memory = runCmd("cat", "/proc/meminfo");
 			
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);

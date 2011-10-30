@@ -810,7 +810,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
-		setLayout();
 
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
@@ -857,6 +856,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 			}
         });
+		setLayout();
         
 		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
 		//shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
@@ -1551,23 +1551,21 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
         LayoutParams lp = webtools_center.getLayoutParams();
         lp.width = dm.widthPixels/2 + 40;
-        webtools_center.setLayoutParams(lp);
         
         lp = btnSys.getLayoutParams();
         lp.width = dm.widthPixels/3 - 10;
-        btnSys.setLayoutParams(lp);
         
         lp = btnUser.getLayoutParams();
         lp.width = dm.widthPixels/3 - 10;
-        btnUser.setLayoutParams(lp);
         
         lp = btnWeb.getLayoutParams();
         lp.width = dm.widthPixels/3 - 10;
-        btnWeb.setLayoutParams(lp);
-        
+
+        lp = shortcutBar.getLayoutParams();
+        if (dm.widthPixels/2 > 240) lp.width = dm.widthPixels/2;
+        	
         lp = shortAppList.getLayoutParams();
-       	lp.width = dm.widthPixels/2 - 60;
-       	if (lp.width > 200) shortAppList.setLayoutParams(lp);
+       	if (dm.widthPixels/2 - 140 > 200) lp.width = dm.widthPixels/2 - 140;
 	}
 	
 	@Override

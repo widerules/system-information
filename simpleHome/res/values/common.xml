@@ -4,8 +4,8 @@
     
     <string name="about_dialog">about</string>
     <string name="about_dialog_text2">jtbuaa@gmail.com</string>
-    <string name="about_dialog_notes">\n\nIf you like this app, \nplease vote me 5 stars, thanks.\n</string>
-    <string name="help_message">Click bottom button to show app list. In app list, \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name to add shortcut, \nlong click shortcut to remove it.</string>
+    <string name="about_dialog_notes">\n\nIf you like this app, \nplease vote me 5 stars, thanks.</string>
+    <string name="help_message">Click home button to show app list. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
     <string name="warning">delete system app may cause phone can not boot. please think carefully！</string>
 
     <string name="wallpaper">Wallpaper...</string>

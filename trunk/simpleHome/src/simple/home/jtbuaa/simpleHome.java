@@ -373,7 +373,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		+ getString(R.string.about_dialog_text2) + "\n\n" 
 		+ getString(R.string.help_message)
 		+ getString(R.string.about_dialog_notes)
-		+ "\n=========================="
+		+ "\n========================="
 		+ "\n" + processor
 		+ "\nAndroid " + android.os.Build.VERSION.RELEASE
 		+ "\n" + memory

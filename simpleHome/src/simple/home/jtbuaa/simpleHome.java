@@ -285,6 +285,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						webpages.removeViewAt(position);
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
+					else imgHome.performClick();//return to home page if only one page when click close button
+					
 					webpages.getChildAt(webIndex).requestFocus();
 				}
             });

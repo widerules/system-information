@@ -11,6 +11,7 @@
     
     <application android:icon="@drawable/icon"
     	android:persistent="true"
+    	android:debuggable="false"
     	android:name=".MyApp" 
     	android:label="@string/app_name">
     	

@@ -78,6 +78,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
@@ -107,9 +108,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	RelativeLayout webControl;
-	RelativeLayout webtools_center;
+	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
+	InputMethodManager imm;
 	
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
@@ -635,7 +636,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 			}
 			if (mainlayout.getDisplayedChild() != 2) { 
-				InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
 			}
 			else webpages.getChildAt(webIndex).requestFocus();
@@ -685,6 +685,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	downloadAppID = new ArrayList();
     	appstate = ((MyApp) getApplicationContext());
 
+		imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+		
     	//1,2,3,4 are integer value of small, normal, large and XLARGE screen respectively.
     	int screen_size = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK; 
     	if (screen_size < 3)//disable auto rotate screen for small and normal screen.
@@ -833,7 +836,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					adsParent.setVisibility(View.INVISIBLE);
 					favoAppList.setVisibility(View.VISIBLE);
 					shortcutBar.setVisibility(View.VISIBLE);
-					InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
 					if (mProgressDialog != null) mProgressDialog.hide();
 				}

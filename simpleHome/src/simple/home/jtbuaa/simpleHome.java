@@ -1447,7 +1447,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        	total_read = 0; //初始化“已下载部分”的长度，此处应为0
 	        	is = httpConnection.getInputStream();
 
-	        	byte buf[] = new byte[10240]; //download buffer
+	        	byte buf[] = new byte[1024]; //download buffer
 	        	readLength = 0; //一次性下载的长度
 	        	
 	        	oldProgress = 0;

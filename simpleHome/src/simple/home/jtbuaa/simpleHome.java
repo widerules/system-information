@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import com.google.ads.AdRequest;
@@ -233,6 +235,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				public void onPageFinished(WebView view, String url) {
 					webAdapter.notifyDataSetChanged();
 					//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+	        		if (mProgressDialog != null) {
+	    				if (mProgressDialog.isShowing()) {
+	    					mProgressDialog.hide();
+	    					mProgressDialog.setProgress(0);
+	    				}
+	        		}
 				}         
 				
 				@Override
@@ -1370,6 +1378,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
 			String ss[] = url.split("/");
 			String apkName = ss[ss.length-1]; //get download file name
+			
+			Iterator iter = appstate.downloadState.entrySet().iterator();
+			while (iter.hasNext()) {
+				Entry entry = (Entry) iter.next();
+				DownloadTask val = (DownloadTask) entry.getValue();
+				if (val.apkName.equals(apkName)) return true;//the file is downloading, not start a new download task.
+			}
 			
 	    	Random random = new Random();
 	    	int id = random.nextInt() + 1000;

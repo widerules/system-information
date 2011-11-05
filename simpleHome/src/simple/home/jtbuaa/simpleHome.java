@@ -790,7 +790,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	        Intent intent = new Intent(Intent.ACTION_SEND);
     	        intent.setType("text/plain");  
     	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getUrl());
+        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
     	        startActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			}
 		});

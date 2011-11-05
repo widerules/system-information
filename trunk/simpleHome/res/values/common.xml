@@ -15,6 +15,10 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     
+    <string name="share">Share</string>
+    <string name="sharemode">Share Mode</string>
+    <string name="sharetext">I am using an interesting app, come on to try it too!</string>
+    
     <string name="favoriteapps">Shortcut</string>        
     <string name="systemapps">System</string>        
     <string name="userapps">User</string>        

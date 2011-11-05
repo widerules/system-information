@@ -14,6 +14,10 @@
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     
+    <string name="share">分享</string>
+    <string name="sharemode">分享方式</string>
+    <string name="sharetext">我正在用一个好东东，你也来试试吧！</string>
+    
     <string name="favoriteapps">快捷方式</string>        
     <string name="systemapps">系统应用</string>        
     <string name="userapps">个人应用</string>        

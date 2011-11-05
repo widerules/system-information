@@ -437,9 +437,22 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		case 2://help dialog
         	if (m_aboutDialog == null) {
             	m_aboutDialog = new AlertDialog.Builder(this).
-            	setPositiveButton(getString(R.string.ok), 
-            	          new DialogInterface.OnClickListener() {
-    	        	  public void onClick(DialogInterface dialog, int which) {}
+            	setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            		public void onClick(DialogInterface dialog, int which) {}
+            	}).
+            	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
+            		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends
+            	        String text = getString(R.string.sharetext) 
+	        				+ " https://market.android.com/details?id=simple.home.jtbuaa";
+            	        if (getResources().getConfiguration().locale.getLanguage().equals("zh")) 
+            	        	text += "&hl=zh_TW";
+            	        
+            	        Intent intent = new Intent(Intent.ACTION_SEND);
+            	        intent.setType("text/plain");  
+            	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+    	        		intent.putExtra(Intent.EXTRA_TEXT, text);
+            	        startActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
+            		}
             	}).create();
         	}
 			m_aboutDialog.setMessage(aboutMsg());

@@ -170,11 +170,11 @@
 				android:src="@drawable/refresh"
 				android:layout_alignParentLeft="true"
 			/>
-			<ImageView android:id="@+id/home"
+			<ImageView android:id="@+id/share"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
 				android:scaleType="fitCenter"
-				android:src="@drawable/home"
+				android:src="@drawable/share"
 				android:layout_alignParentRight="true"
 			/>
 			

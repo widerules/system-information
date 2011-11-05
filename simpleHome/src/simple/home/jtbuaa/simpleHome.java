@@ -108,7 +108,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ArrayList<MyWebview> serverWebs;
 	int webIndex;
 	ViewFlipper webpages;
-	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
+	ImageView imgNext, imgPrev, imgShare, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
@@ -294,7 +294,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						webpages.removeViewAt(position);
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
-					else imgHome.performClick();//return to home page if only one page when click close button
+					else //return to home page if only one page when click close button
+						serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 					
 					webpages.getChildAt(webIndex).requestFocus();
 				}
@@ -445,7 +446,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	        String text = getString(R.string.sharetext) 
 	        				+ " https://market.android.com/details?id=simple.home.jtbuaa";
             	        if (getResources().getConfiguration().locale.getLanguage().equals("zh")) 
-            	        	text += "&hl=zh_TW";
+            	        	text = "http://m.appchina.com/market-web/lemon/soft_detail.action?id=168438";
             	        
             	        Intent intent = new Intent(Intent.ACTION_SEND);
             	        intent.setType("text/plain");  
@@ -782,11 +783,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				serverWebs.get(webIndex).reload();
 			}
 		});
-		imgHome = (ImageView) findViewById(R.id.home);
-		imgHome.setOnClickListener(new OnClickListener() {
+		imgShare = (ImageView) findViewById(R.id.share);
+		imgShare.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+    	        Intent intent = new Intent(Intent.ACTION_SEND);
+    	        intent.setType("text/plain");  
+    	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getUrl());
+    	        startActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);
@@ -817,7 +822,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				webIndex = webAdapter.getCount() - 1;
 		        webpages.addView(webAdapter.getItem(webIndex));
 		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-		        imgHome.performClick();
+		        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 				webpages.getChildAt(webIndex).requestFocus();
 			}
 		});

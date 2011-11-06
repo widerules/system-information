@@ -2,9 +2,10 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">简洁主屏</string>
     
-    <string name="about_dialog">关于</string>
     <string name="about_dialog_notes">\n\n如果觉得这个应用对您有帮助\n请给我打5颗星，多谢！</string>
     <string name="help_message">单击back键显示/隐藏应用列表\n单击应用图标：结束应用\n单击应用名称：启动应用\n单击应用版本：删除应用\n长按应用名称：添加快捷方式\n长按快捷方式：删除快捷方式</string>
+    <string name="auto_change_wallpaper">晃动手机切换背景</string>
+    
     <string name="warning">删除系统应用可能导致不能开机，请三思！</string>
 
     <string name="wallpaper">墙纸...</string>
@@ -49,16 +50,4 @@
     <string name="downloading">正在下载...</string>
     <string name="download_finish">下载完成</string>
     <string name="download_fail">下载失败 :</string>
-    
-    <string name="dlg_ok">确定</string>
-    <string name="app_not_found_dlg_title">找不到应用程序</string>
-    <string name="app_not_found_dlg_text">在已安装应用程序的列表中找不到该应用程序。</string>
-    <string name="uninstall_application_question">是否卸载应用程序？</string>
-    <string name="uninstall_update_question">是否卸载更新？</string>
-    <string name="uninstall_application_text">将卸载此应用程序。</string>
-    <string name="uninstall_update_text">此时将卸载该应用程序更新。仍可使用该应用程序的出厂版。</string>
-    <string name="uninstalling">正在卸载...</string>
-    <string name="uninstall_done">卸载完成</string>
-    <string name="uninstall_failed">卸载失败</string>
-    <string name="uninstall_failed_msg">"无法卸载<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
 </resources>

@@ -333,6 +333,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	}
         case 2: {//delete system app dialog
 			return new AlertDialog.Builder(this).
+			setMessage(R.string.warning).
         	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface arg0, int arg1) {
@@ -395,7 +396,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     
     String aboutMsg() {
 		return getString(R.string.app_name) + " " + version + "\n"
-		+ getString(R.string.about_dialog_text2) + "\n\n" 
+		+ "jtbuaa@gmail.com\n\n" 
 		+ getString(R.string.help_message)
 		+ getString(R.string.about_dialog_notes)
 		+ "\n========================="
@@ -450,7 +451,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			return super.onOptionsItemSelected(item);
 		case 2://help dialog
         	if (m_aboutDialog == null) {
+        		LayoutInflater inflater = LayoutInflater.from(this);
+        		final View aboutView = inflater.inflate(R.layout.about, null);
+        		
             	m_aboutDialog = new AlertDialog.Builder(this).
+            	setView(aboutView).
             	setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {}
             	}).

@@ -5,6 +5,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -53,9 +54,15 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -103,8 +110,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class simpleHome extends Activity implements OnGestureListener, OnTouchListener {
+public class simpleHome extends Activity implements OnGestureListener, OnTouchListener, SensorEventListener {
 
+	//browser related
 	ArrayList<MyWebview> serverWebs;
 	int webIndex;
 	ViewFlipper webpages;
@@ -113,6 +121,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
+	
+	//wall paper related
+	SensorManager sensorMgr;
+	Sensor mSensor;
+	float last_x, last_y, last_z;
+	long lastUpdate;
+	ArrayList<String> picList;
 	
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
@@ -142,7 +157,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	boolean canRoot;
 	
 	ProgressDialog mProgressDialog;
-	private static final int MAX_PROGRESS = 100;
 	DisplayMetrics dm;
 	String processor, memory;
 	
@@ -319,7 +333,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	}
         case 2: {//delete system app dialog
 			return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.warning)).
         	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface arg0, int arg1) {
@@ -707,7 +720,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     	downloadAppID = new ArrayList();
     	appstate = ((MyApp) getApplicationContext());
-
+    	
+    	sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+    	mSensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    	sensorMgr.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    	
 		imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		
@@ -1314,6 +1331,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			}
         	} 
         	else downloadPath = getFilesDir().getPath() + "/";
+        	picList = new ArrayList();
+        	new File(downloadPath).list(new OnlyPic());
 			   
         	FileType.initMimeMap();//init the file type map
         	
@@ -1345,8 +1364,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		}
 	}
 	
+	class OnlyPic implements FilenameFilter { 
+	    public boolean accept(File dir, String s) {
+	    	 String name = s.toLowerCase();
+	         if (s.endsWith(".png") || s.endsWith(".jpg")) {
+	        	 picList.add(s);
+	        	 return true;
+	         }
+	         else return false;
+	    } 
+	} 
+	
     appHandler mAppHandler = new appHandler();
-
     class appHandler extends Handler {
 
         public void handleMessage(Message msg) {
@@ -1537,6 +1566,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//change file property, for on some device the property is wrong
         			p.waitFor();
     				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
+    				
+    				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) picList.add(apkName);//add to picture list
             	}
 				
 	    	} catch (Exception e) {
@@ -1715,6 +1746,48 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onTouch(View arg0, MotionEvent event) {
 		// TODO Auto-generated method stub
 		return mGestureDetector.onTouchEvent(event);
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent arg0) {
+		if (arg0.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {  
+			long curTime = System.currentTimeMillis();  
+			// 每100毫秒检测一次  
+			if ((curTime - lastUpdate) > 100) {  
+				long timeInterval = (curTime - lastUpdate);  
+				lastUpdate = curTime;  
+				  
+				float x = arg0.values[SensorManager.DATA_X];  
+				float y = arg0.values[SensorManager.DATA_Y];  
+				float z = arg0.values[SensorManager.DATA_Z];  
+				  
+				float deltaX = x - last_x;
+				float deltaY = y - last_y;
+				float deltaZ = z - last_z;
+				  
+				double m = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ);
+				if ((m > 10) && (picList != null) && (picList.size() > 0)) {
+			    	Random random = new Random();
+			    	int id = random.nextInt(picList.size());
+					Bitmap bitmap = BitmapFactory.decodeFile(downloadPath + picList.get(id));
+				    try {
+						setWallpaper(bitmap);
+					} catch (IOException e) {
+						e.printStackTrace();
+						picList.remove(id);
+					}
+				}  
+				last_x = x;  
+				last_y = y;  
+				last_z = z;  
+			}  
+		}  
 	}
 }
 

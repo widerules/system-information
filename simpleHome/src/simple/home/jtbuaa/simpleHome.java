@@ -443,10 +443,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	}).
             	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends
-            	        String text = getString(R.string.sharetext) 
-	        				+ " https://market.android.com/details?id=simple.home.jtbuaa";
+            	        String text = getString(R.string.sharetext); 
             	        if (getResources().getConfiguration().locale.getLanguage().equals("zh")) 
-            	        	text = "http://m.appchina.com/market-web/lemon/soft_detail.action?id=168438";
+            	        	text += " http://m.appchina.com/market-web/lemon/soft_detail.action?id=168438";
+            	        else
+	        				text += " https://market.android.com/details?id=simple.home.jtbuaa";
             	        
             	        Intent intent = new Intent(Intent.ACTION_SEND);
             	        intent.setType("text/plain");  

@@ -2,26 +2,18 @@
 <LinearLayout android:id="@+id/about"
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-  
-	<LinearLayout 
-  	xmlns:android="http://schemas.android.com/apk/res/android"
-  	android:orientation="vertical"
-   	android:gravity="center_horizontal" 
-  	android:layout_width="fill_parent"
-  	android:layout_height="wrap_content">
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
   
       <TextView android:id="@+id/myversion"
         android:layout_height="wrap_content" 
         android:layout_width="wrap_content"/>
         
-	</LinearLayout>
-	
-    <TextView android:id="@+id/mynotes"
-    	android:paddingLeft="10dip"
-        android:layout_height="wrap_content" 
-        android:layout_width="wrap_content"
-        android:text="@string/about_dialog_notes"/>
-        
+      <CheckBox android:id="@+id/change_wallpaper"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:text="@string/auto_change_wallpaper" 
+      	android:layout_margin="5dip"
+      	android:singleLine="true"
+      />  
 </LinearLayout>

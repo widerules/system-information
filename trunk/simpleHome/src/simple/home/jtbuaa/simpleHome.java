@@ -1402,7 +1402,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			while (iter.hasNext()) {
 				Entry entry = (Entry) iter.next();
 				DownloadTask val = (DownloadTask) entry.getValue();
-				if (val.apkName.equals(apkName)) return true;//the file is downloading, not start a new download task.
+				if ((val != null) && val.apkName.equals(apkName)) return true;//the file is downloading, not start a new download task.
 			}
 			
 	    	Random random = new Random();

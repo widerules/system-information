@@ -616,7 +616,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
 			if (!cbWallPaper.isChecked())
-				base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
+				base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), base.getWidth(), base.getHeight()));
 		}
 	};
 	
@@ -883,7 +883,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (RelativeLayout) findViewById(R.id.base);
-        base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
+        base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), base.getWidth(), base.getHeight()));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
         homeBar = (ImageView) findViewById(R.id.home_bar);
         homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
@@ -944,7 +944,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onClick(View arg0) {
 				if (cbWallPaper.isChecked()) {
-			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_UI);
 				}
 				else {
 					sensorMgr.unregisterListener(sensorListener);
@@ -1802,14 +1802,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				float deltaZ = z - last_z;
 				  
 				double m = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)/timeInterval * 100;
-				if ((m > 4) && (picList != null) && (picList.size() > 0)) {
+				if ((m > 8) && (picList != null) && (picList.size() > 0)) {
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
-					Bitmap bitmap = BitmapFactory.decodeFile(downloadPath + picList.get(id));
 				    try {
-				    	//base.setBackgroundDrawable(new ClippedDrawable(Drawable.createFromPath(downloadPath + picList.get(id))));
-						setWallpaper(bitmap);
-						base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
+				    	Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
+				    	base.setBackgroundDrawable(new ClippedDrawable(cd, base.getWidth(), base.getHeight()));
 					} catch (Exception e) {
 						e.printStackTrace();
 						picList.remove(id);
@@ -1838,9 +1836,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
  */
 class ClippedDrawable extends Drawable {
     private final Drawable mWallpaper;
+    int screenWidth, screenHeight;
 
-    public ClippedDrawable(Drawable wallpaper) {
+    public ClippedDrawable(Drawable wallpaper, int sw, int sh) {
         mWallpaper = wallpaper;
+        screenWidth = sw;
+        screenHeight = sh;
     }
 
     @Override
@@ -1848,8 +1849,11 @@ class ClippedDrawable extends Drawable {
         super.setBounds(left, top, right, bottom);
         // Ensure the wallpaper is as large as it really is, to avoid stretching it
         // at drawing time
-        mWallpaper.setBounds(left, top, left + mWallpaper.getIntrinsicWidth(),
-                top + mWallpaper.getIntrinsicHeight());
+        int tmpHeight = mWallpaper.getIntrinsicHeight() * screenWidth / mWallpaper.getIntrinsicWidth();
+        if (tmpHeight >= screenHeight)
+        	mWallpaper.setBounds(left, top, left + screenWidth, top + tmpHeight);
+        else
+        	mWallpaper.setBounds(left, top, left + mWallpaper.getIntrinsicWidth() * screenHeight / mWallpaper.getIntrinsicHeight(), top + screenHeight);
     }
 
     public void draw(Canvas canvas) {

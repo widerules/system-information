@@ -6,11 +6,21 @@
   android:layout_height="fill_parent"
   >
   
-      <CheckBox android:id="@+id/change_wallpaper"
+  	<TextView
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-      	android:text="@string/auto_change_wallpaper" 
-      	android:singleLine="true"
-      />  
+      	android:text="@string/author"
+      	android:textSize="16dip"
+      	android:textColor="#FFFFFFFF"
+      	android:gravity="right"
+      	android:layout_marginRight="15dip"
+    />
+    
+    <CheckBox android:id="@+id/change_wallpaper"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/auto_change_wallpaper"
+      	android:layout_marginLeft="15dip" 
+    />  
 
 </LinearLayout>

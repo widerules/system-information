@@ -792,6 +792,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		
 		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 		dm = new DisplayMetrics();  
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
 		imgNext = (ImageView) findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -883,7 +884,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (RelativeLayout) findViewById(R.id.base); 
-        base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), base.getWidth(), base.getHeight()));
+        base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
         homeBar = (ImageView) findViewById(R.id.home_bar);
         homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout

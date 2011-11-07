@@ -159,7 +159,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	
 	ProgressDialog mProgressDialog;
 	DisplayMetrics dm;
-	String processor, memory;
+	String processor;
 	
 	//download related
 	String downloadPath;
@@ -398,11 +398,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     
     String aboutMsg() {
 		return getString(R.string.help_message)
-		+ "\n\n" + getString(R.string.about_dialog_notes)
+		//+ "\n\n" + getString(R.string.about_dialog_notes)
 		+ "\n========================="
 		+ "\n" + processor
 		+ "\nAndroid " + android.os.Build.VERSION.RELEASE
-		+ "\n" + memory
 		+ "\n" + dm.widthPixels+" * "+dm.heightPixels
 		+ "\n" + ip()
 		+ "\n                    jtbuaa@gmail.com";
@@ -456,8 +455,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		final View aboutView = inflater.inflate(R.layout.about, null);
         		
             	m_aboutDialog = new AlertDialog.Builder(this).
-            	setView(aboutView).
             	setTitle(getString(R.string.app_name) + " " + version).
+            	setView(aboutView).
+            	/*setMultiChoiceItems(new String[] {getString(R.string.auto_change_wallpaper)}, new boolean[] {false}, new DialogInterface.OnMultiChoiceClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1, boolean arg2) {
+					}
+            	}).*/
             	setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {}
             	}).
@@ -1359,7 +1363,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 			
 			processor = runCmd("cat", "/proc/cpuinfo");
-			memory = runCmd("cat", "/proc/meminfo");
 			
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);

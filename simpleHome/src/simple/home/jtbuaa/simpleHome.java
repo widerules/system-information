@@ -882,7 +882,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		favoAppList.setAdapter(favoAdapter);
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
-        base = (RelativeLayout) findViewById(R.id.base);
+        base = (RelativeLayout) findViewById(R.id.base); 
         base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), base.getWidth(), base.getHeight()));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
         homeBar = (ImageView) findViewById(R.id.home_bar);
@@ -1647,7 +1647,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
 	
 	void setLayout() {
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		//int width = base.getWidth();
 
         LayoutParams lp = webtools_center.getLayoutParams();
         lp.width = dm.widthPixels/2 + 40;
@@ -1850,10 +1851,15 @@ class ClippedDrawable extends Drawable {
         // Ensure the wallpaper is as large as it really is, to avoid stretching it
         // at drawing time
         int tmpHeight = mWallpaper.getIntrinsicHeight() * screenWidth / mWallpaper.getIntrinsicWidth();
-        if (tmpHeight >= screenHeight)
+        int tmpWidth = mWallpaper.getIntrinsicWidth() * screenHeight / mWallpaper.getIntrinsicHeight();
+        if (tmpHeight >= screenHeight) {
+        	top -= (tmpHeight - screenHeight)/2;
         	mWallpaper.setBounds(left, top, left + screenWidth, top + tmpHeight);
-        else
-        	mWallpaper.setBounds(left, top, left + mWallpaper.getIntrinsicWidth() * screenHeight / mWallpaper.getIntrinsicHeight(), top + screenHeight);
+        }
+        else {
+        	left -= (tmpWidth - screenWidth)/2;
+        	mWallpaper.setBounds(left, top, left + tmpWidth, top + screenHeight);
+        }
     }
 
     public void draw(Canvas canvas) {

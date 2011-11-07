@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
@@ -404,7 +405,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		+ "\n" + memory
 		+ "\n" + dm.widthPixels+" * "+dm.heightPixels
 		+ "\n" + ip()
-		+ "\n                jtbuaa@gmail.com";
+		+ "\n                    jtbuaa@gmail.com";
     }
 
     String runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 
@@ -735,15 +736,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		
 		try {
-			Configuration.class.getField("screenLayout");
-			Log.d("============", "screenLayout");
+			Field screenLayout = Configuration.class.getField("screenLayout");
 	    	//1,2,3,4 are integer value of small, normal, large and XLARGE screen respectively.
-	    	int screen_size = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK; 
+	    	int screen_size = screenLayout.getInt(getResources().getConfiguration()) & Configuration.SCREENLAYOUT_SIZE_MASK; 
 	    	if (screen_size < 3)//disable auto rotate screen for small and normal screen.
 	    		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {//no such field is sdk level <= 3
+		} catch (Exception e) {//no such field is sdk level <= 3
 			e.printStackTrace();
 		}
     	

@@ -101,6 +101,7 @@ import android.webkit.SslErrorHandler;
 import android.net.http.SslError;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -129,6 +130,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	float last_x, last_y, last_z;
 	long lastUpdate;
 	ArrayList<String> picList;
+	CheckBox cbWallPaper;
+	View aboutView;
 	
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
@@ -151,7 +154,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ResolveInfo ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	RelativeLayout shortcutBar, adsParent, base;
-	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_PIC = 4; 
 	AdView adview;
 	
 	String apkToDel, pkgToDel;
@@ -455,18 +458,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			return super.onOptionsItemSelected(item);
 		case 2://help dialog
         	if (m_aboutDialog == null) {
-        		LayoutInflater inflater = LayoutInflater.from(this);
-        		final View aboutView = inflater.inflate(R.layout.about, null);
-        		
             	m_aboutDialog = new AlertDialog.Builder(this).
             	setTitle(getString(R.string.app_name) + " " + version).
             	setView(aboutView).
-            	/*setMultiChoiceItems(new String[] {getString(R.string.auto_change_wallpaper)}, new boolean[] {false}, new DialogInterface.OnMultiChoiceClickListener() {
-					@Override
-					public void onClick(DialogInterface arg0, int arg1, boolean arg2) {
-					}
-            	}).*/
-            	setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            	setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {}
             	}).
             	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
@@ -697,7 +692,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         mContext = this.getBaseContext();
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
@@ -738,7 +733,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	
     	sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
     	mSensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-    	sensorMgr.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     	
 		imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -943,6 +937,22 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
+		LayoutInflater inflater = LayoutInflater.from(this);
+		aboutView = inflater.inflate(R.layout.about, null);
+		final simpleHome sensorListener = this;
+    	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
+    	cbWallPaper.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (cbWallPaper.isChecked()) {
+			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
+				}
+				else {
+					sensorMgr.unregisterListener(sensorListener);
+				}
+			}
+    	});
+
 		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
@@ -1353,6 +1363,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	else downloadPath = getFilesDir().getPath() + "/";
         	picList = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
+        	if (!picList.isEmpty()) {
+            	Message msgpic = mAppHandler.obtainMessage();
+            	msguser.what = UPDATE_PIC;
+            	mAppHandler.sendMessage(msgpic);//inform UI thread to update UI.
+        	}
 			   
         	FileType.initMimeMap();//init the file type map
         	
@@ -1435,6 +1450,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     					startApp(ri_contact);
     				}
     			});
+        		break;
+        	case UPDATE_PIC:
+        		cbWallPaper.setEnabled(true);
         		break;
         	}
         }
@@ -1586,7 +1604,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         			p.waitFor();
     				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
     				
-    				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) picList.add(apkName);//add to picture list
+    				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) {
+    					picList.add(apkName);//add to picture list
+    	        		cbWallPaper.setEnabled(true);
+    				}
             	}
 				
 	    	} catch (Exception e) {
@@ -1797,9 +1818,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					Bitmap bitmap = BitmapFactory.decodeFile(downloadPath + picList.get(id));
 				    try {
 						setWallpaper(bitmap);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 						picList.remove(id);
+						if (picList.isEmpty()) {
+			        		cbWallPaper.setEnabled(false);
+			        		cbWallPaper.setChecked(false);
+						}
 					}
 				}  
 				last_x = x;  

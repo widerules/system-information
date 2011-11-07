@@ -333,6 +333,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	}
         case 2: {//delete system app dialog
 			return new AlertDialog.Builder(this).
+			setTitle(getString(R.string.app_name) + " " + version).
 			setMessage(R.string.warning).
         	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
 				@Override
@@ -395,16 +396,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
     
     String aboutMsg() {
-		return getString(R.string.app_name) + " " + version + "\n"
-		+ "jtbuaa@gmail.com\n\n" 
-		+ getString(R.string.help_message)
-		+ getString(R.string.about_dialog_notes)
+		return getString(R.string.help_message)
+		+ "\n\n" + getString(R.string.about_dialog_notes)
 		+ "\n========================="
 		+ "\n" + processor
 		+ "\nAndroid " + android.os.Build.VERSION.RELEASE
 		+ "\n" + memory
 		+ "\n" + dm.widthPixels+" * "+dm.heightPixels
-		+ "\n" + ip();
+		+ "\n" + ip()
+		+ "\n                jtbuaa@gmail.com";
     }
 
     String runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 
@@ -456,6 +456,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		
             	m_aboutDialog = new AlertDialog.Builder(this).
             	setView(aboutView).
+            	setTitle(getString(R.string.app_name) + " " + version).
             	setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {}
             	}).
@@ -733,10 +734,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		
-    	//1,2,3,4 are integer value of small, normal, large and XLARGE screen respectively.
-    	int screen_size = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK; 
-    	if (screen_size < 3)//disable auto rotate screen for small and normal screen.
-    		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		try {
+			Configuration.class.getField("screenLayout");
+			Log.d("============", "screenLayout");
+	    	//1,2,3,4 are integer value of small, normal, large and XLARGE screen respectively.
+	    	int screen_size = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK; 
+	    	if (screen_size < 3)//disable auto rotate screen for small and normal screen.
+	    		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {//no such field is sdk level <= 3
+			e.printStackTrace();
+		}
     	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);

@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +61,6 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -617,7 +615,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
+			if (!cbWallPaper.isChecked())
+				base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
 		}
 	};
 	
@@ -945,7 +944,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onClick(View arg0) {
 				if (cbWallPaper.isChecked()) {
-			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_GAME);
+			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 				}
 				else {
 					sensorMgr.unregisterListener(sensorListener);
@@ -1363,11 +1362,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	else downloadPath = getFilesDir().getPath() + "/";
         	picList = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
-        	if (!picList.isEmpty()) {
-            	Message msgpic = mAppHandler.obtainMessage();
-            	msguser.what = UPDATE_PIC;
-            	mAppHandler.sendMessage(msgpic);//inform UI thread to update UI.
-        	}
 			   
         	FileType.initMimeMap();//init the file type map
         	
@@ -1450,9 +1444,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     					startApp(ri_contact);
     				}
     			});
-        		break;
-        	case UPDATE_PIC:
-        		cbWallPaper.setEnabled(true);
         		break;
         	}
         }
@@ -1606,7 +1597,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     				
     				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) {
     					picList.add(apkName);//add to picture list
-    	        		cbWallPaper.setEnabled(true);
     				}
             	}
 				
@@ -1811,18 +1801,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				float deltaY = y - last_y;
 				float deltaZ = z - last_z;
 				  
-				double m = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ);
-				if ((m > 10) && (picList != null) && (picList.size() > 0)) {
+				double m = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)/timeInterval * 100;
+				if ((m > 4) && (picList != null) && (picList.size() > 0)) {
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 					Bitmap bitmap = BitmapFactory.decodeFile(downloadPath + picList.get(id));
 				    try {
+				    	//base.setBackgroundDrawable(new ClippedDrawable(Drawable.createFromPath(downloadPath + picList.get(id))));
 						setWallpaper(bitmap);
+						base.setBackgroundDrawable(new ClippedDrawable(getWallpaper()));
 					} catch (Exception e) {
 						e.printStackTrace();
 						picList.remove(id);
 						if (picList.isEmpty()) {
-			        		cbWallPaper.setEnabled(false);
 			        		cbWallPaper.setChecked(false);
 						}
 					}

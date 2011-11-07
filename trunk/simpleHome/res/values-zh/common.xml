@@ -6,7 +6,7 @@
     <string name="help_message">单击back键显示/隐藏应用列表\n单击应用图标：结束应用\n单击应用名称：启动应用\n单击应用版本：删除应用\n长按应用名称：添加快捷方式\n长按快捷方式：删除快捷方式</string>
     <string name="auto_change_wallpaper">晃动手机切换背景</string>
     
-    <string name="warning">删除系统应用可能导致不能开机，请三思！</string>
+    <string name="warning">删除系统应用可能导致不能开机\n请三思！</string>
 
     <string name="wallpaper">墙纸...</string>
     <string name="about">关于...</string>

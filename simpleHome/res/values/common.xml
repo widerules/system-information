@@ -4,6 +4,7 @@
     
     <string name="about_dialog_notes">If you like this app, \nplease vote me 5 stars, thanks.</string>
     <string name="help_message">Click back key to show/hide app list. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
+    <string name="author">jtbuaa@gmail.com</string>
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     
     <string name="warning">Delete system app may cause phone can not boot.\n\nPlease think carefully！</string>

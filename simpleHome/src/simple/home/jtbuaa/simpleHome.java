@@ -390,7 +390,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					}
 				}
 			}
-			return sb.toString();
+			return sb.toString().trim();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
@@ -398,14 +398,17 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
     
     String aboutMsg() {
-		return getString(R.string.help_message)
-		//+ "\n\n" + getString(R.string.about_dialog_notes)
+		String res = getString(R.string.help_message)
+		+ "\n\n" + getString(R.string.about_dialog_notes)
 		+ "\n========================="
 		+ "\n" + processor
 		+ "\nAndroid " + android.os.Build.VERSION.RELEASE
-		+ "\n" + dm.widthPixels+" * "+dm.heightPixels
-		+ "\n" + ip()
-		+ "\n                    jtbuaa@gmail.com";
+		+ "\n" + dm.widthPixels+" * "+dm.heightPixels;
+		
+		String ipaddr = ip();
+		if (!ipaddr.equals(""))
+			res += "\n" + ipaddr;
+		return res;
     }
 
     String runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 

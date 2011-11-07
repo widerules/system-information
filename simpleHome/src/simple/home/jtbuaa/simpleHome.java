@@ -335,6 +335,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         case 2: {//delete system app dialog
 			return new AlertDialog.Builder(this).
 			setTitle(getString(R.string.app_name) + " " + version).
+			setIcon(R.drawable.error).
 			setMessage(R.string.warning).
         	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
 				@Override

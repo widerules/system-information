@@ -1671,7 +1671,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	
         lp = shortAppList.getLayoutParams();
        	if (width/2 - 140 > 200) lp.width = width/2 - 140;
-       	else if (width/2 -140 <= 100) lp.width = width/3;
 	}
 	
 	@Override
@@ -1835,7 +1834,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	@Override
 	public void onSizeChanged(int w, int h, int oldW, int oldH) {
-		setLayout(oldW);
+		//setLayout(oldW);
 	}
 }
 

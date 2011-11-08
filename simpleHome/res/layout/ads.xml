@@ -4,7 +4,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	
-<RelativeLayout 
+<simple.home.jtbuaa.sizedRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/base"
 	android:orientation="vertical"
     android:layout_width="fill_parent"
@@ -65,7 +65,7 @@
 		android:scrollingCache="false"
 		android:fadingEdge="none"/>
 	 
-</RelativeLayout>
+</simple.home.jtbuaa.sizedRelativeLayout>
 	
 <RelativeLayout 
     android:id="@+id/adsParent"

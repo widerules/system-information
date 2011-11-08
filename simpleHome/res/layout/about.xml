@@ -21,6 +21,8 @@
       	android:layout_height="wrap_content"
       	android:text="@string/auto_change_wallpaper"
       	android:layout_marginLeft="15dip"
+      	android:checked="false"
+      	android:enabled="false"
     />  
 
 </LinearLayout>

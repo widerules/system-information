@@ -1680,9 +1680,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		setLayout(dm.widthPixels);
 		
 		if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO)
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		else
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
 

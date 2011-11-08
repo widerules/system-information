@@ -1598,6 +1598,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     				
     				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) {
     					picList.add(apkName);//add to picture list
+		        		cbWallPaper.setEnabled(true);
     				}
             	}
 				
@@ -1814,7 +1815,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						e.printStackTrace();
 						picList.remove(id);
 						if (picList.isEmpty()) {
-			        		cbWallPaper.setChecked(false);
+							cbWallPaper.performClick();
+			        		cbWallPaper.setEnabled(false);
 						}
 					}
 				}  

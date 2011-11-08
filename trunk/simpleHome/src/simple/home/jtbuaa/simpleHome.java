@@ -126,7 +126,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	SensorManager sensorMgr;
 	Sensor mSensor;
 	float last_x, last_y, last_z;
-	long lastUpdate;
+	long lastUpdate, lastSet;
 	ArrayList<String> picList;
 	CheckBox cbWallPaper;
 	View aboutView;
@@ -1363,6 +1363,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         	else downloadPath = getFilesDir().getPath() + "/";
         	picList = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
+        	if (picList.size() > 0) cbWallPaper.setEnabled(true);
 			   
         	FileType.initMimeMap();//init the file type map
         	
@@ -1804,13 +1805,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				float deltaY = y - last_y;
 				float deltaZ = z - last_z;
 				  
-				double m = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)/timeInterval * 100;
-				if ((m > 8) && (picList != null) && (picList.size() > 0)) {
+				double speed = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)/timeInterval * 100;
+				//condition to change wallpaper: speed is enough; frequency is not too high; picList is not empty. 
+				if ((speed > 8) && (curTime - lastSet > 500) && (picList != null) && (picList.size() > 0)) {
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
 				    	Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
 				    	base.setBackgroundDrawable(new ClippedDrawable(cd, base.getWidth(), base.getHeight()));
+				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();
 						picList.remove(id);

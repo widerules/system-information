@@ -1678,6 +1678,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		setLayout(dm.widthPixels);
+		
+		if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO)
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		else
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
 

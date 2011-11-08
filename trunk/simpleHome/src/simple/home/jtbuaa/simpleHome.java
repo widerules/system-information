@@ -69,6 +69,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -110,7 +111,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class simpleHome extends Activity implements OnGestureListener, OnTouchListener, SensorEventListener {
+public class simpleHome extends Activity implements OnGestureListener, OnTouchListener, SensorEventListener, sizedRelativeLayout.OnResizeChangeListener {
 
 	//browser related
 	ArrayList<MyWebview> serverWebs;
@@ -131,6 +132,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	CheckBox cbWallPaper;
 	View aboutView;
 	
+	//app list related
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
 	ImageView homeBar, shortBar;
@@ -151,7 +153,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo ri_phone, ri_sms, ri_contact;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
-	RelativeLayout shortcutBar, adsParent, base;
+	sizedRelativeLayout base;
+	RelativeLayout shortcutBar, adsParent;
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_PIC = 4; 
 	AdView adview;
 	
@@ -883,7 +886,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		favoAppList.setAdapter(favoAdapter);
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
-        base = (RelativeLayout) findViewById(R.id.base); 
+        base = (sizedRelativeLayout) findViewById(R.id.base); 
+        base.setResizeListener(this);
         base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
         homeBar = (ImageView) findViewById(R.id.home_bar);
@@ -919,7 +923,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				}
 			}
         });
-		setLayout();
+		setLayout(dm.widthPixels);
         
 		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
 		//shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
@@ -1649,33 +1653,32 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		return false;
 	}
 	
-	void setLayout() {
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		//int width = base.getWidth();
-
+	void setLayout(int width) {
         LayoutParams lp = webtools_center.getLayoutParams();
-        lp.width = dm.widthPixels/2 + 40;
+        lp.width = width/2 + 40;
         
         lp = btnSys.getLayoutParams();
-        lp.width = dm.widthPixels/3 - 10;
+        lp.width = width/3 - 10;
         
         lp = btnUser.getLayoutParams();
-        lp.width = dm.widthPixels/3 - 10;
+        lp.width = width/3 - 10;
         
         lp = btnWeb.getLayoutParams();
-        lp.width = dm.widthPixels/3 - 10;
+        lp.width = width/3 - 10;
 
         lp = shortcutBar.getLayoutParams();
-        if (dm.widthPixels/2 > 240) lp.width = dm.widthPixels/2;
+        if (width/2 > 240) lp.width = width/2;
         	
         lp = shortAppList.getLayoutParams();
-       	if (dm.widthPixels/2 - 140 > 200) lp.width = dm.widthPixels/2 - 140;
+       	if (width/2 - 140 > 200) lp.width = width/2 - 140;
+       	else if (width/2 -140 <= 100) lp.width = width/3;
 	}
 	
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
-		setLayout();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		setLayout(dm.widthPixels);
     }
 
 
@@ -1829,6 +1832,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}  
 		}  
 	}
+
+	@Override
+	public void onSizeChanged(int w, int h, int oldW, int oldH) {
+		setLayout(oldW);
+	}
 }
 
 /** from Android Home sample
@@ -1883,4 +1891,33 @@ class ClippedDrawable extends Drawable {
     public int getOpacity() {
         return mWallpaper.getOpacity();
     }
+}
+
+class sizedRelativeLayout extends RelativeLayout {
+
+	public sizedRelativeLayout(Context context) {
+		super(context);
+	}
+	
+    public sizedRelativeLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+	
+	private OnResizeChangeListener mOnResizeChangeListener;
+	
+    protected void onSizeChanged(int w, int h, int oldW, int oldH) {
+        if(mOnResizeChangeListener!=null){
+            mOnResizeChangeListener.onSizeChanged(w,h,oldW,oldH);
+        }
+        super.onSizeChanged(w,h,oldW,oldH);
+    }
+	
+    public void setResizeListener(OnResizeChangeListener l) {
+        mOnResizeChangeListener = l;
+    }
+	    
+    public interface OnResizeChangeListener{
+        void onSizeChanged(int w,int h,int oldW,int oldH);
+    }
+	
 }

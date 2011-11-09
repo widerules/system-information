@@ -1066,8 +1066,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	};
 
 	void startApp(ResolveInfo info) {
-		if (info.activityInfo.applicationInfo.packageName.equals(myPackageName)) return;//not start myself again.
-		
 		Intent i = new Intent(Intent.ACTION_MAIN);
 		i.setComponent(new ComponentName(
 				info.activityInfo.applicationInfo.packageName,

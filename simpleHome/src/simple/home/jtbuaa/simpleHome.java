@@ -1123,10 +1123,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             btnIcon.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {//kill app
-					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-					am.restartPackage(info.activityInfo.packageName);
-					//but we need to know when will it restart by itself?
-					textView1.setTextColor(0xFF000000);//set color back to black after kill it.
+					if (! info.activityInfo.packageName.equals(myPackageName)) {//don't kill myself
+						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+						am.restartPackage(info.activityInfo.packageName);
+						//but we need to know when will it restart by itself?
+						textView1.setTextColor(0xFF000000);//set color back to black after kill it.
+					}
 				}
             });
             

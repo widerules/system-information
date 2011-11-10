@@ -52,14 +52,15 @@ public class SelectHome extends Activity{
 
                     Intent intent =  new Intent(Intent.ACTION_MAIN, null);
                     intent.addCategory(Intent.CATEGORY_HOME);
+                    intent.setClassName(mHomeList.get(which).activityInfo.packageName, 
+                    		mHomeList.get(which).activityInfo.name);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                     startActivity(intent);
                 }
-                else {
-                    dialog.cancel();
-                	finish();
-                }
+                
+                dialog.cancel();
+            	finish();
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			@Override

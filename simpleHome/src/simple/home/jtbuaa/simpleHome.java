@@ -501,10 +501,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			menu.add(0, 1, 0, getString(R.string.removeFromShort));
 			break;
 		case 2://on app list
-			menu.add(0, 2, 0, getString(R.string.addtoFavo));
-			menu.add(0, 3, 0, getString(R.string.addtoShort));
-			menu.add(0, 4, 0, getString(R.string.backapp));
-			menu.add(0, 5, 0, getString(R.string.appdetail));
+			menu.add(0, 2, 0, getString(R.string.share));
+			menu.add(0, 3, 0, getString(R.string.backapp));
+			menu.add(0, 4, 0, getString(R.string.appdetail));
+			menu.add(0, 5, 0, getString(R.string.addtoFavo));
+			menu.add(0, 6, 0, getString(R.string.addtoShort));
 			break;
 		}
 	}
@@ -562,19 +563,14 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			shortAdapter.remove(selected_case.mRi);
 			writeFile("short");	//save shortcut to file
 			break;
-		case 2://add to home
-			if (favoAdapter.getPosition(selected_case.mRi) < 0) { 
-				favoAdapter.add(selected_case.mRi);
-				writeFile("favo");
-			}
+		case 2://app name share
+	        Intent intent = new Intent(Intent.ACTION_SEND);
+	        intent.setType("text/plain");  
+	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+    		intent.putExtra(Intent.EXTRA_TEXT, selected_case.mRi.loadLabel(pm) + " " + getString(R.string.app_share_text));
+	        startActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			break;
-		case 3://add to shortcut
-			if (shortAdapter.getPosition(selected_case.mRi) < 0) {
-				shortAdapter.insert(selected_case.mRi, 0);
-				writeFile("short");	//save shortcut to file
-			}
-			break;
-		case 4://backup app
+		case 3://backup app
 			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
 			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
 			if (backup(sourceDir)) {
@@ -587,13 +583,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				if (target.exists()) backup(odex);//backup odex if any
 			}
 			break;
-		case 5://get app detail info
+		case 4://get app detail info
 			String source = selected_case.mRi.activityInfo.applicationInfo.sourceDir 
 				+ "\n\n" 
 				+ selected_case.mRi.activityInfo.packageName;
         	Toast.makeText(getBaseContext(), source, Toast.LENGTH_LONG).show();
 
-			Intent intent;
 			if (appDetail != null) {
 				intent = new Intent(Intent.ACTION_VIEW);
 				intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
@@ -608,7 +603,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			} catch (Exception e) {
 				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
 			}
-			
+			break;
+		case 5://add to home
+			if (favoAdapter.getPosition(selected_case.mRi) < 0) { 
+				favoAdapter.add(selected_case.mRi);
+				writeFile("favo");
+			}
+			break;
+		case 6://add to shortcut
+			if (shortAdapter.getPosition(selected_case.mRi) < 0) {
+				shortAdapter.insert(selected_case.mRi, 0);
+				writeFile("short");	//save shortcut to file
+			}
 			break;
 		}
 		return false;

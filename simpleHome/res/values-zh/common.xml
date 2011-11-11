@@ -19,7 +19,8 @@
     
     <string name="share">分享</string>
     <string name="sharemode">分享方式</string>
-    <string name="sharetext">简洁主屏，简单实用!</string>
+    <string name="sharetext">推荐简洁主屏，简单实用! 可以从</string>
+    <string name="sharetext2">下载，点开链接后再点下载按钮就可以啦</string>
     <string name="app_share_text">真的很棒，一起来玩吧！</string>
     
     <string name="favoriteapps">快捷方式</string>        

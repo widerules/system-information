@@ -50,6 +50,10 @@ public class SelectHome extends Activity{
 					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 					am.restartPackage(mHomeList.get(currentHomeIndex).activityInfo.packageName);
 
+					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
+					intentNewhome.putExtra("configured_home", mHomeList.get(which).activityInfo.name);
+	                sendBroadcast(intentNewhome);
+
                     Intent intent =  new Intent(Intent.ACTION_MAIN, null);
                     intent.addCategory(Intent.CATEGORY_HOME);
                     intent.setClassName(mHomeList.get(which).activityInfo.packageName, 

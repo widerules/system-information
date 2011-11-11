@@ -165,6 +165,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	DisplayMetrics dm;
 	String processor;
 	
+	private final BroadcastReceiver mHomeChangeReceiver = new HomeChangeReceiver();
+	
 	//download related
 	String downloadPath;
 	NotificationManager nManager;
@@ -264,7 +266,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				
 				@Override
 				public boolean shouldOverrideUrlLoading(WebView view, String url) {
-					return startDownload(url);
+					if (!url.startsWith("http")) {
+						Uri uri = Uri.parse(url);
+						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+						intent.addCategory(Intent.CATEGORY_BROWSABLE);
+						List<ResolveInfo> handleList = pm.queryIntentActivities(intent, 0);
+						if (!handleList.isEmpty()) {
+							startActivity(intent);
+							return true;
+						}
+						else return false;
+					}
+					else return startDownload(url);
 				}
 			});
 		}
@@ -469,7 +482,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends
             	        String text = getString(R.string.sharetext); 
             	        if (getResources().getConfiguration().locale.getLanguage().equals("zh")) 
-            	        	text += " http://m.appchina.com/market-web/lemon/soft_detail.action?id=168438";
+            	        	text += " http://yyh.co/168438 " + getString(R.string.sharetext2);
             	        else
 	        				text += " https://market.android.com/details?id=simple.home.jtbuaa";
             	        
@@ -947,6 +960,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
+		IntentFilter homeChangeFilter = new IntentFilter("simpleHome.action.HOME_CHANGED");
+        registerReceiver(mHomeChangeReceiver, homeChangeFilter);
+
 		LayoutInflater inflater = LayoutInflater.from(this);
 		aboutView = inflater.inflate(R.layout.about, null);
 		final simpleHome sensorListener = this;
@@ -973,10 +989,25 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     protected void onDestroy() {
     	unregisterReceiver(packageReceiver);
     	unregisterReceiver(wallpaperReceiver);
+    	unregisterReceiver(mHomeChangeReceiver);
     	
     	super.onDestroy();
     }
     
+    private class HomeChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+        	Log.d("=========", "finish myself");
+            if(intent.getAction().equals("simpleHome.action.HOME_CHANGED")) {
+                final String homeName = intent.getStringExtra("configured_home");
+                if(homeName.equals(myPackageName)) {
+                	finish();
+                    //Process.killProcess(Process.myPid());
+                }
+            }
+        }
+    }
+
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 		@Override

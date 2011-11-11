@@ -997,13 +997,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     private class HomeChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-        	Log.d("=========", "finish myself");
             if(intent.getAction().equals("simpleHome.action.HOME_CHANGED")) {
-                final String homeName = intent.getStringExtra("configured_home");
-                if(homeName.equals(myPackageName)) {
-                	finish();
-                    //Process.killProcess(Process.myPid());
-                }
+                final String homeName = intent.getStringExtra("old_home");
+                if(homeName.equals(myPackageName)) finish();
             }
         }
     }

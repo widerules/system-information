@@ -17,10 +17,13 @@ import android.provider.Settings;
 public class SelectHome extends Activity{
 	private List<ResolveInfo> mHomeList;
 	private int currentHomeIndex = 0;
+	String mPackageName;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        mPackageName = this.getPackageName();
         
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_HOME);
@@ -47,13 +50,18 @@ public class SelectHome extends Activity{
                     Settings.System.putString(getContentResolver(), "configured_home",
                             mHomeList.get(which).activityInfo.name);
 
-					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-					am.restartPackage(mHomeList.get(currentHomeIndex).activityInfo.packageName);
-
-					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
-					intentNewhome.putExtra("configured_home", mHomeList.get(which).activityInfo.name);
-	                sendBroadcast(intentNewhome);
-
+                    String oldName = mHomeList.get(currentHomeIndex).activityInfo.packageName;
+                    if (!mPackageName.equals(oldName)) {//try to close the old home
+    					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    					am.restartPackage(oldName);
+                    }
+                    else {//if I'm the old home, not stop me immediately, otherwise the new home may not launch 
+    					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
+    					intentNewhome.putExtra("old_home", oldName);
+    	                sendBroadcast(intentNewhome);
+                    }
+                    
+                    //launch the new home
                     Intent intent =  new Intent(Intent.ACTION_MAIN, null);
                     intent.addCategory(Intent.CATEGORY_HOME);
                     intent.setClassName(mHomeList.get(which).activityInfo.packageName, 

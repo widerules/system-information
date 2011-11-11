@@ -69,6 +69,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -130,6 +131,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	long lastUpdate, lastSet;
 	ArrayList<String> picList;
 	CheckBox cbWallPaper;
+	TextView mailto;
 	View aboutView;
 	
 	//app list related
@@ -337,6 +339,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         }
     }
 
+    private void myStartActivity(Intent intent) {
+		try {
+			startActivity(intent);
+		} catch (Exception e) {
+			Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+			e.printStackTrace();
+		}
+    }
+    
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
@@ -466,7 +477,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		switch (item.getItemId()) {
 		case 0://wallpaper
 	        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-	        startActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)));
+	        myStartActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)));
 			break;
 		case 1://settings
 			return super.onOptionsItemSelected(item);
@@ -490,7 +501,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	        intent.setType("text/plain");  
             	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
     	        		intent.putExtra(Intent.EXTRA_TEXT, text);
-            	        startActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
+   	        			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
             		}
             	}).create();
         	}
@@ -581,7 +592,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	        intent.setType("text/plain");  
 	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
     		intent.putExtra(Intent.EXTRA_TEXT, selected_case.mRi.loadLabel(pm) + " " + getString(R.string.app_share_text));
-	        startActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
+   			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			break;
 		case 3://backup app
 			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
@@ -611,11 +622,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			else {//2.6 tahiti change the action.
 				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_case.mRi.activityInfo.packageName, null));
 			}
-			try {
-				startActivity(intent);
-			} catch (Exception e) {
-				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_SHORT).show();
-			}
+			myStartActivity(intent);
 			break;
 		case 5://add to home
 			if (favoAdapter.getPosition(selected_case.mRi) < 0) { 
@@ -845,7 +852,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	        intent.setType("text/plain");  
     	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
         		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
-    	        startActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
+    	        myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);
@@ -964,8 +971,19 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         registerReceiver(mHomeChangeReceiver, homeChangeFilter);
 
 		LayoutInflater inflater = LayoutInflater.from(this);
-		aboutView = inflater.inflate(R.layout.about, null);
 		final simpleHome sensorListener = this;
+		
+		aboutView = inflater.inflate(R.layout.about, null);
+		mailto = (TextView) aboutView.findViewById(R.id.mailto);
+		mailto.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
+		mailto.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
+				myStartActivity(intent);
+			}
+		});
+		
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1104,11 +1122,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				info.activityInfo.applicationInfo.packageName,
 				info.activityInfo.name));
 		i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-		try {
-			startActivity(i);
-		} catch(Exception e) {
-			Toast.makeText(getBaseContext(), e.toString(), 3500).show();
-		}
+		myStartActivity(i);
 	}
 	
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
@@ -1190,7 +1204,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
 						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
 						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-						startActivity(intent);
+						myStartActivity(intent);
 					}
 					else {//system app
 						apkToDel = info.activityInfo.applicationInfo.sourceDir;
@@ -1548,7 +1562,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
                 	String[] tmp = apkName.split("\\.");
         			intent.setAction(Intent.ACTION_VIEW);
         			intent.setDataAndType(Uri.fromFile(download_file), FileType.MIMEMAP.get(tmp[tmp.length-1].toUpperCase()));
-    				startActivity(intent);
+    				myStartActivity(intent);
     				return "";
         		}
         		else if (download_file.length() < apk_length) {//local file size < need to download, need continue to download
@@ -1632,7 +1646,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         			
         			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//change file property, for on some device the property is wrong
         			p.waitFor();
-    				startActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
+    				myStartActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
     				
     				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) {
     					picList.add(apkName);//add to picture list

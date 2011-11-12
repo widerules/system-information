@@ -167,8 +167,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	DisplayMetrics dm;
 	String processor;
 	
-	private final BroadcastReceiver mHomeChangeReceiver = new HomeChangeReceiver();
-	
 	//download related
 	String downloadPath;
 	NotificationManager nManager;
@@ -640,15 +638,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		return false;
 	}
 
-	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context arg0, Intent arg1) {
-			if (!cbWallPaper.isChecked())
-				base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), base.getWidth(), base.getHeight()));
-		}
-	};
-	
 	OnBtnClickListener mBtnCL = new OnBtnClickListener();
 	class OnBtnClickListener implements OnClickListener {
 		@Override
@@ -963,13 +952,15 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		registerReceiver(packageReceiver, filter);
 		
 		//for wall paper changed
-		filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+		filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
 		registerReceiver(wallpaperReceiver, filter);
 		
-		IntentFilter homeChangeFilter = new IntentFilter("simpleHome.action.HOME_CHANGED");
-        registerReceiver(mHomeChangeReceiver, homeChangeFilter);
+		filter = new IntentFilter("simpleHome.action.HOME_CHANGED");
+        registerReceiver(homeChangeReceiver, filter);
 
+		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
+        registerReceiver(downloadReceiver, filter);
+        
 		LayoutInflater inflater = LayoutInflater.from(this);
 		final simpleHome sensorListener = this;
 		
@@ -1008,20 +999,34 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     protected void onDestroy() {
     	unregisterReceiver(packageReceiver);
     	unregisterReceiver(wallpaperReceiver);
-    	unregisterReceiver(mHomeChangeReceiver);
+    	unregisterReceiver(homeChangeReceiver);
+    	unregisterReceiver(downloadReceiver);
     	
     	super.onDestroy();
     }
     
-    private class HomeChangeReceiver extends BroadcastReceiver {
+	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context arg0, Intent intent) {
+			startDownload(intent.getStringExtra("url"));
+		}
+	};
+	
+	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context arg0, Intent arg1) {
+			if (!cbWallPaper.isChecked())
+				base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), base.getWidth(), base.getHeight()));
+		}
+	};
+	
+    BroadcastReceiver homeChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("simpleHome.action.HOME_CHANGED")) {
-                final String homeName = intent.getStringExtra("old_home");
-                if(homeName.equals(myPackageName)) finish();
-            }
+            final String homeName = intent.getStringExtra("old_home");
+            if(homeName.equals(myPackageName)) finish();
         }
-    }
+    };
 
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
@@ -1513,7 +1518,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			while (iter.hasNext()) {
 				Entry entry = (Entry) iter.next();
 				DownloadTask val = (DownloadTask) entry.getValue();
-				if ((val != null) && val.apkName.equals(apkName)) return true;//the file is downloading, not start a new download task.
+				if ((val != null) && val.apkName.equals(apkName)) {
+					if (val.pauseDownload) val.pauseDownload = false;
+					return true;//the file is downloading, not start a new download task.
+				}
 			}
 			
 	    	Random random = new Random();
@@ -1535,12 +1543,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		private int readLength = 0; //一次性下载的长度(以字节为单位)
 		private long apk_length = 0; //音乐文件的长度(以字节为单位)
 		private long skip_length = 0;//if found local file not download finished last time, need continue to download
-		private String apkName; //下载的文件名
+		String apkName = ""; //下载的文件名
 		int NOTIFICATION_ID;
 		private Notification notification;
 		private int oldProgress;
 		boolean stopDownload = false;//true to stop download
 		boolean pauseDownload = false;//true to pause download
+		boolean downloadFailed = false;
 
 		@Override
 		protected String doInBackground(String... params) {//download here
@@ -1548,9 +1557,20 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    	apkName = params[1]; //get download file name
 	    	if (apkName.contains("%")) apkName = apkName.split("%")[apkName.split("%").length-1];//for some filename contain % will cause error
 	    	
+	    	notification = new Notification(android.R.drawable.stat_sys_download, getString(R.string.start_download), System.currentTimeMillis());   
+			
 	    	Intent intent = new Intent();
-	    	PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
-	    	
+			PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
+    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.start_download), contentIntent);
+	        nManager.notify(NOTIFICATION_ID, notification);
+	        
+			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
+			intent.putExtra("id", NOTIFICATION_ID);
+			intent.putExtra("name", apkName);
+			intent.putExtra("url", URL_str);
+			contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
+	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
+	        
 	    	FileOutputStream fos = null; //文件输出流
 	    	InputStream is = null; //网络文件输入流
 	    	URL url = null;
@@ -1573,16 +1593,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		else //need overwrite
         			fos = new FileOutputStream(download_file, false);
         		
-    	    	notification = new Notification(android.R.drawable.stat_sys_download, getString(R.string.start_download), System.currentTimeMillis());   
-    			
-    			intent = new Intent();
-    			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
-    			intent.putExtra("id", NOTIFICATION_ID);
-    			intent.putExtra("name", apkName);
-
-    	        contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread  
-    	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
-    	        
     	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
     	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
     	        notification.contentView.setTextViewText(R.id.progress, "0%");
@@ -1657,15 +1667,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				
 	    	} catch (Exception e) {
 	    		e.printStackTrace();
-	    		if (notification == null) //in some special case, the notification is null;
-	    			notification = new Notification(android.R.drawable.stat_notify_error, getString(R.string.download_fail), System.currentTimeMillis());
-	    		else 
-		    		notification.icon = android.R.drawable.stat_notify_error;
+	    		downloadFailed = true;
+	    		notification.icon = android.R.drawable.stat_notify_error;
 	    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail) + e.getMessage(), contentIntent);
 	    		nManager.notify(NOTIFICATION_ID, notification);
 	    		
     	        if (download_file.length() == 0) download_file.delete();//delete empty file
-            	appstate.downloadState.remove(NOTIFICATION_ID);//remove download notification control if download fail
 	    	}
 
 	    	return null;

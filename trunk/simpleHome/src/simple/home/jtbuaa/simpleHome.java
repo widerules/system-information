@@ -133,12 +133,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	CheckBox cbWallPaper;
 	TextView mailto;
 	View aboutView;
+	AlertDialog m_aboutDialog;
 	
 	//app list related
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
 	ImageView homeBar, shortBar;
-	AlertDialog m_aboutDialog;
 	String version, myPackageName;
 	ViewFlipper mainlayout;
 	GestureDetector mGestureDetector;
@@ -981,6 +981,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
 				myStartActivity(intent);
+				m_aboutDialog.cancel();
 			}
 		});
 		

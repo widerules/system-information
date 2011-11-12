@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 
 public class SelectHome extends Activity{
 	private List<ResolveInfo> mHomeList;
@@ -30,56 +31,78 @@ public class SelectHome extends Activity{
         PackageManager pm = getPackageManager();
     	mHomeList = pm.queryIntentActivities(mainIntent, 0);
     	Collections.sort(mHomeList, new ResolveInfo.DisplayNameComparator(pm));//sort by name
-        
-        int N = mHomeList.size();
-        String configuredHome = Settings.System.getString(getContentResolver(), "configured_home");
-        CharSequence[] mValue = new CharSequence[N];
-        CharSequence[] mTitle = new CharSequence[N];
-        for (int i = 0; i < N; i++) {
-            ResolveInfo ri = mHomeList.get(i);
-            mValue[i] = Integer.toString(i);
-            mTitle[i] = ri.activityInfo.loadLabel(pm);
-            if (configuredHome != null && configuredHome.equals(ri.activityInfo.name)) {
-                currentHomeIndex = i;
-            }
-        }
-        new AlertDialog.Builder(this).setTitle(R.string.menu_choose_home).setSingleChoiceItems(mTitle, currentHomeIndex,new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                //select current home, do nothing
-                if(which != currentHomeIndex) {
-                    Settings.System.putString(getContentResolver(), "configured_home",
-                            mHomeList.get(which).activityInfo.name);
 
-                    String oldName = mHomeList.get(currentHomeIndex).activityInfo.packageName;
-                    if (!mPackageName.equals(oldName)) {//try to close the old home
-    					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-    					am.restartPackage(oldName);
-                    }
-                    else {//if I'm the old home, not stop me immediately, otherwise the new home may not launch 
-    					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
-    					intentNewhome.putExtra("old_home", oldName);
-    	                sendBroadcast(intentNewhome);
+    	String myName = "";
+    	String configuredHome = Settings.System.getString(getContentResolver(), "configured_home");
+        if (configuredHome == null) {//first run after install
+			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            for (int i = 0; i < mHomeList.size(); i++) {
+            	String oldName = mHomeList.get(i).activityInfo.packageName;
+            	if (!oldName.equals(mPackageName))
+        			am.restartPackage(oldName);//kill all old home
+            	else myName = mHomeList.get(i).activityInfo.name;
+            }
+            
+            //start myself
+            Intent intent =  new Intent(Intent.ACTION_MAIN, null);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setClassName(mPackageName, mPackageName+".simpleHome");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            startActivity(intent);
+            
+            Settings.System.putString(getContentResolver(), "configured_home", myName); 
+
+            finish();
+        }
+        else {
+            int N = mHomeList.size();
+            CharSequence[] mValue = new CharSequence[N];
+            CharSequence[] mTitle = new CharSequence[N];
+            for (int i = 0; i < N; i++) {
+                ResolveInfo ri = mHomeList.get(i);
+                mValue[i] = Integer.toString(i);
+                mTitle[i] = ri.activityInfo.loadLabel(pm);
+                if (configuredHome != null && configuredHome.equals(ri.activityInfo.name)) currentHomeIndex = i;
+            }
+            new AlertDialog.Builder(this).setTitle(R.string.menu_choose_home).setSingleChoiceItems(mTitle, currentHomeIndex,new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    //select current home, do nothing
+                    if(which != currentHomeIndex) {
+                        Settings.System.putString(getContentResolver(), "configured_home",
+                                mHomeList.get(which).activityInfo.name);
+
+                        String oldName = mHomeList.get(currentHomeIndex).activityInfo.packageName;
+                        if (!mPackageName.equals(oldName)) {//try to close the old home
+        					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        					am.restartPackage(oldName);
+                        }
+                        else {//if I'm the old home, not stop me immediately, otherwise the new home may not launch 
+        					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
+        					intentNewhome.putExtra("old_home", oldName);
+        	                sendBroadcast(intentNewhome);
+                        }
+                        
+                        //launch the new home
+                        Intent intent =  new Intent(Intent.ACTION_MAIN, null);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setClassName(mHomeList.get(which).activityInfo.packageName, 
+                        		mHomeList.get(which).activityInfo.name);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                        startActivity(intent);
                     }
                     
-                    //launch the new home
-                    Intent intent =  new Intent(Intent.ACTION_MAIN, null);
-                    intent.addCategory(Intent.CATEGORY_HOME);
-                    intent.setClassName(mHomeList.get(which).activityInfo.packageName, 
-                    		mHomeList.get(which).activityInfo.name);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    startActivity(intent);
+                    dialog.cancel();
+                	finish();
                 }
-                
-                dialog.cancel();
-            	finish();
-            }
-        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int arg1) {
-                dialog.cancel();
-				finish();
-			}
-        }).show();
+            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+    			@Override
+    			public void onClick(DialogInterface dialog, int arg1) {
+                    dialog.cancel();
+    				finish();
+    			}
+            }).show();
+    	}
 	}
 }

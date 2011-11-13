@@ -42,6 +42,7 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,11 +56,19 @@ import android.content.pm.PackageStats;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -336,6 +345,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						((MyWebview) webpages.getChildAt(position)).destroy();
 						webAdapter.remove((MyWebview) webpages.getChildAt(position));
 						webpages.removeViewAt(position);
+						imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount()));
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
 					else //return to home page if only one page when click close button
@@ -349,6 +359,48 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         }
     }
 
+    /** 
+     * get bitmap from resource id 
+     * @param res 
+     * @param resId 
+     * @return 
+     */  
+    private Bitmap getResIcon(Resources res,int resId){  
+        Drawable icon=res.getDrawable(resId);  
+        if(icon instanceof BitmapDrawable){  
+            BitmapDrawable bd=(BitmapDrawable)icon;  
+            return bd.getBitmap();  
+        }else return null;  
+    }  
+    
+    /** 
+     * put number on gaven bitmap with blue color 
+     * @param icon gaven bitmap
+     * @return bitmap with count
+     */  
+    private Bitmap generatorCountIcon(Bitmap icon, int count){  
+        //初始化画布  
+        int iconSize=(int)getResources().getDimension(android.R.dimen.app_icon_size);  
+        Bitmap contactIcon=Bitmap.createBitmap(iconSize, iconSize, Config.ARGB_8888);  
+        Canvas canvas=new Canvas(contactIcon);  
+          
+        //拷贝图片  
+        Paint iconPaint=new Paint();  
+        iconPaint.setDither(true);//防抖动  
+        iconPaint.setFilterBitmap(true);//用来对Bitmap进行滤波处理，这样，当你选择Drawable时，会有抗锯齿的效果  
+        Rect src=new Rect(0, 0, icon.getWidth(), icon.getHeight());  
+        Rect dst=new Rect(0, 0, iconSize, iconSize);  
+        canvas.drawBitmap(icon, src, dst, iconPaint);  
+          
+        //启用抗锯齿和使用设备的文本字距  
+        Paint countPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);  
+        countPaint.setColor(Color.WHITE);  
+        countPaint.setTextSize(25f);  
+        countPaint.setTypeface(Typeface.DEFAULT_BOLD);  
+        canvas.drawText(String.valueOf(count), iconSize/2-3, iconSize/2+13, countPaint);  
+        return contactIcon;  
+    }  
+    
     private void myStartActivity(Intent intent) {
 		try {
 			startActivity(intent);
@@ -857,6 +909,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);
+		imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), 1));
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -886,6 +939,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 				webpages.getChildAt(webIndex).requestFocus();
+				imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount()));
 			}
 		});
     	//web list
@@ -1013,23 +1067,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			Calls.TYPE + "=" + Calls.MISSED_TYPE, 
     			null, Calls.DEFAULT_SORT_ORDER);
     	Log.d("==============", "missed call: " + csr.getCount());
-    	
-    	//get sms unread count
-    	csr = getContentResolver().query(Uri.parse("content://sms"),
-    	                new String[] {"thread_id"},
-    	                "read=0",
-    	                null,
-    	                null);
-    	Log.d("==============", "sms" + csr.getCount());
-    	
-    	//get mms unread count
-    	csr = getContentResolver().query(Uri.parse("content://mms"),
-    	                new String[] {"thread_id"},
-    	                "read=0",
-    	                null,
-    	                null);
-    	Log.d("==============", "mms" + csr.getCount());
-    	
+
+    	SmsChangeObserver smsObserver = new SmsChangeObserver();
+    	smsObserver.countUnread(getContentResolver());
+    	getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
+    		
 		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
@@ -2019,3 +2061,37 @@ class sizedRelativeLayout extends RelativeLayout {
     }
 	
 }
+
+class SmsChangeObserver extends ContentObserver {
+	public SmsChangeObserver() {
+		super(new Handler());
+	}
+	
+	public SmsChangeObserver(Handler handler) {
+		super(handler);
+		// TODO Auto-generated constructor stub
+	}
+
+	public void countUnread(ContentResolver cr) {
+    	//get sms unread count
+    	Cursor csr = cr.query(Uri.parse("content://sms"),
+    	                new String[] {"thread_id"},
+    	                "read=0",
+    	                null,
+    	                null);
+    	Log.d("==============", "sms" + csr.getCount());
+    	
+    	//get mms unread count
+    	csr = cr.query(Uri.parse("content://mms"),
+    	                new String[] {"thread_id"},
+    	                "read=0",
+    	                null,
+    	                null);
+    	Log.d("==============", "mms" + csr.getCount());
+	}
+	
+	@Override
+	public void onChange(boolean selfChange) {
+	}
+}
+

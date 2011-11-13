@@ -403,7 +403,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             canvas.drawText(String.valueOf(count), iconSize/2-3, iconSize/2+13, countPaint);
         }
         else {//for miss call and unread sms
-            countPaint.setColor(Color.WHITE);  
+            countPaint.setColor(Color.DKGRAY);  
             countPaint.setTextSize(25f);  
             countPaint.setTypeface(Typeface.DEFAULT_BOLD);  
             canvas.drawText(String.valueOf(count), iconSize-30, 20, countPaint);
@@ -1821,7 +1821,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         lp.width = width/3 - 10;
 
         lp = shortcutBar_center.getLayoutParams();
-        lp.width = width/2-30;
+        lp.width = width/2-20;
         	
         lp = shortAppList.getLayoutParams();
        	if (width/2 - 140 > 200) lp.width = width/2 - 140;

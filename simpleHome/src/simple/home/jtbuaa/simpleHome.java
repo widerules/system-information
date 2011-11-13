@@ -1460,23 +1460,22 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    		        	msgphone.what = UPDATE_RI_PHONE;
 	    		        	mAppHandler.sendMessage(msgphone);//inform UI thread to update UI.
 	    				}
-	    			} else if (shortEmpty) {//only add sms and contact if shortcut is empty.
-		    			if (label_sms.contains(name)) {
-		    				if ((ri_sms == null) && (!name.equals("MM"))) {
-		    					ri_sms = ri;
-		    		        	Message msgsms = mAppHandler.obtainMessage();
-		    		        	msgsms.what = UPDATE_RI_SMS;
-		    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.
-		    				}
-		    			}
-		    			else if (label_contact.contains(name)) {
-		    				if (ri_contact == null) {
-		    					mShortApps.add(ri);
-		    					/*ri_contact = ri;
-		    		        	Message msgcontact = mAppHandler.obtainMessage();
-		    		        	msgcontact.what = UPDATE_RI_CONTACT;
-		    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.*/
-		    				}
+	    			} 
+	    			else if (label_sms.contains(name)) {
+	    				if ((ri_sms == null) && (!name.equals("MM"))) {
+	    					ri_sms = ri;
+	    		        	Message msgsms = mAppHandler.obtainMessage();
+	    		        	msgsms.what = UPDATE_RI_SMS;
+	    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.
+	    				}
+	    			}
+	    			else if ((shortEmpty) && label_contact.contains(name)) {//only add contact to shortcut if shortcut is empty.
+	    				if (ri_contact == null) {
+	    					mShortApps.add(ri);
+	    					/*ri_contact = ri;
+	    		        	Message msgcontact = mAppHandler.obtainMessage();
+	    		        	msgcontact.what = UPDATE_RI_CONTACT;
+	    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.*/
 		    			}
 	    			}
 	    		}

@@ -168,6 +168,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	shortAppAdapter shortAdapter;
 	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo ri_phone, ri_sms, ri_contact;
+	CallObserver callObserver;
+	SmsChangeObserver smsObserver;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	sizedRelativeLayout base;
 	RelativeLayout shortcutBar, adsParent;
@@ -345,7 +347,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						((MyWebview) webpages.getChildAt(position)).destroy();
 						webAdapter.remove((MyWebview) webpages.getChildAt(position));
 						webpages.removeViewAt(position);
-						imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount()));
+						imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
 					else //return to home page if only one page when click close button
@@ -378,7 +380,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
      * @param icon gaven bitmap
      * @return bitmap with count
      */  
-    private Bitmap generatorCountIcon(Bitmap icon, int count){  
+    private Bitmap generatorCountIcon(Bitmap icon, int count, int scheme){  
         //初始化画布  
         int iconSize=(int)getResources().getDimension(android.R.dimen.app_icon_size);  
         Bitmap contactIcon=Bitmap.createBitmap(iconSize, iconSize, Config.ARGB_8888);  
@@ -393,11 +395,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         canvas.drawBitmap(icon, src, dst, iconPaint);  
           
         //启用抗锯齿和使用设备的文本字距  
-        Paint countPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);  
-        countPaint.setColor(Color.WHITE);  
-        countPaint.setTextSize(25f);  
-        countPaint.setTypeface(Typeface.DEFAULT_BOLD);  
-        canvas.drawText(String.valueOf(count), iconSize/2-3, iconSize/2+13, countPaint);  
+        Paint countPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);
+        if (scheme == 0) {//for newpage icon
+            countPaint.setColor(Color.BLACK);  
+            countPaint.setTextSize(25f);  
+            canvas.drawText(String.valueOf(count), iconSize/2-3, iconSize/2+13, countPaint);
+        }
+        else {//for miss call and unread sms
+            countPaint.setColor(Color.WHITE);  
+            countPaint.setTextSize(25f);  
+            countPaint.setTypeface(Typeface.DEFAULT_BOLD);  
+            canvas.drawText(String.valueOf(count), iconSize-30, 20, countPaint);
+        }
         return contactIcon;  
     }  
     
@@ -909,7 +918,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);
-		imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), 1));
+		imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), 1, 0));
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -939,7 +948,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 				webpages.getChildAt(webIndex).requestFocus();
-				imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount()));
+				imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
 			}
 		});
     	//web list
@@ -1061,16 +1070,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	//TelephonyManager tm = (TelephonyManager) getSystemService(Service.TELEPHONY_SERVICE);
     	//getITelephony(tm).getActivePhoneType();
     	
-    	//get missed call number
-    	Cursor csr = getContentResolver().query(Calls.CONTENT_URI, 
-    			new String[] {Calls.NUMBER, Calls.TYPE, Calls.NEW}, 
-    			Calls.TYPE + "=" + Calls.MISSED_TYPE, 
-    			null, Calls.DEFAULT_SORT_ORDER);
-    	Log.d("==============", "missed call: " + csr.getCount());
-
-    	SmsChangeObserver smsObserver = new SmsChangeObserver();
-    	smsObserver.countUnread(getContentResolver());
-    	getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
+    	ContentResolver cr = getContentResolver();
+    	callObserver = new CallObserver(cr);
+    	smsObserver = new SmsChangeObserver(cr);
+    	getContentResolver().registerContentObserver(Calls.CONTENT_URI, true, callObserver);
+    	cr.registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
+    	cr.registerContentObserver(Uri.parse("content://mms/"), true, smsObserver);
     		
 		pkgToDel = "";
     	//task for init, such as load webview, load package list
@@ -1561,7 +1566,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		shortAppList.setAdapter(shortAdapter);
         		break;
         	case UPDATE_RI_PHONE:
-    			shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
+    			//shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
+        		BitmapDrawable bd = (BitmapDrawable) ri_phone.loadIcon(pm);
+    			shortcut_phone.setImageBitmap(generatorCountIcon(bd.getBitmap(), callObserver.countUnread(), 1));
+
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
@@ -1570,7 +1578,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			});
         		break;
         	case UPDATE_RI_SMS:
-    			shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
+    			//shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
+        		bd = (BitmapDrawable) ri_sms.loadIcon(pm);
+        		shortcut_sms.setImageBitmap(generatorCountIcon(bd.getBitmap(), smsObserver.countUnread(), 1));
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
@@ -2063,8 +2073,10 @@ class sizedRelativeLayout extends RelativeLayout {
 }
 
 class SmsChangeObserver extends ContentObserver {
-	public SmsChangeObserver() {
+	ContentResolver mCR;
+	public SmsChangeObserver(ContentResolver cr) {
 		super(new Handler());
+		mCR = cr;
 	}
 	
 	public SmsChangeObserver(Handler handler) {
@@ -2072,26 +2084,55 @@ class SmsChangeObserver extends ContentObserver {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void countUnread(ContentResolver cr) {
+	public int countUnread() {
     	//get sms unread count
-    	Cursor csr = cr.query(Uri.parse("content://sms"),
+    	Cursor csr = mCR.query(Uri.parse("content://sms"),
     	                new String[] {"thread_id"},
     	                "read=0",
     	                null,
     	                null);
-    	Log.d("==============", "sms" + csr.getCount());
+    	int ret = csr.getCount();
     	
     	//get mms unread count
-    	csr = cr.query(Uri.parse("content://mms"),
+    	csr = mCR.query(Uri.parse("content://mms"),
     	                new String[] {"thread_id"},
     	                "read=0",
     	                null,
     	                null);
-    	Log.d("==============", "mms" + csr.getCount());
+    	return ret + csr.getCount();
 	}
 	
 	@Override
 	public void onChange(boolean selfChange) {
+		super.onChange(selfChange);
+		countUnread();
 	}
 }
 
+class CallObserver extends ContentObserver {
+	ContentResolver mCR;
+	public CallObserver(ContentResolver cr) {
+		super(new Handler());
+		mCR = cr;
+	}
+	
+	public CallObserver(Handler handler) {
+		super(handler);
+		// TODO Auto-generated constructor stub
+	}
+
+	public int countUnread() {
+    	//get missed call number
+    	Cursor csr = mCR.query(Calls.CONTENT_URI, 
+    			new String[] {Calls.NUMBER, Calls.TYPE, Calls.NEW}, 
+    			Calls.TYPE + "=" + Calls.MISSED_TYPE, 
+    			null, Calls.DEFAULT_SORT_ORDER);
+    	return csr.getCount();
+	}
+	
+	@Override
+	public void onChange(boolean selfChange) {
+		super.onChange(selfChange);
+		countUnread();
+	}
+}

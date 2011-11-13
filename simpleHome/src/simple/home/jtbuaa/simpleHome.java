@@ -39,6 +39,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -72,6 +73,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.provider.CallLog.Calls;
+import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -184,6 +186,13 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	private static Method setPackage;
 	
+	static public com.android.internal.telephony.ITelephony getITelephony(TelephonyManager telMgr) throws Exception { 
+	    Method getITelephonyMethod = telMgr.getClass().getDeclaredMethod("getITelephony"); 
+	    getITelephonyMethod.setAccessible(true);//私有化函数也能使用 
+	    return (com.android.internal.telephony.ITelephony)getITelephonyMethod.invoke(telMgr); 
+	} 
+	 
+
 	class packageIDpair {
 		String packageName;
 		File downloadedfile;
@@ -995,7 +1004,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
     	});
 
-    	//ITelephony iTelephony =	ITelephony.Stub.asInterface(ServiceManager.getService("phone"));
+    	//TelephonyManager tm = (TelephonyManager) getSystemService(Service.TELEPHONY_SERVICE);
+    	//getITelephony(tm).getActivePhoneType();
     	
     	//get missed call number
     	Cursor csr = getContentResolver().query(Calls.CONTENT_URI, 

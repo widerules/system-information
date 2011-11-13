@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import com.android.internal.telephony.ITelephony;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 
@@ -53,6 +54,7 @@ import android.content.pm.PackageStats;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -69,6 +71,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.provider.CallLog.Calls;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -992,6 +995,31 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			}
     	});
 
+    	//ITelephony iTelephony =	ITelephony.Stub.asInterface(ServiceManager.getService("phone"));
+    	
+    	//get missed call number
+    	Cursor csr = getContentResolver().query(Calls.CONTENT_URI, 
+    			new String[] {Calls.NUMBER, Calls.TYPE, Calls.NEW}, 
+    			Calls.TYPE + "=" + Calls.MISSED_TYPE, 
+    			null, Calls.DEFAULT_SORT_ORDER);
+    	Log.d("==============", "missed call: " + csr.getCount());
+    	
+    	//get sms unread count
+    	csr = getContentResolver().query(Uri.parse("content://sms"),
+    	                new String[] {"thread_id"},
+    	                "read=0",
+    	                null,
+    	                null);
+    	Log.d("==============", "sms" + csr.getCount());
+    	
+    	//get mms unread count
+    	csr = getContentResolver().query(Uri.parse("content://mms"),
+    	                new String[] {"thread_id"},
+    	                "read=0",
+    	                null,
+    	                null);
+    	Log.d("==============", "mms" + csr.getCount());
+    	
 		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();

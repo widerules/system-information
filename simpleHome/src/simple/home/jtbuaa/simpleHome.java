@@ -971,8 +971,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
-				myStartActivity(intent);
-				m_aboutDialog.cancel();
+				List<ResolveInfo> handleList = pm.queryIntentActivities(intent, 0);
+				if (!handleList.isEmpty()) {
+					startActivity(intent);
+					m_aboutDialog.cancel();
+				}
 			}
 		});
 		

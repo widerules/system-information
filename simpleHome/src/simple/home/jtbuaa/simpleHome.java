@@ -172,7 +172,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	SmsChangeObserver smsObserver;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	sizedRelativeLayout base;
-	RelativeLayout shortcutBar, adsParent;
+	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
+    appHandler mAppHandler = new appHandler();
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_PIC = 4; 
 	AdView adview;
 	
@@ -980,6 +981,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         base.setResizeListener(this);
         base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
         shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
+        shortcutBar_center = (RelativeLayout) findViewById(R.id.shortcut_bar_center);
         homeBar = (ImageView) findViewById(R.id.home_bar);
         homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
@@ -1016,7 +1018,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		setLayout(dm.widthPixels);
         
 		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
-		//shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
+		shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
 		//shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
 		
 		//for package add/remove
@@ -1071,8 +1073,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	//getITelephony(tm).getActivePhoneType();
     	
     	ContentResolver cr = getContentResolver();
-    	callObserver = new CallObserver(cr);
-    	smsObserver = new SmsChangeObserver(cr);
+    	callObserver = new CallObserver(cr, mAppHandler);
+    	smsObserver = new SmsChangeObserver(cr, mAppHandler);
     	getContentResolver().registerContentObserver(Calls.CONTENT_URI, true, callObserver);
     	cr.registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
     	cr.registerContentObserver(Uri.parse("content://mms/"), true, smsObserver);
@@ -1461,11 +1463,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    			} else if (shortEmpty) {//only add sms and contact if shortcut is empty.
 		    			if (label_sms.contains(name)) {
 		    				if ((ri_sms == null) && (!name.equals("MM"))) {
-		    					mShortApps.add(ri);
-		    					/*ri_sms = ri;
+		    					ri_sms = ri;
 		    		        	Message msgsms = mAppHandler.obtainMessage();
 		    		        	msgsms.what = UPDATE_RI_SMS;
-		    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.*/
+		    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.
 		    				}
 		    			}
 		    			else if (label_contact.contains(name)) {
@@ -1550,7 +1551,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    } 
 	} 
 	
-    appHandler mAppHandler = new appHandler();
     class appHandler extends Handler {
 
         public void handleMessage(Message msg) {
@@ -1566,9 +1566,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         		shortAppList.setAdapter(shortAdapter);
         		break;
         	case UPDATE_RI_PHONE:
-    			//shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
-        		BitmapDrawable bd = (BitmapDrawable) ri_phone.loadIcon(pm);
-    			shortcut_phone.setImageBitmap(generatorCountIcon(bd.getBitmap(), callObserver.countUnread(), 1));
+        		int missCallCount = callObserver.countUnread();
+        		if (missCallCount > 0) {
+            		BitmapDrawable bd = (BitmapDrawable) ri_phone.loadIcon(pm);
+        			shortcut_phone.setImageBitmap(generatorCountIcon(bd.getBitmap(), missCallCount, 1));
+        		}
+        		else shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
 
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
     				@Override
@@ -1578,9 +1581,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     			});
         		break;
         	case UPDATE_RI_SMS:
-    			//shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
-        		bd = (BitmapDrawable) ri_sms.loadIcon(pm);
-        		shortcut_sms.setImageBitmap(generatorCountIcon(bd.getBitmap(), smsObserver.countUnread(), 1));
+        		int unreadCount = smsObserver.countUnread();
+        		if (unreadCount > 0) {
+            		BitmapDrawable bd = (BitmapDrawable) ri_sms.loadIcon(pm);
+            		shortcut_sms.setImageBitmap(generatorCountIcon(bd.getBitmap(), unreadCount, 1));
+        		}
+        		else shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
@@ -1814,8 +1820,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         lp = btnWeb.getLayoutParams();
         lp.width = width/3 - 10;
 
-        lp = shortcutBar.getLayoutParams();
-        if (width/2 > 240) lp.width = width/2;
+        lp = shortcutBar_center.getLayoutParams();
+        lp.width = width/2-30;
         	
         lp = shortAppList.getLayoutParams();
        	if (width/2 - 140 > 200) lp.width = width/2 - 140;
@@ -2074,16 +2080,14 @@ class sizedRelativeLayout extends RelativeLayout {
 
 class SmsChangeObserver extends ContentObserver {
 	ContentResolver mCR;
-	public SmsChangeObserver(ContentResolver cr) {
-		super(new Handler());
+	Handler mHandler;
+	
+	public SmsChangeObserver(ContentResolver cr, Handler handler) {
+		super(handler);
 		mCR = cr;
+		mHandler = handler;
 	}
 	
-	public SmsChangeObserver(Handler handler) {
-		super(handler);
-		// TODO Auto-generated constructor stub
-	}
-
 	public int countUnread() {
     	//get sms unread count
     	Cursor csr = mCR.query(Uri.parse("content://sms"),
@@ -2105,27 +2109,27 @@ class SmsChangeObserver extends ContentObserver {
 	@Override
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
-		countUnread();
+    	Message msgsms = mHandler.obtainMessage();
+    	msgsms.what = 1;//UPDATE_RI_SMS;
+    	mHandler.sendMessage(msgsms);//inform UI thread to update UI.
 	}
 }
 
 class CallObserver extends ContentObserver {
 	ContentResolver mCR;
-	public CallObserver(ContentResolver cr) {
-		super(new Handler());
+	Handler mHandler;
+	
+	public CallObserver(ContentResolver cr, Handler handler) {
+		super(handler);
+		mHandler = handler;
 		mCR = cr;
 	}
 	
-	public CallObserver(Handler handler) {
-		super(handler);
-		// TODO Auto-generated constructor stub
-	}
-
 	public int countUnread() {
     	//get missed call number
     	Cursor csr = mCR.query(Calls.CONTENT_URI, 
     			new String[] {Calls.NUMBER, Calls.TYPE, Calls.NEW}, 
-    			Calls.TYPE + "=" + Calls.MISSED_TYPE, 
+    			Calls.TYPE + "=" + Calls.MISSED_TYPE + " AND " + Calls.NEW + "=1", 
     			null, Calls.DEFAULT_SORT_ORDER);
     	return csr.getCount();
 	}
@@ -2133,6 +2137,8 @@ class CallObserver extends ContentObserver {
 	@Override
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
-		countUnread();
+    	Message msgphone = mHandler.obtainMessage();
+    	msgphone.what = 0;//UPDATE_RI_PHONE;
+    	mHandler.sendMessage(msgphone);//inform UI thread to update UI.
 	}
 }

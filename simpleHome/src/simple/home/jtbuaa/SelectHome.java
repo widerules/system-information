@@ -8,6 +8,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -102,6 +103,11 @@ public class SelectHome extends Activity{
                     dialog.cancel();
     				finish();
     			}
+            }).setOnCancelListener(new OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface arg0) {
+					finish();
+				}
             }).show();
     	}
 	}

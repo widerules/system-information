@@ -1806,6 +1806,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	}
 	
 	void setLayout(int width) {
+		if (width < 100) return;//can't work on so small screen.
+		
         LayoutParams lp = webtools_center.getLayoutParams();
         lp.width = width/2 + 40;
         
@@ -1991,7 +1993,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	@Override
 	public void onSizeChanged(int w, int h, int oldW, int oldH) {
-		//setLayout(oldW);
+		setLayout(oldW);
 	}
 }
 

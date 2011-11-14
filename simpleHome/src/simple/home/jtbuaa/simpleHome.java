@@ -1820,8 +1820,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
         lp = shortcutBar_center.getLayoutParams();
         if (width > 320)
-        	lp.width = width/2-20;
-        else lp.width = width/2-10;
+        	lp.width = width/2-25;
+        else lp.width = width/2-15;
         	
         lp = shortAppList.getLayoutParams();
        	if (width/2 - 140 > 200) lp.width = width/2 - 140;

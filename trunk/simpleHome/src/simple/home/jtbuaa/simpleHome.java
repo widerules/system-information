@@ -1076,8 +1076,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	callObserver = new CallObserver(cr, mAppHandler);
     	smsObserver = new SmsChangeObserver(cr, mAppHandler);
     	getContentResolver().registerContentObserver(Calls.CONTENT_URI, true, callObserver);
-    	cr.registerContentObserver(Uri.parse("content://sms/"), true, smsObserver);
-    	cr.registerContentObserver(Uri.parse("content://mms/"), true, smsObserver);
+    	cr.registerContentObserver(Uri.parse("content://mms-sms/"), true, smsObserver);
     		
 		pkgToDel = "";
     	//task for init, such as load webview, load package list

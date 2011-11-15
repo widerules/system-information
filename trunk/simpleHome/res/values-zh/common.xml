@@ -49,7 +49,7 @@
     <string name="justreturn">返回上页</string>
     <string name="resume">恢复下载</string>
     <string name="stop">取消下载</string>
-    <string name="download_hint">正在下载\n\n</string>
+    <string name="download_hint">正在下载</string>
     <string name="start_download">开始下载</string>
     <string name="downloading">正在下载...</string>
     <string name="download_finish">下载完成</string>

@@ -49,7 +49,7 @@
     <string name="justreturn">Just Return</string>
     <string name="resume">Resume download</string>
     <string name="stop">Cancel download</string>
-    <string name="download_hint">what do you want for\n\n</string>
+    <string name="download_hint">what do you want for</string>
     <string name="start_download">start download</string>
     <string name="downloading">downloading...</string>
     <string name="download_finish">download finished</string>

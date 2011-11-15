@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class downloadControl extends Activity{
-	Button btnPause, btnStop, btnReturn;
+	Button btnPause, btnStop;
 	boolean pause = false, stop = false, failed = false;
 	TextView tv;
 	Intent intent;
@@ -62,7 +62,6 @@ public class downloadControl extends Activity{
     	
         btnPause = (Button) findViewById(R.id.pause);
         btnStop = (Button) findViewById(R.id.stop);
-        btnReturn = (Button) findViewById(R.id.just_return);
         
 		if (pause || failed) 
 			btnPause.setText(getString(R.string.resume));
@@ -107,14 +106,6 @@ public class downloadControl extends Activity{
 				}
 	        });
 		}
-
-        btnReturn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				finish();
-			}
-        });
 	}
 	
 }

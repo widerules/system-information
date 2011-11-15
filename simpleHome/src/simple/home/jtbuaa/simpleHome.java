@@ -1681,6 +1681,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
         			intent.setAction(Intent.ACTION_VIEW);
         			intent.setDataAndType(Uri.fromFile(download_file), FileType.MIMEMAP.get(tmp[tmp.length-1].toUpperCase()));
     				myStartActivity(intent);
+                	appstate.downloadState.remove(NOTIFICATION_ID);
+            		nManager.cancel(NOTIFICATION_ID);
     				return "";
         		}
         		else if (download_file.length() < apk_length) {//local file size < need to download, need continue to download

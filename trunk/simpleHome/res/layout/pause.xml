@@ -6,25 +6,16 @@
   android:layout_height="fill_parent">
   
 	<com.google.ads.AdView xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"  
-    	android:id="@+id/adView"        
+    	android:id="@+id/adBoard"        
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content"
     	android:layout_alignParentTop="true"
     	ads:loadAdOnCreate="true"
     	ads:adUnitId="a14e79197567476"
-    	ads:adSize="BANNER"/>
+    	ads:adSize="IAB_MRECT"/>
   
-	<TextView android:id="@+id/download_name"
-    	android:layout_centerInParent="true"
-    	android:textSize="18dip"
-	   	android:layout_margin="5dip"
-	   	android:gravity="center"
-        android:layout_height="wrap_content" 
-        android:layout_width="wrap_content"
-        android:text="@string/download_hint"/>
-        
-	<LinearLayout 
-  		android:orientation="vertical"
+	<LinearLayout android:id="@+id/control_buttons"
+  		android:orientation="horizontal"
   		android:layout_alignParentBottom="true"
    		android:gravity="center" 
    		android:layout_margin="5dip"
@@ -39,11 +30,16 @@
         	android:text="@string/stop"
         	android:layout_height="wrap_content" 
         	android:layout_width="140dip"/>
-      	<Button android:id="@+id/just_return"
-        	android:text="@string/justreturn"
-        	android:layout_height="wrap_content" 
-        	android:layout_width="140dip"/>
 	</LinearLayout>
 	
+	<TextView android:id="@+id/download_name"
+    	android:layout_above="@id/control_buttons"
+    	android:layout_centerHorizontal="true"
+    	android:textSize="18dip"
+	   	android:layout_margin="5dip"
+	   	android:gravity="center"
+        android:layout_height="wrap_content" 
+        android:layout_width="wrap_content"
+        android:text="@string/download_hint"/>
         
 </RelativeLayout>

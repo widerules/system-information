@@ -137,6 +137,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
+	final static int onlineTab = 2;
 	
 	//wall paper related
 	SensorManager sensorMgr;
@@ -772,9 +773,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 						mainlayout.showNext();
 				}
 			}
-			if (mainlayout.getDisplayedChild() != 2) { 
+			if (mainlayout.getDisplayedChild() != onlineTab) 
 				imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
-			}
 			else webpages.getChildAt(webIndex).requestFocus();
 		}
 	}
@@ -990,13 +990,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					adsParent.setVisibility(View.INVISIBLE);
 					favoAppList.setVisibility(View.VISIBLE);
 					shortcutBar.setVisibility(View.VISIBLE);
-					imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
-					if (mProgressDialog != null) mProgressDialog.hide();
 				}
 				else {
 					adsParent.setVisibility(View.VISIBLE);
 					favoAppList.setVisibility(View.INVISIBLE);
-					if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 					shortcutBar.setVisibility(View.INVISIBLE);
 				}
 			}
@@ -1784,7 +1781,10 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if ((intent.getAction().equals(Intent.ACTION_MAIN)) && (intent.hasCategory(Intent.CATEGORY_HOME))) {
 			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
-			if (mProgressDialog != null) mProgressDialog.hide();
+			if (mProgressDialog != null) {
+				mProgressDialog.setProgress(0);
+				mProgressDialog.hide();
+			}
 		}
 		else if (intent.getAction().equals(Intent.ACTION_VIEW)) {//view webpages
 			serverWebs.get(webIndex).loadUrl(intent.getDataString());
@@ -1798,8 +1798,18 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-				if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
-				else homeBar.performClick();
+				if (adsParent.getVisibility() == View.VISIBLE) {
+					if (mainlayout.getDisplayedChild() != onlineTab) homeBar.performClick();
+					else if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
+						mProgressDialog.setProgress(0);
+						mProgressDialog.hide();
+					}
+					else if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();
+					else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
+					else homeBar.performClick();
+				}
+				else if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
+				else this.openOptionsMenu();
 				return true;
 			}	
 		}

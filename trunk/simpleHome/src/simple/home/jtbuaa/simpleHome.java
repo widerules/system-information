@@ -559,8 +559,11 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             	m_aboutDialog = new AlertDialog.Builder(this).
             	setTitle(getString(R.string.app_name) + " " + version).
             	setView(aboutView).
-            	setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-            		public void onClick(DialogInterface dialog, int which) {}
+            	setNegativeButton(R.string.vote, new DialogInterface.OnClickListener() {
+            		public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=simple.home.jtbuaa"));
+						myStartActivity(intent);
+            		}
             	}).
             	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends

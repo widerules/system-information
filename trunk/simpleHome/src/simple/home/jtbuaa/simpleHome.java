@@ -77,6 +77,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -184,6 +185,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	ProgressDialog mProgressDialog;
 	DisplayMetrics dm;
 	String processor;
+	Field pid;
 	
 	//download related
 	String downloadPath;
@@ -506,6 +508,21 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		+ "\nAndroid " + android.os.Build.VERSION.RELEASE
 		+ "\n" + dm.widthPixels+" * "+dm.heightPixels;
 		
+		/*ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<RunningAppProcessInfo> appList = am.getRunningAppProcesses(); 
+        for (int i = 0; i < appList.size(); i++) {
+    		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+    		if (as.processName.equals(myPackageName)) {
+        		try {//memory used by me
+        			Debug.MemoryInfo info = am.getProcessMemoryInfo(new int[] {pid.getInt(as)})[0];
+        			Log.d("==============", myPackageName + " " + info.getTotalPss()+"kb");
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+    			break;
+    		}
+        }*/
+
 		String ipaddr = ip();
 		if (!ipaddr.equals(""))
 			res += "\n" + ipaddr;
@@ -1246,7 +1263,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
             textView1.setTextColor(0xFF000000);
-            List appList = am.getRunningAppProcesses();
+            List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
             for (int i = 0; i < appList.size(); i++) {
         		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
             	if (info.activityInfo.processName.equals(as.processName)) {
@@ -1521,6 +1538,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 				e.printStackTrace();
 			}
 			
+			try {
+				pid = RunningAppProcessInfo.class.getField("pid");
+			} catch (Exception e) {//no such field is sdk level <= 3
+				e.printStackTrace();
+			}
+
 			processor = runCmd("cat", "/proc/cpuinfo");
 			
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);

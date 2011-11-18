@@ -2008,7 +2008,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 
 	@Override
 	public void onSizeChanged(int w, int h, int oldW, int oldH) {
-		setLayout(oldW);
+		//setLayout(oldW);
 	}
 }
 

@@ -81,8 +81,12 @@ import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.provider.CallLog.Calls;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.AttributeSet;
@@ -127,7 +131,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-public class simpleHome extends Activity implements OnGestureListener, OnTouchListener, SensorEventListener, sizedRelativeLayout.OnResizeChangeListener {
+public class simpleHome extends Activity implements SensorEventListener, sizedRelativeLayout.OnResizeChangeListener {
 
 	//browser related
 	ArrayList<MyWebview> serverWebs;
@@ -152,12 +156,12 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	AlertDialog m_aboutDialog;
 	
 	//app list related
+	private List<View> mListViews;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
-	ViewFlipper mainlayout;
-	GestureDetector mGestureDetector;
+	ViewPager mainlayout;
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
@@ -207,6 +211,45 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 	    return (com.android.internal.telephony.ITelephony)getITelephonyMethod.invoke(telMgr); 
 	} 
 	 
+	class MyPagerAdapter extends PagerAdapter{
+	    @Override
+	    public void destroyItem(View arg0, int arg1, Object arg2) {
+	        ((ViewPager) arg0).removeView(mListViews.get(arg1));
+	    }
+	    
+	    @Override
+	    public void finishUpdate(View arg0) {
+	    }
+
+	    @Override
+	    public int getCount() {
+	        return mListViews.size();
+	    }
+
+	    @Override
+	    public Object instantiateItem(View arg0, int arg1) {
+	        ((ViewPager) arg0).addView(mListViews.get(arg1),0);
+	        return mListViews.get(arg1);
+	    }
+
+	    @Override
+	    public boolean isViewFromObject(View arg0, Object arg1) {
+	        return arg0==(arg1);
+	    }
+
+	    @Override
+	    public void restoreState(Parcelable arg0, ClassLoader arg1) {
+	    }
+
+	    @Override
+	    public Parcelable saveState() {
+	        return null;
+	    }
+
+	    @Override
+	    public void startUpdate(View arg0) {
+	    }
+	}
 
 	class packageIDpair {
 		String packageName;
@@ -237,7 +280,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			super(context);
 			// TODO Auto-generated constructor stub
 	        setScrollBarStyle(0);
-	        //serverWeb.setOnTouchListener(this);
 	        WebSettings webSettings = getSettings();
 	        webSettings.setJavaScriptEnabled(true);
 	        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
@@ -747,8 +789,8 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			else if (text.equals(getString(R.string.userapps))) newTab = 1;
 			else if (text.equals(getString(R.string.online))) newTab = 2;
 			
-			if (mainlayout.getDisplayedChild() != newTab) {
-				switch(mainlayout.getDisplayedChild()) {
+			if (mainlayout.getCurrentItem() != newTab) {
+				switch(mainlayout.getCurrentItem()) {
 				case 0:
 					btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
 					break;
@@ -772,28 +814,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 					break;
 				}
 				
-				if (mainlayout.getDisplayedChild() > newTab) {//move to left if newTab is on the left
-					/*// 设置切入动画
-					mainlayout.setInAnimation(AnimationUtils.loadAnimation(
-		                    getApplicationContext(), android.R.anim.slide_in_left));
-		            // 设置切出动画
-		            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
-		                    getApplicationContext(), android.R.anim.slide_out_right));*/
-					while(mainlayout.getDisplayedChild() != newTab)
-						mainlayout.showPrevious();
-				}
-				else {//move to right if newTab is on the right
-					/*// 设置切入动画
-		            mainlayout.setInAnimation(AnimationUtils.loadAnimation(
-		                    getApplicationContext(), R.anim.slide_in_right));
-		            // 设置切出动画
-		            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
-		                    getApplicationContext(), R.anim.slide_out_left));*/
-					while(mainlayout.getDisplayedChild() != newTab)
-						mainlayout.showNext();
-				}
+				mainlayout.setCurrentItem(newTab);
 			}
-			if (mainlayout.getDisplayedChild() != onlineTab) 
+			if (mainlayout.getCurrentItem() != onlineTab) 
 				imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
 			else webpages.getChildAt(webIndex).requestFocus();
 		}
@@ -861,10 +884,32 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
     	
-        mainlayout = (ViewFlipper)findViewById(R.id.mainFrame);
-        //mainlayout.setOnTouchListener(this);
+        mainlayout = (ViewPager)findViewById(R.id.mainFrame);
         mainlayout.setLongClickable(true);
-        mGestureDetector = new GestureDetector(this);
+        mainlayout.setCurrentItem(0);
+        MyPagerAdapter myAdapter = new MyPagerAdapter();
+        mainlayout.setAdapter(myAdapter);
+        mainlayout.setOnPageChangeListener(new OnPageChangeListener() {
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPageSelected(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+        	
+        });
         
         adview = (AdView) this.findViewById(R.id.adView);
         
@@ -874,60 +919,65 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	favoAppList.inflate(this, R.layout.app_list, null);
     	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
     	favoAppList.setScrollingCacheEnabled(false);
-    	//favoAppList.setOnTouchListener(this);
         
     	shortAppList = (ListView) findViewById(R.id.business);
     	shortAppList.bringToFront();
     	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
     	
     	//system app tab
-    	sysAppList = (ListView) findViewById(R.id.sysapp);
+    	sysAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
+    	//sysAppList = (ListView) findViewById(R.id.sysapp);
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
     	sysAppList.setScrollingCacheEnabled(false);
-    	//sysAppList.setOnTouchListener(this);
         
     	//user app tab
-    	userAppList = (ListView) findViewById(R.id.userapp);
+    	userAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
+    	//userAppList = (ListView) findViewById(R.id.userapp);
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setFadingEdgeLength(0);//no shadow when scroll
         userAppList.setScrollingCacheEnabled(false);
-        //userAppList.setOnTouchListener(this);
+        
+        RelativeLayout webs = (RelativeLayout) getLayoutInflater().inflate(R.layout.webs, null); 
+        mListViews = new ArrayList<View>();
+        mListViews.add(sysAppList);
+        mListViews.add(userAppList);
+        mListViews.add(webs);
         
         //online tab
         WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
         webIndex = 0;
         serverWebs = new ArrayList<MyWebview>();
         serverWebs.add(new MyWebview(this));
-        webpages = (ViewFlipper) findViewById(R.id.webpages);
+        webpages = (ViewFlipper) webs.findViewById(R.id.webpages);
         webpages.addView(serverWebs.get(webIndex));
-		
-		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
+        
+		webtools_center = (RelativeLayout) webs.findViewById(R.id.webtools_center);
 		dm = new DisplayMetrics();  
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
-		imgNext = (ImageView) findViewById(R.id.next);
+		imgNext = (ImageView) webs.findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoForward()) serverWebs.get(webIndex).goForward();
 			}
 		});
-		imgPrev = (ImageView) findViewById(R.id.prev);
+		imgPrev = (ImageView) webs.findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
 			}
 		});
-		imgRefresh = (ImageView) findViewById(R.id.refresh);
+		imgRefresh = (ImageView) webs.findViewById(R.id.refresh);
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				serverWebs.get(webIndex).reload();
 			}
 		});
-		imgShare = (ImageView) findViewById(R.id.share);
+		imgShare = (ImageView) webs.findViewById(R.id.share);
 		imgShare.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -938,7 +988,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
     	        myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			}
 		});
-		imgNew = (ImageView) findViewById(R.id.newpage);
+		imgNew = (ImageView) webs.findViewById(R.id.newpage);
 		imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), 1, 0));
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
@@ -955,9 +1005,9 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		});
 		
 		//web control
-		webControl = (RelativeLayout) findViewById(R.id.webcontrol);
+		webControl = (RelativeLayout) webs.findViewById(R.id.webcontrol);
 		
-		btnNewpage = (TextView) findViewById(R.id.opennewpage);
+		btnNewpage = (TextView) webs.findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -974,7 +1024,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		});
     	//web list
 		webAdapter = new WebAdapter(this, serverWebs);
-    	webList = (ListView) findViewById(R.id.weblist);
+    	webList = (ListView) webs.findViewById(R.id.weblist);
     	webList.inflate(this, R.layout.web_list, null);
     	webList.setFadingEdgeLength(0);//no shadow when scroll
     	webList.setScrollingCacheEnabled(false);
@@ -1295,7 +1345,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
             });
         	lapp.setTag(new ricase(info, 2));
             registerForContextMenu(lapp);
-            //lapp.setOnTouchListener(simpleHome.this);
             
             Object o = packagesSize.get(info.activityInfo.packageName);
            	textView1.setText(info.loadLabel(pm));
@@ -1826,7 +1875,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 				if (adsParent.getVisibility() == View.VISIBLE) {
-					if (mainlayout.getDisplayedChild() != onlineTab) homeBar.performClick();
+					if (mainlayout.getId() != onlineTab) homeBar.performClick();
 					else if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
 						mProgressDialog.setProgress(0);
 						mProgressDialog.hide();
@@ -1878,109 +1927,6 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
-
-	@Override
-	public boolean onDown(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
-		// TODO Auto-generated method stub
-		if (e1.getX() == e2.getX()) return false;
-		else if ((e1.getX() < e2.getX()) && (mainlayout.getDisplayedChild() == 0)) return false;//don't show previous for first view
-		else if ((e1.getX() > e2.getX()) && (mainlayout.getDisplayedChild() == mainlayout.getChildCount()-1)) return false;//don't show next for the last view
-
-		int oldIndex = mainlayout.getDisplayedChild(); 
-		boolean scroll = false;
-		
-		if(e2.getX() - e1.getX() > 100 + Math.abs(e2.getY() - e1.getY())) {//the finger move on x direction more than y direction, from left to right
-			// 设置切入动画
-			mainlayout.setInAnimation(AnimationUtils.loadAnimation(
-                    getApplicationContext(), android.R.anim.slide_in_left));
-            // 设置切出动画
-            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
-                    getApplicationContext(), android.R.anim.slide_out_right));
-			mainlayout.showPrevious(); //move to left
-			scroll = true;
-		}
-		else if(e1.getX() - e2.getX() > 100 + Math.abs(e1.getY() - e2.getY())) {//the finger move on x direction more than y direction, from right to left
-			// 设置切入动画
-            mainlayout.setInAnimation(AnimationUtils.loadAnimation(
-                    getApplicationContext(), R.anim.slide_in_right));
-            // 设置切出动画
-            mainlayout.setOutAnimation(AnimationUtils.loadAnimation(
-                    getApplicationContext(), R.anim.slide_out_left));
-			mainlayout.showNext(); //move to right
-			scroll = true;
-		}
-
-		if (scroll) {
-			switch(oldIndex) {
-			case 0:
-				btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			case 1:
-				btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			case 2:
-				btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
-				break;
-			}
-			
-			switch(mainlayout.getDisplayedChild()) {
-			case 0:
-				btnSys.setBackgroundResource(R.drawable.button_layout_selected);
-				break;
-			case 1:
-				btnUser.setBackgroundResource(R.drawable.button_layout_selected);
-				break;
-			case 2:
-				btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
-				break;
-			}
-			return true;
-		}
-		else return false;
-	}
-
-
-	@Override
-	public void onLongPress(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public boolean onScroll(MotionEvent arg0, MotionEvent arg1, float arg2,
-			float arg3) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public void onShowPress(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-
-	@Override
-	public boolean onTouch(View arg0, MotionEvent event) {
-		// TODO Auto-generated method stub
-		return mGestureDetector.onTouchEvent(event);
-	}
 
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
@@ -2183,3 +2129,4 @@ class CallObserver extends ContentObserver {
     	mHandler.sendMessage(msgphone);//inform UI thread to update UI.
 	}
 }
+

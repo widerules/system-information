@@ -1,15 +1,18 @@
 package simple.home.jtbuaa;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -20,6 +23,48 @@ public class SelectHome extends Activity{
 	private List<ResolveInfo> mHomeList;
 	private int currentHomeIndex = 0;
 	String mPackageName;
+	PackageManager mPM;
+	
+	public ComponentName queryDefaultHome() {
+        List<IntentFilter> intentList = new ArrayList<IntentFilter>();
+        List<ComponentName> cnList = new ArrayList<ComponentName>();
+        mPM.getPreferredActivities(intentList, cnList, null);
+        IntentFilter dhIF;
+        for(int i = 0; i < cnList.size(); i++) {
+            dhIF = intentList.get(i);
+            if(dhIF.hasAction(Intent.ACTION_MAIN) &&
+          		dhIF.hasCategory(Intent.CATEGORY_HOME) &&
+           		dhIF.hasCategory(Intent.CATEGORY_DEFAULT)) {
+                return cnList.get(i);
+            }
+        }
+        return null;
+	}
+	
+	private void removeDefaultHome() {
+        String activityName = FakeHome.class.getName();
+        String packageName = this.getPackageName();
+        ComponentName fakeHome = new ComponentName(packageName, activityName);
+        
+        mPM.setComponentEnabledSetting(fakeHome, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 1);
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(homeIntent);
+        mPM.setComponentEnabledSetting(fakeHome, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 1);
+        
+        Intent intent = new Intent();
+        intent.setClassName(getApplicationContext(), SelectHome.class.getName());
+        startActivity(intent);
+	}
+	
+	private void setDefaultHome(String packageName, String activityName) {
+		IntentFilter filter = new IntentFilter("android.intent.action.MAIN");
+		filter.addCategory("android.intent.category.HOME");
+		filter.addCategory("android.intent.category.DEFAULT");
+		
+		ComponentName component = new ComponentName(packageName, activityName);
+    	mPM.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_EMPTY, new ComponentName[] {component}, component);
+	}
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,9 +74,9 @@ public class SelectHome extends Activity{
         
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_HOME);
-        PackageManager pm = getPackageManager();
-    	mHomeList = pm.queryIntentActivities(mainIntent, 0);
-    	Collections.sort(mHomeList, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+    	mPM = getPackageManager();
+    	mHomeList = mPM.queryIntentActivities(mainIntent, 0);
+    	Collections.sort(mHomeList, new ResolveInfo.DisplayNameComparator(mPM));//sort by name
 
     	String myName = "";
     	String configuredHome = Settings.System.getString(getContentResolver(), "configured_home");
@@ -63,13 +108,16 @@ public class SelectHome extends Activity{
             for (int i = 0; i < N; i++) {
                 ResolveInfo ri = mHomeList.get(i);
                 mValue[i] = Integer.toString(i);
-                mTitle[i] = ri.activityInfo.loadLabel(pm);
+                mTitle[i] = ri.activityInfo.loadLabel(mPM);
                 if (configuredHome != null && configuredHome.equals(ri.activityInfo.name)) currentHomeIndex = i;
             }
             new AlertDialog.Builder(this).setTitle(R.string.menu_choose_home).setSingleChoiceItems(mTitle, currentHomeIndex,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     //select current home, do nothing
                     if(which != currentHomeIndex) {
+                    	//removeDefaultHome();
+                    	//setDefaultHome(mHomeList.get(which).activityInfo.packageName, mHomeList.get(which).activityInfo.name);
+                    	
                         Settings.System.putString(getContentResolver(), "configured_home",
                                 mHomeList.get(which).activityInfo.name);
 

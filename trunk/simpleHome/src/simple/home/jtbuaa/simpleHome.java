@@ -1633,6 +1633,7 @@ public class simpleHome extends Activity implements OnGestureListener, OnTouchLi
 		if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
 			String ss[] = url.split("/");
 			String apkName = ss[ss.length-1]; //get download file name
+			if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 			
 			Iterator iter = appstate.downloadState.entrySet().iterator();
 			while (iter.hasNext()) {

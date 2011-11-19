@@ -892,21 +892,32 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         mainlayout.setOnPageChangeListener(new OnPageChangeListener() {
 
 			@Override
-			public void onPageScrollStateChanged(int arg0) {
+			public void onPageScrollStateChanged(int state) {
 				// TODO Auto-generated method stub
-				
+				if (state == ViewPager.SCROLL_STATE_SETTLING) {
+					btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
+					switch(mainlayout.getCurrentItem()) {
+					case 0:
+						btnSys.setBackgroundResource(R.drawable.button_layout_selected);
+						break;
+					case 1:
+						btnUser.setBackgroundResource(R.drawable.button_layout_selected);
+						break;
+					case 2:
+						btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
+						break;
+					}
+				}
 			}
 
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void onPageSelected(int arg0) {
-				// TODO Auto-generated method stub
-				
 			}
         	
         });

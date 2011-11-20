@@ -165,7 +165,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	private Button btnSys, btnUser, btnWeb;
+	private Button btnSys, btnUser, btnWeb, btnSys_flat, btnUser_flat, btnWeb_flat;
 	static int grayColor = 0xCCEEEEEE;
 	static int whiteColor = 0xDDFFFFFF;
 	Context mContext;
@@ -792,25 +792,25 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			if (mainlayout.getCurrentItem() != newTab) {
 				switch(mainlayout.getCurrentItem()) {
 				case 0:
-					btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnSys_flat.setBackgroundResource(R.drawable.button_layout_unselected);
 					break;
 				case 1:
-					btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnUser_flat.setBackgroundResource(R.drawable.button_layout_unselected);
 					break;
 				case 2:
-					btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnWeb_flat.setBackgroundResource(R.drawable.button_layout_unselected);
 					break;
 				}
 				
 				switch(newTab) {
 				case 0:
-					btnSys.setBackgroundResource(R.drawable.button_layout_selected);
+					btnSys_flat.setBackgroundResource(R.drawable.button_layout_selected);
 					break;
 				case 1:
-					btnUser.setBackgroundResource(R.drawable.button_layout_selected);
+					btnUser_flat.setBackgroundResource(R.drawable.button_layout_selected);
 					break;
 				case 2:
-					btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
+					btnWeb_flat.setBackgroundResource(R.drawable.button_layout_selected);
 					break;
 				}
 				
@@ -895,18 +895,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			public void onPageScrollStateChanged(int state) {
 				// TODO Auto-generated method stub
 				if (state == ViewPager.SCROLL_STATE_SETTLING) {
-					btnSys.setBackgroundResource(R.drawable.button_layout_unselected);
-					btnUser.setBackgroundResource(R.drawable.button_layout_unselected);
-					btnWeb.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnSys_flat.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnUser_flat.setBackgroundResource(R.drawable.button_layout_unselected);
+					btnWeb_flat.setBackgroundResource(R.drawable.button_layout_unselected);
 					switch(mainlayout.getCurrentItem()) {
 					case 0:
-						btnSys.setBackgroundResource(R.drawable.button_layout_selected);
+						btnSys_flat.setBackgroundResource(R.drawable.button_layout_selected);
 						break;
 					case 1:
-						btnUser.setBackgroundResource(R.drawable.button_layout_selected);
+						btnUser_flat.setBackgroundResource(R.drawable.button_layout_selected);
 						break;
 					case 2:
-						btnWeb.setBackgroundResource(R.drawable.button_layout_selected);
+						btnWeb_flat.setBackgroundResource(R.drawable.button_layout_selected);
 						break;
 					}
 				}
@@ -1050,6 +1050,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         btnWeb = (Button) findViewById(R.id.btnOnline);
 		btnWeb.setOnClickListener(mBtnCL);
 
+        btnSys_flat = (Button) findViewById(R.id.btnSystemApp_flat);
+        btnUser_flat = (Button) findViewById(R.id.btnUserApp_flat);
+        btnWeb_flat = (Button) findViewById(R.id.btnOnline_flat);
+        
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
 		mFavoApps = new ArrayList<ResolveInfo>();
@@ -1919,6 +1923,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         lp = btnWeb.getLayoutParams();
         lp.width = width/3 - 10;
 
+        lp = btnSys_flat.getLayoutParams();
+        lp.width = width/3 - 10;
+        
+        lp = btnUser_flat.getLayoutParams();
+        lp.width = width/3 - 10;
+        
+        lp = btnWeb_flat.getLayoutParams();
+        lp.width = width/3 - 10;
+        
         lp = shortcutBar_center.getLayoutParams();
         if (width > 320)
         	lp.width = width/2-25;

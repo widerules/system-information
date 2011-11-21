@@ -1856,7 +1856,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    		e.printStackTrace();
 	    		downloadFailed = true;
 	    		notification.icon = android.R.drawable.stat_notify_error;
-	    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail) + e.getMessage(), contentIntent);
+	    		intent.putExtra("errorMsg", e.getMessage());
+				contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
+	    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail), contentIntent);
 	    		nManager.notify(NOTIFICATION_ID, notification);
 	    		
     	        if (download_file.length() == 0) download_file.delete();//delete empty file

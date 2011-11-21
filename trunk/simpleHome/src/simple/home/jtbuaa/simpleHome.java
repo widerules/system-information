@@ -628,7 +628,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends
             	        String text = getString(R.string.sharetext); 
             	        if (getResources().getConfiguration().locale.getLanguage().equals("zh")) 
-            	        	text += " http://yyh.co/168438 " + getString(R.string.sharetext2);
+            	        	text += " http://opda.co/?s=D/simple.home.jtbuaa";//opda will do the webpage reload for us.
             	        else
 	        				text += " https://market.android.com/details?id=simple.home.jtbuaa";
             	        
@@ -726,7 +726,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	        Intent intent = new Intent(Intent.ACTION_SEND);
 	        intent.setType("text/plain");  
 	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-    		intent.putExtra(Intent.EXTRA_TEXT, selected_case.mRi.loadLabel(pm) + " " + getString(R.string.app_share_text));
+    		intent.putExtra(Intent.EXTRA_TEXT, selected_case.mRi.loadLabel(pm) + getString(R.string.app_share_text) 
+    				+ " http://opda.co/?s=D/" + selected_case.mRi.activityInfo.packageName);
    			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			break;
 		case 3://backup app

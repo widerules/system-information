@@ -58,9 +58,11 @@ public class downloadControl extends Activity{
         }
         
         tv = (TextView) findViewById(R.id.download_name);
-        String hint = getString(R.string.download_hint) + "\n" + intent.getStringExtra("name") + "\n";
+        String hint = getString(R.string.download_hint) + "\n";
+        String name = intent.getStringExtra("name") + "\n";
         String errorMsg = intent.getStringExtra("errorMsg"); 
-        if (errorMsg != null) hint += errorMsg;  
+        if (errorMsg != null) hint += errorMsg;
+        else hint += name;
     	tv.setText(hint);
     	
         btnPause = (Button) findViewById(R.id.pause);

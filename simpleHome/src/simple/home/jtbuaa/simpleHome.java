@@ -1336,6 +1336,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             }
 
             btnIcon.setImageDrawable(info.loadIcon(pm));
+            if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
             btnIcon.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {//kill app

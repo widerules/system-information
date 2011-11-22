@@ -10,6 +10,7 @@
     <string name="warning">删除系统应用可能导致不能开机\n请三思！</string>
 
     <string name="menu_choose_home">Switch Home</string>
+    <string name="select">Select Home</string>
     
     <string name="wallpaper">墙纸...</string>
     <string name="about">关于...</string>

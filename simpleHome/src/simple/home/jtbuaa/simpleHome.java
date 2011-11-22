@@ -627,10 +627,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends
             	        String text = getString(R.string.sharetext); 
-            	        if (getResources().getConfiguration().locale.getLanguage().equals("zh")) 
-            	        	text += " http://opda.co/?s=D/simple.home.jtbuaa";//opda will do the webpage reload for us.
-            	        else
-	        				text += " https://market.android.com/details?id=simple.home.jtbuaa";
+           	        	text += " http://opda.co/?s=D/simple.home.jtbuaa";//opda will do the webpage reload for us.
             	        
             	        Intent intent = new Intent(Intent.ACTION_SEND);
             	        intent.setType("text/plain");  
@@ -722,7 +719,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			shortAdapter.remove(selected_case.mRi);
 			writeFile("short");	//save shortcut to file
 			break;
-		case 2://app name share
+		case 2://share app name and link
 	        Intent intent = new Intent(Intent.ACTION_SEND);
 	        intent.setType("text/plain");  
 	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
@@ -1893,7 +1890,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 				if (adsParent.getVisibility() == View.VISIBLE) {
-					if (mainlayout.getId() != onlineTab) homeBar.performClick();
+					if (mainlayout.getCurrentItem() != onlineTab) homeBar.performClick();
 					else if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
 						mProgressDialog.setProgress(0);
 						mProgressDialog.hide();

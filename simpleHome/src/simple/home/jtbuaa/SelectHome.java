@@ -25,7 +25,7 @@ public class SelectHome extends Activity{
 	String mPackageName;
 	PackageManager mPM;
 	
-	private void removeDefaultHome() {
+	private void removeDefaultHome() {//refer to http://www.dotblogs.com.tw/neil/archive/2011/08/12/33058.aspx
         String activityName = FakeHome.class.getName();
         String packageName = this.getPackageName();
         ComponentName fakeHome = new ComponentName(packageName, activityName);
@@ -37,7 +37,8 @@ public class SelectHome extends Activity{
         mPM.setComponentEnabledSetting(fakeHome, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 1);
         
         Settings.System.putString(getContentResolver(), "configured_home", "");
-        
+
+        //we don't start myself again for we use system chooser to select home, and won't go back to myself
         //Intent intent = new Intent();
         //intent.setClassName(getApplicationContext(), SelectHome.class.getName());
         //startActivity(intent);

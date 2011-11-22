@@ -76,8 +76,7 @@
         <activity android:name=".SelectHome"
         	android:launchMode="singleTask"
         	android:label="@string/switcher_name" 
-        	android:icon="@drawable/icon_switcher"
-            android:configChanges="keyboard|keyboardHidden|orientation">
+        	android:icon="@drawable/icon_switcher">
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

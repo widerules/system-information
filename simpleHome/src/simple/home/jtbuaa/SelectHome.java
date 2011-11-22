@@ -1,6 +1,5 @@
 package simple.home.jtbuaa;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,34 +11,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class SelectHome extends Activity{
 	private List<ResolveInfo> mHomeList;
 	private int currentHomeIndex = 0;
 	String mPackageName;
 	PackageManager mPM;
-	
-	public ComponentName queryDefaultHome() {
-        List<IntentFilter> intentList = new ArrayList<IntentFilter>();
-        List<ComponentName> cnList = new ArrayList<ComponentName>();
-        mPM.getPreferredActivities(intentList, cnList, null);
-        IntentFilter dhIF;
-        for(int i = 0; i < cnList.size(); i++) {
-            dhIF = intentList.get(i);
-            if(dhIF.hasAction(Intent.ACTION_MAIN) &&
-          		dhIF.hasCategory(Intent.CATEGORY_HOME) &&
-           		dhIF.hasCategory(Intent.CATEGORY_DEFAULT)) {
-                return cnList.get(i);
-            }
-        }
-        return null;
-	}
 	
 	private void removeDefaultHome() {
         String activityName = FakeHome.class.getName();
@@ -52,29 +36,17 @@ public class SelectHome extends Activity{
         startActivity(homeIntent);
         mPM.setComponentEnabledSetting(fakeHome, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 1);
         
-        Intent intent = new Intent();
-        intent.setClassName(getApplicationContext(), SelectHome.class.getName());
-        startActivity(intent);
-	}
-	
-	private void setDefaultHome(String packageName, String activityName) {
-		IntentFilter filter = new IntentFilter("android.intent.action.MAIN");
-		filter.addCategory("android.intent.category.HOME");
-		filter.addCategory("android.intent.category.DEFAULT");
-		
-		ComponentName component = new ComponentName(packageName, activityName);
-    	mPM.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_EMPTY, new ComponentName[] {component}, component);
-	}
-	
-	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        Settings.System.putString(getContentResolver(), "configured_home", "");
         
+        //Intent intent = new Intent();
+        //intent.setClassName(getApplicationContext(), SelectHome.class.getName());
+        //startActivity(intent);
+	}
+
+	private void selectOphoneHome() {
         mPackageName = this.getPackageName();
-        
     	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
     	mainIntent.addCategory(Intent.CATEGORY_HOME);
-    	mPM = getPackageManager();
     	mHomeList = mPM.queryIntentActivities(mainIntent, 0);
     	Collections.sort(mHomeList, new ResolveInfo.DisplayNameComparator(mPM));//sort by name
 
@@ -113,34 +85,28 @@ public class SelectHome extends Activity{
             }
             new AlertDialog.Builder(this).setTitle(R.string.menu_choose_home).setSingleChoiceItems(mTitle, currentHomeIndex,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    //select current home, do nothing
-                    if(which != currentHomeIndex) {
-                    	//removeDefaultHome();
-                    	//setDefaultHome(mHomeList.get(which).activityInfo.packageName, mHomeList.get(which).activityInfo.name);
-                    	
-                        Settings.System.putString(getContentResolver(), "configured_home",
-                                mHomeList.get(which).activityInfo.name);
+                    Settings.System.putString(getContentResolver(), "configured_home",
+                            mHomeList.get(which).activityInfo.name);
 
-                        String oldName = mHomeList.get(currentHomeIndex).activityInfo.packageName;
-                        if (!mPackageName.equals(oldName)) {//try to close the old home
-        					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        					am.restartPackage(oldName);
-                        }
-                        else {//if I'm the old home, not stop me immediately, otherwise the new home may not launch 
-        					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
-        					intentNewhome.putExtra("old_home", oldName);
-        	                sendBroadcast(intentNewhome);
-                        }
-                        
-                        //launch the new home
-                        Intent intent =  new Intent(Intent.ACTION_MAIN, null);
-                        intent.addCategory(Intent.CATEGORY_HOME);
-                        intent.setClassName(mHomeList.get(which).activityInfo.packageName, 
-                        		mHomeList.get(which).activityInfo.name);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                        startActivity(intent);
+                    String oldName = mHomeList.get(currentHomeIndex).activityInfo.packageName;
+                    if (!mPackageName.equals(oldName)) {//try to close the old home
+    					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    					am.restartPackage(oldName);
                     }
+                    else {//if I'm the old home, not stop me immediately, otherwise the new home may not launch 
+    					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
+    					intentNewhome.putExtra("old_home", oldName);
+    	                sendBroadcast(intentNewhome);
+                    }
+                    
+                    //launch the new home
+                    Intent intent =  new Intent(Intent.ACTION_MAIN, null);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    intent.setClassName(mHomeList.get(which).activityInfo.packageName, 
+                    		mHomeList.get(which).activityInfo.name);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    startActivity(intent);
                     
                     dialog.cancel();
                 	finish();
@@ -159,4 +125,27 @@ public class SelectHome extends Activity{
             }).show();
     	}
 	}
+	
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+    	mPM = getPackageManager();
+    	
+        setContentView(R.layout.select_home);
+    	
+        Button btnSelect = (Button) findViewById(R.id.select);
+        btnSelect.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				try {
+					Class.forName("oms.content.Action");//ophone
+			        selectOphoneHome();
+				} catch (ClassNotFoundException e) {//android phone
+		        	removeDefaultHome();
+				}
+			}
+        });
+	}
+    	
 }

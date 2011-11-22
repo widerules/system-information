@@ -1162,6 +1162,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
+        
+    	if (getIntent().getDataString() != null) {//open the url from intent
+			if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
+			btnWeb.performClick();
+    	}
     }
     
     @Override 
@@ -1591,9 +1596,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			   
         	FileType.initMimeMap();//init the file type map
         	
-			try {serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");}
-			catch (Exception e) {}
-			
+        	if (getIntent().getDataString() != null) 
+    			serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
+        	else 
+    			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+        	
 			try {//for 1.5 which do not have this method
 				setPackage = Intent.class.getMethod("setPackage", new Class[] {String.class});
 			} catch (Exception e) {

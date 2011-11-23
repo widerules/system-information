@@ -143,6 +143,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	TextView btnNewpage;
 	InputMethodManager imm;
 	final static int onlineTab = 2;
+	final static String mSimpleHome = "Simple Home";
 	
 	//wall paper related
 	SensorManager sensorMgr;
@@ -275,6 +276,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ricase selected_case;
 	
 	class MyWebview extends WebView {
+		public String title = "";
 
 		public MyWebview(Context context) {
 			super(context);
@@ -372,7 +374,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btnIcon.setImageBitmap(wv.getFavicon());
             
             TextView webname = (TextView) convertView.findViewById(R.id.webname);
-            webname.setText(wv.getTitle());
+            if ((wv.getTitle() != null) && (!wv.getTitle().equals("")))
+            	webname.setText(wv.getTitle());
+            else webname.setText(wv.title);
             
             webname.setOnClickListener(new OnClickListener() {
 				@Override
@@ -396,8 +400,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
-					else //return to home page if only one page when click close button
+					else {//return to home page if only one page when click close button
 						serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+						serverWebs.get(webIndex).title = mSimpleHome;
+					}
 					
 					webpages.getChildAt(webIndex).requestFocus();
 				}
@@ -960,6 +966,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         serverWebs.add(new MyWebview(this));
         webpages = (ViewFlipper) webs.findViewById(R.id.webpages);
         webpages.addView(serverWebs.get(webIndex));
+        serverWebs.get(webIndex).title = mSimpleHome;
         
 		webtools_center = (RelativeLayout) webs.findViewById(R.id.webtools_center);
 		dm = new DisplayMetrics();  
@@ -1026,6 +1033,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		        webpages.addView(webAdapter.getItem(webIndex));
 		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+		        serverWebs.get(webIndex).title = mSimpleHome;
 				webpages.getChildAt(webIndex).requestFocus();
 				imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
 			}
@@ -1156,17 +1164,22 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	smsObserver = new SmsChangeObserver(cr, mAppHandler);
     	getContentResolver().registerContentObserver(Calls.CONTENT_URI, true, callObserver);
     	cr.registerContentObserver(Uri.parse("content://mms-sms/"), true, smsObserver);
-    		
+        
+    	if (getIntent().getAction().equals(Intent.ACTION_VIEW)) //open the url from intent in a new page if the old page is under reading.
+    		loadNewPage(getIntent().getDataString());
+		
 		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
-        
-    	if (getIntent().getAction().equals(Intent.ACTION_VIEW) && (getIntent().getDataString() != null)) {//open the url from intent in a new page if the old page is under reading.
-			if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
-			if (serverWebs.get(webIndex).canGoBack()) btnNewpage.performClick(); 
-			btnWeb.performClick();
-    	}
+    }
+    
+    private void loadNewPage(String url) {
+		if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
+		if (!serverWebs.get(webIndex).title.equals(mSimpleHome)) btnNewpage.performClick();//open the url in a new page if current page is not the main page
+		serverWebs.get(webIndex).loadUrl(url);
+		serverWebs.get(webIndex).title = url; 
+		btnWeb.performClick();
     }
     
     @Override 
@@ -1596,10 +1609,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			   
         	FileType.initMimeMap();//init the file type map
         	
-        	if (getIntent().getDataString() != null) 
-    			serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
-        	else 
+        	if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) {
     			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+    			serverWebs.get(webIndex).title = mSimpleHome;
+        	}
         	
 			try {//for 1.5 which do not have this method
 				setPackage = Intent.class.getMethod("setPackage", new Class[] {String.class});
@@ -1885,12 +1898,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				mProgressDialog.hide();
 			}
 		}
-		else if (intent.getAction().equals(Intent.ACTION_VIEW)) {//view webpages
-			serverWebs.get(webIndex).loadUrl(intent.getDataString());
-			if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
-			if (serverWebs.get(webIndex).canGoBack()) btnNewpage.performClick(); 
-			btnWeb.performClick();
-		}
+		else if (intent.getAction().equals(Intent.ACTION_VIEW)) //view webpages
+			loadNewPage(intent.getDataString());
 		super.onNewIntent(intent); 
 	}
 	

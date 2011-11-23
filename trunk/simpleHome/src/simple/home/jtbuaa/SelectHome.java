@@ -116,13 +116,7 @@ public class SelectHome extends Activity{
     			@Override
     			public void onClick(DialogInterface dialog, int arg1) {
                     dialog.cancel();
-    				finish();
     			}
-            }).setOnCancelListener(new OnCancelListener() {
-				@Override
-				public void onCancel(DialogInterface arg0) {
-					finish();
-				}
             }).show();
     	}
 	}

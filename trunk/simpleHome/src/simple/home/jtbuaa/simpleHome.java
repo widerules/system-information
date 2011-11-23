@@ -280,7 +280,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 		public MyWebview(Context context) {
 			super(context);
-			// TODO Auto-generated constructor stub
+			title = mSimpleHome;
+			
 	        setScrollBarStyle(0);
 	        WebSettings webSettings = getSettings();
 	        webSettings.setJavaScriptEnabled(true);
@@ -288,7 +289,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	        webSettings.setSaveFormData(true);
 	        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
 	        webSettings.setSupportZoom(true);
-	        //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
 
 	        setDownloadListener(new DownloadListener() {
 				@Override
@@ -403,6 +403,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					else {//return to home page if only one page when click close button
 						serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 						serverWebs.get(webIndex).title = mSimpleHome;
+						serverWebs.get(webIndex).clearHistory();
 					}
 					
 					webpages.getChildAt(webIndex).requestFocus();
@@ -966,7 +967,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         serverWebs.add(new MyWebview(this));
         webpages = (ViewFlipper) webs.findViewById(R.id.webpages);
         webpages.addView(serverWebs.get(webIndex));
-        serverWebs.get(webIndex).title = mSimpleHome;
         
 		webtools_center = (RelativeLayout) webs.findViewById(R.id.webtools_center);
 		dm = new DisplayMetrics();  
@@ -1033,7 +1033,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		        webpages.addView(webAdapter.getItem(webIndex));
 		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-		        serverWebs.get(webIndex).title = mSimpleHome;
 				webpages.getChildAt(webIndex).requestFocus();
 				imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
 			}
@@ -1176,7 +1175,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     
     private void loadNewPage(String url) {
 		if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
-		if (!serverWebs.get(webIndex).title.equals(mSimpleHome)) btnNewpage.performClick();//open the url in a new page if current page is not the main page
+		if ((!serverWebs.get(webIndex).title.equals(mSimpleHome)) || serverWebs.get(webIndex).canGoBack()) 
+			btnNewpage.performClick();//open the url in a new page if current page is not the main page
 		serverWebs.get(webIndex).loadUrl(url);
 		serverWebs.get(webIndex).title = url; 
 		btnWeb.performClick();
@@ -1609,10 +1609,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			   
         	FileType.initMimeMap();//init the file type map
         	
-        	if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+        	if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) 
     			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-    			serverWebs.get(webIndex).title = mSimpleHome;
-        	}
         	
 			try {//for 1.5 which do not have this method
 				setPackage = Intent.class.getMethod("setPackage", new Class[] {String.class});

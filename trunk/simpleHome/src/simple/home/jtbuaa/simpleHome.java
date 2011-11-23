@@ -1019,8 +1019,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		btnNewpage = (TextView) webs.findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
+			public void onClick(View arg0) {//add a new page
 		        webControl.setVisibility(View.INVISIBLE);
 				webAdapter.add(new MyWebview(mContext));
 				webIndex = webAdapter.getCount() - 1;
@@ -1163,8 +1162,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		InitTask initTask = new InitTask();
         initTask.execute("");
         
-    	if (getIntent().getDataString() != null) {//open the url from intent
+    	if (getIntent().getAction().equals(Intent.ACTION_VIEW) && (getIntent().getDataString() != null)) {//open the url from intent in a new page if the old page is under reading.
 			if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
+			if (serverWebs.get(webIndex).canGoBack()) btnNewpage.performClick(); 
 			btnWeb.performClick();
     	}
     }
@@ -1888,6 +1888,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		else if (intent.getAction().equals(Intent.ACTION_VIEW)) {//view webpages
 			serverWebs.get(webIndex).loadUrl(intent.getDataString());
 			if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
+			if (serverWebs.get(webIndex).canGoBack()) btnNewpage.performClick(); 
 			btnWeb.performClick();
 		}
 		super.onNewIntent(intent); 

@@ -392,7 +392,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					webControl.setVisibility(View.INVISIBLE);
 					if (webAdapter.getCount() > 1) {
 						((MyWebview) webpages.getChildAt(position)).destroy();
 						webAdapter.remove((MyWebview) webpages.getChildAt(position));
@@ -401,6 +400,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 					}
 					else {//return to home page if only one page when click close button
+						webControl.setVisibility(View.INVISIBLE);
 						serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 						serverWebs.get(webIndex).title = mSimpleHome;
 						serverWebs.get(webIndex).clearHistory();

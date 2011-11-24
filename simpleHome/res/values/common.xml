@@ -23,7 +23,10 @@
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
     <string name="sharetext">SimpleHome, simple but useful!</string>
-    <string name="app_share_text">" "is cool! let us try it together.</string>
+    <string name="app_share_text">" "is cool!</string>
+    <string name="share_text1">" "Check" "</string>
+    <string name="share_text2">" "by phone or" "</string>
+    <string name="share_text3">" "by pc.</string>
     <string name="vote">Vote me</string>
     
     <string name="favoriteapps">Shortcut</string>        

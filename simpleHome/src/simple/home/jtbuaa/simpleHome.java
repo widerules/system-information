@@ -467,7 +467,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		try {
 			startActivity(intent);
 		} catch (Exception e) {
-			Toast.makeText(getBaseContext(), e.toString(), 3500).show();
+			Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 			e.printStackTrace();
 		}
     }
@@ -668,7 +668,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			break;
 		case 2://on app list
 			menu.add(0, 2, 0, getString(R.string.share));
-			menu.add(0, 3, 0, getString(R.string.backapp));
+			menu.add(0, 3, 0, getString(R.string.backapp)).setEnabled(!downloadPath.equals(""));//no need to backup if no sdcard
 			menu.add(0, 4, 0, getString(R.string.appdetail));
 			menu.add(0, 5, 0, getString(R.string.addtoFavo));
 			menu.add(0, 6, 0, getString(R.string.addtoShort));
@@ -1607,9 +1607,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			}
     			catch(Exception e) {
     				e.printStackTrace();
+    				downloadPath = "";
     			}
         	} 
-        	else downloadPath = getFilesDir().getPath() + "/";
+        	else downloadPath = "";
+        	
         	picList = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
         	if (picList.size() > 0) cbWallPaper.setEnabled(true);
@@ -1719,6 +1721,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     boolean startDownload(String url) {
 		String[] tmp = url.split("\\.");
 		if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
+			if (downloadPath.equals("")) {
+				Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
+				return true;
+			}
 			String ss[] = url.split("/");
 			String apkName = ss[ss.length-1]; //get download file name
 			if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
@@ -1813,7 +1819,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	        	total_read = 0; //初始化“已下载部分”的长度，此处应为0
 	        	is = httpConnection.getInputStream();
 
-	        	byte buf[] = new byte[1024]; //download buffer
+	        	byte buf[] = new byte[10240]; //download buffer. is that ok for 10240?
 	        	readLength = 0; //一次性下载的长度
 	        	
 	        	oldProgress = 0;

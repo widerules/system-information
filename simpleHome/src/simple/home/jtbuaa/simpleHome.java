@@ -1294,7 +1294,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	}
             	
             	for (int i = 0; i < downloadAppID.size(); i++) {//cancel download notification if install succeed
-            		if (downloadAppID.get(i).packageName.startsWith(packageName.toLowerCase()))
+            		if (downloadAppID.get(i).packageName.equals(packageName))
             		{
                 		nManager.cancel(downloadAppID.get(i).notificationID);
                 		try {
@@ -1856,17 +1856,20 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_finish), contentIntent);//click listener for download progress bar
         	        nManager.notify(NOTIFICATION_ID, notification);
         	        
-        	        //apkName from appchina is always packageName+xxx.apk. so we use this pair to store package name and nofification id.
-        			downloadAppID.add(new packageIDpair(apkName.toLowerCase(), NOTIFICATION_ID, download_file));
-        			
         			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//change file property, for on some device the property is wrong
         			p.waitFor();
-    				myStartActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
-    				
+        			
     				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) {
     					picList.add(apkName);//add to picture list
 		        		cbWallPaper.setEnabled(true);
     				}
+    				else if (apkName.toLowerCase().endsWith("apk")) {
+    					PackageInfo pi = pm.getPackageArchiveInfo(downloadPath + apkName, 0);
+    					//PackageParser packageParser  =  PackageParser(downloadPath + apkName);
+            			downloadAppID.add(new packageIDpair(pi.packageName, NOTIFICATION_ID, download_file));
+    				}
+        			
+    				myStartActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
             	}
 				
 	    	} catch (Exception e) {

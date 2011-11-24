@@ -633,8 +633,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	}).
             	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends
-            	        String text = getString(R.string.sharetext); 
-           	        	text += " http://opda.co/?s=D/simple.home.jtbuaa";//opda will do the webpage reload for us.
+            	        String text = getString(R.string.sharetext) + getString(R.string.share_text1) 
+           	        		+ "http://opda.co/?s=D/simple.home.jtbuaa"//opda will do the webpage reload for us.
+           	        		+ getString(R.string.share_text2)
+           	        		+ "https://market.android.com/details?id=simple.home.jtbuaa"
+           	        		+ getString(R.string.share_text3);
             	        
             	        Intent intent = new Intent(Intent.ACTION_SEND);
             	        intent.setType("text/plain");  
@@ -730,8 +733,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	        Intent intent = new Intent(Intent.ACTION_SEND);
 	        intent.setType("text/plain");  
 	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-    		intent.putExtra(Intent.EXTRA_TEXT, selected_case.mRi.loadLabel(pm) + getString(R.string.app_share_text) 
-    				+ " http://opda.co/?s=D/" + selected_case.mRi.activityInfo.packageName);
+	        String text = selected_case.mRi.loadLabel(pm) + getString(R.string.app_share_text) + getString(R.string.share_text1) 
+	        	+ "http://opda.co/?s=D/" + selected_case.mRi.activityInfo.packageName
+	        	+ getString(R.string.share_text2)
+	        	+ "https://market.android.com/details?id=" + selected_case.mRi.activityInfo.packageName
+	        	+ getString(R.string.share_text3);
+    		intent.putExtra(Intent.EXTRA_TEXT, text);
    			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			break;
 		case 3://backup app

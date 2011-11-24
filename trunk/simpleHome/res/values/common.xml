@@ -49,6 +49,8 @@
     <string name="next">Next</string>
     <string name="newpage">new</string>
     
+    <string name="sdcard_needed">Please insert SDcard before Download.</string>
+    
     <string name="loading">Loading...</string>
     <string name="wait">Please wait while loading...</string>
     <string name="pause">Pause download</string>

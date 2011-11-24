@@ -48,7 +48,7 @@
     <string name="next">下一页</string>
     <string name="newpage">新建窗口</string>
     
-    <string name="sdcard_needed">要有SD卡才下载，不然下载的文件打不开。</string>
+    <string name="sdcard_needed">没有SD卡，下载的文件可能打不开。</string>
     
     <string name="loading">正在读取...</string>
     <string name="wait">网页加载中，请稍候...</string>

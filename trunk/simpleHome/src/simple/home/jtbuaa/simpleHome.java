@@ -668,7 +668,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			break;
 		case 2://on app list
 			menu.add(0, 2, 0, getString(R.string.share));
-			menu.add(0, 3, 0, getString(R.string.backapp)).setEnabled(!downloadPath.equals(""));//no need to backup if no sdcard
+			menu.add(0, 3, 0, getString(R.string.backapp)).setEnabled(!downloadPath.startsWith(getFilesDir().getPath()));//no need to backup if no sdcard
 			menu.add(0, 4, 0, getString(R.string.appdetail));
 			menu.add(0, 5, 0, getString(R.string.addtoFavo));
 			menu.add(0, 6, 0, getString(R.string.addtoShort));
@@ -1607,10 +1607,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			}
     			catch(Exception e) {
     				e.printStackTrace();
-    				downloadPath = "";
+    				downloadPath = getFilesDir().getPath() + "/";
     			}
         	} 
-        	else downloadPath = "";
+        	else downloadPath = getFilesDir().getPath() + "/";
         	
         	picList = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
@@ -1721,10 +1721,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     boolean startDownload(String url) {
 		String[] tmp = url.split("\\.");
 		if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
-			if (downloadPath.equals("")) {
+			if (downloadPath.startsWith(getFilesDir().getPath())) 
 				Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
-				return true;
-			}
+
 			String ss[] = url.split("/");
 			String apkName = ss[ss.length-1]; //get download file name
 			if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];

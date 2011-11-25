@@ -194,6 +194,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	
 	//download related
 	String downloadPath;
+	ContextMenu mMenu;
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
@@ -685,6 +686,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 4, 0, getString(R.string.appdetail));
 			menu.add(0, 5, 0, getString(R.string.addtoFavo));
 			menu.add(0, 6, 0, getString(R.string.addtoShort));
+			mMenu = menu;
 			break;
 		}
 	}
@@ -1148,6 +1150,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
         registerReceiver(downloadReceiver, filter);
         
+        filter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);  
+        filter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);  
+        filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);  
+        filter.addAction(Intent.ACTION_MEDIA_REMOVED);  
+        filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);  
+        filter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);  
+        filter.addDataScheme("file");  
+        registerReceiver(sdcardListener, filter);  
+        
 		LayoutInflater inflater = LayoutInflater.from(this);
 		final simpleHome sensorListener = this;
 		
@@ -1212,9 +1223,32 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	unregisterReceiver(wallpaperReceiver);
     	unregisterReceiver(homeChangeReceiver);
     	unregisterReceiver(downloadReceiver);
+    	unregisterReceiver(sdcardListener);
     	
     	super.onDestroy();
     }
+    
+    BroadcastReceiver sdcardListener = new BroadcastReceiver() {  
+        @Override  
+        public void onReceive(Context context, Intent intent) {  
+              
+            String action = intent.getAction();  
+            Log.d("TAG", "sdcard action:::::" + action);  
+            if(Intent.ACTION_MEDIA_MOUNTED.equals(action)  
+                    || Intent.ACTION_MEDIA_SCANNER_STARTED.equals(action)  
+                    || Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)  
+                    ){// SD卡成功挂载
+            	downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/"; 
+            	mMenu.getItem(3).setEnabled(true);
+            } else if(Intent.ACTION_MEDIA_REMOVED.equals(action)  
+                    || Intent.ACTION_MEDIA_UNMOUNTED.equals(action)  
+                    || Intent.ACTION_MEDIA_BAD_REMOVAL.equals(action)  
+                    ){// SD卡挂载失败
+            	downloadPath = getFilesDir().getPath() + "/";
+            	mMenu.getItem(3).setEnabled(false);
+            }  
+        }  
+    };  
     
 	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		@Override
@@ -1400,7 +1434,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				}
             });
         	lapp.setTag(new ricase(info, 2));
-            registerForContextMenu(lapp);
+            registerForContextMenu(lapp); 
             
             Object o = packagesSize.get(info.activityInfo.packageName);
            	textView1.setText(info.loadLabel(pm));

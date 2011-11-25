@@ -36,6 +36,7 @@
         <TextView android:id="@+id/appname" 
             android:layout_height="wrap_content" 
             android:layout_width="fill_parent"
+            android:singleLine="true"
             android:textSize="18dip" 
 	        android:textColor="#FF000000"/>
 	

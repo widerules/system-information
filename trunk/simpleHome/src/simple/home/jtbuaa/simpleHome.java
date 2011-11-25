@@ -1409,7 +1409,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	textView3.setTextColor(0xFFF8BF00);//brown for debuggable apk
             	source += " (debuggable)";
             }
-            else textView3.setTextColor(0xFF888888);//gray for normal
+            else textView3.setTextColor(0xFF444444);//gray for normal
         	textView3.setText(source);
 			
             return convertView;

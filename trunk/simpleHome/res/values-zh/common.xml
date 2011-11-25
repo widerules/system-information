@@ -47,6 +47,7 @@
     <string name="back">前一页</string>
     <string name="next">下一页</string>
     <string name="newpage">新建窗口</string>
+    <string name="nomore_pages">页面数不能大于9个。请先关掉不用的页面吧。</string>
     
     <string name="sdcard_needed">没有SD卡，下载的文件可能打不开。</string>
     

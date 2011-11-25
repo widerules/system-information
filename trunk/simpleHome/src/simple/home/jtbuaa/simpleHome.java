@@ -160,8 +160,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int grayColor = 0x33EEEEEE;
-	static int whiteColor = 0x44FFFFFF;
+	static int grayColor = 0x33111111;
+	static int whiteColor = 0x44222222;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;

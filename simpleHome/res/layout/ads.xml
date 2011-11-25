@@ -4,82 +4,13 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	
-<simple.home.jtbuaa.sizedRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/base"
-	android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    
-	<RelativeLayout android:id="@+id/shortcut_bar"
-  		android:background="@drawable/shortcut_bar_layout_revert"
-  		android:orientation="horizontal"
-  		android:layout_alignParentBottom="true"
-  		android:layout_centerHorizontal="true"
-  		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content">
-  		
-		<ImageView android:id="@+id/home_bar"
-			android:layout_height="54dip" 
-			android:layout_width="54dip"
-			android:src="@drawable/icon"
-			android:layout_alignParentLeft="true"
-			android:scaleType="fitCenter"
-			android:paddingLeft="5dip"
-  		/>
-		<RelativeLayout android:id="@+id/shortcut_bar_center"
-  			android:background="@android:color/transparent"
-  			android:orientation="horizontal"
-  			android:layout_centerHorizontal="true"
-  			android:layout_width="240dip"
-  			android:layout_height="wrap_content">
-			<ImageView android:id="@+id/shortcut_sms"
-				android:layout_height="54dip" 
-				android:layout_width="54dip"
-				android:layout_alignParentLeft="true"
-				android:scaleType="fitCenter"
-  			/>
-			<ImageView android:id="@+id/shortcut_phone"
-				android:layout_height="54dip" 
-				android:layout_width="54dip"
-				android:layout_alignParentRight="true"
-				android:scaleType="fitCenter"
-  			/>
-		</RelativeLayout>
-		<ImageView android:id="@+id/business_bar"
-			android:layout_height="54dip" 
-			android:layout_width="54dip"
-			android:src="@drawable/favorites"
-			android:layout_alignParentRight="true"
-			android:scaleType="fitCenter"
-			android:paddingRight="5dip"
-		/>
-	</RelativeLayout>
 	
-	<GridView android:id="@+id/favos"
-		android:layout_above="@id/shortcut_bar"
-		android:stackFromBottom="true"
-		android:verticalSpacing="10dip"
-		android:horizontalSpacing="10dip"
-		android:paddingBottom="15dip"
-		android:columnWidth="55dip"
-		android:numColumns="auto_fit"
-		android:background="@android:color/transparent"
+    <android.support.v4.view.ViewPager
+    	android:id="@+id/mainFrame"
+    	android:background="@android:color/transparent"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"/>
 		
-	<ListView android:id="@+id/business"
-		android:layout_alignParentRight="true"
-		android:layout_marginRight="10dip"
-		android:layout_marginBottom="10dip"
-		android:layout_above="@id/shortcut_bar"
-		android:background="#AA222222"
-		android:layout_width="200dip"
-		android:layout_height="wrap_content"
-		android:scrollingCache="false"
-		android:fadingEdge="none"/>
-	 
-</simple.home.jtbuaa.sizedRelativeLayout>
-	
 <RelativeLayout 
     android:id="@+id/adsParent"
     android:visibility="invisible"
@@ -95,92 +26,92 @@
     ads:adUnitId="a14e79197567476"
     ads:adSize="BANNER"/>
     
-	<RelativeLayout android:id="@+id/buttons"
-  		android:background="#FFEEEEEE"
-  		android:orientation="horizontal"
-  		android:layout_below="@id/adView"
-  		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content">
+  			<RelativeLayout android:id="@+id/webtools"
+  				android:background="@drawable/shortcut_bar_layout"
+  				android:layout_alignParentBottom="true" 
+  				android:orientation="horizontal" 
+  				android:layout_width="fill_parent"
+  				android:layout_height="wrap_content">
+  	
+			<ImageView android:id="@+id/refresh"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
+				android:scaleType="fitCenter"
+				android:src="@drawable/refresh"
+				android:layout_alignParentLeft="true"
+			/>
+			<ImageView android:id="@+id/share"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
+				android:scaleType="fitCenter"
+				android:src="@drawable/share"
+				android:layout_alignParentRight="true"
+			/>
+			
+  			<RelativeLayout android:id="@+id/webtools_center"
+  				android:background="@drawable/shortcut_bar_layout"
+  				android:orientation="horizontal" 
+				android:layout_centerHorizontal="true"
+  				android:layout_width="180dip"
+  				android:layout_height="wrap_content"
+  			>
+			<ImageView android:id="@+id/newpage"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
+				android:scaleType="fitCenter"
+				android:src="@drawable/newpage"
+				android:layout_centerHorizontal="true"
+			/>
+			<ImageView android:id="@+id/prev"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
+				android:scaleType="fitCenter"
+				android:src="@drawable/prev"
+				android:layout_alignParentLeft="true"
+			/>
+			<ImageView android:id="@+id/next"
+				android:layout_height="35dip" 
+				android:layout_width="35dip"
+				android:scaleType="fitCenter"
+				android:src="@drawable/next"
+				android:layout_alignParentRight="true"
+			/>
+  		</RelativeLayout>
+  		</RelativeLayout>
     
-	    <Button
-			android:layout_width="105dip"
-			android:layout_height="24dip"
-			android:layout_marginLeft="5dip"
-			android:id="@+id/btnSystemApp"
-			android:text="@string/systemapps"
-			android:background="@drawable/button_layout_unselected"
-			android:textSize="14dip"
-			android:layout_alignParentLeft="true"
-		></Button>
-			 
-	    <Button
-			android:layout_width="105dip"
-			android:layout_height="24dip"
-			android:id="@+id/btnUserApp"
-			android:text="@string/userapps"
-			android:background="@drawable/button_layout_unselected"
-			android:textSize="14dip"
+  		<RelativeLayout android:id="@+id/webcontrol"
+			android:layout_above="@id/webtools"
 			android:layout_centerHorizontal="true"
-		></Button>
-			 
-	    <Button
-			android:layout_width="105dip"
-			android:layout_height="24dip"
-			android:layout_marginRight="5dip"
-			android:id="@+id/btnOnline"
-			android:text="@string/online"
-			android:background="@drawable/button_layout_unselected"
-			android:textSize="14dip"
-			android:layout_alignParentRight="true"
-		></Button>
-	</RelativeLayout>
-    
-	<RelativeLayout android:id="@+id/flat_buttons"
-  		android:background="#FFEEEEEE"
-  		android:orientation="horizontal"
-  		android:layout_below="@id/buttons"
-  		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content">
-    
-	    <Button
-			android:layout_width="105dip"
-			android:layout_height="6dip"
-			android:layout_marginLeft="5dip"
-			android:id="@+id/btnSystemApp_flat"
-			android:background="@drawable/button_layout_selected"
-			android:layout_alignParentLeft="true"
-		></Button>
-			 
-	    <Button
-			android:layout_width="105dip"
-			android:layout_height="6dip"
-			android:id="@+id/btnUserApp_flat"
-			android:background="@drawable/button_layout_unselected"
-			android:layout_centerHorizontal="true"
-		></Button>
-			 
-	    <Button
-			android:layout_width="105dip"
-			android:layout_height="6dip"
-			android:layout_marginRight="5dip"
-			android:id="@+id/btnOnline_flat"
-			android:background="@drawable/button_layout_unselected"
-			android:layout_alignParentRight="true"
-		></Button>
-	</RelativeLayout>
-    
-	<View android:id="@+id/blue_bar"
-		android:layout_below="@id/flat_buttons"
-		android:layout_height="3dip" 
-		android:layout_width="fill_parent"
-		android:background ="@drawable/bar_layout" /> 
-    
-    <android.support.v4.view.ViewPager
-    	android:id="@+id/mainFrame"
-    	android:background="@android:color/transparent"
-    	android:layout_below="@id/blue_bar"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"/>
+			android:orientation="vertical"
+			android:visibility="invisible"
+  			android:layout_width="wrap_content"
+  			android:layout_height="wrap_content">
+  			
+			<TextView android:id="@+id/opennewpage"
+				android:text="@string/newpage"
+				android:layout_centerHorizontal="true"
+				android:layout_alignParentBottom="true"
+				android:gravity="center"
+				android:textSize="20dip"
+				android:background="#EE222222"
+				android:textColor="#FF96c732"
+				android:textStyle="bold"
+				android:layout_width="250dip"
+				android:layout_height="35dip"/>
+				
+			<ListView android:id="@+id/weblist"
+				android:layout_centerHorizontal="true"
+				android:layout_above="@id/opennewpage"
+				android:layout_width="250dip"
+				android:layout_height="wrap_content"/>
+				
+		</RelativeLayout>
+		
+		<ViewFlipper
+			android:id="@+id/webpages"
+			android:layout_above="@id/webtools"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"/>
     
 </RelativeLayout>
 </FrameLayout>

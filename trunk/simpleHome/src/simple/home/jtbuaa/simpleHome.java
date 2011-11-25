@@ -877,23 +877,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
     	
     	//system app tab
-    	sysAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
-    	sysAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+    	RelativeLayout systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
+    	sysAppList = (ListView) systems.findViewById(R.id.applist); 
     	sysAppList.inflate(this, R.layout.app_list, null);
-    	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
-    	sysAppList.setScrollingCacheEnabled(false);
         
     	//user app tab
-    	userAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
-    	userAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+    	RelativeLayout users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
+    	userAppList = (ListView) users.findViewById(R.id.applist); 
         userAppList.inflate(this, R.layout.app_list, null);
-        userAppList.setFadingEdgeLength(0);//no shadow when scroll
-        userAppList.setScrollingCacheEnabled(false);
         
         mListViews = new ArrayList<View>();
-        mListViews.add(sysAppList);
+        mListViews.add(systems);
         mListViews.add(home);
-        mListViews.add(userAppList);
+        mListViews.add(users);
         
         mainlayout = (ViewPager)findViewById(R.id.mainFrame);
         mainlayout.setLongClickable(true);
@@ -1024,12 +1020,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
 		
-        apps = (FrameLayout) findViewById(R.id.apps);
-        
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (sizedRelativeLayout) home.findViewById(R.id.base); 
         base.setResizeListener(this);
-        base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
         shortcutBar = (RelativeLayout) home.findViewById(R.id.shortcut_bar);
         shortcutBar_center = (RelativeLayout) home.findViewById(R.id.shortcut_bar_center);
         homeBar = (ImageView) home.findViewById(R.id.home_bar);
@@ -1112,6 +1105,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 		});
 		
+        apps = (FrameLayout) findViewById(R.id.apps);
+    	apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+    	
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
 			@Override

@@ -160,8 +160,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int grayColor = 0x88111111;
-	static int whiteColor = 0x99222222;
+	static int grayColor = 0xAA777777;
+	static int whiteColor = 0xBB888888;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
@@ -388,6 +388,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					AdRequest adRequest = new AdRequest();
+					adview.loadAd(adRequest);
 					webControl.setVisibility(View.INVISIBLE);
 					webIndex = position;
 					while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
@@ -399,6 +401,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					AdRequest adRequest = new AdRequest();
+					adview.loadAd(adRequest);
 					if (webAdapter.getCount() > 1) {
 						((MyWebview) webpages.getChildAt(position)).destroy();
 						webAdapter.remove((MyWebview) webpages.getChildAt(position));
@@ -901,9 +905,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			public void onPageScrollStateChanged(int state) {
 				// TODO Auto-generated method stub
 				if (state == ViewPager.SCROLL_STATE_SETTLING) {
-					AdRequest adRequest = new AdRequest();
-					adview.loadAd(adRequest);
-					
 					switch(mainlayout.getCurrentItem()) {
 					case 0:
 						break;
@@ -991,14 +992,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {//add a new page
+				AdRequest adRequest = new AdRequest();
+				adview.loadAd(adRequest);
 				if (webAdapter.getCount() == 9) //max count is 9.
 					Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 				else {
 			        webControl.setVisibility(View.INVISIBLE);
 					webAdapter.add(new MyWebview(mContext));
 					webIndex = webAdapter.getCount() - 1;
-			        webpages.addView(webAdapter.getItem(webIndex));
 			        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+			        webpages.addView(webAdapter.getItem(webIndex));
 			        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 					webpages.getChildAt(webIndex).requestFocus();
 					imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));

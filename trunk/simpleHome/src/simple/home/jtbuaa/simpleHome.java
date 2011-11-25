@@ -160,8 +160,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int grayColor = 0x33111111;
-	static int whiteColor = 0x44222222;
+	static int grayColor = 0x88111111;
+	static int whiteColor = 0x99222222;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
@@ -998,8 +998,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					webAdapter.add(new MyWebview(mContext));
 					webIndex = webAdapter.getCount() - 1;
 			        webpages.addView(webAdapter.getItem(webIndex));
-			        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 			        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+			        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 					webpages.getChildAt(webIndex).requestFocus();
 					imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
 				}

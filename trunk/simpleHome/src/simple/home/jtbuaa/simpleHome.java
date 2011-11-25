@@ -142,8 +142,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
-	final static int onlineTab = 2;
 	final static String mSimpleHome = "Simple Home";
+	
+	final static int homeTab = 1;
 	
 	//wall paper related
 	SensorManager sensorMgr;
@@ -933,7 +934,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
         	
         });
-        mainlayout.setCurrentItem(1);
+        mainlayout.setCurrentItem(homeTab);
         
         //online tab
         WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
@@ -1912,8 +1913,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 				if (adsParent.getVisibility() == View.VISIBLE) {
-					if (mainlayout.getCurrentItem() != onlineTab) homeBar.performClick();
-					else if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
+					if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
 						mProgressDialog.setProgress(0);
 						mProgressDialog.hide();
 					}
@@ -1921,6 +1921,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
 					else homeBar.performClick();
 				}
+				else if (mainlayout.getCurrentItem() != homeTab) mainlayout.setCurrentItem(homeTab);
 				else if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 				else this.openOptionsMenu();
 				return true;

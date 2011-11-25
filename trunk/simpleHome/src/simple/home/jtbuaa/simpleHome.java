@@ -1238,14 +1238,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                     || Intent.ACTION_MEDIA_SCANNER_STARTED.equals(action)  
                     || Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)  
                     ){// SD卡成功挂载
-            	downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/"; 
-            	mMenu.getItem(3).setEnabled(true);
+            	if (downloadPath != null) 
+            		downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/"; 
+            	if (mMenu != null) mMenu.getItem(3).setEnabled(true);
             } else if(Intent.ACTION_MEDIA_REMOVED.equals(action)  
                     || Intent.ACTION_MEDIA_UNMOUNTED.equals(action)  
                     || Intent.ACTION_MEDIA_BAD_REMOVAL.equals(action)  
                     ){// SD卡挂载失败
-            	downloadPath = getFilesDir().getPath() + "/";
-            	mMenu.getItem(3).setEnabled(false);
+            	if (downloadPath != null) 
+            		downloadPath = getFilesDir().getPath() + "/";
+            	if (mMenu != null) mMenu.getItem(3).setEnabled(false);
             }  
         }  
     };  

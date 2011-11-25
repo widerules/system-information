@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import com.android.internal.telephony.ITelephony;
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 
@@ -39,7 +38,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -61,7 +59,6 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -77,7 +74,6 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -94,8 +90,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -103,12 +97,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
@@ -121,6 +113,7 @@ import android.net.http.SslError;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -167,8 +160,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int grayColor = 0xCCEEEEEE;
-	static int whiteColor = 0xDDFFFFFF;
+	static int grayColor = 0x33EEEEEE;
+	static int whiteColor = 0x44FFFFFF;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
@@ -179,6 +172,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	SmsChangeObserver smsObserver;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	sizedRelativeLayout base;
+	FrameLayout apps;
 	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
     appHandler mAppHandler = new appHandler();
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_PIC = 4; 
@@ -1030,6 +1024,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
 		
+        apps = (FrameLayout) findViewById(R.id.apps);
+        
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (sizedRelativeLayout) home.findViewById(R.id.base); 
         base.setResizeListener(this);
@@ -1202,7 +1198,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
 			if (!cbWallPaper.isChecked())
-				base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), base.getWidth(), base.getHeight()));
+				apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
 		}
 	};
 	
@@ -1918,7 +1914,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						mProgressDialog.hide();
 					}
 					else if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();
-					else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
+					//else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
 					else homeBar.performClick();
 				}
 				else if (mainlayout.getCurrentItem() != homeTab) mainlayout.setCurrentItem(homeTab);
@@ -1987,7 +1983,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	int id = random.nextInt(picList.size());
 				    try {
 				    	Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
-				    	base.setBackgroundDrawable(new ClippedDrawable(cd, base.getWidth(), base.getHeight()));
+				    	apps.setBackgroundDrawable(new ClippedDrawable(cd, apps.getWidth(), apps.getHeight()));
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();

@@ -1029,16 +1029,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
-				if (adsParent.getVisibility() == View.VISIBLE) {
-					adsParent.setVisibility(View.INVISIBLE);
-					favoAppList.setVisibility(View.VISIBLE);
-					shortcutBar.setVisibility(View.VISIBLE);
-				}
-				else {
-					adsParent.setVisibility(View.VISIBLE);
-					favoAppList.setVisibility(View.INVISIBLE);
-					shortcutBar.setVisibility(View.INVISIBLE);
-				}
+				adsParent.setVisibility(View.VISIBLE);
+				favoAppList.setVisibility(View.INVISIBLE);
+				shortcutBar.setVisibility(View.INVISIBLE);
+				serverWebs.get(webIndex).requestFocus();
 			}
         });
         

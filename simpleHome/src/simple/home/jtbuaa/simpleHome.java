@@ -275,6 +275,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	}
 	ricase selected_case;
 	
+	void hideWebControl() {
+		if (webControl.getVisibility() == View.VISIBLE) imgNew.performClick();		
+	}
+	
 	class MyWebview extends WebView {
 		public String title = "";
 
@@ -290,6 +294,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
 	        webSettings.setSupportZoom(true);
 
+	        setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View arg0, MotionEvent arg1) {//just close webcontrol page if it is open.
+		        	hideWebControl();
+					return false;
+				}
+	        });
+	        
 	        setDownloadListener(new DownloadListener() {
 				@Override
 				public void onDownloadStart(String url, String ua, String contentDisposition,
@@ -537,6 +549,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				while (ips.hasMoreElements()) {
 					InetAddress local = ips.nextElement();
 					if (!local.isLoopbackAddress()) {
+						if (sb.length() > 0) sb.append(", ");
 						sb.append(local.getHostAddress());
 						break;
 					}
@@ -1034,14 +1047,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {//add a new page
-		        webControl.setVisibility(View.INVISIBLE);
-				webAdapter.add(new MyWebview(mContext));
-				webIndex = webAdapter.getCount() - 1;
-		        webpages.addView(webAdapter.getItem(webIndex));
-		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-		        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-				webpages.getChildAt(webIndex).requestFocus();
-				imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
+				if (webAdapter.getCount() == 9) //max count is 9.
+					Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
+				else {
+			        webControl.setVisibility(View.INVISIBLE);
+					webAdapter.add(new MyWebview(mContext));
+					webIndex = webAdapter.getCount() - 1;
+			        webpages.addView(webAdapter.getItem(webIndex));
+			        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
+			        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+					webpages.getChildAt(webIndex).requestFocus();
+					imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
+				}
 			}
 		});
     	//web list

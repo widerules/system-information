@@ -48,6 +48,7 @@
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="newpage">new</string>
+    <string name="nomore_pages">Sorry, can not create more than 9 pages. Please close old pages before create new one.</string>
     
     <string name="sdcard_needed">Downloaded file may not be opened without SDcard.</string>
     

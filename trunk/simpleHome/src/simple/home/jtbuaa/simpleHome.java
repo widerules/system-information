@@ -166,7 +166,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	private Button btnSys, btnUser, btnWeb, btnSys_flat, btnUser_flat, btnWeb_flat;
 	static int grayColor = 0xCCEEEEEE;
 	static int whiteColor = 0xDDFFFFFF;
 	Context mContext;
@@ -801,53 +800,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		}
 		return false;
 	}
-
-	OnBtnClickListener mBtnCL = new OnBtnClickListener();
-	class OnBtnClickListener implements OnClickListener {
-		@Override
-		public void onClick(View v) {
-			AdRequest adRequest = new AdRequest();
-			adview.loadAd(adRequest);
-			
-			int newTab = 0;
-
-			String text = (String) ((Button) v).getText();
-			if (text.equals(getString(R.string.systemapps))) newTab = 0;
-			else if (text.equals(getString(R.string.userapps))) newTab = 1;
-			else if (text.equals(getString(R.string.online))) newTab = 2;
-			
-			if (mainlayout.getCurrentItem() != newTab) {
-				switch(mainlayout.getCurrentItem()) {
-				case 0:
-					btnSys_flat.setBackgroundResource(R.drawable.button_layout_unselected);
-					break;
-				case 1:
-					btnUser_flat.setBackgroundResource(R.drawable.button_layout_unselected);
-					break;
-				case 2:
-					btnWeb_flat.setBackgroundResource(R.drawable.button_layout_unselected);
-					break;
-				}
-				
-				switch(newTab) {
-				case 0:
-					btnSys_flat.setBackgroundResource(R.drawable.button_layout_selected);
-					break;
-				case 1:
-					btnUser_flat.setBackgroundResource(R.drawable.button_layout_selected);
-					break;
-				case 2:
-					btnWeb_flat.setBackgroundResource(R.drawable.button_layout_selected);
-					break;
-				}
-				
-				mainlayout.setCurrentItem(newTab);
-			}
-			if (mainlayout.getCurrentItem() != onlineTab) 
-				imm.hideSoftInputFromWindow(serverWebs.get(webIndex).getWindowToken(), 0);//hide input method
-			else webpages.getChildAt(webIndex).requestFocus();
-		}
-	}
 	
     @SuppressWarnings("unchecked")
 	@Override
@@ -898,6 +850,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		
+		dm = new DisplayMetrics();  
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		
 		try {
 			Field screenLayout = Configuration.class.getField("screenLayout");
 	    	//1,2,3,4 are integer value of small, normal, large and XLARGE screen respectively.
@@ -911,9 +866,42 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
     	
+        RelativeLayout home = (RelativeLayout) getLayoutInflater().inflate(R.layout.home, null);
+        adview = (AdView) this.findViewById(R.id.adView);
+        
+        
+    	//favorite app tab
+    	favoAppList = (GridView) home.findViewById(R.id.favos);
+    	favoAppList.setVerticalScrollBarEnabled(false);
+    	favoAppList.inflate(this, R.layout.app_list, null);
+    	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
+    	favoAppList.setScrollingCacheEnabled(false);
+        
+    	shortAppList = (ListView) home.findViewById(R.id.business);
+    	shortAppList.bringToFront();
+    	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
+    	
+    	//system app tab
+    	sysAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
+    	sysAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+    	sysAppList.inflate(this, R.layout.app_list, null);
+    	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
+    	sysAppList.setScrollingCacheEnabled(false);
+        
+    	//user app tab
+    	userAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
+    	userAppList.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+        userAppList.inflate(this, R.layout.app_list, null);
+        userAppList.setFadingEdgeLength(0);//no shadow when scroll
+        userAppList.setScrollingCacheEnabled(false);
+        
+        mListViews = new ArrayList<View>();
+        mListViews.add(sysAppList);
+        mListViews.add(home);
+        mListViews.add(userAppList);
+        
         mainlayout = (ViewPager)findViewById(R.id.mainFrame);
         mainlayout.setLongClickable(true);
-        mainlayout.setCurrentItem(0);
         MyPagerAdapter myAdapter = new MyPagerAdapter();
         mainlayout.setAdapter(myAdapter);
         mainlayout.setOnPageChangeListener(new OnPageChangeListener() {
@@ -922,18 +910,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			public void onPageScrollStateChanged(int state) {
 				// TODO Auto-generated method stub
 				if (state == ViewPager.SCROLL_STATE_SETTLING) {
-					btnSys_flat.setBackgroundResource(R.drawable.button_layout_unselected);
-					btnUser_flat.setBackgroundResource(R.drawable.button_layout_unselected);
-					btnWeb_flat.setBackgroundResource(R.drawable.button_layout_unselected);
+					AdRequest adRequest = new AdRequest();
+					adview.loadAd(adRequest);
+					
 					switch(mainlayout.getCurrentItem()) {
 					case 0:
-						btnSys_flat.setBackgroundResource(R.drawable.button_layout_selected);
 						break;
 					case 1:
-						btnUser_flat.setBackgroundResource(R.drawable.button_layout_selected);
 						break;
 					case 2:
-						btnWeb_flat.setBackgroundResource(R.drawable.button_layout_selected);
 						break;
 					}
 				}
@@ -948,74 +933,40 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
         	
         });
-        
-        adview = (AdView) this.findViewById(R.id.adView);
-        
-    	//favorite app tab
-    	favoAppList = (GridView) findViewById(R.id.favos);
-    	favoAppList.setVerticalScrollBarEnabled(false);
-    	favoAppList.inflate(this, R.layout.app_list, null);
-    	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
-    	favoAppList.setScrollingCacheEnabled(false);
-        
-    	shortAppList = (ListView) findViewById(R.id.business);
-    	shortAppList.bringToFront();
-    	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
-    	
-    	//system app tab
-    	sysAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
-    	//sysAppList = (ListView) findViewById(R.id.sysapp);
-    	sysAppList.inflate(this, R.layout.app_list, null);
-    	sysAppList.setFadingEdgeLength(0);//no shadow when scroll
-    	sysAppList.setScrollingCacheEnabled(false);
-        
-    	//user app tab
-    	userAppList = (ListView) getLayoutInflater().inflate(R.layout.apps, null); 
-    	//userAppList = (ListView) findViewById(R.id.userapp);
-        userAppList.inflate(this, R.layout.app_list, null);
-        userAppList.setFadingEdgeLength(0);//no shadow when scroll
-        userAppList.setScrollingCacheEnabled(false);
-        
-        RelativeLayout webs = (RelativeLayout) getLayoutInflater().inflate(R.layout.webs, null); 
-        mListViews = new ArrayList<View>();
-        mListViews.add(sysAppList);
-        mListViews.add(userAppList);
-        mListViews.add(webs);
+        mainlayout.setCurrentItem(1);
         
         //online tab
         WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
         webIndex = 0;
         serverWebs = new ArrayList<MyWebview>();
         serverWebs.add(new MyWebview(this));
-        webpages = (ViewFlipper) webs.findViewById(R.id.webpages);
+        webpages = (ViewFlipper) findViewById(R.id.webpages);
         webpages.addView(serverWebs.get(webIndex));
         
-		webtools_center = (RelativeLayout) webs.findViewById(R.id.webtools_center);
-		dm = new DisplayMetrics();  
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 		
-		imgNext = (ImageView) webs.findViewById(R.id.next);
+		imgNext = (ImageView) findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoForward()) serverWebs.get(webIndex).goForward();
 			}
 		});
-		imgPrev = (ImageView) webs.findViewById(R.id.prev);
+		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
 			}
 		});
-		imgRefresh = (ImageView) webs.findViewById(R.id.refresh);
+		imgRefresh = (ImageView) findViewById(R.id.refresh);
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				serverWebs.get(webIndex).reload();
 			}
 		});
-		imgShare = (ImageView) webs.findViewById(R.id.share);
+		imgShare = (ImageView) findViewById(R.id.share);
 		imgShare.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -1026,7 +977,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	        myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
 			}
 		});
-		imgNew = (ImageView) webs.findViewById(R.id.newpage);
+		imgNew = (ImageView) findViewById(R.id.newpage);
 		imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), 1, 0));
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1043,9 +994,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		});
 		
 		//web control
-		webControl = (RelativeLayout) webs.findViewById(R.id.webcontrol);
+		webControl = (RelativeLayout) findViewById(R.id.webcontrol);
 		
-		btnNewpage = (TextView) webs.findViewById(R.id.opennewpage);
+		btnNewpage = (TextView) findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {//add a new page
@@ -1065,25 +1016,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		});
     	//web list
 		webAdapter = new WebAdapter(this, serverWebs);
-    	webList = (ListView) webs.findViewById(R.id.weblist);
+    	webList = (ListView) findViewById(R.id.weblist);
     	webList.inflate(this, R.layout.web_list, null);
     	webList.setFadingEdgeLength(0);//no shadow when scroll
     	webList.setScrollingCacheEnabled(false);
     	webList.setAdapter(webAdapter);
     	
-        btnSys = (Button) findViewById(R.id.btnSystemApp);
-        btnSys.setOnClickListener(mBtnCL);
-        
-        btnUser = (Button) findViewById(R.id.btnUserApp);
-        btnUser.setOnClickListener(mBtnCL);
-        
-        btnWeb = (Button) findViewById(R.id.btnOnline);
-		btnWeb.setOnClickListener(mBtnCL);
-
-        btnSys_flat = (Button) findViewById(R.id.btnSystemApp_flat);
-        btnUser_flat = (Button) findViewById(R.id.btnUserApp_flat);
-        btnWeb_flat = (Button) findViewById(R.id.btnOnline_flat);
-        
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
 		mFavoApps = new ArrayList<ResolveInfo>();
@@ -1092,12 +1030,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		favoAppList.setAdapter(favoAdapter);
 		
         adsParent = (RelativeLayout) findViewById(R.id.adsParent);
-        base = (sizedRelativeLayout) findViewById(R.id.base); 
+        base = (sizedRelativeLayout) home.findViewById(R.id.base); 
         base.setResizeListener(this);
         base.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
-        shortcutBar = (RelativeLayout) findViewById(R.id.shortcut_bar);
-        shortcutBar_center = (RelativeLayout) findViewById(R.id.shortcut_bar_center);
-        homeBar = (ImageView) findViewById(R.id.home_bar);
+        shortcutBar = (RelativeLayout) home.findViewById(R.id.shortcut_bar);
+        shortcutBar_center = (RelativeLayout) home.findViewById(R.id.shortcut_bar_center);
+        homeBar = (ImageView) home.findViewById(R.id.home_bar);
         homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
@@ -1114,7 +1052,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
         });
         
-        shortBar = (ImageView) findViewById(R.id.business_bar);
+        shortBar = (ImageView) home.findViewById(R.id.business_bar);
         shortBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
@@ -1129,8 +1067,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         });
 		setLayout(dm.widthPixels);
         
-		shortcut_phone = (ImageView) findViewById(R.id.shortcut_phone);
-		shortcut_sms = (ImageView) findViewById(R.id.shortcut_sms);
+		shortcut_phone = (ImageView) home.findViewById(R.id.shortcut_phone);
+		shortcut_sms = (ImageView) home.findViewById(R.id.shortcut_sms);
 		//shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
 		
 		//for package add/remove
@@ -1214,7 +1152,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			btnNewpage.performClick();//open the url in a new page if current page is not the main page
 		serverWebs.get(webIndex).loadUrl(url);
 		serverWebs.get(webIndex).title = url; 
-		btnWeb.performClick();
+		serverWebs.get(webIndex).requestFocus();
     }
     
     @Override 
@@ -1997,24 +1935,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		
         LayoutParams lp = webtools_center.getLayoutParams();
         lp.width = width/2 + 40;
-        
-        lp = btnSys.getLayoutParams();
-        lp.width = width/3 - 10;
-        
-        lp = btnUser.getLayoutParams();
-        lp.width = width/3 - 10;
-        
-        lp = btnWeb.getLayoutParams();
-        lp.width = width/3 - 10;
-
-        lp = btnSys_flat.getLayoutParams();
-        lp.width = width/3 - 10;
-        
-        lp = btnUser_flat.getLayoutParams();
-        lp.width = width/3 - 10;
-        
-        lp = btnWeb_flat.getLayoutParams();
-        lp.width = width/3 - 10;
         
         lp = shortcutBar_center.getLayoutParams();
         if (width > 320)

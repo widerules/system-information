@@ -63,7 +63,8 @@
         android:textSize="12dip" 
         android:layout_marginLeft="5dip"
         android:layout_marginTop="5dip"
-        android:background="@drawable/button_layout_selected"
+        android:padding="3dip"
+        android:background="@drawable/button_layout_unselected"
 	    android:textColor="#FF666666"/>
     
 	</TableRow>

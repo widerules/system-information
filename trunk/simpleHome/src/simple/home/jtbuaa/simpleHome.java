@@ -1197,8 +1197,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			if (!cbWallPaper.isChecked())
-				apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
+			apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
 		}
 	};
 	

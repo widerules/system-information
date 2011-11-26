@@ -1711,7 +1711,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		String ss[] = url.split("/");
 		String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 		if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
-		if ((apkName.endsWith(".txt")) || (apkName.endsWith(".html"))) return false;//should not download txt and html file.
+		if ((apkName.endsWith(".txt")) || (apkName.endsWith(".html")) || (apkName.endsWith(".htm"))) return false;//should not download txt and html file.
 		
 		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 		if (mimeTypeMap.hasExtension(mimeTypeMap.getFileExtensionFromUrl(apkName))) {//files need download

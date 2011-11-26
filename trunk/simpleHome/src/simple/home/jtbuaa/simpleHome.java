@@ -104,6 +104,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
+import android.webkit.MimeTypeMap;
 import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
@@ -1604,8 +1605,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	new File(downloadPath).list(new OnlyPic());
         	if (picList.size() > 0) cbWallPaper.setEnabled(true);
 			   
-        	FileType.initMimeMap();//init the file type map
-        	
         	if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) 
     			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
         	
@@ -1707,14 +1706,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     };
 
     boolean startDownload(String url) {
-		String[] tmp = url.split("\\.");
-		if ((tmp.length > 0) && (FileType.MIMEMAP.containsKey(tmp[tmp.length-1].toUpperCase()))) {//files need download
+		if (!url.contains(".")) return false;//not a file
+		
+		String ss[] = url.split("/");
+		String apkName = ss[ss.length-1]; //get download file name
+		if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
+		
+		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+		if (mimeTypeMap.hasExtension(mimeTypeMap.getFileExtensionFromUrl(apkName))) {//files need download
 			if (downloadPath.startsWith(getFilesDir().getPath())) 
 				Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
-
-			String ss[] = url.split("/");
-			String apkName = ss[ss.length-1]; //get download file name
-			if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 			
 			Iterator iter = appstate.downloadState.entrySet().iterator();
 			while (iter.hasNext()) {
@@ -1773,6 +1774,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
 	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
 	        
+			MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+			String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName));
+			
 	    	FileOutputStream fos = null; //文件输出流
 	    	InputStream is = null; //网络文件输入流
 	    	URL url = null;
@@ -1784,7 +1788,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		if (download_file.length() == apk_length) {//found local file with same name and length, no need to download, just send intent to view it
                 	String[] tmp = apkName.split("\\.");
         			intent.setAction(Intent.ACTION_VIEW);
-        			intent.setDataAndType(Uri.fromFile(download_file), FileType.MIMEMAP.get(tmp[tmp.length-1].toUpperCase()));
+        			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
     				myStartActivity(intent);
                 	appstate.downloadState.remove(NOTIFICATION_ID);
             		nManager.cancel(NOTIFICATION_ID);
@@ -1847,10 +1851,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	else {//download success. change notification, start package manager to install package
                 	notification.icon = android.R.drawable.stat_sys_download_done;
 
-                	String[] tmp = apkName.split("\\.");
         			intent = new Intent();
         			intent.setAction(Intent.ACTION_VIEW);
-        			intent.setDataAndType(Uri.fromFile(download_file), FileType.MIMEMAP.get(tmp[tmp.length-1].toUpperCase()));
+        			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
         	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
         	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
         	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_finish), contentIntent);//click listener for download progress bar

@@ -71,10 +71,6 @@ public class FileType {
 		MIMEMAP.put("POT", "application/mspowerpoint");
 		MIMEMAP.put("DOT", "application/msword");
 		MIMEMAP.put("DOC", "application/msword");
-		MIMEMAP.put("BIN", "application/octet-stream");		
-		MIMEMAP.put("EXE", "application/octet-stream");
-		MIMEMAP.put("COM", "application/octet-stream");
-		MIMEMAP.put("DLL", "application/octet-stream");
 		MIMEMAP.put("CLASS", "application/octet-stream");
 		MIMEMAP.put("ODA", "application/oda");
 		MIMEMAP.put("PDF", "application/pdf");

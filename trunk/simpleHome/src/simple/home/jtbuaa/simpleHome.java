@@ -76,6 +76,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.RemoteException;
@@ -1867,7 +1868,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     					//PackageParser packageParser  =  PackageParser(downloadPath + apkName);
             			downloadAppID.add(new packageIDpair(pi.packageName, NOTIFICATION_ID, download_file));
     				}
-        			
+
     				myStartActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
             	}
 				

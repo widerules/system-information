@@ -1276,12 +1276,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 	if (targetApps.get(i).activityInfo.packageName.equals(packageName) ) {//the new package may not support Launcher category, we will omit it.
                     	if ((targetApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             				sysAdapter.add(targetApps.get(0));
-            		    	Collections.sort(sysAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+            		    	Collections.sort(sysAdapter.localApplist, new myComparator(pm));//sort by name
             		    	break;
                     	}
                     	else {
             				userAdapter.add(targetApps.get(0));
-            		    	Collections.sort(userAdapter.localApplist, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+            		    	Collections.sort(userAdapter.localApplist, new myComparator(pm));//sort by name
             		    	break;
                     	}
                 	}
@@ -1528,7 +1528,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-	    	Collections.sort(mAllApps, new ResolveInfo.DisplayNameComparator(pm));//sort by name
+	    	Collections.sort(mAllApps, new myComparator(pm));//sort by name
 
             readFile("favo");
             readFile("short");

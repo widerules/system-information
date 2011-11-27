@@ -390,12 +390,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					AdRequest adRequest = new AdRequest();
-					adview.loadAd(adRequest);
 					webControl.setVisibility(View.INVISIBLE);
 					webIndex = position;
 					while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 					webpages.getChildAt(webIndex).requestFocus();
+					AdRequest adRequest = new AdRequest();
+					adview.loadAd(adRequest);
 				}
     		});
             
@@ -403,8 +403,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					AdRequest adRequest = new AdRequest();
-					adview.loadAd(adRequest);
 					if (webAdapter.getCount() > 1) {
 						((MyWebview) webpages.getChildAt(position)).destroy();
 						webAdapter.remove((MyWebview) webpages.getChildAt(position));
@@ -418,7 +416,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						serverWebs.get(webIndex).title = mSimpleHome;
 						serverWebs.get(webIndex).clearHistory();
 					}
-					
+					AdRequest adRequest = new AdRequest();
+					adview.loadAd(adRequest);
 					webpages.getChildAt(webIndex).requestFocus();
 				}
             });
@@ -994,8 +993,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {//add a new page
-				AdRequest adRequest = new AdRequest();
-				adview.loadAd(adRequest);
 				if (webAdapter.getCount() == 9) //max count is 9.
 					Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 				else {
@@ -1008,6 +1005,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					webpages.getChildAt(webIndex).requestFocus();
 					imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
 				}
+				AdRequest adRequest = new AdRequest();
+				adview.loadAd(adRequest);
 			}
 		});
     	//web list

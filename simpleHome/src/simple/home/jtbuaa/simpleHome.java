@@ -352,12 +352,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						Uri uri = Uri.parse(url);
 						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 						intent.addCategory(Intent.CATEGORY_BROWSABLE);
-						List<ResolveInfo> handleList = pm.queryIntentActivities(intent, 0);
-						if (!handleList.isEmpty()) {
-							startActivity(intent);
-							return true;
-						}
-						else return false;
+						return myStartActivity(intent, false);
 					}
 					else return startDownload(url);
 				}
@@ -475,12 +470,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         return contactIcon;  
     }  
     
-    private void myStartActivity(Intent intent) {
+    private boolean myStartActivity(Intent intent, boolean showToast) {
 		try {
 			startActivity(intent);
+			return true;
 		} catch (Exception e) {
-			Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+			if (showToast)
+				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 			e.printStackTrace();
+			return false;
 		}
     }
     
@@ -629,7 +627,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		switch (item.getItemId()) {
 		case 0://wallpaper
 	        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-	        myStartActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)));
+	        myStartActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)), true);
 			break;
 		case 1://settings
 			return super.onOptionsItemSelected(item);
@@ -641,7 +639,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	setNegativeButton(R.string.vote, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {
 						Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=simple.home.jtbuaa"));
-						myStartActivity(intent);
+						if (!myStartActivity(intent, false)) {
+							intent.setAction(Intent.ACTION_VIEW);
+							intent.setData(Uri.parse("https://market.android.com/details?id=simple.home.jtbuaa"));
+							intent.setComponent(getComponentName());
+							myStartActivity(intent, false);
+						}
             		}
             	}).
             	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
@@ -656,7 +659,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	        intent.setType("text/plain");  
             	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
     	        		intent.putExtra(Intent.EXTRA_TEXT, text);
-   	        			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
+   	        			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true);
             		}
             	}).create();
         	}
@@ -753,7 +756,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	        	+ "https://market.android.com/details?id=" + selected_case.mRi.activityInfo.packageName
 	        	+ getString(R.string.share_text3);
     		intent.putExtra(Intent.EXTRA_TEXT, text);
-   			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
+   			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true);
 			break;
 		case 3://backup app
 			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
@@ -783,7 +786,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			else {//2.6 tahiti change the action.
 				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_case.mRi.activityInfo.packageName, null));
 			}
-			myStartActivity(intent);
+			myStartActivity(intent, true);
 			break;
 		case 5://add to home
 			if (favoAdapter.getPosition(selected_case.mRi) < 0) { 
@@ -967,7 +970,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	        intent.setType("text/plain");  
     	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
         		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
-    	        myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)));
+    	        myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true);
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);
@@ -1101,11 +1104,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
-				List<ResolveInfo> handleList = pm.queryIntentActivities(intent, 0);
-				if (!handleList.isEmpty()) {
-					startActivity(intent);
-					m_aboutDialog.cancel();
-				}
+				if (myStartActivity(intent, true)) m_aboutDialog.cancel();
 			}
 		});
 		
@@ -1318,7 +1317,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				info.activityInfo.applicationInfo.packageName,
 				info.activityInfo.name));
 		i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-		myStartActivity(i);
+		myStartActivity(i, true);
 	}
 	
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
@@ -1400,7 +1399,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
 						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
 						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-						myStartActivity(intent);
+						myStartActivity(intent, true);
 					}
 					else {//system app
 						apkToDel = info.activityInfo.applicationInfo.sourceDir;
@@ -1807,7 +1806,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 	String[] tmp = apkName.split("\\.");
         			intent.setAction(Intent.ACTION_VIEW);
         			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
-    				myStartActivity(intent);
+    				myStartActivity(intent, false);
                 	appstate.downloadState.remove(NOTIFICATION_ID);
             		nManager.cancel(NOTIFICATION_ID);
     				return "";
@@ -1890,7 +1889,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			downloadAppID.add(new packageIDpair(pi.packageName, NOTIFICATION_ID, download_file));
     				}
 
-    				myStartActivity(intent);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
+    				myStartActivity(intent, false);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
             	}
 				
 	    	} catch (Exception e) {

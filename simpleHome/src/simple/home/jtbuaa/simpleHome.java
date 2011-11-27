@@ -1274,14 +1274,23 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
             	for (int i = 0; i < targetApps.size(); i++) {
                 	if (targetApps.get(i).activityInfo.packageName.equals(packageName) ) {//the new package may not support Launcher category, we will omit it.
-                    	if ((targetApps.get(i).activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-            				sysAdapter.add(targetApps.get(0));
-            		    	Collections.sort(sysAdapter.localApplist, new myComparator(pm));//sort by name
+                		ResolveInfo ri = targetApps.get(i);
+        	    	    CharSequence  sa = ri.loadLabel(pm);
+        	    	    if (sa == null) sa = ri.activityInfo.name;
+        	    	    String sa1 = sa.toString().trim();
+        	    	    String sa2 = "";
+        	    	    for (int j = 0; j < sa1.length(); j++)
+        	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
+        	    		ri.activityInfo.applicationInfo.dataDir = sa2;//we borrow dataDir to store the Pinyin of the label.
+
+                    	if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+            				sysAdapter.add(ri);
+            		    	Collections.sort(sysAdapter.localApplist, new myComparator());//sort by name
             		    	break;
                     	}
                     	else {
-            				userAdapter.add(targetApps.get(0));
-            		    	Collections.sort(userAdapter.localApplist, new myComparator(pm));//sort by name
+            				userAdapter.add(ri);
+            		    	Collections.sort(userAdapter.localApplist, new myComparator());//sort by name
             		    	break;
                     	}
                 	}
@@ -1528,7 +1537,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-	    	Collections.sort(mAllApps, new myComparator(pm));//sort by name
 
             readFile("favo");
             readFile("short");
@@ -1540,6 +1548,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	String label_contact = "聯絡人 联系人 Contacts People 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
+	    		
+	    	    CharSequence  sa = ri.loadLabel(pm);
+	    	    if (sa == null) sa = ri.activityInfo.name;
+	    	    String sa1 = sa.toString().trim();
+	    	    String sa2 = "";
+	    	    for (int j = 0; j < sa1.length(); j++)
+	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
+	    		ri.activityInfo.applicationInfo.dataDir = sa2;//we borrow dataDir to store the Pinyin of the label.
+	    		
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 	    			mSysApps.add(ri);
 	    			String name = ri.loadLabel(pm).toString() ; 
@@ -1571,6 +1588,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    			}
 	    		}
 	    		else mUserApps.add(ri);
+		    	Collections.sort(mSysApps, new myComparator());//sort by name
+		    	Collections.sort(mUserApps, new myComparator());//sort by name
 	    		
 	    		try {
 					getPackageSizeInfo.invoke(pm, ri.activityInfo.packageName, sizeObserver);

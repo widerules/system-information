@@ -137,7 +137,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
-	final static String mSimpleHome = "Simple Home";
 	
 	final static int homeTab = 1;
 	
@@ -283,7 +282,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 		public MyWebview(Context context) {
 			super(context);
-			title = mSimpleHome;
+			title = getString(R.string.app_name);
 			
 	        setScrollBarStyle(0);
 	        WebSettings webSettings = getSettings();
@@ -409,7 +408,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					else {//return to home page if only one page when click close button
 						webControl.setVisibility(View.INVISIBLE);
 						serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-						serverWebs.get(webIndex).title = mSimpleHome;
+						serverWebs.get(webIndex).title = getString(R.string.app_name);
 						serverWebs.get(webIndex).clearHistory();
 					}
 					adview.loadAd(adRequest);
@@ -1144,7 +1143,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     
     private void loadNewPage(String url) {
 		if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
-		if ((!serverWebs.get(webIndex).title.equals(mSimpleHome)) || serverWebs.get(webIndex).canGoBack()) 
+		if ((!serverWebs.get(webIndex).title.equals(getString(R.string.app_name))) || serverWebs.get(webIndex).canGoBack()) 
 			btnNewpage.performClick();//open the url in a new page if current page is not the main page
 		serverWebs.get(webIndex).loadUrl(url);
 		serverWebs.get(webIndex).title = url; 

@@ -4,12 +4,38 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	
+<RelativeLayout 
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 	
+<RadioGroup android:id="@+id/radio_hint"  
+    android:layout_width="wrap_content"  
+    android:layout_height="wrap_content"  
+    android:layout_alignParentTop="true" 
+    android:layout_centerHorizontal="true"
+    android:orientation="horizontal" >  
+    <RadioButton  
+        android:id="@+id/radio_system"  
+        android:button="@drawable/radio"
+        />  
+    <RadioButton  
+        android:id="@+id/radio_home"
+        android:checked="true"  
+        android:button="@drawable/radio"
+        />  
+    <RadioButton  
+        android:id="@+id/radio_user"  
+        android:button="@drawable/radio"
+        />     
+</RadioGroup>           
+		
     <android.support.v4.view.ViewPager
     	android:id="@+id/mainFrame"
     	android:background="@android:color/transparent"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"/>
+</RelativeLayout>
 		
 <RelativeLayout 
     android:id="@+id/adsParent"

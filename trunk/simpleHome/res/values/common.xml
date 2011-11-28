@@ -10,8 +10,8 @@
     
     <string name="warning">Delete system app may cause phone can not boot.\n\nPlease think carefully！</string>
 
-    <string name="menu_choose_home">切换主屏</string>
-    <string name="select">选择主屏</string>
+    <string name="menu_choose_home">Switch Home</string>
+    <string name="select">Select Home</string>
     
     <string name="wallpaper">Wallpaper...</string>
     <string name="about">About...</string>

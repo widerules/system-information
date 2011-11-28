@@ -120,6 +120,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -898,22 +899,28 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         mListViews.add(home);
         mListViews.add(users);
         
+        final RadioButton btnSystem, btnUser, btnHome;
+        btnSystem = (RadioButton) findViewById(R.id.radio_system);
+        btnUser = (RadioButton) findViewById(R.id.radio_user);
+        btnHome = (RadioButton) findViewById(R.id.radio_home);
+        
         mainlayout = (ViewPager)findViewById(R.id.mainFrame);
         mainlayout.setLongClickable(true);
         MyPagerAdapter myAdapter = new MyPagerAdapter();
         mainlayout.setAdapter(myAdapter);
         mainlayout.setOnPageChangeListener(new OnPageChangeListener() {
-
 			@Override
 			public void onPageScrollStateChanged(int state) {
-				// TODO Auto-generated method stub
 				if (state == ViewPager.SCROLL_STATE_SETTLING) {
 					switch(mainlayout.getCurrentItem()) {
 					case 0:
+						btnSystem.setChecked(true);
 						break;
 					case 1:
+						btnHome.setChecked(true);
 						break;
 					case 2:
+						btnUser.setChecked(true);
 						break;
 					}
 				}

@@ -17,8 +17,10 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -151,6 +153,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	TextView mailto;
 	View aboutView;
 	AlertDialog m_aboutDialog;
+	
+	//alpha list related
+	ListView sysAlpha, userAlpha;
+	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
+	ArrayList<String> mSysAlpha, mUserAlpha;
 	
 	//app list related
 	private List<View> mListViews;
@@ -888,11 +895,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	RelativeLayout systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	sysAppList = (ListView) systems.findViewById(R.id.applist); 
     	sysAppList.inflate(this, R.layout.app_list, null);
+    	sysAlpha = (ListView) systems.findViewById(R.id.alpha_list); 
+    	sysAlpha.inflate(this, R.layout.alpha_list, null);
         
     	//user app tab
     	RelativeLayout users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	userAppList = (ListView) users.findViewById(R.id.applist); 
         userAppList.inflate(this, R.layout.app_list, null);
+    	userAlpha = (ListView) users.findViewById(R.id.alpha_list); 
+    	userAlpha.inflate(this, R.layout.alpha_list, null);
         
         mListViews = new ArrayList<View>();
         mListViews.add(systems);
@@ -1029,6 +1040,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		mUserApps = new ArrayList<ResolveInfo>();
 		mFavoApps = new ArrayList<ResolveInfo>();
 		mShortApps = new ArrayList<ResolveInfo>();
+		mSysAlpha = new ArrayList<String>();
+		mUserAlpha = new ArrayList<String>();
+		
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
 		
@@ -1326,6 +1340,25 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		myStartActivity(i, true);
 	}
 	
+    private class AlphaAdapter extends ArrayAdapter<String> {
+    	ArrayList<String> localList;
+        public AlphaAdapter(Context context, List<String> alphas) {
+            super(context, 0, alphas);
+            localList = (ArrayList<String>) alphas;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                final LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.alpha_list, parent, false);
+            }
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.alpha);
+            textView1.setText(localList.get(position));
+        	return convertView;
+        }
+    }
+    
     private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
     	ArrayList localApplist;
         public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {
@@ -1562,8 +1595,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
 	    		ri.activityInfo.applicationInfo.dataDir = sa2;//we borrow dataDir to store the Pinyin of the label.
 	    		
+    			String tmp = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target.substring(0, 1).toUpperCase();
+    			
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 	    			mSysApps.add(ri);
+	    			
+	    			if (!mSysAlpha.contains(tmp)) mSysAlpha.add(tmp);
+	    			
 	    			String name = ri.loadLabel(pm).toString() ; 
 	    			//Log.d("===============", name);
 	    			if (label_phone.contains(name)) {
@@ -1592,9 +1630,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		    			}
 	    			}
 	    		}
-	    		else mUserApps.add(ri);
+	    		else {
+	    			mUserApps.add(ri);
+	    			if (!mUserAlpha.contains(tmp)) mUserAlpha.add(tmp);
+	    		}
 		    	Collections.sort(mSysApps, new myComparator());//sort by name
 		    	Collections.sort(mUserApps, new myComparator());//sort by name
+		    	Collections.sort(mSysAlpha, new stringCompatator());
+		    	Collections.sort(mUserAlpha, new stringCompatator());
 	    		
 	    		try {
 					getPackageSizeInfo.invoke(pm, ri.activityInfo.packageName, sizeObserver);
@@ -1684,6 +1727,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		
         		shortAdapter = new shortAppAdapter(getBaseContext(), mShortApps);
         		shortAppList.setAdapter(shortAdapter);
+        		
+        		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
+        		sysAlpha.setAdapter(sysAlphaAdapter);
+        	
+        		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
+        		userAlpha.setAdapter(userAlphaAdapter);
         		break;
         	case UPDATE_RI_PHONE:
         		int missCallCount = callObserver.countUnread();

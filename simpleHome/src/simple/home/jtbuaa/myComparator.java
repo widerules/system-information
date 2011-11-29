@@ -3,9 +3,7 @@ package simple.home.jtbuaa;
 import java.text.Collator;
 import java.util.Comparator;
 
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.util.Log;
 
 public class myComparator implements Comparator<ResolveInfo> {
 	public myComparator() {

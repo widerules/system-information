@@ -1242,6 +1242,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         			info = userAdapter.getItem(i);
         			if (info.activityInfo.packageName.equals(packageName)) {
         				userAdapter.remove(info);
+            			Log.d("=================0", info.activityInfo.applicationInfo.dataDir);
         				inUser = true;
         				break;
         			}
@@ -1255,6 +1256,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			}
             		}
             	}
+    			String tmp = info.activityInfo.applicationInfo.dataDir.substring(0, 1);
+    			
             	if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {//not remove shortcut if it is just replace 
             		for (int i = 0; i < favoAdapter.getCount(); i++) {
             			info = favoAdapter.getItem(i);
@@ -1273,7 +1276,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			}
             		}
             		
-        			String tmp = info.activityInfo.applicationInfo.dataDir;
         			boolean found = false;
             		if (inUser) {//check user alpha list
             			for (int i = 0; i < userAdapter.getCount(); i++) {
@@ -1322,7 +1324,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    	    String sa2 = "";
         	    	    for (int j = 0; j < sa1.length(); j++)
         	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
-        	    		ri.activityInfo.applicationInfo.dataDir = sa2.toUpperCase() ;//we borrow dataDir to store the Pinyin of the label.
+        	    		ri.activityInfo.applicationInfo.dataDir = sa2.trim().toUpperCase() ;//we borrow dataDir to store the Pinyin of the label.
         	    		String tmp = ri.activityInfo.applicationInfo.dataDir.substring(0, 1);
         	    		
                     	if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {

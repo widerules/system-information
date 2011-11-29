@@ -1236,18 +1236,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             String action = intent.getAction();
             String packageName = intent.getDataString().split(":")[1];//it always in the format of package:x.y.z
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
-            	boolean found = false;
+            	boolean inUser = false;
+            	ResolveInfo info = null;
         		for (int i = 0; i < userAdapter.getCount(); i++) {
-        			ResolveInfo info = userAdapter.getItem(i);
+        			info = userAdapter.getItem(i);
         			if (info.activityInfo.packageName.equals(packageName)) {
         				userAdapter.remove(info);
-        				found = true;
+        				inUser = true;
         				break;
         			}
         		}
-            	if (!found) {
+            	if (!inUser) {
             		for (int i = 0; i < sysAdapter.getCount(); i++) {
-            			ResolveInfo info = sysAdapter.getItem(i);
+            			info = sysAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				sysAdapter.remove(info);
             				break;
@@ -1256,7 +1257,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	}
             	if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {//not remove shortcut if it is just replace 
             		for (int i = 0; i < favoAdapter.getCount(); i++) {
-            			ResolveInfo info = favoAdapter.getItem(i);
+            			info = favoAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				favoAdapter.remove(info);
             				writeFile("favo");
@@ -1264,12 +1265,33 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			}
             		}
             		for (int i = 0; i < shortAdapter.getCount(); i++) {
-            			ResolveInfo info = shortAdapter.getItem(i);
+            			info = shortAdapter.getItem(i);
             			if (info.activityInfo.packageName.equals(packageName)) {
             				shortAdapter.remove(info);
             				writeFile("short");
             				break;
             			}
+            		}
+            		
+        			String tmp = info.activityInfo.applicationInfo.dataDir;
+        			boolean found = false;
+            		if (inUser) {//check user alpha list
+            			for (int i = 0; i < userAdapter.getCount(); i++) {
+            				if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
+            					found = true;
+            					break;
+            				}
+            			}
+            			if (!found) mUserAlpha.remove(tmp);
+            		}
+            		else {//check system alpha list
+            			for (int i = 0; i < sysAdapter.getCount(); i++) {
+            				if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
+            					found = true;
+            					break;
+            				}
+            			}
+            			if (!found) mSysAlpha.remove(tmp);
             		}
             	}
             }
@@ -1300,16 +1322,27 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    	    String sa2 = "";
         	    	    for (int j = 0; j < sa1.length(); j++)
         	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
-        	    		ri.activityInfo.applicationInfo.dataDir = sa2;//we borrow dataDir to store the Pinyin of the label.
-
+        	    		ri.activityInfo.applicationInfo.dataDir = sa2.toUpperCase() ;//we borrow dataDir to store the Pinyin of the label.
+        	    		String tmp = ri.activityInfo.applicationInfo.dataDir.substring(0, 1);
+        	    		
                     	if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
             				sysAdapter.add(ri);
             		    	Collections.sort(sysAdapter.localApplist, new myComparator());//sort by name
+            		    	
+        	    			if (!mSysAlpha.contains(tmp)) {
+        	    				mSysAlpha.add(tmp);
+            			    	Collections.sort(mSysAlpha, new stringCompatator());
+        	    			}
             		    	break;
                     	}
                     	else {
             				userAdapter.add(ri);
             		    	Collections.sort(userAdapter.localApplist, new myComparator());//sort by name
+            		    	
+        	    			if (!mUserAlpha.contains(tmp)) {
+        	    				mUserAlpha.add(tmp);
+            			    	Collections.sort(mUserAlpha, new stringCompatator());
+        	    			}
             		    	break;
                     	}
                 	}
@@ -1348,13 +1381,38 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 final LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.alpha_list, parent, false);
             }
             final TextView textView1 = (TextView) convertView.findViewById(R.id.alpha);
             textView1.setText(localList.get(position));
+            textView1.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					String tmp = localList.get(position);
+					switch(mainlayout.getCurrentItem()) {
+					case 0://system app
+						for (int i = 0; i < sysAdapter.getCount(); i++) {
+							if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
+								sysAppList.setSelection(i);
+								break;
+							}
+						}
+						break;
+					case 2://user app
+						for (int i = 0; i < userAdapter.getCount(); i++) {
+							if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
+								userAppList.setSelection(i);
+								break;
+							}
+						}
+						break;
+					}
+				}
+            });
+            
         	return convertView;
         }
     }
@@ -1593,9 +1651,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	    String sa2 = "";
 	    	    for (int j = 0; j < sa1.length(); j++)
 	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
-	    		ri.activityInfo.applicationInfo.dataDir = sa2;//we borrow dataDir to store the Pinyin of the label.
+	    		ri.activityInfo.applicationInfo.dataDir = sa2.toUpperCase() ;//we borrow dataDir to store the Pinyin of the label.
 	    		
-    			String tmp = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target.substring(0, 1).toUpperCase();
+    			String tmp = ri.activityInfo.applicationInfo.dataDir.substring(0, 1);
     			
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
 	    			mSysApps.add(ri);

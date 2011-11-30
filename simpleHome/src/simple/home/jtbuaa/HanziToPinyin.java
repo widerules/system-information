@@ -390,8 +390,10 @@ public class HanziToPinyin {
             offset--;
         }
         StringBuilder pinyin = new StringBuilder();
-        for (int j = 0; j < PINYINS[offset].length && PINYINS[offset][j] != 0; j++) {
-            pinyin.append((char) PINYINS[offset][j]);
+        if (offset >= 0) {
+            for (int j = 0; j < PINYINS[offset].length && PINYINS[offset][j] != 0; j++) {
+                pinyin.append((char) PINYINS[offset][j]);
+            }
         }
         token.target = pinyin.toString();
         return token;

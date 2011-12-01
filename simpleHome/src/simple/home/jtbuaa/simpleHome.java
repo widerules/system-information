@@ -118,6 +118,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.Gallery;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -155,7 +156,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	AlertDialog m_aboutDialog;
 	
 	//alpha list related
-	ListView sysAlpha, userAlpha;
+	GridView sysAlpha, userAlpha;
 	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	
@@ -895,14 +896,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	RelativeLayout systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	sysAppList = (ListView) systems.findViewById(R.id.applist); 
     	sysAppList.inflate(this, R.layout.app_list, null);
-    	sysAlpha = (ListView) systems.findViewById(R.id.alpha_list); 
+    	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
     	sysAlpha.inflate(this, R.layout.alpha_list, null);
         
     	//user app tab
     	RelativeLayout users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	userAppList = (ListView) users.findViewById(R.id.applist); 
         userAppList.inflate(this, R.layout.app_list, null);
-    	userAlpha = (ListView) users.findViewById(R.id.alpha_list); 
+    	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
     	userAlpha.inflate(this, R.layout.alpha_list, null);
         
         mListViews = new ArrayList<View>();
@@ -1388,9 +1389,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 final LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.alpha_list, parent, false);
             }
-            final TextView textView1 = (TextView) convertView.findViewById(R.id.alpha);
-            textView1.setText(localList.get(position));
-            textView1.setOnClickListener(new OnClickListener() {
+            final TextView btn = (TextView) convertView.findViewById(R.id.alpha);
+            btn.setText(localList.get(position));
+            btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
 					String tmp = localList.get(position);
@@ -1434,19 +1435,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 final LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.app_list, parent, false);
             }
-
-            if (position % 2 == 1)
-            	convertView.setBackgroundColor(whiteColor);
-            else
-            	convertView.setBackgroundColor(grayColor);
             
-            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
             final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
             textView1.setTextColor(0xFF000000);
             List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
-            for (int i = 0; i < appList.size(); i++) {
+            for (int i = 0; i < appList.size(); i++) {//a bottle neck
         		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
             	if (info.activityInfo.processName.equals(as.processName)) {
                 	textView1.setTextColor(0xFFFF7777);//red for running apk
@@ -1454,8 +1449,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		}
             }
 
+           	if (info.loadLabel(pm) == textView1.getText()) 
+           		return convertView;//seldom come here
+           	else textView1.setText(info.loadLabel(pm));
+           	
+            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
             btnIcon.setImageDrawable(info.loadIcon(pm));
-            if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
+            //if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
             btnIcon.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {//kill app
@@ -1479,11 +1479,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	lapp.setTag(new ricase(info, 2));
             registerForContextMenu(lapp); 
             
-            Object o = packagesSize.get(info.activityInfo.packageName);
-           	textView1.setText(info.loadLabel(pm));
-            
             final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
-            btnVersion.setVisibility(View.VISIBLE);
             try {
             	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
 			} catch (NameNotFoundException e) {
@@ -1510,6 +1506,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             
             final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
             String source = "";
+            Object o = packagesSize.get(info.activityInfo.packageName);
             if(o != null) source = o.toString();
             if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
             	textView3.setTextColor(0xFFF8BF00);//brown for debuggable apk
@@ -1518,6 +1515,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             else textView3.setTextColor(0xFF444444);//gray for normal
         	textView3.setText(source);
 			
+            if (position % 2 == 1)
+            	convertView.setBackgroundColor(whiteColor);
+            else
+            	convertView.setBackgroundColor(grayColor);
+            
             return convertView;
         }
     }
@@ -1537,7 +1539,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 final LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.favo_list, parent, false);
             }
-
+            
             convertView.setBackgroundColor(0);
             
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
@@ -1571,7 +1573,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 final LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.favo_list, parent, false);
             }
-
+            
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
             btnIcon.setImageDrawable(info.loadIcon(pm));
             

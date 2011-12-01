@@ -176,7 +176,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int grayColor = 0xDDDDDDDD;
 	static int whiteColor = 0xEEEEEEEE;
 	Context mContext;
 	PackageManager pm;
@@ -1552,8 +1551,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             
                 if (position % 2 == 1)
                 	convertView.setBackgroundColor(whiteColor);
-                else
-                	convertView.setBackgroundColor(grayColor);
             }
             
             return convertView;

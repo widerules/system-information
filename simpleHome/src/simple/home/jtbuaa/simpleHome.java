@@ -114,6 +114,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.SslErrorHandler;
 import android.net.http.SslError;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -160,6 +162,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	int MaxCount = 16;
+	Boolean DuringSelection = false;
 	
 	//app list related
 	private List<View> mListViews;
@@ -897,6 +900,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	RelativeLayout systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	sysAppList = (ListView) systems.findViewById(R.id.applist); 
     	sysAppList.inflate(this, R.layout.app_list, null);
+    	sysAppList.setOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
+				DuringSelection = false;
+			}
+			@Override
+			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+			}
+    	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
     	sysAlpha.inflate(this, R.layout.alpha_list, null);
         
@@ -904,6 +916,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	RelativeLayout users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	userAppList = (ListView) users.findViewById(R.id.applist); 
         userAppList.inflate(this, R.layout.app_list, null);
+        userAppList.setOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
+				DuringSelection = false;
+			}
+			@Override
+			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+			}
+        });
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
     	userAlpha.inflate(this, R.layout.alpha_list, null);
         
@@ -1157,7 +1178,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         
     	if (getIntent().getAction().equals(Intent.ACTION_VIEW)) //open the url from intent in a new page if the old page is under reading.
     		loadNewPage(getIntent().getDataString());
-		
+
 		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
@@ -1189,7 +1210,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         public void onReceive(Context context, Intent intent) {  
               
             String action = intent.getAction();  
-            Log.d("TAG", "sdcard action:::::" + action);  
             if(Intent.ACTION_MEDIA_MOUNTED.equals(action)  
                     || Intent.ACTION_MEDIA_SCANNER_STARTED.equals(action)  
                     || Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)  
@@ -1244,7 +1264,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         			info = userAdapter.getItem(i);
         			if (info.activityInfo.packageName.equals(packageName)) {
         				userAdapter.remove(info);
-            			Log.d("=================0", info.activityInfo.applicationInfo.dataDir);
         				inUser = true;
         				break;
         			}
@@ -1404,6 +1423,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				@Override
 				public void onClick(View arg0) {
 					String tmp = localList.get(position);
+					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
 					case 0://system app
 						for (int i = 0; i < sysAdapter.getCount(); i++) {
@@ -1446,18 +1466,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             }
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
-            final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             
-            textView1.setTextColor(0xFF000000);
-            List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
-            for (int i = 0; i < appList.size(); i++) {//a bottle neck
-        		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-            	if (info.activityInfo.processName.equals(as.processName)) {
-                	textView1.setTextColor(0xFFFF7777);//red for running apk
-        			break;
-        		}
-            }
-
            	if (info.loadLabel(pm) == textView1.getText()) 
            		return convertView;//seldom come here
            	else textView1.setText(info.loadLabel(pm));
@@ -1511,21 +1520,34 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				}
 			});
             
-            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
-            String source = "";
-            Object o = packagesSize.get(info.activityInfo.packageName);
-            if(o != null) source = o.toString();
-            if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-            	textView3.setTextColor(0xFFF8BF00);//brown for debuggable apk
-            	source += " (debuggable)";
+            if (!DuringSelection) {
+                textView1.setTextColor(0xFF000000);
+                final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
+                for (int i = 0; i < appList.size(); i++) {//a bottle neck
+            		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+                	if (info.activityInfo.processName.equals(as.processName)) {
+                    	textView1.setTextColor(0xFFFF7777);//red for running apk
+            			break;
+            		}
+                }
+                
+                final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
+                String source = "";
+                Object o = packagesSize.get(info.activityInfo.packageName);
+                if(o != null) source = o.toString();
+                if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
+                	textView3.setTextColor(0xFFF8BF00);//brown for debuggable apk
+                	source += " (debuggable)";
+                }
+                else textView3.setTextColor(0xFF444444);//gray for normal
+            	textView3.setText(source);
+            
+                if (position % 2 == 1)
+                	convertView.setBackgroundColor(whiteColor);
+                else
+                	convertView.setBackgroundColor(grayColor);
             }
-            else textView3.setTextColor(0xFF444444);//gray for normal
-        	textView3.setText(source);
-			
-            if (position % 2 == 1)
-            	convertView.setBackgroundColor(whiteColor);
-            else
-            	convertView.setBackgroundColor(grayColor);
             
             return convertView;
         }

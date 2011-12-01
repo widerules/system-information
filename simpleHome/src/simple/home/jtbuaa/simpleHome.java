@@ -159,6 +159,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	GridView sysAlpha, userAlpha;
 	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
 	ArrayList<String> mSysAlpha, mUserAlpha;
+	int MaxCount = 16;
 	
 	//app list related
 	private List<View> mListViews;
@@ -1285,7 +1286,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             					break;
             				}
             			}
-            			if (!found) mUserAlpha.remove(tmp);
+            			if (!found) {
+            				mUserAlpha.remove(tmp);
+                    		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
+                    		else userAlpha.setNumColumns(MaxCount);
+            			}
             		}
             		else {//check system alpha list
             			for (int i = 0; i < sysAdapter.getCount(); i++) {
@@ -1294,7 +1299,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             					break;
             				}
             			}
-            			if (!found) mSysAlpha.remove(tmp);
+            			if (!found) {
+            				mSysAlpha.remove(tmp);
+                    		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+                    		else sysAlpha.setNumColumns(MaxCount);
+            			}
             		}
             	}
             }
@@ -1790,9 +1799,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		
         		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
         		sysAlpha.setAdapter(sysAlphaAdapter);
+        		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
         	
         		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
         		userAlpha.setAdapter(userAlphaAdapter);
+        		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
         		break;
         	case UPDATE_RI_PHONE:
         		int missCallCount = callObserver.countUnread();

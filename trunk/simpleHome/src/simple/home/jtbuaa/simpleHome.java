@@ -1486,8 +1486,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				btnVersion.setText("unknown");
 			}
 			
-			if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM)
-				btnVersion.setEnabled(canRoot);//for system app, need judge whether can uninstall
 			btnVersion.setOnClickListener(new OnClickListener() {//delete app
 				@Override
 				public void onClick(View arg0) {

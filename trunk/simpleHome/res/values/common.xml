@@ -8,7 +8,7 @@
     <string name="author">jtbuaa@gmail.com</string>
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     
-    <string name="warning">Delete system app may cause phone can not boot.\n\nPlease think carefully！</string>
+    <string name="warning">Only root user can delete system app.\n\nDelete system app may cause phone can not boot.\n\nPlease think carefully！</string>
 
     <string name="menu_choose_home">Switch Home</string>
     <string name="select">Select Home</string>

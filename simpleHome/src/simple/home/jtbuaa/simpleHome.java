@@ -1369,6 +1369,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    			if (!mSysAlpha.contains(tmp)) {
         	    				mSysAlpha.add(tmp);
             			    	Collections.sort(mSysAlpha, new stringCompatator());
+                        		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
         	    			}
             		    	break;
                     	}
@@ -1379,6 +1380,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    			if (!mUserAlpha.contains(tmp)) {
         	    				mUserAlpha.add(tmp);
             			    	Collections.sort(mUserAlpha, new stringCompatator());
+                        		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
         	    			}
             		    	break;
                     	}

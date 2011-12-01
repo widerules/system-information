@@ -24,7 +24,7 @@
 	<TextView android:id="@+id/test"
 		android:layout_height="fill_parent" 
 		android:width="1dip"
-		android:background ="#00bbbbbb" /> 
+		android:background ="#F0bbbbbb" /> 
 	
     <LinearLayout android:id="@+id/app" 
     	android:orientation="vertical"
@@ -51,7 +51,7 @@
 	<TextView android:id="@+id/test"
 		android:layout_height="fill_parent" 
 		android:width="1dip"
-		android:background ="#00bbbbbb" /> 
+		android:background ="#F0bbbbbb" /> 
 	
     <Button android:id="@+id/appversion"
 	    android:focusable="false" 

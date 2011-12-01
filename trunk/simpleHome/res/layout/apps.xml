@@ -5,29 +5,22 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-<RelativeLayout 
-   	android:background="@android:color/transparent"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent">
-	
-	<ListView android:id="@+id/alpha_list"
-		android:layout_width="50dip"
+	<GridView android:id="@+id/alpha_list"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_centerVertical="true"
-		android:layout_alignParentRight="true"
-		android:divider="@android:color/transparent"
-		android:fadingEdge="none"
-		android:scrollingCache="false"
-		android:fadeScrollbars="true"
+		android:layout_alignParentBottom="true"
+		android:numColumns="16"
+		android:paddingTop="20dip"
 	/>
+	
 	<ListView android:id="@+id/applist"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_toLeftOf="@id/alpha_list"
+		android:layout_above="@id/alpha_list"
 		android:divider="@android:color/transparent"
 		android:fadingEdge="none"
 		android:scrollingCache="false"
 		android:fadeScrollbars="true"
 	/>
+	
 </RelativeLayout>	
-</RelativeLayout>

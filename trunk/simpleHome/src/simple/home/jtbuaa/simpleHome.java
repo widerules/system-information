@@ -93,6 +93,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -168,14 +169,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	private List<View> mListViews;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
+	TextView sysTitle, userTitle;
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int grayColor = 0x00DDDDDD;
-	static int whiteColor = 0x00EEEEEE;
+	static int grayColor = 0xDDDDDDDD;
+	static int whiteColor = 0xEEEEEEEE;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
@@ -911,6 +913,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
     	sysAlpha.inflate(this, R.layout.alpha_list, null);
+    	sysTitle = (TextView) systems.findViewById(R.id.title);
+    	sysTitle.setText(R.string.systemapps);
         
     	//user app tab
     	RelativeLayout users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
@@ -927,6 +931,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         });
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
     	userAlpha.inflate(this, R.layout.alpha_list, null);
+    	userTitle = (TextView) users.findViewById(R.id.title);
+    	userTitle.setText(R.string.userapps);
+    	userTitle.setGravity(Gravity.RIGHT);
         
         mListViews = new ArrayList<View>();
         mListViews.add(systems);

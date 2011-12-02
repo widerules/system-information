@@ -176,7 +176,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int whiteColor = 0xEEEEEEEE;
+	static int whiteColor = 0xEEEEEEEE, grayColor = 0xDDDDDDDD;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
@@ -1475,60 +1475,63 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
             
-           	if (info.loadLabel(pm) == textView1.getText()) 
+           	if ((info.loadLabel(pm) == textView1.getText()) && (DuringSelection))//don't update the view here 
            		return convertView;//seldom come here
-           	else textView1.setText(info.loadLabel(pm));
            	
-            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
-            btnIcon.setImageDrawable(info.loadIcon(pm));
-            //if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
-            btnIcon.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {//kill app
-					if (! info.activityInfo.packageName.equals(myPackageName)) {//don't kill myself
-						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-						am.restartPackage(info.activityInfo.packageName);
-						//but we need to know when will it restart by itself?
-						textView1.setTextColor(0xFF000000);//set color back to black after kill it.
-					}
-				}
-            });
-            
-            LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
-            lapp.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {//start app
-					startApp(info);
-					textView1.setTextColor(0xFFFF7777);//red for running apk
-				}
-            });
-        	lapp.setTag(new ricase(info, 2));
-            registerForContextMenu(lapp); 
-            
-            final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
-            try {
-            	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
-			} catch (NameNotFoundException e) {
-				btnVersion.setText("unknown");
-			}
-			
-			btnVersion.setOnClickListener(new OnClickListener() {//delete app
-				@Override
-				public void onClick(View arg0) {
-					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
-						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
-						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-						myStartActivity(intent, true);
-					}
-					else {//system app
-						apkToDel = info.activityInfo.applicationInfo.sourceDir;
-						pkgToDel = info.activityInfo.packageName;
-						showDialog(2);
-					}
-				}
-			});
-            
-            if (!DuringSelection) {
+           	if (info.loadLabel(pm) != textView1.getText()) {//only reset the appname, version, icon when needed
+               	textView1.setText(info.loadLabel(pm));
+               	
+                final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
+                btnIcon.setImageDrawable(info.loadIcon(pm));
+                //if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
+                btnIcon.setOnClickListener(new OnClickListener() {
+    				@Override
+    				public void onClick(View arg0) {//kill app
+    					if (! info.activityInfo.packageName.equals(myPackageName)) {//don't kill myself
+    						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    						am.restartPackage(info.activityInfo.packageName);
+    						//but we need to know when will it restart by itself?
+    						textView1.setTextColor(0xFF000000);//set color back to black after kill it.
+    					}
+    				}
+                });
+                
+                LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
+                lapp.setOnClickListener(new OnClickListener() {
+    				@Override
+    				public void onClick(View arg0) {//start app
+    					startApp(info);
+    					textView1.setTextColor(0xFFFF7777);//red for running apk
+    				}
+                });
+            	lapp.setTag(new ricase(info, 2));
+                registerForContextMenu(lapp); 
+                
+                final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
+                try {
+                	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
+    			} catch (NameNotFoundException e) {
+    				btnVersion.setText("unknown");
+    			}
+    			
+    			btnVersion.setOnClickListener(new OnClickListener() {//delete app
+    				@Override
+    				public void onClick(View arg0) {
+    					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
+    						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
+    						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+    						myStartActivity(intent, true);
+    					}
+    					else {//system app
+    						apkToDel = info.activityInfo.applicationInfo.sourceDir;
+    						pkgToDel = info.activityInfo.packageName;
+    						showDialog(2);
+    					}
+    				}
+    			});
+           	}
+           	
+            if (!DuringSelection) {//running state, size and color should be updated when not busy each time
                 textView1.setTextColor(0xFF000000);
                 final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
@@ -1553,6 +1556,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             
                 if (position % 2 == 1)
                 	convertView.setBackgroundColor(whiteColor);
+                else
+                	convertView.setBackgroundColor(grayColor);
             }
             
             return convertView;

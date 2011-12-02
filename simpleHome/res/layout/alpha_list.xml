@@ -10,7 +10,7 @@
 	android:layout_centerInParent="true"
 	android:textSize="14dip"
 	android:padding="5dip"
-   	android:background="@android:color/transparent"
+   	android:background="@drawable/circle"
    	android:focusable="true"
    	android:focusableInTouchMode="true"
 	/>

@@ -165,6 +165,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	final int MaxCount = 18;
 	Boolean DuringSelection = false;
 	final int minAppCount = 15;
+	int alphaPosition = -1;
 	
 	//app list related
 	private List<View> mListViews;
@@ -905,6 +906,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	sysAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
+				if ((sysAlpha != null) && (alphaPosition > -1) && (alphaPosition < sysAlpha.getCount())) {
+					RelativeLayout rl = (RelativeLayout)sysAlpha.getChildAt(alphaPosition);
+					if (rl != null) {
+						TextView tv = (TextView) rl.findViewById(R.id.alpha);
+						if (tv != null) {
+							tv.clearFocus();
+							alphaPosition = -1;
+						}
+					}
+				}
 				DuringSelection = false;
 			}
 			@Override
@@ -923,6 +934,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         userAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
+				if ((userAlpha != null) && (alphaPosition > -1) && (alphaPosition < userAlpha.getCount())) {
+					RelativeLayout rl = (RelativeLayout)userAlpha.getChildAt(alphaPosition);
+					if (rl != null) {
+						TextView tv = (TextView) rl.findViewById(R.id.alpha);
+						if (tv != null) {
+							tv.clearFocus();
+							alphaPosition = -1;
+						}
+					}
+				}
 				DuringSelection = false;
 			}
 			@Override
@@ -1439,6 +1460,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					alphaPosition = position;
 					String tmp = localList.get(position);
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {

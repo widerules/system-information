@@ -22,7 +22,7 @@
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"
 		android:numColumns="16"
-		android:layout_margin="3dip"
+		android:layout_margin="2dip"
 	/>
 	
 	<ListView android:id="@+id/applist"
@@ -35,6 +35,7 @@
 		android:fadingEdge="none"
 		android:scrollingCache="false"
 		android:fadeScrollbars="true"
+		android:background="@drawable/round_corner"
 	/>
 	
 </RelativeLayout>	

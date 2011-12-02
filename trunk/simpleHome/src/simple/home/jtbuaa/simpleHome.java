@@ -164,8 +164,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	final int MaxCount = 18;
 	Boolean DuringSelection = false;
-	final int minAppCount = 15;
-	int alphaPosition = -1;
 	
 	//app list related
 	private List<View> mListViews;
@@ -905,21 +903,23 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
-			public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
-				if ((sysAlpha != null) && (alphaPosition > -1) && (alphaPosition < sysAlpha.getCount())) {
-					RelativeLayout rl = (RelativeLayout)sysAlpha.getChildAt(alphaPosition);
-					if (rl != null) {
-						TextView tv = (TextView) rl.findViewById(R.id.alpha);
-						if (tv != null) {
-							tv.clearFocus();
-							alphaPosition = -1;
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if ((sysAlpha != null) && (sysAdapter != null)) {
+					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
+					for (int i = 0; i < sysAlphaAdapter.getCount(); i++) 
+						if (alpha.charAt(0) == sysAlphaAdapter.getItem(i).charAt(0)) {
+							RelativeLayout rl = (RelativeLayout)sysAlpha.getChildAt(i);
+							if (rl != null) {
+								TextView tv = (TextView) rl.findViewById(R.id.alpha);
+								if (tv != null) tv.requestFocus();
+							}
+							break;
 						}
-					}
 				}
 			}
 			@Override
-			public void onScrollStateChanged(AbsListView arg0, int arg1) {
-				DuringSelection = false;
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				DuringSelection = false;//the scrollState will not change when setSelection(), but will change during scroll manually. so we turn off the flag here.
 			}
     	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
@@ -933,16 +933,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
-			public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
-				if ((userAlpha != null) && (alphaPosition > -1) && (alphaPosition < userAlpha.getCount())) {
-					RelativeLayout rl = (RelativeLayout)userAlpha.getChildAt(alphaPosition);
-					if (rl != null) {
-						TextView tv = (TextView) rl.findViewById(R.id.alpha);
-						if (tv != null) {
-							tv.clearFocus();
-							alphaPosition = -1;
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if ((userAlpha != null) && (userAdapter != null)) {
+					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
+					for (int i = 0; i < userAlphaAdapter.getCount(); i++) 
+						if (alpha.charAt(0) == userAlphaAdapter.getItem(i).charAt(0)) {
+							RelativeLayout rl = (RelativeLayout)userAlpha.getChildAt(i);
+							if (rl != null) {
+								TextView tv = (TextView) rl.findViewById(R.id.alpha);
+								if (tv != null) tv.requestFocus();
+							}
+							break;
 						}
-					}
 				}
 			}
 			@Override
@@ -1392,10 +1394,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    				mSysAlpha.add(tmp);
             			    	Collections.sort(mSysAlpha, new stringCompatator());
                         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
-                        		if (sysAdapter.getCount() >= minAppCount) {//the list view is more than 2 page, need to use Alpha index
-                        			LayoutParams lp = sysAlpha.getLayoutParams();
-                        			lp.height = lp.WRAP_CONTENT;
-                        		}
         	    			}
             		    	break;
                     	}
@@ -1407,10 +1405,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    				mUserAlpha.add(tmp);
             			    	Collections.sort(mUserAlpha, new stringCompatator());
                         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
-                        		if (userAdapter.getCount() >= minAppCount) {//the list view is more than 2 page, need to use Alpha index
-                        			LayoutParams lp = userAlpha.getLayoutParams();
-                        			lp.height = lp.WRAP_CONTENT;
-                        		}
         	    			}
             		    	break;
                     	}
@@ -1460,7 +1454,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					alphaPosition = position;
 					String tmp = localList.get(position);
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
@@ -1864,18 +1857,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
         		sysAlpha.setAdapter(sysAlphaAdapter);
         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
-        		if (sysAdapter.getCount() < minAppCount) {//the list view is not more than 2 page, no need to use Alpha index
-        			LayoutParams lp = sysAlpha.getLayoutParams();
-        			lp.height = 0;
-        		}
         	
         		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
         		userAlpha.setAdapter(userAlphaAdapter);
         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
-        		if (userAdapter.getCount() < minAppCount) {//the list view is not more than 2 page, no need to use Alpha index
-        			LayoutParams lp = userAlpha.getLayoutParams();
-        			lp.height = 0;
-        		}
         		
         		break;
         	case UPDATE_RI_PHONE:

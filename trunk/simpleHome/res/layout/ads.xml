@@ -126,7 +126,7 @@
 				android:layout_height="35dip"/>
 				
 			<ListView android:id="@+id/weblist"
-				android:background="@drawable/board"
+				android:background="@drawable/border"
 				android:layout_centerHorizontal="true"
 				android:layout_above="@id/opennewpage"
 				android:layout_width="250dip"

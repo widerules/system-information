@@ -1554,10 +1554,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 else textView3.setTextColor(0xFF444444);//gray for normal
             	textView3.setText(source);
             
-                if (position % 2 == 1)
+                /*if (position % 2 == 1)
                 	convertView.setBackgroundColor(whiteColor);
                 else
-                	convertView.setBackgroundColor(grayColor);
+                	convertView.setBackgroundColor(grayColor);*/
             }
             
             return convertView;

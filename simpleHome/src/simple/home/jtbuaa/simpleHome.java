@@ -162,8 +162,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	GridView sysAlpha, userAlpha;
 	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
 	ArrayList<String> mSysAlpha, mUserAlpha;
-	int MaxCount = 16;
+	final int MaxCount = 18;
 	Boolean DuringSelection = false;
+	final int minAppCount = 15;
 	
 	//app list related
 	private List<View> mListViews;
@@ -1370,6 +1371,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    				mSysAlpha.add(tmp);
             			    	Collections.sort(mSysAlpha, new stringCompatator());
                         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+                        		if (sysAdapter.getCount() >= minAppCount) {//the list view is more than 2 page, need to use Alpha index
+                        			LayoutParams lp = sysAlpha.getLayoutParams();
+                        			lp.height = lp.WRAP_CONTENT;
+                        		}
         	    			}
             		    	break;
                     	}
@@ -1381,6 +1386,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    				mUserAlpha.add(tmp);
             			    	Collections.sort(mUserAlpha, new stringCompatator());
                         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
+                        		if (userAdapter.getCount() >= minAppCount) {//the list view is more than 2 page, need to use Alpha index
+                        			LayoutParams lp = userAlpha.getLayoutParams();
+                        			lp.height = lp.WRAP_CONTENT;
+                        		}
         	    			}
             		    	break;
                     	}
@@ -1833,10 +1842,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
         		sysAlpha.setAdapter(sysAlphaAdapter);
         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+        		if (sysAdapter.getCount() < minAppCount) {//the list view is not more than 2 page, no need to use Alpha index
+        			LayoutParams lp = sysAlpha.getLayoutParams();
+        			lp.height = 0;
+        		}
         	
         		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
         		userAlpha.setAdapter(userAlphaAdapter);
         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
+        		if (userAdapter.getCount() < minAppCount) {//the list view is not more than 2 page, no need to use Alpha index
+        			LayoutParams lp = userAlpha.getLayoutParams();
+        			lp.height = 0;
+        		}
+        		
         		break;
         	case UPDATE_RI_PHONE:
         		int missCallCount = callObserver.countUnread();

@@ -162,7 +162,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	GridView sysAlpha, userAlpha;
 	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
 	ArrayList<String> mSysAlpha, mUserAlpha;
-	final int MaxCount = 18;
+	final int MaxCount = 14;
 	Boolean DuringSelection = false;
 	
 	//app list related
@@ -1394,6 +1394,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    				mSysAlpha.add(tmp);
             			    	Collections.sort(mSysAlpha, new stringCompatator());
                         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+                        		else sysAlpha.setNumColumns(MaxCount);
         	    			}
             		    	break;
                     	}
@@ -1405,6 +1406,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    				mUserAlpha.add(tmp);
             			    	Collections.sort(mUserAlpha, new stringCompatator());
                         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
+                        		else userAlpha.setNumColumns(MaxCount);
         	    			}
             		    	break;
                     	}
@@ -1857,11 +1859,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
         		sysAlpha.setAdapter(sysAlphaAdapter);
         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+        		else sysAlpha.setNumColumns(MaxCount);
         	
         		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
         		userAlpha.setAdapter(userAlphaAdapter);
         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
-        		
+        		else userAlpha.setNumColumns(MaxCount);
+
         		break;
         	case UPDATE_RI_PHONE:
         		int missCallCount = callObserver.countUnread();

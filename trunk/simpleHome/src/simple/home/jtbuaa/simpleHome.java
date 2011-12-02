@@ -916,10 +916,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						}
 					}
 				}
-				DuringSelection = false;
 			}
 			@Override
 			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+				DuringSelection = false;
 			}
     	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
@@ -944,10 +944,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						}
 					}
 				}
-				DuringSelection = false;
 			}
 			@Override
 			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+				DuringSelection = false;
 			}
         });
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 

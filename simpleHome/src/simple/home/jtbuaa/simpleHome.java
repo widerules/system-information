@@ -129,6 +129,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -164,6 +165,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	final int MaxCount = 14;
 	Boolean DuringSelection = false;
+	int lastPosition = 0;
 	
 	//app list related
 	private List<View> mListViews;
@@ -904,6 +906,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	sysAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (!DuringSelection) {
+					TableLayout tl = (TableLayout) sysAppList.getChildAt(lastPosition);
+					if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
+				}
+				
 				if ((sysAlpha != null) && (sysAdapter != null)) {
 					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < sysAlphaAdapter.getCount(); i++) 
@@ -934,6 +941,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         userAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				if (!DuringSelection) {
+					TableLayout tl = (TableLayout) userAppList.getChildAt(lastPosition);
+					if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
+				}
+				
 				if ((userAlpha != null) && (userAdapter != null)) {
 					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < userAlphaAdapter.getCount(); i++) 
@@ -1460,17 +1472,31 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
 					case 0://system app
+						TableLayout tl = (TableLayout) sysAppList.getChildAt(lastPosition);
+						if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
 						for (int i = 0; i < sysAdapter.getCount(); i++) {
 							if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								sysAppList.setSelection(i);
+								tl = (TableLayout) sysAppList.getChildAt(i);
+								if (tl != null) {
+									tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle_revert);
+									lastPosition = i;
+								}
 								break;
 							}
 						}
 						break;
 					case 2://user app
+						tl = (TableLayout) userAppList.getChildAt(lastPosition);
+						if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
 						for (int i = 0; i < userAdapter.getCount(); i++) {
 							if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								userAppList.setSelection(i);
+								tl = (TableLayout) userAppList.getChildAt(i);
+								if (tl != null) {
+									tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle_revert);
+									lastPosition = i;
+								}
 								break;
 							}
 						}

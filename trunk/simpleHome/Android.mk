@@ -30,7 +30,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
-LOCAL_PACKAGE_NAME := SimpleHome
+LOCAL_PACKAGE_NAME := SuperHome
 
 LOCAL_STATIC_JAVA_LIBRARIES := admob
 

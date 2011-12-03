@@ -165,8 +165,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	final int MaxCount = 14;
 	Boolean DuringSelection = false;
-	int lastPosition = 0;
-	
+	int sysLastPosition = -1, userLastPosition = -1;
+    RadioButton btnSystem, btnUser, btnHome;
+
 	//app list related
 	private List<View> mListViews;
 	GridView favoAppList;
@@ -906,12 +907,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	sysAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if (!DuringSelection) {
-					TableLayout tl = (TableLayout) sysAppList.getChildAt(lastPosition);
-					if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
-				}
-				
-				if ((sysAlpha != null) && (sysAdapter != null)) {
+				if ((sysAlpha != null) && (sysAdapter != null) && (!DuringSelection)) {
 					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < sysAlphaAdapter.getCount(); i++) 
 						if (alpha.charAt(0) == sysAlphaAdapter.getItem(i).charAt(0)) {
@@ -941,12 +937,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         userAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if (!DuringSelection) {
-					TableLayout tl = (TableLayout) userAppList.getChildAt(lastPosition);
-					if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
-				}
-				
-				if ((userAlpha != null) && (userAdapter != null)) {
+				if ((userAlpha != null) && (userAdapter != null) && (!DuringSelection)) {
 					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < userAlphaAdapter.getCount(); i++) 
 						if (alpha.charAt(0) == userAlphaAdapter.getItem(i).charAt(0)) {
@@ -975,7 +966,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         mListViews.add(home);
         mListViews.add(users);
         
-        final RadioButton btnSystem, btnUser, btnHome;
         btnSystem = (RadioButton) findViewById(R.id.radio_system);
         btnUser = (RadioButton) findViewById(R.id.radio_user);
         btnHome = (RadioButton) findViewById(R.id.radio_home);
@@ -1472,31 +1462,23 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
 					case 0://system app
-						TableLayout tl = (TableLayout) sysAppList.getChildAt(lastPosition);
-						if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
 						for (int i = 0; i < sysAdapter.getCount(); i++) {
 							if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								sysAppList.setSelection(i);
-								tl = (TableLayout) sysAppList.getChildAt(i);
-								if (tl != null) {
-									tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle_revert);
-									lastPosition = i;
-								}
+								TableLayout tl = (TableLayout) sysAppList.getChildAt(i);
+								if (tl != null) tl.findViewById(R.id.app).requestFocus();
+								sysLastPosition = i;
 								break;
 							}
 						}
 						break;
 					case 2://user app
-						tl = (TableLayout) userAppList.getChildAt(lastPosition);
-						if (tl != null) tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle);
 						for (int i = 0; i < userAdapter.getCount(); i++) {
 							if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								userAppList.setSelection(i);
-								tl = (TableLayout) userAppList.getChildAt(i);
-								if (tl != null) {
-									tl.findViewById(R.id.app).setBackgroundResource(R.drawable.circle_revert);
-									lastPosition = i;
-								}
+								TableLayout tl = (TableLayout) userAppList.getChildAt(i);
+								if (tl != null) tl.findViewById(R.id.app).requestFocus();
+								userLastPosition = i;
 								break;
 							}
 						}
@@ -1558,8 +1540,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 });
             	lapp.setTag(new ricase(info, 2));
                 registerForContextMenu(lapp); 
+                if (DuringSelection) {
+                	if ((btnSystem.isChecked() && (position == sysLastPosition)) ||
+                			(btnUser.isChecked() && (position == userLastPosition))) {
+                		lapp.requestFocus();
+                	}
+                }
                 
-                final Button btnVersion = (Button) convertView.findViewById(R.id.appversion);
+                final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
                 try {
                 	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
     			} catch (NameNotFoundException e) {

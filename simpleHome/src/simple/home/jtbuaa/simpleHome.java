@@ -1536,6 +1536,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     				public void onClick(View arg0) {//start app
     					startApp(info);
     					textView1.setTextColor(0xFFFF7777);//red for running apk
+    					arg0.requestFocus();
     				}
                 });
             	lapp.setTag(new ricase(info, 2));

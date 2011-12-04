@@ -17,7 +17,7 @@
 		android:paddingBottom="5dip"
 		android:layout_margin="5dip"
 		android:layout_alignParentRight="true"
-		android:background="@drawable/round_corner"
+		android:background="@drawable/round_corner_light"
 	/>
 	
 	<GridView android:id="@+id/alpha_list"
@@ -27,7 +27,7 @@
 		android:layout_centerHorizontal="true"
 		android:numColumns="16"
 		android:layout_margin="5dip"
-		android:background="@drawable/round_corner"
+		android:background="@drawable/round_corner_light"
 	/>
 	
 	<ListView android:id="@+id/applist"

@@ -11,7 +11,7 @@
  
     <item android:state_focused="true">
         <shape>
-            <gradient android:startColor="#AA0000FF" android:endColor="#F0FFFFFF" android:angle="90" />
+            <gradient android:startColor="#AAAAAAFF" android:endColor="#AAFFFFFF" android:angle="90" />
             <corners android:radius="5dip" />
             <padding android:left="1dip" android:top="1dip"
                 android:right="1dip" android:bottom="1dip" />

@@ -1526,6 +1526,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						am.restartPackage(info.activityInfo.packageName);
     						//but we need to know when will it restart by itself?
     						textView1.setTextColor(0xFF000000);//set color back to black after kill it.
+    						arg0.requestFocus();
     					}
     				}
                 });
@@ -1554,7 +1555,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			} catch (NameNotFoundException e) {
     				btnVersion.setText("unknown");
     			}
-    			
     			btnVersion.setOnClickListener(new OnClickListener() {//delete app
     				@Override
     				public void onClick(View arg0) {
@@ -1562,6 +1562,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
     						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
     						myStartActivity(intent, true);
+    						arg0.requestFocus();
     					}
     					else {//system app
     						apkToDel = info.activityInfo.applicationInfo.sourceDir;

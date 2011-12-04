@@ -6,14 +6,18 @@
 
 	<TextView android:id="@+id/title"
 		android:layout_height="wrap_content" 
-		android:layout_width="match_parent"
+		android:layout_width="wrap_content"
 		android:layout_alignParentTop="true"
-		android:textSize="18dip"
+		android:textSize="14dip"
+		android:textColor="#FF000000"
+		android:textColorHighlight="#80000000"
 		android:paddingLeft="20dip"
 		android:paddingRight="20dip"
-		android:paddingTop="5dip"
+		android:paddingTop="3dip"
 		android:paddingBottom="5dip"
-   		android:background="@android:color/transparent"
+		android:layout_margin="5dip"
+		android:layout_alignParentRight="true"
+		android:background="@drawable/round_corner"
 	/>
 	
 	<GridView android:id="@+id/alpha_list"
@@ -22,7 +26,8 @@
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"
 		android:numColumns="16"
-		android:layout_margin="2dip"
+		android:layout_margin="5dip"
+		android:background="@drawable/round_corner"
 	/>
 	
 	<ListView android:id="@+id/applist"

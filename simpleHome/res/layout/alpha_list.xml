@@ -9,6 +9,8 @@
 	android:layout_width="wrap_content"
 	android:layout_centerInParent="true"
 	android:textSize="14dip"
+	android:textColor="#FF000000"
+	android:textColorHighlight="#80000000"
 	android:padding="5dip"
    	android:background="@drawable/circle"
    	android:focusable="true"

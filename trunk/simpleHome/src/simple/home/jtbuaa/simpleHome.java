@@ -173,7 +173,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	private List<View> mListViews;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList, webList;
-	TextView sysTitle, userTitle;
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
@@ -933,8 +932,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
     	sysAlpha.inflate(this, R.layout.alpha_list, null);
-    	sysTitle = (TextView) systems.findViewById(R.id.title);
-    	sysTitle.setText(R.string.systemapps);
         
     	//user app tab
     	RelativeLayout users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
@@ -963,8 +960,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         });
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
     	userAlpha.inflate(this, R.layout.alpha_list, null);
-    	userTitle = (TextView) users.findViewById(R.id.title);
-    	userTitle.setText(R.string.userapps);
         
         mListViews = new ArrayList<View>();
         mListViews.add(systems);
@@ -986,12 +981,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					switch(mainlayout.getCurrentItem()) {
 					case 0:
 						btnSystem.setChecked(true);
+						btnUser.setText(R.string.systemapps);
 						break;
 					case 1:
 						btnHome.setChecked(true);
+						btnUser.setText("");
 						break;
 					case 2:
 						btnUser.setChecked(true);
+						btnUser.setText(R.string.userapps);
 						break;
 					}
 				}

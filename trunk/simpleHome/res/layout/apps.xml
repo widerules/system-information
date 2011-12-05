@@ -4,22 +4,6 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<TextView android:id="@+id/title"
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content"
-		android:layout_alignParentTop="true"
-		android:textSize="14dip"
-		android:textColor="#FF000000"
-		android:textColorHighlight="#80000000"
-		android:paddingLeft="20dip"
-		android:paddingRight="20dip"
-		android:paddingTop="3dip"
-		android:paddingBottom="5dip"
-		android:layout_margin="5dip"
-		android:layout_alignParentRight="true"
-		android:background="@android:color/transparent"
-	/>
-	
 	<GridView android:id="@+id/alpha_list"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -35,8 +19,8 @@
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="5dip"
 		android:layout_marginRight="5dip"
+		android:layout_marginTop="35dip"
 		android:layout_above="@id/alpha_list"
-		android:layout_below="@id/title"
 		android:fadingEdge="none"
 		android:scrollingCache="false"
 		android:fadeScrollbars="true"

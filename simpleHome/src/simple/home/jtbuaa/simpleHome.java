@@ -985,7 +985,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						break;
 					case 1:
 						btnHome.setChecked(true);
-						btnUser.setText("");
+						btnUser.setText(R.string.home);
 						break;
 					case 2:
 						btnUser.setChecked(true);

@@ -1531,7 +1531,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     						am.restartPackage(info.activityInfo.packageName);
     						//but we need to know when will it restart by itself?
-    						textView1.setTextColor(0xFF000000);//set color back to black after kill it.
+    						textView1.setTextColor(0xFFFFFFFF);//set color back to black after kill it.
     						arg0.requestFocus();
     					}
     				}
@@ -1580,7 +1580,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
            	}
            	
             if (!DuringSelection) {//running state, size and color should be updated when not busy each time
-                textView1.setTextColor(0xFF000000);
+                textView1.setTextColor(0xFFFFFFFF);
                 final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
                 for (int i = 0; i < appList.size(); i++) {//a bottle neck

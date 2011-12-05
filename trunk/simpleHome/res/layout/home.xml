@@ -62,6 +62,7 @@
 		android:numColumns="auto_fit"
 		android:background="@android:color/transparent"
 		android:scrollingCache="false"
+		android:fadeScrollbars="true"
 		android:fadingEdge="none"/>
 		
 	<ListView android:id="@+id/business"
@@ -73,6 +74,7 @@
 		android:layout_marginBottom="10dip"
 		android:background="@drawable/border"
 		android:scrollingCache="false"
+		android:fadeScrollbars="true"
 		android:fadingEdge="none"/>
 	 
 </simple.home.jtbuaa.sizedRelativeLayout>

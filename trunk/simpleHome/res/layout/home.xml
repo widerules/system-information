@@ -52,6 +52,8 @@
 	
 	<GridView android:id="@+id/favos"
 		android:layout_above="@id/shortcut_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
 		android:stackFromBottom="true"
 		android:verticalSpacing="10dip"
 		android:horizontalSpacing="10dip"
@@ -59,17 +61,17 @@
 		android:columnWidth="55dip"
 		android:numColumns="auto_fit"
 		android:background="@android:color/transparent"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"/>
+		android:scrollingCache="false"
+		android:fadingEdge="none"/>
 		
 	<ListView android:id="@+id/business"
+		android:layout_above="@id/shortcut_bar"
+		android:layout_width="200dip"
+		android:layout_height="wrap_content"
 		android:layout_alignParentRight="true"
 		android:layout_marginRight="10dip"
 		android:layout_marginBottom="10dip"
-		android:layout_above="@id/shortcut_bar"
 		android:background="@drawable/border"
-		android:layout_width="200dip"
-		android:layout_height="wrap_content"
 		android:scrollingCache="false"
 		android:fadingEdge="none"/>
 	 

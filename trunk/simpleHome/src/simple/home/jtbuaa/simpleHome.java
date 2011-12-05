@@ -101,6 +101,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -893,12 +894,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	favoAppList = (GridView) home.findViewById(R.id.favos);
     	favoAppList.setVerticalScrollBarEnabled(false);
     	favoAppList.inflate(this, R.layout.app_list, null);
-    	favoAppList.setFadingEdgeLength(0);//no shadow when scroll
-    	favoAppList.setScrollingCacheEnabled(false);
+    	favoAppList.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+		    	shortAppList.setVisibility(View.INVISIBLE);
+				return false;
+			}
+    	});
         
     	shortAppList = (ListView) home.findViewById(R.id.business);
     	shortAppList.bringToFront();
-    	shortAppList.setVisibility(View.INVISIBLE);//why can't put it to the right of parent?
+    	shortAppList.setVisibility(View.INVISIBLE);
     	
     	//system app tab
     	RelativeLayout systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);

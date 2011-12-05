@@ -965,7 +965,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	userAlpha.inflate(this, R.layout.alpha_list, null);
     	userTitle = (TextView) users.findViewById(R.id.title);
     	userTitle.setText(R.string.userapps);
-    	userTitle.setGravity(Gravity.RIGHT);
         
         mListViews = new ArrayList<View>();
         mListViews.add(systems);

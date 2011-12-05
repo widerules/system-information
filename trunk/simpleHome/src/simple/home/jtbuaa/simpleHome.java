@@ -180,7 +180,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int whiteColor = 0xEEEEEEEE, grayColor = 0xDDDDDDDD;
+	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
 	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
@@ -1531,7 +1531,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     						am.restartPackage(info.activityInfo.packageName);
     						//but we need to know when will it restart by itself?
-    						textView1.setTextColor(0xFFFFFFFF);//set color back to black after kill it.
+    						textView1.setTextColor(whiteColor);//set color back after kill it.
     						arg0.requestFocus();
     					}
     				}
@@ -1542,7 +1542,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     				@Override
     				public void onClick(View arg0) {//start app
     					startApp(info);
-    					textView1.setTextColor(0xFFFF7777);//red for running apk
+    					textView1.setTextColor(redColor);//red for running apk
     					arg0.requestFocus();
     				}
                 });
@@ -1580,13 +1580,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
            	}
            	
             if (!DuringSelection) {//running state, size and color should be updated when not busy each time
-                textView1.setTextColor(0xFFFFFFFF);
+                textView1.setTextColor(whiteColor);
                 final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
                 for (int i = 0; i < appList.size(); i++) {//a bottle neck
             		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
                 	if (info.activityInfo.processName.equals(as.processName)) {
-                    	textView1.setTextColor(0xFFFF7777);//red for running apk
+                    	textView1.setTextColor(redColor);//red for running apk
             			break;
             		}
                 }
@@ -1596,16 +1596,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 Object o = packagesSize.get(info.activityInfo.packageName);
                 if(o != null) source = o.toString();
                 if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-                	textView3.setTextColor(0xFFF8BF00);//brown for debuggable apk
+                	textView3.setTextColor(brownColor);//brown for debuggable apk
                 	source += " (debuggable)";
                 }
-                else textView3.setTextColor(0xFF444444);//gray for normal
+                else textView3.setTextColor(grayColor);//gray for normal
             	textView3.setText(source);
-            
-                /*if (position % 2 == 1)
-                	convertView.setBackgroundColor(whiteColor);
-                else
-                	convertView.setBackgroundColor(grayColor);*/
             }
             
             return convertView;

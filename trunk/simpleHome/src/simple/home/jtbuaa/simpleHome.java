@@ -118,6 +118,8 @@ import android.webkit.SslErrorHandler;
 import android.net.http.SslError;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -166,7 +168,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	final int MaxCount = 14;
 	Boolean DuringSelection = false;
-	int sysLastPosition = -1, userLastPosition = -1;
     RadioButton btnSystem, btnUser, btnHome;
 
 	//app list related
@@ -912,7 +913,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	sysAppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if ((sysAlpha != null) && (sysAdapter != null) && (!DuringSelection)) {
+				if ((sysAlpha != null) && (sysAdapter != null) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
 					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < sysAlphaAdapter.getCount(); i++) 
 						if (alpha.charAt(0) == sysAlphaAdapter.getItem(i).charAt(0)) {
@@ -1470,10 +1471,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 0://system app
 						for (int i = 0; i < sysAdapter.getCount(); i++) {
 							if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
+								sysAppList.requestFocusFromTouch();
 								sysAppList.setSelection(i);
-								TableLayout tl = (TableLayout) sysAppList.getChildAt(i);
-								if (tl != null) tl.findViewById(R.id.app).requestFocus();
-								sysLastPosition = i;
 								break;
 							}
 						}
@@ -1481,10 +1480,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 2://user app
 						for (int i = 0; i < userAdapter.getCount(); i++) {
 							if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
+								userAppList.requestFocusFromTouch();
 								userAppList.setSelection(i);
-								TableLayout tl = (TableLayout) userAppList.getChildAt(i);
-								if (tl != null) tl.findViewById(R.id.app).requestFocus();
-								userLastPosition = i;
 								break;
 							}
 						}
@@ -1532,7 +1529,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						am.restartPackage(info.activityInfo.packageName);
     						//but we need to know when will it restart by itself?
     						textView1.setTextColor(whiteColor);//set color back after kill it.
-    						arg0.requestFocus();
     					}
     				}
                 });
@@ -1543,17 +1539,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     				public void onClick(View arg0) {//start app
     					startApp(info);
     					textView1.setTextColor(redColor);//red for running apk
-    					arg0.requestFocus();
     				}
                 });
             	lapp.setTag(new ricase(info, 2));
                 registerForContextMenu(lapp); 
-                if (DuringSelection) {
-                	if ((btnSystem.isChecked() && (position == sysLastPosition)) ||
-                			(btnUser.isChecked() && (position == userLastPosition))) {
-                		lapp.requestFocus();
-                	}
-                }
                 
                 final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
                 try {

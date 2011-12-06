@@ -1021,6 +1021,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoForward()) serverWebs.get(webIndex).goForward();
+				adview.loadAd(adRequest);
 			}
 		});
 		imgPrev = (ImageView) findViewById(R.id.prev);
@@ -1028,6 +1029,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
+				adview.loadAd(adRequest);
 			}
 		});
 		imgRefresh = (ImageView) findViewById(R.id.refresh);
@@ -1035,6 +1037,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onClick(View arg0) {
 				serverWebs.get(webIndex).reload();
+				adview.loadAd(adRequest);
 			}
 		});
 		imgShare = (ImageView) findViewById(R.id.share);

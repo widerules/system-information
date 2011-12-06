@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">超级主屏</string>
+    <string name="app_name">简洁主屏</string>
     <string name="switcher_name">主屏选择</string>
     
     <string name="about_dialog_notes">如果觉得这个应用对您有帮助\n请给我打5颗星，多谢！</string>
@@ -21,7 +21,7 @@
     
     <string name="share">分享</string>
     <string name="sharemode">分享方式</string>
-    <string name="sharetext">超级主屏，简单实用！</string>
+    <string name="sharetext">简洁主屏，简单实用！</string>
     <string name="app_share_text">很不错，推荐给你！</string>
     <string name="share_text1">手机查看请点</string>
     <string name="share_text2">. 电脑查看请点</string>
@@ -32,10 +32,10 @@
     <string name="systemapps">系统应用</string>        
     <string name="userapps">个人应用</string>        
     <string name="online">上网</string>
-    <string name="home">主屏</string>
+    <string name="home">首屏</string>
 
-    <string name="addtoFavo">添加到主屏</string>
-    <string name="removeFromFavo">从主屏删除</string>
+    <string name="addtoFavo">添加到首屏</string>
+    <string name="removeFromFavo">从首屏删除</string>
     <string name="addtoShort">添加到快捷方式</string>
     <string name="removeFromShort">删除快捷方式</string>
     <string name="appdetail">详细信息...</string>

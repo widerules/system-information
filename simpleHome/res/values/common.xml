@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Super Home</string>
+    <string name="app_name">Simple Home</string>
     <string name="switcher_name">Home Switcher</string>
     
     <string name="about_dialog_notes">If you like this app, \nplease vote me 5 stars, thanks.</string>
@@ -22,7 +22,7 @@
     
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
-    <string name="sharetext">SuperHome, simple but useful!</string>
+    <string name="sharetext">SimpleHome, simple but useful!</string>
     <string name="app_share_text">" "is cool!</string>
     <string name="share_text1">" "Check" "</string>
     <string name="share_text2">" "by phone or" "</string>

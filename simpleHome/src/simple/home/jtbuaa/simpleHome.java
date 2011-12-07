@@ -1438,13 +1438,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		
 	};
 
-	void startApp(ResolveInfo info) {
+	boolean startApp(ResolveInfo info) {
 		Intent i = new Intent(Intent.ACTION_MAIN);
 		i.setComponent(new ComponentName(
 				info.activityInfo.applicationInfo.packageName,
 				info.activityInfo.name));
 		i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-		myStartActivity(i, true);
+		return myStartActivity(i, true);
 	}
 	
     private class AlphaAdapter extends ArrayAdapter<String> {
@@ -1537,8 +1537,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 lapp.setOnClickListener(new OnClickListener() {
     				@Override
     				public void onClick(View arg0) {//start app
-    					startApp(info);
-    					textView1.setTextColor(redColor);//red for running apk
+    					if (startApp(info))//start success
+    						textView1.setTextColor(redColor);//red for running apk
+    					else {
+    						if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) //user app
+    							userAdapter.remove(info);
+    						else
+    							sysAdapter.remove(info);//fail to start, remove the item.
+    					}
     				}
                 });
             	lapp.setTag(new ricase(info, 2));

@@ -1556,7 +1556,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 	if ((version == null) || (version.trim().equals(""))) version = String.valueOf(pm.getPackageInfo(info.activityInfo.packageName, 0).versionCode);
                 	btnVersion.setText(version);
     			} catch (NameNotFoundException e) {
-    				btnVersion.setText("unknown");
+    				btnVersion.setText(e.toString());
     			}
     			btnVersion.setOnClickListener(new OnClickListener() {//delete app
     				@Override

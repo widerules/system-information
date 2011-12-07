@@ -1345,7 +1345,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             				}
             			}
             			if (!found) {
-            				mUserAlpha.remove(tmp);
+            				userAlphaAdapter.remove(tmp);
                     		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
                     		else userAlpha.setNumColumns(MaxCount);
             			}
@@ -1358,7 +1358,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             				}
             			}
             			if (!found) {
-            				mSysAlpha.remove(tmp);
+            				sysAlphaAdapter.remove(tmp);
                     		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
                     		else sysAlpha.setNumColumns(MaxCount);
             			}
@@ -1400,8 +1400,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             		    	Collections.sort(sysAdapter.localApplist, new myComparator());//sort by name
             		    	
         	    			if (!mSysAlpha.contains(tmp)) {
-        	    				mSysAlpha.add(tmp);
-            			    	Collections.sort(mSysAlpha, new stringCompatator());
+        	    				sysAlphaAdapter.add(tmp);
+            			    	Collections.sort(sysAlphaAdapter.localList, new stringCompatator());
                         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
                         		else sysAlpha.setNumColumns(MaxCount);
         	    			}
@@ -1412,8 +1412,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             		    	Collections.sort(userAdapter.localApplist, new myComparator());//sort by name
             		    	
         	    			if (!mUserAlpha.contains(tmp)) {
-        	    				mUserAlpha.add(tmp);
-            			    	Collections.sort(mUserAlpha, new stringCompatator());
+                				userAlphaAdapter.add(tmp);
+            			    	Collections.sort(userAlphaAdapter.localList, new stringCompatator());
                         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
                         		else userAlpha.setNumColumns(MaxCount);
         	    			}

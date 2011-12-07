@@ -1552,7 +1552,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 
                 final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
                 try {
-                	btnVersion.setText(pm.getPackageInfo(info.activityInfo.packageName, 0).versionName);
+                	String version = pm.getPackageInfo(info.activityInfo.packageName, 0).versionName;
+                	if ((version == null) || (version.trim().equals(""))) version = String.valueOf(pm.getPackageInfo(info.activityInfo.packageName, 0).versionCode);
+                	btnVersion.setText(version);
     			} catch (NameNotFoundException e) {
     				btnVersion.setText("unknown");
     			}

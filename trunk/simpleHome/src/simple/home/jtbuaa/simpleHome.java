@@ -1347,6 +1347,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			if (!found) {
             				userAlphaAdapter.remove(tmp);
                     		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
+                    		else if (userAlphaAdapter.getCount() < MaxCount*2) userAlpha.setNumColumns((int)(userAlphaAdapter.getCount()/2.0+0.5));
                     		else userAlpha.setNumColumns(MaxCount);
             			}
             		}
@@ -1360,6 +1361,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			if (!found) {
             				sysAlphaAdapter.remove(tmp);
                     		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+                    		else if (sysAlphaAdapter.getCount() < MaxCount*2) sysAlpha.setNumColumns((int)(sysAlphaAdapter.getCount()/2.0+0.5));
                     		else sysAlpha.setNumColumns(MaxCount);
             			}
             		}
@@ -1403,6 +1405,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    				sysAlphaAdapter.add(tmp);
             			    	Collections.sort(sysAlphaAdapter.localList, new stringCompatator());
                         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+                        		else if (sysAlphaAdapter.getCount() < MaxCount*2) sysAlpha.setNumColumns((int)(sysAlphaAdapter.getCount()/2.0+0.5));
                         		else sysAlpha.setNumColumns(MaxCount);
         	    			}
             		    	break;
@@ -1415,6 +1418,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 				userAlphaAdapter.add(tmp);
             			    	Collections.sort(userAlphaAdapter.localList, new stringCompatator());
                         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
+                        		else if (userAlphaAdapter.getCount() < MaxCount*2) userAlpha.setNumColumns((int)(userAlphaAdapter.getCount()/2.0+0.5));
                         		else userAlpha.setNumColumns(MaxCount);
         	    			}
             		    	break;
@@ -1873,11 +1877,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
         		sysAlpha.setAdapter(sysAlphaAdapter);
         		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
+        		else if (sysAlphaAdapter.getCount() < MaxCount*2) sysAlpha.setNumColumns((int)(sysAlphaAdapter.getCount()/2.0+0.5));
         		else sysAlpha.setNumColumns(MaxCount);
         	
         		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
         		userAlpha.setAdapter(userAlphaAdapter);
         		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
+        		else if (userAlphaAdapter.getCount() < MaxCount*2) userAlpha.setNumColumns((int)(userAlphaAdapter.getCount()/2.0+0.5));
         		else userAlpha.setNumColumns(MaxCount);
 
         		break;

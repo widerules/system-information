@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import android.app.Application;
 
-import simple.home.jtbuaa.simpleHome.DownloadTask;
+import simple.home.jtbuaa.SimpleBrowser.DownloadTask;
 
 public class MyApp extends Application {
 	HashMap<Integer, DownloadTask> downloadState;

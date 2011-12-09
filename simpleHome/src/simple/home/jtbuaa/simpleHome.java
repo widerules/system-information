@@ -7,38 +7,24 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.URL;
-import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
-
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -56,17 +42,10 @@ import android.content.pm.PackageStats;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -78,7 +57,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.RemoteException;
@@ -90,10 +68,8 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -105,53 +81,26 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.webkit.DownloadListener;
-import android.webkit.MimeTypeMap;
-import android.webkit.WebChromeClient;
-import android.webkit.WebIconDatabase;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.webkit.SslErrorHandler;
-import android.net.http.SslError;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.Gallery;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
-import android.widget.RemoteViews;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 public class simpleHome extends Activity implements SensorEventListener, sizedRelativeLayout.OnResizeChangeListener {
 
-	//browser related
-	ArrayList<MyWebview> serverWebs;
-	int webIndex;
-	ViewFlipper webpages;
-	ImageView imgNext, imgPrev, imgShare, imgRefresh, imgNew;
-	WebAdapter webAdapter;
-	RelativeLayout webControl, webtools_center;
-	TextView btnNewpage;
-	InputMethodManager imm;
-	
 	final static int homeTab = 1;
 	
 	//wall paper related
+	String downloadPath;
 	SensorManager sensorMgr;
 	Sensor mSensor;
 	float last_x, last_y, last_z;
@@ -173,7 +122,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	//app list related
 	private List<View> mListViews;
 	GridView favoAppList;
-	ListView sysAppList, userAppList, shortAppList, webList;
+	ListView sysAppList, userAppList, shortAppList;
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
@@ -181,7 +130,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
 	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
-	Context mContext;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
 	shortAppAdapter shortAdapter;
@@ -195,25 +143,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
     appHandler mAppHandler = new appHandler();
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_PIC = 4; 
-	AdView adview;
+	ContextMenu mMenu;
 	
 	String apkToDel, pkgToDel;
 	boolean canRoot;
 	
-	ProgressDialog mProgressDialog;
 	DisplayMetrics dm;
 	String processor;
 	Field pid;
 	
-	AdRequest adRequest = new AdRequest();
 
-	//download related
-	String downloadPath;
-	ContextMenu mMenu;
-	NotificationManager nManager;
-	ArrayList<packageIDpair> downloadAppID;
-	MyApp appstate;
-	
 	//package size related
 	HashMap<String, Object> packagesSize;
 	Method getPackageSizeInfo;
@@ -268,18 +207,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    }
 	}
 
-	class packageIDpair {
-		String packageName;
-		File downloadedfile;
-		int notificationID;
-		
-		packageIDpair(String name, int id, File file) {
-			packageName = name;
-			notificationID = id;
-			downloadedfile = file;
-		}
-	}
-	
 	class ricase {
 		ResolveInfo mRi;
 		int mCase;
@@ -290,227 +217,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		}
 	}
 	ricase selected_case;
-	
-	void hideWebControl() {
-		if (webControl.getVisibility() == View.VISIBLE) imgNew.performClick();		
-	}
-	
-	class MyWebview extends WebView {
-		public String title = "";
-
-		public MyWebview(Context context) {
-			super(context);
-			title = getString(R.string.app_name);
-			
-	        setScrollBarStyle(0);
-	        WebSettings webSettings = getSettings();
-	        webSettings.setJavaScriptEnabled(true);
-	        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-	        webSettings.setSaveFormData(true);
-	        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-	        webSettings.setSupportZoom(true);
-
-	        setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View arg0, MotionEvent arg1) {//just close webcontrol page if it is open.
-		        	hideWebControl();
-					return false;
-				}
-	        });
-	        
-	        setDownloadListener(new DownloadListener() {
-				@Override
-				public void onDownloadStart(String url, String ua, String contentDisposition,
-						String mimetype, long contentLength) {
-					startDownload(url);
-				}
-	        });
-	        
-	        setWebChromeClient(new WebChromeClient() {
-	        	@Override
-	        	public void onProgressChanged(WebView view, int progress) {
-	        		if (mProgressDialog != null) {
-	    				mProgressDialog.setProgress(progress);
-	    				if (progress >= 50) {//50% is enough
-	    					mProgressDialog.hide();
-	    					mProgressDialog.setProgress(0);
-	    				}
-	        		}
-	        	}
-			});
-	        
-			setWebViewClient(new WebViewClient() {
-				@Override
-				public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error){
-			        handler.proceed();//accept ssl certification when never needed.
-				}
-				
-				@Override
-				public void onPageStarted(WebView view, String url, Bitmap favicon) {
-					if (!url.equals("file:///android_asset/online.html")) showDialog(0);
-					super.onPageStarted(view, url, favicon);
-				}
-				 
-				@Override
-				public void onPageFinished(WebView view, String url) {
-					webAdapter.notifyDataSetChanged();
-					//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-	        		if (mProgressDialog != null) {
-	    				if (mProgressDialog.isShowing()) {
-	    					mProgressDialog.hide();
-	    					mProgressDialog.setProgress(0);
-	    				}
-	        		}
-				}         
-				
-				@Override
-				public boolean shouldOverrideUrlLoading(WebView view, String url) {
-					if (!url.startsWith("http")) {
-						Uri uri = Uri.parse(url);
-						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-						intent.addCategory(Intent.CATEGORY_BROWSABLE);
-						return myStartActivity(intent, false);
-					}
-					else return startDownload(url);
-				}
-			});
-		}
-	}
-	
-    private class WebAdapter extends ArrayAdapter<MyWebview> {
-    	ArrayList localWeblist;
-    	public WebAdapter(Context context, List<MyWebview> webs) {
-            super(context, 0, webs);
-            localWeblist = (ArrayList) webs;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            final MyWebview wv = (MyWebview) localWeblist.get(position);
-
-            if (convertView == null) {
-                final LayoutInflater inflater = getLayoutInflater();
-                convertView = inflater.inflate(R.layout.web_list, parent, false);
-            }
-
-            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
-            btnIcon.setImageBitmap(wv.getFavicon());
-            
-            TextView webname = (TextView) convertView.findViewById(R.id.webname);
-            if ((wv.getTitle() != null) && (!wv.getTitle().equals("")))
-            	webname.setText(wv.getTitle());
-            else webname.setText(wv.title);
-            
-            webname.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					webControl.setVisibility(View.INVISIBLE);
-					webIndex = position;
-					while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-					webpages.getChildAt(webIndex).requestFocus();
-					adview.loadAd(adRequest);
-				}
-    		});
-            
-            ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
-            btnStop.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					if (webAdapter.getCount() > 1) {
-						((MyWebview) webpages.getChildAt(position)).destroy();
-						webAdapter.remove((MyWebview) webpages.getChildAt(position));
-						webpages.removeViewAt(position);
-						imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
-						if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
-					}
-					else {//return to home page if only one page when click close button
-						webControl.setVisibility(View.INVISIBLE);
-						serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-						serverWebs.get(webIndex).title = getString(R.string.app_name);
-						serverWebs.get(webIndex).clearHistory();
-					}
-					adview.loadAd(adRequest);
-					webpages.getChildAt(webIndex).requestFocus();
-				}
-            });
-            
-            return convertView;
-        }
-    }
-
-    /** 
-     * get bitmap from resource id 
-     * @param res 
-     * @param resId 
-     * @return 
-     */  
-    private Bitmap getResIcon(Resources res,int resId){  
-        Drawable icon=res.getDrawable(resId);  
-        if(icon instanceof BitmapDrawable){  
-            BitmapDrawable bd=(BitmapDrawable)icon;  
-            return bd.getBitmap();  
-        }else return null;  
-    }  
-    
-    /** 
-     * put number on gaven bitmap with blue color 
-     * @param icon gaven bitmap
-     * @return bitmap with count
-     */  
-    private Bitmap generatorCountIcon(Bitmap icon, int count, int scheme){  
-        //初始化画布  
-        int iconSize=(int)getResources().getDimension(android.R.dimen.app_icon_size);  
-        Bitmap contactIcon=Bitmap.createBitmap(iconSize, iconSize, Config.ARGB_8888);  
-        Canvas canvas=new Canvas(contactIcon);  
-          
-        //拷贝图片  
-        Paint iconPaint=new Paint();  
-        iconPaint.setDither(true);//防抖动  
-        iconPaint.setFilterBitmap(true);//用来对Bitmap进行滤波处理，这样，当你选择Drawable时，会有抗锯齿的效果  
-        Rect src=new Rect(0, 0, icon.getWidth(), icon.getHeight());  
-        Rect dst=new Rect(0, 0, iconSize, iconSize);  
-        canvas.drawBitmap(icon, src, dst, iconPaint);  
-          
-        //启用抗锯齿和使用设备的文本字距  
-        Paint countPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);
-        if (scheme == 0) {//for newpage icon
-            countPaint.setColor(Color.BLACK);  
-            countPaint.setTextSize(25f);  
-            canvas.drawText(String.valueOf(count), iconSize/2-3, iconSize/2+13, countPaint);
-        }
-        else {//for miss call and unread sms
-            countPaint.setColor(Color.DKGRAY);  
-            countPaint.setTextSize(25f);  
-            countPaint.setTypeface(Typeface.DEFAULT_BOLD);  
-            canvas.drawText(String.valueOf(count), iconSize-30, 20, countPaint);
-        }
-        return contactIcon;  
-    }  
-    
-    private boolean myStartActivity(Intent intent, boolean showToast) {
-		try {
-			startActivity(intent);
-			return true;
-		} catch (Exception e) {
-			if (showToast)
-				Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-			e.printStackTrace();
-			return false;
-		}
-    }
-    
+       
 	@Override
 	protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case 0: {//progress dialog
-        	if (mProgressDialog == null) {
-                mProgressDialog = new ProgressDialog(this);
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.setIndeterminate(false);
-                mProgressDialog.setMessage(getString(R.string.wait));
-        	}
-            return mProgressDialog;
-    	}
         case 2: {//delete system app dialog
 			return new AlertDialog.Builder(this).
 			setTitle(getString(R.string.app_name) + " " + version).
@@ -644,7 +354,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		switch (item.getItemId()) {
 		case 0://wallpaper
 	        final Intent pickWallpaper = new Intent(Intent.ACTION_SET_WALLPAPER);
-	        myStartActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)), true);
+	        util.startActivity(Intent.createChooser(pickWallpaper, getString(R.string.wallpaper)), true, getBaseContext());
 			break;
 		case 1://settings
 			return super.onOptionsItemSelected(item);
@@ -656,11 +366,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	setNegativeButton(R.string.vote, new DialogInterface.OnClickListener() {
             		public void onClick(DialogInterface dialog, int which) {
 						Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=simple.home.jtbuaa"));
-						if (!myStartActivity(intent, false)) {
+						if (!util.startActivity(intent, false, getBaseContext())) {
 							intent.setAction(Intent.ACTION_VIEW);
 							intent.setData(Uri.parse("https://market.android.com/details?id=simple.home.jtbuaa"));
 							intent.setComponent(getComponentName());
-							myStartActivity(intent, false);
+							util.startActivity(intent, false, getBaseContext());
 						}
             		}
             	}).
@@ -676,7 +386,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	        intent.setType("text/plain");  
             	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
     	        		intent.putExtra(Intent.EXTRA_TEXT, text);
-   	        			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true);
+   	        			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
             		}
             	}).create();
         	}
@@ -773,7 +483,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	        	+ "https://market.android.com/details?id=" + selected_case.mRi.activityInfo.packageName
 	        	+ getString(R.string.share_text3);
     		intent.putExtra(Intent.EXTRA_TEXT, text);
-   			myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true);
+   			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
 			break;
 		case 3://backup app
 			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
@@ -803,7 +513,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			else {//2.6 tahiti change the action.
 				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_case.mRi.activityInfo.packageName, null));
 			}
-			myStartActivity(intent, true);
+			util.startActivity(intent, true, getBaseContext());
 			break;
 		case 5://add to home
 			if (favoAdapter.getPosition(selected_case.mRi) < 0) { 
@@ -826,7 +536,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mContext = this.getBaseContext();
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
     	PackageInfo pi = null;
@@ -860,16 +569,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		};
 		packagesSize = new HashMap<String, Object>();
     	
-    	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-    	downloadAppID = new ArrayList();
-    	appstate = ((MyApp) getApplicationContext());
-    	
     	sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
     	mSensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     	
-		imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-		
 		dm = new DisplayMetrics();  
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
@@ -887,7 +589,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	setContentView(R.layout.ads);
     	
         RelativeLayout home = (RelativeLayout) getLayoutInflater().inflate(R.layout.home, null);
-        adview = (AdView) this.findViewById(R.id.adView);
         
         
     	//favorite app tab
@@ -1007,97 +708,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         });
         mainlayout.setCurrentItem(homeTab);
         
-        //online tab
-        WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
-        webIndex = 0;
-        serverWebs = new ArrayList<MyWebview>();
-        serverWebs.add(new MyWebview(this));
-        webpages = (ViewFlipper) findViewById(R.id.webpages);
-        webpages.addView(serverWebs.get(webIndex));
-        
-		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
-		
-		imgNext = (ImageView) findViewById(R.id.next);
-		imgNext.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (serverWebs.get(webIndex).canGoForward()) serverWebs.get(webIndex).goForward();
-				adview.loadAd(adRequest);
-			}
-		});
-		imgPrev = (ImageView) findViewById(R.id.prev);
-		imgPrev.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
-				adview.loadAd(adRequest);
-			}
-		});
-		imgRefresh = (ImageView) findViewById(R.id.refresh);
-		imgRefresh.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				serverWebs.get(webIndex).reload();
-				adview.loadAd(adRequest);
-			}
-		});
-		imgShare = (ImageView) findViewById(R.id.share);
-		imgShare.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-    	        Intent intent = new Intent(Intent.ACTION_SEND);
-    	        intent.setType("text/plain");  
-    	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
-    	        myStartActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true);
-			}
-		});
-		imgNew = (ImageView) findViewById(R.id.newpage);
-		imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), 1, 0));
-		imgNew.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (webControl.getVisibility() == View.INVISIBLE) {
-			        webControl.setVisibility(View.VISIBLE);
-			        webControl.bringToFront();
-				}
-				else {
-					webControl.setVisibility(View.INVISIBLE);
-					webpages.getChildAt(webIndex).requestFocus();
-				}
-			}
-		});
-		
-		//web control
-		webControl = (RelativeLayout) findViewById(R.id.webcontrol);
-		
-		btnNewpage = (TextView) findViewById(R.id.opennewpage);
-		btnNewpage.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {//add a new page
-				if (webAdapter.getCount() == 9) //max count is 9.
-					Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
-				else {
-			        webControl.setVisibility(View.INVISIBLE);
-					webAdapter.add(new MyWebview(mContext));
-					webIndex = webAdapter.getCount() - 1;
-			        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-			        webpages.addView(webAdapter.getItem(webIndex));
-			        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-					webpages.getChildAt(webIndex).requestFocus();
-					imgNew.setImageBitmap(generatorCountIcon(getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0));
-				}
-				adview.loadAd(adRequest);
-			}
-		});
-    	//web list
-		webAdapter = new WebAdapter(this, serverWebs);
-    	webList = (ListView) findViewById(R.id.weblist);
-    	webList.inflate(this, R.layout.web_list, null);
-    	webList.setFadingEdgeLength(0);//no shadow when scroll
-    	webList.setScrollingCacheEnabled(false);
-    	webList.setAdapter(webAdapter);
-    	
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
 		mFavoApps = new ArrayList<ResolveInfo>();
@@ -1114,20 +724,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         shortcutBar = (RelativeLayout) home.findViewById(R.id.shortcut_bar);
         shortcutBar_center = (RelativeLayout) home.findViewById(R.id.shortcut_bar_center);
         homeBar = (ImageView) home.findViewById(R.id.home_bar);
-        homeBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
+        homeBar.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (adsParent.getVisibility() == View.VISIBLE) {
-					adsParent.setVisibility(View.INVISIBLE);
-					favoAppList.setVisibility(View.VISIBLE);
-					shortcutBar.setVisibility(View.VISIBLE);
-				}
-				else {
-					adsParent.setVisibility(View.VISIBLE);
-					favoAppList.setVisibility(View.INVISIBLE);
-					shortcutBar.setVisibility(View.INVISIBLE);
-					serverWebs.get(webIndex).requestFocus();
-				}
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.addCategory(Intent.CATEGORY_LAUNCHER);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
+				util.startActivity(intent, true, getBaseContext());
 			}
         });
         
@@ -1164,8 +768,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		filter = new IntentFilter("simpleHome.action.HOME_CHANGED");
         registerReceiver(homeChangeReceiver, filter);
 
-		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
-        registerReceiver(downloadReceiver, filter);
+		filter = new IntentFilter("simpleHome.action.PIC_ADDED");
+        registerReceiver(picAddReceiver, filter);
         
         filter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);  
         filter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);  
@@ -1186,7 +790,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
-				if (myStartActivity(intent, true)) m_aboutDialog.cancel();
+				if (util.startActivity(intent, true, getBaseContext())) m_aboutDialog.cancel();
 			}
 		});
 		
@@ -1215,30 +819,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	getContentResolver().registerContentObserver(Calls.CONTENT_URI, true, callObserver);
     	cr.registerContentObserver(Uri.parse("content://mms-sms/"), true, smsObserver);
         
-    	if (getIntent().getAction().equals(Intent.ACTION_VIEW)) //open the url from intent in a new page if the old page is under reading.
-    		loadNewPage(getIntent().getDataString());
-
 		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
     }
     
-    private void loadNewPage(String url) {
-		if (adsParent.getVisibility() == View.INVISIBLE) homeBar.performClick();
-		if ((!serverWebs.get(webIndex).title.equals(getString(R.string.app_name))) || serverWebs.get(webIndex).canGoBack()) 
-			btnNewpage.performClick();//open the url in a new page if current page is not the main page
-		serverWebs.get(webIndex).loadUrl(url);
-		serverWebs.get(webIndex).title = url; 
-		serverWebs.get(webIndex).requestFocus();
-    }
-    
     @Override 
     protected void onDestroy() {
     	unregisterReceiver(packageReceiver);
     	unregisterReceiver(wallpaperReceiver);
+    	unregisterReceiver(picAddReceiver);
     	unregisterReceiver(homeChangeReceiver);
-    	unregisterReceiver(downloadReceiver);
     	unregisterReceiver(sdcardListener);
     	
     	super.onDestroy();
@@ -1267,13 +859,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         }  
     };  
     
-	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-			startDownload(intent.getStringExtra("url"));
-		}
-	};
-	
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
@@ -1281,6 +866,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		}
 	};
 	
+    BroadcastReceiver picAddReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String picName = intent.getStringExtra("picFile");
+			picList.add(picName);//add to picture list
+    		cbWallPaper.setEnabled(true);
+        }
+    };
+    
     BroadcastReceiver homeChangeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1293,7 +887,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
             String action = intent.getAction();
             String packageName = intent.getDataString().split(":")[1];//it always in the format of package:x.y.z
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
@@ -1425,18 +1018,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                     	}
                 	}
             	}
-            	
-            	for (int i = 0; i < downloadAppID.size(); i++) {//cancel download notification if install succeed
-            		if (downloadAppID.get(i).packageName.equals(packageName))
-            		{
-                		nManager.cancel(downloadAppID.get(i).notificationID);
-                		try {
-                			downloadAppID.get(i).downloadedfile.delete();
-                		} catch(Exception e) {};
-                		downloadAppID.remove(i);
-                		break;
-            		}
-            	}
             }
 		}
 		
@@ -1448,7 +1029,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				info.activityInfo.applicationInfo.packageName,
 				info.activityInfo.name));
 		i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
-		return myStartActivity(i, true);
+		return util.startActivity(i, true, getBaseContext());
 	}
 	
     private class AlphaAdapter extends ArrayAdapter<String> {
@@ -1568,7 +1149,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
     						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
     						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-    						myStartActivity(intent, true);
+    						util.startActivity(intent, true, getBaseContext());
     						arg0.requestFocus();
     					}
     					else {//system app
@@ -1683,7 +1264,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	FileInputStream fi = null;
     	ObjectInputStream ois = null;
 		try {//read favorite or shortcut data
-			fi = mContext.openFileInput(name);
+			fi = openFileInput(name);
 			ois = new ObjectInputStream(fi);
 			String activityName;
 			while ((activityName = (String) ois.readObject()) != null) {
@@ -1796,29 +1377,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	msguser.what = UPDATE_USER;
         	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.
 	    	
-        	String status = Environment.getExternalStorageState();
-        	if (status.equals(Environment.MEDIA_MOUNTED)) {
-        		downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/";   
-    			java.io.File myFilePath = new java.io.File(downloadPath);
-    			try
-    			{
-    			    if(myFilePath.isDirectory()) ;//folder exist
-    			    else myFilePath.mkdir();//create folder
-    			}
-    			catch(Exception e) {
-    				e.printStackTrace();
-    				downloadPath = getFilesDir().getPath() + "/";
-    			}
-        	} 
-        	else downloadPath = getFilesDir().getPath() + "/";
+        	downloadPath = util.preparePath(getFilesDir().getPath());
         	
         	picList = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
         	if (picList.size() > 0) cbWallPaper.setEnabled(true);
 			   
-        	if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) 
-    			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-        	
 			try {//for 1.5 which do not have this method
 				setPackage = Intent.class.getMethod("setPackage", new Class[] {String.class});
 			} catch (Exception e) {
@@ -1891,7 +1455,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		int missCallCount = callObserver.countUnread();
         		if (missCallCount > 0) {
             		BitmapDrawable bd = (BitmapDrawable) ri_phone.loadIcon(pm);
-        			shortcut_phone.setImageBitmap(generatorCountIcon(bd.getBitmap(), missCallCount, 1));
+        			shortcut_phone.setImageBitmap(util.generatorCountIcon(bd.getBitmap(), missCallCount, 1, getBaseContext()));
         		}
         		else shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
 
@@ -1906,7 +1470,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		int unreadCount = smsObserver.countUnread();
         		if (unreadCount > 0) {
             		BitmapDrawable bd = (BitmapDrawable) ri_sms.loadIcon(pm);
-            		shortcut_sms.setImageBitmap(generatorCountIcon(bd.getBitmap(), unreadCount, 1));
+            		shortcut_sms.setImageBitmap(util.generatorCountIcon(bd.getBitmap(), unreadCount, 1, getBaseContext()));
         		}
         		else shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
@@ -1929,206 +1493,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         }
     };
 
-    boolean startDownload(String url) {
-		if (!url.contains(".")) return false;//not a file
-		
-		String ss[] = url.split("/");
-		String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
-		if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
-		if ((apkName.endsWith(".txt")) || (apkName.endsWith(".html")) || (apkName.endsWith(".htm"))) return false;//should not download txt and html file.
-		
-		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-		if (mimeTypeMap.hasExtension(mimeTypeMap.getFileExtensionFromUrl(apkName))) {//files need download
-			if (downloadPath.startsWith(getFilesDir().getPath())) 
-				Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
-			
-			Iterator iter = appstate.downloadState.entrySet().iterator();
-			while (iter.hasNext()) {
-				Entry entry = (Entry) iter.next();
-				DownloadTask val = (DownloadTask) entry.getValue();
-				if ((val != null) && val.apkName.equals(apkName)) {
-					if (val.pauseDownload) val.pauseDownload = false;
-					return true;//the file is downloading, not start a new download task.
-				}
-			}
-			
-	    	Random random = new Random();
-	    	int id = random.nextInt() + 1000;
-	    	
-			DownloadTask dltask = new DownloadTask();
-			dltask.NOTIFICATION_ID = id;
-			appstate.downloadState.put(id, dltask);
-			dltask.execute(url, apkName);
-			return true;
-		}
-		else return false;
-    }
-    
-	class DownloadTask extends AsyncTask<String, Integer, String> {
-		private String URL_str; //网络歌曲的路径
-		private File download_file; //下载的文件
-		private long total_read = 0; //已经下载文件的长度(以字节为单位)
-		private int readLength = 0; //一次性下载的长度(以字节为单位)
-		private long apk_length = 0; //音乐文件的长度(以字节为单位)
-		private long skip_length = 0;//if found local file not download finished last time, need continue to download
-		String apkName = ""; //下载的文件名
-		int NOTIFICATION_ID;
-		private Notification notification;
-		private int oldProgress;
-		boolean stopDownload = false;//true to stop download
-		boolean pauseDownload = false;//true to pause download
-		boolean downloadFailed = false;
-
-		@Override
-		protected String doInBackground(String... params) {//download here
-	    	URL_str = params[0]; //get download url
-	    	apkName = params[1]; //get download file name
-	    	if (apkName.contains("%")) apkName = apkName.split("%")[apkName.split("%").length-1];//for some filename contain % will cause error
-	    	
-	    	notification = new Notification(android.R.drawable.stat_sys_download, getString(R.string.start_download), System.currentTimeMillis());   
-			
-	    	Intent intent = new Intent();
-			PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
-    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.start_download), contentIntent);
-	        nManager.notify(NOTIFICATION_ID, notification);
-	        
-			intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
-			intent.putExtra("id", NOTIFICATION_ID);
-			intent.putExtra("name", apkName);
-			intent.putExtra("url", URL_str);
-			contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
-	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
-	        
-			MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-			String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName));
-			
-	    	FileOutputStream fos = null; //文件输出流
-	    	InputStream is = null; //网络文件输入流
-	    	URL url = null;
-	    	try {
-	        	url = new URL(URL_str); //网络歌曲的url
-	        	HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection(); //打开网络连接
-        		download_file = new File(downloadPath + apkName);
-	        	apk_length = httpConnection.getContentLength(); //file size need to download
-        		if (download_file.length() == apk_length) {//found local file with same name and length, no need to download, just send intent to view it
-                	String[] tmp = apkName.split("\\.");
-        			intent.setAction(Intent.ACTION_VIEW);
-        			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
-    				myStartActivity(intent, false);
-                	appstate.downloadState.remove(NOTIFICATION_ID);
-            		nManager.cancel(NOTIFICATION_ID);
-    				return "";
-        		}
-        		else if (download_file.length() < apk_length) {//local file size < need to download, need continue to download
-        			fos = new FileOutputStream(download_file, true);
-        			skip_length = download_file.length();
-        		}
-        		else //need overwrite
-        			fos = new FileOutputStream(download_file, false);
-        		
-    	        notification.contentView = new RemoteViews(getApplication().getPackageName(), R.layout.notification_dialog);
-    	        notification.contentView.setProgressBar(R.id.progress_bar, 100, 0, false);
-    	        notification.contentView.setTextViewText(R.id.progress, "0%");
-    	        notification.contentView.setTextViewText(R.id.title, apkName);
-    	        nManager.notify(NOTIFICATION_ID, notification);
-    	        
-	        	total_read = 0; //初始化“已下载部分”的长度，此处应为0
-	        	is = httpConnection.getInputStream();
-
-	        	byte buf[] = new byte[10240]; //download buffer. is that ok for 10240?
-	        	readLength = 0; //一次性下载的长度
-	        	
-	        	oldProgress = 0;
-	        	//如果读取网络文件的数据流成功，且用户没有选择停止下载，则开始下载文件
-	        	while (readLength != -1 && !stopDownload) {
-	        		if (pauseDownload) {
-	        			continue;
-	        		}
-	        		
-	            	if((readLength = is.read(buf))>0){
-	            		if (skip_length == 0)
-	            			fos.write(buf, 0, readLength);
-	            		else if (skip_length < readLength) {
-	            			fos.write(buf, (int) skip_length, (int) (readLength - skip_length));
-	            			skip_length = 0;
-	            		}
-	            		else skip_length -= readLength;//just read and skip, not write if need skip
-	            		
-	                	total_read += readLength; //increase the download size
-	            	}
-
-                	int progress = (int) ((total_read+0.0)/apk_length*100);
-                	if (oldProgress != progress) {//the device will get no response if update too often
-                		oldProgress = progress;
-                		notification.contentView.setProgressBar(R.id.progress_bar, 100, progress, false);//update download progress
-            	        notification.contentView.setTextViewText(R.id.progress, progress + "%");
-                		nManager.notify(NOTIFICATION_ID, notification);
-                	}
-	        	}
-            	fos.close();
-            	is.close();
-            	httpConnection.disconnect();
-            	
-            	appstate.downloadState.remove(NOTIFICATION_ID);
-            	if (stopDownload) {//stop download by user. clear notification
-            		nManager.cancel(NOTIFICATION_ID);
-            	}
-            	else {//download success. change notification, start package manager to install package
-                	notification.icon = android.R.drawable.stat_sys_download_done;
-
-        			intent = new Intent();
-        			intent.setAction(Intent.ACTION_VIEW);
-        			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
-        	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
-        	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
-        	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_finish), contentIntent);//click listener for download progress bar
-        	        nManager.notify(NOTIFICATION_ID, notification);
-        	        
-        			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//change file property, for on some device the property is wrong
-        			p.waitFor();
-        			
-    				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) {
-    					picList.add(apkName);//add to picture list
-		        		cbWallPaper.setEnabled(true);
-    				}
-    				else if (apkName.toLowerCase().endsWith("apk")) {
-    					PackageInfo pi = pm.getPackageArchiveInfo(downloadPath + apkName, 0);
-    					//PackageParser packageParser  =  PackageParser(downloadPath + apkName);
-            			downloadAppID.add(new packageIDpair(pi.packageName, NOTIFICATION_ID, download_file));
-    				}
-
-    				myStartActivity(intent, false);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
-            	}
-				
-	    	} catch (Exception e) {
-	    		e.printStackTrace();
-	    		downloadFailed = true;
-	    		notification.icon = android.R.drawable.stat_notify_error;
-	    		intent.putExtra("errorMsg", e.toString());
-				contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
-	    		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail), contentIntent);
-	    		nManager.notify(NOTIFICATION_ID, notification);
-	    		
-    	        if (download_file.length() == 0) download_file.delete();//delete empty file
-	    	}
-
-	    	return null;
-		}
-
-	}
 	
 	@Override
 	protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 		if ((intent.getAction().equals(Intent.ACTION_MAIN)) && (intent.hasCategory(Intent.CATEGORY_HOME))) {
-			if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
-			if (adsParent.getVisibility() == View.VISIBLE) homeBar.performClick();
-			if (mProgressDialog != null) {
-				mProgressDialog.setProgress(0);
-				mProgressDialog.hide();
-			}
+			if (mainlayout.getCurrentItem() != homeTab) mainlayout.setCurrentItem(homeTab);
+			else if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 		}
-		else if (intent.getAction().equals(Intent.ACTION_VIEW)) //view webpages
-			loadNewPage(intent.getDataString());
 		super.onNewIntent(intent); 
 	}
 	
@@ -2136,32 +1507,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-				if (adsParent.getVisibility() == View.VISIBLE) {
-					if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
-						mProgressDialog.setProgress(0);
-						mProgressDialog.hide();
-					}
-					else if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();
-					//else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
-					else homeBar.performClick();
-				}
-				else if (mainlayout.getCurrentItem() != homeTab) mainlayout.setCurrentItem(homeTab);
+				if (mainlayout.getCurrentItem() != homeTab) mainlayout.setCurrentItem(homeTab);
 				else if (shortAppList.getVisibility() == View.VISIBLE) shortBar.performClick();
 				else this.openOptionsMenu();
 				return true;
 			}	
 		}
-		
 		return false;
 	}
 	
 	void setLayout(int width) {
 		if (width < 100) return;//can't work on so small screen.
 		
-        LayoutParams lp = webtools_center.getLayoutParams();
-        lp.width = width/2 + 40;
-        
-        lp = shortcutBar_center.getLayoutParams();
+        LayoutParams lp = shortcutBar_center.getLayoutParams();
         if (width > 320)
         	lp.width = width/2-25;
         else lp.width = width/2-15;

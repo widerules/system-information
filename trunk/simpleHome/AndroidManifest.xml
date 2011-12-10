@@ -32,7 +32,8 @@
             
         <activity android:name=".SimpleBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/app_name">
+            android:icon="@drawable/explorer"
+            android:label="@string/browser_name">
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

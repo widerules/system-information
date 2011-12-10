@@ -729,7 +729,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_MAIN);
 				intent.addCategory(Intent.CATEGORY_LAUNCHER);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
 				util.startActivity(intent, true, getBaseContext());
 			}
@@ -1028,7 +1027,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		i.setComponent(new ComponentName(
 				info.activityInfo.applicationInfo.packageName,
 				info.activityInfo.name));
-		i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);//not start a new activity but bring it to front if it already launched.
 		return util.startActivity(i, true, getBaseContext());
 	}
 	

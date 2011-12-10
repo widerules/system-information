@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 public class util {
     static public boolean startActivity(Intent intent, boolean showToast, Context context) {
+    	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		try {
 			context.startActivity(intent);
 			return true;

@@ -31,6 +31,8 @@
         </activity>
             
         <activity android:name=".SimpleBrowser"
+        	android:launchMode="singleInstance"
+        	android:excludeFromRecents="false"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:icon="@drawable/explorer"
             android:label="@string/browser_name">

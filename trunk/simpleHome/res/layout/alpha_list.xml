@@ -10,7 +10,7 @@
 	android:layout_centerInParent="true"
 	android:gravity="center"
 	android:textSize="14dip"
-	android:textColor="#FF000000"
+	android:textColor="#80FFFFFF"
 	android:textColorHighlight="#80000000"
 	android:padding="5dip"
    	android:background="@drawable/circle"

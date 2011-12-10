@@ -638,12 +638,12 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 			}
 			else if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();
 			else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
-			else return false;
+			else return super.onKeyDown(keyCode, event);
 			
 			return true;
 		}	
 	}
-	return false;
+	return super.onKeyDown(keyCode, event);
 }
 
 }

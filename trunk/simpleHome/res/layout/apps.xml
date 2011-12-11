@@ -24,6 +24,7 @@
 		android:fadingEdge="none"
 		android:scrollingCache="false"
 		android:fadeScrollbars="true"
+		android:divider="@android:color/transparent"
 		android:background="@drawable/round_corner_light"
 	/>
 	

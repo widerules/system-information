@@ -13,6 +13,13 @@
     ads:adUnitId="a14e79197567476"
     ads:adSize="BANNER"/>
     
+    <EditText android:id="@+id/url"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_below="@id/adView"
+    	android:visibility="invisible"
+    	/>
+    	
   			<RelativeLayout android:id="@+id/webtools"
   				android:background="@drawable/shortcut_bar_layout"
   				android:layout_alignParentBottom="true" 

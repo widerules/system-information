@@ -35,6 +35,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -50,6 +51,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -61,6 +63,7 @@ import android.widget.ViewFlipper;
 public class SimpleBrowser extends Activity {
 
 	//browser related
+	EditText webAddress;
 	ArrayList<MyWebview> serverWebs;
 	int webIndex;
 	ViewFlipper webpages;
@@ -464,9 +467,20 @@ public void onCreate(Bundle savedInstanceState) {
 	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
 	setContentView(R.layout.browser);
 
-    adview = (AdView) this.findViewById(R.id.adView);
+    adview = (AdView) findViewById(R.id.adView);
 
-    //online tab
+    webAddress = (EditText) findViewById(R.id.url);
+    webAddress.setOnKeyListener(new OnKeyListener() {
+		@Override
+		public boolean onKey(View view, int keyCode, KeyEvent event) {
+			if (keyCode == KeyEvent.KEYCODE_ENTER) {
+				serverWebs.get(webIndex).loadUrl(webAddress.getText().toString());
+				return true;
+			}
+			else return false;
+		}
+    });
+    
     WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
     webIndex = 0;
     serverWebs = new ArrayList<MyWebview>();

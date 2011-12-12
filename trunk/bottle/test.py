@@ -1,4 +1,4 @@
-from bottle import Bottle, route, run, redirect, request
+from bottle import Bottle, route, run, redirect, request, static_file
 
 import urllib2, simplejson, json, gzip, StringIO
 
@@ -7,11 +7,9 @@ app = Bottle()
 @route('/')
 @route('/test')
 def test():
-    #req = urllib2.Request('http://api.borqs.com/user/show?users=43')  
-    #sthdecode = something.decode('utf-8', 'ignore')
-    #print json.dumps(sthdecode.encode('utf-8'))
     something = findUrlGzip('http://api.borqs.com/user/show?users=43')
-    return json.dumps(something)
+    return something
+    #return json.loads(something)
 
 def findUrlGzip(url):
     request = urllib2.Request(url)
@@ -19,7 +17,6 @@ def findUrlGzip(url):
     opener = urllib2.build_opener()
     f = opener.open(request)
     isGzip = f.headers.get('Content-Encoding')
-    #print isGzip
     if isGzip :
         compresseddata = f.read()
         compressedstream = StringIO.StringIO(compresseddata)
@@ -29,4 +26,8 @@ def findUrlGzip(url):
         data = f.read()
     return data
 
-run(host='localhost', port=8080)
+@route('/static/<filename:path>')
+def send_static(filename):
+    return static_file(filename, root='')
+
+run(host='localhost', port=8080, reloader=True)

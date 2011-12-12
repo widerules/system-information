@@ -28,6 +28,6 @@ def findUrlGzip(url):
 
 @route('/static/<filename:path>')
 def send_static(filename):
-    return static_file(filename, root='../simpleHome/assets/')
+    return static_file(filename, root='kendoui/examples/web')
 
 run(host='localhost', port=8080, reloader=True)

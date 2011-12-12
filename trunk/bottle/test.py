@@ -26,8 +26,8 @@ def findUrlGzip(url):
         data = f.read()
     return data
 
-@route('/static/<filename:path>')
+@route('/<filename:path>')
 def send_static(filename):
     return static_file(filename, root='kendoui/examples/web')
 
-run(host='localhost', port=8080, reloader=True)
+run(host='192.168.5.136', port=8080, reloader=True)

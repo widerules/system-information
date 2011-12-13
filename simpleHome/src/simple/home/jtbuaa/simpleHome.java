@@ -111,23 +111,30 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	TextView mailto;
 	View aboutView;
 	AlertDialog m_aboutDialog;
-	Drawable cd;
-	boolean m_needRedraw = true;
-	void setBackGround() {
-		if (m_needRedraw) {
-			int width = apps.getWidth();
-			if (width == 0) width = dm.widthPixels;
-			
-			int height = apps.getHeight();
-			if (height == 0) height = dm.heightPixels;
-			
-			ClippedDrawable cdrawable = null;
-			if ((cbWallPaper != null) && (cbWallPaper.isChecked())) //change background by shake
-				cdrawable = new ClippedDrawable(cd, width, height, mainlayout.getCurrentItem());
-			else //not change background by shake
-				cdrawable = new ClippedDrawable(getWallpaper(), width, height, mainlayout.getCurrentItem());
-			
-	    	apps.setBackgroundDrawable(cdrawable);
+	
+	void setBackGround(Drawable drawable) {
+		int width = apps.getWidth();
+		if (width == 0) width = dm.widthPixels;
+		
+		int height = apps.getHeight();
+		if (height == 0) height = dm.heightPixels;
+		
+		ClippedDrawable cdrawable1 = new ClippedDrawable(drawable, width, height, 1);
+		boolean need_redraw = cdrawable1.need_redraw();
+		if (need_redraw) {
+	    	home.setBackgroundDrawable(cdrawable1);
+
+	    	ClippedDrawable cdrawable0 = new ClippedDrawable(drawable, width, height, 0);
+	    	systems.setBackgroundDrawable(cdrawable0);
+	    	
+	    	ClippedDrawable cdrawable2 = new ClippedDrawable(drawable, width, height, 2);
+	    	users.setBackgroundDrawable(cdrawable2);
+		}
+		else {
+			home.setBackgroundColor(0); //transparent
+			systems.setBackgroundColor(0);
+			users.setBackgroundColor(0);
+			apps.setBackgroundDrawable(cdrawable1);
 		}
 	}
 	
@@ -146,6 +153,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
+	RelativeLayout home, systems, users;
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps;
 	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
@@ -601,14 +609,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	int screen_size = screenLayout.getInt(getResources().getConfiguration()) & Configuration.SCREENLAYOUT_SIZE_MASK; 
 	    	if (screen_size < 3)//disable auto rotate screen for small and normal screen.
 	    		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		} catch (Exception e) {//no such field is sdk level <= 3
+		} catch (Exception e) {//no such field if sdk level <= 3
 			e.printStackTrace();
 		}
     	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
     	
-        RelativeLayout home = (RelativeLayout) getLayoutInflater().inflate(R.layout.home, null);
+        home = (RelativeLayout) getLayoutInflater().inflate(R.layout.home, null);
         
         
     	//favorite app tab
@@ -628,7 +636,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	shortAppList.setVisibility(View.INVISIBLE);
     	
     	//system app tab
-    	RelativeLayout systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
+    	systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	sysAppList = (ListView) systems.findViewById(R.id.applist); 
     	sysAppList.inflate(this, R.layout.app_list, null);
     	sysAppList.setOnScrollListener(new OnScrollListener() {
@@ -656,7 +664,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	sysAlpha.inflate(this, R.layout.alpha_list, null);
         
     	//user app tab
-    	RelativeLayout users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
+    	users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	userAppList = (ListView) users.findViewById(R.id.applist); 
         userAppList.inflate(this, R.layout.app_list, null);
         userAppList.setOnScrollListener(new OnScrollListener() {
@@ -714,7 +722,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						btnUser.setText(R.string.userapps);
 						break;
 					}
-					setBackGround();
 				}
 			}
 
@@ -815,7 +822,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		});
 		
         apps = (FrameLayout) findViewById(R.id.apps);
-        setBackGround();
+        setBackGround(getWallpaper());
     	
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
@@ -882,8 +889,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			m_needRedraw = true;
-			setBackGround();
+			setBackGround(getWallpaper());
 		}
 	};
 	
@@ -1588,9 +1594,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
-				    	cd = Drawable.createFromPath(downloadPath + picList.get(id));
-				    	m_needRedraw = true;
-						setBackGround();
+				    	Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
+						setBackGround(cd);
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1612,6 +1617,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	public void onSizeChanged(int w, int h, int oldW, int oldH) {
 		//setLayout(oldW);
 	}
+}
 
 /** from Android Home sample
  * When a drawable is attached to a View, the View gives the Drawable its dimensions
@@ -1627,10 +1633,9 @@ class ClippedDrawable extends Drawable {
     private final Drawable mWallpaper;
     int screenWidth, screenHeight;
     int m_which;
-    public boolean needRedraw;
 
     public ClippedDrawable(Drawable wallpaper, int sw, int sh, int which) {
-        mWallpaper = wallpaper;
+        mWallpaper = wallpaper; 
         screenWidth = sw;
         screenHeight = sh;
         m_which = which;//0 for left, 1 for middle, 2 for right.
@@ -1645,22 +1650,31 @@ class ClippedDrawable extends Drawable {
         if (tmpHeight >= screenHeight) { 
         	top -= (tmpHeight - screenHeight)/2;
         	mWallpaper.setBounds(left, top, left + screenWidth, top + tmpHeight);
-        	needRedraw = false;
         }
         else {//if the pic width is wider than screen width, then we need show part of the pic.
         	if (m_which == 0) //left
-            	left -= 0;
+            	left -= tmpWidth/2;
         	else if (m_which == 1) //middle 
             	left -= (tmpWidth - screenWidth)/2;
-        	else //right
-            	left -= (tmpWidth - screenWidth);
+        	else
+            	left = tmpWidth/2 - screenWidth;
+        	Log.d("============="+m_which, left+"");
         		
         	mWallpaper.setBounds(left, top, left + tmpWidth, top + screenHeight);
-        	needRedraw = true;
         }
-		m_needRedraw = needRedraw;//can't update m_needRedraw elsewhere, so update it here.
     }
 
+    public boolean need_redraw() {
+        int tmpHeight = mWallpaper.getIntrinsicHeight() * screenWidth / mWallpaper.getIntrinsicWidth();
+        int tmpWidth = mWallpaper.getIntrinsicWidth() * screenHeight / mWallpaper.getIntrinsicHeight();
+        if (tmpHeight >= screenHeight) 
+        	return false;
+        else if (tmpWidth < 1.5*screenWidth) //no need to switch back ground if it is not too width
+        	return false;
+        else
+        	return true;
+    }
+    
     public void draw(Canvas canvas) {
         mWallpaper.draw(canvas);
     }
@@ -1676,8 +1690,6 @@ class ClippedDrawable extends Drawable {
     public int getOpacity() {
         return mWallpaper.getOpacity();
     }
-}
-
 }
 
 class sizedRelativeLayout extends RelativeLayout {
@@ -1745,6 +1757,7 @@ class SmsChangeObserver extends ContentObserver {
     	mHandler.sendMessage(msgsms);//inform UI thread to update UI.
 	}
 }
+
 
 class CallObserver extends ContentObserver {
 	ContentResolver mCR;

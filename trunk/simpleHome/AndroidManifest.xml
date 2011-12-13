@@ -96,6 +96,15 @@
 				<action	android:name="android.intent.action.SEARCH" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
+			<intent-filter>
+		        <action android:name="android.intent.action.VIEW" />           	 
+   				<category android:name="android.intent.category.DEFAULT" />
+             	<data android:scheme="file" />
+				<data android:mimeType="*/*" />
+				<data android:host="*" />  
+				<data android:pathPattern=".*\\.xml" />
+            </intent-filter>
+			
         </activity>
         
         <activity android:name=".FakeHome"

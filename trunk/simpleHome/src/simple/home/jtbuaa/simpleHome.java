@@ -68,6 +68,7 @@ import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -110,6 +111,25 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	TextView mailto;
 	View aboutView;
 	AlertDialog m_aboutDialog;
+	Drawable cd;
+	boolean m_needRedraw = true;
+	void setBackGround() {
+		if (m_needRedraw) {
+			int width = apps.getWidth();
+			if (width == 0) width = dm.widthPixels;
+			
+			int height = apps.getHeight();
+			if (height == 0) height = dm.heightPixels;
+			
+			ClippedDrawable cdrawable = null;
+			if ((cbWallPaper != null) && (cbWallPaper.isChecked())) //change background by shake
+				cdrawable = new ClippedDrawable(cd, width, height, mainlayout.getCurrentItem());
+			else //not change background by shake
+				cdrawable = new ClippedDrawable(getWallpaper(), width, height, mainlayout.getCurrentItem());
+			
+	    	apps.setBackgroundDrawable(cdrawable);
+		}
+	}
 	
 	//alpha list related
 	GridView sysAlpha, userAlpha;
@@ -694,6 +714,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						btnUser.setText(R.string.userapps);
 						break;
 					}
+					setBackGround();
 				}
 			}
 
@@ -794,7 +815,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		});
 		
         apps = (FrameLayout) findViewById(R.id.apps);
-    	apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+        setBackGround();
     	
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
@@ -861,7 +882,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
+			m_needRedraw = true;
+			setBackGround();
 		}
 	};
 	
@@ -1566,8 +1588,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
-				    	Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
-				    	apps.setBackgroundDrawable(new ClippedDrawable(cd, apps.getWidth(), apps.getHeight()));
+				    	cd = Drawable.createFromPath(downloadPath + picList.get(id));
+				    	m_needRedraw = true;
+						setBackGround();
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1589,7 +1612,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	public void onSizeChanged(int w, int h, int oldW, int oldH) {
 		//setLayout(oldW);
 	}
-}
 
 /** from Android Home sample
  * When a drawable is attached to a View, the View gives the Drawable its dimensions
@@ -1604,28 +1626,39 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 class ClippedDrawable extends Drawable {
     private final Drawable mWallpaper;
     int screenWidth, screenHeight;
+    int m_which;
+    public boolean needRedraw;
 
-    public ClippedDrawable(Drawable wallpaper, int sw, int sh) {
+    public ClippedDrawable(Drawable wallpaper, int sw, int sh, int which) {
         mWallpaper = wallpaper;
         screenWidth = sw;
         screenHeight = sh;
+        m_which = which;//0 for left, 1 for middle, 2 for right.
     }
 
     @Override
     public void setBounds(int left, int top, int right, int bottom) {
         super.setBounds(left, top, right, bottom);
-        // Ensure the wallpaper is as large as it really is, to avoid stretching it
-        // at drawing time
+        // Ensure the wallpaper is as large as it really is, to avoid stretching it at drawing time
         int tmpHeight = mWallpaper.getIntrinsicHeight() * screenWidth / mWallpaper.getIntrinsicWidth();
         int tmpWidth = mWallpaper.getIntrinsicWidth() * screenHeight / mWallpaper.getIntrinsicHeight();
-        if (tmpHeight >= screenHeight) {
+        if (tmpHeight >= screenHeight) { 
         	top -= (tmpHeight - screenHeight)/2;
         	mWallpaper.setBounds(left, top, left + screenWidth, top + tmpHeight);
+        	needRedraw = false;
         }
-        else {
-        	left -= (tmpWidth - screenWidth)/2;
+        else {//if the pic width is wider than screen width, then we need show part of the pic.
+        	if (m_which == 0) //left
+            	left -= 0;
+        	else if (m_which == 1) //middle 
+            	left -= (tmpWidth - screenWidth)/2;
+        	else //right
+            	left -= (tmpWidth - screenWidth);
+        		
         	mWallpaper.setBounds(left, top, left + tmpWidth, top + screenHeight);
+        	needRedraw = true;
         }
+		m_needRedraw = needRedraw;//can't update m_needRedraw elsewhere, so update it here.
     }
 
     public void draw(Canvas canvas) {
@@ -1643,6 +1676,8 @@ class ClippedDrawable extends Drawable {
     public int getOpacity() {
         return mWallpaper.getOpacity();
     }
+}
+
 }
 
 class sizedRelativeLayout extends RelativeLayout {

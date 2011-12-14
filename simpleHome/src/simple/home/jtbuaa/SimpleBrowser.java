@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -299,6 +300,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 	@Override
 	protected String doInBackground(String... params) {//download here
     	URL_str = params[0]; //get download url
+    	if (URL_str.startsWith("file")) return null;//not download local file 
     	apkName = params[1]; //get download file name
     	if (apkName.contains("%")) apkName = apkName.split("%")[apkName.split("%").length-1];//for some filename contain % will cause error
     	

@@ -26,6 +26,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -57,6 +58,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.RemoteException;
@@ -108,35 +110,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	long lastUpdate, lastSet;
 	ArrayList<String> picList;
 	CheckBox cbWallPaper;
+	WallpaperManager mWallpaperManager;
+	
+	//about dialog
 	TextView mailto;
 	View aboutView;
 	AlertDialog m_aboutDialog;
-	
-	void setBackGround(Drawable drawable) {
-		int width = apps.getWidth();
-		if (width == 0) width = dm.widthPixels;
-		
-		int height = apps.getHeight();
-		if (height == 0) height = dm.heightPixels;
-		
-		ClippedDrawable cdrawable1 = new ClippedDrawable(drawable, width, height, 1);
-		boolean need_redraw = cdrawable1.need_redraw();
-		if (need_redraw) {
-	    	home.setBackgroundDrawable(cdrawable1);
-
-	    	ClippedDrawable cdrawable0 = new ClippedDrawable(drawable, width, height, 0);
-	    	systems.setBackgroundDrawable(cdrawable0);
-	    	
-	    	ClippedDrawable cdrawable2 = new ClippedDrawable(drawable, width, height, 2);
-	    	users.setBackgroundDrawable(cdrawable2);
-		}
-		else {
-			home.setBackgroundColor(0); //transparent
-			systems.setBackgroundColor(0);
-			users.setBackgroundColor(0);
-			apps.setBackgroundDrawable(cdrawable1);
-		}
-	}
 	
 	//alpha list related
 	GridView sysAlpha, userAlpha;
@@ -262,7 +241,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
         		@Override
         		public void onClick(DialogInterface dialog, int which) {//rm system app
-					ShellInterface.doExec(new String[] {"mv " + apkToDel + " " + apkToDel + ".bak"}, false);
+					ShellInterface.doExec(new String[] {"mv " + apkToDel + " " + apkToDel + ".bak"});
 					Uri uri = Uri.fromParts("package", pkgToDel, null);
 					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
 					startActivityForResult(intent, 1);
@@ -283,7 +262,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						"rm " + apkToDel.replace(".apk", ".odex")};
 				ShellInterface.doExec(cmds, false);
 			}
-			else ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel}, false);
+			else ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel});
 			
 			pkgToDel = "";
 		}
@@ -700,6 +679,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         btnUser = (RadioButton) findViewById(R.id.radio_user);
         btnHome = (RadioButton) findViewById(R.id.radio_home);
         
+        mWallpaperManager = WallpaperManager.getInstance(this);
+        
         mainlayout = (ViewPager)findViewById(R.id.mainFrame);
         mainlayout.setLongClickable(true);
         MyPagerAdapter myAdapter = new MyPagerAdapter();
@@ -726,7 +707,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 
 			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+		        IBinder token = apps.getWindowToken();
+		        if (token != null) {
+		            mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
+		            mWallpaperManager.setWallpaperOffsets(apps.getWindowToken(),
+		                    Math.max(0.f, Math.min(positionOffsetPixels/positionOffset, 1.f)), 0);
+		        }
 			}
 
 			@Override
@@ -817,12 +804,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
-				if (util.startActivity(intent, true, getBaseContext())) m_aboutDialog.cancel();
+				if (util.startActivity(intent, false, getBaseContext())) m_aboutDialog.cancel();
 			}
 		});
 		
         apps = (FrameLayout) findViewById(R.id.apps);
-        setBackGround(getWallpaper());
+		//apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+		getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
     	
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
@@ -889,7 +877,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			setBackGround(getWallpaper());
+			getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
+			//apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
 		}
 	};
 	
@@ -1595,7 +1584,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	int id = random.nextInt(picList.size());
 				    try {
 				    	Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
-						setBackGround(cd);
+						getWindow().setBackgroundDrawable(new ClippedDrawable(cd, apps.getWidth(), apps.getHeight()));
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1632,13 +1621,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 class ClippedDrawable extends Drawable {
     private final Drawable mWallpaper;
     int screenWidth, screenHeight;
-    int m_which;
 
-    public ClippedDrawable(Drawable wallpaper, int sw, int sh, int which) {
+    public ClippedDrawable(Drawable wallpaper, int sw, int sh) {
         mWallpaper = wallpaper; 
         screenWidth = sw;
         screenHeight = sh;
-        m_which = which;//0 for left, 1 for middle, 2 for right.
     }
 
     @Override
@@ -1652,29 +1639,11 @@ class ClippedDrawable extends Drawable {
         	mWallpaper.setBounds(left, top, left + screenWidth, top + tmpHeight);
         }
         else {//if the pic width is wider than screen width, then we need show part of the pic.
-        	if (m_which == 0) //left
-            	left -= tmpWidth/2;
-        	else if (m_which == 1) //middle 
-            	left -= (tmpWidth - screenWidth)/2;
-        	else
-            	left = tmpWidth/2 - screenWidth;
-        	Log.d("============="+m_which, left+"");
-        		
+           	left -= (tmpWidth - screenWidth)/2;
         	mWallpaper.setBounds(left, top, left + tmpWidth, top + screenHeight);
         }
     }
 
-    public boolean need_redraw() {
-        int tmpHeight = mWallpaper.getIntrinsicHeight() * screenWidth / mWallpaper.getIntrinsicWidth();
-        int tmpWidth = mWallpaper.getIntrinsicWidth() * screenHeight / mWallpaper.getIntrinsicHeight();
-        if (tmpHeight >= screenHeight) 
-        	return false;
-        else if (tmpWidth < 1.5*screenWidth) //no need to switch back ground if it is not too width
-        	return false;
-        else
-        	return true;
-    }
-    
     public void draw(Canvas canvas) {
         mWallpaper.draw(canvas);
     }

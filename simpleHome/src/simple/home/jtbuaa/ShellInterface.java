@@ -11,6 +11,10 @@ import android.util.Log;
 
 public class ShellInterface {
 
+	public static String doExec(String[] commands) {
+		return doExec(commands, false);
+	}
+	
 	public static String doExec(String[] commands, boolean resNeeded) {
 		Process process = null;
 		DataOutputStream os = null;

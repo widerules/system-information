@@ -298,9 +298,15 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 	boolean downloadFailed = false;
 
 	@Override
+	protected void onPostExecute(String result) {
+		if (result != null)
+			serverWebs.get(webIndex).loadUrl("file:///android_asset/warning.html");
+	}
+	
+	@Override
 	protected String doInBackground(String... params) {//download here
     	URL_str = params[0]; //get download url
-    	if (URL_str.startsWith("file")) return null;//not download local file 
+    	if (URL_str.startsWith("file")) return "local file";//not download local file 
     	apkName = params[1]; //get download file name
     	if (apkName.contains("%")) apkName = apkName.split("%")[apkName.split("%").length-1];//for some filename contain % will cause error
     	

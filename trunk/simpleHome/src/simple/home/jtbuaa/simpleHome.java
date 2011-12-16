@@ -172,7 +172,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	FrameLayout apps;
 	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
     appHandler mAppHandler = new appHandler();
-	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_PIC = 4; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SHAKE_WALLPAPER = 4; 
 	ContextMenu mMenu;
 	
 	String apkToDel, pkgToDel;
@@ -718,17 +718,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 0:
 						btnSystem.setChecked(true);
 						btnUser.setText(R.string.systemapps);
-						updateWallpaperOffset(mainlayout.getChildAt(0), 0.1f);
 						break;
 					case 1:
 						btnHome.setChecked(true);
 						btnUser.setText(R.string.home);
-						updateWallpaperOffset(mainlayout.getChildAt(1), 0.5f);
 						break;
 					case 2:
 						btnUser.setChecked(true);
 						btnUser.setText(R.string.userapps);
-						updateWallpaperOffset(mainlayout.getChildAt(2), 0.9f);
 						break;
 					}
 				}
@@ -736,12 +733,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		        /*IBinder token = mainlayout.getWindowToken();
+		        IBinder token = apps.getWindowToken();
 		        if (token != null) {
+		        	Log.d("============", token.toString());
 		            mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
-		            mWallpaperManager.setWallpaperOffsets(mainlayout.getWindowToken(),
+		            mWallpaperManager.setWallpaperOffsets(apps.getWindowToken(),
 		                    Math.max(0.f, Math.min(positionOffsetPixels/positionOffset, 1.f)), 0);
-		        }*/
+		        }
 			}
 
 			@Override
@@ -837,8 +835,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		});
 		
         apps = (FrameLayout) findViewById(R.id.apps);
-		//apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
-		//getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
     	
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
@@ -902,14 +898,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         }  
     };  
     
-	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context arg0, Intent arg1) {
-			//getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
-			//apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
-		}
-	};
-	
+ 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
+ 		@Override
+ 		public void onReceive(Context arg0, Intent arg1) {
+ 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
+ 		}
+ 	};
+ 	
     BroadcastReceiver picAddReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1424,7 +1419,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	
         	picList = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
-        	if (picList.size() > 0) cbWallPaper.setEnabled(true);
+        	if (picList.size() > 0) {
+	        	Message msgshake = mAppHandler.obtainMessage();
+	        	msgshake.what = UPDATE_SHAKE_WALLPAPER;
+	        	mAppHandler.sendMessage(msgshake);
+        	}
 			   
 			try {//for 1.5 which do not have this method
 				setPackage = Intent.class.getMethod("setPackage", new Class[] {String.class});
@@ -1532,6 +1531,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     				}
     			});
         		break;
+        	case UPDATE_SHAKE_WALLPAPER:
+        		cbWallPaper.setEnabled(true);
+        		break;
         	}
         }
     };
@@ -1611,10 +1613,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
-				    	//Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
-				    	Bitmap bm = BitmapFactory.decodeFile(downloadPath + picList.get(id));
-				    	mWallpaperManager.setBitmap(bm);
-						//getWindow().setBackgroundDrawable(new ClippedDrawable(cd, apps.getWidth(), apps.getHeight()));
+				    	Drawable drawable = Drawable.createFromPath(downloadPath + picList.get(id));
+				    	ClippedDrawable cd = new ClippedDrawable(drawable, apps.getWidth(), apps.getHeight());
+				    	apps.setBackgroundDrawable(cd);
+				    	//mWallpaperManager.setBitmap(cd.getBitmap());//null pointer error?
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1648,7 +1650,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
  * by always giving it its intrinsic dimensions. If the wallpaper is larger than the
  * screen, it will simply get clipped but it won't impact performance.
  */
-class ClippedDrawable extends Drawable {
+class ClippedDrawable extends BitmapDrawable {
     private final Drawable mWallpaper;
     int screenWidth, screenHeight;
 

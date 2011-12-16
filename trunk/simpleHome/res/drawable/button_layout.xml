@@ -22,8 +22,8 @@
         <shape>
             <gradient android:startColor="#80AAAAFF" android:endColor="#80FFFFFF" android:angle="90" />
             <corners android:radius="5dip" />
-            <padding android:left="1dip" android:top="1dip"
-                android:right="1dip" android:bottom="1dip" />
+            <padding android:left="3dip" android:top="5dip"
+                android:right="3dip" android:bottom="5dip" />
         </shape>
     </item>
 </selector>

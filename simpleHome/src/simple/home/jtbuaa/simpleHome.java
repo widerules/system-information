@@ -45,6 +45,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.BitmapDrawable;
@@ -73,6 +75,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -112,6 +115,26 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	CheckBox cbWallPaper;
 	WallpaperManager mWallpaperManager;
 	
+    private void setWallpaperDimension() {
+        WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
+
+        Display display = getWindowManager().getDefaultDisplay();
+        boolean isPortrait = display.getWidth() < display.getHeight();
+
+        final int width = isPortrait ? display.getWidth() : display.getHeight();
+        final int height = isPortrait ? display.getHeight() : display.getWidth();
+        wpm.suggestDesiredDimensions(width * 2, height);
+    }
+    
+    private void updateWallpaperOffset(View view, float offset) {
+        IBinder token = view.getWindowToken();
+        if (token != null) {
+        	Log.d("==============", token.toString());
+            mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
+            mWallpaperManager.setWallpaperOffsets(view.getWindowToken(), offset, 0);
+        }
+    }
+    
 	//about dialog
 	TextView mailto;
 	View aboutView;
@@ -591,6 +614,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		} catch (Exception e) {//no such field if sdk level <= 3
 			e.printStackTrace();
 		}
+		
+        setWallpaperDimension();
     	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
@@ -693,14 +718,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 0:
 						btnSystem.setChecked(true);
 						btnUser.setText(R.string.systemapps);
+						updateWallpaperOffset(mainlayout.getChildAt(0), 0.1f);
 						break;
 					case 1:
 						btnHome.setChecked(true);
 						btnUser.setText(R.string.home);
+						updateWallpaperOffset(mainlayout.getChildAt(1), 0.5f);
 						break;
 					case 2:
 						btnUser.setChecked(true);
 						btnUser.setText(R.string.userapps);
+						updateWallpaperOffset(mainlayout.getChildAt(2), 0.9f);
 						break;
 					}
 				}
@@ -708,12 +736,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		        IBinder token = apps.getWindowToken();
+		        /*IBinder token = mainlayout.getWindowToken();
 		        if (token != null) {
 		            mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
-		            mWallpaperManager.setWallpaperOffsets(apps.getWindowToken(),
+		            mWallpaperManager.setWallpaperOffsets(mainlayout.getWindowToken(),
 		                    Math.max(0.f, Math.min(positionOffsetPixels/positionOffset, 1.f)), 0);
-		        }
+		        }*/
 			}
 
 			@Override
@@ -810,7 +838,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		
         apps = (FrameLayout) findViewById(R.id.apps);
 		//apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
-		getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
+		//getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), dm.widthPixels, dm.heightPixels));
     	
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
@@ -877,7 +905,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent arg1) {
-			getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
+			//getWindow().setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
 			//apps.setBackgroundDrawable(new ClippedDrawable(getWallpaper(), apps.getWidth(), apps.getHeight()));
 		}
 	};
@@ -1583,8 +1611,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
-				    	Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
-						getWindow().setBackgroundDrawable(new ClippedDrawable(cd, apps.getWidth(), apps.getHeight()));
+				    	//Drawable cd = Drawable.createFromPath(downloadPath + picList.get(id));
+				    	Bitmap bm = BitmapFactory.decodeFile(downloadPath + picList.get(id));
+				    	mWallpaperManager.setBitmap(bm);
+						//getWindow().setBackgroundDrawable(new ClippedDrawable(cd, apps.getWidth(), apps.getHeight()));
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();

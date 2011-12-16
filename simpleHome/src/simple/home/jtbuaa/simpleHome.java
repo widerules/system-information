@@ -126,15 +126,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         wpm.suggestDesiredDimensions(width * 2, height);
     }
     
-    private void updateWallpaperOffset(View view, float offset) {
-        IBinder token = view.getWindowToken();
-        if (token != null) {
-        	Log.d("==============", token.toString());
-            mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
-            mWallpaperManager.setWallpaperOffsets(view.getWindowToken(), offset, 0);
-        }
-    }
-    
 	//about dialog
 	TextView mailto;
 	View aboutView;
@@ -733,11 +724,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		        IBinder token = apps.getWindowToken();
+		        IBinder token = mainlayout.getWindowToken();
 		        if (token != null) {
 		        	Log.d("============", token.toString());
 		            mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
-		            mWallpaperManager.setWallpaperOffsets(apps.getWindowToken(),
+		            mWallpaperManager.setWallpaperOffsets(mainlayout.getWindowToken(),
 		                    Math.max(0.f, Math.min(positionOffsetPixels/positionOffset, 1.f)), 0);
 		        }
 			}

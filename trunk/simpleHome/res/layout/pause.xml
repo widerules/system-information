@@ -2,6 +2,7 @@
 <RelativeLayout android:id="@+id/pause_download"
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
+  android:background="@android:color/transparent"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
   
@@ -17,6 +18,7 @@
 	<TextView android:id="@+id/download_name"
     	android:layout_below="@id/adBoard"
     	android:layout_centerHorizontal="true"
+		android:background="@android:color/transparent"
     	android:textSize="18dip"
 	   	android:layout_margin="10dip"
 	   	android:gravity="center"
@@ -26,6 +28,7 @@
         
 	<LinearLayout android:id="@+id/control_buttons"
   		android:orientation="horizontal"
+		android:background="@android:color/transparent"
   		android:layout_below="@id/download_name"
    		android:gravity="center" 
   		android:layout_width="fill_parent"
@@ -33,10 +36,14 @@
   
     	<Button android:id="@+id/pause"
         	android:text="@string/pause"
+	        android:background="@drawable/button_layout"
+	        android:layout_marginRight="5dip"
         	android:layout_height="wrap_content" 
         	android:layout_width="140dip"/>
       	<Button android:id="@+id/stop"
         	android:text="@string/stop"
+	        android:background="@drawable/button_layout"
+	        android:layout_marginLeft="5dip"
         	android:layout_height="wrap_content" 
         	android:layout_width="140dip"/>
 	</LinearLayout>

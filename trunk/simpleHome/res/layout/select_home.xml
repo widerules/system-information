@@ -2,6 +2,7 @@
 <RelativeLayout android:id="@+id/pause_download"
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
+  android:background="@android:color/transparent"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
   
@@ -18,8 +19,9 @@
         	android:text="@string/select"
 	  		android:layout_below="@id/adBoard"
 	  		android:layout_centerHorizontal="true"
-	  		android:layout_margin="10dip"
+	  		android:layout_marginTop="20dip"
    			android:gravity="center" 
+	        android:background="@drawable/button_layout"
         	android:layout_height="wrap_content" 
         	android:layout_width="140dip"/>
         

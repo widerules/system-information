@@ -892,7 +892,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
  	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
  		@Override
  		public void onReceive(Context arg0, Intent arg1) {
- 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
+ 			if (cbWallPaper.isChecked()) {
+ 	 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
+ 	 			cbWallPaper.performClick();
+ 			}
  		}
  	};
  	

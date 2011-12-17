@@ -835,12 +835,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	cbWallPaper.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (cbWallPaper.isChecked()) {
+				if (cbWallPaper.isChecked()) 
 			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_UI);
-				}
-				else {
+				else 
 					sensorMgr.unregisterListener(sensorListener);
-				}
 			}
     	});
 
@@ -896,10 +894,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
  	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
  		@Override
  		public void onReceive(Context arg0, Intent arg1) {
- 			if (cbWallPaper.isChecked()) {
- 	 			cbWallPaper.performClick();
- 	 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
- 			}
  		}
  	};
  	
@@ -1611,10 +1605,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
-				    	Drawable drawable = Drawable.createFromPath(downloadPath + picList.get(id));
-				    	ClippedDrawable cd = new ClippedDrawable(drawable, apps.getWidth(), apps.getHeight());
-				    	apps.setBackgroundDrawable(cd);
-				    	//mWallpaperManager.setBitmap(cd.getBitmap());//null pointer error?
+				    	BitmapDrawable bd = (BitmapDrawable) BitmapDrawable.createFromPath(downloadPath + picList.get(id));
+				        double tmpWidth = 1.0 * bd.getIntrinsicWidth() / bd.getIntrinsicHeight();
+				        if (tmpWidth >= 1.2) {//if too wide, we want use setWallpaperOffsets to move it, so we need set it to wallpaper 
+			 	 			cbWallPaper.performClick();
+			 	 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
+					    	mWallpaperManager.setBitmap(bd.getBitmap());
+				        }
+				    	else {//otherwise just change the background is ok.				    		
+					    	ClippedDrawable cd = new ClippedDrawable(bd, apps.getWidth(), apps.getHeight());
+					    	apps.setBackgroundDrawable(cd);
+				        }
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1648,9 +1649,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
  * by always giving it its intrinsic dimensions. If the wallpaper is larger than the
  * screen, it will simply get clipped but it won't impact performance.
  */
-class ClippedDrawable extends BitmapDrawable {
+class ClippedDrawable extends Drawable {
     private final Drawable mWallpaper;
     int screenWidth, screenHeight;
+    boolean tooWide = false;
 
     public ClippedDrawable(Drawable wallpaper, int sw, int sh) {
         mWallpaper = wallpaper; 
@@ -1669,6 +1671,7 @@ class ClippedDrawable extends BitmapDrawable {
         	mWallpaper.setBounds(left, top, left + screenWidth, top + tmpHeight);
         }
         else {//if the pic width is wider than screen width, then we need show part of the pic.
+        	tooWide = true;
            	left -= (tmpWidth - screenWidth)/2;
         	mWallpaper.setBounds(left, top, left + tmpWidth, top + screenHeight);
         }

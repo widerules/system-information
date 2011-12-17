@@ -260,7 +260,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					ShellInterface.doExec(new String[] {"mv " + apkToDel + " " + apkToDel + ".bak"});
 					Uri uri = Uri.fromParts("package", pkgToDel, null);
 					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-					startActivityForResult(intent, 1);
+					startActivity(intent);//this will launch package installer. after it close, onResume() will be invoke.
 	        	}
         	}).create();
         }
@@ -276,7 +276,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				String[] cmds = {
 						"rm " + apkToDel + ".bak",
 						"rm " + apkToDel.replace(".apk", ".odex")};
-				ShellInterface.doExec(cmds, false);
+				ShellInterface.doExec(cmds);
 			}
 			else ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel});
 			

@@ -1391,11 +1391,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    			mUserApps.add(ri);
 	    			if (!mUserAlpha.contains(tmp)) mUserAlpha.add(tmp);
 	    		}
-		    	Collections.sort(mSysApps, new myComparator());//sort by name
-		    	Collections.sort(mUserApps, new myComparator());//sort by name
-		    	Collections.sort(mSysAlpha, new stringCompatator());
-		    	Collections.sort(mUserAlpha, new stringCompatator());
-	    		
+		    	
 	    		try {
 					getPackageSizeInfo.invoke(pm, ri.activityInfo.packageName, sizeObserver);
 				} catch (Exception e) {
@@ -1403,6 +1399,20 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				}
 				
 	    	}
+	    	Collections.sort(mSysApps, new myComparator());//sort by name
+	    	Collections.sort(mUserApps, new myComparator());//sort by name
+	    	Collections.sort(mSysAlpha, new stringCompatator());
+	    	Collections.sort(mUserAlpha, new stringCompatator());
+    		
+	    	if (shortEmpty) {//add select home to short cut. I don't like to add it to menu
+		    	Intent intent = new Intent(Intent.ACTION_MAIN, null);
+		    	intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		    	intent.setClassName(myPackageName, myPackageName+".SelectHome");
+		    	mAllApps = pm.queryIntentActivities(intent, 0);
+		    	if (mAllApps.size() == 1)
+		    		mShortApps.add(mAllApps.get(0));
+	    	}
+	    	
         	Message msguser = mAppHandler.obtainMessage();
         	msguser.what = UPDATE_USER;
         	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.

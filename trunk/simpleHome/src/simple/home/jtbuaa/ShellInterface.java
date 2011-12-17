@@ -2,11 +2,6 @@ package simple.home.jtbuaa;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 public class ShellInterface {

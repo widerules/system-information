@@ -607,7 +607,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			e.printStackTrace();
 		}
 		
-        //setWallpaperDimension();
+        setWallpaperDimension();//otherwise the wallpaper will not show completely
     	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);

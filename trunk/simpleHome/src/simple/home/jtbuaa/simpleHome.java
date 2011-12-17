@@ -1627,6 +1627,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				        if (factor >= 1.2) {//if too wide, we want use setWallpaperOffsets to move it, so we need set it to wallpaper
 				        	int tmpWidth = (int) (apps.getHeight() * factor);
 					    	mWallpaperManager.setBitmap(Bitmap.createScaledBitmap(bd.getBitmap(), tmpWidth, apps.getHeight(), true));
+					    	mWallpaperManager.suggestDesiredDimensions(tmpWidth, apps.getHeight());
 			 	 			cbWallPaper.performClick();
 				        }
 				    	else {//otherwise just change the background is ok.				    		

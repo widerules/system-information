@@ -114,6 +114,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ArrayList<String> picList;
 	CheckBox cbWallPaper;
 	WallpaperManager mWallpaperManager;
+	IBinder token;
 	
     private void setWallpaperDimension() {
         WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
@@ -724,12 +725,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		        IBinder token = mainlayout.getWindowToken();
+				token = mainlayout.getWindowToken();//any token from a component is ok
 		        if (token != null) {
-		        	Log.d("============", token.toString());
 		            mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
-		            mWallpaperManager.setWallpaperOffsets(mainlayout.getWindowToken(),
-		                    Math.max(0.f, Math.min(positionOffsetPixels/positionOffset, 1.f)), 0);
+		            mWallpaperManager.setWallpaperOffsets(token, (float) Math.random(), 0);
+		                    //Math.max(0.f, Math.min(positionOffsetPixels/positionOffset, 1.f)), 0);
 		        }
 			}
 
@@ -854,7 +854,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		InitTask initTask = new InitTask();
         initTask.execute("");
     }
-    
+
     @Override 
     protected void onDestroy() {
     	unregisterReceiver(packageReceiver);
@@ -893,8 +893,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
  		@Override
  		public void onReceive(Context arg0, Intent arg1) {
  			if (cbWallPaper.isChecked()) {
- 	 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
  	 			cbWallPaper.performClick();
+ 	 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
  			}
  		}
  	};

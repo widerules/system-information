@@ -111,7 +111,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	Sensor mSensor;
 	float last_x, last_y, last_z;
 	long lastUpdate, lastSet;
-	ArrayList<String> picList;
+	ArrayList<String> picList, picList_selected;
 	CheckBox cbWallPaper;
 	WallpaperManager mWallpaperManager;
 	IBinder token;
@@ -1420,6 +1420,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	downloadPath = util.preparePath(getFilesDir().getPath());
         	
         	picList = new ArrayList();
+        	picList_selected = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
         	if (picList.size() > 0) {
 	        	Message msgshake = mAppHandler.obtainMessage();
@@ -1626,13 +1627,22 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					    	ClippedDrawable cd = new ClippedDrawable(bd, apps.getWidth(), apps.getHeight());
 					    	apps.setBackgroundDrawable(cd);
 				        }
+				        picList_selected.add(picList.get(id));
+				        picList.remove(id);//prevent it be selected again before a full cycle
 				    	lastSet = System.currentTimeMillis();
 					} catch (Exception e) {
 						e.printStackTrace();
 						picList.remove(id);
-						if (picList.isEmpty()) {
+					}
+					
+					if (picList.isEmpty()) {
+						if (picList_selected.isEmpty()) {
 							cbWallPaper.performClick();
 			        		cbWallPaper.setEnabled(false);
+						}
+						else {
+							picList = (ArrayList<String>) picList_selected.clone();
+							picList_selected.clear();
 						}
 					}
 				}  

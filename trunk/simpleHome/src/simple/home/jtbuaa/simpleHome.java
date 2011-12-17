@@ -117,17 +117,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	WallpaperManager mWallpaperManager;
 	IBinder token;
 	
-    private void setWallpaperDimension() {
-        WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
-
-        Display display = getWindowManager().getDefaultDisplay();
-        boolean isPortrait = display.getWidth() < display.getHeight();
-
-        final int width = isPortrait ? display.getWidth() : display.getHeight();
-        final int height = isPortrait ? display.getHeight() : display.getWidth();
-        wpm.suggestDesiredDimensions(width * 2, height);
-    }
-    
 	//about dialog
 	TextView mailto;
 	View aboutView;
@@ -608,8 +597,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			e.printStackTrace();
 		}
 		
-        setWallpaperDimension();//otherwise the wallpaper will not show completely
-    	
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
     	

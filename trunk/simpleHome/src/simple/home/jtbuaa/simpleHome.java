@@ -113,6 +113,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	long lastUpdate, lastSet;
 	ArrayList<String> picList, picList_selected;
 	CheckBox cbWallPaper;
+	boolean busy;
 	WallpaperManager mWallpaperManager;
 	IBinder token;
 	
@@ -835,10 +836,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	cbWallPaper.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (cbWallPaper.isChecked()) 
+				if (cbWallPaper.isChecked()) { 
 			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_UI);
-				else 
+			    	busy = false;
+				}
+				else { 
 					sensorMgr.unregisterListener(sensorListener);
+				}
 			}
     	});
 
@@ -894,6 +898,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
  	BroadcastReceiver wallpaperReceiver = new BroadcastReceiver() {
  		@Override
  		public void onReceive(Context arg0, Intent arg1) {
+ 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
  		}
  	};
  	
@@ -1612,16 +1617,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				  
 				double speed = Math.sqrt(deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ)/timeInterval * 100;
 				//condition to change wallpaper: speed is enough; frequency is not too high; picList is not empty. 
-				if ((speed > 8) && (curTime - lastSet > 500) && (picList != null) && (picList.size() > 0)) {
+				if ((!busy) && (speed > 8) && (curTime - lastSet > 500) && (picList != null) && (picList.size() > 0)) {
+					busy = true;
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
 				    	BitmapDrawable bd = (BitmapDrawable) BitmapDrawable.createFromPath(downloadPath + picList.get(id));
-				        double tmpWidth = 1.0 * bd.getIntrinsicWidth() / bd.getIntrinsicHeight();
-				        if (tmpWidth >= 1.2) {//if too wide, we want use setWallpaperOffsets to move it, so we need set it to wallpaper 
+				        double factor = 1.0 * bd.getIntrinsicWidth() / bd.getIntrinsicHeight();
+				        if (factor >= 1.2) {//if too wide, we want use setWallpaperOffsets to move it, so we need set it to wallpaper
+				        	int tmpWidth = (int) (apps.getHeight() * factor);
+					    	mWallpaperManager.setBitmap(Bitmap.createScaledBitmap(bd.getBitmap(), tmpWidth, apps.getHeight(), true));
 			 	 			cbWallPaper.performClick();
-			 	 			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
-					    	mWallpaperManager.setBitmap(bd.getBitmap());
 				        }
 				    	else {//otherwise just change the background is ok.				    		
 					    	ClippedDrawable cd = new ClippedDrawable(bd, apps.getWidth(), apps.getHeight());
@@ -1645,6 +1651,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 							picList_selected.clear();
 						}
 					}
+					
+					busy = false;
 				}  
 				last_x = x;  
 				last_y = y;  

@@ -139,8 +139,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ViewPager mainlayout;
 	RelativeLayout home, systems, users;
 	ResolveInfo appDetail;
-	List<ResolveInfo> mAllApps;
-	ArrayList<ResolveInfo> mFavoApps, mSysApps, mUserApps, mShortApps;
+	List<ResolveInfo> mAllApps, mFavoApps, mSysApps, mUserApps, mShortApps;
 	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
@@ -1326,34 +1325,26 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 	    	mAllApps = pm.queryIntentActivities(mainIntent, 0);
-
+				    	
             readFile("favo");
             readFile("short");
             boolean shortEmpty = mShortApps.isEmpty();
-			
+            
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging Messages メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
 	    	String label_phone = "電話 Phone 电话 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
 	    	String label_contact = "聯絡人 联系人 Contacts People 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
-	    		
 	    	    CharSequence  sa = ri.loadLabel(pm);
 	    	    if (sa == null) sa = ri.activityInfo.name;
 	    	    String sa1 = sa.toString().trim();
-	    	    String sa2 = "";
-	    	    for (int j = 0; j < sa1.length(); j++)
-	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
-	    		ri.activityInfo.applicationInfo.dataDir = sa2.toUpperCase() ;//we borrow dataDir to store the Pinyin of the label.
+	    	    String sa2 = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target.substring(0, 1);
+	    		ri.activityInfo.applicationInfo.dataDir = sa2.toUpperCase();//we borrow dataDir to store the Pinyin of the label.
 	    		
-    			String tmp = ri.activityInfo.applicationInfo.dataDir.substring(0, 1);
-    			
-	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 
 	    			mSysApps.add(ri);
-	    			
-	    			if (!mSysAlpha.contains(tmp)) mSysAlpha.add(tmp);
-	    			
-	    			String name = ri.loadLabel(pm).toString() ; 
+	    			String name = sa.toString() ; 
 	    			//Log.d("===============", name);
 	    			if (label_phone.contains(name)) {
 	    				if (ri_phone == null) {
@@ -1381,10 +1372,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		    			}
 	    			}
 	    		}
-	    		else {
-	    			mUserApps.add(ri);
-	    			if (!mUserAlpha.contains(tmp)) mUserAlpha.add(tmp);
-	    		}
+	    		else mUserApps.add(ri);
 		    	
 	    		try {
 					getPackageSizeInfo.invoke(pm, ri.activityInfo.packageName, sizeObserver);
@@ -1395,9 +1383,29 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	}
 	    	Collections.sort(mSysApps, new myComparator());//sort by name
 	    	Collections.sort(mUserApps, new myComparator());//sort by name
-	    	Collections.sort(mSysAlpha, new stringCompatator());
-	    	Collections.sort(mUserAlpha, new stringCompatator());
-    		
+
+	    	//below will reserve the sort process of mSysAlpha and mUserAlpha
+    		String tmp = mSysApps.get(0).activityInfo.applicationInfo.dataDir;
+	    	mSysAlpha.add(tmp);
+	    	for (int i = 1; i < mSysApps.size(); i++) {
+	    		String tmp2 = mSysApps.get(i).activityInfo.applicationInfo.dataDir;
+	    		if (!tmp.equals(tmp2)) {
+	    			tmp = tmp2;
+	    			mSysAlpha.add(tmp);
+	    		}
+	    	}
+	    	
+    		tmp = mUserApps.get(0).activityInfo.applicationInfo.dataDir;
+	    	mUserAlpha.add(tmp);
+	    	for (int i = 1; i < mUserApps.size(); i++) {
+	    		String tmp2 = mUserApps.get(i).activityInfo.applicationInfo.dataDir;
+	    		if (!tmp.equals(tmp2)) {
+	    			tmp = tmp2;
+	    			mUserAlpha.add(tmp);
+	    		}
+	    	}
+
+	    	
 	    	if (shortEmpty) {//add select home to short cut. I don't like to add it to menu
 		    	Intent intent = new Intent(Intent.ACTION_MAIN, null);
 		    	intent.addCategory(Intent.CATEGORY_LAUNCHER);

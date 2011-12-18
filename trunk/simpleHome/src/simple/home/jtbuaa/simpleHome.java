@@ -713,16 +713,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				token = mainlayout.getWindowToken();//any token from a component is ok
-		        if ((token != null) && (positionOffset > 0)) {
-		            //mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
-		            mWallpaperManager.setWallpaperOffsets(token, 
-				            //when slide from home to systems or from systems to home, the "position" is 0,
-				            //when slide from home to users or from users to home, it is 1.
-				            //positionOffset is from 0 to 1. sometime it will jump from 1 to 0, we just omit it if it is 0.
-				            //so we can unify it to (0, 1) by (positionOffset+position)/2
-		                    Math.max(0.f, Math.min((positionOffset+position)/2, 1.f)), 0);
-		        }
+				if (!cbWallPaper.isChecked()) {//don't move wallpaper if change wallpaper by shake
+					token = mainlayout.getWindowToken();//any token from a component is ok
+			        if ((token != null) && (positionOffset > 0)) {
+			            //mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
+			            mWallpaperManager.setWallpaperOffsets(token, 
+					            //when slide from home to systems or from systems to home, the "position" is 0,
+					            //when slide from home to users or from users to home, it is 1.
+					            //positionOffset is from 0 to 1. sometime it will jump from 1 to 0, we just omit it if it is 0.
+					            //so we can unify it to (0, 1) by (positionOffset+position)/2
+			                    Math.max(0.f, Math.min((positionOffset+position)/2, 1.f)), 0);
+			        }
+				}
 			}
 
 			@Override

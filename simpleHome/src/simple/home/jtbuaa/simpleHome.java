@@ -1334,6 +1334,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	String label_sms = "簡訊 Messaging Messages メッセージ 信息 消息 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
 	    	String label_phone = "電話 Phone 电话 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
 	    	String label_contact = "聯絡人 联系人 Contacts People 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
+	    	int match = 0;
 	    	for (int i = 0; i < mAllApps.size(); i++) {
 	    		ResolveInfo ri = mAllApps.get(i);
 	    	    CharSequence  sa = ri.loadLabel(pm);
@@ -1344,31 +1345,37 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    		
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 
 	    			mSysApps.add(ri);
-	    			String name = sa.toString() ; 
-	    			//Log.d("===============", name);
-	    			if (label_phone.contains(name)) {
-	    				if (ri_phone == null) {
-	    					ri_phone = ri;
-	    		        	Message msgphone = mAppHandler.obtainMessage();
-	    		        	msgphone.what = UPDATE_RI_PHONE;
-	    		        	mAppHandler.sendMessage(msgphone);//inform UI thread to update UI.
-	    				}
-	    			} 
-	    			else if (label_sms.contains(name)) {
-	    				if ((ri_sms == null) && (!name.equals("MM"))) {
-	    					ri_sms = ri;
-	    		        	Message msgsms = mAppHandler.obtainMessage();
-	    		        	msgsms.what = UPDATE_RI_SMS;
-	    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.
-	    				}
-	    			}
-	    			else if ((shortEmpty) && label_contact.contains(name)) {//only add contact to shortcut if shortcut is empty.
-	    				if (ri_contact == null) {
-	    					mShortApps.add(ri);
-	    					/*ri_contact = ri;
-	    		        	Message msgcontact = mAppHandler.obtainMessage();
-	    		        	msgcontact.what = UPDATE_RI_CONTACT;
-	    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.*/
+	    			
+	    			if (match < 3) {//only find 3 match: sms, phone, contact
+		    			String name = sa.toString() ; 
+		    			//Log.d("===============", name);
+		    			if (label_phone.contains(name)) {
+		    				if (ri_phone == null) {
+		    					ri_phone = ri;
+		    		        	Message msgphone = mAppHandler.obtainMessage();
+		    		        	msgphone.what = UPDATE_RI_PHONE;
+		    		        	mAppHandler.sendMessage(msgphone);//inform UI thread to update UI.
+		    		        	match += 1;
+		    				}
+		    			} 
+		    			else if (label_sms.contains(name)) {
+		    				if ((ri_sms == null) && (!name.equals("MM"))) {
+		    					ri_sms = ri;
+		    		        	Message msgsms = mAppHandler.obtainMessage();
+		    		        	msgsms.what = UPDATE_RI_SMS;
+		    		        	mAppHandler.sendMessage(msgsms);//inform UI thread to update UI.
+		    		        	match += 1;
+		    				}
+		    			}
+		    			else if ((shortEmpty) && label_contact.contains(name)) {//only add contact to shortcut if shortcut is empty.
+		    				if (ri_contact == null) {
+		    					mShortApps.add(ri);
+		    					/*ri_contact = ri;
+		    		        	Message msgcontact = mAppHandler.obtainMessage();
+		    		        	msgcontact.what = UPDATE_RI_CONTACT;
+		    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.*/
+		    		        	match += 1;
+			    			}
 		    			}
 	    			}
 	    		}
@@ -1501,11 +1508,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	case UPDATE_RI_PHONE:
         		int missCallCount = callObserver.countUnread();
         		if (missCallCount > 0) {
-            		BitmapDrawable bd = (BitmapDrawable) ri_phone.loadIcon(pm);
-        			shortcut_phone.setImageBitmap(util.generatorCountIcon(bd.getBitmap(), missCallCount, 1, getBaseContext()));
+        			Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.phone);
+        			shortcut_phone.setImageBitmap(util.generatorCountIcon(bm, missCallCount, 1, getBaseContext()));
         		}
-        		else shortcut_phone.setImageDrawable(ri_phone.loadIcon(pm));
-
+        		else shortcut_phone.setImageResource(R.drawable.phone);
+        		
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
@@ -1516,10 +1523,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	case UPDATE_RI_SMS:
         		int unreadCount = smsObserver.countUnread();
         		if (unreadCount > 0) {
-            		BitmapDrawable bd = (BitmapDrawable) ri_sms.loadIcon(pm);
-            		shortcut_sms.setImageBitmap(util.generatorCountIcon(bd.getBitmap(), unreadCount, 1, getBaseContext()));
+        			Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.sms);
+            		shortcut_sms.setImageBitmap(util.generatorCountIcon(bm, unreadCount, 1, getBaseContext()));
         		}
-        		else shortcut_sms.setImageDrawable(ri_sms.loadIcon(pm));
+        		else shortcut_sms.setImageResource(R.drawable.sms);
+        		
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {

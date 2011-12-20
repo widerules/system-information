@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -56,6 +57,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -497,6 +499,10 @@ public void onCreate(Bundle savedInstanceState) {
     webpages.addView(serverWebs.get(webIndex));
     
 	webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
+	DisplayMetrics dm  = new DisplayMetrics();
+	getWindowManager().getDefaultDisplay().getMetrics(dm);
+	android.view.ViewGroup.LayoutParams lp = webtools_center.getLayoutParams();
+	lp.width = dm.widthPixels/2 + 40;
 	
 	imgNext = (ImageView) findViewById(R.id.next);
 	imgNext.setOnClickListener(new OnClickListener() {

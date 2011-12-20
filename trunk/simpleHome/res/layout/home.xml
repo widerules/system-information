@@ -32,14 +32,12 @@
 				android:layout_width="54dip"
 				android:layout_alignParentLeft="true"
 				android:scaleType="fitCenter"
-				android:src="@drawable/sms"
   			/>
 			<ImageView android:id="@+id/shortcut_phone"
 				android:layout_height="54dip" 
 				android:layout_width="54dip"
 				android:layout_alignParentRight="true"
 				android:scaleType="fitCenter"
-				android:src="@drawable/phone"
   			/>
 		</RelativeLayout>
 		<ImageView android:id="@+id/business_bar"

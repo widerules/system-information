@@ -1,6 +1,6 @@
 from bottle import Bottle, route, run, redirect, request, static_file
 
-import urllib2, simplejson, json, gzip, StringIO
+import urllib2, simplejson, json, gzip, StringIO, redis
 
 app = Bottle()
 
@@ -29,5 +29,20 @@ def findUrlGzip(url):
 @route('/<filename:path>')
 def send_static(filename):
     return static_file(filename, root='kendoui/')
+
+@route('/redis')
+def redis():
+    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r.set('foo','bar')
+    r.set('foo1','bar1')
+    print 'dbsize:%s' %r.dbsize()
+    print 'key value is:%s' %r.get('fool')
+    return r.get('fool')
+
+@route('/json')
+def json():
+    data = [['apple', 'cat'], ['banana', 'dog'], ['pear', 'fish']]
+    x = simplejson.dumps(data)
+    return x
 
 run(host='192.168.5.136', port=8080, reloader=True)

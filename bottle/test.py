@@ -41,7 +41,7 @@ def redis():
 
 @route('/json')
 def json():
-    data = [['apple', 'cat'], ['banana', 'dog'], ['pear', 'fish']]
+    data = [{'Id': 1, 'city': 'beijing', 'area': 16800, 'population': 1600}, {'Id': 2, 'city': 'shanghai', 'area': 6400, 'population': 1800}]
     x = simplejson.dumps(data)
     return x
 

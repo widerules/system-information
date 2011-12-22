@@ -1,21 +1,27 @@
-from bottle import Bottle, route, run, redirect, request, static_file
+from bottle import Bottle, route, run, redirect, request, static_file, debug
 
-import urllib2, simplejson, json, gzip, StringIO, redis
+import urllib2, json, gzip, StringIO, redis
 
 app = Bottle()
 
 @route('/')
+def ping():
+    s = 'pang: '
+    for key in request.params.keys():
+	s += key + ', ' + request.params[key] + '\n'
+    return s
+
 @route('/test')
 def test():
     something = findUrlGzip('http://api.borqs.com/user/show?users=43')
     return something
-    #return json.loads(something)
+    #return simplejson.dumps(something)
 
 def findUrlGzip(url):
-    request = urllib2.Request(url)
-    request.add_header('Accept-encoding', 'gzip')
+    request0 = urllib2.Request(url)
+    request0.add_header('Accept-encoding', 'gzip')
     opener = urllib2.build_opener()
-    f = opener.open(request)
+    f = opener.open(request0)
     isGzip = f.headers.get('Content-Encoding')
     if isGzip :
         compresseddata = f.read()
@@ -40,9 +46,27 @@ def redis():
     return r.get('fool')
 
 @route('/json')
-def json():
+def testjson():
     data = [{'Id': 1, 'city': 'beijing', 'area': 16800, 'population': 1600}, {'Id': 2, 'city': 'shanghai', 'area': 6400, 'population': 1800}]
-    x = simplejson.dumps(data)
-    return x
+    return wrapResults(data)
 
-run(host='192.168.5.136', port=8080, reloader=True)
+def wrapResults(results):
+    callback = getCallback()
+    if len(callback) > 0:
+	return '%s(%s);'%(callback, json.dumps({'results':results}))
+    else:
+	return {'results':results}
+
+def getCallback():
+    callback = ''
+    try:
+	for key in request.params.keys():
+	    if key == 'callback' or key == 'jsonp' or key == 'jsonpcallback':
+		callback = request.params[key]
+    except:
+	pass
+    return callback
+
+if (__name__ == '__main__'):
+    debug(True)
+    run(host='192.168.5.136', port=8080, reloader=True)

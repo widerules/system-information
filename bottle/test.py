@@ -53,9 +53,11 @@ def testjson():
 def wrapResults(results):
     callback = getCallback()
     if len(callback) > 0:
-	return '%s(%s);'%(callback, json.dumps({'results':results}))
+	ret = '%s(%s);'%(callback, json.dumps({'results':results}))
     else:
-	return {'results':results}
+	ret = {'results':results}
+    print ret
+    return ret
 
 def getCallback():
     callback = ''

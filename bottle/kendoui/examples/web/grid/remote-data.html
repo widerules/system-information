@@ -39,41 +39,18 @@
                 $(document).ready(function() {
                     $("#grid").kendoGrid({
                         dataSource: {
-                            type: "odata",
                             transport: {
-                                read: "http://services.odata.org/Northwind/Northwind.svc/Orders"
+                                read: "http://192.168.5.136:8080/json",
+				dataType: "json"
                             },
                             schema: {
-                                model: {
-                                    fields: {
-                                        OrderID: { type: "number" },
-                                        Freight: { type: "number" },
-                                        ShipName: { type: "string" },
-                                        OrderDate: { type: "date" },
-                                        ShipCity: { type: "string" }
-                                    }
-                                }
+				data: "results"
                             },
-                            pageSize: 10,
-                            serverPaging: true,
-                            serverFiltering: true,
-                            serverSorting: true
                         },
                         height: 250,
                         filterable: true,
                         sortable: true,
                         pageable: true,
-                        columns: [{
-                                field:"OrderID",
-                                filterable: false
-                            },
-                            "Freight", {
-                                field: "OrderDate",
-                                template: '#= kendo.toString(toDate(OrderDate), "MM/dd/yyyy")#'
-                            },
-                            "ShipName",
-                            "ShipCity"
-                        ]
                     });
                 });
             </script>

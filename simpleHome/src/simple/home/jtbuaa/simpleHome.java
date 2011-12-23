@@ -1073,7 +1073,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btn.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {//find app when click
-					btn.requestFocus();
+					v.requestFocus();
 					String tmp = localList.get(position);
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
@@ -1148,7 +1148,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 lapp.setOnTouchListener(new OnTouchListener() {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
-						if (event.getAction() == MotionEvent.ACTION_UP) {//start app when click
+						long pressTime = event.getEventTime() - event.getDownTime();//use this to avoid long click
+						if ((pressTime > 0) && (pressTime < 200) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
 	    					if (startApp(info))//start success
 	    						textView1.setTextColor(redColor);//red for running apk
 	    					else {
@@ -1190,20 +1191,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						return false;
 					}
     			});
-           	}
-           	
-            if (!DuringSelection) {//running state, size and color should be updated when not busy each time
-                textView1.setTextColor(whiteColor);
-                final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
-                for (int i = 0; i < appList.size(); i++) {//a bottle neck
-            		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-                	if (info.activityInfo.processName.equals(as.processName)) {
-                    	textView1.setTextColor(redColor);//red for running apk
-            			break;
-            		}
-                }
-                
+    			
                 final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
                 String source = "";
                 Object o = packagesSize.get(info.activityInfo.packageName);
@@ -1214,6 +1202,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 }
                 else textView3.setTextColor(grayColor);//gray for normal
             	textView3.setText(source);
+           	}
+           	
+            if (!DuringSelection) {//running state should be updated when not busy, for it is time consuming
+                textView1.setTextColor(whiteColor);
+                final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
+                for (int i = 0; i < appList.size(); i++) {//a bottle neck
+            		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
+                	if (info.activityInfo.processName.equals(as.processName)) {
+                    	textView1.setTextColor(redColor);//red for running apk
+            			break;
+            		}
+                }
             }
             
             return convertView;

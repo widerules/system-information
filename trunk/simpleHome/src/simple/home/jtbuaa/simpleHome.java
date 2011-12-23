@@ -1128,6 +1128,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
            	if (info.loadLabel(pm) != textView1.getText()) {//only reset the appname, version, icon when needed
                	textView1.setText(info.loadLabel(pm));
                	
+               	final boolean isUser = (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0;
+               	
                 final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
                 btnIcon.setImageDrawable(info.loadIcon(pm));
                 //if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
@@ -1153,7 +1155,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    					if (startApp(info))//start success
 	    						textView1.setTextColor(redColor);//red for running apk
 	    					else {
-	    						if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) //user app
+	    						if (isUser) //user app
 	    							userAdapter.remove(info);
 	    						else
 	    							sysAdapter.remove(info);//fail to start, remove the item.
@@ -1177,7 +1179,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			btnVersion.setOnTouchListener(new OnTouchListener() {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {//uninstall app when click
-    					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
+    					if (isUser) {//user app
     						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
     						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
     						util.startActivity(intent, true, getBaseContext());

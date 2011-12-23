@@ -1070,9 +1070,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             }
             final TextView btn = (TextView) convertView.findViewById(R.id.alpha);
             btn.setText(localList.get(position));
-            btn.setOnClickListener(new OnClickListener() {
+            btn.setOnTouchListener(new OnTouchListener() {
 				@Override
-				public void onClick(View arg0) {
+				public boolean onTouch(View v, MotionEvent event) {//find app when click
+					btn.requestFocus();
 					String tmp = localList.get(position);
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
@@ -1095,6 +1096,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						}
 						break;
 					}
+					return false;
 				}
             });
             
@@ -1129,31 +1131,36 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
                 btnIcon.setImageDrawable(info.loadIcon(pm));
                 //if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
-                btnIcon.setOnClickListener(new OnClickListener() {
-    				@Override
-    				public void onClick(View arg0) {//kill app
+                btnIcon.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {//kill process when click
     					if (! info.activityInfo.packageName.equals(myPackageName)) {//don't kill myself
     						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     						am.restartPackage(info.activityInfo.packageName);
     						//but we need to know when will it restart by itself?
     						textView1.setTextColor(whiteColor);//set color back after kill it.
     					}
-    				}
+						return false;
+					}
                 });
                 
                 LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
-                lapp.setOnClickListener(new OnClickListener() {
-    				@Override
-    				public void onClick(View arg0) {//start app
-    					if (startApp(info))//start success
-    						textView1.setTextColor(redColor);//red for running apk
-    					else {
-    						if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) //user app
-    							userAdapter.remove(info);
-    						else
-    							sysAdapter.remove(info);//fail to start, remove the item.
-    					}
-    				}
+                lapp.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if (event.getAction() == MotionEvent.ACTION_UP) {//start app when click
+	    					if (startApp(info))//start success
+	    						textView1.setTextColor(redColor);//red for running apk
+	    					else {
+	    						if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) //user app
+	    							userAdapter.remove(info);
+	    						else
+	    							sysAdapter.remove(info);//fail to start, remove the item.
+	    					}
+							return true;
+						}
+						else return false;
+					}
                 });
             	lapp.setTag(new ricase(info, 2));
                 registerForContextMenu(lapp); 
@@ -1166,21 +1173,22 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			} catch (NameNotFoundException e) {
     				btnVersion.setText(e.toString());
     			}
-    			btnVersion.setOnClickListener(new OnClickListener() {//delete app
-    				@Override
-    				public void onClick(View arg0) {
+    			btnVersion.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {//uninstall app when click
     					if ((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {//user app
     						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
     						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
     						util.startActivity(intent, true, getBaseContext());
-    						arg0.requestFocus();
+    						btnVersion.requestFocus();
     					}
     					else {//system app
     						apkToDel = info.activityInfo.applicationInfo.sourceDir;
     						pkgToDel = info.activityInfo.packageName;
     						showDialog(2);
     					}
-    				}
+						return false;
+					}
     			});
            	}
            	

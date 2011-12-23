@@ -1057,15 +1057,24 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 final LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.alpha_list, parent, false);
             }
-            if (localList.size() == mSysAlpha.size()) {//tun gravity to show diversify
-                if (position < systemColumns) 
-                	((TextView)convertView).setGravity(Gravity.CENTER);
-                else 
-                	((TextView)convertView).setGravity(Gravity.RIGHT);
+            if (localList.size() == mSysAlpha.size()) {//tune gravity to show diversify
+            	if (mSysAlpha.size() > systemColumns) {//only tune it if more than one line
+                    if (position < systemColumns) {
+                    	if (dm.widthPixels > 480)
+                        	((TextView)convertView).setGravity(Gravity.CENTER);
+                    	else
+                        	((TextView)convertView).setGravity(Gravity.LEFT);
+                    }
+                    else 
+                    	((TextView)convertView).setGravity(Gravity.RIGHT);
+            	}
             }
-            else {
+            else if (mUserAlpha.size() > userColumns){
                 if (position < userColumns) 
-                	((TextView)convertView).setGravity(Gravity.CENTER);
+                	if (dm.widthPixels > 480)
+                    	((TextView)convertView).setGravity(Gravity.CENTER);
+                	else
+                    	((TextView)convertView).setGravity(Gravity.LEFT);
                 else 
                 	((TextView)convertView).setGravity(Gravity.RIGHT);
             }

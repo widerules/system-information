@@ -76,6 +76,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -128,6 +129,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	final int MaxCount = 14;
+	int systemColumns, userColumns;
 	Boolean DuringSelection = false;
     RadioButton btnSystem, btnUser, btnHome;
 
@@ -630,11 +632,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < sysAlphaAdapter.getCount(); i++) 
 						if (alpha.charAt(0) == sysAlphaAdapter.getItem(i).charAt(0)) {
-							RelativeLayout rl = (RelativeLayout)sysAlpha.getChildAt(i);
-							if (rl != null) {
-								TextView tv = (TextView) rl.findViewById(R.id.alpha);
-								if (tv != null) tv.requestFocus();
-							}
+							TextView tv = (TextView)sysAlpha.getChildAt(i);
+							if (tv != null) tv.requestFocus();
 							break;
 						}
 				}
@@ -658,11 +657,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < userAlphaAdapter.getCount(); i++) 
 						if (alpha.charAt(0) == userAlphaAdapter.getItem(i).charAt(0)) {
-							RelativeLayout rl = (RelativeLayout)userAlpha.getChildAt(i);
-							if (rl != null) {
-								TextView tv = (TextView) rl.findViewById(R.id.alpha);
-								if (tv != null) tv.requestFocus();
-							}
+							TextView tv = (TextView)userAlpha.getChildAt(i);
+							if (tv != null) tv.requestFocus();
 							break;
 						}
 				}
@@ -964,9 +960,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			}
             			if (!found) {
             				userAlphaAdapter.remove(tmp);
-                    		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
-                    		else if (userAlphaAdapter.getCount() < MaxCount*2) userAlpha.setNumColumns((int)(userAlphaAdapter.getCount()/2.0+0.5));
-                    		else userAlpha.setNumColumns(MaxCount);
+            				setColumns(true);
             			}
             		}
             		else {//check system alpha list
@@ -978,9 +972,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			}
             			if (!found) {
             				sysAlphaAdapter.remove(tmp);
-                    		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
-                    		else if (sysAlphaAdapter.getCount() < MaxCount*2) sysAlpha.setNumColumns((int)(sysAlphaAdapter.getCount()/2.0+0.5));
-                    		else sysAlpha.setNumColumns(MaxCount);
+            				setColumns(false);
             			}
             		}
             	}
@@ -1022,9 +1014,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    			if (!mSysAlpha.contains(tmp)) {
         	    				sysAlphaAdapter.add(tmp);
             			    	Collections.sort(sysAlphaAdapter.localList, new stringCompatator());
-                        		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
-                        		else if (sysAlphaAdapter.getCount() < MaxCount*2) sysAlpha.setNumColumns((int)(sysAlphaAdapter.getCount()/2.0+0.5));
-                        		else sysAlpha.setNumColumns(MaxCount);
+            			    	setColumns(false);
         	    			}
             		    	break;
                     	}
@@ -1035,9 +1025,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    			if (!mUserAlpha.contains(tmp)) {
                 				userAlphaAdapter.add(tmp);
             			    	Collections.sort(userAlphaAdapter.localList, new stringCompatator());
-                        		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
-                        		else if (userAlphaAdapter.getCount() < MaxCount*2) userAlpha.setNumColumns((int)(userAlphaAdapter.getCount()/2.0+0.5));
-                        		else userAlpha.setNumColumns(MaxCount);
+            			    	setColumns(true);
         	    			}
             		    	break;
                     	}
@@ -1068,6 +1056,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             if (convertView == null) {
                 final LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.alpha_list, parent, false);
+            }
+            if (localList.size() == mSysAlpha.size()) {//tun gravity to show diversify
+                if (position < systemColumns) 
+                	((TextView)convertView).setGravity(Gravity.CENTER);
+                else 
+                	((TextView)convertView).setGravity(Gravity.RIGHT);
+            }
+            else {
+                if (position < userColumns) 
+                	((TextView)convertView).setGravity(Gravity.CENTER);
+                else 
+                	((TextView)convertView).setGravity(Gravity.RIGHT);
             }
             final TextView btn = (TextView) convertView.findViewById(R.id.alpha);
             btn.setText(localList.get(position));
@@ -1489,6 +1489,21 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    } 
 	} 
 	
+	void setColumns(boolean isUser) {
+		if (isUser) {
+    		userColumns = MaxCount;
+    		if (userAlphaAdapter.getCount() < MaxCount) userColumns = userAlphaAdapter.getCount();
+    		else if (userAlphaAdapter.getCount() < MaxCount*2) userColumns = (int)(userAlphaAdapter.getCount()/2.0+0.5);
+    		userAlpha.setNumColumns(userColumns);
+		}
+		else {
+    		systemColumns = MaxCount;
+    		if (sysAlphaAdapter.getCount() < MaxCount) systemColumns = sysAlphaAdapter.getCount();
+    		else if (sysAlphaAdapter.getCount() < MaxCount*2) systemColumns = (int)(sysAlphaAdapter.getCount()/2.0+0.5);
+    		sysAlpha.setNumColumns(systemColumns);
+		}
+	}
+	
     class appHandler extends Handler {
 
         public void handleMessage(Message msg) {
@@ -1505,15 +1520,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		
         		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
         		sysAlpha.setAdapter(sysAlphaAdapter);
-        		if (sysAlphaAdapter.getCount() < MaxCount) sysAlpha.setNumColumns(sysAlphaAdapter.getCount());
-        		else if (sysAlphaAdapter.getCount() < MaxCount*2) sysAlpha.setNumColumns((int)(sysAlphaAdapter.getCount()/2.0+0.5));
-        		else sysAlpha.setNumColumns(MaxCount);
+        		setColumns(false);
         	
         		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
         		userAlpha.setAdapter(userAlphaAdapter);
-        		if (userAlphaAdapter.getCount() < MaxCount) userAlpha.setNumColumns(userAlphaAdapter.getCount());
-        		else if (userAlphaAdapter.getCount() < MaxCount*2) userAlpha.setNumColumns((int)(userAlphaAdapter.getCount()/2.0+0.5));
-        		else userAlpha.setNumColumns(MaxCount);
+        		setColumns(true);
 
         		break;
         	case UPDATE_RI_PHONE:

@@ -84,6 +84,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -1073,7 +1074,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             btn.setOnTouchListener(new OnTouchListener() {
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {//find app when click
-					v.requestFocus();
+					v.requestFocusFromTouch();
 					String tmp = localList.get(position);
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
@@ -1151,7 +1152,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						long pressTime = event.getEventTime() - event.getDownTime();//use this to avoid long click
-						if ((pressTime > 0) && (pressTime < 200) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
+						if ((pressTime > 0) && (pressTime < ViewConfiguration.getLongPressTimeout()) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
 	    					if (startApp(info))//start success
 	    						textView1.setTextColor(redColor);//red for running apk
 	    					else {

@@ -1176,9 +1176,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			} catch (NameNotFoundException e) {
     				btnVersion.setText(e.toString());
     			}
-    			btnVersion.setOnTouchListener(new OnTouchListener() {
+                btnVersion.setOnClickListener(new OnClickListener() {
 					@Override
-					public boolean onTouch(View v, MotionEvent event) {//uninstall app when click
+					public void onClick(View v) {
     					if (isUser) {//user app
     						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
     						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
@@ -1190,9 +1190,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						pkgToDel = info.activityInfo.packageName;
     						showDialog(2);
     					}
-						return false;
 					}
-    			});
+                });
     			
                 final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
                 String source = "";

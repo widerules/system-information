@@ -133,6 +133,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	int systemColumns, userColumns;
 	Boolean DuringSelection = false;
     RadioButton btnSystem, btnUser, btnHome;
+    int systemSelected = -1, userSelected = -1;
 
 	//app list related
 	private List<View> mListViews;
@@ -630,13 +631,20 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if ((sysAlpha != null) && (sysAdapter != null) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
+					if (systemSelected > -1) {
+						TextView tv = (TextView)sysAlpha.getChildAt(systemSelected);
+						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
+						systemSelected = -1;
+					}
 					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < sysAlphaAdapter.getCount(); i++) { 
-						TextView tv = (TextView)sysAlpha.getChildAt(i);
-						if (tv != null) {
-							tv.setBackgroundResource(R.drawable.circle);
-							if (alpha.charAt(0) == sysAlphaAdapter.getItem(i).charAt(0)) 
+						if (alpha.charAt(0) == sysAlphaAdapter.getItem(i).charAt(0)) { 
+							TextView tv = (TextView)sysAlpha.getChildAt(i);
+							if (tv != null) {
+								tv.setBackgroundResource(R.drawable.circle);
 								tv.requestFocus();
+							}
+							break;
 						}
 					}
 				}
@@ -657,13 +665,20 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if ((userAlpha != null) && (userAdapter != null) && (!DuringSelection)) {
+					if (userSelected > -1) {
+						TextView tv = (TextView)userAlpha.getChildAt(userSelected);
+						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
+						userSelected = -1;
+					}
 					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					for (int i = 0; i < userAlphaAdapter.getCount(); i++) { 
-						TextView tv = (TextView)userAlpha.getChildAt(i);
-						if (tv != null) {
-							tv.setBackgroundResource(R.drawable.circle);
-							if (alpha.charAt(0) == userAlphaAdapter.getItem(i).charAt(0)) 
+						if (alpha.charAt(0) == userAlphaAdapter.getItem(i).charAt(0)) { 
+							TextView tv = (TextView)userAlpha.getChildAt(i);
+							if (tv != null) {
+								tv.setBackgroundResource(R.drawable.circle);
 								tv.requestFocus();
+							}
+							break;
 						}
 					}
 				}
@@ -1093,10 +1108,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					v.requestFocusFromTouch();//this will make app list get focus, very strange
 					switch(mainlayout.getCurrentItem()) {
 					case 0://system app
-						for (int i = 0; i < sysAdapter.getCount(); i++) {//restore the background
-							TextView tv = (TextView)sysAlpha.getChildAt(i);
-							if (tv != null) tv.setBackgroundResource(R.drawable.circle);
-						}
+						TextView tv = (TextView)sysAlpha.getChildAt(systemSelected);//restore the background
+						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
+						systemSelected = position;
 						for (int i = 0; i < sysAdapter.getCount(); i++) {
 							if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								sysAppList.requestFocusFromTouch();
@@ -1106,10 +1120,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						}
 						break;
 					case 2://user app
-						for (int i = 0; i < userAdapter.getCount(); i++) {//restore the background
-							TextView tv = (TextView)userAlpha.getChildAt(i);
-							if (tv != null) tv.setBackgroundResource(R.drawable.circle);
-						}
+						tv = (TextView)userAlpha.getChildAt(userSelected);//restore the background
+						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
+						userSelected = position;
 						for (int i = 0; i < userAdapter.getCount(); i++) {
 							if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								userAppList.requestFocusFromTouch();

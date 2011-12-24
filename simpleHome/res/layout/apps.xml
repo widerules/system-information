@@ -27,17 +27,5 @@
 		android:divider="@android:color/transparent"
 		android:background="@drawable/round_corner_light"
 	/>
-	
-<TextView
-    android:id="@+id/alpha_hint"
-    android:layout_width="wrap_content"  
-    android:layout_height="wrap_content"  
-    android:layout_alignParentTop="true"
-    android:layout_centerHorizontal="true"
-    android:visibility="invisible"
-    android:background="@drawable/circle_selected"
-    android:textSize="24dip"
-    android:padding="5dip"
-    />
-    
+	   
 </RelativeLayout>	

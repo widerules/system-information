@@ -123,7 +123,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	//about dialog
 	TextView mailto;
 	View aboutView;
-	AlertDialog m_aboutDialog;
+	AlertDialog m_aboutDialog, m_deleteDialog;
 	
 	//alpha list related
 	GridView sysAlpha, userAlpha;
@@ -143,7 +143,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	String version, myPackageName;
 	ViewPager mainlayout;
 	RelativeLayout home, systems, users;
-	ResolveInfo appDetail;
+	ResolveInfo appDetail, appToDel = null;
 	List<ResolveInfo> mAllApps, mFavoApps, mSysApps, mUserApps, mShortApps;
 	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
 	PackageManager pm;
@@ -161,7 +161,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SHAKE_WALLPAPER = 4; 
 	ContextMenu mMenu;
 	
-	String apkToDel, pkgToDel;
 	boolean canRoot;
 	
 	DisplayMetrics dm;
@@ -235,36 +234,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ricase selected_case;
        
 	@Override
-	protected Dialog onCreateDialog(int id) {
-        switch (id) {
-        case 2: {//delete system app dialog
-			return new AlertDialog.Builder(this).
-			setTitle(getString(R.string.app_name) + " " + version).
-			setIcon(R.drawable.error).
-			setMessage(R.string.warning).
-        	setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-				}
-			}).
-        	setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-        		@Override
-        		public void onClick(DialogInterface dialog, int which) {//rm system app
-					ShellInterface.doExec(new String[] {"mv " + apkToDel + " " + apkToDel + ".bak"});
-					Uri uri = Uri.fromParts("package", pkgToDel, null);
-					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-					startActivity(intent);//this will launch package installer. after it close, onResume() will be invoke.
-	        	}
-        	}).create();
-        }
-        }
-        return null;
-	}
-
-	@Override
 	protected void onResume() {
-		if (!pkgToDel.equals("")) {
-			String res = ShellInterface.doExec(new String[] {"ls /data/data/" + pkgToDel}, true);
+		if (appToDel != null) {
+			String apkToDel = appToDel.activityInfo.applicationInfo.sourceDir;
+			String res = ShellInterface.doExec(new String[] {"ls /data/data/" + appToDel.activityInfo.packageName}, true);
 			if (res.contains("No such file or directory")) {//uninstalled
 				String[] cmds = {
 						"rm " + apkToDel + ".bak",
@@ -273,7 +246,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 			else ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel});
 			
-			pkgToDel = "";
+			appToDel = null;
 		}
 		
 		super.onResume();
@@ -860,7 +833,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	getContentResolver().registerContentObserver(Calls.CONTENT_URI, true, callObserver);
     	cr.registerContentObserver(Uri.parse("content://mms-sms/"), true, smsObserver);
         
-		pkgToDel = "";
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
@@ -1223,9 +1195,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						btnVersion.requestFocus();
     					}
     					else {//system app
-    						apkToDel = info.activityInfo.applicationInfo.sourceDir;
-    						pkgToDel = info.activityInfo.packageName;
-    						showDialog(2);
+    						appToDel = info;
+    						showDelDialog(info.loadLabel(pm) + " " + btnVersion.getText());
     					}
 					}
                 });
@@ -1259,6 +1230,32 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         }
     }
 
+    void showDelDialog(String title) {
+    	if (m_deleteDialog == null) {
+			m_deleteDialog = new AlertDialog.Builder(this).
+			setTitle(title).
+			setIcon(R.drawable.error).
+			setMessage(R.string.warning).
+			setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+				}
+			}).
+			setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {//rm system app
+					String apkToDel = appToDel.activityInfo.applicationInfo.sourceDir;
+					ShellInterface.doExec(new String[] {"mv " + apkToDel + " " + apkToDel + ".bak"});
+					Uri uri = Uri.fromParts("package", appToDel.activityInfo.packageName, null);
+					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
+					startActivity(intent);//this will launch package installer. after it close, onResume() will be invoke.
+				}
+			}).create();
+        }
+    	else m_deleteDialog.setTitle(title);
+    	m_deleteDialog.show();
+    }
+    
     private class favoAppAdapter extends ArrayAdapter<ResolveInfo> {
     	ArrayList<ResolveInfo> localApplist;
         public favoAppAdapter(Context context, List<ResolveInfo> apps) {

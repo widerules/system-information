@@ -1090,6 +1090,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				public boolean onTouch(View v, MotionEvent event) {//find app when click
 					String tmp = localList.get(position);
 					DuringSelection = true;
+					v.requestFocusFromTouch();//this will make app list get focus, very strange
 					switch(mainlayout.getCurrentItem()) {
 					case 0://system app
 						for (int i = 0; i < sysAdapter.getCount(); i++) {//restore the background

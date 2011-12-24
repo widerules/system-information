@@ -132,6 +132,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	int systemColumns, userColumns;
 	Boolean DuringSelection = false;
     RadioButton btnSystem, btnUser, btnHome;
+    TextView sysAlphaHint, userAlphaHint;
 
 	//app list related
 	private List<View> mListViews;
@@ -153,7 +154,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	SmsChangeObserver smsObserver;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	sizedRelativeLayout base;
-	FrameLayout apps;
+	RelativeLayout apps;
 	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
     appHandler mAppHandler = new appHandler();
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SHAKE_WALLPAPER = 4; 
@@ -641,10 +642,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				DuringSelection = false;//the scrollState will not change when setSelection(), but will change during scroll manually. so we turn off the flag here.
+				sysAlphaHint.setVisibility(View.INVISIBLE);
 			}
     	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
     	sysAlpha.inflate(this, R.layout.alpha_list, null);
+        sysAlphaHint = (TextView) systems.findViewById(R.id.alpha_hint);
         
     	//user app tab
     	users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
@@ -666,10 +669,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScrollStateChanged(AbsListView arg0, int arg1) {
 				DuringSelection = false;
+				userAlphaHint.setVisibility(View.INVISIBLE);
 			}
         });
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
     	userAlpha.inflate(this, R.layout.alpha_list, null);
+        userAlphaHint = (TextView) users.findViewById(R.id.alpha_hint);
         
         mListViews = new ArrayList<View>();
         mListViews.add(systems);
@@ -686,6 +691,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         mainlayout.setLongClickable(true);
         MyPagerAdapter myAdapter = new MyPagerAdapter();
         mainlayout.setAdapter(myAdapter);
+        mainlayout.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				sysAlphaHint.setVisibility(View.INVISIBLE);
+				userAlphaHint.setVisibility(View.INVISIBLE);
+				return false;
+			}
+        });
         mainlayout.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrollStateChanged(int state) {
@@ -815,7 +828,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 		});
 		
-        apps = (FrameLayout) findViewById(R.id.apps);
+        apps = (RelativeLayout) findViewById(R.id.apps);
     	
     	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
@@ -1088,6 +1101,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					DuringSelection = true;
 					switch(mainlayout.getCurrentItem()) {
 					case 0://system app
+						sysAlphaHint.setText(tmp);
+						sysAlphaHint.setVisibility(View.VISIBLE);
+						sysAlphaHint.bringToFront();
 						for (int i = 0; i < sysAdapter.getCount(); i++) {
 							if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								sysAppList.requestFocusFromTouch();
@@ -1097,6 +1113,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						}
 						break;
 					case 2://user app
+						userAlphaHint.setText(tmp);
+						userAlphaHint.setVisibility(View.VISIBLE);
+						userAlphaHint.bringToFront();
 						for (int i = 0; i < userAdapter.getCount(); i++) {
 							if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
 								userAppList.requestFocusFromTouch();
@@ -1146,6 +1165,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 btnIcon.setOnTouchListener(new OnTouchListener() {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {//kill process when click
+						sysAlphaHint.setVisibility(View.INVISIBLE);
+						userAlphaHint.setVisibility(View.INVISIBLE);
     					if (! info.activityInfo.packageName.equals(myPackageName)) {//don't kill myself
     						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     						am.restartPackage(info.activityInfo.packageName);
@@ -1160,6 +1181,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 lapp.setOnTouchListener(new OnTouchListener() {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
+						sysAlphaHint.setVisibility(View.INVISIBLE);
+						userAlphaHint.setVisibility(View.INVISIBLE);
 						long pressTime = event.getEventTime() - event.getDownTime();//use this to avoid long click
 						if ((pressTime > 0) && (pressTime < ViewConfiguration.getLongPressTimeout()) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
 	    					if (startApp(info))//start success
@@ -1190,12 +1213,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					@Override
 					public void onClick(View v) {
     					if (isUser) {//user app
+    						userAlphaHint.setVisibility(View.INVISIBLE);
     						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
     						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
     						util.startActivity(intent, true, getBaseContext());
     						btnVersion.requestFocus();
     					}
     					else {//system app
+    						sysAlphaHint.setVisibility(View.INVISIBLE);
     						apkToDel = info.activityInfo.applicationInfo.sourceDir;
     						pkgToDel = info.activityInfo.packageName;
     						showDialog(2);

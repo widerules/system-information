@@ -34,6 +34,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageStatsObserver;
@@ -65,6 +66,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.provider.CallLog.Calls;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -115,8 +117,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	float last_x, last_y, last_z;
 	long lastUpdate, lastSet;
 	ArrayList<String> picList, picList_selected;
-	CheckBox cbWallPaper;
+	boolean shakeWallpaper = false;
 	boolean busy;
+	SharedPreferences perferences;
 	WallpaperManager mWallpaperManager;
 	IBinder token;
 	
@@ -155,7 +158,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	RelativeLayout apps;
 	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
     appHandler mAppHandler = new appHandler();
-	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SHAKE_WALLPAPER = 4; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
 	ContextMenu mMenu;
 	
 	boolean canRoot;
@@ -245,6 +248,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			appToDel = null;
 		}
 		
+		shakeWallpaper = perferences.getBoolean("shake", false);
+		if (shakeWallpaper) { 
+	    	sensorMgr.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
+	    	busy = false;
+		}
+		else { 
+			sensorMgr.unregisterListener(this);
+		}
+
 		super.onResume();
 	}
 	
@@ -449,6 +461,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	
     	sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
     	mSensor = sensorMgr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		perferences = PreferenceManager.getDefaultSharedPreferences(this);
     	
 		dm = new DisplayMetrics();  
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -591,7 +604,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				/*if (!cbWallPaper.isChecked()) {//don't move wallpaper if change wallpaper by shake
+				if (!shakeWallpaper) {//don't move wallpaper if change wallpaper by shake
 					token = mainlayout.getWindowToken();//any token from a component is ok
 			        if ((token != null) && (positionOffset > 0)) {
 			            //mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
@@ -602,7 +615,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					            //so we can unify it to (0, 1) by (positionOffset+position)/2
 			                    Math.max(0.f, Math.min((positionOffset+position)/2, 1.f)), 0);
 			        }
-				}*/
+				}
 			}
 
 			@Override
@@ -684,24 +697,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         registerReceiver(sdcardListener, filter);  
         
 		LayoutInflater inflater = LayoutInflater.from(this);
-		final simpleHome sensorListener = this;
 			
         apps = (RelativeLayout) findViewById(R.id.apps);
     	
-    	/*cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
-    	cbWallPaper.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (cbWallPaper.isChecked()) { 
-			    	sensorMgr.registerListener(sensorListener, mSensor, SensorManager.SENSOR_DELAY_UI);
-			    	busy = false;
-				}
-				else { 
-					sensorMgr.unregisterListener(sensorListener);
-				}
-			}
-    	});*/
-
     	//TelephonyManager tm = (TelephonyManager) getSystemService(Service.TELEPHONY_SERVICE);
     	//getITelephony(tm).getActivePhoneType();
     	
@@ -762,7 +760,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         public void onReceive(Context context, Intent intent) {
             final String picName = intent.getStringExtra("picFile");
 			picList.add(picName);//add to picture list
-    		cbWallPaper.setEnabled(true);
+			
+    		SharedPreferences.Editor editor = perferences.edit();
+    		editor.putBoolean("shake_enabled", true);
+    		editor.commit();
         }
     };
     
@@ -1354,9 +1355,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	picList_selected = new ArrayList();
         	new File(downloadPath).list(new OnlyPic());
         	if (picList.size() > 0) {
-	        	Message msgshake = mAppHandler.obtainMessage();
-	        	msgshake.what = UPDATE_SHAKE_WALLPAPER;
-	        	mAppHandler.sendMessage(msgshake);
+        		SharedPreferences.Editor editor = perferences.edit();
+        		editor.putBoolean("shake_enabled", true);
+        		editor.commit();
         	}
 			   
 			try {//for 1.5 which do not have this method
@@ -1475,9 +1476,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     				}
     			});
         		break;
-        	case UPDATE_SHAKE_WALLPAPER:
-        		//cbWallPaper.setEnabled(true);
-        		break;
         	}
         }
     };
@@ -1564,7 +1562,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				        	int tmpWidth = (int) (dm.heightPixels * factor);
 					    	mWallpaperManager.setBitmap(Bitmap.createScaledBitmap(bd.getBitmap(), tmpWidth, dm.heightPixels, false));
 					    	mWallpaperManager.suggestDesiredDimensions(tmpWidth, dm.heightPixels);
-			 	 			cbWallPaper.performClick();
+					    	
+							sensorMgr.unregisterListener(this);
+			        		SharedPreferences.Editor editor = perferences.edit();
+			        		shakeWallpaper = false;
+			        		editor.putBoolean("shake", false);
+			        		editor.commit();
 				        }
 				    	else {//otherwise just change the background is ok.				    		
 					    	ClippedDrawable cd = new ClippedDrawable(bd, apps.getWidth(), apps.getHeight());
@@ -1580,8 +1583,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					
 					if (picList.isEmpty()) {
 						if (picList_selected.isEmpty()) {
-							cbWallPaper.performClick();
-			        		cbWallPaper.setEnabled(false);
+							sensorMgr.unregisterListener(this);
+							
+			        		SharedPreferences.Editor editor = perferences.edit();
+			        		editor.putBoolean("shake_enabled", false);
+			        		shakeWallpaper = false;
+			        		editor.putBoolean("shake", false);
+			        		editor.commit();
 						}
 						else {
 							picList = (ArrayList<String>) picList_selected.clone();

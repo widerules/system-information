@@ -9,19 +9,24 @@ import java.util.Enumeration;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class About extends Activity{
 	
-
+	CheckBox cbShake;
+	SharedPreferences perferences;
+	
     String ip() {
         //network
     	StringBuffer sb = new StringBuffer("");
@@ -109,9 +114,20 @@ public class About extends Activity{
         tvHelp.setText(getString(R.string.help_message)
         		+ "\n\n" + getString(R.string.about_dialog_notes));
         
-        TextView tvInfo = (TextView) findViewById(R.id.info);
-        tvInfo.setText(aboutMsg());
-        
+        Button btnVote = (Button) findViewById(R.id.vote);
+        btnVote.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=simple.home.jtbuaa"));
+				if (!util.startActivity(intent, false, getBaseContext())) {
+					intent.setAction(Intent.ACTION_VIEW);
+					intent.setData(Uri.parse("https://market.android.com/details?id=simple.home.jtbuaa"));
+					intent.setComponent(getComponentName());
+					util.startActivity(intent, false, getBaseContext());
+				}
+			}
+        });
+
         TextView tvMailTo = (TextView) findViewById(R.id.mailto);
         tvMailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
         tvMailTo.setOnClickListener(new OnClickListener() {
@@ -121,6 +137,9 @@ public class About extends Activity{
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});
+        
+        TextView tvInfo = (TextView) findViewById(R.id.info);
+        tvInfo.setText(aboutMsg());
         
         Button btnShare = (Button) findViewById(R.id.share);
         btnShare.setOnClickListener(new OnClickListener() {
@@ -139,21 +158,18 @@ public class About extends Activity{
        			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
 			}
         });
-        
-        Button btnVote = (Button) findViewById(R.id.vote);
-        btnVote.setOnClickListener(new OnClickListener() {
+
+		perferences = PreferenceManager.getDefaultSharedPreferences(this);
+        cbShake = (CheckBox) findViewById(R.id.change_wallpaper);
+        cbShake.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=simple.home.jtbuaa"));
-				if (!util.startActivity(intent, false, getBaseContext())) {
-					intent.setAction(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse("https://market.android.com/details?id=simple.home.jtbuaa"));
-					intent.setComponent(getComponentName());
-					util.startActivity(intent, false, getBaseContext());
-				}
+        		SharedPreferences.Editor editor = perferences.edit();
+        		editor.putBoolean("shake", cbShake.isChecked());
+        		editor.commit();
 			}
         });
-
+        
         TextView tvFellow = (TextView) findViewById(R.id.fellow);
         tvFellow.setText(Html.fromHtml("<u>腾讯应用中心</u>"));
         tvFellow.setOnClickListener(new OnClickListener() {
@@ -163,5 +179,13 @@ public class About extends Activity{
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});
+	}
+	
+	@Override
+	protected void onResume() {
+        cbShake.setEnabled(perferences.getBoolean("shake_enabled", false));
+        cbShake.setChecked(perferences.getBoolean("shake", false));
+        
+		super.onResume();
 	}
 }

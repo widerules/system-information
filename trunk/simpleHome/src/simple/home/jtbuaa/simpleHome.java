@@ -281,6 +281,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			return super.onOptionsItemSelected(item);
 		case 2://help dialog
 			Intent intent = new Intent("simple.home.jtbuaa.about");
+			intent.putExtra("version", version);
 			util.startActivity(intent, false, getBaseContext());
 			break;
 		}

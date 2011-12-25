@@ -110,6 +110,9 @@ public class About extends Activity{
         
         setContentView(R.layout.about);
 
+        TextView tvTitle = (TextView) findViewById(R.id.title);
+        tvTitle.setText(getString(R.string.app_name) + " " + getIntent().getStringExtra("version"));
+        
         TextView tvHelp = (TextView) findViewById(R.id.help);
         tvHelp.setText(getString(R.string.help_message)
         		+ "\n\n" + getString(R.string.about_dialog_notes));

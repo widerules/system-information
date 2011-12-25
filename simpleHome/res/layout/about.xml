@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
-  android:background="#E0404040"
+  android:background="#F0404040"
   >
     
 <LinearLayout 
@@ -14,6 +14,7 @@
   	<TextView android:id="@+id/title"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
+      	android:gravity="center_horizontal"
       	android:textSize="16dip"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"

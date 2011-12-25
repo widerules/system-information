@@ -120,10 +120,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	WallpaperManager mWallpaperManager;
 	IBinder token;
 	
-	//about dialog
-	TextView mailto;
-	View aboutView;
-	AlertDialog m_aboutDialog, m_deleteDialog;
+	AlertDialog m_deleteDialog;
 	
 	//alpha list related
 	GridView sysAlpha, userAlpha;
@@ -164,7 +161,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	boolean canRoot;
 	
 	DisplayMetrics dm;
-	String processor;
 	Field pid;
 	
 
@@ -252,82 +248,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		super.onResume();
 	}
 	
-    String ip() {
-        //network
-    	StringBuffer sb = new StringBuffer("");
-		try {
-			Enumeration<NetworkInterface> enumNI = NetworkInterface.getNetworkInterfaces();
-			while (enumNI.hasMoreElements()) {
-				NetworkInterface ni = enumNI.nextElement();
-				Enumeration<InetAddress> ips = ni.getInetAddresses();
-				while (ips.hasMoreElements()) {
-					InetAddress local = ips.nextElement();
-					if (!local.isLoopbackAddress()) {
-						if (sb.length() > 0) sb.append(", ");
-						sb.append(local.getHostAddress());
-						break;
-					}
-				}
-			}
-			return sb.toString().trim();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "";
-		}
-	}
-    
-    String aboutMsg() {
-		String res = getString(R.string.help_message)
-		+ "\n\n" + getString(R.string.about_dialog_notes)
-		+ "\n========================="
-		+ "\n" + processor
-		+ "\nAndroid " + android.os.Build.VERSION.RELEASE
-		+ "\n" + dm.widthPixels+" * "+dm.heightPixels;
-		
-		/*ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        List<RunningAppProcessInfo> appList = am.getRunningAppProcesses(); 
-        for (int i = 0; i < appList.size(); i++) {
-    		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-    		if (as.processName.equals(myPackageName)) {
-        		try {//memory used by me
-        			Debug.MemoryInfo info = am.getProcessMemoryInfo(new int[] {pid.getInt(as)})[0];
-        			Log.d("==============", myPackageName + " " + info.getTotalPss()+"kb");
-    			} catch (Exception e) {
-    				e.printStackTrace();
-    			}
-    			break;
-    		}
-        }*/
-
-		String ipaddr = ip();
-		if (!ipaddr.equals(""))
-			res += "\n" + ipaddr;
-		return res;
-    }
-
-    String runCmd(String cmd, String para) {//performance of runCmd is very low, may cause black screen. do not use it AFAC 
-        String line = "";
-        try {
-            String []cmds={cmd, para};
-            java.lang.Process proc;
-            if (para != "")
-                proc = Runtime.getRuntime().exec(cmds);
-            else
-                proc = Runtime.getRuntime().exec(cmd);
-            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            while((line=br.readLine())!=null) {
-            	if ((line.contains("Processor")) || (line.contains("model name")) || (line.contains("MemTotal:"))) {
-            		if (line.contains("processor	: 1")) continue;
-            		line = line.split(":")[1].trim();
-            		break;
-            	}
-            }
-        	br.close();
-        } catch (IOException e) {
-            return e.toString();
-        }
-        return line;
-    }
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -348,39 +268,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		case 1://settings
 			return super.onOptionsItemSelected(item);
 		case 2://help dialog
-        	if (m_aboutDialog == null) {
-            	m_aboutDialog = new AlertDialog.Builder(this).
-            	setTitle(getString(R.string.app_name) + " " + version).
-            	setView(aboutView).
-            	setNegativeButton(R.string.vote, new DialogInterface.OnClickListener() {
-            		public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=simple.home.jtbuaa"));
-						if (!util.startActivity(intent, false, getBaseContext())) {
-							intent.setAction(Intent.ACTION_VIEW);
-							intent.setData(Uri.parse("https://market.android.com/details?id=simple.home.jtbuaa"));
-							intent.setComponent(getComponentName());
-							util.startActivity(intent, false, getBaseContext());
-						}
-            		}
-            	}).
-            	setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
-            		public void onClick(DialogInterface dialog, int which) {//share simpleHome to friends
-            	        String text = getString(R.string.sharetext) + getString(R.string.share_text1) 
-           	        		+ "http://opda.co/?s=D/simple.home.jtbuaa"//opda will do the webpage reload for us.
-           	        		+ getString(R.string.share_text2)
-           	        		+ "https://market.android.com/details?id=simple.home.jtbuaa"
-           	        		+ getString(R.string.share_text3);
-            	        
-            	        Intent intent = new Intent(Intent.ACTION_SEND);
-            	        intent.setType("text/plain");  
-            	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-    	        		intent.putExtra(Intent.EXTRA_TEXT, text);
-   	        			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
-            		}
-            	}).create();
-        	}
-			m_aboutDialog.setMessage(aboutMsg());
-			m_aboutDialog.show();
+			Intent intent = new Intent("simple.home.jtbuaa.about");
+			util.startActivity(intent, false, getBaseContext());
 			break;
 		}
 		return true;
@@ -702,7 +591,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				if (!cbWallPaper.isChecked()) {//don't move wallpaper if change wallpaper by shake
+				/*if (!cbWallPaper.isChecked()) {//don't move wallpaper if change wallpaper by shake
 					token = mainlayout.getWindowToken();//any token from a component is ok
 			        if ((token != null) && (positionOffset > 0)) {
 			            //mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
@@ -713,7 +602,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					            //so we can unify it to (0, 1) by (positionOffset+position)/2
 			                    Math.max(0.f, Math.min((positionOffset+position)/2, 1.f)), 0);
 			        }
-				}
+				}*/
 			}
 
 			@Override
@@ -796,21 +685,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         
 		LayoutInflater inflater = LayoutInflater.from(this);
 		final simpleHome sensorListener = this;
-		
-		aboutView = inflater.inflate(R.layout.about, null);
-		mailto = (TextView) aboutView.findViewById(R.id.mailto);
-		mailto.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
-		mailto.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
-				if (util.startActivity(intent, false, getBaseContext())) m_aboutDialog.cancel();
-			}
-		});
-		
+			
         apps = (RelativeLayout) findViewById(R.id.apps);
     	
-    	cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
+    	/*cbWallPaper = (CheckBox) aboutView.findViewById(R.id.change_wallpaper);
     	cbWallPaper.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -822,7 +700,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					sensorMgr.unregisterListener(sensorListener);
 				}
 			}
-    	});
+    	});*/
 
     	//TelephonyManager tm = (TelephonyManager) getSystemService(Service.TELEPHONY_SERVICE);
     	//getITelephony(tm).getActivePhoneType();
@@ -1494,8 +1372,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				e.printStackTrace();
 			}
 
-			processor = runCmd("cat", "/proc/cpuinfo");
-			
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
 	    	List<ResolveInfo> viewApps = pm.queryIntentActivities(mainIntent, 0);
@@ -1600,7 +1476,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			});
         		break;
         	case UPDATE_SHAKE_WALLPAPER:
-        		cbWallPaper.setEnabled(true);
+        		//cbWallPaper.setEnabled(true);
         		break;
         	}
         }

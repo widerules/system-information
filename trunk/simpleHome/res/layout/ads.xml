@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <ImageView android:id="@+id/splash"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:src="@drawable/tencent"
+    	android:scaleType="center"
+        />
+    
+<RelativeLayout  
 	android:id="@+id/apps"
+	android:visibility="invisible"
     android:orientation="vertical"
    	android:background="@android:color/transparent"
     android:layout_width="fill_parent"
@@ -35,3 +47,4 @@
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"/>
 </RelativeLayout>
+</FrameLayout>

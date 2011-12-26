@@ -584,11 +584,17 @@ public void onCreate(Bundle savedInstanceState) {
 	webList.setFadingEdgeLength(0);//no shadow when scroll
 	webList.setScrollingCacheEnabled(false);
 	webList.setAdapter(webAdapter);
-	
-	if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) 
+
+	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
+		if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) 
+			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+		else //open the url from intent in a new page if the old page is under reading.
+			loadNewPage(getIntent().getDataString());
+	}
+	catch (Exception e) {
+		e.printStackTrace();
 		serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-	else //open the url from intent in a new page if the old page is under reading.
-		loadNewPage(getIntent().getDataString());
+	}
 
 	
 	downloadPath = util.preparePath(getFilesDir().getPath());

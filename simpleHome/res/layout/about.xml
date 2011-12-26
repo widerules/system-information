@@ -69,6 +69,14 @@
       	android:enabled="false"
     />  
 
+  	<TextView android:id="@+id/fellow"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:layout_gravity="center_horizontal"
+      	android:textSize="16dip"
+      	android:textColor="#FFFFFFFF"
+    />
+  	
   	<TextView android:id="@+id/mailto"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
@@ -77,15 +85,6 @@
       	android:textColor="#FFFFFFFF"
     />
     	
-  	<TextView android:id="@+id/fellow"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:layout_gravity="center_horizontal"
-      	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
-      	android:visibility="invisible"
-    />
-  	
 </LinearLayout>
 
 </ScrollView>

@@ -1,22 +1,17 @@
 package simple.home.jtbuaa;
 
-import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -24,7 +19,6 @@ import java.util.Random;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
@@ -44,7 +38,6 @@ import android.content.pm.PackageStats;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -72,13 +65,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.TelephonyManager;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -95,8 +86,6 @@ import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -121,7 +110,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	boolean busy;
 	SharedPreferences perferences;
 	WallpaperManager mWallpaperManager;
-	IBinder token;
 	
 	AlertDialog m_deleteDialog;
 	
@@ -158,13 +146,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	RelativeLayout apps;
 	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
     appHandler mAppHandler = new appHandler();
-	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SPLASH = 4; 
 	ContextMenu mMenu;
 	
 	boolean canRoot;
 	
 	DisplayMetrics dm;
-	Field pid;
 	
 
 	//package size related
@@ -173,8 +160,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	IPackageStatsObserver sizeObserver;
 	static int sizeM = 1024*1024; 
 
-	private static Method setPackage;
-	
 	static public com.android.internal.telephony.ITelephony getITelephony(TelephonyManager telMgr) throws Exception { 
 	    Method getITelephonyMethod = telMgr.getClass().getDeclaredMethod("getITelephony"); 
 	    getITelephonyMethod.setAccessible(true);//私有化函数也能使用 
@@ -427,6 +412,25 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //splash screen
+        Thread splashTimer=new Thread()
+        {
+            public void run(){
+                try{
+        			long curTime = System.currentTimeMillis();  
+        			while (System.currentTimeMillis() - curTime < 3000) {
+                        sleep(1000);//wait for 1000ms
+        			}
+                	Message msg = mAppHandler.obtainMessage();
+                	msg.what = UPDATE_SPLASH;
+                	mAppHandler.sendMessage(msg);//inform UI thread to update UI.
+                }
+                catch(Exception ex){
+                }
+            }
+        };
+        splashTimer.start();
+        
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
     	PackageInfo pi = null;
@@ -467,19 +471,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		dm = new DisplayMetrics();  
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
-		try {
-			Field screenLayout = Configuration.class.getField("screenLayout");
-	    	//1,2,3,4 are integer value of small, normal, large and XLARGE screen respectively.
-	    	int screen_size = screenLayout.getInt(getResources().getConfiguration()) & Configuration.SCREENLAYOUT_SIZE_MASK; 
-	    	if (screen_size < 3)//disable auto rotate screen for small and normal screen.
-	    		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		} catch (Exception e) {//no such field if sdk level <= 3
-			e.printStackTrace();
-		}
+    	//1,2,3,4 are integer value of small, normal, large and XLARGE screen respectively.
+    	int screen_size = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK; 
+    	if (screen_size < Configuration.SCREENLAYOUT_SIZE_LARGE)//disable auto rotate screen for small and normal screen.
+    		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
     	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
     	setContentView(R.layout.ads);
-    	
+    	    	
         home = (RelativeLayout) getLayoutInflater().inflate(R.layout.home, null);
         
         
@@ -606,7 +605,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 				if (!shakeWallpaper) {//don't move wallpaper if change wallpaper by shake
-					token = mainlayout.getWindowToken();//any token from a component is ok
+					IBinder token = mainlayout.getWindowToken();//any token from a component is ok
 			        if ((token != null) && (positionOffset > 0)) {
 			            //mWallpaperManager.setWallpaperOffsetSteps(0.5f, 0);
 			            mWallpaperManager.setWallpaperOffsets(token, 
@@ -625,6 +624,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	
         });
         mainlayout.setCurrentItem(homeTab);
+
         
 		mSysApps = new ArrayList<ResolveInfo>();
 		mUserApps = new ArrayList<ResolveInfo>();
@@ -696,11 +696,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         filter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);  
         filter.addDataScheme("file");  
         registerReceiver(sdcardListener, filter);  
-        
-		LayoutInflater inflater = LayoutInflater.from(this);
-			
+            	
         apps = (RelativeLayout) findViewById(R.id.apps);
-    	
+        //mWallpaperManager.setWallpaperOffsets(apps.getWindowToken(), 0.5f, 0);//move wallpaper to center, but null pointer? 
+        
     	//TelephonyManager tm = (TelephonyManager) getSystemService(Service.TELEPHONY_SERVICE);
     	//getITelephony(tm).getActivePhoneType();
     	
@@ -858,13 +857,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
             	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
             	mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            	if (setPackage != null) {
-            		try {
-						setPackage.invoke(mainIntent, packageName);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-            	}
+            	mainIntent.setPackage(packageName);
             	List<ResolveInfo> targetApps = pm.queryIntentActivities(mainIntent, 0);
 
             	for (int i = 0; i < targetApps.size(); i++) {
@@ -1361,27 +1354,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		editor.commit();
         	}
 			   
-			try {//for 1.5 which do not have this method
-				setPackage = Intent.class.getMethod("setPackage", new Class[] {String.class});
-			} catch (Exception e) {
-				setPackage = null;
-				e.printStackTrace();
-			}
-			
-			try {
-				pid = RunningAppProcessInfo.class.getField("pid");
-			} catch (Exception e) {//no such field is sdk level <= 3
-				e.printStackTrace();
-			}
-
 	    	mainIntent = new Intent(Intent.ACTION_VIEW, null);
 	    	mainIntent.addCategory(Intent.CATEGORY_DEFAULT);
 	    	List<ResolveInfo> viewApps = pm.queryIntentActivities(mainIntent, 0);
 	    	appDetail = null;
 	    	for (int i = 0; i < viewApps.size(); i++) {
 	    		if (viewApps.get(i).activityInfo.name.contains("InstalledAppDetails")) {
-	    			appDetail = viewApps.get(i);
-	    			return null;//get the activity for app detail setting
+	    			appDetail = viewApps.get(i);//get the activity for app detail setting
+	    			break;
 	    		}
 	    	}
 	    	
@@ -1400,7 +1380,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    } 
 	} 
 	
-	void setColumns(boolean isUser) {
+	void setColumns(boolean isUser) {//set column number of alpha grid
 		if (isUser) {
     		userColumns = MaxCount;
     		if (userAlphaAdapter.getCount() < MaxCount) userColumns = userAlphaAdapter.getCount();
@@ -1476,6 +1456,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     					startApp(ri_contact);
     				}
     			});
+        		break;
+        	case UPDATE_SPLASH:
+        		ImageView splash = (ImageView) findViewById(R.id.splash);
+        		splash.setVisibility(View.INVISIBLE);
+        		apps.setVisibility(View.VISIBLE);
+        		apps.bringToFront();
         		break;
         	}
         }

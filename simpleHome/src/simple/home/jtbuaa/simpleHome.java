@@ -785,7 +785,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
             	boolean inUser = false;
             	ResolveInfo info = null;
-        		for (int i = 0; i < userAdapter.getCount(); i++) {
+        		for (int i = 0; i < userAdapter.getCount(); i++) {//once got a null pointer on v1.2.1. keep tracking  
         			info = userAdapter.getItem(i);
         			if (info.activityInfo.packageName.equals(packageName)) {
         				userAdapter.remove(info);

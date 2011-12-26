@@ -14,6 +14,13 @@
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
     
+	<uses-sdk android:minSdkVersion="4"/>
+    <supports-screens
+        android:anyDensity="true"
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"/>
+
     <application android:icon="@drawable/icon"
     	android:persistent="true"
     	android:debuggable="false"
@@ -141,14 +148,6 @@
         	android:label="@string/app_name"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize">
         </activity>
-
-    </application>
     
-	<uses-sdk android:minSdkVersion="4"/>
-    <supports-screens
-        android:anyDensity="true"
-        android:smallScreens="true"
-        android:normalScreens="true"
-        android:largeScreens="true"/>
-
+    </application>
 </manifest> 

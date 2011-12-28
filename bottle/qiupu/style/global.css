@@ -1,0 +1,501 @@
+/* Reset */
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+img,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+form,
+fieldset,
+embed,
+object,
+applet {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	cursor : default;
+}
+ul,
+ol,
+li {
+	list-style: none;
+}
+input,
+select,
+textarea,
+option {
+	font-family: inherit;
+	font-size: inherit;
+}
+em {
+	font-style: normal;
+}
+    
+/* General */
+
+body {
+	background:#F7EEE1;
+	font-family: "Microsoft YaHei",arial, sans-serif !important;
+	font-size: 75%;
+	width:100%;
+}
+a:link,
+a:visited {
+	text-decoration: none;
+}
+a:hover,
+a:active {
+	text-decoration: underline;
+}
+p {
+	padding-bottom: .5em;
+}
+.yyh-inactive {
+	color: #999;
+}
+
+/* Doc */
+
+.yyh-doc {
+	background: url(images/d.png) repeat-x;
+	border-bottom: #fff solid 1px;
+	padding: 0px;
+}
+.yyh-doc .yyh-content {
+	background:url(images/h.png) center center repeat-y;
+	margin: 0 auto;
+	width: 1001px;   
+}
+
+/* Doc > Header */
+
+.yyh-header {
+	background: #fff url(images/k.png) 0 0 no-repeat;
+	height: 376px;
+	left: 0px;
+	padding: 0px 0px 0;
+	position: relative;
+	top: 0px;
+	width: 1001px;
+}
+
+.yyh-nav-top {
+	position: absolute;
+	text-align: right;
+	top: 0px;
+	right: 0px;
+	width: 100%;
+}
+.yyh-nav {
+	font-size: 116%;
+	font-weight: bold;
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	width:90%;
+}
+.yyh-nav li {
+	display: inline;
+	padding:10px 10px 13px 10px;
+}
+.yyh-nav li.selected{
+	background:#fff;
+}
+.yyh-nav li a {
+  color: #fff;
+}
+.yyh-nav li.selected a{
+	color:#000;
+}
+.yyh-nav li.yyh-cur,
+.yyh-nav li.yyh-cur a {
+  background: #e1e1e1;
+}
+
+/*	yyh-nav-bar	*/
+.yyh-nav-bar{
+	position:absolute; 
+	top:119px; 
+	right:14px; 
+	height:35px
+}
+*html .yyh-nav-bar{
+	top:111px;
+}
+.yyh-nav-bar .item{
+	float:left; 
+	height:43px; 
+	width:96px; 
+	position:relative;
+	text-align:center;
+}
+.yyh-nav-bar .item div{
+	background:url(images/navbtn2.png) no-repeat 0 -7px;
+	width:96px;
+	height:43px;
+}
+*html .yyh-nav-bar .item div{
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale', src='style/images/navbtn2.png');
+	background:none;
+	width:96px;
+	height:43px;
+}
+.yyh-nav-bar .item a{
+	color:#FFF; 
+	display:block; 
+	font-family:"Microsoft YaHei",arial,sans-serif; 
+	font-size:16px; 
+	height:33px; 
+	line-height:33px; 
+	text-align:center;
+	position:relative;
+}
+*html .yyh-nav-bar .item a{
+	position:relative;
+	z-index:1;
+	display:block;
+	outline:none;
+	line-height:44px;
+	height:44px
+}
+.yyh-nav-bar .selected div{
+	background:url(images/navbtn.png) no-repeat 0 -7px;
+	width:96px;
+	height:34px;
+}
+*html .yyh-nav-bar .selected div{
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale', src='style/images/navbtn.png');
+	background:none;
+	width:96px;
+	height:42px;
+}
+.yyh-nav-bar .selected a{
+	color:#000;
+	line-height:36px;
+	height:34px
+}
+*html .yyh-nav-bar .selected a{
+	position:relative;
+	z-index:1;
+	display:block;
+	outline:none;
+	line-height:42px;
+	height:42px
+}
+
+/*	Welcome	*/
+.yyh-welcome{
+	position:absolute;
+	top:200px;
+	right:50px;
+}
+
+/* Doc > Main */    
+.yyh-main {
+  left: 0px;
+  overflow: hidden;
+  padding: 8px 0px 0px 0px;
+  margin-top: -221px;  
+  min-height:800px;
+  height:auto !important;
+  height:800px;
+  position: relative;
+  width: 100%;
+}
+
+/* Doc > Main > Menu */
+.yyh-menu {
+  float: left;
+  font-size: 120%;
+  background: #eee;
+  margin-left:38px;
+  margin-top:35px;
+  width: 230px;
+  display:inline;
+}
+.yyh-menu li a {
+	color: #000;
+}
+.yyh-menu-list{
+	display:inline;
+}
+.yyh-menu-top {
+	background: url(images/menu-top.png) 0 0 repeat-x;
+	font-weight: bold;
+	height: 23px;
+	padding-left: 10px;
+	padding-top: 8px;	
+}
+.yyh-menu-sub {
+	height: 23px;
+	padding-left: 40px;
+	border-style: solid;
+	border-color: #ffffff;
+	border-width: 0px 0px 1px 0px;
+	padding-top: 8px;
+}
+.yyh-menu-sub-active {
+	height: 23px;
+	padding-left: 40px;
+	border-style: solid;
+	border-color: #fff #fff #fff #eee;
+	border-width: 0px 0px 1px 1px;
+	padding-top: 8px;
+	padding-right: 8px;
+	background-image: url(images/menu-active.png);
+	background-repeat: no-repeat;
+	background-position: 95%;
+	background-color: #ffffff;
+}
+.yyh-menu-icon {
+	background: url(images/menu-icon.PNG) 0 0 no-repeat;
+	padding-left: 10px;
+}
+
+/* yyh-form */
+
+.yyh-form form  div.required,.yyh-form form div.optional {
+  clear: left;
+  display: block;
+  /*width: 650px;*/
+  width:100%;
+  zoom: 1;
+  margin: 5px 0 0 0;
+  padding: 1px 3px;
+}
+
+.yyh-form form div label {
+  display: block;
+  float: left;
+  /*width: 130px;*/
+  width:20%;
+  padding: 3px 10px;
+  margin: 0 0 5px 0;
+  text-align: right;
+  font-size:120%;
+}
+
+.yyh-form form div img {
+  float: left;
+  border: 1px solid #000000;
+  margin: 0 0 5px 0;
+}
+
+
+.yyh-form form div select,.yyh-form form div textarea {
+  /*width: 200px;*/
+  width:31%;
+  padding: 1px 3px;
+  margin: 0 0 0 0;
+}
+
+.yyh-form form div select{
+	height:22px;
+}
+
+.yyh-form form div input.inputText,.yyh-form form div input.inputPassword {
+  /*width: 213px;*/
+  width:33%;
+  height:26px;
+  font-size:15px;
+  padding: 0px 0px;
+  margin: 0 0 0 0;
+  border:1px solid #ccc;
+}
+.yyh-form form div textarea{
+	width:33%;
+	height:50px;
+	font-size:15px;
+	padding: 0px 0px;
+	margin: 0 0 0 0;
+	border:1px solid #ccc;
+}
+/*
+.yyh-form form div.submit {
+	margin-top:20px;
+	width:100%;
+	padding: 0 0 0 0px;
+}
+
+.yyh-form form div.submit{
+	position:relative;
+	display: inline;
+	width: auto;
+	top:50px;
+	right:-560px;
+}
+*/
+
+.yyh-form form input.inputSubmit{
+	border:1px solid #ccc;
+	padding:2px 5px 2px 5px;
+	cursor:pointer;
+}
+
+.yyh-form form input.inputSubmit:hover{
+	border:1px solid #99A5AF;
+}
+
+.yyh-form form .note{
+	display:none;
+	color:#EF0E0E;
+	font-size:12px;
+	padding:8px 5px;
+	width:auto;
+	height:30px;
+	overflow:hidden;
+}
+
+.yyh-form form span.hint {
+	font-size:12px;
+	color:#777777;
+	padding:5px 5px 5px 0px;
+	margin-left:148px;
+	/*width:400px;*/
+	width:62%;
+	display:block;
+}
+
+
+/* yyh-step-nav */
+.yyh-step-nav li {
+	background-color:#B5B5B5;
+	background-image:url("images/yyh-step-bg.gif");
+	background-position:right center;
+	background-repeat:no-repeat;
+	color:white;
+	float:left; 
+	height:29px;
+	line-height:29px;
+	text-align:center;
+	width:33%;
+}
+.yyh-step-nav .done{
+	background-image:url("images/yyh-step-bg.gif");
+}
+.yyh-step-nav .last{
+	background-image:url("images/yyh-step-bg-last.gif");
+}
+.yyh-step-nav .current {
+	background-color:#7993d6;
+	background-image:url("images/yyh-step-bg-current.gif");
+}
+.yyh-step-nav .final {
+	background-image:none;
+}
+
+/* sidebar */
+.yyh-page{
+	float:left;
+	margin-left:15px;
+	margin-top:35px;
+	width:680px;
+}
+
+/*	sub-page	*/
+.sub-page-title{
+	background:url(images/subtitlebg.png) repeat-x;
+	width:656px;
+	height:20px;
+	line-height:20px;
+	padding:15px 12px 10px 12px;
+	font-size:120%;
+}
+
+/*	yyh-pager	*/
+.yyh-pager{
+	width:100%;
+	text-align:center;
+	margin-top:15px;
+}
+.yyh-pager a{
+	padding:5px;
+	margin:1px;
+	border:1px solid #93c8f6;
+	text-decoration:none;
+	display:inline-block;
+}
+.yyh-pager a.cur{
+	background:#d3eeff;
+}
+.yyh-pager a:hover{
+	background:#f9f5ec;
+}
+
+/*	yyh-title	*/
+.yyh-title{
+	font-size:130%;
+	font-weight:bold;
+}
+
+
+.yyh-links{ position:absolute;left:58px;top:50px;text-align:left;color:#154279;width:80%;}
+.yyh-links a{color:#154279}
+
+/* Footer */
+.yyh-footer {
+  background: url(images/fc.png) repeat-x;
+  color: #ccc;
+  text-align: center;
+  width:100%;
+  height:146px;
+}
+.yyh-footer .yyh-footer-content {
+	position:relative;
+  background:url("images/k.png") repeat-x scroll 0 bottom transparent;
+  height: 146px;
+  width: 1001px;
+  margin: 0 auto;
+}
+.yyh-footer a {
+  color: #ccc;
+}
+.yyh-footer-info{
+	position:relative;
+	left:10px;
+	top:93px;
+}
+
+#nav2home{width:436px;height:151px;position:relative;top:10px;left:0;display:block;}
+
+#yyh-search{
+	width:180px;
+	position:absolute;
+	top:10px;
+	right:18px;
+}
+#yyh-search img{
+	vertical-align:bottom;
+	width:25px;
+}
+#yyh-search input{
+	line-height:18px;
+	height:18px;
+	width:148px;
+	border:1px solid #ccc;
+	padding:0;
+}
+#yyh-welcome{
+	position:absolute;
+	top:50px;
+	right:20px;
+}

@@ -32,9 +32,12 @@ def findUrlGzip(url):
         data = f.read()
     return data
 
+#example: 
+# http://192.168.5.136:8080/kendoui/examples/index.html
+# http://192.168.5.136:8080/qiupu/login.html
 @route('/<filename:path>')
 def send_static(filename):
-    return static_file(filename, root='kendoui/')
+    return static_file(filename, root='')
 
 @route('/redis')
 def redis():

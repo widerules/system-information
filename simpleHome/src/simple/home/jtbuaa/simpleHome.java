@@ -8,7 +8,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -997,10 +996,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         public View getView(int position, View convertView, ViewGroup parent) {
             final ResolveInfo info = (ResolveInfo) localApplist.get(position);
 
-            if (convertView == null) {
-                final LayoutInflater inflater = getLayoutInflater();
-                convertView = inflater.inflate(R.layout.app_list, parent, false);
-            }
+            if (convertView == null) 
+                convertView = getLayoutInflater().inflate(R.layout.app_list, parent, false);
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
             

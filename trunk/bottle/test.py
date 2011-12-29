@@ -1,6 +1,6 @@
 from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib, template
 
-import urllib2, json, gzip, StringIO, redis, md5
+import urllib2, json, gzip, StringIO, redis, md5, base64
 
 app = Bottle()
 
@@ -10,6 +10,18 @@ def ping():
     for key in request.params.keys():
 	s += key + ', ' + request.params[key] + '\n'
     return s
+
+@route('/md5')
+def md5base64():
+    strid = 'emails'
+    appsec = 'appSecret1'
+    data = appsec + strid + appsec
+    key = md5.new()
+    key.update(data)
+    md5string = key.hexdigest()
+    b64 = base64.b64encode(md5string)
+    return data + ', ' + md5string + ', ' + b64
+    
 
 @route('/test')
 def test():

@@ -1,4 +1,4 @@
-from bottle import Bottle, route, run, redirect, request, static_file, debug
+from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib
 
 import urllib2, json, gzip, StringIO, redis
 
@@ -35,7 +35,7 @@ def findUrlGzip(url):
 #example: 
 # http://192.168.5.136:8080/kendoui/examples/index.html
 # http://192.168.5.136:8080/qiupu/login.html
-@route('/<filename:path>')
+@route('/<filename:path>', method='GET, POST')
 def send_static(filename):
     return static_file(filename, root='')
 
@@ -71,6 +71,33 @@ def getCallback():
     except:
 	pass
     return callback
+
+
+@get('/login') # or @route('/login')
+def login_form():
+    return '''<form method="POST">
+                <input name="name"     type="text" />
+                <input name="password" type="password" />
+                <input name="submit" type="submit" />
+              </form>'''
+
+@post('/login') # or @route('/login', method='POST')
+def login_submit():
+    name     = request.forms.get('name')
+    password = request.forms.get('password')
+    print name
+    print password
+    data = {'login_name':'wanglinbjjx@sina.com','password':'7B9AD327EDF1AC93E2A2599FE5A49379'}
+    apiurl = 'http://api.borqs.com/account/login'
+    f = urllib.urlopen(apiurl, urllib.urlencode(data))
+    compresseddata = f.read()
+    compressedstream = StringIO.StringIO(compresseddata)
+    gzipper = gzip.GzipFile(fileobj=compressedstream)
+    data = gzipper.read()
+    return data
+    #something = findUrlGzip('http://api.borqs.com/account/login?login_name=name&password=password')
+    #return something
+
 
 if (__name__ == '__main__'):
     debug(True)

@@ -1,4 +1,4 @@
-from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib
+from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib, template
 
 import urllib2, json, gzip, StringIO, redis, md5
 
@@ -35,7 +35,8 @@ def findUrlGzip(url):
 #example: 
 # http://192.168.5.136:8080/kendoui/examples/index.html
 # http://192.168.5.136:8080/qiupu/login.html
-@route('/<filename:path>', method='GET, POST')
+@post('/<filename:path>')
+@get('/<filename:path>')
 def send_static(filename):
     return static_file(filename, root='')
 
@@ -76,17 +77,16 @@ def getCallback():
 @get('/login') # or @route('/login')
 def login_form():
     return '''<form method="POST">
-                <input name="name"     type="text" />
+                <input name="username"     type="text" />
                 <input name="password" type="password" />
-                <input name="submit" type="submit" />
+                <input name="login" type="submit" />
               </form>'''
 
+@post('/qiupu/login_post.action')
 @post('/login') # or @route('/login', method='POST')
 def login_submit():
-    name     = request.forms.get('name')
+    name     = request.forms.get('username')
     password = request.forms.get('password')
-    print name
-    print password
     key = md5.new()
     key.update(password)
     data = {'login_name':name,'password':key.hexdigest()}
@@ -96,9 +96,14 @@ def login_submit():
     compressedstream = StringIO.StringIO(compresseddata)
     gzipper = gzip.GzipFile(fileobj=compressedstream)
     data = gzipper.read()
-    return data
-    #something = findUrlGzip('http://api.borqs.com/account/login?login_name=name&password=password')
-    #return something
+    #output = template('make_table', rows=data)
+    if (data.find('error_code')):
+	return data
+    else:
+	return data
+
+def user_form():
+    return ''
 
 
 if (__name__ == '__main__'):

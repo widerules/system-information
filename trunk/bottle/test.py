@@ -1,6 +1,6 @@
 from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib
 
-import urllib2, json, gzip, StringIO, redis
+import urllib2, json, gzip, StringIO, redis, md5
 
 app = Bottle()
 
@@ -87,7 +87,9 @@ def login_submit():
     password = request.forms.get('password')
     print name
     print password
-    data = {'login_name':'wanglinbjjx@sina.com','password':'7B9AD327EDF1AC93E2A2599FE5A49379'}
+    key = md5.new()
+    key.update(password)
+    data = {'login_name':name,'password':key.hexdigest()}
     apiurl = 'http://api.borqs.com/account/login'
     f = urllib.urlopen(apiurl, urllib.urlencode(data))
     compresseddata = f.read()

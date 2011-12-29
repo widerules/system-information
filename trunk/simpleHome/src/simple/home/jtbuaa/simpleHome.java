@@ -411,7 +411,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //splash screen
+        /*//splash screen
         Thread splashTimer=new Thread()
         {
             public void run(){
@@ -428,7 +428,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 }
             }
         };
-        splashTimer.start();
+        splashTimer.start();*/
         
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
@@ -1454,12 +1454,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     				}
     			});
         		break;
-        	case UPDATE_SPLASH:
+        	/*case UPDATE_SPLASH:
         		ImageView splash = (ImageView) findViewById(R.id.splash);
         		splash.setVisibility(View.INVISIBLE);
         		apps.setVisibility(View.VISIBLE);
         		apps.bringToFront();
-        		break;
+        		break;*/
         	}
         }
     };

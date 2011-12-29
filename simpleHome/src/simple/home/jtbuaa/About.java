@@ -173,7 +173,7 @@ public class About extends Activity{
 			}
         });
         
-        TextView tvFellow = (TextView) findViewById(R.id.fellow);
+        /*TextView tvFellow = (TextView) findViewById(R.id.fellow);
         tvFellow.setText(Html.fromHtml("<u>腾讯应用中心</u>"));
         tvFellow.setOnClickListener(new OnClickListener() {
 			@Override
@@ -181,7 +181,7 @@ public class About extends Activity{
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://app.qq.com/g/s?aid=index&g_f=990424"));
 				util.startActivity(intent, false, getBaseContext());
 			}
-		});
+		});*/
 	}
 	
 	@Override

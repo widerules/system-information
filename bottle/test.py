@@ -18,7 +18,7 @@ def md5base64():
     data = appsec + strid + appsec
     key = md5.new()
     key.update(data)
-    md5string = key.hexdigest()
+    md5string = key.digest()
     b64 = base64.b64encode(md5string)
     return data + ', ' + md5string + ', ' + b64
     

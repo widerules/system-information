@@ -1,6 +1,6 @@
 from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib, template
 
-import urllib2, json, gzip, StringIO, redis, md5, base64
+import urllib2, json, gzip, StringIO, redis, hashlib, base64
 
 app = Bottle()
 
@@ -16,7 +16,7 @@ def md5base64():
     strid = 'emails'
     appsec = 'appSecret1'
     data = appsec + strid + appsec
-    key = md5.new()
+    key = hashlib.md5()
     key.update(data)
     md5string = key.digest()
     b64 = base64.b64encode(md5string)
@@ -99,7 +99,7 @@ def login_form():
 def login_submit():
     name     = request.forms.get('username')
     password = request.forms.get('password')
-    key = md5.new()
+    key = hashlib.md5()
     key.update(password)
     data = {'login_name':name,'password':key.hexdigest()}
     apiurl = 'http://api.borqs.com/account/login'
@@ -120,4 +120,4 @@ def user_form():
 
 if (__name__ == '__main__'):
     debug(True)
-#    run(host='192.168.5.136', port=8080, reloader=True)
+    run(host='192.168.5.136', port=8080, reloader=True)

@@ -252,6 +252,9 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 boolean startDownload(String url) {
 	if (!url.contains(".")) return false;//not a file
 	
+	int posQ = url.indexOf("?");
+	if (posQ > 0) url = url.substring(0, posQ);//cut off post paras if any.
+	
 	String ss[] = url.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];

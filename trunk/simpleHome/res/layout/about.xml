@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+  android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:background="#F0404040"
+  >
+  
+    <com.google.ads.AdView xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"  
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    ads:loadAdOnCreate="true"
+    ads:adUnitId="a14e79197567476"
+    ads:adSize="BANNER"/>
+    
+<ScrollView 
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
   >
     
 <LinearLayout 
@@ -11,13 +24,12 @@
   android:layout_height="wrap_content"
   >
   
-  	<TextView android:id="@+id/title"
+    	<TextView android:id="@+id/title"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
       	android:gravity="center_horizontal"
       	android:textSize="16dip"
 		android:layout_margin="5dip"
-        android:background="@drawable/button_layout"
     />
   	
     <TextView android:id="@+id/help"
@@ -90,3 +102,4 @@
 </LinearLayout>
 
 </ScrollView>
+</LinearLayout>

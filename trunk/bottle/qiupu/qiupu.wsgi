@@ -6,5 +6,3 @@ sys.path+=[os.path.dirname(__file__)]
 import qiupu
 
 application=qiupu.app
-
-

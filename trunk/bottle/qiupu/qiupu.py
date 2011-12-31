@@ -4,14 +4,14 @@ import urllib2, json, gzip, StringIO, redis, hashlib, base64
 
 app = Bottle()
 
-@route('/')
+@app.route('/')
 def ping():
     s = 'pang: '
     for key in request.params.keys():
 	s += key + ', ' + request.params[key] + '\n'
     return s
 
-@route('/md5')
+@app.route('/md5')
 def md5base64():
     strid = 'emails'
     appsec = 'appSecret1'
@@ -23,7 +23,7 @@ def md5base64():
     return data + ', ' + md5string + ', ' + b64
     
 
-@route('/test')
+@app.route('/test')
 def test():
     something = findUrlGzip('http://api.borqs.com/user/show?users=43')
     return something
@@ -47,12 +47,12 @@ def findUrlGzip(url):
 #example: 
 # http://192.168.5.136:8080/kendoui/examples/index.html
 # http://192.168.5.136:8080/qiupu/login.html
-@post('/<filename:path>')
-@get('/<filename:path>')
+@app.post('/<filename:path>')
+@app.get('/<filename:path>')
 def send_static(filename):
     return static_file(filename, root='')
 
-@route('/redis')
+@app.route('/redis')
 def redis():
     r = redis.StrictRedis(host='localhost', port=6379, db=0)
     r.set('foo','bar')
@@ -61,7 +61,7 @@ def redis():
     print 'key value is:%s' %r.get('fool')
     return r.get('fool')
 
-@route('/json')
+@app.route('/json')
 def testjson():
     data = [{'Id': 1, 'city': 'beijing', 'area': 16800, 'population': 1600}, {'Id': 2, 'city': 'shanghai', 'area': 6400, 'population': 1800}]
     return wrapResults(data)
@@ -86,7 +86,7 @@ def getCallback():
     return callback
 
 
-@get('/login') # or @route('/login')
+@app.get('/login') # or @route('/login')
 def login_form():
     return '''<form method="POST">
                 <input name="username"     type="text" />
@@ -94,8 +94,8 @@ def login_form():
                 <input name="login" type="submit" />
               </form>'''
 
-@post('/login_post.action')
-@post('/login') # or @route('/login', method='POST')
+@app.post('/login_post.action')
+@app.post('/login') # or @route('/login', method='POST')
 def login_submit():
     name     = request.forms.get('username')
     password = request.forms.get('password')
@@ -120,4 +120,4 @@ def user_form():
 
 if (__name__ == '__main__'):
     debug(True)
-    run(host='192.168.5.136', port=8080, reloader=True)
+    run(app, host='192.168.5.136', port=8080, reloader=True)

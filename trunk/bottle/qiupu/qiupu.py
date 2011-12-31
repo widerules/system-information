@@ -94,7 +94,7 @@ def login_form():
                 <input name="login" type="submit" />
               </form>'''
 
-@post('/qiupu/login_post.action')
+@post('/login_post.action')
 @post('/login') # or @route('/login', method='POST')
 def login_submit():
     name     = request.forms.get('username')
@@ -120,4 +120,4 @@ def user_form():
 
 if (__name__ == '__main__'):
     debug(True)
-#    run(host='192.168.5.136', port=8080, reloader=True)
+    run(host='192.168.5.136', port=8080, reloader=True)

@@ -50,7 +50,11 @@
     <string name="next">下一页</string>
     <string name="newpage">新建窗口</string>
     <string name="nomore_pages">页面数不能大于9个。请先关掉不用的页面吧。</string>
-    
+    <string name="history">历史</string>
+    <string name="bookmark">书签</string>
+    <string name="source">查看源码</string>
+    <string name="snap">分享截屏</string>
+        
     <string name="sdcard_needed">没有SD卡，下载的文件可能打不开。</string>
     
     <string name="loading">正在读取...</string>

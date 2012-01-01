@@ -514,7 +514,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 			String snap = downloadPath + "snap/snap.png";
 			FileOutputStream fos = new FileOutputStream(snap); 
 			Picture pic = serverWebs.get(webIndex).capturePicture();
-			Bitmap bmp = Bitmap.createBitmap(pic.getWidth(), pic.getHeight(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+			Bitmap bmp = Bitmap.createBitmap(serverWebs.get(webIndex).getWidth(), serverWebs.get(webIndex).getHeight(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
 			Canvas canvas = new Canvas(bmp); 
 	        pic.draw(canvas);
 	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 

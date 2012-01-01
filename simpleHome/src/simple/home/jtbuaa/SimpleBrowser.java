@@ -491,7 +491,8 @@ public boolean onOptionsItemSelected(MenuItem item){
 		break;
 	case 3://snap
 		try {
-			FileOutputStream fos = new FileOutputStream(downloadPath + "snap.png"); 
+			String snap = downloadPath + "snap/snap.png";
+			FileOutputStream fos = new FileOutputStream(snap); 
 			Picture pic = serverWebs.get(webIndex).capturePicture();
 			Bitmap bmp = Bitmap.createBitmap(pic.getWidth(), pic.getHeight(), Bitmap.Config.ARGB_8888); 
 			Canvas canvas = new Canvas(bmp); 
@@ -502,7 +503,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 	        Intent intent = new Intent(Intent.ACTION_SEND);
 	        intent.setType("image/*");  
 	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
-			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloadPath + "snap.png")));
+			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
 	        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
 		}
 		catch (Exception e) {

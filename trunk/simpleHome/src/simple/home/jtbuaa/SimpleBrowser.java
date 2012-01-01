@@ -499,7 +499,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
 		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
-		intent.setType("plain/text");//important?
+		intent.setType("text/plain");//important. can't send mail without this line.
 		if (!util.startActivity(intent, false, getBaseContext())) {
 	    	if (m_sourceDialog == null) {
 				m_sourceDialog = new AlertDialog.Builder(this).
@@ -514,7 +514,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 			String snap = downloadPath + "snap/snap.png";
 			FileOutputStream fos = new FileOutputStream(snap); 
 			Picture pic = serverWebs.get(webIndex).capturePicture();
-			Bitmap bmp = Bitmap.createBitmap(pic.getWidth(), pic.getHeight(), Bitmap.Config.ARGB_8888); 
+			Bitmap bmp = Bitmap.createBitmap(pic.getWidth(), pic.getHeight(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
 			Canvas canvas = new Canvas(bmp); 
 	        pic.draw(canvas);
 	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 

@@ -1,15 +1,21 @@
 package simple.home.jtbuaa;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Map.Entry;
+
+import simple.home.jtbuaa.simpleHome.ricase;
 
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
@@ -26,6 +32,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Picture;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -35,8 +43,11 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -462,6 +473,44 @@ protected Dialog onCreateDialog(int id) {
 	}
     }
     return null;
+}
+
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+	super.onCreateOptionsMenu(menu);
+	menu.add(0, 0, 0, R.string.history).setAlphabeticShortcut('H');
+	menu.add(0, 1, 0, R.string.bookmark).setAlphabeticShortcut('B');
+	menu.add(0, 2, 0, R.string.source).setAlphabeticShortcut('S');
+	menu.add(0, 3, 0, R.string.snap).setAlphabeticShortcut('N');
+	return true;
+}
+
+public boolean onOptionsItemSelected(MenuItem item){
+	switch (item.getItemId()) {
+	case 0://history
+		break;
+	case 3://snap
+		try {
+			FileOutputStream fos = new FileOutputStream(downloadPath + "snap.png"); 
+			Picture pic = serverWebs.get(webIndex).capturePicture();
+			Bitmap bmp = Bitmap.createBitmap(pic.getWidth(), pic.getHeight(), Bitmap.Config.ARGB_8888); 
+			Canvas canvas = new Canvas(bmp); 
+	        pic.draw(canvas);
+	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
+	        fos.close();
+			
+	        Intent intent = new Intent(Intent.ACTION_SEND);
+	        intent.setType("image/*");  
+	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
+			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloadPath + "snap.png")));
+	        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
+		}
+		catch (Exception e) {
+			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+		}
+		break;
+	}
+	return true;
 }
 
 @Override

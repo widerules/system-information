@@ -330,7 +330,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			fos.close();
 			fis.close();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
 			return false;
 		}

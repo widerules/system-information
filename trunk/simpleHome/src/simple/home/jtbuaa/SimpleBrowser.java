@@ -496,13 +496,10 @@ public boolean onOptionsItemSelected(MenuItem item){
 	case 0://history
 		break;
 	case 2://view page source
-		Intent intent = new Intent(Intent.ACTION_SENDTO);
-		String uriText = "mailto:" + 
-	              "?subject=" + serverWebs.get(webIndex).getTitle() + 
-	              "&body=" + serverWebs.get(webIndex).pageSource;
-	    uriText = uriText.replace(" ", "%20");
-	    Uri uri = Uri.parse(uriText);
-	    intent.setData(uri);
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
+		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
+		intent.setType("plain/text");//important?
 		if (!util.startActivity(intent, false, getBaseContext())) {
 	    	if (m_sourceDialog == null) {
 				m_sourceDialog = new AlertDialog.Builder(this).

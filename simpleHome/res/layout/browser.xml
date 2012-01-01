@@ -18,10 +18,19 @@
     	android:layout_height="wrap_content"
     	android:layout_below="@id/adView"
     	android:inputType="textWebEmailAddress"
-    	android:visibility="invisible"
-    	/>
+    	android:visibility="invisible"/>
     	
-  			<RelativeLayout android:id="@+id/webtools"
+    <TextView android:id="@+id/page_source"
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:layout_below="@id/adView"
+    	android:background="#F0FFFFFF"
+    	android:focusable="true"
+    	android:focusableInTouchMode="true"
+		android:scrollbars="vertical"
+    	android:visibility="invisible"/>
+    
+    		<RelativeLayout android:id="@+id/webtools"
   				android:background="@drawable/shortcut_bar_layout"
   				android:layout_alignParentBottom="true" 
   				android:orientation="horizontal" 
@@ -109,5 +118,5 @@
 			android:layout_below="@id/adView"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"/>
-    
+				
 </RelativeLayout>

@@ -1,21 +1,15 @@
 package simple.home.jtbuaa;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Map.Entry;
-
-import simple.home.jtbuaa.simpleHome.ricase;
 
 import com.google.ads.AdRequest;
 import com.google.ads.AdView;
@@ -40,20 +34,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
 import android.webkit.MimeTypeMap;
@@ -68,7 +59,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,6 +76,7 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
+	TextView tvPageSource;
 	
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
@@ -119,7 +110,17 @@ public class SimpleBrowser extends Activity {
 
 class MyWebview extends WebView {
 	public String title = "";
+	public String pageSource;
 
+	class MyJavaScriptInterface
+	{
+	    @SuppressWarnings("unused")
+	    public void processHTML(String html)
+	    {
+	    	pageSource = html;
+	    }
+	}
+	
 	public MyWebview(Context context) {
 		super(context);
 		title = getString(R.string.app_name);
@@ -132,6 +133,8 @@ class MyWebview extends WebView {
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
 
+        addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
+        
         setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {//just close webcontrol page if it is open.
@@ -183,6 +186,7 @@ class MyWebview extends WebView {
     					mProgressDialog.setProgress(0);
     				}
         		}
+        		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
 			}         
 			
 			@Override
@@ -489,6 +493,11 @@ public boolean onOptionsItemSelected(MenuItem item){
 	switch (item.getItemId()) {
 	case 0://history
 		break;
+	case 2://view page source
+		tvPageSource.setText(serverWebs.get(webIndex).pageSource);
+		tvPageSource.setVisibility(View.VISIBLE);
+		tvPageSource.bringToFront();
+		break;
 	case 3://snap
 		try {
 			String snap = downloadPath + "snap/snap.png";
@@ -531,6 +540,8 @@ public void onCreate(Bundle savedInstanceState) {
 	setContentView(R.layout.browser);
 
     adview = (AdView) findViewById(R.id.adView);
+    
+	tvPageSource = (TextView) findViewById(R.id.page_source);
 
     webAddress = (EditText) findViewById(R.id.url);
     webAddress.setOnKeyListener(new OnKeyListener() {
@@ -719,7 +730,9 @@ protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-			if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
+			if (tvPageSource.getVisibility() == View.VISIBLE)
+				tvPageSource.setVisibility(View.INVISIBLE);
+			else if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
 				mProgressDialog.setProgress(0);
 				mProgressDialog.hide();
 			}

@@ -74,6 +74,7 @@
       	android:layout_alignParentLeft="true"
       	android:textSize="16dip"
       	android:text="@string/share_home"
+      	android:singleLine="true"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />
@@ -83,6 +84,7 @@
       	android:layout_centerHorizontal="true"
       	android:textSize="16dip"
       	android:text="@string/share_desktop"
+      	android:singleLine="true"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />
@@ -92,6 +94,7 @@
       	android:layout_alignParentRight="true"
       	android:textSize="16dip"
       	android:text="@string/share_wallpaper"
+      	android:singleLine="true"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />

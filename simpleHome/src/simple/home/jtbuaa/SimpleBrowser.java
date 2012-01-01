@@ -15,6 +15,7 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -22,6 +23,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -76,7 +78,7 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
-	TextView tvPageSource;
+	AlertDialog m_sourceDialog;
 	
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
@@ -117,13 +119,13 @@ class MyWebview extends WebView {
 	    @SuppressWarnings("unused")
 	    public void processHTML(String html)
 	    {
-	    	pageSource = html;
+	    	pageSource = html;//to get page source, part 1
 	    }
 	}
 	
 	public MyWebview(Context context) {
 		super(context);
-		title = getString(R.string.app_name);
+		title = getString(R.string.browser_name);
 		
         setScrollBarStyle(0);
         WebSettings webSettings = getSettings();
@@ -133,7 +135,7 @@ class MyWebview extends WebView {
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
 
-        addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
+        addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");//to get page source, part 2
         
         setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -186,7 +188,7 @@ class MyWebview extends WebView {
     					mProgressDialog.setProgress(0);
     				}
         		}
-        		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+        		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
 			}         
 			
 			@Override
@@ -494,9 +496,21 @@ public boolean onOptionsItemSelected(MenuItem item){
 	case 0://history
 		break;
 	case 2://view page source
-		tvPageSource.setText(serverWebs.get(webIndex).pageSource);
-		tvPageSource.setVisibility(View.VISIBLE);
-		tvPageSource.bringToFront();
+		Intent intent = new Intent(Intent.ACTION_SENDTO);
+		String uriText = "mailto:" + 
+	              "?subject=" + serverWebs.get(webIndex).getTitle() + 
+	              "&body=" + serverWebs.get(webIndex).pageSource;
+	    uriText = uriText.replace(" ", "%20");
+	    Uri uri = Uri.parse(uriText);
+	    intent.setData(uri);
+		if (!util.startActivity(intent, false, getBaseContext())) {
+	    	if (m_sourceDialog == null) {
+				m_sourceDialog = new AlertDialog.Builder(this).
+				setMessage(serverWebs.get(webIndex).pageSource).create();
+	        }
+	    	else m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
+	    	m_sourceDialog.show();
+		}
 		break;
 	case 3://snap
 		try {
@@ -509,7 +523,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
 	        fos.close();
 			
-	        Intent intent = new Intent(Intent.ACTION_SEND);
+	        intent = new Intent(Intent.ACTION_SEND);
 	        intent.setType("image/*");  
 	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
 			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
@@ -541,8 +555,6 @@ public void onCreate(Bundle savedInstanceState) {
 
     adview = (AdView) findViewById(R.id.adView);
     
-	tvPageSource = (TextView) findViewById(R.id.page_source);
-
     webAddress = (EditText) findViewById(R.id.url);
     webAddress.setOnKeyListener(new OnKeyListener() {
 		@Override
@@ -730,9 +742,7 @@ protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-			if (tvPageSource.getVisibility() == View.VISIBLE)
-				tvPageSource.setVisibility(View.INVISIBLE);
-			else if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
+			if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
 				mProgressDialog.setProgress(0);
 				mProgressDialog.hide();
 			}

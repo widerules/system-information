@@ -176,11 +176,8 @@ public class About extends Activity{
         btnShareDesktop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-		        Intent intent = new Intent(Intent.ACTION_SEND);
-		        intent.setType("image/*");  
-		        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
-				intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloadPath + "snap/snap.png")));
-		        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
+				Intent intentShareDesktop = new Intent("simpleHome.action.SHARE_DESKTOP");
+                sendBroadcast(intentShareDesktop);//need get screen of home, so send intent to home
 			}
         });
 

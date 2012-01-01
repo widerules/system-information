@@ -146,7 +146,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
 	sizedRelativeLayout base;
 	RelativeLayout apps;
-	RelativeLayout shortcutBar, shortcutBar_center, adsParent;
+	RelativeLayout shortcutBar_center;
     appHandler mAppHandler = new appHandler();
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SPLASH = 4; 
 	ContextMenu mMenu;
@@ -638,10 +638,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
 		
-        adsParent = (RelativeLayout) findViewById(R.id.adsParent);
         base = (sizedRelativeLayout) home.findViewById(R.id.base); 
         base.setResizeListener(this);
-        shortcutBar = (RelativeLayout) home.findViewById(R.id.shortcut_bar);
         shortcutBar_center = (RelativeLayout) home.findViewById(R.id.shortcut_bar_center);
         homeBar = (ImageView) home.findViewById(R.id.home_bar);
         homeBar.setOnClickListener(new OnClickListener() {

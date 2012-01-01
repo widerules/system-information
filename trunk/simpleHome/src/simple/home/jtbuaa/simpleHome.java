@@ -267,17 +267,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		case 1://settings
 			return super.onOptionsItemSelected(item);
 		case 2://help dialog
-			String snap = downloadPath + "snap/snap.png";
-			FileOutputStream fos;
-			try {//prepare for share desktop
-				fos = new FileOutputStream(snap);
-				apps.setDrawingCacheEnabled(true);
-				Bitmap bmp = apps.getDrawingCache(); 
-		        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
-		        fos.close();
-			} catch (Exception e) {
-			} 
-	        
 			Intent intent = new Intent("simple.home.jtbuaa.about");
 			intent.putExtra("version", version);
 			intent.putExtra("filename", wallpaperFile);
@@ -701,6 +690,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		filter = new IntentFilter("simpleHome.action.PIC_ADDED");
         registerReceiver(picAddReceiver, filter);
         
+		filter = new IntentFilter("simpleHome.action.SHARE_DESKTOP");
+        registerReceiver(deskShareReceiver, filter);
+        
         filter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);  
         filter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);  
         filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);  
@@ -732,6 +724,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	unregisterReceiver(packageReceiver);
     	unregisterReceiver(wallpaperReceiver);
     	unregisterReceiver(picAddReceiver);
+    	unregisterReceiver(deskShareReceiver);
     	unregisterReceiver(homeChangeReceiver);
     	unregisterReceiver(sdcardListener);
     	
@@ -778,6 +771,28 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     		SharedPreferences.Editor editor = perferences.edit();
     		editor.putBoolean("shake_enabled", true);
     		editor.commit();
+        }
+    };
+    
+    BroadcastReceiver deskShareReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+			String snap = downloadPath + "snap/snap.png";
+			FileOutputStream fos;
+			try {//prepare for share desktop
+				fos = new FileOutputStream(snap);
+				apps.setDrawingCacheEnabled(true);
+				Bitmap bmp = apps.getDrawingCache(); 
+		        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
+		        fos.close();
+			} catch (Exception e) {
+			} 
+
+	        Intent intentSend = new Intent(Intent.ACTION_SEND);
+	        intentSend.setType("image/*");  
+	        intentSend.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
+	        intentSend.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloadPath + "snap/snap.png")));
+	        util.startActivity(Intent.createChooser(intentSend, getString(R.string.sharemode)), true, getBaseContext());
         }
     };
     

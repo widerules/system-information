@@ -3,6 +3,7 @@ package simple.home.jtbuaa;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -43,6 +44,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -109,6 +111,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	boolean busy;
 	SharedPreferences perferences;
 	WallpaperManager mWallpaperManager;
+	String wallpaperFile = "";
 	
 	AlertDialog m_deleteDialog;
 	
@@ -264,8 +267,20 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		case 1://settings
 			return super.onOptionsItemSelected(item);
 		case 2://help dialog
+			String snap = downloadPath + "snap/snap.png";
+			FileOutputStream fos;
+			try {//prepare for share desktop
+				fos = new FileOutputStream(snap);
+				apps.setDrawingCacheEnabled(true);
+				Bitmap bmp = apps.getDrawingCache(); 
+		        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
+		        fos.close();
+			} catch (Exception e) {
+			} 
+	        
 			Intent intent = new Intent("simple.home.jtbuaa.about");
 			intent.putExtra("version", version);
+			intent.putExtra("filename", wallpaperFile);
 			util.startActivity(intent, false, getBaseContext());
 			break;
 		}
@@ -750,6 +765,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
  		@Override
  		public void onReceive(Context arg0, Intent arg1) {
  			apps.setBackgroundColor(0);//set back ground to transparent to show wallpaper
+ 			wallpaperFile = "";
  		}
  	};
  	
@@ -1539,7 +1555,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    	Random random = new Random();
 			    	int id = random.nextInt(picList.size());
 				    try {
-				    	BitmapDrawable bd = (BitmapDrawable) BitmapDrawable.createFromPath(downloadPath + picList.get(id));
+				    	wallpaperFile = downloadPath + picList.get(id);
+				    	BitmapDrawable bd = (BitmapDrawable) BitmapDrawable.createFromPath(wallpaperFile);
 				        double factor = 1.0 * bd.getIntrinsicWidth() / bd.getIntrinsicHeight();
 				        if (factor >= 1.2) {//if too wide, we want use setWallpaperOffsets to move it, so we need set it to wallpaper
 				        	int tmpWidth = (int) (dm.heightPixels * factor);
@@ -1562,6 +1579,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					} catch (Exception e) {
 						e.printStackTrace();
 						picList.remove(id);
+						wallpaperFile = "";
 					}
 					
 					if (picList.isEmpty()) {

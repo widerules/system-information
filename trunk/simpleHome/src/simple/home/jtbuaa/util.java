@@ -40,6 +40,10 @@ public class util {
 			{
 			    if(myFilePath.isDirectory()) ;//folder exist
 			    else myFilePath.mkdir();//create folder
+			    
+				java.io.File snapPath = new java.io.File(downloadPath + "snap/");
+			    if(snapPath.isDirectory()) ;//folder exist
+			    else snapPath.mkdir();//create folder
 			}
 			catch(Exception e) {
 				e.printStackTrace();

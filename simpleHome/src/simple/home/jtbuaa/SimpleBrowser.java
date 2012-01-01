@@ -79,6 +79,19 @@ public class SimpleBrowser extends Activity {
 	TextView btnNewpage;
 	InputMethodManager imm;
 	AlertDialog m_sourceDialog;
+	ArrayList<TitleUrl> urlHistory = new ArrayList<TitleUrl>();
+
+	class TitleUrl {
+		String m_title;
+		String m_url;
+		String m_site;
+		
+		TitleUrl(String title, String url, String site) {
+			m_title =  title;
+			m_url = url;
+			m_site = site;
+		}
+	}
 	
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
@@ -189,6 +202,16 @@ class MyWebview extends WebView {
     				}
         		}
         		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
+        		
+        		if (!url.equals("file:///android_asset/online.html")) {
+        			String site = url.split("/")[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+            		for (int i = urlHistory.size()-1; i >= 0; i--) 
+            			if (urlHistory.get(i).m_site.equals(site)) return;//record one site only once in the history list.
+            		
+        			TitleUrl titleUrl = new TitleUrl(site, url, view.getTitle());
+            		urlHistory.add(titleUrl);
+            		if (urlHistory.size() > 16) urlHistory.remove(0);//delete the first history if list larger than 16;
+        		}
 			}         
 			
 			@Override

@@ -8,11 +8,21 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +30,7 @@ public class BookmarkEditor extends Activity{
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ListView bookmarkList;
 	BookmarkAdapter bAdapter;
+	boolean deleted;
 
 	@Override
 	protected void onResume() {
@@ -31,6 +42,7 @@ public class BookmarkEditor extends Activity{
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		deleted = false;
 		
 		bAdapter = new BookmarkAdapter(getBaseContext(), mBookMark);
 		bookmarkList.setAdapter(bAdapter);
@@ -40,14 +52,16 @@ public class BookmarkEditor extends Activity{
 
 	@Override
 	protected void onPause() {
-		FileOutputStream fo;
-		try {
-			fo = this.openFileOutput(getIntent().getStringExtra("filename"), 0);
-			util.writeBookmark(fo, mBookMark);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		if (deleted) {//only backup the list if it changed.
+			FileOutputStream fo;
+			try {
+				fo = this.openFileOutput(getIntent().getStringExtra("filename"), 0);
+				util.writeBookmark(fo, mBookMark);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
-
+		
 		super.onPause();
 	}
 
@@ -76,6 +90,30 @@ public class BookmarkEditor extends Activity{
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
            	textView1.setText(tu.m_title);
+
+            LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
+            lapp.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setClassName(getPackageName(), getPackageName()+".SimpleBrowser");
+					intent.setData(Uri.parse(tu.m_url));
+					util.startActivity(intent, true, getBaseContext());
+				}
+            });
+            
+            final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
+			btnVersion.setText("remove");
+            btnVersion.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					bAdapter.remove(tu);
+					deleted = true;//mark as changed
+				}
+            });
+            
+            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
+        	textView3.setText(tu.m_url);
 
             return convertView;
         }

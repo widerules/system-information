@@ -81,6 +81,7 @@ public class SimpleBrowser extends Activity {
 	AlertDialog m_sourceDialog;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
+	boolean historyChanged, bookmarkChanged;
 
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
@@ -190,8 +191,8 @@ class MyWebview extends WebView {
     					mProgressDialog.setProgress(0);
     				}
         		}
-        		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
-        		
+        		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
+				
         		if (!url.equals("file:///android_asset/online.html")) {
         			String site = url.split("/")[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
             		for (int i = mHistory.size()-1; i >= 0; i--) 
@@ -200,6 +201,7 @@ class MyWebview extends WebView {
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
             		if (mHistory.size() > 16) mHistory.remove(0);//delete the first history if list larger than 16;
+            		historyChanged = true;
         		}
 			}         
 			
@@ -507,6 +509,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 	switch (item.getItemId()) {
 	case 0://history
 		Intent intent = new Intent("simple.home.jtbuaa.bookmark");
+		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
 		intent.putExtra("filename", "history");
 		util.startActivity(intent, false, getBaseContext());
 		break;
@@ -779,6 +782,8 @@ protected void onResume() {
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	}
+	historyChanged = false;
+	bookmarkChanged = false;
 
 	super.onResume();
 }
@@ -787,10 +792,15 @@ protected void onResume() {
 protected void onPause() {
 	FileOutputStream fo;
 	try {
-		fo = this.openFileOutput("history", 0);
-		util.writeBookmark(fo, mHistory);
-		fo = this.openFileOutput("bookmark", 0);
-		util.writeBookmark(fo, mBookMark);
+		if (historyChanged) {
+			fo = this.openFileOutput("history", 0);
+			util.writeBookmark(fo, mHistory);
+		}
+		
+		if (bookmarkChanged) {
+			fo = this.openFileOutput("bookmark", 0);
+			util.writeBookmark(fo, mBookMark);
+		}
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	}

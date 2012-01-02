@@ -1,13 +1,10 @@
 package simple.home.jtbuaa;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,21 +25,17 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
-import android.hardware.SensorManager;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -89,18 +82,6 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 
-	class TitleUrl {
-		String m_title;
-		String m_url;
-		String m_site;
-		
-		TitleUrl(String title, String url, String site) {
-			m_title =  title;
-			m_url = url;
-			m_site = site;
-		}
-	}
-	
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
 
@@ -525,9 +506,12 @@ public boolean onCreateOptionsMenu(Menu menu) {
 public boolean onOptionsItemSelected(MenuItem item){
 	switch (item.getItemId()) {
 	case 0://history
+		Intent intent = new Intent("simple.home.jtbuaa.bookmark");
+		intent.putExtra("filename", "history");
+		util.startActivity(intent, false, getBaseContext());
 		break;
 	case 2://view page source
-		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent = new Intent(Intent.ACTION_SEND);
 		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
 		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
 		intent.setType("text/plain");//important. can't send mail without this line.
@@ -786,74 +770,32 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 @Override
 protected void onResume() {
-    readFile("history");
-    readFile("bookmark");
+	FileInputStream fi = null;
+	try {
+		fi = openFileInput("history");
+		mHistory = util.readBookmark(fi);
+		fi = openFileInput("bookmark");
+		mBookMark = util.readBookmark(fi);
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	}
 
 	super.onResume();
 }
 
 @Override
 protected void onPause() {
-    writeFile("history");
-    writeFile("bookmark");
-
-	super.onPause();
-}
-
-void writeFile(String name) {
+	FileOutputStream fo;
 	try {
-		FileOutputStream fo = this.openFileOutput(name, 0);
-		ObjectOutputStream oos = new ObjectOutputStream(fo);
-		TitleUrl tu;
-		if (name.equals("history")) {
-			for (int i = 0; i < mHistory.size(); i++) {
-				tu = mHistory.get(i);
-				oos.writeObject(tu.m_title);
-				oos.writeObject(tu.m_url);
-				oos.writeObject(tu.m_site);
-			}
-		}
-		else if (name.equals("bookmark")) {
-			for (int i = 0; i < mBookMark.size(); i++) {
-				tu = mBookMark.get(i);
-				oos.writeObject(tu.m_title);
-				oos.writeObject(tu.m_url);
-				oos.writeObject(tu.m_site);
-			}
-		}
-		oos.flush();
-		oos.close();
-		fo.close();
-	} catch (Exception e) {}
-}
-
-void readFile(String name) 
-{
-	FileInputStream fi = null;
-	ObjectInputStream ois = null;
-	try {//read favorite or shortcut data
-		fi = openFileInput(name);
-		ois = new ObjectInputStream(fi);
-		TitleUrl tu;
-		String title, url, site;
-		while ((title = (String) ois.readObject()) != null) {
-			url = (String) ois.readObject();
-			site = (String) ois.readObject();
-			tu = new TitleUrl(title, url, site);
-			if (name.equals("bookmark")) mBookMark.add(tu);
-			else if (name.equals("history")) mHistory.add(tu);
-		}
-	} catch (EOFException e) {//only when read eof need send out msg.
-		try {
-			ois.close();
-			fi.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	} catch (Exception e) {
+		fo = this.openFileOutput("history", 0);
+		util.writeBookmark(fo, mHistory);
+		fo = this.openFileOutput("bookmark", 0);
+		util.writeBookmark(fo, mBookMark);
+	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	}
+
+	super.onPause();
 }
 
 }

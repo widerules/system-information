@@ -15,7 +15,7 @@
     	ads:adUnitId="a14e79197567476"
     	ads:adSize="BANNER"/>
 
-    <TextView android:id="@+id/title"
+    <Button android:id="@+id/title"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
       	android:layout_below="@id/ads"
@@ -35,11 +35,22 @@
       	android:textColor="#FFFFFFFF"
     />
     
+  	<Button android:id="@+id/share_wallpaper"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:layout_above="@id/mailto"
+      	android:textSize="16dip"
+      	android:text="@string/share_wallpaper"
+      	android:singleLine="true"
+		android:layout_margin="5dip"
+        android:background="@drawable/button_layout"
+    />
+  	
 <RelativeLayout android:id="@+id/cbWallpaper"
   android:orientation="horizontal"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
-  android:layout_above="@id/mailto"
+  android:layout_above="@id/share_wallpaper"
   >
 
   	<CheckBox android:id="@+id/change_wallpaper"
@@ -61,38 +72,21 @@
     />			
 </RelativeLayout>
   	
-<RelativeLayout android:id="@+id/shared"
-  android:orientation="horizontal"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:layout_above="@id/cbWallpaper"
-  >
   	<Button android:id="@+id/share_desktop"
-      	android:layout_width="150dip"
+      	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-      	android:layout_alignParentLeft="true"
+		android:layout_above="@id/cbWallpaper"
       	android:textSize="16dip"
       	android:text="@string/share_desktop"
       	android:singleLine="true"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />
-  	<Button android:id="@+id/share_wallpaper"
-      	android:layout_width="150dip"
-      	android:layout_height="wrap_content"
-      	android:layout_alignParentRight="true"
-      	android:textSize="16dip"
-      	android:text="@string/share_wallpaper"
-      	android:singleLine="true"
-		android:layout_margin="5dip"
-        android:background="@drawable/button_layout"
-    />
-</RelativeLayout> 
 
   	<TextView android:id="@+id/info"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-		android:layout_above="@id/shared"
+		android:layout_above="@id/share_desktop"
       	android:textSize="16dip"
       	android:textColor="#FFFFFFFF"
 		android:layout_marginLeft="5dip"
@@ -101,39 +95,21 @@
 		android:background="@drawable/round_corner_light"
     />
   		
-<RelativeLayout android:id="@+id/voted"
-  android:orientation="horizontal"
-  android:layout_width="fill_parent"
-  android:layout_height="wrap_content"
-  android:layout_above="@id/info"
-  >
-  	<Button android:id="@+id/share_home"
-      	android:layout_width="150dip"
-      	android:layout_height="wrap_content"
-      	android:layout_alignParentLeft="true"
-      	android:textSize="16dip"
-      	android:text="@string/share_home"
-      	android:singleLine="true"
-		android:layout_margin="5dip"
-        android:background="@drawable/button_layout"
-    />
     <Button android:id="@+id/vote"
-      	android:layout_width="150dip"
+      	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-      	android:layout_alignParentRight="true"
+		android:layout_above="@id/info"
       	android:textSize="16dip"
       	android:text="@string/vote"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />
     
-</RelativeLayout> 
-    	
 <ScrollView 
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:layout_below="@id/title"
-  android:layout_above="@id/voted"
+  android:layout_above="@id/vote"
   >
     
     <TextView android:id="@+id/help"

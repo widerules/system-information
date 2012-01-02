@@ -152,7 +152,7 @@ public class About extends Activity{
         TextView tvInfo = (TextView) findViewById(R.id.info);
         tvInfo.setText(aboutMsg());
         
-        Button btnShareHome = (Button) findViewById(R.id.share_home);
+        Button btnShareHome = (Button) findViewById(R.id.title);
         btnShareHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

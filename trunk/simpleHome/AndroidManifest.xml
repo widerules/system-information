@@ -145,9 +145,9 @@
         </activity>
         
         <activity android:name=".BookmarkEditor"
-        	android:noHistory="true"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="true"
+            android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/app_name">
             <intent-filter>
             	<action android:name="simple.home.jtbuaa.bookmark"/>

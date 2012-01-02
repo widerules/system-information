@@ -220,6 +220,8 @@ public class About extends Activity{
         
 		perferences = PreferenceManager.getDefaultSharedPreferences(this);
         cbShake = (CheckBox) findViewById(R.id.change_wallpaper);
+        cbShake.setEnabled(perferences.getBoolean("shake_enabled", false));
+        cbShake.setChecked(perferences.getBoolean("shake", false));
         cbShake.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

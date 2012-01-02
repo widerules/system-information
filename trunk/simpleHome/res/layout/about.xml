@@ -48,8 +48,6 @@
       	android:layout_alignParentLeft="true"
       	android:text="@string/auto_change_wallpaper"
       	android:layout_marginLeft="15dip"
-      	android:checked="false"
-      	android:enabled="false"
     />
   	  
   	<TextView android:id="@+id/download_wallpaper"

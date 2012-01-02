@@ -98,12 +98,13 @@ public class BookmarkEditor extends Activity{
 					Intent intent = new Intent(Intent.ACTION_VIEW);
 					intent.setClassName(getPackageName(), getPackageName()+".SimpleBrowser");
 					intent.setData(Uri.parse(tu.m_url));
+					intent.putExtra("update", true);
 					util.startActivity(intent, true, getBaseContext());
 				}
             });
             
             final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
-			btnVersion.setText("remove");
+			btnVersion.setText("delete");
             btnVersion.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

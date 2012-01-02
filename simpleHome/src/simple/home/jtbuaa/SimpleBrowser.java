@@ -36,6 +36,7 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -680,7 +681,7 @@ public void onCreate(Bundle savedInstanceState) {
 		if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) 
 			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 		else //open the url from intent in a new page if the old page is under reading.
-			loadNewPage(getIntent().getDataString());
+			loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
 	}
 	catch (Exception e) {
 		e.printStackTrace();
@@ -715,8 +716,7 @@ BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	}
 };
 
-private void loadNewPage(String url) {
-	boolean update = getIntent().getBooleanExtra("update", false);
+private void loadNewPage(String url, boolean update) {
 	if (!update)//only open new page if not update from bookmark/history
 		if ((!serverWebs.get(webIndex).title.equals(getString(R.string.browser_name))) || serverWebs.get(webIndex).canGoBack()) 
 		btnNewpage.performClick();//open the url in a new page if current page is not the main page
@@ -751,7 +751,7 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 @Override
 protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 	if (intent.getAction().equals(Intent.ACTION_VIEW)) //view webpages
-		loadNewPage(intent.getDataString());
+		loadNewPage(intent.getDataString(), intent.getBooleanExtra("update", false));
 	super.onNewIntent(intent); 
 }
 

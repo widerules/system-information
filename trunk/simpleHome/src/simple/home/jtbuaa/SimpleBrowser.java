@@ -716,7 +716,9 @@ BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 };
 
 private void loadNewPage(String url) {
-	if ((!serverWebs.get(webIndex).title.equals(getString(R.string.browser_name))) || serverWebs.get(webIndex).canGoBack()) 
+	boolean update = getIntent().getBooleanExtra("update", false);
+	if (!update)//only open new page if not update from bookmark/history
+		if ((!serverWebs.get(webIndex).title.equals(getString(R.string.browser_name))) || serverWebs.get(webIndex).canGoBack()) 
 		btnNewpage.performClick();//open the url in a new page if current page is not the main page
 	serverWebs.get(webIndex).loadUrl(url);
 	serverWebs.get(webIndex).title = url; 

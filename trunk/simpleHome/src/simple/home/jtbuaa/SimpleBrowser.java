@@ -1,8 +1,13 @@
 package simple.home.jtbuaa;
 
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,9 +32,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -79,7 +86,8 @@ public class SimpleBrowser extends Activity {
 	TextView btnNewpage;
 	InputMethodManager imm;
 	AlertDialog m_sourceDialog;
-	ArrayList<TitleUrl> urlHistory = new ArrayList<TitleUrl>();
+	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
+	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 
 	class TitleUrl {
 		String m_title;
@@ -205,12 +213,12 @@ class MyWebview extends WebView {
         		
         		if (!url.equals("file:///android_asset/online.html")) {
         			String site = url.split("/")[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-            		for (int i = urlHistory.size()-1; i >= 0; i--) 
-            			if (urlHistory.get(i).m_site.equals(site)) return;//record one site only once in the history list.
+            		for (int i = mHistory.size()-1; i >= 0; i--) 
+            			if (mHistory.get(i).m_site.equals(site)) return;//record one site only once in the history list.
             		
-        			TitleUrl titleUrl = new TitleUrl(site, url, view.getTitle());
-            		urlHistory.add(titleUrl);
-            		if (urlHistory.size() > 16) urlHistory.remove(0);//delete the first history if list larger than 16;
+        			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
+            		mHistory.add(titleUrl);
+            		if (mHistory.size() > 16) mHistory.remove(0);//delete the first history if list larger than 16;
         		}
 			}         
 			
@@ -774,6 +782,78 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 		}	
 	}
 	return super.onKeyDown(keyCode, event);
+}
+
+@Override
+protected void onResume() {
+    readFile("history");
+    readFile("bookmark");
+
+	super.onResume();
+}
+
+@Override
+protected void onPause() {
+    writeFile("history");
+    writeFile("bookmark");
+
+	super.onPause();
+}
+
+void writeFile(String name) {
+	try {
+		FileOutputStream fo = this.openFileOutput(name, 0);
+		ObjectOutputStream oos = new ObjectOutputStream(fo);
+		TitleUrl tu;
+		if (name.equals("history")) {
+			for (int i = 0; i < mHistory.size(); i++) {
+				tu = mHistory.get(i);
+				oos.writeObject(tu.m_title);
+				oos.writeObject(tu.m_url);
+				oos.writeObject(tu.m_site);
+			}
+		}
+		else if (name.equals("bookmark")) {
+			for (int i = 0; i < mBookMark.size(); i++) {
+				tu = mBookMark.get(i);
+				oos.writeObject(tu.m_title);
+				oos.writeObject(tu.m_url);
+				oos.writeObject(tu.m_site);
+			}
+		}
+		oos.flush();
+		oos.close();
+		fo.close();
+	} catch (Exception e) {}
+}
+
+void readFile(String name) 
+{
+	FileInputStream fi = null;
+	ObjectInputStream ois = null;
+	try {//read favorite or shortcut data
+		fi = openFileInput(name);
+		ois = new ObjectInputStream(fi);
+		TitleUrl tu;
+		String title, url, site;
+		while ((title = (String) ois.readObject()) != null) {
+			url = (String) ois.readObject();
+			site = (String) ois.readObject();
+			tu = new TitleUrl(title, url, site);
+			if (name.equals("bookmark")) mBookMark.add(tu);
+			else if (name.equals("history")) mHistory.add(tu);
+		}
+	} catch (EOFException e) {//only when read eof need send out msg.
+		try {
+			ois.close();
+			fi.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
 }
 
 }

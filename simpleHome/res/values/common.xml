@@ -60,6 +60,9 @@
     <string name="source">View Source</string>
     <string name="snap">Share ScreenShot</string>
     
+    <string name="add_bookmark">Add Bookmark</string>
+    <string name="view_bookmark">View Bookmark</string>
+    
     <string name="sdcard_needed">Downloaded file may not be opened without SDcard.</string>
     
     <string name="loading">Loading...</string>

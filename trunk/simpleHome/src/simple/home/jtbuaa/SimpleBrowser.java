@@ -25,6 +25,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -514,6 +515,37 @@ public boolean onOptionsItemSelected(MenuItem item){
 		intent.putExtra("filename", "history");
 		util.startActivity(intent, false, getBaseContext());
 		break;
+	case 1://bookmark
+		final String url = serverWebs.get(webIndex).getUrl(); 
+		for (int i = mBookMark.size()-1; i >= 0; i--) 
+			if (mBookMark.get(i).m_url.equals(url)) {
+				viewBookMark();//just view the bookmark list if current url is always in bookmark
+				return true;
+			}
+		
+		new AlertDialog.Builder(this).
+		setTitle(R.string.add_bookmark).
+		setMessage(url).
+		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+        		
+    			String site = url.split("/")[2];
+    			TitleUrl titleUrl = new TitleUrl(serverWebs.get(webIndex).getTitle(), url, site);
+        		mBookMark.add(titleUrl);
+        		bookmarkChanged = true;
+			}
+		}).setNeutralButton(R.string.view_bookmark, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				viewBookMark();
+			}
+		}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		}).show();
+		break;
 	case 2://view page source
 		intent = new Intent(Intent.ACTION_SEND);
 		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
@@ -551,6 +583,13 @@ public boolean onOptionsItemSelected(MenuItem item){
 		break;
 	}
 	return true;
+}
+
+void viewBookMark() {
+	Intent intent = new Intent("simple.home.jtbuaa.bookmark");
+	intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
+	intent.putExtra("filename", "bookmark");
+	util.startActivity(intent, false, getBaseContext());
 }
 
 @Override

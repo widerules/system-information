@@ -21,6 +21,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -70,8 +71,7 @@ public class BookmarkEditor extends Activity{
 	    super.onCreate(savedInstanceState);
 	    
     	setContentView(R.layout.bookmarks);
-    	bookmarkList = (ListView) findViewById(R.id.bookmark_list); 
-
+    	bookmarkList = (ListView) findViewById(R.id.bookmark_list);
 	}
 	
     private class BookmarkAdapter extends ArrayAdapter<TitleUrl> {

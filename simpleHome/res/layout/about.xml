@@ -32,7 +32,7 @@
       	android:layout_centerHorizontal="true"
       	android:layout_marginBottom="5dip"
       	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
+      	android:textColor="#F08080F0"
     />
     
   	<Button android:id="@+id/share_wallpaper"
@@ -58,7 +58,7 @@
       	android:layout_height="wrap_content"
       	android:layout_alignParentLeft="true"
       	android:text="@string/auto_change_wallpaper"
-      	android:layout_marginLeft="15dip"
+      	android:layout_marginLeft="5dip"
     />
   	  
   	<TextView android:id="@+id/download_wallpaper"
@@ -68,7 +68,7 @@
       	android:layout_marginTop="13dip"
       	android:layout_marginRight="10dip"
       	android:textSize="14dip"
-      	android:textColor="#FFFFFFFF"
+      	android:textColor="#F08080F0"
     />			
 </RelativeLayout>
   	

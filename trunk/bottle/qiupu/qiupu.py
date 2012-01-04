@@ -5,6 +5,8 @@ import urllib2, json, gzip, StringIO, redis, hashlib, base64
 app = Bottle()
    
 
+global apiurl, src, strSrc, ticket, user_id
+
 #example: 
 # http://192.168.5.136:8080/kendoui/examples/index.html
 # http://192.168.5.136:8080/qiupu/login.html
@@ -58,6 +60,8 @@ def login_form():
 apiurl = 'http://api.borqs.com/'
 src = 'appSecret1userappSecret1'
 strSrc = base64.b64encode(hashlib.md5(src).digest())
+ticket = ''
+user_id = ''
 
 @app.post('/login_post.action')
 @app.post('/login') # or @route('/login', method='POST')
@@ -70,18 +74,32 @@ def login_submit():
     loginurl = apiurl + 'account/login'
     data = findUrlGzip(loginurl, data)
     if (data.find('error_code') > -1):
-	return data
+	ticket = ''
+	user_id = ''
     else:
 	jdata = json.loads(data)
-	data = {'user':jdata["user_id"], 'ticket':jdata["ticket"], 'appid':'1', 'sign':strSrc}
-	followers = findUrlGzip(apiurl + 'follower/show', data)
-	data = json.loads(followers)
-	ret = '['
-	for follower in data:
-	    jf = {'user_id':follower['user_id'], 'contact_info':follower['contact_info'], 'followers_count':follower['followers_count'], 'status':follower['status'], 'friends_count':follower['friends_count'], 'display_name':follower['display_name'], 'gender':follower['gender'], 'image_url':follower['image_url']}
-	    ret += json.dumps(jf) + ','
-	ret = ret.rstrip(',') + ']'
-	return {'results':ret}
+	ticket = jdata["ticket"]
+	user_id = jdata["user_id"]
+    print ticket
+    print user_id
+    #return data
+    return static_file('remote-data.html', root='')
+
+@app.route('/show_followers')
+def show_followers():
+    print ticket
+    print user_id
+    data = {'user':user_id, 'ticket':ticket, 'appid':'1', 'sign':strSrc}
+    followers = findUrlGzip(apiurl + 'follower/show', data)
+    print followers
+    data = json.loads(followers)
+    ret = '['
+#    for follower in data:
+#	jf = {'user_id':follower['user_id'], 'contact_info':follower['contact_info'], 'followers_count':follower['followers_count'], 'status':follower['status'], 'friends_count':follower['friends_count'], 'display_name':follower['display_name'], 'gender':follower['gender'], 'image_url':follower['image_url']}
+#    ret += json.dumps(jf) + ','
+#    ret = ret.rstrip(',') + ']'
+#    return {'results':ret}
+    return {'results':data}
 
 def findUrlGzip(url):
     return findUrlGzip(url, '')

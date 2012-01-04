@@ -207,12 +207,22 @@ public class About extends Activity{
         });
         
         final String myPackageName = getApplication().getPackageName();
-        TextView tvDownload = (TextView) findViewById(R.id.download_wallpaper);
-        tvDownload.setText(Html.fromHtml("<u>" + getString(R.string.wallpaper) + "</u>"));
-        tvDownload.setOnClickListener(new OnClickListener() {
+        TextView tvDownload1 = (TextView) findViewById(R.id.download_wallpaper1);
+        tvDownload1.setText(Html.fromHtml("<u>" + getString(R.string.wallpaper_scene) + "</u>"));
+        tvDownload1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/ssid=0/from=844b/bd_page_type=1/uid=wiaui_1325410173_4417/pu=sz%401320_480/img?sv=75&tn=bdlistiphone&word=%E5%9F%8E%E5%B8%82%E5%A4%9C%E6%99%AF&ftn=bddir&cls=jingmeibizhi_2&class=jingmeibizhi_2&col=3&cpn=5&pn=0"));
+				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
+				util.startActivity(intent, false, getBaseContext());
+			}
+		});
+        TextView tvDownload2 = (TextView) findViewById(R.id.download_wallpaper2);
+        tvDownload2.setText(Html.fromHtml("<u>" + getString(R.string.wallpaper_beauty) + "</u>"));
+        tvDownload2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/ssid=0/from=844b/bd_page_type=1/uid=wiaui_1325637338_1514/pu=sz%401320_480/img?sv=0&tn=bdlistiphone&word=%E6%AF%94%E5%9F%BA%E5%B0%BC%E7%BE%8E%E5%A5%B3&ftn=bddir&cls=jingmeibizhi_1&class=jingmeibizhi_1&col=3&cpn=5&pn=0"));
 				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
 				util.startActivity(intent, false, getBaseContext());
 			}

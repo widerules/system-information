@@ -18,6 +18,9 @@
     <string name="menu_choose_home">Switch Home</string>
     <string name="select">Select Home</string>
     
+    <string name="wallpaper_scene">Scenic View</string>
+    <string name="wallpaper_beauty">Beauties</string>
+    
     <string name="wallpaper">Wallpaper</string>
     <string name="about">About...</string>
     <string name="help">Help</string>

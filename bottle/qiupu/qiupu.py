@@ -70,11 +70,10 @@ def login_submit():
     if (data.find('error_code') > -1):
 	return data
     else:
+	jdata = json.loads(data)
 	src = 'appSecret1userappSecret1'
 	strSrc = base64.b64encode(hashlib.md5(src).digest())
-	user_id = data.split(',')[0].split(':')[-1].strip('"')
-	ticket_id = data.split(',')[1].split(':')[-1].strip('"')
-	data = {'user':user_id,'ticket':ticket_id,'appid':'1','sign':strSrc}
+	data = {'user':jdata["user_id"], 'ticket':jdata["ticket"], 'appid':'1', 'sign':strSrc}
 	return findUrlGzip(apiurl + 'follower/show', data)
 
 def findUrlGzip(url):

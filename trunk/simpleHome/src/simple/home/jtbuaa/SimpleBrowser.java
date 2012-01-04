@@ -523,15 +523,16 @@ public boolean onOptionsItemSelected(MenuItem item){
 				return true;
 			}
 		
+		final String title = serverWebs.get(webIndex).getTitle(); 
 		new AlertDialog.Builder(this).
 		setTitle(R.string.add_bookmark).
-		setMessage(url).
+		setMessage(title).
 		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
         		
     			String site = url.split("/")[2];
-    			TitleUrl titleUrl = new TitleUrl(serverWebs.get(webIndex).getTitle(), url, site);
+    			TitleUrl titleUrl = new TitleUrl(title, url, site);
         		mBookMark.add(titleUrl);
         		bookmarkChanged = true;
 			}

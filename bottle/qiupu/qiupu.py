@@ -56,6 +56,8 @@ def login_form():
               </form>'''
 
 apiurl = 'http://api.borqs.com/'
+src = 'appSecret1userappSecret1'
+strSrc = base64.b64encode(hashlib.md5(src).digest())
 
 @app.post('/login_post.action')
 @app.post('/login') # or @route('/login', method='POST')
@@ -71,10 +73,15 @@ def login_submit():
 	return data
     else:
 	jdata = json.loads(data)
-	src = 'appSecret1userappSecret1'
-	strSrc = base64.b64encode(hashlib.md5(src).digest())
 	data = {'user':jdata["user_id"], 'ticket':jdata["ticket"], 'appid':'1', 'sign':strSrc}
-	return findUrlGzip(apiurl + 'follower/show', data)
+	followers = findUrlGzip(apiurl + 'follower/show', data)
+	data = json.loads(followers)
+	ret = '['
+	for follower in data:
+	    jf = {'user_id':follower['user_id'], 'contact_info':follower['contact_info'], 'followers_count':follower['followers_count'], 'status':follower['status'], 'friends_count':follower['friends_count'], 'display_name':follower['display_name'], 'gender':follower['gender'], 'image_url':follower['image_url']}
+	    ret += json.dumps(jf) + ','
+	ret = ret.rstrip(',') + ']'
+	return {'results':ret}
 
 def findUrlGzip(url):
     return findUrlGzip(url, '')

@@ -5,8 +5,6 @@ import urllib2, json, gzip, StringIO, redis, hashlib, base64
 app = Bottle()
    
 
-global apiurl, src, strSrc, ticket, user_id
-
 #example: 
 # http://192.168.5.136:8080/kendoui/examples/index.html
 # http://192.168.5.136:8080/qiupu/login.html
@@ -60,8 +58,6 @@ def login_form():
 apiurl = 'http://api.borqs.com/'
 src = 'appSecret1userappSecret1'
 strSrc = base64.b64encode(hashlib.md5(src).digest())
-ticket = ''
-user_id = ''
 
 @app.post('/login_post.action')
 @app.post('/login') # or @route('/login', method='POST')
@@ -74,22 +70,18 @@ def login_submit():
     loginurl = apiurl + 'account/login'
     data = findUrlGzip(loginurl, data)
     if (data.find('error_code') > -1):
-	ticket = ''
-	user_id = ''
+	app.ticket = ''
+	app.user_id = ''
     else:
 	jdata = json.loads(data)
-	ticket = jdata["ticket"]
-	user_id = jdata["user_id"]
-    print ticket
-    print user_id
+	app.ticket = jdata["ticket"]
+	app.user_id = jdata["user_id"]
     #return data
     return static_file('remote-data.html', root='')
 
 @app.route('/show_followers')
 def show_followers():
-    print ticket
-    print user_id
-    data = {'user':user_id, 'ticket':ticket, 'appid':'1', 'sign':strSrc}
+    data = {'user':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':strSrc}
     followers = findUrlGzip(apiurl + 'follower/show', data)
     print followers
     data = json.loads(followers)

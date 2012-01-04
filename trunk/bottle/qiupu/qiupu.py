@@ -3,46 +3,7 @@ from bottle import Bottle, route, run, redirect, request, static_file, debug, po
 import urllib2, json, gzip, StringIO, redis, hashlib, base64
 
 app = Bottle()
-
-@app.route('/')
-def ping():
-    s = 'pang: '
-    for key in request.params.keys():
-	s += key + ', ' + request.params[key] + '\n'
-    return s
-
-@app.route('/md5')
-def md5base64():
-    strid = 'emails'
-    appsec = 'appSecret1'
-    data = appsec + strid + appsec
-    key = hashlib.md5()
-    key.update(data)
-    md5string = key.digest()
-    b64 = base64.b64encode(md5string)
-    return data + ', ' + md5string + ', ' + b64
-    
-
-@app.route('/test')
-def test():
-    something = findUrlGzip('http://api.borqs.com/user/show?users=43')
-    return something
-    #return simplejson.dumps(something)
-
-def findUrlGzip(url):
-    request0 = urllib2.Request(url)
-    request0.add_header('Accept-encoding', 'gzip')
-    opener = urllib2.build_opener()
-    f = opener.open(request0)
-    isGzip = f.headers.get('Content-Encoding')
-    if isGzip :
-        compresseddata = f.read()
-        compressedstream = StringIO.StringIO(compresseddata)
-        gzipper = gzip.GzipFile(fileobj=compressedstream)
-        data = gzipper.read()
-    else:
-        data = f.read()
-    return data
+   
 
 #example: 
 # http://192.168.5.136:8080/kendoui/examples/index.html
@@ -94,6 +55,8 @@ def login_form():
                 <input name="login" type="submit" />
               </form>'''
 
+apiurl = 'http://api.borqs.com/'
+
 @app.post('/login_post.action')
 @app.post('/login') # or @route('/login', method='POST')
 def login_submit():
@@ -102,20 +65,31 @@ def login_submit():
     key = hashlib.md5()
     key.update(password)
     data = {'login_name':name,'password':key.hexdigest()}
-    apiurl = 'http://api.borqs.com/account/login'
-    f = urllib.urlopen(apiurl, urllib.urlencode(data))
+    loginurl = apiurl + 'account/login'
+    data = findUrlGzip(loginurl, data)
+    if (data.find('error_code') > -1):
+	return data
+    else:
+	src = 'appSecret1userappSecret1'
+	strSrc = base64.b64encode(hashlib.md5(src).digest())
+	user_id = data.split(',')[0].split(':')[-1].strip('"')
+	ticket_id = data.split(',')[1].split(':')[-1].strip('"')
+	data = {'user':user_id,'ticket':ticket_id,'appid':'1','sign':strSrc}
+	return findUrlGzip(apiurl + 'follower/show', data)
+
+def findUrlGzip(url):
+    return findUrlGzip(url, '')
+
+def findUrlGzip(url, data):
+    f = urllib.urlopen(url, urllib.urlencode(data))
     compresseddata = f.read()
     compressedstream = StringIO.StringIO(compresseddata)
     gzipper = gzip.GzipFile(fileobj=compressedstream)
-    data = gzipper.read()
-    #output = template('make_table', rows=data)
-    if (data.find('error_code')):
+    try:
+	data = gzipper.read()
 	return data
-    else:
-	return data
-
-def user_form():
-    return ''
+    except:
+	return compresseddata
 
 
 if (__name__ == '__main__'):

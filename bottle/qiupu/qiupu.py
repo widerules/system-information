@@ -76,7 +76,7 @@ def login_submit():
 	jdata = json.loads(data)
 	app.ticket = jdata["ticket"]
 	app.user_id = jdata["user_id"]
-    return static_file('userstimeline.html', root='')
+    return static_file('publictimeline.html', root='')
 
 @app.route('/show_followers')
 def show_followers():
@@ -94,7 +94,9 @@ def show_userstimeline():
     data = {'users':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
     data = findUrlGzip(apiurl + 'post/userstimeline', data)
     data = json.loads(data)
+    return parse_data(data)
 
+def parse_data(data):
     ids = ''
     for post in data:
 	ids += str(post['source']) + ','
@@ -102,12 +104,18 @@ def show_userstimeline():
     userlist = {}
     for user in users:
 	userlist[user['user_id']] = user['display_name']
-    print userlist
+
     ret = []
     for post in data:
 	jf = {'author':userlist[post['source']], 'message':post['message'], 'post_id':post['post_id']}
 	ret.append(jf)
     return {'results':ret}
+
+@app.route('/show_publictimeline')
+def show_publictimeline():
+    data = findUrlGzip(apiurl + 'post/publictimeline', {'appid':'1', 'cols':'post_id, source, message'})
+    data = json.loads(data)
+    return parse_data(data)
 
 
 if (__name__ == '__main__'):

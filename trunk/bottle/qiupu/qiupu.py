@@ -83,15 +83,12 @@ def login_submit():
 def show_followers():
     data = {'user':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':strSrc}
     followers = findUrlGzip(apiurl + 'follower/show', data)
-    print followers
     data = json.loads(followers)
-    ret = '['
-#    for follower in data:
-#	jf = {'user_id':follower['user_id'], 'contact_info':follower['contact_info'], 'followers_count':follower['followers_count'], 'status':follower['status'], 'friends_count':follower['friends_count'], 'display_name':follower['display_name'], 'gender':follower['gender'], 'image_url':follower['image_url']}
-#    ret += json.dumps(jf) + ','
-#    ret = ret.rstrip(',') + ']'
-#    return {'results':ret}
-    return {'results':data}
+    ret = []
+    for follower in data:
+	jf = {'status':follower['status'], 'display_name':follower['display_name'], 'gender':follower['gender'], 'image_url':follower['image_url']}
+	ret.append(jf)
+    return {'results':ret}
 
 def findUrlGzip(url):
     return findUrlGzip(url, '')

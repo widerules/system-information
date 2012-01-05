@@ -86,7 +86,7 @@ def show_followers():
     data = json.loads(followers)
     ret = []
     for follower in data:
-	jf = {'status':follower['status'], 'display_name':follower['display_name'], 'gender':follower['gender'], 'image_url':follower['image_url']}
+	jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
 	ret.append(jf)
     return {'results':ret}
 

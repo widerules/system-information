@@ -94,9 +94,18 @@ def show_userstimeline():
     data = {'users':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
     data = findUrlGzip(apiurl + 'post/userstimeline', data)
     data = json.loads(data)
+
+    ids = ''
+    for post in data:
+	ids += str(post['source']) + ','
+    users = json.loads(findUrlGzip(apiurl + 'user/show', {'users':ids, 'columns':'display_name'}))
+    userlist = {}
+    for user in users:
+	userlist[user['user_id']] = user['display_name']
+    print userlist
     ret = []
     for post in data:
-	jf = {'source':post['source'], 'message':post['message'], 'post_id':post['post_id'], 'comments':post['comments']}
+	jf = {'author':userlist[post['source']], 'message':post['message'], 'post_id':post['post_id']}
 	ret.append(jf)
     return {'results':ret}
 

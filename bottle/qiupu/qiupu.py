@@ -13,15 +13,6 @@ app = Bottle()
 def send_static(filename):
     return static_file(filename, root='')
 
-@app.route('/redis')
-def redis():
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
-    r.set('foo','bar')
-    r.set('foo1','bar1')
-    print 'dbsize:%s' %r.dbsize()
-    print 'key value is:%s' %r.get('fool')
-    return r.get('fool')
-
 @app.route('/json')
 def testjson():
     data = [{'Id': 1, 'city': 'beijing', 'area': 16800, 'population': 1600}, {'Id': 2, 'city': 'shanghai', 'area': 6400, 'population': 1800}]
@@ -47,17 +38,26 @@ def getCallback():
     return callback
 
 
-@app.get('/login') # or @route('/login')
-def login_form():
-    return '''<form method="POST">
-                <input name="username"     type="text" />
-                <input name="password" type="password" />
-                <input name="login" type="submit" />
-              </form>'''
+def findUrlGzip(url):
+    return findUrlGzip(url, '')
+
+def findUrlGzip(url, data):
+    f = urllib.urlopen(url, urllib.urlencode(data))
+    compresseddata = f.read()
+    compressedstream = StringIO.StringIO(compresseddata)
+    gzipper = gzip.GzipFile(fileobj=compressedstream)
+    try:
+	data = gzipper.read()
+	return data
+    except:
+	return compresseddata
 
 apiurl = 'http://api.borqs.com/'
-src = 'appSecret1userappSecret1'
-strSrc = base64.b64encode(hashlib.md5(src).digest())
+def getSrc(src):
+    return 'appSecret1' + src + 'appSecret1'
+
+def md5b64(src):
+    return base64.b64encode(hashlib.md5(src).digest())
 
 @app.post('/login_post.action')
 @app.post('/login') # or @route('/login', method='POST')
@@ -76,12 +76,11 @@ def login_submit():
 	jdata = json.loads(data)
 	app.ticket = jdata["ticket"]
 	app.user_id = jdata["user_id"]
-    #return data
-    return static_file('remote-data.html', root='')
+    return static_file('userstimeline.html', root='')
 
 @app.route('/show_followers')
 def show_followers():
-    data = {'user':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':strSrc}
+    data = {'user':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':md5b64(getSrc('user'))}
     followers = findUrlGzip(apiurl + 'follower/show', data)
     data = json.loads(followers)
     ret = []
@@ -90,19 +89,16 @@ def show_followers():
 	ret.append(jf)
     return {'results':ret}
 
-def findUrlGzip(url):
-    return findUrlGzip(url, '')
-
-def findUrlGzip(url, data):
-    f = urllib.urlopen(url, urllib.urlencode(data))
-    compresseddata = f.read()
-    compressedstream = StringIO.StringIO(compresseddata)
-    gzipper = gzip.GzipFile(fileobj=compressedstream)
-    try:
-	data = gzipper.read()
-	return data
-    except:
-	return compresseddata
+@app.route('/show_userstimeline')
+def show_userstimeline():
+    data = {'users':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
+    data = findUrlGzip(apiurl + 'post/userstimeline', data)
+    data = json.loads(data)
+    ret = []
+    for post in data:
+	jf = {'source':post['source'], 'message':post['message'], 'post_id':post['post_id'], 'comments':post['comments']}
+	ret.append(jf)
+    return {'results':ret}
 
 
 if (__name__ == '__main__'):

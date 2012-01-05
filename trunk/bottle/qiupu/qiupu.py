@@ -76,7 +76,7 @@ def login_submit():
 	jdata = json.loads(data)
 	app.ticket = jdata["ticket"]
 	app.user_id = jdata["user_id"]
-    return static_file('publictimeline.html', root='')
+    return static_file('index.html', root='')
 
 @app.route('/show_followers')
 def show_followers():

@@ -1,0 +1,31 @@
+
+<HTML>
+<HEAD>
+<TITLE>
+Hello World!
+</TITLE>
+<SCRIPT type="text/javascript">
+    targetPage = "" + window.location.search;
+    if (targetPage != "" && targetPage != "undefined")
+        targetPage = targetPage.substring(1);
+    if (targetPage.indexOf(":") != -1)
+        targetPage = "undefined";
+    function loadFrames() {
+        if (targetPage != "" && targetPage != "undefined")
+             top.classFrame.location = top.targetPage;
+    }
+</SCRIPT>
+</HEAD>
+
+<FRAMESET rows="10%,90%" title="" onLoad="top.loadFrames()">
+
+<FRAME src="status.html" title="user status">
+
+<FRAMESET cols="20%,80%" title="" onLoad="top.loadFrames()">
+<FRAME src="overview.html" title="overview of all pages">
+<FRAME src="content.html" title="pages" scrolling="yes">
+</FRAMESET>
+
+
+</FRAMESET>
+</HTML>

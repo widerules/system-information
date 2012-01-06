@@ -59,6 +59,7 @@ def getSrc(src):
 def md5b64(src):
 	return base64.b64encode(hashlib.md5(src).digest())
 
+
 @app.post('/login_post.action')
 @app.post('/login') # or @route('/login', method='POST')
 def login_submit():
@@ -83,6 +84,7 @@ def login_submit():
 		print 'user:'+user_id + ' from ' + ip + ' login'
 		return static_file('index.html', root='')
 
+
 def invoke_api(cmd, paras = {}, needLogin = True):
 	user_id = request.cookies.get('user_id', '')
 	print 'user:'+user_id + ' ' + cmd
@@ -99,6 +101,7 @@ def invoke_api(cmd, paras = {}, needLogin = True):
 		data = paras
 	return json.loads(findUrlGzip(apiurl + cmd, data))
 
+
 @app.route('/show_followers')
 def show_followers():
 	followers = invoke_api('follower/show', {'user':request.cookies.get('user_id', '')})
@@ -108,14 +111,20 @@ def show_followers():
 		ret.append(jf)
 	return {'results':ret}
 
+
 @app.route('/show_friends')
 def show_friends():
-	data = invoke_api('friend/show', {'circles':''})
+	data = show_circles('')
+	circles = ''
+	for circle in data:
+		circles += str(circle['circle_id']) + ','
+	data = invoke_api('friend/show', {'circles':circles.rstrip(',')})
 	ret = []
 	for follower in data:
 		jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
 		ret.append(jf)
 	return {'results':ret}
+
 
 @app.route('/show_me')
 def show_me():
@@ -124,12 +133,15 @@ def show_me():
 def show_user(users):
 	return invoke_api('user/show', {'users':users}, False)
 
+
 @app.route('/show_mycircles')
 def show_mycircles():
 	return {'results':show_circles('')}
 
+
 def show_circles(circles):
 	return invoke_api('circle/show', {'circles':circles})
+
 
 def parse_data(data):
 	ids = ''
@@ -146,15 +158,18 @@ def parse_data(data):
 		ret.append(jf)
 	return {'results':ret}
 
+
 @app.route('/show_userstimeline')
 def show_userstimeline():
 	data = invoke_api('post/userstimeline', {'users':request.cookies.get('user_id', '')})
 	return parse_data(data)
 
+
 @app.route('/show_friendtimeline')
 def show_userstimeline():
 	data = invoke_api('post/qiupufriendtimeline')
 	return parse_data(data)
+
 
 @app.route('/show_publictimeline') #no login needed
 def show_publictimeline():

@@ -202,7 +202,18 @@ class MyWebview extends WebView {
             		
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
-            		if (mHistory.size() > 16) mHistory.remove(0);//delete the first history if list larger than 16;
+        			try {//save the Favicon
+        				FileOutputStream fos = openFileOutput(site+".png", 0);
+        				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
+        		        fos.close();
+        			} catch (Exception e) {
+        				e.printStackTrace();
+        			} 
+            		
+            		if (mHistory.size() > 16) {
+            			deleteFile(mHistory.get(0).m_title + ".png");//delete the Favicon
+            			mHistory.remove(0);//delete the first history if list larger than 16;
+            		}
             		historyChanged = true;
         		}
 			}         

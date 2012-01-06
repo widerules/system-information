@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -91,6 +94,10 @@ public class BookmarkEditor extends Activity{
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
            	textView1.setText(tu.m_title);
 
+            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
+	    	Drawable bd = (Drawable) Drawable.createFromPath(getFilesDir().getAbsolutePath() + "/" + tu.m_site + ".png");
+            btnIcon.setImageDrawable(bd);
+
             LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
             lapp.setOnClickListener(new OnClickListener() {
 				@Override
@@ -108,6 +115,7 @@ public class BookmarkEditor extends Activity{
             btnVersion.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+        			deleteFile(tu.m_title + ".png");//delete the Favicon
 					bAdapter.remove(tu);
 					deleted = true;//mark as changed
 				}

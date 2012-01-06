@@ -83,19 +83,57 @@ def login_submit():
 	print 'user:'+user_id + ' from ' + ip + ' login'
 	return static_file('index.html', root='')
 
+def invoke_api(cmd, paras, needLogin):
+    user_id = request.cookies.get('user_id', '')
+    print 'user:'+user_id + ' ' + cmd
+    if needLogin:
+	src = ''
+	for para in paras:
+	    src += para + ','
+	src = src.rstrip(',')
+	data = paras #this is a reference, so must put after get src
+	data['ticket'] = request.cookies.get('ticket', '')
+	data['appid'] = '1'
+	data['sign'] = md5b64(getSrc(src))
+    else:
+	data = paras
+    return json.loads(findUrlGzip(apiurl + cmd, data))
+
 @app.route('/show_followers')
 def show_followers():
+    followers = invoke_api('follower/show', {'user':request.cookies.get('user_id', '')}, True)
+    ret = []
+    for follower in followers:
+	jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
+	ret.append(jf)
+    return {'results':ret}
+
+@app.route('/show_friends')
+def show_friends():
     user_id = request.cookies.get('user_id', '')
     ticket = request.cookies.get('ticket', '')
-    print 'user:'+user_id +' show_followers'
-    data = {'user':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('user'))}
-    followers = findUrlGzip(apiurl + 'follower/show', data)
+    print 'user:'+user_id +' show_friends'
+    data = {'circles':'', 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
+    followers = findUrlGzip(apiurl + 'friend/show', data)
     data = json.loads(followers)
     ret = []
     for follower in data:
 	jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
 	ret.append(jf)
     return {'results':ret}
+
+def show_user(users):
+    print 'user:'+ request.cookies.get('user_id', '') +' show_user' + users
+    data = findUrlGzip(apiurl + 'user/show', {'users':users})
+    data = json.loads(data)
+    return parse_data(data)
+
+def show_circles(circles):
+    print 'user:'+ request.cookies.get('user_id', '') +' show_circles' + circles
+    ticket = request.cookies.get('ticket', '')
+    data = {'circles':circles, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
+    data = json.loads(data)
+    return parse_data(data)
 
 def parse_data(data):
     ids = ''

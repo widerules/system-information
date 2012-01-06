@@ -11,173 +11,173 @@ app = Bottle()
 @app.post('/<filename:path>')
 @app.get('/<filename:path>')
 def send_static(filename):
-    return static_file(filename, root='')
+	return static_file(filename, root='')
 
 @app.route('/json')
 def testjson():
-    data = [{'Id': 1, 'city': 'beijing', 'area': 16800, 'population': 1600}, {'Id': 2, 'city': 'shanghai', 'area': 6400, 'population': 1800}]
-    return wrapResults(data)
+	data = [{'Id': 1, 'city': 'beijing', 'area': 16800, 'population': 1600}, {'Id': 2, 'city': 'shanghai', 'area': 6400, 'population': 1800}]
+	return wrapResults(data)
 
 def wrapResults(results):
-    callback = getCallback()
-    if len(callback) > 0:
-	ret = '%s(%s);'%(callback, json.dumps({'results':results}))
-    else:
-	ret = {'results':results}
-    print ret
-    return ret
+	callback = getCallback()
+	if len(callback) > 0:
+		ret = '%s(%s);'%(callback, json.dumps({'results':results}))
+	else:
+		ret = {'results':results}
+	print ret
+	return ret
 
 def getCallback():
-    callback = ''
-    try:
-	for key in request.params.keys():
-	    if key == 'callback' or key == 'jsonp' or key == 'jsonpcallback':
-		callback = request.params[key]
-    except:
-	pass
-    return callback
+	callback = ''
+	try:
+		for key in request.params.keys():
+			if key == 'callback' or key == 'jsonp' or key == 'jsonpcallback':
+				callback = request.params[key]
+	except:
+		pass
+	return callback
 
 
 def findUrlGzip(url):
-    return findUrlGzip(url, '')
+	return findUrlGzip(url, '')
 
 def findUrlGzip(url, data):
-    f = urllib.urlopen(url, urllib.urlencode(data))
-    compresseddata = f.read()
-    compressedstream = StringIO.StringIO(compresseddata)
-    gzipper = gzip.GzipFile(fileobj=compressedstream)
-    try:
-	data = gzipper.read()
-	return data
-    except:
-	return compresseddata
+	f = urllib.urlopen(url, urllib.urlencode(data))
+	compresseddata = f.read()
+	compressedstream = StringIO.StringIO(compresseddata)
+	gzipper = gzip.GzipFile(fileobj=compressedstream)
+	try:
+		data = gzipper.read()
+		return data
+	except:
+		return compresseddata
 
 apiurl = 'http://api.borqs.com/'
 def getSrc(src):
-    return 'appSecret1' + src + 'appSecret1'
+	return 'appSecret1' + src + 'appSecret1'
 
 def md5b64(src):
-    return base64.b64encode(hashlib.md5(src).digest())
+	return base64.b64encode(hashlib.md5(src).digest())
 
 @app.post('/login_post.action')
 @app.post('/login') # or @route('/login', method='POST')
 def login_submit():
-    name     = request.forms.get('username')
-    password = request.forms.get('password')
-    key = hashlib.md5()
-    key.update(password)
-    data = {'login_name':name,'password':key.hexdigest()}
-    loginurl = apiurl + 'account/login'
-    data = findUrlGzip(loginurl, data)
-    ip = request.environ.get('REMOTE_ADDR')
-    if (data.find('error_code') > -1):
-	response.set_cookie('ticket', '')
-	response.set_cookie('user_id', '')
-	print 'user:'+name + ' from ' + ip +' login fail'
-	return static_file('login.html', root='')
-    else:
-	jdata = json.loads(data)
-	user_id = jdata['user_id']
-	response.set_cookie('ticket', jdata['ticket'])
-	response.set_cookie('user_id', user_id)
-	print 'user:'+user_id + ' from ' + ip + ' login'
-	return static_file('index.html', root='')
+	name     = request.forms.get('username')
+	password = request.forms.get('password')
+	key = hashlib.md5()
+	key.update(password)
+	data = {'login_name':name,'password':key.hexdigest()}
+	loginurl = apiurl + 'account/login'
+	data = findUrlGzip(loginurl, data)
+	ip = request.environ.get('REMOTE_ADDR')
+	if (data.find('error_code') > -1):
+		response.set_cookie('ticket', '')
+		response.set_cookie('user_id', '')
+		print 'user:'+name + ' from ' + ip +' login fail'
+		return static_file('login.html', root='')
+	else:
+		jdata = json.loads(data)
+		user_id = jdata['user_id']
+		response.set_cookie('ticket', jdata['ticket'])
+		response.set_cookie('user_id', user_id)
+		print 'user:'+user_id + ' from ' + ip + ' login'
+		return static_file('index.html', root='')
 
 def invoke_api(cmd, paras, needLogin):
-    user_id = request.cookies.get('user_id', '')
-    print 'user:'+user_id + ' ' + cmd
-    if needLogin:
-	src = ''
-	for para in paras:
-	    src += para + ','
-	src = src.rstrip(',')
-	data = paras #this is a reference, so must put after get src
-	data['ticket'] = request.cookies.get('ticket', '')
-	data['appid'] = '1'
-	data['sign'] = md5b64(getSrc(src))
-    else:
-	data = paras
-    return json.loads(findUrlGzip(apiurl + cmd, data))
+	user_id = request.cookies.get('user_id', '')
+	print 'user:'+user_id + ' ' + cmd
+	if needLogin:
+		src = ''
+		for para in paras:
+			src += para + ','
+		src = src.rstrip(',')
+		data = paras #this is a reference, so must put after get src
+		data['ticket'] = request.cookies.get('ticket', '')
+		data['appid'] = '1'
+		data['sign'] = md5b64(getSrc(src))
+	else:
+		data = paras
+	return json.loads(findUrlGzip(apiurl + cmd, data))
 
 @app.route('/show_followers')
 def show_followers():
-    followers = invoke_api('follower/show', {'user':request.cookies.get('user_id', '')}, True)
-    ret = []
-    for follower in followers:
-	jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
-	ret.append(jf)
-    return {'results':ret}
+	followers = invoke_api('follower/show', {'user':request.cookies.get('user_id', '')}, True)
+	ret = []
+	for follower in followers:
+		jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
+		ret.append(jf)
+	return {'results':ret}
 
 @app.route('/show_friends')
 def show_friends():
-    user_id = request.cookies.get('user_id', '')
-    ticket = request.cookies.get('ticket', '')
-    print 'user:'+user_id +' show_friends'
-    data = {'circles':'', 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
-    followers = findUrlGzip(apiurl + 'friend/show', data)
-    data = json.loads(followers)
-    ret = []
-    for follower in data:
-	jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
-	ret.append(jf)
-    return {'results':ret}
+	user_id = request.cookies.get('user_id', '')
+	ticket = request.cookies.get('ticket', '')
+	print 'user:'+user_id +' show_friends'
+	data = {'circles':'', 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
+	followers = findUrlGzip(apiurl + 'friend/show', data)
+	data = json.loads(followers)
+	ret = []
+	for follower in data:
+		jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
+		ret.append(jf)
+	return {'results':ret}
 
 def show_user(users):
-    print 'user:'+ request.cookies.get('user_id', '') +' show_user' + users
-    data = findUrlGzip(apiurl + 'user/show', {'users':users})
-    data = json.loads(data)
-    return parse_data(data)
+	print 'user:'+ request.cookies.get('user_id', '') +' show_user' + users
+	data = findUrlGzip(apiurl + 'user/show', {'users':users})
+	data = json.loads(data)
+	return parse_data(data)
 
 def show_circles(circles):
-    print 'user:'+ request.cookies.get('user_id', '') +' show_circles' + circles
-    ticket = request.cookies.get('ticket', '')
-    data = {'circles':circles, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
-    data = json.loads(data)
-    return parse_data(data)
+	print 'user:'+ request.cookies.get('user_id', '') +' show_circles' + circles
+	ticket = request.cookies.get('ticket', '')
+	data = {'circles':circles, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
+	data = json.loads(data)
+	return parse_data(data)
 
 def parse_data(data):
-    ids = ''
-    for post in data:
-	ids += str(post['source']) + ','
-    users = json.loads(findUrlGzip(apiurl + 'user/show', {'users':ids, 'columns':'display_name'}))
-    userlist = {}
-    for user in users:
-	userlist[user['user_id']] = user['display_name']
+	ids = ''
+	for post in data:
+		ids += str(post['source']) + ','
+	users = json.loads(findUrlGzip(apiurl + 'user/show', {'users':ids, 'columns':'display_name'}))
+	userlist = {}
+	for user in users:
+		userlist[user['user_id']] = user['display_name']
 
-    ret = []
-    for post in data:
-	jf = {'author':userlist[post['source']], 'message':post['message'], 'post_id':post['post_id']}
-	ret.append(jf)
-    return {'results':ret}
+	ret = []
+	for post in data:
+		jf = {'author':userlist[post['source']], 'message':post['message'], 'post_id':post['post_id']}
+		ret.append(jf)
+	return {'results':ret}
 
 @app.route('/show_userstimeline')
 def show_userstimeline():
-    user_id = request.cookies.get('user_id', '')
-    ticket = request.cookies.get('ticket', '')
-    print 'user:'+user_id +' show_usertimeline'
-    data = {'users':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
-    data = findUrlGzip(apiurl + 'post/userstimeline', data)
-    data = json.loads(data)
-    return parse_data(data)
+	user_id = request.cookies.get('user_id', '')
+	ticket = request.cookies.get('ticket', '')
+	print 'user:'+user_id +' show_usertimeline'
+	data = {'users':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
+	data = findUrlGzip(apiurl + 'post/userstimeline', data)
+	data = json.loads(data)
+	return parse_data(data)
 
 @app.route('/show_friendtimeline')
 def show_userstimeline():
-    user_id = request.cookies.get('user_id', '')
-    ticket = request.cookies.get('ticket', '')
-    print 'user:'+user_id +' show_qiupufriendtimeline'
-    data = {'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc(''))}
-    data = findUrlGzip(apiurl + 'post/qiupufriendtimeline', data)
-    data = json.loads(data)
-    return parse_data(data)
+	user_id = request.cookies.get('user_id', '')
+	ticket = request.cookies.get('ticket', '')
+	print 'user:'+user_id +' show_qiupufriendtimeline'
+	data = {'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc(''))}
+	data = findUrlGzip(apiurl + 'post/qiupufriendtimeline', data)
+	data = json.loads(data)
+	return parse_data(data)
 
 @app.route('/show_publictimeline') #no login needed
 def show_publictimeline():
-    print 'user:'+ request.cookies.get('user_id', '') +' show_qiupupublictimeline'
-    data = findUrlGzip(apiurl + 'post/qiupupublictimeline', {'appid':'1', 'cols':'source, message, post_id'})
-    data = json.loads(data)
-    return parse_data(data)
+	print 'user:'+ request.cookies.get('user_id', '') +' show_qiupupublictimeline'
+	data = findUrlGzip(apiurl + 'post/qiupupublictimeline', {'appid':'1', 'cols':'source, message, post_id'})
+	data = json.loads(data)
+	return parse_data(data)
 
 
 if (__name__ == '__main__'):
-    debug(True)
-    run(app, host='192.168.5.136', port=8080, reloader=True)
+	debug(True)
+	run(app, host='192.168.5.136', port=8080, reloader=True)

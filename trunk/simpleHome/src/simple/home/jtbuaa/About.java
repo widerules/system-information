@@ -222,7 +222,7 @@ public class About extends Activity{
         tvDownload2.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/ssid=0/from=844b/bd_page_type=1/uid=wiaui_1325637338_1514/pu=sz%401320_480/img?sv=0&tn=bdlistiphone&word=%E6%AF%94%E5%9F%BA%E5%B0%BC%E7%BE%8E%E5%A5%B3&ftn=bddir&cls=jingmeibizhi_1&class=jingmeibizhi_1&col=3&cpn=5&pn=0"));
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/img?tn=bdLISTIphone&word=%E9%BB%91%E4%B8%9D&st=103110&prest=11105i&pn=0&rn=10&vit=aladdin&from=844b&ssid=0&bd_page_type=1&ref=www_iphone&uid=wiaui_1325637338_1514"));
 				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
 				util.startActivity(intent, false, getBaseContext());
 			}

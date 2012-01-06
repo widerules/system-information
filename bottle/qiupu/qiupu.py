@@ -83,7 +83,7 @@ def login_submit():
 		print 'user:'+user_id + ' from ' + ip + ' login'
 		return static_file('index.html', root='')
 
-def invoke_api(cmd, paras, needLogin):
+def invoke_api(cmd, paras = {}, needLogin = True):
 	user_id = request.cookies.get('user_id', '')
 	print 'user:'+user_id + ' ' + cmd
 	if needLogin:
@@ -101,7 +101,7 @@ def invoke_api(cmd, paras, needLogin):
 
 @app.route('/show_followers')
 def show_followers():
-	followers = invoke_api('follower/show', {'user':request.cookies.get('user_id', '')}, True)
+	followers = invoke_api('follower/show', {'user':request.cookies.get('user_id', '')})
 	ret = []
 	for follower in followers:
 		jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
@@ -110,29 +110,22 @@ def show_followers():
 
 @app.route('/show_friends')
 def show_friends():
-	user_id = request.cookies.get('user_id', '')
-	ticket = request.cookies.get('ticket', '')
-	print 'user:'+user_id +' show_friends'
-	data = {'circles':'', 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
-	followers = findUrlGzip(apiurl + 'friend/show', data)
-	data = json.loads(followers)
+	data = invoke_api('friend/show', {'circles':''})
 	ret = []
 	for follower in data:
 		jf = {'display_name':follower['display_name'], 'status':follower['status'], 'gender':follower['gender'], 'image_url':follower['image_url']}
 		ret.append(jf)
 	return {'results':ret}
 
+@app.route('/show_me')
+def show_me():
+	return {'results': show_user(request.cookies.get('user_id', ''))}
+
 def show_user(users):
-	print 'user:'+ request.cookies.get('user_id', '') +' show_user' + users
-	data = findUrlGzip(apiurl + 'user/show', {'users':users})
-	data = json.loads(data)
-	return parse_data(data)
+	return invoke_api('user/show', {'users':users}, False)
 
 def show_circles(circles):
-	print 'user:'+ request.cookies.get('user_id', '') +' show_circles' + circles
-	ticket = request.cookies.get('ticket', '')
-	data = {'circles':circles, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('circles'))}
-	data = json.loads(data)
+	data = invoke_api('circle/show', {'circles':circles})
 	return parse_data(data)
 
 def parse_data(data):
@@ -152,29 +145,17 @@ def parse_data(data):
 
 @app.route('/show_userstimeline')
 def show_userstimeline():
-	user_id = request.cookies.get('user_id', '')
-	ticket = request.cookies.get('ticket', '')
-	print 'user:'+user_id +' show_usertimeline'
-	data = {'users':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
-	data = findUrlGzip(apiurl + 'post/userstimeline', data)
-	data = json.loads(data)
+	data = invoke_api('post/userstimeline', {'users':request.cookies.get('user_id', '')})
 	return parse_data(data)
 
 @app.route('/show_friendtimeline')
 def show_userstimeline():
-	user_id = request.cookies.get('user_id', '')
-	ticket = request.cookies.get('ticket', '')
-	print 'user:'+user_id +' show_qiupufriendtimeline'
-	data = {'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc(''))}
-	data = findUrlGzip(apiurl + 'post/qiupufriendtimeline', data)
-	data = json.loads(data)
+	data = invoke_api('post/qiupufriendtimeline')
 	return parse_data(data)
 
 @app.route('/show_publictimeline') #no login needed
 def show_publictimeline():
-	print 'user:'+ request.cookies.get('user_id', '') +' show_qiupupublictimeline'
-	data = findUrlGzip(apiurl + 'post/qiupupublictimeline', {'appid':'1', 'cols':'source, message, post_id'})
-	data = json.loads(data)
+	data = invoke_api('post/qiupupublictimeline', {'appid':'1', 'cols':'source, message, post_id'}, False)
 	return parse_data(data)
 
 

@@ -97,16 +97,6 @@ def show_followers():
 	ret.append(jf)
     return {'results':ret}
 
-@app.route('/show_userstimeline')
-def show_userstimeline():
-    user_id = request.cookies.get('user_id', '')
-    ticket = request.cookies.get('ticket', '')
-    print 'user:'+user_id +' show_usertimeline'
-    data = {'users':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
-    data = findUrlGzip(apiurl + 'post/userstimeline', data)
-    data = json.loads(data)
-    return parse_data(data)
-
 def parse_data(data):
     ids = ''
     for post in data:
@@ -122,10 +112,30 @@ def parse_data(data):
 	ret.append(jf)
     return {'results':ret}
 
-@app.route('/show_publictimeline')
+@app.route('/show_userstimeline')
+def show_userstimeline():
+    user_id = request.cookies.get('user_id', '')
+    ticket = request.cookies.get('ticket', '')
+    print 'user:'+user_id +' show_usertimeline'
+    data = {'users':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
+    data = findUrlGzip(apiurl + 'post/userstimeline', data)
+    data = json.loads(data)
+    return parse_data(data)
+
+@app.route('/show_friendtimeline')
+def show_userstimeline():
+    user_id = request.cookies.get('user_id', '')
+    ticket = request.cookies.get('ticket', '')
+    print 'user:'+user_id +' show_qiupufriendtimeline'
+    data = {'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc(''))}
+    data = findUrlGzip(apiurl + 'post/qiupufriendtimeline', data)
+    data = json.loads(data)
+    return parse_data(data)
+
+@app.route('/show_publictimeline') #no login needed
 def show_publictimeline():
-    print 'user:'+ request.cookies.get('user_id', '') +' show_publictimeline'
-    data = findUrlGzip(apiurl + 'post/publictimeline', {'appid':'1', 'cols':'post_id, source, message'})
+    print 'user:'+ request.cookies.get('user_id', '') +' show_qiupupublictimeline'
+    data = findUrlGzip(apiurl + 'post/qiupupublictimeline', {'appid':'1', 'cols':'source, message, post_id'})
     data = json.loads(data)
     return parse_data(data)
 

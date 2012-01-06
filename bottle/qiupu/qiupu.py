@@ -124,9 +124,12 @@ def show_me():
 def show_user(users):
 	return invoke_api('user/show', {'users':users}, False)
 
+@app.route('/show_mycircles')
+def show_mycircles():
+	return {'results':show_circles('')}
+
 def show_circles(circles):
-	data = invoke_api('circle/show', {'circles':circles})
-	return parse_data(data)
+	return invoke_api('circle/show', {'circles':circles})
 
 def parse_data(data):
 	ids = ''

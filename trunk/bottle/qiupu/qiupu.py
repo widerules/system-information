@@ -1,4 +1,4 @@
-from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib, template
+from bottle import Bottle, route, run, redirect, request, static_file, debug, post, get, urllib, template, response
 
 import urllib2, json, gzip, StringIO, redis, hashlib, base64
 
@@ -69,18 +69,26 @@ def login_submit():
     data = {'login_name':name,'password':key.hexdigest()}
     loginurl = apiurl + 'account/login'
     data = findUrlGzip(loginurl, data)
+    ip = request.environ.get('REMOTE_ADDR')
     if (data.find('error_code') > -1):
-	app.ticket = ''
-	app.user_id = ''
+	response.set_cookie('ticket', '')
+	response.set_cookie('user_id', '')
+	print 'user:'+name + ' from ' + ip +' login fail'
+	return static_file('login.html', root='')
     else:
 	jdata = json.loads(data)
-	app.ticket = jdata["ticket"]
-	app.user_id = jdata["user_id"]
-    return static_file('index.html', root='')
+	user_id = jdata['user_id']
+	response.set_cookie('ticket', jdata['ticket'])
+	response.set_cookie('user_id', user_id)
+	print 'user:'+user_id + ' from ' + ip + ' login'
+	return static_file('index.html', root='')
 
 @app.route('/show_followers')
 def show_followers():
-    data = {'user':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':md5b64(getSrc('user'))}
+    user_id = request.cookies.get('user_id', '')
+    ticket = request.cookies.get('ticket', '')
+    print 'user:'+user_id +' show_followers'
+    data = {'user':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('user'))}
     followers = findUrlGzip(apiurl + 'follower/show', data)
     data = json.loads(followers)
     ret = []
@@ -91,7 +99,10 @@ def show_followers():
 
 @app.route('/show_userstimeline')
 def show_userstimeline():
-    data = {'users':app.user_id, 'ticket':app.ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
+    user_id = request.cookies.get('user_id', '')
+    ticket = request.cookies.get('ticket', '')
+    print 'user:'+user_id +' show_usertimeline'
+    data = {'users':user_id, 'ticket':ticket, 'appid':'1', 'sign':md5b64(getSrc('users'))}
     data = findUrlGzip(apiurl + 'post/userstimeline', data)
     data = json.loads(data)
     return parse_data(data)
@@ -113,6 +124,7 @@ def parse_data(data):
 
 @app.route('/show_publictimeline')
 def show_publictimeline():
+    print 'user:'+ request.cookies.get('user_id', '') +' show_publictimeline'
     data = findUrlGzip(apiurl + 'post/publictimeline', {'appid':'1', 'cols':'post_id, source, message'})
     data = json.loads(data)
     return parse_data(data)

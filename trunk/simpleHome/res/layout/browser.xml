@@ -20,7 +20,7 @@
     	android:singleLine="true"
     	android:imeOptions="actionGo"
     	android:inputType="textAutoComplete"
-    	android:enabled="false"
+    	android:focusable="false"
     	/>
     	
     		<RelativeLayout android:id="@+id/webtools"

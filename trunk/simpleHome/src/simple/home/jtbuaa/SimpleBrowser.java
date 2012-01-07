@@ -150,8 +150,10 @@ class MyWebview extends WebView {
         
         setOnTouchListener(new OnTouchListener() {
 			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {//just close webcontrol page if it is open.
+			public boolean onTouch(View view, MotionEvent arg1) {//just close webcontrol page if it is open.
 	        	hideWebControl();
+	        	hideWebAddress();
+	        	view.requestFocus();
 				return false;
 			}
         });

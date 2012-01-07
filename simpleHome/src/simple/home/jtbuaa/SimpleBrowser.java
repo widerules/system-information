@@ -46,6 +46,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -58,20 +59,25 @@ import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 public class SimpleBrowser extends Activity {
 
 	//browser related
-	EditText webAddress;
+	AutoCompleteTextView webAddress;
+	ArrayAdapter<String> urlAdapter;
 	ArrayList<MyWebview> serverWebs;
 	int webIndex;
 	ViewFlipper webpages;
@@ -150,6 +156,14 @@ class MyWebview extends WebView {
 			}
         });
         
+        setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view) {
+				Log.d("===============", view.toString());
+				return false;
+			}
+        });
+        
         setDownloadListener(new DownloadListener() {
 			@Override
 			public void onDownloadStart(String url, String ua, String contentDisposition,
@@ -196,12 +210,16 @@ class MyWebview extends WebView {
         		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
 				
         		if (!url.equals("file:///android_asset/online.html")) {
-        			String site = url.split("/")[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+        			String site = "";
+        			String[] tmp = url.split("/");
+        			if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+        			else site = tmp[0];
             		for (int i = mHistory.size()-1; i >= 0; i--) 
             			if (mHistory.get(i).m_site.equals(site)) return;//record one site only once in the history list.
             		
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
+            		urlAdapter.add(site);
         			try {//save the Favicon
         				FileOutputStream fos = openFileOutput(site+".png", 0);
         				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
@@ -604,6 +622,16 @@ void viewBookMark() {
 	util.startActivity(intent, false, getBaseContext());
 }
 
+void hideWebAddress() {
+	LayoutParams lp = webAddress.getLayoutParams();
+	lp.height = 0;
+	webAddress.invalidate();
+	webAddress.setEnabled(false);
+	webpages.invalidate();
+	webAddress.requestFocusFromTouch();//this will cause it lose focus
+	webpages.requestFocus();
+}
+
 @Override
 public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -622,17 +650,25 @@ public void onCreate(Bundle savedInstanceState) {
 
     adview = (AdView) findViewById(R.id.adView);
     
-    webAddress = (EditText) findViewById(R.id.url);
-    webAddress.setOnKeyListener(new OnKeyListener() {
+    webAddress = (AutoCompleteTextView) findViewById(R.id.url);
+    webAddress.setOnItemClickListener(new OnItemClickListener() {
 		@Override
-		public boolean onKey(View view, int keyCode, KeyEvent event) {
-			if (keyCode == KeyEvent.KEYCODE_ENTER) {
-				serverWebs.get(webIndex).loadUrl(webAddress.getText().toString());
-				return true;
-			}
-			else return false;
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			serverWebs.get(webIndex).loadUrl("http://" + urlAdapter.getItem(position));
+			hideWebAddress();
+		}
+    	
+    });
+    webAddress.setOnEditorActionListener(new OnEditorActionListener() {
+		@Override
+		public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+			serverWebs.get(webIndex).loadUrl("http://" + webAddress.getText().toString());
+			hideWebAddress();
+			return false;
 		}
     });
+    urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+    webAddress.setAdapter(urlAdapter);
     
     WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
     webIndex = 0;
@@ -832,6 +868,13 @@ protected void onResume() {
 		mHistory = util.readBookmark(fi);
 		fi = openFileInput("bookmark");
 		mBookMark = util.readBookmark(fi);
+		
+		for (int i = 0; i < mHistory.size(); i++) 
+			urlAdapter.add(mHistory.get(i).m_site);
+		for (int i = 0; i < mBookMark.size(); i++) 
+			urlAdapter.add(mBookMark.get(i).m_site);
+		urlAdapter.add("www.baidu.com");
+		urlAdapter.add("www.google.com");
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	}
@@ -859,6 +902,17 @@ protected void onPause() {
 	}
 
 	super.onPause();
+}
+
+@Override
+public boolean onMenuOpened(int featureId, Menu menu) {
+	webAddress.setEnabled(true);
+	LayoutParams lp = webAddress.getLayoutParams();
+	lp.height = 60;
+	webAddress.invalidate();
+	webpages.invalidate();
+
+    return true;// return true will show system menu
 }
 
 }

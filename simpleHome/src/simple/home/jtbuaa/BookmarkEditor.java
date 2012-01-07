@@ -26,6 +26,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -89,7 +90,7 @@ public class BookmarkEditor extends Activity{
             final TitleUrl tu = (TitleUrl) localList.get(position);
 
             if (convertView == null) 
-                convertView = getLayoutInflater().inflate(R.layout.app_list, parent, false);
+                convertView = getLayoutInflater().inflate(R.layout.url_list, parent, false);
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
            	textView1.setText(tu.m_title);

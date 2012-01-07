@@ -869,12 +869,22 @@ protected void onResume() {
 		fi = openFileInput("bookmark");
 		mBookMark = util.readBookmark(fi);
 		
-		for (int i = 0; i < mHistory.size(); i++) 
-			urlAdapter.add(mHistory.get(i).m_site);
-		for (int i = 0; i < mBookMark.size(); i++) 
-			urlAdapter.add(mBookMark.get(i).m_site);
-		urlAdapter.add("www.baidu.com");
-		urlAdapter.add("www.google.com");
+		if (urlAdapter.isEmpty()) {
+			urlAdapter.add("www.baidu.com");
+			urlAdapter.add("www.google.com");
+			for (int i = 0; i < mHistory.size(); i++) 
+				urlAdapter.add(mHistory.get(i).m_site);
+			for (int i = 0; i < mBookMark.size(); i++) 
+				urlAdapter.add(mBookMark.get(i).m_site);
+			urlAdapter.sort(new stringCompatator());
+			
+			int l = 0;
+			while (l < urlAdapter.getCount()-1) {// remove duplicate
+				while (urlAdapter.getItem(l).equals(urlAdapter.getItem(l+1))) 
+					urlAdapter.remove(urlAdapter.getItem(l));
+				l += 1;
+			}
+		}
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	}

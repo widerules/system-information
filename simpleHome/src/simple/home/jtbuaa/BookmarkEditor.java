@@ -108,6 +108,7 @@ public class BookmarkEditor extends Activity{
 					intent.setData(Uri.parse(tu.m_url));
 					intent.putExtra("update", true);
 					util.startActivity(intent, true, getBaseContext());
+					finish();
 				}
             });
             

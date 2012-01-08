@@ -86,10 +86,12 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
+	
 	AlertDialog m_sourceDialog;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	boolean historyChanged, bookmarkChanged;
+	ImageView imgAddFavo;
 
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
@@ -547,36 +549,10 @@ public boolean onOptionsItemSelected(MenuItem item){
 		util.startActivity(intent, false, getBaseContext());
 		break;
 	case 1://bookmark
-		final String url = serverWebs.get(webIndex).getUrl(); 
-		for (int i = mBookMark.size()-1; i >= 0; i--) 
-			if (mBookMark.get(i).m_url.equals(url)) {
-				viewBookMark();//just view the bookmark list if current url is always in bookmark
-				return true;
-			}
-		
-		final String title = serverWebs.get(webIndex).getTitle(); 
-		new AlertDialog.Builder(this).
-		setTitle(R.string.add_bookmark).
-		setMessage(title).
-		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-        		
-    			String site = url.split("/")[2];
-    			TitleUrl titleUrl = new TitleUrl(title, url, site);
-        		mBookMark.add(titleUrl);
-        		bookmarkChanged = true;
-			}
-		}).setNeutralButton(R.string.view_bookmark, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				viewBookMark();
-			}
-		}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		}).show();
+   		intent = new Intent("simple.home.jtbuaa.bookmark");
+   		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
+   		intent.putExtra("filename", "bookmark");
+   		util.startActivity(intent, false, getBaseContext());        		
 		break;
 	case 2://view page source
 		intent = new Intent(Intent.ACTION_SEND);
@@ -617,21 +593,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 	return true;
 }
 
-void viewBookMark() {
-	Intent intent = new Intent("simple.home.jtbuaa.bookmark");
-	intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
-	intent.putExtra("filename", "bookmark");
-	util.startActivity(intent, false, getBaseContext());
-}
-
 void hideWebAddress() {
-	LayoutParams lp = webAddress.getLayoutParams();
-	lp.height = 0;
-	webAddress.invalidate();
-	webAddress.setEnabled(false);
-	webpages.invalidate();
-	webAddress.requestFocusFromTouch();//this will cause it lose focus
-	webpages.requestFocus();
 }
 
 @Override
@@ -651,6 +613,22 @@ public void onCreate(Bundle savedInstanceState) {
 	setContentView(R.layout.browser);
 
     adview = (AdView) findViewById(R.id.adView);
+
+    imgAddFavo = (ImageView) findViewById(R.id.addfavorite);
+    imgAddFavo.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			String url = serverWebs.get(webIndex).getUrl(); 
+			for (int i = mBookMark.size()-1; i >= 0; i--) 
+				if (mBookMark.get(i).m_url.equals(url)) return;//no need to add it again if always in bookmark
+			
+			String title = serverWebs.get(webIndex).getTitle(); 
+			String site = url.split("/")[2];
+			TitleUrl titleUrl = new TitleUrl(title, url, site);
+    		mBookMark.add(titleUrl);
+    		bookmarkChanged = true;
+		}
+    });
     
     webAddress = (AutoCompleteTextView) findViewById(R.id.url);
     webAddress.setOnItemClickListener(new OnItemClickListener() {
@@ -918,12 +896,6 @@ protected void onPause() {
 
 @Override
 public boolean onMenuOpened(int featureId, Menu menu) {
-	webAddress.setEnabled(true);
-	LayoutParams lp = webAddress.getLayoutParams();
-	lp.height = 60;
-	webAddress.invalidate();
-	webpages.invalidate();
-
     return true;// return true will show system menu
 }
 

@@ -159,7 +159,7 @@ class MyWebview extends WebView {
 				return false;
 			}
         });
-        
+
         setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View view) {
@@ -618,15 +618,47 @@ public void onCreate(Bundle savedInstanceState) {
     imgAddFavo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			String url = serverWebs.get(webIndex).getUrl(); 
+			final String url = serverWebs.get(webIndex).getUrl(); 
+			final String site = url.split("/")[2];
 			for (int i = mBookMark.size()-1; i >= 0; i--) 
-				if (mBookMark.get(i).m_url.equals(url)) return;//no need to add it again if always in bookmark
+				if (mBookMark.get(i).m_url.equals(url)) {//ask use whether to delete the bookmark if already exist.
+					final int ii = i;
+					new AlertDialog.Builder(mContext).
+					setTitle(R.string.remove_bookmark).
+					setMessage(site).
+					setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Log.d("=============", which+"");
+							Log.d("=============", ii+"");
+				    		//mBookMark.remove(ii);
+				    		//bookmarkChanged = true;
+						}
+					}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					}).show();
+					return;//no need to add it again if always in bookmark
+				}
 			
-			String title = serverWebs.get(webIndex).getTitle(); 
-			String site = url.split("/")[2];
-			TitleUrl titleUrl = new TitleUrl(title, url, site);
-    		mBookMark.add(titleUrl);
-    		bookmarkChanged = true;
+			//need use's confirm to add to bookmark
+			new AlertDialog.Builder(mContext).
+				setTitle(R.string.add_bookmark).
+				setMessage(site).
+				setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String title = serverWebs.get(webIndex).getTitle(); 
+						TitleUrl titleUrl = new TitleUrl(title, url, site);
+			    		mBookMark.add(titleUrl);
+			    		bookmarkChanged = true;
+					}
+				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				}).show();
 		}
     });
     

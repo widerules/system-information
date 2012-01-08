@@ -9,7 +9,6 @@
     <string name="author">jtbuaa@gmail.com</string>
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     
-    <string name="share_home">Share Home</string>
     <string name="share_wallpaper">Share Wallpaper</string>
     <string name="share_desktop">Share Desktop</string>
         
@@ -64,6 +63,7 @@
     <string name="snap">Share ScreenShot</string>
     
     <string name="add_bookmark">Add to Bookmark</string>
+    <string name="remove_bookmark">Remove Bookmark</string>
     <string name="view_bookmark">View Bookmark</string>
     
     <string name="sdcard_needed">Downloaded file may not be opened without SDcard.</string>

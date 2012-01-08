@@ -555,10 +555,10 @@ public boolean onOptionsItemSelected(MenuItem item){
    		util.startActivity(intent, false, getBaseContext());        		
 		break;
 	case 2://view page source
-		intent = new Intent(Intent.ACTION_SEND);
+		intent = new Intent(Intent.ACTION_SENDTO);
+		intent.setData(Uri.fromParts("mailto", "", null));
 		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
 		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
-		intent.setType("text/plain");//important. can't send mail without this line.
 		if (!util.startActivity(intent, false, getBaseContext())) {
 	    	if (m_sourceDialog == null) {
 				m_sourceDialog = new AlertDialog.Builder(this).

@@ -58,6 +58,7 @@
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="false"
             android:configChanges="keyboard|keyboardHidden|orientation"
+            android:windowSoftInputMode="stateUnchanged"
             android:icon="@drawable/explorer"
             android:label="@string/browser_name">
             

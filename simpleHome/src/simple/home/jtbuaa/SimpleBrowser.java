@@ -600,7 +600,7 @@ void hideWebAddress() {
 public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
-    mContext = this.getBaseContext();
+    mContext = this;
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -625,14 +625,12 @@ public void onCreate(Bundle savedInstanceState) {
 					final int ii = i;
 					new AlertDialog.Builder(mContext).
 					setTitle(R.string.remove_bookmark).
-					setMessage(site).
+					setMessage(url).
 					setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							Log.d("=============", which+"");
-							Log.d("=============", ii+"");
-				    		//mBookMark.remove(ii);
-				    		//bookmarkChanged = true;
+				    		mBookMark.remove(ii);
+				    		bookmarkChanged = true;
 						}
 					}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 						@Override
@@ -645,7 +643,7 @@ public void onCreate(Bundle savedInstanceState) {
 			//need use's confirm to add to bookmark
 			new AlertDialog.Builder(mContext).
 				setTitle(R.string.add_bookmark).
-				setMessage(site).
+				setMessage(url).
 				setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

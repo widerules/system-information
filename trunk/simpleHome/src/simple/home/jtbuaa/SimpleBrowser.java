@@ -66,6 +66,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -93,6 +94,8 @@ public class SimpleBrowser extends Activity {
 	boolean historyChanged, bookmarkChanged;
 	ImageView imgAddFavo;
 
+	ProgressBar loadProgress;
+	
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
 
@@ -101,8 +104,6 @@ public class SimpleBrowser extends Activity {
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
-	
-	ProgressDialog mProgressDialog;
 	
 	ListView webList;
 	Context mContext;
@@ -179,13 +180,8 @@ class MyWebview extends WebView {
         setWebChromeClient(new WebChromeClient() {
         	@Override
         	public void onProgressChanged(WebView view, int progress) {
-        		if (mProgressDialog != null) {
-    				mProgressDialog.setProgress(progress);
-    				if (progress >= 50) {//50% is enough
-    					mProgressDialog.hide();
-    					mProgressDialog.setProgress(0);
-    				}
-        		}
+        		loadProgress.setProgress(progress);
+        		if (progress == 100) loadProgress.setVisibility(View.INVISIBLE);
         	}
 		});
         
@@ -197,20 +193,14 @@ class MyWebview extends WebView {
 			
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				if (!url.equals("file:///android_asset/online.html")) showDialog(0);
+        		loadProgress.setVisibility(View.VISIBLE);
 				super.onPageStarted(view, url, favicon);
 			}
 			 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				webAdapter.notifyDataSetChanged();
+				webAdapter.notifyDataSetChanged();//what this for?
 				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        		if (mProgressDialog != null) {
-    				if (mProgressDialog.isShowing()) {
-    					mProgressDialog.hide();
-    					mProgressDialog.setProgress(0);
-    				}
-        		}
         		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
 				
         		if (!url.equals("file:///android_asset/online.html")) {
@@ -515,22 +505,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 }
 
 @Override
-protected Dialog onCreateDialog(int id) {
-    switch (id) {
-    case 0: {//progress dialog
-    	if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setMessage(getString(R.string.wait));
-    	}
-        return mProgressDialog;
-	}
-    }
-    return null;
-}
-
-@Override
 public boolean onCreateOptionsMenu(Menu menu) {
 	super.onCreateOptionsMenu(menu);
 	menu.add(0, 0, 0, R.string.history).setAlphabeticShortcut('H');
@@ -614,6 +588,9 @@ public void onCreate(Bundle savedInstanceState) {
 
     adview = (AdView) findViewById(R.id.adView);
 
+    loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
+    loadProgress.setProgress(0);
+    
     imgAddFavo = (ImageView) findViewById(R.id.addfavorite);
     imgAddFavo.setOnClickListener(new OnClickListener() {
 		@Override
@@ -861,11 +838,7 @@ protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-			if ((mProgressDialog != null) && mProgressDialog.getProgress() > 0) {
-				mProgressDialog.setProgress(0);
-				mProgressDialog.hide();
-			}
-			else if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();
+			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();
 			else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
 			else return super.onKeyDown(keyCode, event);
 			

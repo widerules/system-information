@@ -124,10 +124,18 @@
     	android:imeOptions="actionGo"
     	android:inputType="textAutoComplete"
     	/>
+	    
 			    <TextView android:id="@+id/urltext"
 			        android:layout_width="fill_parent"
 			        android:layout_height="50dip"
 			        android:singleLine="true"
+			        />
+			    <ProgressBar android:id="@+id/loadprogress"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        style="?android:attr/progressBarStyleHorizontal"
+			        android:max="100"
+			        android:visibility="invisible"
 			        />
 	    	</FrameLayout>
 			

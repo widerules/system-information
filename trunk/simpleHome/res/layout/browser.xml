@@ -16,7 +16,7 @@
     ads:adSize="BANNER"/>
 
     		<RelativeLayout android:id="@+id/webtools"
-  				android:background="@drawable/shortcut_bar_layout"
+  				android:background="@drawable/round_corner"
   				android:layout_alignParentBottom="true" 
   				android:orientation="horizontal" 
   				android:layout_width="fill_parent"
@@ -38,7 +38,6 @@
 			/>
 			
   			<RelativeLayout android:id="@+id/webtools_center"
-  				android:background="@drawable/shortcut_bar_layout"
   				android:orientation="horizontal" 
 				android:layout_centerHorizontal="true"
   				android:layout_width="180dip"

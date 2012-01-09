@@ -194,6 +194,7 @@ class MyWebview extends WebView {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
         		loadProgress.setVisibility(View.VISIBLE);
+        		webAddress.setText(url);
 				super.onPageStarted(view, url, favicon);
 			}
 			 
@@ -589,7 +590,6 @@ public void onCreate(Bundle savedInstanceState) {
     adview = (AdView) findViewById(R.id.adView);
 
     loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
-    loadProgress.setProgress(0);
     
     imgAddFavo = (ImageView) findViewById(R.id.addfavorite);
     imgAddFavo.setOnClickListener(new OnClickListener() {

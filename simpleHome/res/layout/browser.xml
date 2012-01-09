@@ -3,7 +3,9 @@
     android:id="@+id/adsParent"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="#FFFFFFFF"
+    >
     
     <com.google.ads.AdView xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"  
     android:id="@+id/adView"        
@@ -101,11 +103,12 @@
   	    android:layout_height="wrap_content"
   	    android:layout_below="@id/adView"
   	    android:orientation="horizontal"
+  	    android:background="@drawable/round_corner_white"
 	    >
 	    
 			<ImageView android:id="@+id/addfavorite"
-				android:layout_height="36dip" 
-				android:layout_width="36dip"
+				android:layout_height="32dip" 
+				android:layout_width="32dip"
 				android:scaleType="centerCrop"
 				android:src="@drawable/favorites_add"
 				android:layout_alignParentLeft="true"
@@ -119,23 +122,24 @@
 			
 	    <AutoCompleteTextView android:id="@+id/url"
     	android:layout_width="fill_parent"
-    	android:layout_height="50dip"
+    	android:layout_height="wrap_content"
     	android:singleLine="true"
     	android:imeOptions="actionGo"
     	android:inputType="textAutoComplete"
+    	android:background="@drawable/circle_transparent"
+    	android:layout_marginTop="0dip"
+    	android:layout_marginBottom="0dip"
     	/>
 	    
-			    <TextView android:id="@+id/urltext"
-			        android:layout_width="fill_parent"
-			        android:layout_height="50dip"
-			        android:singleLine="true"
-			        />
 			    <ProgressBar android:id="@+id/loadprogress"
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
+			        android:layout_marginRight="5dip"
 			        style="?android:attr/progressBarStyleHorizontal"
 			        android:max="100"
+			        android:progress="0"
 			        android:visibility="invisible"
+			        android:layout_gravity="center_vertical"
 			        />
 	    	</FrameLayout>
 			

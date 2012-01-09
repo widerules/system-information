@@ -193,8 +193,7 @@ class MyWebview extends WebView {
 			
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				if (imm.isAcceptingText())//close soft keyboard if it is open
-					imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+				imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
         		loadProgress.setVisibility(View.VISIBLE);
         		webAddress.setText(url);
 				super.onPageStarted(view, url, favicon);

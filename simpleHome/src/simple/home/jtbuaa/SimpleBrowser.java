@@ -155,8 +155,7 @@ class MyWebview extends WebView {
 			@Override
 			public boolean onTouch(View view, MotionEvent arg1) {//just close webcontrol page if it is open.
 	        	hideWebControl();
-	        	hideWebAddress();
-	        	view.requestFocus();
+	        	view.requestFocusFromTouch();
 				return false;
 			}
         });
@@ -193,6 +192,7 @@ class MyWebview extends WebView {
 			
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);//close soft keyboard
         		loadProgress.setVisibility(View.VISIBLE);
         		webAddress.setText(url);
 				super.onPageStarted(view, url, favicon);
@@ -568,9 +568,6 @@ public boolean onOptionsItemSelected(MenuItem item){
 	return true;
 }
 
-void hideWebAddress() {
-}
-
 @Override
 public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -647,15 +644,15 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			serverWebs.get(webIndex).loadUrl("http://" + urlAdapter.getItem(position));
-			hideWebAddress();
 		}
     	
     });
     webAddress.setOnEditorActionListener(new OnEditorActionListener() {
 		@Override
 		public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-			serverWebs.get(webIndex).loadUrl("http://" + webAddress.getText().toString());
-			hideWebAddress();
+			String url = webAddress.getText().toString();
+			if (!url.startsWith("http")) url = "http://" + url;
+			serverWebs.get(webIndex).loadUrl(url);
 			return false;
 		}
     });

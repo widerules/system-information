@@ -123,6 +123,7 @@
 	    <AutoCompleteTextView android:id="@+id/url"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
+    	android:selectAllOnFocus="true"
     	android:singleLine="true"
     	android:imeOptions="actionGo"
     	android:inputType="textAutoComplete"

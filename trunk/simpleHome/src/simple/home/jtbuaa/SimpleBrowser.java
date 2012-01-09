@@ -658,7 +658,6 @@ public void onCreate(Bundle savedInstanceState) {
 		}
     });
     urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
-    webAddress.setAdapter(urlAdapter);
     
     WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
     webIndex = 0;
@@ -871,6 +870,8 @@ protected void onResume() {
 				l += 1;
 			}
 		}
+	    webAddress.setAdapter(urlAdapter);
+		
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	}

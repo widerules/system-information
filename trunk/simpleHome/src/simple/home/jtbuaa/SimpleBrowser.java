@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -652,7 +653,7 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
 			String url = webAddress.getText().toString();
-			if (!url.startsWith("http")) url = "http://" + url;
+			if (!url.startsWith("http") && !url.startsWith("file")) url = "http://" + url;
 			serverWebs.get(webIndex).loadUrl(url);
 			return false;
 		}

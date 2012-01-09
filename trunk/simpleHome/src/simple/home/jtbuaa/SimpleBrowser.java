@@ -619,7 +619,6 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			final String url = serverWebs.get(webIndex).getUrl(); 
-			final String site = url.split("/")[2];
 			for (int i = mBookMark.size()-1; i >= 0; i--) 
 				if (mBookMark.get(i).m_url.equals(url)) {//ask use whether to delete the bookmark if already exist.
 					final int ii = i;
@@ -647,7 +646,13 @@ public void onCreate(Bundle savedInstanceState) {
 				setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						String title = serverWebs.get(webIndex).getTitle(); 
+						String site = "";
+						String[] tmp = url.split("/");
+						if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+						else site = tmp[0];
+						
+						String title = serverWebs.get(webIndex).getTitle();
+						
 						TitleUrl titleUrl = new TitleUrl(title, url, site);
 			    		mBookMark.add(titleUrl);
 			    		bookmarkChanged = true;

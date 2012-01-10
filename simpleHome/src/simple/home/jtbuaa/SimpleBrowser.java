@@ -642,6 +642,7 @@ public void onCreate(Bundle savedInstanceState) {
     });
     
     webAddress = (AutoCompleteTextView) findViewById(R.id.url);
+    webAddress.bringToFront();
     webAddress.setOnItemClickListener(new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -658,7 +659,6 @@ public void onCreate(Bundle savedInstanceState) {
 			return false;
 		}
     });
-    //urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());//will cause strange behavior of auto complete edittext?
     
     WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
     webIndex = 0;

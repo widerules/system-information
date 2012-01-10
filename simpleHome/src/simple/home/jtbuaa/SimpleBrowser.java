@@ -161,14 +161,6 @@ class MyWebview extends WebView {
 			}
         });
 
-        setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View view) {
-				Log.d("===============", view.toString());
-				return false;
-			}
-        });
-        
         setDownloadListener(new DownloadListener() {
 			@Override
 			public void onDownloadStart(String url, String ua, String contentDisposition,
@@ -665,7 +657,7 @@ public void onCreate(Bundle savedInstanceState) {
 			return false;
 		}
     });
-    urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+    //urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());//will cause strange behavior of auto complete edittext?
     
     WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
     webIndex = 0;
@@ -868,23 +860,24 @@ protected void onResume() {
 		fi = openFileInput("bookmark");
 		mBookMark = util.readBookmark(fi);
 		
-		if (urlAdapter.isEmpty()) {
-			urlAdapter.add("www.baidu.com");
-			urlAdapter.add("www.google.com");
-			for (int i = 0; i < mHistory.size(); i++) 
-				urlAdapter.add(mHistory.get(i).m_site);
-			for (int i = 0; i < mBookMark.size(); i++) 
-				urlAdapter.add(mBookMark.get(i).m_site);
-			urlAdapter.sort(new stringCompatator());
-			
-			int l = 0;
-			while (l < urlAdapter.getCount()-1) {// remove duplicate
-				while (urlAdapter.getItem(l).equals(urlAdapter.getItem(l+1))) 
-					urlAdapter.remove(urlAdapter.getItem(l));
-				l += 1;
-			}
-		    webAddress.setAdapter(urlAdapter);//add android:inputType="textAutoComplete" to webAddress will cause strange behavior
+		//once set the adapter, the item count of the adapter is always 0, and their will be duplicate item in auto complete edit text.
+		//so we create the adapter again each time. it is bug of Android?
+		urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+		urlAdapter.add("www.baidu.com");
+		urlAdapter.add("www.google.com");
+		for (int i = 0; i < mHistory.size(); i++) 
+			urlAdapter.add(mHistory.get(i).m_site);
+		for (int i = 0; i < mBookMark.size(); i++) 
+			urlAdapter.add(mBookMark.get(i).m_site);
+		urlAdapter.sort(new stringCompatator());
+		
+		int l = 0;
+		while (l < urlAdapter.getCount()-1) {// remove duplicate
+			while (urlAdapter.getItem(l).equals(urlAdapter.getItem(l+1))) 
+				urlAdapter.remove(urlAdapter.getItem(l));
+			l = l+1;
 		}
+		webAddress.setAdapter(urlAdapter); 
 		
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();

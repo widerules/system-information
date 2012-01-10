@@ -1,6 +1,9 @@
 <html>
     <head>
         <title>Binding to remote data</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="../assets/documentation.css" rel="stylesheet" type="text/css" />
+
         <link href="shared/styles/examples.css" rel="stylesheet"/>
         <link href="shared/styles/examples-offline.css" rel="stylesheet"/>
         <link href="../styles/kendo.common.min.css" rel="stylesheet"/>
@@ -21,16 +24,30 @@
         <script src="../js/kendo.numerictextbox.min.js"></script>
         <script src="../js/kendo.filtermenu.min.js"></script>
         <script src="../js/kendo.grid.min.js"></script>
+
+        <noscript>
+        <style type="text/css">
+         html,body{overflow:auto;}
+       </style>
+       </noscript>
+
     </head>
 
 <body>
 
 <!-- the status div-->
-        <div id="example" class="k-content">
-            <div id="grid"></div>
+<div id="header">
+     <div><h1> <a href="../index.html"  class="ulink"  target="_top">QiuPu</a> </h1></div>
+     <div> 
+         <p class="copyright"> </p> 
+         <p class="releaseinfo">API Testing UI</p> 
+         <p class="copyright">Copyright &copy; 2012 Borqs</p> 
+
+        <!--<div id="example" class="k-content">-->
+            <div id="grid1"></div>
             <script>
                 $(document).ready(function() {
-                    $("#grid").kendoGrid({
+                    $("#grid1").kendoGrid({
                         dataSource: {
                             transport: {
                                 read: "http://192.168.5.136:8080/show_me",
@@ -40,23 +57,26 @@
 				data: "results"
                             },
                         },
-                        height: 100,
+                        height: 160,
                         filterable: true,
                         sortable: true,
                         pageable: true,
                     });
                 });
             </script>
-        </div>
+        <!--</div> -->
+     </div>
 
+</div>
 
 
 <!-- the circles div-->
+<div class="sect1" lang="en">
         <div id="example" class="k-content">
-            <div id="grid"></div>
+            <div id="grid2"></div>
             <script>
                 $(document).ready(function() {
-                    $("#grid").kendoGrid({
+                    $("#grid2").kendoGrid({
                         dataSource: {
                             transport: {
                                 read: "http://192.168.5.136:8080/show_mycircles",
@@ -74,11 +94,16 @@
                 });
             </script>
         </div>
+</div>
 
 
 
 
-<div>
+<div class="sect2" lang="en">
+<br>
+<br>
+<br>
+<br>
 <a href="followers.html">my followers</a><br>
 <a href="friends.html">my friends</a><br>
 <a href="publictimeline.html">public post</a><br>

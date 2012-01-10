@@ -222,7 +222,7 @@ class MyWebview extends WebView {
             		
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
-            		urlAdapter.add(site);
+            		//urlAdapter.add(site);//this will cause strange behavior of autocompleteEditText?
         			try {//save the Favicon
         				FileOutputStream fos = openFileOutput(site+".png", 0);
         				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 

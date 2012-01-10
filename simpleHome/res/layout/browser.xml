@@ -25,7 +25,7 @@
 			<ImageView android:id="@+id/refresh"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
-				android:scaleType="centerCrop"
+				android:scaleType="centerInside"
 				android:src="@drawable/refresh"
 				android:layout_alignParentLeft="true"
 			/>
@@ -125,7 +125,6 @@
     	android:selectAllOnFocus="true"
     	android:singleLine="true"
     	android:imeOptions="actionGo"
-    	android:inputType="textAutoComplete"
     	android:completionThreshold="1"
     	android:background="@drawable/circle_transparent"
     	android:layout_marginTop="0dip"

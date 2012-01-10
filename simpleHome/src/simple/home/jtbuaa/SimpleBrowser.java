@@ -220,9 +220,10 @@ class MyWebview extends WebView {
             		for (int i = mHistory.size()-1; i >= 0; i--) 
             			if (mHistory.get(i).m_site.equals(site)) return;//record one site only once in the history list.
             		
+            		urlAdapter.add(site);
+            		
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
-            		//urlAdapter.add(site);//this will cause strange behavior of autocompleteEditText?
         			try {//save the Favicon
         				FileOutputStream fos = openFileOutput(site+".png", 0);
         				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
@@ -701,6 +702,7 @@ public void onCreate(Bundle savedInstanceState) {
 		public void onClick(View view) {
 			if (loadProgress.getVisibility() == View.VISIBLE) {//webpage is loading then stop it
 				serverWebs.get(webIndex).stopLoading();
+				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
 				serverWebs.get(webIndex).reload();
@@ -881,8 +883,8 @@ protected void onResume() {
 					urlAdapter.remove(urlAdapter.getItem(l));
 				l += 1;
 			}
+		    webAddress.setAdapter(urlAdapter);//add android:inputType="textAutoComplete" to webAddress will cause strange behavior
 		}
-	    webAddress.setAdapter(urlAdapter);
 		
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();

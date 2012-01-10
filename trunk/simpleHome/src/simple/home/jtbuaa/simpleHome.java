@@ -1282,7 +1282,15 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	    CharSequence  sa = ri.loadLabel(pm);
 	    	    if (sa == null) sa = ri.activityInfo.name;
 	    	    String sa1 = sa.toString().trim();
-	    	    String sa2 = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target.substring(0, 1);
+	    	    String sa2 = sa1;
+	    	    if (sa1.length() > 0) {
+		    	    try {//this is to fix a bug report by market
+		    	    	sa2 = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target;
+		    	    	if (sa2.length() > 1) sa2 = sa2.substring(0, 1);
+		    	    } catch(Exception e) {
+		    	    	e.printStackTrace();
+		    	    }
+	    	    }
 	    		ri.activityInfo.applicationInfo.dataDir = sa2.toUpperCase();//we borrow dataDir to store the Pinyin of the label.
 	    		
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 

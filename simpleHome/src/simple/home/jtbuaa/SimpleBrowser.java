@@ -196,11 +196,18 @@ class MyWebview extends WebView {
 				imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
         		loadProgress.setVisibility(View.VISIBLE);
         		webAddress.setText(url);
+        		imgPrev.setEnabled(false);
+        		imgNext.setEnabled(false);
+        		imgRefresh.setImageResource(R.drawable.stop);
 				super.onPageStarted(view, url, favicon);
 			}
 			 
 			@Override
 			public void onPageFinished(WebView view, String url) {
+        		imgPrev.setEnabled(view.canGoBack());
+        		imgNext.setEnabled(view.canGoForward());
+        		imgRefresh.setImageResource(R.drawable.refresh);
+
 				webAdapter.notifyDataSetChanged();//what this for?
 				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
@@ -691,9 +698,14 @@ public void onCreate(Bundle savedInstanceState) {
 	imgRefresh = (ImageView) findViewById(R.id.refresh);
 	imgRefresh.setOnClickListener(new OnClickListener() {
 		@Override
-		public void onClick(View arg0) {
-			serverWebs.get(webIndex).reload();
-			adview.loadAd(adRequest);
+		public void onClick(View view) {
+			if (loadProgress.getVisibility() == View.VISIBLE) {//webpage is loading then stop it
+				serverWebs.get(webIndex).stopLoading();
+			}
+			else {//reload the webpage
+				serverWebs.get(webIndex).reload();
+				adview.loadAd(adRequest);
+			}
 		}
 	});
 	imgShare = (ImageView) findViewById(R.id.share);

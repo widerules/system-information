@@ -285,6 +285,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         btnStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				serverWebs.get(webIndex).stopLoading();//stop loading at first
 				if (webAdapter.getCount() > 1) {
 					((MyWebview) webpages.getChildAt(position)).destroy();
 					webAdapter.remove((MyWebview) webpages.getChildAt(position));

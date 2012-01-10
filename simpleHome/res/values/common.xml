@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Easy Home</string>
+    <string name="app_name">Easy Launcher</string>
     <string name="switcher_name">Easy Home Switcher</string>
     <string name="browser_name">Easy Browser</string>
     
@@ -29,7 +29,7 @@
     
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
-    <string name="sharetext">EasyHome, simple and easy!</string>
+    <string name="sharetext">Easy Launcher, simple and easy!</string>
     <string name="app_share_text">" "is cool!</string>
     <string name="share_text1">" "Check" "</string>
     <string name="share_text2">" "by phone or" "</string>

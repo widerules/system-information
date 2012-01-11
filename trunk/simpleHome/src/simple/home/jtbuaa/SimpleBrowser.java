@@ -29,7 +29,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
@@ -221,6 +223,7 @@ class MyWebview extends WebView {
         			} 
             		
             		if (mHistory.size() > 16) {
+            			urlAdapter.remove(mHistory.get(0).m_site);//also remove it from auto-complete item
             			deleteFile(mHistory.get(0).m_title + ".png");//delete the Favicon
             			mHistory.remove(0);//delete the first history if list larger than 16;
             		}
@@ -771,6 +774,8 @@ public void onCreate(Bundle savedInstanceState) {
 
 	
 	downloadPath = util.preparePath(getFilesDir().getPath());
+
+	setLayout();
 	
 	//for package add
 	IntentFilter filter = new IntentFilter();
@@ -911,6 +916,25 @@ protected void onPause() {
 @Override
 public boolean onMenuOpened(int featureId, Menu menu) {
     return true;// return true will show system menu
+}
+
+@Override
+public void onConfigurationChanged(Configuration newConfig) {
+	super.onConfigurationChanged(newConfig); //not restart activity each time screen orientation changes
+	setLayout();
+}
+
+void setLayout() {
+	DisplayMetrics dm = new DisplayMetrics();  
+	getWindowManager().getDefaultDisplay().getMetrics(dm);
+	
+	int width = dm.widthPixels;
+	if (width < 100) return;//can't work on so small screen.
+	
+    LayoutParams lp = webtools_center.getLayoutParams();
+    if (width >= 320)
+    	lp.width = width/2 + 30;//15
+    else lp.width = width/2-15;
 }
 
 }

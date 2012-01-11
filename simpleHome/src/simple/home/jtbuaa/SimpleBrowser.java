@@ -188,16 +188,12 @@ class MyWebview extends WebView {
 				imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
         		loadProgress.setVisibility(View.VISIBLE);
         		webAddress.setText(url);
-        		imgPrev.setEnabled(false);
-        		imgNext.setEnabled(false);
         		imgRefresh.setImageResource(R.drawable.stop);
 				super.onPageStarted(view, url, favicon);
 			}
 			 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-        		imgPrev.setEnabled(view.canGoBack());
-        		imgNext.setEnabled(view.canGoForward());
         		imgRefresh.setImageResource(R.drawable.refresh);
 
 				webAdapter.notifyDataSetChanged();//what this for?
@@ -880,8 +876,10 @@ protected void onResume() {
 		
 		int l = 0;
 		while (l < urlAdapter.getCount()-1) {// remove duplicate
-			while (urlAdapter.getItem(l).equals(urlAdapter.getItem(l+1))) 
+			while (urlAdapter.getItem(l).equals(urlAdapter.getItem(l+1))) { 
 				urlAdapter.remove(urlAdapter.getItem(l));
+				if (l+1 == urlAdapter.getCount()) break;
+			}
 			l = l+1;
 		}
 		webAddress.setAdapter(urlAdapter); 

@@ -25,7 +25,7 @@
 			<ImageView android:id="@+id/refresh"
 				android:layout_height="35dip" 
 				android:layout_width="35dip"
-				android:scaleType="centerInside"
+				android:scaleType="center"
 				android:src="@drawable/refresh"
 				android:layout_alignParentLeft="true"
 			/>

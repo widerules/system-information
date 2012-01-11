@@ -212,7 +212,7 @@ class MyWebview extends WebView {
             		for (int i = mHistory.size()-1; i >= 0; i--) 
             			if (mHistory.get(i).m_site.equals(site)) return;//record one site only once in the history list.
             		
-            		urlAdapter.add(site);
+            		urlAdapter.add(site);//update the auto-complete edittext
             		
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
@@ -859,10 +859,16 @@ protected void onResume() {
 		fi = openFileInput("history");
 		mHistory = util.readBookmark(fi);
 		fi = openFileInput("bookmark");
-		mBookMark = util.readBookmark(fi);
-		
-		//once set the adapter, the item count of the adapter is always 0, and their will be duplicate item in auto complete edit text.
-		//so we create the adapter again each time. it is bug of Android?
+		mBookMark = util.readBookmark(fi);		
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	}
+	historyChanged = false;
+	bookmarkChanged = false;
+
+	//once set the adapter, the item count of the adapter is always 0, it is bug of Android?
+	//we can only set the adapter to the auto-complete edittext once, otherwise there will be duplicate items in it?
+	if (webAddress.getAdapter() == null) {
 		urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
 		urlAdapter.add("www.baidu.com");
 		urlAdapter.add("www.google.com");
@@ -879,13 +885,8 @@ protected void onResume() {
 			l = l+1;
 		}
 		webAddress.setAdapter(urlAdapter); 
-		
-	} catch (FileNotFoundException e) {
-		e.printStackTrace();
 	}
-	historyChanged = false;
-	bookmarkChanged = false;
-
+	
 	super.onResume();
 }
 

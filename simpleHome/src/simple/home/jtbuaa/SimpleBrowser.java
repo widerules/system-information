@@ -272,6 +272,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 				webControl.setVisibility(View.INVISIBLE);
 				webIndex = position;
 				while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
+				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
 				webpages.getChildAt(webIndex).requestFocus();
 				adview.loadAd(adRequest);
 			}
@@ -281,12 +282,12 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         btnStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				serverWebs.get(webIndex).stopLoading();//stop loading at first
+				serverWebs.get(webIndex).stopLoading();//remove current page, so stop loading at first
 				if (webAdapter.getCount() > 1) {
 					((MyWebview) webpages.getChildAt(position)).destroy();
 					webAdapter.remove((MyWebview) webpages.getChildAt(position));
 					webpages.removeViewAt(position);
-					imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));
+					imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));//show the changed page number
 					if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 				}
 				else {//return to home page if only one page when click close button
@@ -295,6 +296,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 					serverWebs.get(webIndex).title = getString(R.string.app_name);
 					serverWebs.get(webIndex).clearHistory();
 				}
+				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
 				adview.loadAd(adRequest);
 				webpages.getChildAt(webIndex).requestFocus();
 			}

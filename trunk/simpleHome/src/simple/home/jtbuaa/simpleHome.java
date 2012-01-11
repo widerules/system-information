@@ -1261,7 +1261,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	    }
 	    }
 	    sa2 = sa2.toUpperCase();
-	    if (sa2.compareTo("A") < 0) sa2 = "#";//for space or number, we change to #
+	    if ((sa2.compareTo("A") < 0) || (sa2.compareTo("Z") > 0)) sa2 = "#";//for space or number, we change to #
 	    return sa2;
     }
     

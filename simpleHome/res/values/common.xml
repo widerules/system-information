@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Easy Launcher</string>
-    <string name="switcher_name">Easy Home Switcher</string>
+    <string name="switcher_name">Easy Switcher</string>
     <string name="browser_name">Easy Browser</string>
     
     <string name="about_dialog_notes">If you like this app, \nplease vote me 5 stars, thanks.</string>

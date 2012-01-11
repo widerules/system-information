@@ -868,8 +868,6 @@ protected void onResume() {
 	//we can only set the adapter to the auto-complete edittext once, otherwise there will be duplicate items in it?
 	if (webAddress.getAdapter() == null) {
 		urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
-		urlAdapter.add("www.baidu.com");
-		urlAdapter.add("www.google.com");
 		for (int i = 0; i < mHistory.size(); i++) 
 			urlAdapter.add(mHistory.get(i).m_site);
 		for (int i = 0; i < mBookMark.size(); i++) 

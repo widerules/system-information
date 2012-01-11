@@ -548,7 +548,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						userSelected = -1;
 					}
 					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
-					for (int i = 0; i < userAlphaAdapter.getCount(); i++) { 
+					for (int i = 0; i < userAlphaAdapter.getCount(); i++) {
 						if (alpha.charAt(0) == userAlphaAdapter.getItem(i).charAt(0)) { 
 							TextView tv = (TextView)userAlpha.getChildAt(i);
 							if (tv != null) {
@@ -892,11 +892,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                 		ResolveInfo ri = targetApps.get(i);
         	    	    CharSequence  sa = ri.loadLabel(pm);
         	    	    if (sa == null) sa = ri.activityInfo.name;
-        	    	    String sa1 = sa.toString().trim();
-        	    	    String sa2 = "";
-        	    	    for (int j = 0; j < sa1.length(); j++)
-        	    	    	sa2 += HanziToPinyin.getInstance().getToken(sa1.charAt(j)).target; 
-        	    		ri.activityInfo.applicationInfo.dataDir = sa2.trim().toUpperCase() ;//we borrow dataDir to store the Pinyin of the label.
+        	    		ri.activityInfo.applicationInfo.dataDir = getToken(sa);//we borrow dataDir to store the Pinyin of the label.
         	    		String tmp = ri.activityInfo.applicationInfo.dataDir.substring(0, 1);
         	    		
                     	if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
@@ -1253,6 +1249,22 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		}
     }
     
+    public String getToken(CharSequence sa) {
+	    String sa1 = sa.toString().trim();
+	    String sa2 = sa1;
+	    if (sa1.length() > 0) {
+    	    try {//this is to fix a bug report by market
+    	    	sa2 = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target.trim();
+    	    	if (sa2.length() > 1) sa2 = sa2.substring(0, 1);
+    	    } catch(Exception e) {
+    	    	e.printStackTrace();
+    	    }
+	    }
+	    sa2 = sa2.toUpperCase();
+	    if (sa2.compareTo("A") < 0) sa2 = "#";//for space or number, we change to #
+	    return sa2;
+    }
+    
 	class InitTask extends AsyncTask<String, Integer, String> {
 		@Override
 		protected String doInBackground(String... params) {//do all time consuming work here
@@ -1281,17 +1293,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    		ResolveInfo ri = mAllApps.get(i);
 	    	    CharSequence  sa = ri.loadLabel(pm);
 	    	    if (sa == null) sa = ri.activityInfo.name;
-	    	    String sa1 = sa.toString().trim();
-	    	    String sa2 = sa1;
-	    	    if (sa1.length() > 0) {
-		    	    try {//this is to fix a bug report by market
-		    	    	sa2 = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target;
-		    	    	if (sa2.length() > 1) sa2 = sa2.substring(0, 1);
-		    	    } catch(Exception e) {
-		    	    	e.printStackTrace();
-		    	    }
-	    	    }
-	    		ri.activityInfo.applicationInfo.dataDir = sa2.toUpperCase();//we borrow dataDir to store the Pinyin of the label.
+	    		ri.activityInfo.applicationInfo.dataDir = getToken(sa);//we borrow dataDir to store the Pinyin of the label.
 	    		
 	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 
 	    			mSysApps.add(ri);

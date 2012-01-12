@@ -364,14 +364,16 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		if (result != null)
-			serverWebs.get(webIndex).loadUrl("file:///android_asset/warning.html");
+		if (result != null) {
+			String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
+			serverWebs.get(webIndex).loadData(header + result, "text/html", "UTF-8");
+		}
 	}
 	
 	@Override
 	protected String doInBackground(String... params) {//download here
     	URL_str = params[0]; //get download url
-    	if (URL_str.startsWith("file")) return "local file";//not download local file 
+    	if (URL_str.startsWith("file")) return URL_str;//not download local file 
     	apkName = params[1]; //get download file name
     	if (apkName.contains("%")) apkName = apkName.split("%")[apkName.split("%").length-1];//for some filename contain % will cause error
     	
@@ -407,7 +409,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 				util.startActivity(intent, false, mContext);
             	appstate.downloadState.remove(NOTIFICATION_ID);
         		nManager.cancel(NOTIFICATION_ID);
-				return "";
+				return downloadPath + apkName;
     		}
     		else if (download_file.length() < apk_length) {//local file size < need to download, need continue to download
     			fos = new FileOutputStream(download_file, true);

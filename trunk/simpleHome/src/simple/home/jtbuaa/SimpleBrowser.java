@@ -602,7 +602,12 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			final String title = serverWebs.get(webIndex).getTitle();
-			final String url = serverWebs.get(webIndex).getUrl(); 
+			final String url = serverWebs.get(webIndex).getUrl();
+			if (url == null) {
+				Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
+				return;
+			}
+			
 			for (int i = mBookMark.size()-1; i >= 0; i--) 
 				if (mBookMark.get(i).m_url.equals(url)) {//ask use whether to delete the bookmark if already exist.
 					final int ii = i;

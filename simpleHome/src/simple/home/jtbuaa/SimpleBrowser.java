@@ -595,13 +595,14 @@ public void onCreate(Bundle savedInstanceState) {
     imgAddFavo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
+			final String title = serverWebs.get(webIndex).getTitle();
 			final String url = serverWebs.get(webIndex).getUrl(); 
 			for (int i = mBookMark.size()-1; i >= 0; i--) 
 				if (mBookMark.get(i).m_url.equals(url)) {//ask use whether to delete the bookmark if already exist.
 					final int ii = i;
 					new AlertDialog.Builder(mContext).
 					setTitle(R.string.remove_bookmark).
-					setMessage(url).
+					setMessage(title).
 					setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -619,7 +620,7 @@ public void onCreate(Bundle savedInstanceState) {
 			//need use's confirm to add to bookmark
 			new AlertDialog.Builder(mContext).
 				setTitle(R.string.add_bookmark).
-				setMessage(url).
+				setMessage(title).
 				setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -627,8 +628,6 @@ public void onCreate(Bundle savedInstanceState) {
 						String[] tmp = url.split("/");
 						if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
 						else site = tmp[0];
-						
-						String title = serverWebs.get(webIndex).getTitle();
 						
 						TitleUrl titleUrl = new TitleUrl(title, url, site);
 			    		mBookMark.add(titleUrl);

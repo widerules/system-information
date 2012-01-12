@@ -590,7 +590,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					switch(mainlayout.getCurrentItem()) {
 					case 0:
 						btnSystem.setChecked(true);
-						btnUser.setText(R.string.systemapps);
+						btnUser.setText(getString(R.string.systemapps) + "(" + sysAdapter.getCount() + ")");
 						break;
 					case 1:
 						btnHome.setChecked(true);
@@ -598,7 +598,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						break;
 					case 2:
 						btnUser.setChecked(true);
-						btnUser.setText(R.string.userapps);
+						btnUser.setText(getString(R.string.userapps) + "(" + userAdapter.getCount() + ")");
 						break;
 					}
 				}

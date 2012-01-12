@@ -515,6 +515,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
 	menu.add(0, 1, 0, R.string.bookmark).setAlphabeticShortcut('B');
 	menu.add(0, 2, 0, R.string.source).setAlphabeticShortcut('S');
 	menu.add(0, 3, 0, R.string.snap).setAlphabeticShortcut('N');
+	menu.add(0, 4, 0, R.string.homepage).setAlphabeticShortcut('M');
 	return true;
 }
 
@@ -566,6 +567,9 @@ public boolean onOptionsItemSelected(MenuItem item){
 		catch (Exception e) {
 			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
 		}
+		break;
+	case 4://homepage
+        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 		break;
 	}
 	return true;

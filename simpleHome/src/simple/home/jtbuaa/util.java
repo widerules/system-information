@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -49,6 +50,17 @@ public class util {
 		}
     }
 
+    static public String getVersion(Context context) {
+    	String version = "";
+		try {
+			version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return version;
+    }
+    
 	static public String preparePath(String defaultPath) {
 		String downloadPath = defaultPath + "/";
 		

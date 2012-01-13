@@ -435,13 +435,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
-    	PackageInfo pi = null;
-        try {
-        	pi = pm.getPackageInfo(myPackageName, 0);
-        	version = "v" + pi.versionName;
-    	} catch (NameNotFoundException e) {
-    		e.printStackTrace();
-    	}    
+    	version = util.getVersion(this);
 
         try {
         	getPackageSizeInfo = PackageManager.class.getMethod(

@@ -81,4 +81,7 @@
     <string name="downloading">downloading...</string>
     <string name="download_finish">download finished, click to check</string>
     <string name="download_fail">download failed, click to check</string>
+    
+    <string name="sorry">Sorry, app crashed, error log stored to</string>
+    
 </resources>

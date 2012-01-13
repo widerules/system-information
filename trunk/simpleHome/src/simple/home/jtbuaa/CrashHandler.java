@@ -100,6 +100,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		if (ex == null) {
 			return false;
 		}
+		ex.printStackTrace();
+		
 		//collect device info 
 		collectDeviceInfo(mContext);
 
@@ -112,7 +114,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		
 		Writer writer = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(writer);
-		ex.printStackTrace(printWriter);
+		ex.printStackTrace(printWriter); 
 		Throwable cause = ex.getCause();
 		while (cause != null) {
 			cause.printStackTrace(printWriter);
@@ -171,25 +173,22 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	 */
 	private String saveCrashInfo2File(StringBuffer sb) {
 		
-		String path = "";
+		String path = util.preparePath(mContext.getFilesDir().getPath()) + "crash/";
 		try {
 			long timestamp = System.currentTimeMillis();
 			String time = formatter.format(new Date());
 			String fileName = "crash-" + time + "-" + timestamp + ".log";
-			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-				path = Environment.getExternalStorageDirectory() + "/crash/";
-				File dir = new File(path);
-				if (!dir.exists()) {
-					dir.mkdirs();
-				}
-				FileOutputStream fos = new FileOutputStream(path + fileName);
-				fos.write(sb.toString().getBytes());
-				fos.close();
+			File dir = new File(path);
+			if (!dir.exists()) {
+				dir.mkdirs();
 			}
+			FileOutputStream fos = new FileOutputStream(path + fileName);
+			fos.write(sb.toString().getBytes());
+			fos.close();
 			return path + fileName;
 		} catch (Exception e) {
 			Log.e(TAG, "an error occured while writing file...", e);
 		}
-		return path;
+		return "";
 	}
 }

@@ -26,6 +26,7 @@
 					$(this).css({"background":"#fff"},{"border":"1px solid #ccc"});
 				}
 			});
+		});
 
 			function loadXMLDoc()
 			{
@@ -42,13 +43,21 @@
 				{
 					if (xmlhttp.readyState==4 && xmlhttp.status==200)
 					{
-						document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+						var retValue = xmlhttp.responseText;
+						if (retValue == "invalid user name or password")
+						{
+							document.getElementById("login-tip").innerHTML = retValue;
+						}
+						else
+						{
+							window.location.href = "/index.html";
+						}
 					}
 				}
-				xmlhttp.open("GET","/index.html",true);
-				xmlhttp.send();
-			}
-		});
+				xmlhttp.open("POST","/login",true);
+				xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				xmlhttp.send("username="+ $('#email').val() +"&password="+ $('#password').val());
+			};
 	</script>
   </head> 
   <body>
@@ -70,7 +79,7 @@
 					<span class="note"></span>
 				</div>
 				<div class="submit">
-					<input type="submit" id="loginbtn" value="" onclick="loadXMLDoc()" />
+					<input id="loginbtn" value="" onclick="loadXMLDoc()" />
 					<a href="recover_show.action">找回密码</a>
 				</div>
 				<input type="hidden" name="callback" value="http%3A%2F%2Fwww.appchina.com%2F"/>

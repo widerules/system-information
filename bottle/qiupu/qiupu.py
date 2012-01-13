@@ -11,9 +11,7 @@ app = Bottle()
 @app.post('/<filename:path>')
 @app.get('/<filename:path>')
 def send_static(filename):
-        name     = request.forms.get('username')
-        password = request.forms.get('password')
-	if (name != None) and (password != None):
+	if (filename == 'login.html'):
 		return login_submit()
 	else:
 		return static_file(filename, root='')
@@ -70,6 +68,11 @@ def md5b64(src):
 def login_submit():
 	name     = request.forms.get('username')
 	password = request.forms.get('password')
+	print name
+	print password
+	if ((name == None) or (password == None)):
+		return static_file('login.html', root='')
+
 	key = hashlib.md5()
 	key.update(password)
 	data = {'login_name':name,'password':key.hexdigest()}
@@ -87,7 +90,7 @@ def login_submit():
 		response.set_cookie('ticket', jdata['ticket'])
 		response.set_cookie('user_id', user_id)
 		print 'user:'+user_id + ' from ' + ip + ' login'
-		return static_file('index.html', root='')
+		return 'login ok'
 
 
 def invoke_api(cmd, paras = {}, needLogin = True):

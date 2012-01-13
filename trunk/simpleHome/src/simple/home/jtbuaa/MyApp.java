@@ -9,7 +9,12 @@ import simple.home.jtbuaa.SimpleBrowser.DownloadTask;
 public class MyApp extends Application {
 	HashMap<Integer, DownloadTask> downloadState;
 	
-	public MyApp() {
+    @Override  
+    public void onCreate() {  
+        super.onCreate();  
     	downloadState = new HashMap<Integer, DownloadTask>();
-	}
+    	
+        CrashHandler crashHandler = CrashHandler.getInstance();  
+        crashHandler.init(getApplicationContext());  
+    }  
 }

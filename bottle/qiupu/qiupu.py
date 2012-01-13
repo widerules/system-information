@@ -11,7 +11,12 @@ app = Bottle()
 @app.post('/<filename:path>')
 @app.get('/<filename:path>')
 def send_static(filename):
-	return static_file(filename, root='')
+        name     = request.forms.get('username')
+        password = request.forms.get('password')
+	if (name != None) and (password != None):
+		return login_submit()
+	else:
+		return static_file(filename, root='')
 
 @app.route('/json')
 def testjson():
@@ -75,7 +80,7 @@ def login_submit():
 		response.set_cookie('ticket', '')
 		response.set_cookie('user_id', '')
 		print 'user:'+name + ' from ' + ip +' login fail'
-		return static_file('login.html', root='')
+		return 'invalid user name or password' 
 	else:
 		jdata = json.loads(data)
 		user_id = jdata['user_id']

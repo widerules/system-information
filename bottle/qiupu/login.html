@@ -9,21 +9,15 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$('#login-form form').bind('submit',function(event){
-				var flag = 1;
 				if($('#email').val() == ""){
 					$('#email').css({"background":"#FFAFAF"},{"border":"1px solid #ccc"});
 					$('#email').next().text("请输入邮箱").show();
-					flag = 0;
+					return false
 				}
 				if($('#password').val() == ""){
 					$('#password').css({"background":"#FFAFAF"},{"border":"1px solid #ccc"});
 					$('#password').next().text("请输入密码").show();
-					flag = 0;
-				}
-				if(flag == 0){
 					return false;
-				}else{
-					return true;
 				}
 			});
 			$('input.inputText').bind("blur",function(event){
@@ -32,6 +26,28 @@
 					$(this).css({"background":"#fff"},{"border":"1px solid #ccc"});
 				}
 			});
+
+			function loadXMLDoc()
+			{
+				var xmlhttp;
+				if (window.XMLHttpRequest)
+				{// code for IE7+, Firefox, Chrome, Opera, Safari
+					xmlhttp=new XMLHttpRequest();
+				}
+				else
+				{// code for IE6, IE5
+					xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				xmlhttp.onreadystatechange=function()
+				{
+					if (xmlhttp.readyState==4 && xmlhttp.status==200)
+					{
+						document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+					}
+				}
+				xmlhttp.open("GET","/index.html",true);
+				xmlhttp.send();
+			}
 		});
 	</script>
   </head> 
@@ -42,7 +58,7 @@
 				  <p id="login-tip">已有秋浦帐号，可直接登录</p>
 
 		<div id="login-form" class="yyh-form">
-			<form name="loginForm" action="login_post.action" method="POST" id="authform">
+			<form name="loginForm" method="POST" id="authform">
 				<div class="required">
 					<label for="email">登录邮箱</label>
 					<input type="text" id="email" name="username" class="inputText EmailValidate"/>
@@ -54,7 +70,7 @@
 					<span class="note"></span>
 				</div>
 				<div class="submit">
-					<input type="submit" id="loginbtn" value=""/>
+					<input type="submit" id="loginbtn" value="" onclick="loadXMLDoc()" />
 					<a href="recover_show.action">找回密码</a>
 				</div>
 				<input type="hidden" name="callback" value="http%3A%2F%2Fwww.appchina.com%2F"/>

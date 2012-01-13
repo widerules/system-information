@@ -1115,11 +1115,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             	textView3.setText(source);
            	}
            	
+            textView1.setTextColor(whiteColor);//default color
             if (!DuringSelection) {//running state should be updated when not busy, for it is time consuming
-                textView1.setTextColor(whiteColor);
                 final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
                 for (int i = 0; i < appList.size(); i++) {//a bottle neck
+                	if (DuringSelection) break;//cancel current task if enter scroll mode will raise performance significantly
             		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
                 	if (info.activityInfo.processName.equals(as.processName)) {
                     	textView1.setTextColor(redColor);//red for running apk

@@ -196,6 +196,7 @@ class MyWebview extends WebView {
 			 
 			@Override
 			public void onPageFinished(WebView view, String url) {
+        		loadProgress.setVisibility(View.INVISIBLE);//hide progressbar anyway
         		imgRefresh.setImageResource(R.drawable.refresh);
 
 				webAdapter.notifyDataSetChanged();//what this for?

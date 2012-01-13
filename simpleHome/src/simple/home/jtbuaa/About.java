@@ -144,7 +144,7 @@ public class About extends Activity{
         tvMailTo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "jtbuaa@gmail.com", null));
+				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.author), null));
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});

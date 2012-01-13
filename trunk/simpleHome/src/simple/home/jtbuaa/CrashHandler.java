@@ -39,6 +39,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	private static CrashHandler INSTANCE = new CrashHandler();
 	//程序的Context对象
 	private Context mContext;
+	//to store app version
+	private String version;
 	//用来存储设备信息和异常信息
 	private Map<String, String> infos = new HashMap<String, String>();
 
@@ -61,6 +63,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	 */
 	public void init(Context context) {
 		mContext = context;
+		version = util.getVersion(context);
+		
 		//获取系统默认的UncaughtException处理器
 		mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
 		//设置该CrashHandler为程序的默认处理器
@@ -157,6 +161,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			sb.append(key + "=" + value + "\n");
 		}
 		
+		sb.append("App Version = " + version + "\n");
 		Writer writer = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(writer);
 		ex.printStackTrace(printWriter);
@@ -173,7 +178,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			String time = formatter.format(new Date());
 			String fileName = "crash-" + time + "-" + timestamp + ".log";
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-				String path = "/sdcard/crash/";
+				String path = Environment.getExternalStorageDirectory() + "/crash/";
 				File dir = new File(path);
 				if (!dir.exists()) {
 					dir.mkdirs();

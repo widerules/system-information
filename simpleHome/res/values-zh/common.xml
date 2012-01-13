@@ -80,4 +80,7 @@
     <string name="downloading">正在下载...</string>
     <string name="download_finish">下载完成，点击查看</string>
     <string name="download_fail">下载失败，点击查看</string>
+    
+    <string name="sorry">很抱歉，程序出现异常，即将退出，出错日志存储在</string>
+    
 </resources>

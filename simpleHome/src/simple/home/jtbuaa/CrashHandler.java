@@ -14,9 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
@@ -39,8 +41,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	private static CrashHandler INSTANCE = new CrashHandler();
 	//程序的Context对象
 	private Context mContext;
-	//to store app version
-	private String version;
 	//用来存储设备信息和异常信息
 	private Map<String, String> infos = new HashMap<String, String>();
 
@@ -63,7 +63,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	 */
 	public void init(Context context) {
 		mContext = context;
-		version = util.getVersion(context);
 		
 		//获取系统默认的UncaughtException处理器
 		mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
@@ -101,59 +100,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		if (ex == null) {
 			return false;
 		}
-		//使用Toast来显示异常信息
-		new Thread() {
-			@Override
-			public void run() {
-				Looper.prepare();
-				Toast.makeText(mContext, "很抱歉,程序出现异常,即将退出.", Toast.LENGTH_LONG).show();
-				Looper.loop();
-			}
-		}.start();
-		//收集设备参数信息 
+		//collect device info 
 		collectDeviceInfo(mContext);
-		//保存日志文件 
-		saveCrashInfo2File(ex);
-		return true;
-	}
-	
-	/**
-	 * 收集设备参数信息
-	 * @param ctx
-	 */
-	public void collectDeviceInfo(Context ctx) {
-		try {
-			PackageManager pm = ctx.getPackageManager();
-			PackageInfo pi = pm.getPackageInfo(ctx.getPackageName(), PackageManager.GET_ACTIVITIES);
-			if (pi != null) {
-				String versionName = pi.versionName == null ? "null" : pi.versionName;
-				String versionCode = pi.versionCode + "";
-				infos.put("versionName", versionName);
-				infos.put("versionCode", versionCode);
-			}
-		} catch (NameNotFoundException e) {
-			Log.e(TAG, "an error occured when collect package info", e);
-		}
-		Field[] fields = Build.class.getDeclaredFields();
-		for (Field field : fields) {
-			try {
-				field.setAccessible(true);
-				infos.put(field.getName(), field.get(null).toString());
-				Log.d(TAG, field.getName() + " : " + field.get(null));
-			} catch (Exception e) {
-				Log.e(TAG, "an error occured when collect crash info", e);
-			}
-		}
-	}
 
-	/**
-	 * 保存错误信息到文件中
-	 * 
-	 * @param ex
-	 * @return	返回文件名称,便于将文件传送到服务器
-	 */
-	private String saveCrashInfo2File(Throwable ex) {
-		
 		StringBuffer sb = new StringBuffer();
 		for (Map.Entry<String, String> entry : infos.entrySet()) {
 			String key = entry.getKey();
@@ -161,7 +110,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			sb.append(key + "=" + value + "\n");
 		}
 		
-		sb.append("App Version = " + version + "\n");
 		Writer writer = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(writer);
 		ex.printStackTrace(printWriter);
@@ -173,12 +121,63 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		printWriter.close();
 		String result = writer.toString();
 		sb.append(result);
+
+		Intent intent = new Intent(Intent.ACTION_SENDTO);
+		intent.setData(Uri.fromParts("mailto", "mContext.getString(R.string.author)", null));
+		intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.sorry));
+		intent.putExtra(Intent.EXTRA_SUBJECT, sb.toString());
+		if (true) {
+		//if (!util.startActivity(intent, false, mContext)) {
+			//save the error log
+			final String path = saveCrashInfo2File(sb);
+			//show toast
+			new Thread() {
+				@Override
+				public void run() {
+					Looper.prepare();
+					Toast.makeText(mContext, mContext.getString(R.string.sorry) + " " + path, Toast.LENGTH_LONG).show();
+					Looper.loop();
+				}
+			}.start();
+		}
+
+		return true;
+	}
+	
+	/**
+	 * 收集设备参数信息
+	 * @param ctx
+	 */
+	public void collectDeviceInfo(Context ctx) {
+		Field[] fields = Build.class.getDeclaredFields();
+		for (Field field : fields) {
+			try {
+				field.setAccessible(true);
+				infos.put(field.getName(), field.get(null).toString());
+				Log.d(TAG, field.getName() + " : " + field.get(null));
+			} catch (Exception e) {
+				Log.e(TAG, "an error occured when collect crash info", e);
+			}
+		}
+
+		infos.put("versionName", util.getVersion(ctx));
+	}
+
+	/**
+	 * 保存错误信息到文件中
+	 * 
+	 * @param ex
+	 * @return	返回文件名称,便于将文件传送到服务器
+	 */
+	private String saveCrashInfo2File(StringBuffer sb) {
+		
+		String path = "";
 		try {
 			long timestamp = System.currentTimeMillis();
 			String time = formatter.format(new Date());
 			String fileName = "crash-" + time + "-" + timestamp + ".log";
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-				String path = Environment.getExternalStorageDirectory() + "/crash/";
+				path = Environment.getExternalStorageDirectory() + "/crash/";
 				File dir = new File(path);
 				if (!dir.exists()) {
 					dir.mkdirs();
@@ -187,10 +186,10 @@ public class CrashHandler implements UncaughtExceptionHandler {
 				fos.write(sb.toString().getBytes());
 				fos.close();
 			}
-			return fileName;
+			return path + fileName;
 		} catch (Exception e) {
 			Log.e(TAG, "an error occured while writing file...", e);
 		}
-		return null;
+		return path;
 	}
 }

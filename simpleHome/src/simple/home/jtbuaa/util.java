@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -53,7 +55,10 @@ public class util {
     static public String getVersion(Context context) {
     	String version = "";
 		try {
-			version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+			PackageManager pm = context.getPackageManager();
+			PackageInfo pi = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
+			if (pi != null) 
+				version = pi.versionName == null ? "null" : pi.versionName;
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

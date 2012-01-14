@@ -68,8 +68,6 @@ def md5b64(src):
 def login_submit():
 	name     = request.forms.get('username')
 	password = request.forms.get('password')
-	print name
-	print password
 	if ((name == None) or (password == None)):
 		return static_file('login.html', root='')
 
@@ -93,7 +91,7 @@ def login_submit():
 		return 'login ok'
 
 
-def invoke_api(cmd, paras = {}, needLogin = True):
+def invoke_api(cmd, paras, needLogin = True):
 	user_id = request.cookies.get('user_id', '')
 	print 'user:'+user_id + ' ' + cmd
 	if needLogin:
@@ -175,7 +173,7 @@ def show_userstimeline():
 
 @app.route('/show_friendtimeline')
 def show_userstimeline():
-	data = invoke_api('post/qiupufriendtimeline')
+	data = invoke_api('post/qiupufriendtimeline', {})
 	return parse_data(data)
 
 
@@ -187,4 +185,4 @@ def show_publictimeline():
 
 if (__name__ == '__main__'):
 	debug(True)
-	run(app, host='192.168.5.136', port=8080, reloader=True)
+	run(app, host='127.0.0.1', port=8080, reloader=True)

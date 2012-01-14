@@ -121,7 +121,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	final int MaxCount = 14;
 	int systemColumns, userColumns;
-	Boolean DuringSelection = false;
+	Boolean DuringSelection = false, scrolling = false;
     RadioButton btnSystem, btnUser, btnHome;
     int systemSelected = -1, userSelected = -1;
 
@@ -507,22 +507,21 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
 						systemSelected = -1;
 					}
+					
 					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
-					for (int i = 0; i < sysAlphaAdapter.getCount(); i++) { 
-						if (alpha.charAt(0) == sysAlphaAdapter.getItem(i).charAt(0)) { 
-							TextView tv = (TextView)sysAlpha.getChildAt(i);
-							if (tv != null) {
-								tv.setBackgroundResource(R.drawable.circle);
-								tv.requestFocus();
-							}
-							break;
-						}
+					int pos = sysAlphaAdapter.getPosition(alpha);
+					TextView tv = (TextView)sysAlpha.getChildAt(pos);
+					if (tv != null) {
+						tv.setBackgroundResource(R.drawable.circle);
+						tv.requestFocus();
 					}
 				}
 			}
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				DuringSelection = false;//the scrollState will not change when setSelection(), but will change during scroll manually. so we turn off the flag here.
+				if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
+				else scrolling = true;
 			}
     	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
@@ -542,21 +541,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						userSelected = -1;
 					}
 					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
-					for (int i = 0; i < userAlphaAdapter.getCount(); i++) {
-						if (alpha.charAt(0) == userAlphaAdapter.getItem(i).charAt(0)) { 
-							TextView tv = (TextView)userAlpha.getChildAt(i);
-							if (tv != null) {
-								tv.setBackgroundResource(R.drawable.circle);
-								tv.requestFocus();
-							}
-							break;
-						}
+					int pos = userAlphaAdapter.getPosition(alpha);
+					TextView tv = (TextView)userAlpha.getChildAt(pos);
+					if (tv != null) {
+						tv.setBackgroundResource(R.drawable.circle);
+						tv.requestFocus();
 					}
 				}
 			}
 			@Override
-			public void onScrollStateChanged(AbsListView arg0, int arg1) {
+			public void onScrollStateChanged(AbsListView arg0, int scrollState) {
 				DuringSelection = false;
+				if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
+				else scrolling = true;
 			}
         });
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
@@ -1110,11 +1107,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
            	}
            	
             textView1.setTextColor(whiteColor);//default color
-            if (!DuringSelection) {//running state should be updated when not busy, for it is time consuming
+            if (!scrolling) {//running state should be updated when not busy, for it is time consuming
                 final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
                 for (int i = 0; i < appList.size(); i++) {//a bottle neck
-                	if (DuringSelection) break;//cancel current task if enter scroll mode will raise performance significantly
+                	if (scrolling) break;//cancel current task if enter scroll mode will raise performance significantly
             		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
                 	if (info.activityInfo.processName.equals(as.processName)) {
                     	textView1.setTextColor(redColor);//red for running apk
@@ -1122,7 +1119,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             		}
                 }
             }
-            
+           	
             return convertView;
         }
     }

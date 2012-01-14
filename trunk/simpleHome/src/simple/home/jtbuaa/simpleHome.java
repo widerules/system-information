@@ -502,18 +502,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if ((sysAlpha != null) && (sysAdapter != null) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
-					if (systemSelected > -1) {
-						TextView tv = (TextView)sysAlpha.getChildAt(systemSelected);
-						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
-						systemSelected = -1;
-					}
-					
 					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					int pos = sysAlphaAdapter.getPosition(alpha);
-					TextView tv = (TextView)sysAlpha.getChildAt(pos);
-					if (tv != null) {
-						tv.setBackgroundResource(R.drawable.circle);
-						tv.requestFocus();
+					if (pos != systemSelected) {
+						TextView tv = (TextView)sysAlpha.getChildAt(systemSelected);
+						if (tv != null) tv.setBackgroundResource(R.drawable.circle);//it may be circle_selected when user click in alpha grid, so we need set it back
+					
+						tv = (TextView)sysAlpha.getChildAt(pos);
+						if (tv != null) tv.requestFocus();//this will change its background color
+						
+						systemSelected = pos;
 					}
 				}
 			}
@@ -535,17 +533,16 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if ((userAlpha != null) && (userAdapter != null) && (!DuringSelection)) {
-					if (userSelected > -1) {
-						TextView tv = (TextView)userAlpha.getChildAt(userSelected);
-						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
-						userSelected = -1;
-					}
 					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
 					int pos = userAlphaAdapter.getPosition(alpha);
-					TextView tv = (TextView)userAlpha.getChildAt(pos);
-					if (tv != null) {
-						tv.setBackgroundResource(R.drawable.circle);
-						tv.requestFocus();
+					if (pos != userSelected) {
+						TextView tv = (TextView)userAlpha.getChildAt(userSelected);
+						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
+						
+						tv = (TextView)userAlpha.getChildAt(pos);
+						if (tv != null) tv.requestFocus();
+						
+						userSelected = pos;
 					}
 				}
 			}

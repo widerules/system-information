@@ -121,7 +121,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ArrayList<String> mSysAlpha, mUserAlpha;
 	final int MaxCount = 14;
 	int systemColumns, userColumns;
-	Boolean DuringSelection = false, scrolling = false;
+	Boolean DuringSelection = false;
     RadioButton btnSystem, btnUser, btnHome;
     int systemSelected = -1, userSelected = -1;
 
@@ -518,8 +518,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				DuringSelection = false;//the scrollState will not change when setSelection(), but will change during scroll manually. so we turn off the flag here.
-				if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
-				else scrolling = true;
+				//if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
+				//else scrolling = true;//failed to get app running state
 			}
     	});
     	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
@@ -549,8 +549,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onScrollStateChanged(AbsListView arg0, int scrollState) {
 				DuringSelection = false;
-				if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
-				else scrolling = true;
+				//if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
+				//else scrolling = true;
 			}
         });
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
@@ -1104,11 +1104,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
            	}
            	
             textView1.setTextColor(whiteColor);//default color
-            if (!scrolling) {//running state should be updated when not busy, for it is time consuming
+            if (!DuringSelection) {//running state should be updated when not busy, for it is time consuming
                 final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
                 for (int i = 0; i < appList.size(); i++) {//a bottle neck
-                	if (scrolling) break;//cancel current task if enter scroll mode will raise performance significantly
+                	if (DuringSelection) break;//cancel current task if enter scroll mode will raise performance significantly
             		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
                 	if (info.activityInfo.processName.equals(as.processName)) {
                     	textView1.setTextColor(redColor);//red for running apk

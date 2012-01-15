@@ -134,7 +134,7 @@ public class About extends Activity{
 					intent.setAction(Intent.ACTION_VIEW);
 					intent.setData(Uri.parse("https://market.android.com/details?id=simple.home.jtbuaa"));
 					intent.setComponent(getComponentName());
-					util.startActivity(intent, false, getBaseContext());
+					util.startActivity(intent, true, getBaseContext());
 				}
 			}
         });

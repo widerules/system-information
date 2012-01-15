@@ -58,8 +58,22 @@ public class util {
 			PackageManager pm = context.getPackageManager();
 			PackageInfo pi = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
 			if (pi != null) 
-				version = pi.versionName == null ? "null" : pi.versionName;
-		} catch (NameNotFoundException e) {
+				version = pi.versionName == null ? String.valueOf(pi.versionCode) : pi.versionName;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return version;
+    }
+    
+    static public String getVersionCode(Context context) {
+    	String version = "";
+		try {
+			PackageManager pm = context.getPackageManager();
+			PackageInfo pi = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_ACTIVITIES);
+			if (pi != null) 
+				version = String.valueOf(pi.versionCode);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

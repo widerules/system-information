@@ -162,6 +162,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		}
 
 		infos.put("versionName", util.getVersion(ctx));
+		infos.put("versionCode", util.getVersionCode(ctx));
 	}
 
 	/**

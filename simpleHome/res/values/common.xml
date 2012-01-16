@@ -62,6 +62,7 @@
     <string name="source">View Source</string>
     <string name="snap">Share ScreenShot</string>
     <string name="homepage">Home Page</string>
+    <string name="shareurl">Share Url</string>
     
     <string name="add_bookmark">Add to Bookmark</string>
     <string name="remove_bookmark">Remove Bookmark</string>

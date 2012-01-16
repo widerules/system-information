@@ -61,6 +61,7 @@
     <string name="source">网页源码</string>
     <string name="snap">分享截屏</string>
     <string name="homepage">主页</string>
+    <string name="shareurl">分享网址</string>
     
     <string name="add_bookmark">添加书签</string>
     <string name="remove_bookmark">删除书签</string>

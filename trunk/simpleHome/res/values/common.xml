@@ -68,6 +68,13 @@
     <string name="remove_bookmark">Remove Bookmark</string>
     <string name="view_bookmark">View Bookmark</string>
     
+    <string name="save_img">Save Image</string>
+    <string name="view_img">View Image</string>
+    <string name="share_img">Share Image</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="open_new">Open in new tab</string>
+    <string name="copy_url">Copy Url</string>
+    
     <string name="sdcard_needed">Downloaded file may not be opened without SDcard.</string>
     
     <string name="loading">Loading...</string>

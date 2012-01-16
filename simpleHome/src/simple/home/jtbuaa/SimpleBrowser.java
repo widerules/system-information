@@ -39,14 +39,17 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -61,6 +64,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -90,6 +94,8 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
+
+	String globalUrl = "";
 	
 	AlertDialog m_sourceDialog;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
@@ -151,6 +157,8 @@ class MyWebview extends WebView {
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
+        
+        registerForContextMenu(this);
 
         addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");//to get page source, part 2
         
@@ -307,6 +315,63 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         });
         
         return convertView;
+    }
+}
+
+@Override
+public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	super.onCreateContextMenu(menu, v, menuInfo);
+
+    HitTestResult result = ((WebView)v).getHitTestResult();
+    globalUrl = result.getExtra();
+
+    MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
+        public boolean onMenuItemClick(MenuItem item) {// do the menu action
+    		switch (item.getItemId()) {
+    		case 0://save image
+    			startDownload(globalUrl);//not work
+    			break;
+    		case 1://view image
+    			serverWebs.get(webIndex).loadUrl(globalUrl);
+    			break;
+    		case 4://open in new tab
+    			btnNewpage.performClick();
+    			globalUrl = "";
+    			break;
+    		case 5://add bookmark
+    			imgAddFavo.performClick();//error
+    			globalUrl = "";
+    			break;
+    		case 6://share url
+    			shareUrl(globalUrl);
+    			break;
+    		case 7://copy url
+    			ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+    			ClipMan.setText(globalUrl);
+    			break;
+    		}
+    		return true;
+        }
+    };
+
+    if (result.getType() == HitTestResult.IMAGE_TYPE ||
+            result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+        // Menu options for an image.
+        //set the header title to the image url
+        menu.setHeaderTitle(result.getExtra());
+        menu.add(0, 0, 0, R.string.save_img).setOnMenuItemClickListener(handler);
+        menu.add(0, 1, 0, R.string.view_img).setOnMenuItemClickListener(handler);
+        menu.add(0, 2, 0, R.string.share_img).setOnMenuItemClickListener(handler).setVisible(false);
+        menu.add(0, 3, 0, R.string.set_wallpaper).setOnMenuItemClickListener(handler).setVisible(false);
+    } else if (result.getType() == HitTestResult.ANCHOR_TYPE ||
+            result.getType() == HitTestResult.SRC_ANCHOR_TYPE) {
+        // Menu options for a hyperlink.
+        //set the header title to the link url
+        menu.setHeaderTitle(result.getExtra());
+        menu.add(0, 4, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+        menu.add(0, 5, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
+        menu.add(0, 6, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
+        menu.add(0, 7, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
     }
 }
 
@@ -572,14 +637,19 @@ public boolean onOptionsItemSelected(MenuItem item){
 		}
 		break;
 	case 4://share url
-        intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");  
-        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
-        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
+		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
 		break;
 	}
 	return true;
+}
+
+private void shareUrl(String text)
+{
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    intent.setType("text/plain");  
+    intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+	intent.putExtra(Intent.EXTRA_TEXT, text);
+    util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);	
 }
 
 @Override
@@ -607,14 +677,16 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			final String title = serverWebs.get(webIndex).getTitle();
-			final String url = serverWebs.get(webIndex).getUrl();
-			if (url == null) {
+			Log.d("=============", globalUrl);
+			if (globalUrl.equals("")) globalUrl = serverWebs.get(webIndex).getUrl();
+			else globalUrl = "";
+			if (globalUrl == null) {
 				Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
 				return;
 			}
 			
 			for (int i = mBookMark.size()-1; i >= 0; i--) 
-				if (mBookMark.get(i).m_url.equals(url)) {//ask use whether to delete the bookmark if already exist.
+				if (mBookMark.get(i).m_url.equals(globalUrl)) {//ask use whether to delete the bookmark if already exist.
 					final int ii = i;
 					new AlertDialog.Builder(mContext).
 					setTitle(R.string.remove_bookmark).
@@ -641,11 +713,11 @@ public void onCreate(Bundle savedInstanceState) {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						String site = "";
-						String[] tmp = url.split("/");
+						String[] tmp = globalUrl.split("/");
 						if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
 						else site = tmp[0];
 						
-						TitleUrl titleUrl = new TitleUrl(title, url, site);
+						TitleUrl titleUrl = new TitleUrl(title, globalUrl, site);
 			    		mBookMark.add(titleUrl);
 			    		bookmarkChanged = true;
 					}
@@ -755,7 +827,8 @@ public void onCreate(Bundle savedInstanceState) {
 		        webControl.setVisibility(View.INVISIBLE);
 				webAdapter.add(new MyWebview(mContext));
 				webIndex = webAdapter.getCount() - 1;
-		        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+				if (globalUrl.equals("")) serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+				else serverWebs.get(webIndex).loadUrl(globalUrl);
 		        webpages.addView(webAdapter.getItem(webIndex));
 		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 				webpages.getChildAt(webIndex).requestFocus();

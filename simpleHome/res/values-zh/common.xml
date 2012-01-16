@@ -67,6 +67,13 @@
     <string name="remove_bookmark">删除书签</string>
     <string name="view_bookmark">查看书签</string>
     
+    <string name="save_img">保存图片</string>
+    <string name="view_img">查看图片</string>
+    <string name="share_img">分享图片</string>
+    <string name="set_wallpaper">设为墙纸</string>
+    <string name="open_new">在新窗口中打开</string>
+    <string name="copy_url">复制链接</string>
+    
     <string name="sdcard_needed">没有SD卡，下载的文件可能打不开。</string>
     
     <string name="loading">正在读取...</string>

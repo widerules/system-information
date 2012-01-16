@@ -85,7 +85,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<MyWebview> serverWebs;
 	int webIndex;
 	ViewFlipper webpages;
-	ImageView imgNext, imgPrev, imgShare, imgRefresh, imgNew;
+	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
@@ -518,7 +518,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
 	menu.add(0, 1, 0, R.string.bookmark).setAlphabeticShortcut('B');
 	menu.add(0, 2, 0, R.string.source).setAlphabeticShortcut('S');
 	menu.add(0, 3, 0, R.string.snap).setAlphabeticShortcut('N');
-	menu.add(0, 4, 0, R.string.homepage).setAlphabeticShortcut('M');
+	menu.add(0, 4, 0, R.string.shareurl).setAlphabeticShortcut('M');
 	return true;
 }
 
@@ -571,8 +571,12 @@ public boolean onOptionsItemSelected(MenuItem item){
 			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
 		}
 		break;
-	case 4://homepage
-        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+	case 4://share url
+        intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");  
+        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
+        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
 		break;
 	}
 	return true;
@@ -715,15 +719,11 @@ public void onCreate(Bundle savedInstanceState) {
 			}
 		}
 	});
-	imgShare = (ImageView) findViewById(R.id.share);
-	imgShare.setOnClickListener(new OnClickListener() {
+	imgHome = (ImageView) findViewById(R.id.home);
+	imgHome.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-	        Intent intent = new Intent(Intent.ACTION_SEND);
-	        intent.setType("text/plain");  
-	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-    		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
-	        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
+	        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
 		}
 	});
 	imgNew = (ImageView) findViewById(R.id.newpage);
@@ -788,7 +788,7 @@ public void onCreate(Bundle savedInstanceState) {
 
 	setLayout();
 	
-	//for package add
+	//for package added
 	IntentFilter filter = new IntentFilter();
 	filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 	filter.addDataScheme("package");

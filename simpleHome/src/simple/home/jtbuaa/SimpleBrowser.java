@@ -374,7 +374,12 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
 boolean startDownload(String url) {
 	if (!url.contains(".")) return false;//not a file
 	
-	int posQ = url.indexOf("?");
+	int posQ = url.indexOf("src=");
+	if (posQ > 0) url = url.substring(posQ+4);//get src part
+	url = url.replace("%2F", "/");
+	url = url.replace("%3A", ":");// replace %3A%2F%2F to ://
+	
+	posQ = url.indexOf("?");
 	if (posQ > 0) url = url.substring(0, posQ);//cut off post paras if any.
 	
 	String ss[] = url.split("/");

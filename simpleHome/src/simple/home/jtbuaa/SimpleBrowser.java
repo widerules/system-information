@@ -95,8 +95,6 @@ public class SimpleBrowser extends Activity {
 	TextView btnNewpage;
 	InputMethodManager imm;
 
-	String globalUrl = "";
-	
 	AlertDialog m_sourceDialog;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
@@ -323,31 +321,29 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
 	super.onCreateContextMenu(menu, v, menuInfo);
 
     HitTestResult result = ((WebView)v).getHitTestResult();
-    globalUrl = result.getExtra();
+    final String url = result.getExtra();
 
     MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://save image
-    			startDownload(globalUrl);//not work
+    			startDownload(url);//not work
     			break;
     		case 1://view image
-    			serverWebs.get(webIndex).loadUrl(globalUrl);
+    			serverWebs.get(webIndex).loadUrl(url);
     			break;
     		case 4://open in new tab
-    			btnNewpage.performClick();
-    			globalUrl = "";
+    			openNewPage(url);
     			break;
     		case 5://add bookmark
-    			imgAddFavo.performClick();//error
-    			globalUrl = "";
+    			addFavo(url, url);
     			break;
     		case 6://share url
-    			shareUrl(globalUrl);
+    			shareUrl(url);
     			break;
     		case 7://copy url
     			ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-    			ClipMan.setText(globalUrl);
+    			ClipMan.setText(url);
     			break;
     		}
     		return true;
@@ -676,56 +672,7 @@ public void onCreate(Bundle savedInstanceState) {
     imgAddFavo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			final String title = serverWebs.get(webIndex).getTitle();
-			Log.d("=============", globalUrl);
-			if (globalUrl.equals("")) globalUrl = serverWebs.get(webIndex).getUrl();
-			else globalUrl = "";
-			if (globalUrl == null) {
-				Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
-				return;
-			}
-			
-			for (int i = mBookMark.size()-1; i >= 0; i--) 
-				if (mBookMark.get(i).m_url.equals(globalUrl)) {//ask use whether to delete the bookmark if already exist.
-					final int ii = i;
-					new AlertDialog.Builder(mContext).
-					setTitle(R.string.remove_bookmark).
-					setMessage(title).
-					setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-				    		mBookMark.remove(ii);
-				    		bookmarkChanged = true;
-						}
-					}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-						}
-					}).show();
-					return;//no need to add it again if always in bookmark
-				}
-			
-			//need use's confirm to add to bookmark
-			new AlertDialog.Builder(mContext).
-				setTitle(R.string.add_bookmark).
-				setMessage(title).
-				setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						String site = "";
-						String[] tmp = globalUrl.split("/");
-						if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-						else site = tmp[0];
-						
-						TitleUrl titleUrl = new TitleUrl(title, globalUrl, site);
-			    		mBookMark.add(titleUrl);
-			    		bookmarkChanged = true;
-					}
-				}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				}).show();
+			addFavo(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
 		}
     });
     
@@ -821,20 +768,7 @@ public void onCreate(Bundle savedInstanceState) {
 	btnNewpage.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {//add a new page
-			if (webAdapter.getCount() == 9) //max count is 9.
-				Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
-			else {
-		        webControl.setVisibility(View.INVISIBLE);
-				webAdapter.add(new MyWebview(mContext));
-				webIndex = webAdapter.getCount() - 1;
-				if (globalUrl.equals("")) serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
-				else serverWebs.get(webIndex).loadUrl(globalUrl);
-		        webpages.addView(webAdapter.getItem(webIndex));
-		        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-				webpages.getChildAt(webIndex).requestFocus();
-				imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));
-			}
-			adview.loadAd(adRequest);
+			openNewPage("file:///android_asset/online.html");
 		}
 	});
 	//web list
@@ -923,6 +857,72 @@ protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 	if (intent.getAction().equals(Intent.ACTION_VIEW)) //view webpages
 		loadNewPage(intent.getDataString(), intent.getBooleanExtra("update", false));
 	super.onNewIntent(intent); 
+}
+
+private void addFavo(final String url, final String title) {
+	if (url == null) {
+		Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
+		return;
+	}
+	
+	for (int i = mBookMark.size()-1; i >= 0; i--) 
+		if (mBookMark.get(i).m_url.equals(url)) {//ask user whether to delete the bookmark if already exist.
+			final int ii = i;
+			new AlertDialog.Builder(mContext).
+			setTitle(R.string.remove_bookmark).
+			setMessage(title).
+			setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+		    		mBookMark.remove(ii);
+		    		bookmarkChanged = true;
+				}
+			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			}).show();
+			return;//no need to add it again if always in bookmark
+		}
+	
+	//need user's confirm to add to bookmark
+	new AlertDialog.Builder(mContext).
+		setTitle(R.string.add_bookmark).
+		setMessage(title).
+		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String site = "";
+				String[] tmp = url.split("/");
+				if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+				else site = tmp[0];
+				
+				TitleUrl titleUrl = new TitleUrl(title, url, site);
+	    		mBookMark.add(titleUrl);
+	    		bookmarkChanged = true;
+			}
+		}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		}).show();	
+}
+
+
+private void openNewPage(String url) {
+	if (webAdapter.getCount() == 9) //max count is 9.
+		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
+	else {
+        webControl.setVisibility(View.INVISIBLE);
+		webAdapter.add(new MyWebview(mContext));
+		webIndex = webAdapter.getCount() - 1;
+		serverWebs.get(webIndex).loadUrl(url);
+        webpages.addView(webAdapter.getItem(webIndex));
+        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
+		webpages.getChildAt(webIndex).requestFocus();
+		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));
+	}
+	adview.loadAd(adRequest);
 }
 
 @Override

@@ -327,7 +327,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://save image
-    			startDownload(url);//not work
+    			startDownload(url, ".jpg");
     			break;
     		case 1://view image
     			serverWebs.get(webIndex).loadUrl(url);
@@ -391,8 +391,7 @@ boolean startDownload(String url, String ext) {
 	
 	if (!apkName.contains(".")) {
 		if (!ext.equals("")) apkName = apkName + ext;
-		else apkName = apkName + ".jpg";//let's just suppose it is a jpg file
-		//return false;//not a file
+		else return false;//not a file
 	}
 	
 	MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();

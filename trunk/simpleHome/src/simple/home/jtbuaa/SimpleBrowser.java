@@ -372,20 +372,28 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
 }
 
 boolean startDownload(String url) {
-	if (!url.contains(".")) return false;//not a file
-	
+	return startDownload(url, "");
+}
+
+boolean startDownload(String url, String ext) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
 	url = url.replace("%2F", "/");
-	url = url.replace("%3A", ":");// replace %3A%2F%2F to ://
+	url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
 	
 	posQ = url.indexOf("?");
 	if (posQ > 0) url = url.substring(0, posQ);//cut off post paras if any.
-	
+
 	String ss[] = url.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if ((apkName.endsWith(".txt")) || (apkName.endsWith(".html")) || (apkName.endsWith(".htm"))) return false;//should not download txt and html file.
+	
+	if (!apkName.contains(".")) {
+		if (!ext.equals("")) apkName = apkName + ext;
+		else apkName = apkName + ".jpg";//let's just suppose it is a jpg file
+		//return false;//not a file
+	}
 	
 	MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 	if (mimeTypeMap.hasExtension(mimeTypeMap.getFileExtensionFromUrl(apkName))) {//files need download

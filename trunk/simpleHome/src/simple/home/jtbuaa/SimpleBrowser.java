@@ -378,6 +378,8 @@ boolean startDownload(String url) {
 boolean startDownload(String url, String ext) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
+	url = url.replace("%2D", "-");
+	url = url.replace("%2E", ".");
 	url = url.replace("%2F", "/");
 	url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
 	

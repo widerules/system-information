@@ -889,6 +889,7 @@ private void addFavo(final String url, final String title) {
 			setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					deleteFile(mBookMark.get(ii).m_site + ".snap.png");//delete snap too
 		    		mBookMark.remove(ii);
 		    		bookmarkChanged = true;
 				}
@@ -914,6 +915,20 @@ private void addFavo(final String url, final String title) {
 				
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 	    		mBookMark.add(titleUrl);
+	    		
+				try {//save snap
+					FileOutputStream fos = openFileOutput(site+".snap.png", 0);
+					Picture pic = serverWebs.get(webIndex).capturePicture();
+					Bitmap bmp = Bitmap.createBitmap(serverWebs.get(webIndex).getWidth(), serverWebs.get(webIndex).getWidth(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+					Canvas canvas = new Canvas(bmp); 
+			        pic.draw(canvas);
+			        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
+			        fos.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 	    		bookmarkChanged = true;
 			}
 		}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -1043,46 +1058,43 @@ void loadPage(String data) {
 String homePage() {
 	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
 	ret += "<html>";
-	
 	ret += "<title>Easy Browser</title>";
-	
 	ret += "<body>";
-	ret += "<h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3><br>";
-	ret += "<h3><a href=\"http://www.baidu.com/\">百度</a></h3><br>";
-	ret += "<h3><a href=\"http://www.google.com/\">Google</a></h3><br>";
-	ret += "<h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3><br>";
 	
-	ret += "<h3><p> bookmark </p></h3>";
+	ret += "<h3><p>" + getString(R.string.recommend) + "</p></h3>";
+	ret += "<ul type=\"disc\">";
+	ret += "<li><h4><a href=\"http://www.appchina.com\">AppChina应用汇</a></h4></li>";
+	ret += "<li><h4><a href=\"http://www.baidu.com/\">百度</a></h4></li>";
+	ret += "<li><h4><a href=\"http://www.google.com/\">Google</a></h4></li>";
+	ret += "<li><h4><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h4></li>";
+	ret += "</ul>";
+	
+	ret += "<h3><p>" + getString(R.string.bookmark) + "</p></h3>";
 	ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";
 	ret += "<tr>"; 
 	for (int i = 0; i < mBookMark.size(); i++) {
 		if ((i%4 == 0) && (i > 0)) ret += "</tr><tr>"; 
 		String imgHref = "<td width=\"25%\" valign=\"top\">"; 
 		imgHref += "<a href=\"" + mBookMark.get(i).m_url + "\">";
-		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png\"/>";
+		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".snap.png\"/>";
 		imgHref += "</a>";
 		imgHref += "</td>";
 		ret += imgHref;
 	}
 	ret += "</tr></table>";
 	
-	ret += "<h3><p> history </p></h3>";
-	ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";
-	ret += "<tr>"; 
+	ret += "<h3><p>" + getString(R.string.history) + "</p></h3>";
+	ret += "<ul type=\"disc\">";
 	for (int i = 0; i < mHistory.size(); i++) {
-		if ((i%4 == 0) && (i > 0)) ret += "</tr><tr>"; 
-		String imgHref = "<td width=\"25%\" valign=\"top\">";
-		imgHref += "<a href=\"" + mHistory.get(i).m_url + "\">";
-		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png\"/>";
-		imgHref += "</a>";
+		String imgHref = "<li><h5><a href=\"" + mHistory.get(i).m_url + "\">";
+		imgHref += mHistory.get(i).m_title;
+		imgHref += "</h5></a></li>";
 		ret += imgHref;
 	}
-	ret += "</tr></table>";
+	ret += "</ul>";
 	
-	ret += "\n</body>";
-
+	ret += "</body>";
 	ret += "</html>";
-
 	return ret;
 }
 

@@ -794,17 +794,6 @@ public void onCreate(Bundle savedInstanceState) {
 	webList.setScrollingCacheEnabled(false);
 	webList.setAdapter(webAdapter);
 
-	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-		if (!getIntent().getAction().equals(Intent.ACTION_VIEW))
-			loadPage(homePage());
-		else //open the url from intent in a new page if the old page is under reading.
-			loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
-	}
-	catch (Exception e) {
-		e.printStackTrace();
-		loadPage(homePage());
-	}
-
 	
 	downloadPath = util.preparePath(getFilesDir().getPath());
 
@@ -1004,7 +993,19 @@ protected void onResume() {
 			}
 			l = l+1;
 		}
-		webAddress.setAdapter(urlAdapter); 
+		webAddress.setAdapter(urlAdapter);
+
+		//this is the first resume after create, so need load homepage
+		try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
+			if (!getIntent().getAction().equals(Intent.ACTION_VIEW))
+				loadPage(homePage());
+			else //open the url from intent in a new page if the old page is under reading.
+				loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			loadPage(homePage());
+		}
 	}
 	
 	super.onResume();

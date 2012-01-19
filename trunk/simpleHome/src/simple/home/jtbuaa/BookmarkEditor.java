@@ -117,7 +117,7 @@ public class BookmarkEditor extends Activity{
             btnVersion.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-        			deleteFile(tu.m_title + ".png");//delete the Favicon
+        			deleteFile(tu.m_site + ".png");//delete the Favicon
 					bAdapter.remove(tu);
 					deleted = true;//mark as changed
 				}

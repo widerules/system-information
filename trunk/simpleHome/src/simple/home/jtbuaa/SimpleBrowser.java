@@ -209,7 +209,7 @@ class MyWebview extends WebView {
 				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
 				
-        		if (!url.equals("file:///android_asset/online.html")) {
+        		if (!url.equals("file:///android_asset/online.html")) { 
         			String site = "";
         			String[] tmp = url.split("/");
         			if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
@@ -231,7 +231,7 @@ class MyWebview extends WebView {
             		
             		if (mHistory.size() > 16) {
             			urlAdapter.remove(mHistory.get(0).m_site);//also remove it from auto-complete item
-            			deleteFile(mHistory.get(0).m_title + ".png");//delete the Favicon
+            			deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon
             			mHistory.remove(0);//delete the first history if list larger than 16;
             		}
             		historyChanged = true;
@@ -302,7 +302,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 				}
 				else {//return to home page if only one page when click close button
 					webControl.setVisibility(View.INVISIBLE);
-					serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+					loadPage(homePage());
 					serverWebs.get(webIndex).title = getString(R.string.app_name);
 					serverWebs.get(webIndex).clearHistory();
 				}
@@ -757,7 +757,7 @@ public void onCreate(Bundle savedInstanceState) {
 	imgHome.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-	        serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+			loadPage(homePage());
 		}
 	});
 	imgNew = (ImageView) findViewById(R.id.newpage);
@@ -783,7 +783,7 @@ public void onCreate(Bundle savedInstanceState) {
 	btnNewpage.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {//add a new page
-			openNewPage("file:///android_asset/online.html");
+			openNewPage(homePage());
 		}
 	});
 	//web list
@@ -795,14 +795,14 @@ public void onCreate(Bundle savedInstanceState) {
 	webList.setAdapter(webAdapter);
 
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-		if (!getIntent().getAction().equals(Intent.ACTION_VIEW)) 
-			serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+		if (!getIntent().getAction().equals(Intent.ACTION_VIEW))
+			loadPage(homePage());
 		else //open the url from intent in a new page if the old page is under reading.
 			loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
 	}
 	catch (Exception e) {
 		e.printStackTrace();
-		serverWebs.get(webIndex).loadUrl("file:///android_asset/online.html");
+		loadPage(homePage());
 	}
 
 	
@@ -931,7 +931,7 @@ private void openNewPage(String url) {
         webControl.setVisibility(View.INVISIBLE);
 		webAdapter.add(new MyWebview(mContext));
 		webIndex = webAdapter.getCount() - 1;
-		serverWebs.get(webIndex).loadUrl(url);
+		loadPage(url);
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		webpages.getChildAt(webIndex).requestFocus();
@@ -1034,6 +1034,45 @@ void setLayout() {
     if (width >= 320)
     	lp.width = width/2 + 30;//15
     else lp.width = width/2-15;
+}
+
+void loadPage(String data) {
+    serverWebs.get(webIndex).loadDataWithBaseURL("", data, "text/html", "utf-8", "");
+}
+
+String homePage() {
+	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
+	ret += "<html>";
+	
+	ret += "<title>Easy Browser</title>";
+	
+	ret += "<body>";
+	ret += "<h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3><br>";
+	ret += "<h3><a href=\"http://www.baidu.com/\">百度</a></h3><br>";
+	ret += "<h3><a href=\"http://www.google.com/\">Google</a></h3><br>";
+	ret += "<h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3><br>";
+	
+	ret += "<h3><p> bookmark </p></h3>";
+	for (int i = 0; i < mBookMark.size(); i++) {
+		String imgHref = "<a href=\"" + mBookMark.get(i).m_url + "\">";
+		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png\"/>";
+		imgHref += "</a>";
+		ret += imgHref;
+	}
+	
+	ret += "<h3><p> history </p></h3>";
+	for (int i = 0; i < mHistory.size(); i++) {
+		String imgHref = "<a href=\"" + mHistory.get(i).m_url + "\">";
+		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png\"/>";
+		imgHref += "</a>";
+		ret += imgHref;
+	}
+	
+	ret += "\n</body>";
+
+	ret += "</html>";
+
+	return ret;
 }
 
 }

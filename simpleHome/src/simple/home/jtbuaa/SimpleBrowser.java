@@ -1053,20 +1053,31 @@ String homePage() {
 	ret += "<h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3><br>";
 	
 	ret += "<h3><p> bookmark </p></h3>";
+	ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";
+	ret += "<tr>"; 
 	for (int i = 0; i < mBookMark.size(); i++) {
-		String imgHref = "<a href=\"" + mBookMark.get(i).m_url + "\">";
+		if ((i%4 == 0) && (i > 0)) ret += "</tr><tr>"; 
+		String imgHref = "<td width=\"25%\" valign=\"top\">"; 
+		imgHref += "<a href=\"" + mBookMark.get(i).m_url + "\">";
 		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png\"/>";
 		imgHref += "</a>";
+		imgHref += "</td>";
 		ret += imgHref;
 	}
+	ret += "</tr></table>";
 	
 	ret += "<h3><p> history </p></h3>";
+	ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";
+	ret += "<tr>"; 
 	for (int i = 0; i < mHistory.size(); i++) {
-		String imgHref = "<a href=\"" + mHistory.get(i).m_url + "\">";
+		if ((i%4 == 0) && (i > 0)) ret += "</tr><tr>"; 
+		String imgHref = "<td width=\"25%\" valign=\"top\">";
+		imgHref += "<a href=\"" + mHistory.get(i).m_url + "\">";
 		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png\"/>";
 		imgHref += "</a>";
 		ret += imgHref;
 	}
+	ret += "</tr></table>";
 	
 	ret += "\n</body>";
 

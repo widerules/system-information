@@ -118,7 +118,7 @@ public class BookmarkEditor extends Activity{
 				@Override
 				public void onClick(View v) {
         			deleteFile(tu.m_site + ".png");//delete the Favicon
-        			deleteFile(tu.m_title + ".snap.png");//delete the snap if any
+        			//deleteFile(tu.m_title + ".snap.png");//delete the snap if any
 					bAdapter.remove(tu);
 					deleted = true;//mark as changed
 				}

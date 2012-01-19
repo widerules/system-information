@@ -889,7 +889,7 @@ private void addFavo(final String url, final String title) {
 			setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					deleteFile(mBookMark.get(ii).m_title + ".snap.png");//delete snap too
+					//deleteFile(mBookMark.get(ii).m_title + ".snap.png");//delete snap too
 		    		mBookMark.remove(ii);
 		    		bookmarkChanged = true;
 				}
@@ -916,7 +916,7 @@ private void addFavo(final String url, final String title) {
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 	    		mBookMark.add(titleUrl);
 	    		
-				try {//save scaled snap
+				/*try {//save scaled snap
 					int width = serverWebs.get(webIndex).getWidth();
 					FileOutputStream fos = openFileOutput(title+".snap.png", 0);
 					Picture pic = serverWebs.get(webIndex).capturePicture();
@@ -930,7 +930,7 @@ private void addFavo(final String url, final String title) {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}*/
 
 	    		bookmarkChanged = true;
 			}
@@ -1070,7 +1070,15 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<p><h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3></p>";
 	
 	ret += "<h3><p>" + getString(R.string.bookmark) + "</p></h3>";
-	ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";
+	ret += "<ul type=\"disc\">";
+	for (int i = 0; i < mBookMark.size(); i++) {
+		String imgHref = "<li><h5><a href=\"" + mBookMark.get(i).m_url + "\">";
+		imgHref += mBookMark.get(i).m_title;
+		imgHref += "</h5></a></li>";
+		ret += imgHref;
+	}
+	ret += "</ul>";
+	/*ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";//the effect of snap is not clear. so use list
 	ret += "<tr>"; 
 	for (int i = 0; i < mBookMark.size(); i++) {
 		if ((i%2 == 0) && (i > 0)) ret += "</tr><tr>"; //three item per row
@@ -1083,7 +1091,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		imgHref += "</td>";
 		ret += imgHref;
 	}
-	ret += "</tr></table>";
+	ret += "</tr></table>";*/
 	
 	ret += "<h3><p>" + getString(R.string.history) + "</p></h3>";
 	ret += "<ul type=\"disc\">";

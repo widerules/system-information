@@ -889,7 +889,7 @@ private void addFavo(final String url, final String title) {
 			setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					deleteFile(mBookMark.get(ii).m_site + ".snap.png");//delete snap too
+					deleteFile(mBookMark.get(ii).m_title + ".snap.png");//delete snap too
 		    		mBookMark.remove(ii);
 		    		bookmarkChanged = true;
 				}
@@ -918,7 +918,7 @@ private void addFavo(final String url, final String title) {
 	    		
 				try {//save scaled snap
 					int width = serverWebs.get(webIndex).getWidth();
-					FileOutputStream fos = openFileOutput(site+".snap.png", 0);
+					FileOutputStream fos = openFileOutput(title+".snap.png", 0);
 					Picture pic = serverWebs.get(webIndex).capturePicture();
 					Bitmap bmp = Bitmap.createBitmap(width, width*2/3, Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
 					Canvas canvas = new Canvas(bmp); 
@@ -1073,12 +1073,12 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";
 	ret += "<tr>"; 
 	for (int i = 0; i < mBookMark.size(); i++) {
-		if ((i%3 == 0) && (i > 0)) ret += "</tr><tr>"; //three item per row
-		String imgHref = "<td width=\"33%\" valign=\"top\">";
+		if ((i%2 == 0) && (i > 0)) ret += "</tr><tr>"; //three item per row
+		String imgHref = "<td width=\"50%\" valign=\"top\">";
 		String title = mBookMark.get(i).m_title;
-		imgHref += "<p><pre>" + title.substring(0, Math.min(8, title.length())) + "</pre></p>";//control the display length of title not more than 9 character
+		imgHref += "<p><pre>" + title.substring(0, Math.min(14, title.length())) + "</pre></p>";//control the display length of title not more than 15 character
 		imgHref += "<p><a href=\"" + mBookMark.get(i).m_url + "\">";
-		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".snap.png\"/>";
+		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_title + ".snap.png\"/>";
 		imgHref += "</a></p>";
 		imgHref += "</td>";
 		ret += imgHref;

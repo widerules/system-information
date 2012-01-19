@@ -916,13 +916,16 @@ private void addFavo(final String url, final String title) {
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 	    		mBookMark.add(titleUrl);
 	    		
-				try {//save snap
+				try {//save scaled snap
+					int width = serverWebs.get(webIndex).getWidth();
 					FileOutputStream fos = openFileOutput(site+".snap.png", 0);
 					Picture pic = serverWebs.get(webIndex).capturePicture();
-					Bitmap bmp = Bitmap.createBitmap(serverWebs.get(webIndex).getWidth(), serverWebs.get(webIndex).getWidth(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+					Bitmap bmp = Bitmap.createBitmap(width, width*2/3, Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
 					Canvas canvas = new Canvas(bmp); 
 			        pic.draw(canvas);
-			        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
+			        
+			        Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, width/4, width/6, false);
+			        scaledBmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
 			        fos.close();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -1055,29 +1058,28 @@ void loadPage(String data) {
     serverWebs.get(webIndex).loadDataWithBaseURL("", data, "text/html", "utf-8", "");
 }
 
-String homePage() {
+String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
 	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
 	ret += "<html>";
 	ret += "<title>Easy Browser</title>";
 	ret += "<body>";
 	
-	ret += "<h3><p>" + getString(R.string.recommend) + "</p></h3>";
-	ret += "<ul type=\"disc\">";
-	ret += "<li><h4><a href=\"http://www.appchina.com\">AppChina应用汇</a></h4></li>";
-	ret += "<li><h4><a href=\"http://www.baidu.com/\">百度</a></h4></li>";
-	ret += "<li><h4><a href=\"http://www.google.com/\">Google</a></h4></li>";
-	ret += "<li><h4><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h4></li>";
-	ret += "</ul>";
+	ret += "<p><h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3></p>";
+	ret += "<p><h3><a href=\"http://www.baidu.com/\">百度</a></h3></p>";
+	ret += "<p><h3><a href=\"http://www.google.com/\">Google</a></h3></p>";
+	ret += "<p><h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3></p>";
 	
 	ret += "<h3><p>" + getString(R.string.bookmark) + "</p></h3>";
 	ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";
 	ret += "<tr>"; 
 	for (int i = 0; i < mBookMark.size(); i++) {
-		if ((i%4 == 0) && (i > 0)) ret += "</tr><tr>"; 
-		String imgHref = "<td width=\"25%\" valign=\"top\">"; 
-		imgHref += "<a href=\"" + mBookMark.get(i).m_url + "\">";
+		if ((i%3 == 0) && (i > 0)) ret += "</tr><tr>"; //three item per row
+		String imgHref = "<td width=\"33%\" valign=\"top\">";
+		String title = mBookMark.get(i).m_title;
+		imgHref += "<p><pre>" + title.substring(0, Math.min(8, title.length())) + "</pre></p>";//control the display length of title not more than 9 character
+		imgHref += "<p><a href=\"" + mBookMark.get(i).m_url + "\">";
 		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".snap.png\"/>";
-		imgHref += "</a>";
+		imgHref += "</a></p>";
 		imgHref += "</td>";
 		ret += imgHref;
 	}

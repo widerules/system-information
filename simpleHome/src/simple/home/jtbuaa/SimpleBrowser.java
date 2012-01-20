@@ -333,7 +333,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     			serverWebs.get(webIndex).loadUrl(url);
     			break;
     		case 4://open in new tab
-    			openNewPage(url);
+    			openNewPage(url, "");
     			break;
     		case 5://add bookmark
     			addFavo(url, url);
@@ -931,14 +931,19 @@ private void addFavo(final String url, final String title) {
 }
 
 
-private void openNewPage(String url) {
+private void openNewPage(String data) {
+	openNewPage("", data);
+}
+
+private void openNewPage(String url, String data) {
 	if (webAdapter.getCount() == 9) //max count is 9.
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 	else {
         webControl.setVisibility(View.INVISIBLE);
 		webAdapter.add(new MyWebview(mContext));
 		webIndex = webAdapter.getCount() - 1;
-		loadPage(url);
+		if (url.equals(""))	loadPage(url);
+		else serverWebs.get(webIndex).loadUrl(url);
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		webpages.getChildAt(webIndex).requestFocus();

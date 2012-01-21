@@ -209,7 +209,7 @@ class MyWebview extends WebView {
 				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
 				
-        		if (!url.equals("file:///android_asset/online.html")) { 
+        		if (!url.equals("about:blank")) { 
         			String site = "";
         			String[] tmp = url.split("/");
         			if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
@@ -942,7 +942,7 @@ private void openNewPage(String url, String data) {
         webControl.setVisibility(View.INVISIBLE);
 		webAdapter.add(new MyWebview(mContext));
 		webIndex = webAdapter.getCount() - 1;
-		if (url.equals(""))	loadPage(url);
+		if (url.equals(""))	loadPage(data);
 		else serverWebs.get(webIndex).loadUrl(url);
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();

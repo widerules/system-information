@@ -214,10 +214,13 @@ class MyWebview extends WebView {
         			String[] tmp = url.split("/");
         			if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
         			else site = tmp[0];
-            		for (int i = mHistory.size()-1; i >= 0; i--) 
-            			if (mHistory.get(i).m_site.equals(site)) return;//record one site only once in the history list.
+        			boolean found = false;
+            		for (int i = mHistory.size()-1; i >= 0; i--) {
+            			if (mHistory.get(i).m_url.equals(url)) return;//record one url only once in the history list.
+            			if (mHistory.get(i).m_site.equals(site)) found = true;
+            		}
             		
-            		urlAdapter.add(site);//update the auto-complete edittext
+            		if (!found) urlAdapter.add(site);//update the auto-complete edittext, no duplicate
             		
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
@@ -1002,17 +1005,16 @@ protected void onResume() {
 
 		//this is the first resume after create, so need load homepage
 		try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-			if (!getIntent().getAction().equals(Intent.ACTION_VIEW))
-				loadPage(homePage());
-			else //open the url from intent in a new page if the old page is under reading.
+			if (getIntent().getAction().equals(Intent.ACTION_VIEW))
+			//open the url from intent in a new page if the old page is under reading.
 				loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			loadPage(homePage());
 		}
 	}
 	
+	if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals("about:blank"))) loadPage(homePage());
 	super.onResume();
 }
 

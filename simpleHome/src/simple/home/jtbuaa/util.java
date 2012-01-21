@@ -95,6 +95,10 @@ public class util {
 				java.io.File snapPath = new java.io.File(downloadPath + "snap/");
 			    if(snapPath.isDirectory()) ;//folder exist
 			    else snapPath.mkdir();//create folder
+			    
+				java.io.File apkPath = new java.io.File(downloadPath + "apk/");
+			    if(apkPath.isDirectory()) ;//folder exist
+			    else apkPath.mkdir();//create folder
 			}
 			catch(Exception e) {
 				e.printStackTrace();

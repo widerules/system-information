@@ -321,7 +321,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
 		FileOutputStream fos;
 		FileInputStream fis;
-		String filename = downloadPath + apk;
+		String filename = downloadPath + "apk/" + apk;
 		try {
 			File target = new File(filename);
 			fos = new FileOutputStream(target, false);
@@ -369,7 +369,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			if (backup(sourceDir)) {
 				Toast.makeText(this, 
 						getString(R.string.backapp) + " " + getString(R.string.to) + " " + 
-						downloadPath + apk, Toast.LENGTH_LONG).show();
+						downloadPath + "apk/" + apk, Toast.LENGTH_LONG).show();
 				
 				String odex = sourceDir.replace(".apk", ".odex");
 				File target = new File(odex);

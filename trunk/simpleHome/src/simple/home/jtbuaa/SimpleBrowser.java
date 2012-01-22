@@ -306,7 +306,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 				else {//return to home page if only one page when click close button
 					webControl.setVisibility(View.INVISIBLE);
 					loadPage(homePage());
-					serverWebs.get(webIndex).title = getString(R.string.app_name);
+					serverWebs.get(webIndex).title = getString(R.string.browser_name);
 					serverWebs.get(webIndex).clearHistory();
 				}
 				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
@@ -1003,18 +1003,18 @@ protected void onResume() {
 		}
 		webAddress.setAdapter(urlAdapter);
 
-		//this is the first resume after create, so need load homepage
 		try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-			if (getIntent().getAction().equals(Intent.ACTION_VIEW))
-			//open the url from intent in a new page if the old page is under reading.
+			if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
+				//open the url from intent in a new page if the old page is under reading.
 				loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
+			else if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals("about:blank"))) loadPage(homePage());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+		
 	
-	if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals("about:blank"))) loadPage(homePage());
 	super.onResume();
 }
 
@@ -1069,7 +1069,7 @@ void loadPage(String data) {
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
 	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
 	ret += "<html>";
-	ret += "<title>Easy Browser</title>";
+	ret += "<title>" + getString(R.string.browser_name) + "</title>";
 	ret += "<body>";
 	
 	ret += "<p><h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3></p>";

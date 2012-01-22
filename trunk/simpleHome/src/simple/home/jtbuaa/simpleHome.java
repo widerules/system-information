@@ -1639,7 +1639,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		if (width < 100) return;//can't work on so small screen.
 		
         LayoutParams lp = shortcutBar_center.getLayoutParams();
-        if (width > 320)
+        if (width > 600)
+        	lp.width = width/2-100;
+        else if (width > 320)
         	lp.width = width/2-25;
         else lp.width = width/2-15;
         	

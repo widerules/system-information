@@ -294,6 +294,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 4, 0, getString(R.string.appdetail));
 			menu.add(0, 5, 0, getString(R.string.addtoFavo));
 			menu.add(0, 6, 0, getString(R.string.addtoShort));
+			menu.add(0, 7, 0, getString(R.string.hideapp));
 			mMenu = menu;
 			break;
 		}
@@ -404,6 +405,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				shortAdapter.insert(selected_case.mRi, 0);
 				writeFile("short");	//save shortcut to file
 			}
+			break;
+		case 7://hide the ri
+			if (mainlayout.getCurrentItem() == 0)
+				sysAdapter.remove(selected_case.mRi);
+			else userAdapter.remove(selected_case.mRi);
 			break;
 		}
 		return false;

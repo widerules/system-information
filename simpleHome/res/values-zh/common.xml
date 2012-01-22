@@ -40,7 +40,8 @@
     <string name="userapps">个人应用</string>        
     <string name="online">上网</string>
     <string name="home">首屏</string>
-
+    <string name="packages">其他应用</string>
+    
     <string name="addtoFavo">添加到首屏</string>
     <string name="removeFromFavo">从首屏删除</string>
     <string name="addtoShort">添加到快捷方式</string>

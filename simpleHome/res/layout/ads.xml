@@ -36,8 +36,11 @@
     <RadioButton  
         android:id="@+id/radio_user"  
         android:button="@drawable/radio"
+        />     
+    <RadioButton  
+        android:id="@+id/radio_package"  
+        android:button="@drawable/radio"
         android:textColor="#80000000"
-        android:text="@string/home"
         />     
 </RadioGroup>           
 		

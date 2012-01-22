@@ -1493,6 +1493,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             lapp.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					String source = info.applicationInfo.sourceDir 
+							+ "\n\n" 
+							+ info.packageName;
+			        	Toast.makeText(getBaseContext(), source, Toast.LENGTH_LONG).show();
+
 					Intent intent;
 					if (appDetail != null) {
 						intent = new Intent(Intent.ACTION_VIEW);

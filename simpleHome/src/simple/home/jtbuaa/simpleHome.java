@@ -636,7 +636,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					            //when slide from home to users or from users to home, it is 1.
 					            //positionOffset is from 0 to 1. sometime it will jump from 1 to 0, we just omit it if it is 0.
 					            //so we can unify it to (0, 1) by (positionOffset+position)/2
-			                    Math.max(0.f, Math.min((positionOffset+position)/2, 1.f)), 0);
+			                    Math.max(0.f, Math.min((positionOffset+position)/(mListViews.size()-1), 1.f)), 0);
 			        }
 				}
 			}

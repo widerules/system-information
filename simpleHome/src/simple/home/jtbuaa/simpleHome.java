@@ -570,6 +570,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	packages = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	packageList = (ListView) packages.findViewById(R.id.applist); 
     	packageList.inflate(this, R.layout.app_list, null);
+    	GridView tmpAlpha = (GridView) packages.findViewById(R.id.alpha_list);//no alpha for package list
+    	tmpAlpha.setVisibility(View.INVISIBLE);//so set it invisible
+    	LayoutParams lp = tmpAlpha.getLayoutParams();
+    	lp.height = 0;//set its height to 0.
     	
         mListViews = new ArrayList<View>();
         mListViews.add(systems);
@@ -581,6 +585,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         btnUser = (RadioButton) findViewById(R.id.radio_user);
         btnHome = (RadioButton) findViewById(R.id.radio_home);
         btnPackage = (RadioButton) findViewById(R.id.radio_package);
+        final RadioButton btnLast = btnPackage;
         
         mWallpaperManager = WallpaperManager.getInstance(this);
         
@@ -596,29 +601,29 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 0:
 						btnSystem.setChecked(true);
 						try {
-						btnPackage.setText(getString(R.string.systemapps) + "(" + sysAdapter.getCount() + ")");
+							btnLast.setText(getString(R.string.systemapps) + "(" + sysAdapter.getCount() + ")");
 						} catch(Exception e) {
-							btnPackage.setText(R.string.systemapps);
+							btnLast.setText(R.string.systemapps);
 						}
 						break;
 					case 1:
 						btnHome.setChecked(true);
-						btnPackage.setText(R.string.home);
+						btnLast.setText(R.string.home);
 						break;
 					case 2:
 						btnUser.setChecked(true);
 						try {
-						btnPackage.setText(getString(R.string.userapps) + "(" + userAdapter.getCount() + ")");
+							btnLast.setText(getString(R.string.userapps) + "(" + userAdapter.getCount() + ")");
 						} catch(Exception e) {//catch null pointer error
-							btnPackage.setText(R.string.userapps);
+							btnLast.setText(R.string.userapps);
 						}
 						break;
 					case 3:
 						btnPackage.setChecked(true);
 						try {
-						btnPackage.setText(getString(R.string.packages) + "(" + packageAdapter.getCount() + ")");
+							btnLast.setText(getString(R.string.packages) + "(" + packageAdapter.getCount() + ")");
 						} catch(Exception e) {//catch null pointer error
-							btnPackage.setText(R.string.packages);
+							btnLast.setText(R.string.packages);
 						}
 						break;
 					}

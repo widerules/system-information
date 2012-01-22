@@ -1391,9 +1391,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		    	Intent intent = new Intent(Intent.ACTION_MAIN, null);
 		    	intent.addCategory(Intent.CATEGORY_LAUNCHER);
 		    	intent.setClassName(myPackageName, myPackageName+".SelectHome");
-		    	mAllApps = pm.queryIntentActivities(intent, 0);
-		    	if (mAllApps.size() == 1)
-		    		mShortApps.add(mAllApps.get(0));
+		    	List<ResolveInfo> selectApps = pm.queryIntentActivities(intent, 0);
+		    	if (selectApps.size() == 1)
+		    		mShortApps.add(selectApps.get(0));
 	    	}
 	    	
         	Message msguser = mAppHandler.obtainMessage();
@@ -1438,7 +1438,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		while (i < mPackages.size()) {
 			PackageInfo pi = mPackages.get(i);
 			boolean found = false;
-			for (int j =  0; j < mAllApps.size(); j++) {
+			for (int j = 0; j < mAllApps.size(); j++) {
 				if (mAllApps.get(j).activityInfo.packageName.equals(pi.packageName)) {
 					mPackages.remove(i);
 					found = true;

@@ -41,6 +41,7 @@
     <string name="userapps">User</string>        
     <string name="online">Online</string>
     <string name="home">Home</string>
+    <string name="packages">Other Packages</string>
     
     <string name="addtoFavo">Add to home</string>
     <string name="removeFromFavo">Delete</string>

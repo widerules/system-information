@@ -122,7 +122,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	final int MaxCount = 14;
 	int systemColumns, userColumns;
 	Boolean DuringSelection = false;
-    RadioButton btnSystem, btnUser, btnHome;
+    RadioButton btnSystem, btnUser, btnHome, btnPackage;
     int systemSelected = -1, userSelected = -1;
 
 	//app list related
@@ -132,7 +132,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
-	RelativeLayout home, systems, users;
+	RelativeLayout home, systems, users, packages;
 	ResolveInfo appDetail, appToDel = null;
 	List<ResolveInfo> mAllApps, mFavoApps, mSysApps, mUserApps, mShortApps;
 	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
@@ -148,9 +148,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	RelativeLayout apps;
 	RelativeLayout shortcutBar_center;
     appHandler mAppHandler = new appHandler();
-	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SPLASH = 4; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SPLASH = 4, UPDATE_PACKAGE = 5; 
 	ContextMenu mMenu;
 	
+	//no launcher package related
+	List<PackageInfo> mPackages;
+	PackageAdapter packageAdapter;
+	ListView packageList;
 	boolean canRoot;
 	
 	DisplayMetrics dm;
@@ -562,14 +566,21 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
     	userAlpha.inflate(this, R.layout.alpha_list, null);
         
+    	//package tab
+    	packages = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
+    	packageList = (ListView) packages.findViewById(R.id.applist); 
+    	packageList.inflate(this, R.layout.app_list, null);
+    	
         mListViews = new ArrayList<View>();
         mListViews.add(systems);
         mListViews.add(home);
         mListViews.add(users);
+        mListViews.add(packages);
         
         btnSystem = (RadioButton) findViewById(R.id.radio_system);
         btnUser = (RadioButton) findViewById(R.id.radio_user);
         btnHome = (RadioButton) findViewById(R.id.radio_home);
+        btnPackage = (RadioButton) findViewById(R.id.radio_package);
         
         mWallpaperManager = WallpaperManager.getInstance(this);
         
@@ -585,21 +596,29 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 0:
 						btnSystem.setChecked(true);
 						try {
-						btnUser.setText(getString(R.string.systemapps) + "(" + sysAdapter.getCount() + ")");
+						btnPackage.setText(getString(R.string.systemapps) + "(" + sysAdapter.getCount() + ")");
 						} catch(Exception e) {
-							btnUser.setText(R.string.systemapps);
+							btnPackage.setText(R.string.systemapps);
 						}
 						break;
 					case 1:
 						btnHome.setChecked(true);
-						btnUser.setText(R.string.home);
+						btnPackage.setText(R.string.home);
 						break;
 					case 2:
 						btnUser.setChecked(true);
 						try {
-						btnUser.setText(getString(R.string.userapps) + "(" + userAdapter.getCount() + ")");
+						btnPackage.setText(getString(R.string.userapps) + "(" + userAdapter.getCount() + ")");
 						} catch(Exception e) {//catch null pointer error
-							btnUser.setText(R.string.userapps);
+							btnPackage.setText(R.string.userapps);
+						}
+						break;
+					case 3:
+						btnPackage.setChecked(true);
+						try {
+						btnPackage.setText(getString(R.string.packages) + "(" + packageAdapter.getCount() + ")");
+						} catch(Exception e) {//catch null pointer error
+							btnPackage.setText(R.string.packages);
 						}
 						break;
 					}
@@ -1403,10 +1422,93 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    		}
 	    	}
 	    	
+	    	getPackages();
+        	Message msgPkg = mAppHandler.obtainMessage();
+        	msgPkg.what = UPDATE_PACKAGE;
+        	mAppHandler.sendMessage(msgPkg);//inform UI thread to update UI.
+	    	
 			return null;
 		}
 	}
+
+	void getPackages() {
+		mPackages = pm.getInstalledPackages(0);
+
+		int i = 0;
+		while (i < mPackages.size()) {
+			PackageInfo pi = mPackages.get(i);
+			boolean found = false;
+			for (int j =  0; j < mAllApps.size(); j++) {
+				if (mAllApps.get(j).activityInfo.packageName.equals(pi.packageName)) {
+					mPackages.remove(i);
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				if (pi.applicationInfo != null) {
+		    	    CharSequence sa = pi.applicationInfo.loadLabel(pm);
+		    	    if (sa == null) sa = pi.packageName;
+					mPackages.get(i).sharedUserId = getToken(sa);
+				}
+				else
+					mPackages.get(i).sharedUserId = pi.packageName;
+				i += 1;
+			}
+		}
+    	Collections.sort(mPackages, new PackageComparator());//sort by name
+	}
 	
+    private class PackageAdapter extends ArrayAdapter<PackageInfo> {
+    	ArrayList localApplist;
+        public PackageAdapter(Context context, List<PackageInfo> apps) {
+            super(context, 0, apps);
+            localApplist = (ArrayList) apps;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final PackageInfo info = (PackageInfo) localApplist.get(position);
+
+            if (convertView == null) 
+                convertView = getLayoutInflater().inflate(R.layout.app_list, parent, false);
+            
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
+            
+           	if (info.packageName == textView1.getText())//don't update the view here 
+           		return convertView;//seldom come here
+           	
+           	if (info.applicationInfo != null) textView1.setText(info.applicationInfo.loadLabel(pm));
+           	else textView1.setText(info.packageName);
+           	          	
+            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
+            if (info.applicationInfo != null) btnIcon.setImageDrawable(info.applicationInfo.loadIcon(pm));
+            
+            LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
+            lapp.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent;
+					if (appDetail != null) {
+						intent = new Intent(Intent.ACTION_VIEW);
+						intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
+						intent.putExtra("pkg", info.packageName);
+						intent.putExtra("com.android.settings.ApplicationPkgName", info.packageName);
+					}
+					else {//2.6 tahiti change the action.
+						intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", info.packageName, null));
+					}
+					util.startActivity(intent, true, getBaseContext());
+				}
+            });
+            
+            final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
+        	btnVersion.setText(info.versionName);
+           	
+            return convertView;
+        }
+    }
+    
 	class OnlyPic implements FilenameFilter { 
 	    public boolean accept(File dir, String s) {
 	    	 String name = s.toLowerCase();
@@ -1454,6 +1556,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
         		userAlpha.setAdapter(userAlphaAdapter);
         		setColumns(true);
+
+        		break;
+        	case UPDATE_PACKAGE:
+        		packageAdapter = new PackageAdapter(getBaseContext(), mPackages);
+        		packageList.setAdapter(packageAdapter);
 
         		break;
         	case UPDATE_RI_PHONE:

@@ -1493,6 +1493,22 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             lapp.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					if (info.applicationInfo != null) {
+						Intent intent = new Intent(Intent.ACTION_MAIN);
+						intent.setPackage(info.packageName);
+						if (!util.startActivity(intent, false, getBaseContext())) {
+							intent.setAction(Intent.ACTION_VIEW);
+							util.startActivity(intent, true, getBaseContext());
+						}
+					}
+				}
+            });
+            
+            final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
+        	btnVersion.setText(info.versionName);
+        	btnVersion.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
 					String source = info.applicationInfo.sourceDir 
 							+ "\n\n" 
 							+ info.packageName;
@@ -1510,10 +1526,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					}
 					util.startActivity(intent, true, getBaseContext());
 				}
-            });
-            
-            final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
-        	btnVersion.setText(info.versionName);
+        	});
            	
             return convertView;
         }

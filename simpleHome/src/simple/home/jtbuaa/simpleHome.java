@@ -1083,12 +1083,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						if ((pressTime > 0) && (pressTime < ViewConfiguration.getLongPressTimeout()) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
 	    					if (startApp(info))//start success
 	    						textView1.setTextColor(redColor);//red for running apk
-	    					else {
-	    						if (isUser) //user app
-	    							userAdapter.remove(info);
-	    						else
-	    							sysAdapter.remove(info);//fail to start, remove the item.
-	    					}
 							return true;
 						}
 						else return false;
@@ -1311,6 +1305,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             readFile("short");
             boolean shortEmpty = mShortApps.isEmpty();
             
+	    	getPackages();
+        	Message msgPkg = mAppHandler.obtainMessage();
+        	msgPkg.what = UPDATE_PACKAGE;
+        	mAppHandler.sendMessage(msgPkg);//inform UI thread to update UI.
+	    	
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging Messages メッセージ 信息 消息 短信 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
 	    	String label_phone = "電話 Phone 电话 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
@@ -1427,11 +1426,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    		}
 	    	}
 	    	
-	    	getPackages();
-        	Message msgPkg = mAppHandler.obtainMessage();
-        	msgPkg.what = UPDATE_PACKAGE;
-        	mAppHandler.sendMessage(msgPkg);//inform UI thread to update UI.
-	    	
 			return null;
 		}
 	}
@@ -1441,31 +1435,46 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 		int i = 0;
 		while (i < mPackages.size()) {
-			PackageInfo pi = mPackages.get(i);
 			boolean found = false;
 			for (int j = 0; j < mAllApps.size(); j++) {
-				if (mAllApps.get(j).activityInfo.packageName.equals(pi.packageName)) {
+				if (mAllApps.get(j).activityInfo.packageName.equals(mPackages.get(i).packageName)) {
 					mPackages.remove(i);//remove duplicate package if already in app list
 					found = true;
 					break;
 				}
 			}
-			if (!found) {
-	    		try {//get package size
-					getPackageSizeInfo.invoke(pm, pi.packageName, sizeObserver);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-	    		
-				if (pi.applicationInfo != null) {
-		    	    CharSequence sa = pi.applicationInfo.loadLabel(pm);
-		    	    if (sa == null) sa = pi.packageName;
-					mPackages.get(i).sharedUserId = getToken(sa);//use sharedUserId to store alpha index
-				}
-				else
-					mPackages.get(i).sharedUserId = pi.packageName;
-				i += 1;
+			if (!found) i += 1;
+		}
+		
+		i = 0;
+		while (i < mPackages.size()) {
+			Intent intent = new Intent(); 
+			intent.setPackage(mPackages.get(i).packageName);
+			List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
+			if (list.size() > 0) {
+				mAllApps.addAll(list);
+				mPackages.remove(i);
 			}
+			else i += 1;
+		}
+		
+		i = 0;
+		while (i < mPackages.size()) {
+			PackageInfo pi = mPackages.get(i);
+    		try {//get package size
+				getPackageSizeInfo.invoke(pm, pi.packageName, sizeObserver);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    		
+			if (pi.applicationInfo != null) {
+	    	    CharSequence sa = pi.applicationInfo.loadLabel(pm);
+	    	    if (sa == null) sa = pi.packageName;
+				mPackages.get(i).sharedUserId = getToken(sa);//use sharedUserId to store alpha index
+			}
+			else
+				mPackages.get(i).sharedUserId = pi.packageName;
+			i += 1;
 		}
     	Collections.sort(mPackages, new PackageComparator());//sort by name
 	}
@@ -1513,11 +1522,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					intent.setPackage(info.packageName);
 					List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
 					if (list.size() > 0) {
-						if (!list.get(0).activityInfo.name.equals("com.android.internal.app.ChooserActivity")) {
-							intent.setClassName(info.packageName, list.get(0).activityInfo.name);
-							util.startActivity(intent, true, getBaseContext());
-							textView1.setTextColor(redColor);//set color to red after launch it
-						}
+    					if (startApp(list.get(0)))//start success
+    						textView1.setTextColor(redColor);//red for running apk
 					}
 				}
             });

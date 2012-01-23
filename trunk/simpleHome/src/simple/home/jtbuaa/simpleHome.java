@@ -1513,9 +1513,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					intent.setPackage(info.packageName);
 					List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
 					if (list.size() > 0) {
-						intent.setClassName(info.packageName, list.get(0).activityInfo.name);
-						util.startActivity(intent, true, getBaseContext());
-						textView1.setTextColor(redColor);//set color to red after launch it
+						if (!list.get(0).activityInfo.name.equals("com.android.internal.app.ChooserActivity")) {
+							intent.setClassName(info.packageName, list.get(0).activityInfo.name);
+							util.startActivity(intent, true, getBaseContext());
+							textView1.setTextColor(redColor);//set color to red after launch it
+						}
 					}
 				}
             });

@@ -1071,7 +1071,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     						//but we need to know when will it restart by itself?
     						textView1.setTextColor(whiteColor);//set color back after kill it.
     					}
-						return false;
+    					return false;
 					}
                 });
                 
@@ -1491,27 +1491,31 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
            	
            	if (info.applicationInfo != null) textView1.setText(info.applicationInfo.loadLabel(pm));
            	else textView1.setText(info.packageName);
+           	textView1.setTextColor(whiteColor);
            	          	
             final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
             if (info.applicationInfo != null) btnIcon.setImageDrawable(info.applicationInfo.loadIcon(pm));
+            btnIcon.setOnTouchListener(new OnTouchListener() {
+				@Override
+				public boolean onTouch(View v, MotionEvent event) {
+					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+					am.restartPackage(info.packageName);
+					textView1.setTextColor(whiteColor);//set color back after kill it.
+					return false;
+				}
+            });
             
             LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
             lapp.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent();
+					Intent intent = new Intent(); 
 					intent.setPackage(info.packageName);
-					intent.setAction(Intent.ACTION_MAIN);
-					if (!util.startActivity(intent, false, getBaseContext())) {
-						intent.setAction(Intent.ACTION_VIEW);
-						if (!util.startActivity(intent, false, getBaseContext())) {
-							intent = new Intent(); 
-							List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
-							if (list.size() > 0) {
-								intent.setClassName(info.packageName, list.get(0).activityInfo.name);
-								util.startActivity(intent, true, getBaseContext());
-							}
-						}
+					List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
+					if (list.size() > 0) {
+						intent.setClassName(info.packageName, list.get(0).activityInfo.name);
+						util.startActivity(intent, true, getBaseContext());
+						textView1.setTextColor(redColor);//set color to red after launch it
 					}
 				}
             });

@@ -1445,16 +1445,22 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			boolean found = false;
 			for (int j = 0; j < mAllApps.size(); j++) {
 				if (mAllApps.get(j).activityInfo.packageName.equals(pi.packageName)) {
-					mPackages.remove(i);
+					mPackages.remove(i);//remove duplicate package if already in app list
 					found = true;
 					break;
 				}
 			}
 			if (!found) {
+	    		try {//get package size
+					getPackageSizeInfo.invoke(pm, pi.packageName, sizeObserver);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	    		
 				if (pi.applicationInfo != null) {
 		    	    CharSequence sa = pi.applicationInfo.loadLabel(pm);
 		    	    if (sa == null) sa = pi.packageName;
-					mPackages.get(i).sharedUserId = getToken(sa);
+					mPackages.get(i).sharedUserId = getToken(sa);//use sharedUserId to store alpha index
 				}
 				else
 					mPackages.get(i).sharedUserId = pi.packageName;
@@ -1493,12 +1499,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             lapp.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (info.applicationInfo != null) {
-						Intent intent = new Intent(Intent.ACTION_MAIN);
-						intent.setPackage(info.packageName);
+					Intent intent = new Intent();
+					intent.setPackage(info.packageName);
+					intent.setAction(Intent.ACTION_MAIN);
+					if (!util.startActivity(intent, false, getBaseContext())) {
+						intent.setAction(Intent.ACTION_VIEW);
 						if (!util.startActivity(intent, false, getBaseContext())) {
-							intent.setAction(Intent.ACTION_VIEW);
-							util.startActivity(intent, true, getBaseContext());
+							intent = new Intent(); 
+							List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
+							if (list.size() > 0) {
+								intent.setClassName(info.packageName, list.get(0).activityInfo.name);
+								util.startActivity(intent, true, getBaseContext());
+							}
 						}
 					}
 				}
@@ -1528,6 +1540,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				}
         	});
            	
+            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
+            String source = "";
+            Object o = packagesSize.get(info.packageName);
+            if(o != null) source = o.toString();
+            if((info.applicationInfo != null) && (info.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
+            	textView3.setTextColor(brownColor);//brown for debuggable apk
+            	source += " (debuggable)";
+            }
+            else textView3.setTextColor(grayColor);//gray for normal
+        	textView3.setText(source);
+
             return convertView;
         }
     }

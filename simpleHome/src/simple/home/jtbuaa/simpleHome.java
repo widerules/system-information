@@ -1452,7 +1452,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			intent.setPackage(mPackages.get(i).packageName);
 			List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
 			if (list.size() > 0) {
-				mAllApps.addAll(list);
+				//mAllApps.addAll(list);
+				mAllApps.add(list.get(list.size()-1));
 				mPackages.remove(i);
 			}
 			else i += 1;

@@ -77,6 +77,7 @@
     <string name="set_wallpaper">Set Wallpaper</string>
     <string name="open_new">Open in new tab</string>
     <string name="copy_url">Copy Url</string>
+    <string name="copy">Copy</string>
     
     <string name="sdcard_needed">Downloaded file may not be opened without SDcard.</string>
     

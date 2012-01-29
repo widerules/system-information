@@ -599,9 +599,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
 	super.onCreateOptionsMenu(menu);
 	menu.add(0, 0, 0, R.string.history).setAlphabeticShortcut('H');
 	menu.add(0, 1, 0, R.string.bookmark).setAlphabeticShortcut('B');
-	menu.add(0, 2, 0, R.string.source).setAlphabeticShortcut('S');
-	menu.add(0, 3, 0, R.string.snap).setAlphabeticShortcut('N');
-	menu.add(0, 4, 0, R.string.shareurl).setAlphabeticShortcut('M');
+	menu.add(0, 2, 0, R.string.copy).setAlphabeticShortcut('C');
+	menu.add(0, 3, 0, R.string.source).setAlphabeticShortcut('S');
+	menu.add(0, 4, 0, R.string.snap).setAlphabeticShortcut('N');
+	menu.add(0, 5, 0, R.string.shareurl).setAlphabeticShortcut('M');
 	return true;
 }
 
@@ -619,7 +620,17 @@ public boolean onOptionsItemSelected(MenuItem item){
    		intent.putExtra("filename", "bookmark");
    		util.startActivity(intent, false, getBaseContext());        		
 		break;
-	case 2://view page source
+	case 2://copy
+	    try {
+	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN,
+	                                                KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	    break;
+	case 3://view page source
 		intent = new Intent(Intent.ACTION_SENDTO);
 		intent.setData(Uri.fromParts("mailto", "", null));
 		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
@@ -633,7 +644,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 	    	m_sourceDialog.show();
 		}
 		break;
-	case 3://snap
+	case 4://snap
 		try {
 			String snap = downloadPath + "snap/snap.png";
 			FileOutputStream fos = new FileOutputStream(snap); 
@@ -654,12 +665,13 @@ public boolean onOptionsItemSelected(MenuItem item){
 			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
 		}
 		break;
-	case 4://share url
+	case 5://share url
 		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
 		break;
 	}
 	return true;
 }
+
 
 private void shareUrl(String text)
 {
@@ -669,6 +681,7 @@ private void shareUrl(String text)
 	intent.putExtra(Intent.EXTRA_TEXT, text);
     util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);	
 }
+
 
 @Override
 public void onCreate(Bundle savedInstanceState) {

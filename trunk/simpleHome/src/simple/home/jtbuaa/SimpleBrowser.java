@@ -39,6 +39,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -83,6 +84,8 @@ import android.widget.ViewFlipper;
 
 public class SimpleBrowser extends Activity {
 
+	boolean paid;
+	
 	//browser related
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -197,6 +200,9 @@ class MyWebview extends WebView {
         		loadProgress.setVisibility(View.VISIBLE);
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
+        		
+				if (!paid) adview.loadAd(adRequest);
+
 				super.onPageStarted(view, url, favicon);
 			}
 			 
@@ -287,7 +293,6 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 				while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
 				webpages.getChildAt(webIndex).requestFocus();
-				adview.loadAd(adRequest);
 			}
 		});
         
@@ -310,7 +315,6 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 					serverWebs.get(webIndex).clearHistory();
 				}
 				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
-				adview.loadAd(adRequest);
 				webpages.getChildAt(webIndex).requestFocus();
 			}
         });
@@ -671,6 +675,7 @@ public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
     mContext = this;
+    paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -731,7 +736,6 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			if (serverWebs.get(webIndex).canGoForward()) serverWebs.get(webIndex).goForward();
-			adview.loadAd(adRequest);
 		}
 	});
 	imgPrev = (ImageView) findViewById(R.id.prev);
@@ -739,7 +743,6 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
-			adview.loadAd(adRequest);
 		}
 	});
 	imgRefresh = (ImageView) findViewById(R.id.refresh);
@@ -752,7 +755,6 @@ public void onCreate(Bundle savedInstanceState) {
 			}
 			else {//reload the webpage
 				serverWebs.get(webIndex).reload();
-				adview.loadAd(adRequest);
 			}
 		}
 	});
@@ -952,7 +954,6 @@ private void openNewPage(String url, String data) {
 		webpages.getChildAt(webIndex).requestFocus();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));
 	}
-	adview.loadAd(adRequest);
 }
 
 @Override

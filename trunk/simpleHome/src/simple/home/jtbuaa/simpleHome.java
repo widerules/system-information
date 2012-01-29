@@ -100,6 +100,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 	final static int homeTab = 1;
 	
+	boolean paid;//paid or not 
+	
 	//wall paper related
 	String downloadPath;
 	SensorManager sensorMgr;
@@ -442,6 +444,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             }
         };
         splashTimer.start();*/
+
+        paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
         
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
@@ -579,13 +583,18 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         mListViews.add(systems);
         mListViews.add(home);
         mListViews.add(users);
-        mListViews.add(packages);
+        if (paid) mListViews.add(packages);
         
         btnSystem = (RadioButton) findViewById(R.id.radio_system);
         btnUser = (RadioButton) findViewById(R.id.radio_user);
         btnHome = (RadioButton) findViewById(R.id.radio_home);
         btnPackage = (RadioButton) findViewById(R.id.radio_package);
-        final RadioButton btnLast = btnPackage;
+        final RadioButton btnLast;
+        if (paid) btnLast = btnPackage;
+        else {
+        	btnLast = btnUser;
+        	btnPackage.setVisibility(View.INVISIBLE);
+        }
         
         mWallpaperManager = WallpaperManager.getInstance(this);
         
@@ -1305,11 +1314,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             readFile("short");
             boolean shortEmpty = mShortApps.isEmpty();
             
-	    	getPackages();
-        	Message msgPkg = mAppHandler.obtainMessage();
-        	msgPkg.what = UPDATE_PACKAGE;
-        	mAppHandler.sendMessage(msgPkg);//inform UI thread to update UI.
-	    	
+            if (paid) {
+    	    	getPackages();
+            	Message msgPkg = mAppHandler.obtainMessage();
+            	msgPkg.what = UPDATE_PACKAGE;
+            	mAppHandler.sendMessage(msgPkg);//inform UI thread to update UI.
+            }
+            
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging Messages メッセージ 信息 消息 短信 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
 	    	String label_phone = "電話 Phone 电话 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";

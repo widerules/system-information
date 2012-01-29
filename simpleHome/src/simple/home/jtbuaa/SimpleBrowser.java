@@ -688,6 +688,10 @@ public void onCreate(Bundle savedInstanceState) {
 	setContentView(R.layout.browser);
 
     adview = (AdView) findViewById(R.id.adView);
+    if (paid) {
+    	LayoutParams lp = adview.getLayoutParams();
+    	lp.height = 0;
+    }
 
     loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
     

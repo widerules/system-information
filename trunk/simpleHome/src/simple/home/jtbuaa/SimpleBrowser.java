@@ -770,7 +770,9 @@ public void onCreate(Bundle savedInstanceState) {
 				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
-				serverWebs.get(webIndex).reload();
+				if (!webAddress.getText().toString().equals("about:blank")) 
+					serverWebs.get(webIndex).reload();
+				else loadPage(homePage());
 			}
 		}
 	});

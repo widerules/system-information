@@ -622,8 +622,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 		break;
 	case 2://copy
 	    try {
-	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN,
-	                                                KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
 	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
 	    }
 	    catch (Exception e) {

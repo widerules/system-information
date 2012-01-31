@@ -1097,14 +1097,15 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<p><h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3></p>";
 	
 	ret += "<h3><p>" + getString(R.string.bookmark) + "</p></h3>";
-	ret += "<ul type=\"disc\">";
+	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mBookMark.size(); i++) {
-		String imgHref = "<li><h5><a href=\"" + mBookMark.get(i).m_url + "\">";
+		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
+				+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
 		imgHref += mBookMark.get(i).m_title;
 		imgHref += "</h5></a></li>";
 		ret += imgHref;
 	}
-	ret += "</ul>";
+	ret += "</dl>";
 	/*ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";//the effect of snap is not clear. so use list
 	ret += "<tr>"; 
 	for (int i = 0; i < mBookMark.size(); i++) {
@@ -1121,14 +1122,15 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</tr></table>";*/
 	
 	ret += "<h3><p>" + getString(R.string.history) + "</p></h3>";
-	ret += "<ul type=\"disc\">";
+	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mHistory.size(); i++) {
-		String imgHref = "<li><h5><a href=\"" + mHistory.get(i).m_url + "\">";
+		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
+				+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
 		imgHref += mHistory.get(i).m_title;
 		imgHref += "</h5></a></li>";
 		ret += imgHref;
 	}
-	ret += "</ul>";
+	ret += "</dl>";
 	
 	ret += "</body>";
 	ret += "</html>";

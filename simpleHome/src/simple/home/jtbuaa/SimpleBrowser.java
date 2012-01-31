@@ -240,7 +240,7 @@ class MyWebview extends WebView {
             		
             		if (mHistory.size() > 16) {
             			urlAdapter.remove(mHistory.get(0).m_site);//also remove it from auto-complete item
-            			deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon
+            			//deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon will cause some history site have no icon?
             			mHistory.remove(0);//delete the first history if list larger than 16;
             		}
             		historyChanged = true;
@@ -1102,7 +1102,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
 				+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
 		imgHref += mBookMark.get(i).m_title;
-		imgHref += "</h5></a></li>";
+		imgHref += "</a></h5></li>";
 		ret += imgHref;
 	}
 	ret += "</dl>";
@@ -1127,7 +1127,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
 				+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
 		imgHref += mHistory.get(i).m_title;
-		imgHref += "</h5></a></li>";
+		imgHref += "</a></h5></li>";
 		ret += imgHref;
 	}
 	ret += "</dl>";

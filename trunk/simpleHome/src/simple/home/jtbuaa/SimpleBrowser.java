@@ -1007,19 +1007,11 @@ protected void onResume() {
 	if (webAddress.getAdapter() == null) {
 		urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
 		for (int i = 0; i < mHistory.size(); i++) 
-			urlAdapter.add(mHistory.get(i).m_site);
+			if (urlAdapter.getPosition(mHistory.get(i).m_site) < 0) urlAdapter.add(mHistory.get(i).m_site);
 		for (int i = 0; i < mBookMark.size(); i++) 
-			urlAdapter.add(mBookMark.get(i).m_site);
+			if (urlAdapter.getPosition(mBookMark.get(i).m_site) < 0) urlAdapter.add(mBookMark.get(i).m_site);
 		urlAdapter.sort(new stringCompatator());
 		
-		int l = 0;
-		while (l < urlAdapter.getCount()-1) {// remove duplicate
-			while (urlAdapter.getItem(l).equals(urlAdapter.getItem(l+1))) { 
-				urlAdapter.remove(urlAdapter.getItem(l));
-				if (l+1 == urlAdapter.getCount()) break;
-			}
-			l = l+1;
-		}
 		webAddress.setAdapter(urlAdapter);
 
 		try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.

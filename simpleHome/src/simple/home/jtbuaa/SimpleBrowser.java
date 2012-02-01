@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -227,23 +228,48 @@ class MyWebview extends WebView {
             		}
             		
             		if (!found) urlAdapter.add(site);//update the auto-complete edittext, no duplicate
+            			
+    				try {//try to open the png, if can't open, then need save
+						FileInputStream fis = openFileInput(site+".png");
+						try {
+							fis.close();
+						} catch (IOException e) {
+						}
+					} catch (FileNotFoundException e1) {
+            			try {//save the Favicon
+            				FileOutputStream fos = openFileOutput(site+".png", 0);
+            				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
+            		        fos.close();
+            			} catch (Exception e) {
+            				e.printStackTrace();
+            			} 
+					}
             		
         			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
             		mHistory.add(titleUrl);
-        			try {//save the Favicon
-        				FileOutputStream fos = openFileOutput(site+".png", 0);
-        				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
-        		        fos.close();
-        			} catch (Exception e) {
-        				e.printStackTrace();
-        			} 
-            		
-            		if (mHistory.size() > 16) {
-            			urlAdapter.remove(mHistory.get(0).m_site);//also remove it from auto-complete item
-            			//deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon will cause some history site have no icon?
-            			mHistory.remove(0);//delete the first history if list larger than 16;
-            		}
             		historyChanged = true;
+            		
+            		if (mHistory.size() > 16) {//remove oldest history
+            			site = mHistory.get(0).m_site;
+            			mHistory.remove(0);//delete the first history if list larger than 16;
+            			
+            			found = false;
+            			for (int i = mHistory.size()-1; i >= 0; i--) {
+            				if (mHistory.get(i).m_site.equals(site)) {
+            					found = true;
+            					break;
+            				}
+            			}
+            			if (!found) {
+                			for (int i = mBookMark.size()-1; i >= 0; i--) {
+                				if (mBookMark.get(i).m_site.equals(site)) {
+                					found = true;
+                					break;
+                				}
+                			}
+            				if (!found) deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon if not any reference 
+            			}
+            		}
         		}
 			}         
 			

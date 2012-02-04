@@ -164,7 +164,7 @@ class MyWebview extends WebView {
 			@Override
 			public boolean onTouch(View view, MotionEvent arg1) {//just close webcontrol page if it is open.
 	        	webControl.setVisibility(View.INVISIBLE);
-	        	//view.requestFocusFromTouch();
+	        	view.requestFocusFromTouch();
 				return false;
 			}
         });

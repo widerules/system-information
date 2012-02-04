@@ -131,10 +131,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 	
-	void hideWebControl() {
-		if (webControl.getVisibility() == View.VISIBLE) imgNew.performClick();		
-	}
-
 class MyWebview extends WebView {
 	public String title = "";
 	public String pageSource;
@@ -155,12 +151,10 @@ class MyWebview extends WebView {
         setScrollBarStyle(0);
         WebSettings webSettings = getSettings();
         webSettings.setJavaScriptEnabled(true);
-        //webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
-        //webSettings.setLoadWithOverviewMode(true);
         
         registerForContextMenu(this);
 
@@ -169,8 +163,8 @@ class MyWebview extends WebView {
         setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View view, MotionEvent arg1) {//just close webcontrol page if it is open.
-	        	hideWebControl();
-	        	view.requestFocusFromTouch();
+	        	webControl.setVisibility(View.INVISIBLE);
+	        	//view.requestFocusFromTouch();
 				return false;
 			}
         });
@@ -215,9 +209,10 @@ class MyWebview extends WebView {
         		imgRefresh.setImageResource(R.drawable.refresh);
 
 				webAdapter.notifyDataSetChanged();//what this for?
-				//serverWeb.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
 				
+                webControl.setVisibility(View.INVISIBLE);
+
         		if (!url.equals("about:blank")) { 
         			String site = "";
         			String[] tmp = url.split("/");
@@ -226,7 +221,7 @@ class MyWebview extends WebView {
         			boolean found = false;
             		for (int i = mHistory.size()-1; i >= 0; i--) {
             			if (mHistory.get(i).m_url.equals(url)) return;//record one url only once in the history list.
-            			if (mHistory.get(i).m_site.equals(site)) {
+            			else if (mHistory.get(i).m_site.equals(site)) {
             				found = true;
             				mHistory.remove(i);//only keep the latest history of the same site.
             				break;
@@ -237,10 +232,8 @@ class MyWebview extends WebView {
             			
     				try {//try to open the png, if can't open, then need save
 						FileInputStream fis = openFileInput(site+".png");
-						try {
-							fis.close();
-						} catch (IOException e) {
-						}
+						try {fis.close();} 
+						catch (IOException e) {;}
 					} catch (FileNotFoundException e1) {
             			try {//save the Favicon
             				FileOutputStream fos = openFileOutput(site+".png", 0);
@@ -994,7 +987,6 @@ private void openNewPage(String url, String data) {
 	if (webAdapter.getCount() == 9) //max count is 9.
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 	else {
-        webControl.setVisibility(View.INVISIBLE);
 		webAdapter.add(new MyWebview(mContext));
 		webIndex = webAdapter.getCount() - 1;
 		if (url.equals(""))	loadPage(data);

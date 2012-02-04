@@ -155,10 +155,12 @@ class MyWebview extends WebView {
         setScrollBarStyle(0);
         WebSettings webSettings = getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        //webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
+        //webSettings.setLoadWithOverviewMode(true);
         
         registerForContextMenu(this);
 
@@ -224,7 +226,11 @@ class MyWebview extends WebView {
         			boolean found = false;
             		for (int i = mHistory.size()-1; i >= 0; i--) {
             			if (mHistory.get(i).m_url.equals(url)) return;//record one url only once in the history list.
-            			if (mHistory.get(i).m_site.equals(site)) found = true;
+            			if (mHistory.get(i).m_site.equals(site)) {
+            				found = true;
+            				mHistory.remove(i);//only keep the latest history of the same site.
+            				break;
+            			}
             		}
             		
             		if (!found) urlAdapter.add(site);//update the auto-complete edittext, no duplicate

@@ -103,7 +103,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	boolean historyChanged, bookmarkChanged;
-	ImageView imgAddFavo;
+	ImageView imgAddFavo, imgGo;
 
 	ProgressBar loadProgress;
 	
@@ -737,6 +737,15 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			addFavo(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
+		}
+    });
+    
+    imgGo = (ImageView) findViewById(R.id.go);
+    imgGo.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			if (!webAddress.getText().toString().equals("about:blank")) 
+				serverWebs.get(webIndex).loadUrl(webAddress.getText().toString());
 		}
     });
     

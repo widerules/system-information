@@ -125,6 +125,7 @@
     	android:selectAllOnFocus="true"
     	android:singleLine="true"
     	android:imeOptions="actionGo"
+    	android:inputType="textUri"
     	android:completionThreshold="1"
     	android:background="@drawable/circle_transparent"
     	android:layout_marginTop="0dip"

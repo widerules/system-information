@@ -113,10 +113,19 @@
 				android:layout_alignParentLeft="true"
 				android:layout_centerVertical="true"
 			/>
+			<ImageView android:id="@+id/go"
+				android:layout_height="32dip" 
+				android:layout_width="32dip"
+				android:scaleType="centerCrop"
+				android:src="@drawable/go"
+				android:layout_alignParentRight="true"
+				android:layout_centerVertical="true"
+			/>
 			<FrameLayout
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 			    android:layout_toRightOf="@id/addfavorite"
+			    android:layout_toLeftOf="@id/go"
 			    >
 			
 	    <AutoCompleteTextView android:id="@+id/url"

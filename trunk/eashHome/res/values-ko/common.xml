@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wait">시스템 정보 읽는 중...</string>
+    <string name="about_dialog">소개</string>
+    <string name="about_dialog_text2">\njtbuaa@gmail.com\n</string>
+    <string name="resolution">스크린 해상도:\t</string>
+    <string name="pixels">백만화소</string>
+    <string name="nProcess">진행률:\t</string>
+    <string name="nApk">apk 설치함:\t</string>
+    <string name="wlan">WLAN 주소:\t</string>
+    <string name="latitude">위도:\t</string>
+    <string name="longitude">경도:\t</string>
+
+    <string name="sdk">SDK버전: </string>
+    <string name="vendor">제조업자:\t</string>
+
+    <string name="about">소개...</string>
+    <string name="upload">업로드</string>
+    <string name="refresh">새로고침</string>
+    <string name="exit">나가기</string>
+    <string name="ok">확인</string>
+    
+    <string name="hardware">하드웨어:\t</string>
+    <string name="memtotal">내장메모리:\t</string>   
+    <string name="memerr">내장메모리 인식 실패，잠시 후 재시도 바랍니다.</string>
+    
+    <string name="brief">개요</string>
+    <string name="apps">어플리케이션</string>        
+    <string name="online">온라인</string>
+
+    <string name="ulfail">업로드실패, 오류번호：</string>         
+    <string name="ulsuccess">업로드 성공, 인터넷에서 확인</string>
+    
+    <string name="health">배터리 상태:</string>
+    <string name="level">배터리 량:</string>
+    <string name="plugged">충전 유형:</string>
+    <string name="scale">최대용량:</string>
+    <string name="status">배터리 상태:</string>
+    <string name="technology">적용기술:</string>
+    <string name="temperature">배터리 온도:</string>
+    <string name="voltage">전압:</string>
+    
+    <string name="locationHint">GPS열거나 인터넷위치 켬</string>        
+</resources>

@@ -115,17 +115,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	WallpaperManager mWallpaperManager;
 	String wallpaperFile = "";
 	
-	AlertDialog m_deleteDialog;
-	
+
+	AppAlphaList sysAlphaList, userAlphaList;
 	//alpha list related
-	GridView sysAlpha, userAlpha;
-	AlphaAdapter sysAlphaAdapter, userAlphaAdapter;
-	ArrayList<String> mSysAlpha, mUserAlpha;
-	final int MaxCount = 14;
-	int systemColumns, userColumns;
-	Boolean DuringSelection = false;
     RadioButton btnSystem, btnUser, btnHome, btnPackage;
-    int systemSelected = -1, userSelected = -1;
 
 	//app list related
 	private List<View> mListViews;
@@ -135,13 +128,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	String version, myPackageName;
 	ViewPager mainlayout;
 	RelativeLayout home, systems, users, packages;
-	ResolveInfo appDetail, appToDel = null;
+	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps, mFavoApps, mSysApps, mUserApps, mShortApps;
 	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
 	shortAppAdapter shortAdapter;
-	ApplicationsAdapter sysAdapter, userAdapter;
 	ResolveInfo ri_phone, ri_sms, ri_contact;
 	CallObserver callObserver;
 	SmsChangeObserver smsObserver;
@@ -152,6 +144,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     appHandler mAppHandler = new appHandler();
 	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SPLASH = 4, UPDATE_PACKAGE = 5; 
 	ContextMenu mMenu;
+	
+	ricase selected_case;
 	
 	//no launcher package related
 	List<PackageInfo> mPackages;
@@ -214,22 +208,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    }
 	}
 
-	class ricase {
-		ResolveInfo mRi;
-		int mCase;
-		
-		ricase(ResolveInfo ri, int thecase) {
-			mRi = ri;
-			mCase = thecase;
-		}
-	}
-	ricase selected_case;
-       
 	@Override
 	protected void onResume() {
-		if (appToDel != null) {
-			String apkToDel = appToDel.activityInfo.applicationInfo.sourceDir;
-			String res = ShellInterface.doExec(new String[] {"ls /data/data/" + appToDel.activityInfo.packageName}, true);
+		if (sysAlphaList.appToDel != null) {
+			String apkToDel = sysAlphaList.appToDel.activityInfo.applicationInfo.sourceDir;
+			String res = ShellInterface.doExec(new String[] {"ls /data/data/" + sysAlphaList.appToDel.activityInfo.packageName}, true);
 			if (res.contains("No such file or directory")) {//uninstalled
 				String[] cmds = {
 						"rm " + apkToDel + ".bak",
@@ -238,7 +221,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 			else ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel});
 			
-			appToDel = null;
+			sysAlphaList.appToDel = null;
 		}
 		
 		shakeWallpaper = perferences.getBoolean("shake", false);
@@ -414,8 +397,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			break;
 		case 7://hide the ri
 			if (mainlayout.getCurrentItem() == 0)
-				sysAdapter.remove(selected_case.mRi);
-			else userAdapter.remove(selected_case.mRi);
+				sysAlphaList.remove(selected_case.mRi);
+			else userAlphaList.remove(selected_case.mRi);
 			break;
 		}
 		return false;
@@ -507,69 +490,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	shortAppList = (ListView) home.findViewById(R.id.business);
     	shortAppList.bringToFront();
     	shortAppList.setVisibility(View.INVISIBLE);
+        
+    	sysAlphaList = new AppAlphaList(this, pm, dm.widthPixels > 480, packagesSize);
+    	userAlphaList = new AppAlphaList(this, pm, dm.widthPixels > 480, packagesSize);
     	
-    	//system app tab
-    	systems = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
-    	sysAppList = (ListView) systems.findViewById(R.id.applist); 
-    	sysAppList.inflate(this, R.layout.app_list, null);
-    	sysAppList.setOnScrollListener(new OnScrollListener() {
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if ((sysAlpha != null) && (sysAdapter != null) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
-					String alpha = sysAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
-					int pos = sysAlphaAdapter.getPosition(alpha);
-					if (pos != systemSelected) {
-						TextView tv = (TextView)sysAlpha.getChildAt(systemSelected);
-						if (tv != null) tv.setBackgroundResource(R.drawable.circle);//it may be circle_selected when user click in alpha grid, so we need set it back
-					
-						tv = (TextView)sysAlpha.getChildAt(pos);
-						if (tv != null) tv.requestFocus();//this will change its background color
-						
-						systemSelected = pos;
-					}
-				}
-			}
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				DuringSelection = false;//the scrollState will not change when setSelection(), but will change during scroll manually. so we turn off the flag here.
-				//if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
-				//else scrolling = true;//failed to get app running state
-			}
-    	});
-    	sysAlpha = (GridView) systems.findViewById(R.id.alpha_list); 
-    	sysAlpha.inflate(this, R.layout.alpha_list, null);
-        
-    	//user app tab
-    	users = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
-    	userAppList = (ListView) users.findViewById(R.id.applist); 
-        userAppList.inflate(this, R.layout.app_list, null);
-        userAppList.setOnScrollListener(new OnScrollListener() {
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if ((userAlpha != null) && (userAdapter != null) && (!DuringSelection)) {
-					String alpha = userAdapter.getItem(firstVisibleItem).activityInfo.applicationInfo.dataDir;
-					int pos = userAlphaAdapter.getPosition(alpha);
-					if (pos != userSelected) {
-						TextView tv = (TextView)userAlpha.getChildAt(userSelected);
-						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
-						
-						tv = (TextView)userAlpha.getChildAt(pos);
-						if (tv != null) tv.requestFocus();
-						
-						userSelected = pos;
-					}
-				}
-			}
-			@Override
-			public void onScrollStateChanged(AbsListView arg0, int scrollState) {
-				DuringSelection = false;
-				//if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) scrolling = false;
-				//else scrolling = true;
-			}
-        });
-    	userAlpha = (GridView) users.findViewById(R.id.alpha_list); 
-    	userAlpha.inflate(this, R.layout.alpha_list, null);
-        
     	//package tab
     	packages = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
     	packageList = (ListView) packages.findViewById(R.id.applist); 
@@ -580,9 +504,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	lp.height = 0;//set its height to 0.
     	
         mListViews = new ArrayList<View>();
-        mListViews.add(systems);
+        mListViews.add(sysAlphaList.view);
         mListViews.add(home);
-        mListViews.add(users);
+        mListViews.add(userAlphaList.view);
         if (paid) mListViews.add(packages);
         
         btnSystem = (RadioButton) findViewById(R.id.radio_system);
@@ -610,7 +534,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 0:
 						btnSystem.setChecked(true);
 						try {
-							btnLast.setText(getString(R.string.systemapps) + "(" + sysAdapter.getCount() + ")");
+							btnLast.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
 						} catch(Exception e) {
 							btnLast.setText(R.string.systemapps);
 						}
@@ -622,7 +546,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 2:
 						btnUser.setChecked(true);
 						try {
-							btnLast.setText(getString(R.string.userapps) + "(" + userAdapter.getCount() + ")");
+							btnLast.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
 						} catch(Exception e) {//catch null pointer error
 							btnLast.setText(R.string.userapps);
 						}
@@ -667,8 +591,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		mUserApps = new ArrayList<ResolveInfo>();
 		mFavoApps = new ArrayList<ResolveInfo>();
 		mShortApps = new ArrayList<ResolveInfo>();
-		mSysAlpha = new ArrayList<String>();
-		mUserAlpha = new ArrayList<String>();
 		
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
@@ -844,26 +766,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             String action = intent.getAction();
             String packageName = intent.getDataString().split(":")[1];//it always in the format of package:x.y.z
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
-            	boolean inUser = false;
-            	ResolveInfo info = null;
-        		for (int i = 0; i < userAdapter.getCount(); i++) {//once got a null pointer on v1.2.1. keep tracking  
-        			info = userAdapter.getItem(i);
-        			if (info.activityInfo.packageName.equals(packageName)) {
-        				userAdapter.remove(info);
-        				inUser = true;
-        				break;
-        			}
-        		}
-            	if (!inUser) {
-            		for (int i = 0; i < sysAdapter.getCount(); i++) {
-            			info = sysAdapter.getItem(i);
-            			if (info.activityInfo.packageName.equals(packageName)) {
-            				sysAdapter.remove(info);
-            				break;
-            			}
-            		}
-            	}
-    			String tmp = info.activityInfo.applicationInfo.dataDir.substring(0, 1);
+            	ResolveInfo info = userAlphaList.remove(packageName);
+            	if (info == null) info = sysAlphaList.remove(packageName);
     			
             	if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {//not remove shortcut if it is just replace 
             		for (int i = 0; i < favoAdapter.getCount(); i++) {
@@ -883,31 +787,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             			}
             		}
             		
-        			boolean found = false;
-            		if (inUser) {//check user alpha list
-            			for (int i = 0; i < userAdapter.getCount(); i++) {
-            				if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
-            					found = true;
-            					break;
-            				}
-            			}
-            			if (!found) {
-            				userAlphaAdapter.remove(tmp);
-            				setColumns(true);
-            			}
-            		}
-            		else {//check system alpha list
-            			for (int i = 0; i < sysAdapter.getCount(); i++) {
-            				if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
-            					found = true;
-            					break;
-            				}
-            			}
-            			if (!found) {
-            				sysAlphaAdapter.remove(tmp);
-            				setColumns(false);
-            			}
-            		}
             	}
             }
             else if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
@@ -931,25 +810,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	    		String tmp = ri.activityInfo.applicationInfo.dataDir.substring(0, 1);
         	    		
                     	if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
-            				sysAdapter.add(ri);
-            		    	Collections.sort(sysAdapter.localApplist, new myComparator());//sort by name
-            		    	
-        	    			if (!mSysAlpha.contains(tmp)) {
-        	    				sysAlphaAdapter.add(tmp);
-            			    	Collections.sort(sysAlphaAdapter.localList, new stringCompatator());
-            			    	setColumns(false);
-        	    			}
+                    		sysAlphaList.add(ri);
             		    	break;
                     	}
                     	else {
-            				userAdapter.add(ri);
-            		    	Collections.sort(userAdapter.localApplist, new myComparator());//sort by name
-            		    	
-        	    			if (!mUserAlpha.contains(tmp)) {
-                				userAlphaAdapter.add(tmp);
-            			    	Collections.sort(userAlphaAdapter.localList, new stringCompatator());
-            			    	setColumns(true);
-        	    			}
+                    		userAlphaList.add(ri);
             		    	break;
                     	}
                 	}
@@ -959,226 +824,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		
 	};
 
-	boolean startApp(ResolveInfo info) {
-		Intent i = new Intent(Intent.ACTION_MAIN);
-		i.setComponent(new ComponentName(
-				info.activityInfo.applicationInfo.packageName,
-				info.activityInfo.name));
-		return util.startActivity(i, true, getBaseContext());
-	}
-	
-    private class AlphaAdapter extends ArrayAdapter<String> {
-    	ArrayList<String> localList;
-        public AlphaAdapter(Context context, List<String> alphas) {
-            super(context, 0, alphas);
-            localList = (ArrayList<String>) alphas;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                final LayoutInflater inflater = getLayoutInflater();
-                convertView = inflater.inflate(R.layout.alpha_list, parent, false);
-            }
-            if (localList.size() == mSysAlpha.size()) {//tune gravity to show diversify
-            	if (mSysAlpha.size() > systemColumns) {//only tune it if more than one line
-                    if (position < systemColumns) {
-                    	if (dm.widthPixels > 480)
-                        	((TextView)convertView).setGravity(Gravity.CENTER);
-                    	else
-                        	((TextView)convertView).setGravity(Gravity.LEFT);
-                    }
-                    else 
-                    	((TextView)convertView).setGravity(Gravity.RIGHT);
-            	}
-            }
-            else if (mUserAlpha.size() > userColumns){
-                if (position < userColumns) 
-                	if (dm.widthPixels > 480)
-                    	((TextView)convertView).setGravity(Gravity.CENTER);
-                	else
-                    	((TextView)convertView).setGravity(Gravity.LEFT);
-                else 
-                	((TextView)convertView).setGravity(Gravity.RIGHT);
-            }
-            final TextView btn = (TextView) convertView.findViewById(R.id.alpha);
-            btn.setText(localList.get(position));
-            btn.setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {//find app when click
-					String tmp = localList.get(position);
-					DuringSelection = true;
-					v.requestFocusFromTouch();//this will make app list get focus, very strange
-					switch(mainlayout.getCurrentItem()) {
-					case 0://system app
-						TextView tv = (TextView)sysAlpha.getChildAt(systemSelected);//restore the background
-						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
-						systemSelected = position;
-						for (int i = 0; i < sysAdapter.getCount(); i++) {
-							if (sysAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
-								sysAppList.requestFocusFromTouch();
-								sysAppList.setSelection(i);
-								break;
-							}
-						}
-						break;
-					case 2://user app
-						tv = (TextView)userAlpha.getChildAt(userSelected);//restore the background
-						if (tv != null) tv.setBackgroundResource(R.drawable.circle);
-						userSelected = position;
-						for (int i = 0; i < userAdapter.getCount(); i++) {
-							if (userAdapter.getItem(i).activityInfo.applicationInfo.dataDir.startsWith(tmp)) {
-								userAppList.requestFocusFromTouch();
-								userAppList.setSelection(i);
-								break;
-							}
-						}
-						break;
-					}
-					v.setBackgroundResource(R.drawable.circle_selected);//only set the background of selected one 
-					return false;
-				}
-            });
-            
-        	return convertView;
-        }
-    }
-    
-    private class ApplicationsAdapter extends ArrayAdapter<ResolveInfo> {
-    	ArrayList localApplist;
-        public ApplicationsAdapter(Context context, List<ResolveInfo> apps) {
-            super(context, 0, apps);
-            localApplist = (ArrayList) apps;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final ResolveInfo info = (ResolveInfo) localApplist.get(position);
-
-            if (convertView == null) 
-                convertView = getLayoutInflater().inflate(R.layout.app_list, parent, false);
-            
-            final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
-            
-           	if ((info.loadLabel(pm) == textView1.getText()) && (DuringSelection))//don't update the view here 
-           		return convertView;//seldom come here
-           	
-           	if (info.loadLabel(pm) != textView1.getText()) {//only reset the appname, version, icon when needed
-               	textView1.setText(info.loadLabel(pm));
-               	
-               	final boolean isUser = (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0;
-               	
-                final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
-                btnIcon.setImageDrawable(info.loadIcon(pm));
-                //if (android.os.Build.VERSION.SDK_INT >= 8) btnIcon.setEnabled(false);//currently we can't stop the other app after API level 8 if we have no platform signature
-                btnIcon.setOnTouchListener(new OnTouchListener() {
-					@Override
-					public boolean onTouch(View v, MotionEvent event) {//kill process when click
-    					if (! info.activityInfo.packageName.equals(myPackageName)) {//don't kill myself
-    						ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-    						am.restartPackage(info.activityInfo.packageName);
-    						//but we need to know when will it restart by itself?
-    						textView1.setTextColor(whiteColor);//set color back after kill it.
-    					}
-    					return false;
-					}
-                });
-                
-                LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
-                lapp.setOnTouchListener(new OnTouchListener() {
-					@Override
-					public boolean onTouch(View v, MotionEvent event) {
-						long pressTime = event.getEventTime() - event.getDownTime();//use this to avoid long click
-						if ((pressTime > 0) && (pressTime < ViewConfiguration.getLongPressTimeout()) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
-	    					if (startApp(info))//start success
-	    						textView1.setTextColor(redColor);//red for running apk
-							return true;
-						}
-						else return false;
-					}
-                });
-            	lapp.setTag(new ricase(info, 2));
-                registerForContextMenu(lapp); 
-                
-                final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
-                try {
-                	String version = pm.getPackageInfo(info.activityInfo.packageName, 0).versionName;
-                	if ((version == null) || (version.trim().equals(""))) version = String.valueOf(pm.getPackageInfo(info.activityInfo.packageName, 0).versionCode);
-                	btnVersion.setText(version);
-    			} catch (NameNotFoundException e) {
-    				btnVersion.setText(e.toString());
-    			}
-                btnVersion.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-    					if (isUser) {//user app
-    						Uri uri = Uri.fromParts("package", info.activityInfo.packageName, null);
-    						Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-    						util.startActivity(intent, true, getBaseContext());
-    						btnVersion.requestFocus();
-    					}
-    					else {//system app
-    						appToDel = info;
-    						showDelDialog(info.loadLabel(pm) + " " + btnVersion.getText());
-    					}
-					}
-                });
-    			
-                final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
-                String source = "";
-                Object o = packagesSize.get(info.activityInfo.packageName);
-                if(o != null) source = o.toString();
-                if((info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-                	textView3.setTextColor(brownColor);//brown for debuggable apk
-                	source += " (debuggable)";
-                }
-                else textView3.setTextColor(grayColor);//gray for normal
-            	textView3.setText(source);
-           	}
-           	
-            textView1.setTextColor(whiteColor);//default color
-            if (!DuringSelection) {//running state should be updated when not busy, for it is time consuming
-                final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-                List<RunningAppProcessInfo> appList = am.getRunningAppProcesses();
-                for (int i = 0; i < appList.size(); i++) {//a bottle neck
-                	if (DuringSelection) break;//cancel current task if enter scroll mode will raise performance significantly
-            		RunningAppProcessInfo as = (RunningAppProcessInfo) appList.get(i);
-                	if (info.activityInfo.processName.equals(as.processName)) {
-                    	textView1.setTextColor(redColor);//red for running apk
-            			break;
-            		}
-                }
-            }
-           	
-            return convertView;
-        }
-    }
-
-    void showDelDialog(String title) {
-    	if (m_deleteDialog == null) {
-			m_deleteDialog = new AlertDialog.Builder(this).
-			setTitle(title).
-			setIcon(R.drawable.error).
-			setMessage(R.string.warning).
-			setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-				}
-			}).
-			setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {//rm system app
-					String apkToDel = appToDel.activityInfo.applicationInfo.sourceDir;
-					ShellInterface.doExec(new String[] {"mv " + apkToDel + " " + apkToDel + ".bak"});
-					Uri uri = Uri.fromParts("package", appToDel.activityInfo.packageName, null);
-					Intent intent = new Intent(Intent.ACTION_DELETE, uri);
-					startActivity(intent);//this will launch package installer. after it close, onResume() will be invoke.
-				}
-			}).create();
-        }
-    	else m_deleteDialog.setTitle(title);
-    	m_deleteDialog.show();
-    }
     
     private class favoAppAdapter extends ArrayAdapter<ResolveInfo> {
     	ArrayList<ResolveInfo> localApplist;
@@ -1204,7 +849,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     		btnIcon.setOnClickListener(new OnClickListener() {//start app
 				@Override
 				public void onClick(View arg0) {
-					startApp(info);
+					util.startApp(info, getBaseContext());
 				}
     		});
     		btnIcon.setTag(new ricase(info, 0));
@@ -1239,7 +884,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             convertView.setOnClickListener(new OnClickListener() {//launch app
 				@Override
 				public void onClick(View arg0) {
-					startApp(info);
+					util.startApp(info, getBaseContext());
 					shortAppList.setVisibility(View.INVISIBLE);
 				}
     		});
@@ -1332,8 +977,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	    if (sa == null) sa = ri.activityInfo.name;
 	    		ri.activityInfo.applicationInfo.dataDir = getToken(sa);//we borrow dataDir to store the Pinyin of the label.
 	    		
-	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 
-	    			mSysApps.add(ri);
+	    		if ((ri.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) {
+	    			sysAlphaList.add(ri, false, false);
 	    			
 	    			if (match < 3) {//only find 3 match: sms, phone, contact
 		    			String name = sa.toString() ; 
@@ -1368,7 +1013,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		    			}
 	    			}
 	    		}
-	    		else mUserApps.add(ri);
+	    		else userAlphaList.add(ri, false, false);
 		    	
 	    		try {
 					getPackageSizeInfo.invoke(pm, ri.activityInfo.packageName, sizeObserver);
@@ -1377,29 +1022,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				}
 				
 	    	}
-	    	Collections.sort(mSysApps, new myComparator());//sort by name
-	    	Collections.sort(mUserApps, new myComparator());//sort by name
-
-	    	//below will reserve the sort process of mSysAlpha and mUserAlpha
-    		String tmp = mSysApps.get(0).activityInfo.applicationInfo.dataDir;
-	    	mSysAlpha.add(tmp);
-	    	for (int i = 1; i < mSysApps.size(); i++) {
-	    		String tmp2 = mSysApps.get(i).activityInfo.applicationInfo.dataDir;
-	    		if (!tmp.equals(tmp2)) {
-	    			tmp = tmp2;
-	    			mSysAlpha.add(tmp);
-	    		}
-	    	}
-	    	
-    		tmp = mUserApps.get(0).activityInfo.applicationInfo.dataDir;
-	    	mUserAlpha.add(tmp);
-	    	for (int i = 1; i < mUserApps.size(); i++) {
-	    		String tmp2 = mUserApps.get(i).activityInfo.applicationInfo.dataDir;
-	    		if (!tmp.equals(tmp2)) {
-	    			tmp = tmp2;
-	    			mUserAlpha.add(tmp);
-	    		}
-	    	}
+	    	sysAlphaList.sort();
+	    	userAlphaList.sort();
 
 	    	
 	    	if (shortEmpty) {//add select home to short cut. I don't like to add it to menu
@@ -1578,43 +1202,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    } 
 	} 
 	
-	void setColumns(boolean isUser) {//set column number of alpha grid
-		if (isUser) {
-    		userColumns = MaxCount;
-    		if (userAlphaAdapter.getCount() < MaxCount) userColumns = userAlphaAdapter.getCount();
-    		else if (userAlphaAdapter.getCount() < MaxCount*2) userColumns = (int)(userAlphaAdapter.getCount()/2.0+0.5);
-    		userAlpha.setNumColumns(userColumns);
-		}
-		else {
-    		systemColumns = MaxCount;
-    		if (sysAlphaAdapter.getCount() < MaxCount) systemColumns = sysAlphaAdapter.getCount();
-    		else if (sysAlphaAdapter.getCount() < MaxCount*2) systemColumns = (int)(sysAlphaAdapter.getCount()/2.0+0.5);
-    		sysAlpha.setNumColumns(systemColumns);
-		}
-	}
-	
     class appHandler extends Handler {
 
         public void handleMessage(Message msg) {
         	switch (msg.what) {
         	case UPDATE_USER:
-        		sysAdapter = new ApplicationsAdapter(getBaseContext(), mSysApps);
-        		sysAppList.setAdapter(sysAdapter);
-        	
-        		userAdapter = new ApplicationsAdapter(getBaseContext(), mUserApps);
-        		userAppList.setAdapter(userAdapter);
+        		sysAlphaList.setAdapter();
+        		userAlphaList.setAdapter();
         		
         		shortAdapter = new shortAppAdapter(getBaseContext(), mShortApps);
         		shortAppList.setAdapter(shortAdapter);
         		
-        		sysAlphaAdapter = new AlphaAdapter(getBaseContext(), mSysAlpha);
-        		sysAlpha.setAdapter(sysAlphaAdapter);
-        		setColumns(false);
-        	
-        		userAlphaAdapter = new AlphaAdapter(getBaseContext(), mUserAlpha);
-        		userAlpha.setAdapter(userAlphaAdapter);
-        		setColumns(true);
-
         		break;
         	case UPDATE_PACKAGE:
         		packageAdapter = new PackageAdapter(getBaseContext(), mPackages);
@@ -1632,7 +1230,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			shortcut_phone.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
-    					startApp(ri_phone);
+    					util.startApp(ri_phone, getBaseContext());
     				}
     			});
         		break;
@@ -1647,7 +1245,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			shortcut_sms.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
-    					startApp(ri_sms);
+    					util.startApp(ri_sms, getBaseContext());
     				}
     			});
         		break;
@@ -1656,7 +1254,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			shortcut_contact.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {
-    					startApp(ri_contact);
+    					util.startApp(ri_contact, getBaseContext());
     				}
     			});
         		break;

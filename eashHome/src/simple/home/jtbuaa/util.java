@@ -8,10 +8,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -38,7 +40,20 @@ class TitleUrl {
 	}
 }
 
+
+class ricase {
+	ResolveInfo mRi;
+	int mCase;
+	
+	ricase(ResolveInfo ri, int thecase) {
+		mRi = ri;
+		mCase = thecase;
+	}
+}
+   
+
 public class util {
+	
     static public boolean startActivity(Intent intent, boolean showToast, Context context) {
     	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		try {
@@ -51,6 +66,14 @@ public class util {
 			return false;
 		}
     }
+
+	static boolean startApp(ResolveInfo info, Context context) {
+		Intent i = new Intent(Intent.ACTION_MAIN);
+		i.setComponent(new ComponentName(
+				info.activityInfo.applicationInfo.packageName,
+				info.activityInfo.name));
+		return startActivity(i, true, context);
+	}	
 
     static public String getVersion(Context context) {
     	String version = "";

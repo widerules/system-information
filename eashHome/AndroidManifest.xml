@@ -45,6 +45,7 @@
             
         <activity android:name=".SelectHome"
         	android:launchMode="singleTask"
+        	android:process="eash.switcher"
         	android:label="@string/switcher_name" 
         	android:icon="@drawable/icon_switcher">
             

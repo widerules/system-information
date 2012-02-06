@@ -117,6 +117,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	
 
 	AppAlphaList sysAlphaList, userAlphaList;
+	PkgAlphaList packageAlphaList;
 	//alpha list related
     RadioButton btnSystem, btnUser, btnHome, btnPackage;
 
@@ -127,10 +128,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
-	RelativeLayout home, systems, users, packages;
+	RelativeLayout home;
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps, mFavoApps, mSysApps, mUserApps, mShortApps;
-	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
 	shortAppAdapter shortAdapter;
@@ -147,10 +147,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	
 	ricase selected_case;
 	
-	//no launcher package related
-	List<PackageInfo> mPackages;
-	PackageAdapter packageAdapter;
-	ListView packageList;
 	boolean canRoot;
 	
 	DisplayMetrics dm;
@@ -286,6 +282,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 7, 0, getString(R.string.hideapp));
 			mMenu = menu;
 			break;
+		case 3://on package list
+			menu.add(0, 8, 0, getString(R.string.appdetail));
 		}
 	}
 	
@@ -332,29 +330,30 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
+		ResolveInfo info = (ResolveInfo) selected_case.mRi;
 		switch (item.getItemId()) {
 		case 0://remove from home
-			favoAdapter.remove(selected_case.mRi);
+			favoAdapter.remove(info);
 			writeFile("favo");
 			break;
 		case 1://remove from shortcut
-			shortAdapter.remove(selected_case.mRi);
+			shortAdapter.remove(info);
 			writeFile("short");	//save shortcut to file
 			break;
 		case 2://share app name and link
 	        Intent intent = new Intent(Intent.ACTION_SEND);
 	        intent.setType("text/plain");  
 	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-	        String text = selected_case.mRi.loadLabel(pm) + getString(R.string.app_share_text) + getString(R.string.share_text1) 
-	        	+ "http://opda.co/?s=D/" + selected_case.mRi.activityInfo.packageName
+	        String text = info.loadLabel(pm) + getString(R.string.app_share_text) + getString(R.string.share_text1) 
+	        	+ "http://opda.co/?s=D/" + info.activityInfo.packageName
 	        	+ getString(R.string.share_text2)
-	        	+ "https://market.android.com/details?id=" + selected_case.mRi.activityInfo.packageName
+	        	+ "https://market.android.com/details?id=" + info.activityInfo.packageName
 	        	+ getString(R.string.share_text3);
     		intent.putExtra(Intent.EXTRA_TEXT, text);
    			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
 			break;
 		case 3://backup app
-			String sourceDir = selected_case.mRi.activityInfo.applicationInfo.sourceDir;
+			String sourceDir = info.activityInfo.applicationInfo.sourceDir;
 			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
 			if (backup(sourceDir)) {
 				Toast.makeText(this, 
@@ -367,41 +366,50 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 			break;
 		case 4://get app detail info
-			String source = selected_case.mRi.activityInfo.applicationInfo.sourceDir 
-				+ "\n\n" 
-				+ selected_case.mRi.activityInfo.packageName;
-        	Toast.makeText(getBaseContext(), source, Toast.LENGTH_LONG).show();
-
-			if (appDetail != null) {
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
-				intent.putExtra("pkg", selected_case.mRi.activityInfo.packageName);
-				intent.putExtra("com.android.settings.ApplicationPkgName", selected_case.mRi.activityInfo.packageName);
-			}
-			else {//2.6 tahiti change the action.
-				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", selected_case.mRi.activityInfo.packageName, null));
-			}
-			util.startActivity(intent, true, getBaseContext());
+			showDetail(info.activityInfo.applicationInfo.sourceDir, info.activityInfo.packageName);
 			break;
 		case 5://add to home
-			if (favoAdapter.getPosition(selected_case.mRi) < 0) { 
-				favoAdapter.add(selected_case.mRi);
+			if (favoAdapter.getPosition(info) < 0) { 
+				favoAdapter.add(info);
 				writeFile("favo");
 			}
 			break;
 		case 6://add to shortcut
-			if (shortAdapter.getPosition(selected_case.mRi) < 0) {
-				shortAdapter.insert(selected_case.mRi, 0);
+			if (shortAdapter.getPosition(info) < 0) {
+				shortAdapter.insert(info, 0);
 				writeFile("short");	//save shortcut to file
 			}
 			break;
 		case 7://hide the ri
 			if (mainlayout.getCurrentItem() == 0)
-				sysAlphaList.remove(selected_case.mRi);
-			else userAlphaList.remove(selected_case.mRi);
+				sysAlphaList.remove(info);
+			else userAlphaList.remove(info);
+			break;
+		case 8://get package detail info
+			PackageInfo pi = (PackageInfo) selected_case.mRi;
+			showDetail(pi.applicationInfo.sourceDir, pi.packageName);
 			break;
 		}
 		return false;
+	}
+
+	void showDetail(String sourceDir, String packageName) {
+		String source = sourceDir 
+				+ "\n\n" 
+				+ packageName;
+        	Toast.makeText(getBaseContext(), source, Toast.LENGTH_LONG).show();
+
+        	Intent intent;
+			if (appDetail != null) {
+				intent = new Intent(Intent.ACTION_VIEW);
+				intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
+				intent.putExtra("pkg", packageName);
+				intent.putExtra("com.android.settings.ApplicationPkgName", packageName);
+			}
+			else {//2.6 tahiti change the action.
+				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", packageName, null));
+			}
+			util.startActivity(intent, true, getBaseContext());
 	}
 	
     @SuppressWarnings("unchecked")
@@ -493,21 +501,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         
     	sysAlphaList = new AppAlphaList(this, pm, dm.widthPixels > 480, packagesSize);
     	userAlphaList = new AppAlphaList(this, pm, dm.widthPixels > 480, packagesSize);
+    	if (paid) packageAlphaList = new PkgAlphaList(this, pm, dm.widthPixels > 480, packagesSize);//package tab
     	
-    	//package tab
-    	packages = (RelativeLayout) getLayoutInflater().inflate(R.layout.apps, null);
-    	packageList = (ListView) packages.findViewById(R.id.applist); 
-    	packageList.inflate(this, R.layout.app_list, null);
-    	GridView tmpAlpha = (GridView) packages.findViewById(R.id.alpha_list);//no alpha for package list
-    	tmpAlpha.setVisibility(View.INVISIBLE);//so set it invisible
-    	LayoutParams lp = tmpAlpha.getLayoutParams();
-    	lp.height = 0;//set its height to 0.
-    	
-        mListViews = new ArrayList<View>();
+    	mListViews = new ArrayList<View>();
         mListViews.add(sysAlphaList.view);
         mListViews.add(home);
         mListViews.add(userAlphaList.view);
-        if (paid) mListViews.add(packages);
+        if (paid) mListViews.add(packageAlphaList.view);
         
         btnSystem = (RadioButton) findViewById(R.id.radio_system);
         btnUser = (RadioButton) findViewById(R.id.radio_user);
@@ -554,7 +554,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					case 3:
 						btnPackage.setChecked(true);
 						try {
-							btnLast.setText(getString(R.string.packages) + "(" + packageAdapter.getCount() + ")");
+							btnLast.setText(getString(R.string.packages) + "(" + packageAlphaList.getCount() + ")");
 						} catch(Exception e) {//catch null pointer error
 							btnLast.setText(R.string.packages);
 						}
@@ -960,7 +960,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             boolean shortEmpty = mShortApps.isEmpty();
             
             if (paid) {
-    	    	getPackages();
+    	    	getHidePackages();
             	Message msgPkg = mAppHandler.obtainMessage();
             	msgPkg.what = UPDATE_PACKAGE;
             	mAppHandler.sendMessage(msgPkg);//inform UI thread to update UI.
@@ -1022,8 +1022,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				}
 				
 	    	}
-	    	sysAlphaList.sort();
-	    	userAlphaList.sort();
+	    	sysAlphaList.sortAlpha();
+	    	userAlphaList.sortAlpha();
 
 	    	
 	    	if (shortEmpty) {//add select home to short cut. I don't like to add it to menu
@@ -1065,8 +1065,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		}
 	}
 
-	void getPackages() {
-		mPackages = pm.getInstalledPackages(0);
+	void getHidePackages() {
+		List<PackageInfo> mPackages = pm.getInstalledPackages(0);
 
 		int i = 0;
 		while (i < mPackages.size()) {
@@ -1113,83 +1113,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			i += 1;
 		}
     	Collections.sort(mPackages, new PackageComparator());//sort by name
+    	packageAlphaList.mApps.addAll(mPackages);
+    	packageAlphaList.sortAlpha();
 	}
 	
-    private class PackageAdapter extends ArrayAdapter<PackageInfo> {
-    	ArrayList localApplist;
-        public PackageAdapter(Context context, List<PackageInfo> apps) {
-            super(context, 0, apps);
-            localApplist = (ArrayList) apps;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final PackageInfo info = (PackageInfo) localApplist.get(position);
-
-            if (convertView == null) 
-                convertView = getLayoutInflater().inflate(R.layout.app_list, parent, false);
-            
-            final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
-            
-           	if (info.packageName == textView1.getText())//don't update the view here 
-           		return convertView;//seldom come here
-           	
-           	if (info.applicationInfo != null) textView1.setText(info.applicationInfo.loadLabel(pm));
-           	else textView1.setText(info.packageName);
-           	textView1.setTextColor(whiteColor);
-           	          	
-            final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
-            if (info.applicationInfo != null) btnIcon.setImageDrawable(info.applicationInfo.loadIcon(pm));
-            btnIcon.setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-					am.restartPackage(info.packageName);
-					textView1.setTextColor(whiteColor);//set color back after kill it.
-					return false;
-				}
-            });
-            
-            LinearLayout lapp = (LinearLayout) convertView.findViewById(R.id.app);
-            lapp.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					String source = info.applicationInfo.sourceDir 
-							+ "\n\n" 
-							+ info.packageName;
-			        	Toast.makeText(getBaseContext(), source, Toast.LENGTH_LONG).show();
-
-					Intent intent;
-					if (appDetail != null) {
-						intent = new Intent(Intent.ACTION_VIEW);
-						intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
-						intent.putExtra("pkg", info.packageName);
-						intent.putExtra("com.android.settings.ApplicationPkgName", info.packageName);
-					}
-					else {//2.6 tahiti change the action.
-						intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", info.packageName, null));
-					}
-					util.startActivity(intent, true, getBaseContext());
-				}
-            });
-            
-            final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
-        	btnVersion.setText(info.versionName);
-           	
-            final TextView textView3 = (TextView) convertView.findViewById(R.id.appsource);
-            String source = "";
-            Object o = packagesSize.get(info.packageName);
-            if(o != null) source = o.toString();
-            if((info.applicationInfo != null) && (info.applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == ApplicationInfo.FLAG_DEBUGGABLE) {
-            	textView3.setTextColor(brownColor);//brown for debuggable apk
-            	source += " (debuggable)";
-            }
-            else textView3.setTextColor(grayColor);//gray for normal
-        	textView3.setText(source);
-
-            return convertView;
-        }
-    }
     
 	class OnlyPic implements FilenameFilter { 
 	    public boolean accept(File dir, String s) {
@@ -1215,8 +1142,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		
         		break;
         	case UPDATE_PACKAGE:
-        		packageAdapter = new PackageAdapter(getBaseContext(), mPackages);
-        		packageList.setAdapter(packageAdapter);
+        		packageAlphaList.setAdapter();
 
         		break;
         	case UPDATE_RI_PHONE:

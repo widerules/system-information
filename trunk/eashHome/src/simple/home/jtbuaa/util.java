@@ -41,11 +41,11 @@ class TitleUrl {
 }
 
 
-class ricase {
-	ResolveInfo mRi;
+class ricase<T> {
+	T mRi;
 	int mCase;
 	
-	ricase(ResolveInfo ri, int thecase) {
+	ricase(T ri, int thecase) {
 		mRi = ri;
 		mCase = thecase;
 	}

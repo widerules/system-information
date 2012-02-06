@@ -62,7 +62,7 @@ public abstract class AlphaList<T> {
 	Boolean DuringSelection = false;
 
 	//app list related
-	ListView AppList;
+	GridView AppList;
 	List<T> mApps;
 	ApplicationsAdapter appAdapter;
 	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
@@ -92,7 +92,7 @@ public abstract class AlphaList<T> {
     	AlphaGrid = (GridView) view.findViewById(R.id.alpha_list);
     	AlphaGrid.inflate(mContext, R.layout.alpha_list, null);
     	
-    	AppList = (ListView) view.findViewById(R.id.applist); 
+    	AppList = (GridView) view.findViewById(R.id.applist); 
     	AppList.inflate(mContext, R.layout.app_list, null);
     	AppList.setOnScrollListener(new OnScrollListener() {
 			@Override

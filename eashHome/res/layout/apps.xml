@@ -13,9 +13,10 @@
 		android:background="@drawable/round_corner_light"
 	/>
 	
-	<ListView android:id="@+id/applist"
+	<GridView android:id="@+id/applist"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:numColumns="1"
 		android:layout_marginLeft="5dip"
 		android:layout_marginRight="5dip"
 		android:layout_marginTop="35dip"

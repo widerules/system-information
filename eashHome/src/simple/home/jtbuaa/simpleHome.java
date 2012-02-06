@@ -330,7 +330,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
-		ResolveInfo info = (ResolveInfo) selected_case.mRi;
+		ResolveInfo info = null;
+		if (item.getItemId() != 8) info = (ResolveInfo) selected_case.mRi;
 		switch (item.getItemId()) {
 		case 0://remove from home
 			favoAdapter.remove(info);

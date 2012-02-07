@@ -9,9 +9,9 @@ import android.graphics.drawable.Drawable;
 
 public class AppAlphaList extends AlphaList<ResolveInfo> {
 
-	AppAlphaList(Context context, PackageManager pmgr, boolean largeScreen,
-			HashMap<String, Object> packageSize) {
-		super(context, pmgr, largeScreen, packageSize);
+	AppAlphaList(Context context, PackageManager pmgr,
+			HashMap<String, Object> packageSize, boolean isGrid, boolean largeScreen) {
+		super(context, pmgr, packageSize, isGrid, largeScreen);
 	}
 
 	String getAlpha(ResolveInfo info) {

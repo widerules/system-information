@@ -58,7 +58,7 @@ public abstract class AlphaList<T> {
 	AlphaAdapter alphaAdapter;
 	ArrayList<String> alphaList;
 	final int MaxCount = 14;
-	int mColumns;
+	int mColumns = 10000;//just a big decimal to ensure not adjust gravity in grid mode
     int mSelected = -1;
 	Boolean DuringSelection = false;
 
@@ -92,14 +92,15 @@ public abstract class AlphaList<T> {
 		alphaAdapter = new AlphaAdapter(mContext, alphaList);
 				
 		//init UI
-    	view = (RelativeLayout) ((Activity) mContext).getLayoutInflater().inflate(R.layout.apps, null);
+		if (mIsGrid) view = (RelativeLayout) ((Activity) mContext).getLayoutInflater().inflate(R.layout.grid_apps, null);
+		else view = (RelativeLayout) ((Activity) mContext).getLayoutInflater().inflate(R.layout.apps, null);
     	
     	AlphaGrid = (GridView) view.findViewById(R.id.alpha_list);
     	AlphaGrid.inflate(mContext, R.layout.alpha_list, null);
     	
     	AppList = (GridView) view.findViewById(R.id.applist);
-    	if (mIsGrid) AppList.inflate(mContext, R.layout.favo_list, null);
-    	else AppList.inflate(mContext, R.layout.app_list, null);
+    	//if (mIsGrid) AppList.inflate(mContext, R.layout.icon_list, null);
+    	//else AppList.inflate(mContext, R.layout.app_list, null);
     	AppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -207,10 +208,14 @@ public abstract class AlphaList<T> {
 	}
 	
 	void setColumns() {//set column number of alpha grid
-		mColumns = MaxCount;
-		if (alphaAdapter.getCount() < MaxCount) mColumns = alphaAdapter.getCount();
-		else if (alphaAdapter.getCount() < MaxCount*2) mColumns = (int)(alphaAdapter.getCount()/2.0+0.5);
-		AlphaGrid.setNumColumns(mColumns);
+		if (mIsGrid) {//keep no scroll in grid mode
+		}
+		else {//keep not more than 3 lines in list mode, each line should have almost the same count of alpha
+			mColumns = MaxCount;
+			if (alphaAdapter.getCount() < MaxCount) mColumns = alphaAdapter.getCount();
+			else if (alphaAdapter.getCount() < MaxCount*2) mColumns = (int)(alphaAdapter.getCount()/2.0+0.5);
+			AlphaGrid.setNumColumns(mColumns);
+		}
 	}
 	
 
@@ -338,9 +343,9 @@ public abstract class AlphaList<T> {
             final T info = (T) localApplist.get(position);
 
             if (convertView == null) 
-                convertView = ((Activity) mContext).getLayoutInflater().inflate(R.layout.favo_list, parent, false);
+                convertView = ((Activity) mContext).getLayoutInflater().inflate(R.layout.icon_list, parent, false);
             
-            final TextView textView1 = (TextView) convertView.findViewById(R.id.favoappname);
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
             
            	if ((getLabel(info) == textView1.getText()) && (DuringSelection))//don't update the view here 
            		return convertView;//seldom come here
@@ -348,7 +353,7 @@ public abstract class AlphaList<T> {
            	if (getLabel(info) != textView1.getText()) {//only reset the appname, icon when needed
                	textView1.setText(getLabel(info));
                	
-                final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
+                final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);
                 btnIcon.setImageDrawable(getIcon(info));
                 btnIcon.setOnTouchListener(new OnTouchListener() {
 					@Override

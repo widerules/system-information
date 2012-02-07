@@ -51,6 +51,7 @@ public abstract class AlphaList<T> {
 	
 	//layout
 	RelativeLayout view;
+	boolean mIsGrid = false;
 	
 	//alpha list related
 	GridView AlphaGrid;
@@ -64,7 +65,9 @@ public abstract class AlphaList<T> {
 	//app list related
 	GridView AppList;
 	List<T> mApps;
-	ApplicationsAdapter appAdapter;
+	AppListAdapter appListAdapter;
+	AppGridAdapter appGridAdapter;
+	
 	static int whiteColor = 0xFFFFFFFF, grayColor = 0xDDDDDDDD, redColor = 0xFFFF7777, brownColor = 0xFFF8BF00;
 
 	AlertDialog m_deleteDialog;
@@ -74,14 +77,16 @@ public abstract class AlphaList<T> {
 	boolean mLargeScreen;
 	HashMap<String, Object> mPackagesSize;
 
-	AlphaList(Context context, PackageManager pmgr, boolean largeScreen, HashMap<String, Object> packageSize) {
+	AlphaList(Context context, PackageManager pmgr, HashMap<String, Object> packageSize, boolean isGrid, boolean largeScreen) {
 		mContext = context;
 		pm = pmgr;
 		mLargeScreen = largeScreen;//it is largeScreen if dm.widthPixels > 480
 		mPackagesSize = packageSize;
+		mIsGrid = isGrid;
 		
 		mApps = new ArrayList<T>();
-		appAdapter = new ApplicationsAdapter(mContext, mApps);
+		if (mIsGrid) appGridAdapter = new AppGridAdapter(mContext, mApps);
+		else appListAdapter = new AppListAdapter(mContext, mApps);
 		
 		alphaList = new ArrayList<String>();
 		alphaAdapter = new AlphaAdapter(mContext, alphaList);
@@ -92,13 +97,14 @@ public abstract class AlphaList<T> {
     	AlphaGrid = (GridView) view.findViewById(R.id.alpha_list);
     	AlphaGrid.inflate(mContext, R.layout.alpha_list, null);
     	
-    	AppList = (GridView) view.findViewById(R.id.applist); 
-    	AppList.inflate(mContext, R.layout.app_list, null);
+    	AppList = (GridView) view.findViewById(R.id.applist);
+    	if (mIsGrid) AppList.inflate(mContext, R.layout.favo_list, null);
+    	else AppList.inflate(mContext, R.layout.app_list, null);
     	AppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if ((appAdapter.getCount() > 0) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
-					String alpha = getAlpha(appAdapter.getItem(firstVisibleItem));
+				if ((mApps.size() > 0) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
+					String alpha = getAlpha(mApps.get(firstVisibleItem));
 					int pos = alphaAdapter.getPosition(alpha);
 					if (pos != mSelected) {
 						TextView tv = (TextView)AlphaGrid.getChildAt(mSelected);
@@ -122,7 +128,8 @@ public abstract class AlphaList<T> {
 
 	void setAdapter() {
     	AlphaGrid.setAdapter(alphaAdapter);
-    	AppList.setAdapter(appAdapter);
+    	if (mIsGrid) AppList.setAdapter(appGridAdapter);
+    	else AppList.setAdapter(appListAdapter);
 	}
 	
 	void sortAlpha() {
@@ -146,8 +153,14 @@ public abstract class AlphaList<T> {
 	}
 	
 	void add(T ri, boolean sort, boolean updateAlpha) {
-		appAdapter.add(ri);
-    	Collections.sort(appAdapter.localApplist, new myComparator());//sort by name
+		if (mIsGrid) {
+			appGridAdapter.add(ri);
+	    	Collections.sort(appGridAdapter.localApplist, new myComparator());//sort by name
+		}
+		else {
+			appListAdapter.add(ri);
+	    	Collections.sort(appListAdapter.localApplist, new myComparator());//sort by name
+		}
     	
     	if (updateAlpha) {
     		String tmp = getAlpha(ri);
@@ -161,8 +174,8 @@ public abstract class AlphaList<T> {
 	
 	private void removeAlpha(String alpha) {
 		boolean found = false;
-		for (int i = 0; i < appAdapter.getCount(); i++) {
-			if (getAlpha(appAdapter.getItem(i)).startsWith(alpha)) {
+		for (int i = 0; i < mApps.size(); i++) {
+			if (getAlpha(mApps.get(i)).startsWith(alpha)) {
 				found = true;
 				break;
 			}
@@ -175,16 +188,17 @@ public abstract class AlphaList<T> {
 	
 	void remove(T info) {
 		removeAlpha(getAlpha(info));
-		appAdapter.remove(info);
+		if (mIsGrid) appGridAdapter.remove(info);
+		else appListAdapter.remove(info);
 	}
 	
 	T remove(String packageName) {
     	T info = null;
-		for (int i = 0; i < appAdapter.getCount(); i++) {//once got a null pointer on v1.2.1. keep tracking  
-			info = appAdapter.getItem(i);
+		for (int i = 0; i < mApps.size(); i++) {//once got a null pointer on v1.2.1. keep tracking  
+			info = mApps.get(i);
 			if (getPackageName(info).equals(packageName)) {
     			removeAlpha(getAlpha(info));
-				appAdapter.remove(info);
+				mApps.remove(info);
 
 				return info;
 			}
@@ -201,12 +215,12 @@ public abstract class AlphaList<T> {
 	
 
 	int getCount() {
-		return appAdapter.getCount();
+		return mApps.size();
 	}
 	
-    private class ApplicationsAdapter extends ArrayAdapter<T> {
+    private class AppListAdapter extends ArrayAdapter<T> {
     	ArrayList localApplist;
-        public ApplicationsAdapter(Context context, List<T> apps) {
+        public AppListAdapter(Context context, List<T> apps) {
             super(context, 0, apps);
             localApplist = (ArrayList) apps;
         }
@@ -312,6 +326,49 @@ public abstract class AlphaList<T> {
     }
 
 
+    private class AppGridAdapter extends ArrayAdapter<T> {
+    	ArrayList localApplist;
+        public AppGridAdapter(Context context, List<T> apps) {
+            super(context, 0, apps);
+            localApplist = (ArrayList) apps;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final T info = (T) localApplist.get(position);
+
+            if (convertView == null) 
+                convertView = ((Activity) mContext).getLayoutInflater().inflate(R.layout.favo_list, parent, false);
+            
+            final TextView textView1 = (TextView) convertView.findViewById(R.id.favoappname);
+            
+           	if ((getLabel(info) == textView1.getText()) && (DuringSelection))//don't update the view here 
+           		return convertView;//seldom come here
+           	
+           	if (getLabel(info) != textView1.getText()) {//only reset the appname, icon when needed
+               	textView1.setText(getLabel(info));
+               	
+                final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.favoappicon);
+                btnIcon.setImageDrawable(getIcon(info));
+                btnIcon.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {//kill process when click
+						long pressTime = event.getEventTime() - event.getDownTime();//use this to avoid long click
+						if ((pressTime > 0) && (pressTime < ViewConfiguration.getLongPressTimeout()) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
+	    					start(info);
+							return true;
+						}
+						else return false;
+					}
+                });                
+            	btnIcon.setTag(new ricase(info, tag));
+                ((Activity) mContext).registerForContextMenu(btnIcon);                    			
+           	}
+           	
+            return convertView;
+        }
+    }
+    
     void showDelDialog(String title) {
     	if (m_deleteDialog == null) {
 			m_deleteDialog = new AlertDialog.Builder(mContext).
@@ -375,8 +432,8 @@ public abstract class AlphaList<T> {
 					TextView tv = (TextView)AlphaGrid.getChildAt(mSelected);//restore the background
 					if (tv != null) tv.setBackgroundResource(R.drawable.circle);
 					mSelected = position;
-					for (int i = 0; i < appAdapter.getCount(); i++) {
-						if (getAlpha(appAdapter.getItem(i)).startsWith(tmp)) {
+					for (int i = 0; i < mApps.size(); i++) {
+						if (getAlpha(mApps.get(i)).startsWith(tmp)) {
 							AppList.requestFocusFromTouch();
 							AppList.setSelection(i);
 							break;

@@ -632,7 +632,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
 	menu.add(0, 0, 0, R.string.source).setAlphabeticShortcut('S');
 	menu.add(0, 1, 0, R.string.snap).setAlphabeticShortcut('N');
 	menu.add(0, 2, 0, R.string.shareurl).setAlphabeticShortcut('M');
-	menu.add(0, 3, 0, R.string.history).setAlphabeticShortcut('H');
+	menu.add(0, 3, 0, R.string.history_bookmark).setAlphabeticShortcut('H');
 	menu.add(0, 4, 0, R.string.copy).setAlphabeticShortcut('C');
 	menu.add(0, 5, 0, R.string.about).setAlphabeticShortcut('A');
 	return true;

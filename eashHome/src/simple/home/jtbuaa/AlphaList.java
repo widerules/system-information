@@ -195,11 +195,13 @@ public abstract class AlphaList<T> {
 	
 	T remove(String packageName) {
     	T info = null;
-		for (int i = 0; i < mApps.size(); i++) {//once got a null pointer on v1.2.1. keep tracking  
+		for (int i = 0; i < mApps.size(); i++) {  
 			info = mApps.get(i);
 			if (getPackageName(info).equals(packageName)) {
     			removeAlpha(getAlpha(info));
 				mApps.remove(info);
+				if (mIsGrid) appGridAdapter.notifyDataSetChanged();
+				else appListAdapter.notifyDataSetChanged();
 
 				return info;
 			}

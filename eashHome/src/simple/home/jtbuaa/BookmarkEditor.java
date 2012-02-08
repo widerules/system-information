@@ -151,6 +151,8 @@ public class BookmarkEditor extends Activity{
 				@Override
 				public void onClick(View v) {
 					localList.remove(tu);
+					bAdapter.notifyDataSetChanged();
+					hAdapter.notifyDataSetChanged();
 					deleted = true;//mark as changed
 				}
             });

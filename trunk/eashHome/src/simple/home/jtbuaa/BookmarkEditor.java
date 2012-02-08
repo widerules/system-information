@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
@@ -33,21 +34,28 @@ import android.widget.TextView;
 
 public class BookmarkEditor extends Activity{
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
-	ListView bookmarkList;
-	BookmarkAdapter bAdapter;
+	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
+	ListView bookmarkList, historyList;
+	BookmarkAdapter bAdapter, hAdapter;
 	boolean deleted;
+	Button btnHistory, btnBookmark;
 
 	@Override
 	protected void onResume() {
 		
 		FileInputStream fi = null;
 		try {
-			fi = openFileInput(getIntent().getStringExtra("filename"));
+			fi = openFileInput("history");
+			mHistory = util.readBookmark(fi);
+			fi = openFileInput("bookmark");
 			mBookMark = util.readBookmark(fi);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		deleted = false;
+		
+		hAdapter = new BookmarkAdapter(getBaseContext(), mHistory);
+		historyList.setAdapter(hAdapter);
 		
 		bAdapter = new BookmarkAdapter(getBaseContext(), mBookMark);
 		bookmarkList.setAdapter(bAdapter);
@@ -60,8 +68,10 @@ public class BookmarkEditor extends Activity{
 		if (deleted) {//only backup the list if it changed.
 			FileOutputStream fo;
 			try {
-				fo = this.openFileOutput(getIntent().getStringExtra("filename"), 0);
+				fo = this.openFileOutput("bookmark", 0);
 				util.writeBookmark(fo, mBookMark);
+				fo = this.openFileOutput("history", 0);
+				util.writeBookmark(fo, mHistory);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -76,6 +86,29 @@ public class BookmarkEditor extends Activity{
 	    
     	setContentView(R.layout.bookmarks);
     	bookmarkList = (ListView) findViewById(R.id.bookmark_list);
+    	historyList = (ListView) findViewById(R.id.history_list);
+    	
+    	btnBookmark = (Button) findViewById(R.id.bookmark);
+    	btnBookmark.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				historyList.setVisibility(View.INVISIBLE);
+				bookmarkList.setVisibility(View.VISIBLE);
+				btnBookmark.setBackgroundResource(R.drawable.button_layout);
+				btnHistory.setBackgroundColor(0x0);
+			}
+    	});
+    	
+    	btnHistory = (Button) findViewById(R.id.history);
+    	btnHistory.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				historyList.setVisibility(View.VISIBLE);
+				bookmarkList.setVisibility(View.INVISIBLE);
+				btnHistory.setBackgroundResource(R.drawable.button_layout);
+				btnBookmark.setBackgroundColor(0x0);
+			}
+    	});
 	}
 	
     private class BookmarkAdapter extends ArrayAdapter<TitleUrl> {
@@ -117,7 +150,7 @@ public class BookmarkEditor extends Activity{
             btnVersion.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					bAdapter.remove(tu);
+					localList.remove(tu);
 					deleted = true;//mark as changed
 				}
             });

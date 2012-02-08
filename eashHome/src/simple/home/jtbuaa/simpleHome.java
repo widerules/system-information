@@ -501,7 +501,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	shortAppList.setVisibility(View.INVISIBLE);
         
     	sysAlphaList = new AppAlphaList(this, pm, packagesSize, true, dm.widthPixels > 480);
-    	userAlphaList = new AppAlphaList(this, pm, packagesSize, true, dm.widthPixels > 480);
+    	userAlphaList = new AppAlphaList(this, pm, packagesSize, false, dm.widthPixels > 480);
     	if (paid) packageAlphaList = new PkgAlphaList(this, pm, packagesSize, false, dm.widthPixels > 480);//package tab
     	
     	mListViews = new ArrayList<View>();

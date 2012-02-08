@@ -64,6 +64,7 @@
     <string name="nomore_pages">Sorry, can not create more than 9 pages. Please close old pages before create new one.</string>
     <string name="history">History</string>
     <string name="bookmark">Bookmark</string>
+    <string name="history_bookmark">Bookmark/History</string>
     <string name="source">View Source</string>
     <string name="snap">Share ScreenShot</string>
     <string name="homepage">Home Page</string>

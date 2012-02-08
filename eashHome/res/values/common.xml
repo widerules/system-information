@@ -8,6 +8,7 @@
     <string name="help_message">Find you app by not more than 2 click. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
     <string name="author">clickclick.home@gmail.com</string>
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
+    <string name="about_message">" "is a fast, small but full function browser.\n\n</string>
     
     <string name="share_wallpaper">Share Wallpaper</string>
     <string name="share_desktop">Share Desktop</string>
@@ -42,6 +43,8 @@
     <string name="online">Online</string>
     <string name="home">Home</string>
     <string name="packages">Services/Providers</string>
+    
+    <string name="show_zoom">Show Zoom Control</string>
     
     <string name="addtoFavo">Add to home</string>
     <string name="removeFromFavo">Delete</string>

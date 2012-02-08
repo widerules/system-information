@@ -4,9 +4,10 @@
     <string name="switcher_name">点一点换桌面</string>
     <string name="browser_name">点点浏览器</string>
     
-    <string name="about_dialog_notes">如果喜欢这个应用\n请给我打5颗星，多谢！</string>
+    <string name="about_dialog_notes">如果喜欢这个应用，\n请给我打5颗星，多谢！</string>
     <string name="help_message">两次点击/滑动之内找到你的应用\n单击应用图标：结束应用\n单击应用名称：启动应用\n单击应用版本：删除应用\n长按应用名称：添加快捷方式\n长按快捷方式：删除快捷方式</string>
     <string name="auto_change_wallpaper">晃动手机换壁纸</string>
+    <string name="about_message">是一个小巧，极速，功能完备的浏览器。\n\n</string>
     
     <string name="share_wallpaper">分享壁纸</string>
     <string name="share_desktop">分享桌面</string>
@@ -41,6 +42,8 @@
     <string name="online">上网</string>
     <string name="home">首屏</string>
     <string name="packages">其它</string>
+    
+    <string name="show_zoom">显示缩放按钮</string>
     
     <string name="addtoFavo">添加到首屏</string>
     <string name="removeFromFavo">从首屏删除</string>

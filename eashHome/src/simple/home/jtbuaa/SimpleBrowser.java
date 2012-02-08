@@ -42,6 +42,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -72,6 +73,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -86,6 +88,11 @@ import android.widget.ViewFlipper;
 public class SimpleBrowser extends Activity {
 
 	boolean paid;
+
+	//for about dialog
+	View aboutView;
+	CheckBox showZoomControl;
+	AlertDialog aboutDialog = null;
 	
 	//browser related
 	AutoCompleteTextView webAddress;
@@ -154,7 +161,7 @@ class MyWebview extends WebView {
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
         
         registerForContextMenu(this);
 
@@ -622,40 +629,19 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 @Override
 public boolean onCreateOptionsMenu(Menu menu) {
 	super.onCreateOptionsMenu(menu);
-	menu.add(0, 0, 0, R.string.history).setAlphabeticShortcut('H');
-	menu.add(0, 1, 0, R.string.bookmark).setAlphabeticShortcut('B');
-	menu.add(0, 2, 0, R.string.copy).setAlphabeticShortcut('C');
-	menu.add(0, 3, 0, R.string.source).setAlphabeticShortcut('S');
-	menu.add(0, 4, 0, R.string.snap).setAlphabeticShortcut('N');
-	menu.add(0, 5, 0, R.string.shareurl).setAlphabeticShortcut('M');
+	menu.add(0, 0, 0, R.string.source).setAlphabeticShortcut('S');
+	menu.add(0, 1, 0, R.string.snap).setAlphabeticShortcut('N');
+	menu.add(0, 2, 0, R.string.shareurl).setAlphabeticShortcut('M');
+	menu.add(0, 3, 0, R.string.history).setAlphabeticShortcut('H');
+	menu.add(0, 4, 0, R.string.copy).setAlphabeticShortcut('C');
+	menu.add(0, 5, 0, R.string.about).setAlphabeticShortcut('A');
 	return true;
 }
 
 public boolean onOptionsItemSelected(MenuItem item){
 	switch (item.getItemId()) {
-	case 0://history
-		Intent intent = new Intent("simple.home.jtbuaa.bookmark");
-		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
-		intent.putExtra("filename", "history");
-		util.startActivity(intent, false, getBaseContext());
-		break;
-	case 1://bookmark
-   		intent = new Intent("simple.home.jtbuaa.bookmark");
-   		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
-   		intent.putExtra("filename", "bookmark");
-   		util.startActivity(intent, false, getBaseContext());        		
-		break;
-	case 2://copy
-	    try {
-	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
-	    }
-	    catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-	    break;
-	case 3://view page source
-		intent = new Intent(Intent.ACTION_SENDTO);
+	case 0://view page source
+		Intent intent = new Intent(Intent.ACTION_SENDTO);
 		intent.setData(Uri.fromParts("mailto", "", null));
 		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
 		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
@@ -668,7 +654,7 @@ public boolean onOptionsItemSelected(MenuItem item){
 	    	m_sourceDialog.show();
 		}
 		break;
-	case 4://snap
+	case 1://snap
 		try {
 			String snap = downloadPath + "snap/snap.png";
 			FileOutputStream fos = new FileOutputStream(snap); 
@@ -689,8 +675,39 @@ public boolean onOptionsItemSelected(MenuItem item){
 			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
 		}
 		break;
-	case 5://share url
+	case 2://share url
 		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
+		break;
+	case 3://history/bookmark
+		intent = new Intent("simple.home.jtbuaa.bookmark");
+		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
+		util.startActivity(intent, false, getBaseContext());
+		break;
+	case 4://copy
+	    try {
+	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
+	    }
+	    catch (Exception e) {
+	    	e.printStackTrace();
+	    }
+	    break;
+	case 5://about
+		if (aboutDialog == null) {
+			aboutDialog = new AlertDialog.Builder(mContext).
+					setTitle(getString(R.string.browser_name) + util.getVersion(this)).
+					setIcon(R.drawable.explorer).
+					setView(aboutView).
+					setMessage(getString(R.string.browser_name) + getString(R.string.about_message) + getString(R.string.about_dialog_notes)).
+					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					}).create();
+		}
+		showZoomControl.setChecked(serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
+		aboutDialog.show();
+
 		break;
 	}
 	return true;
@@ -724,6 +741,25 @@ public void onCreate(Bundle savedInstanceState) {
 	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
 	setContentView(R.layout.browser);
 
+	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
+    TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
+    mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
+    mailTo.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.author), null));
+			util.startActivity(intent, true, getBaseContext());
+		}
+	});
+
+	showZoomControl = (CheckBox) aboutView.findViewById(R.id.show_zoom);
+	showZoomControl.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoomControl.isChecked());
+		}
+	});
+			
     adview = (AdView) findViewById(R.id.adView);
     if (paid) {
     	LayoutParams lp = adview.getLayoutParams();

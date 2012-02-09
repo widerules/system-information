@@ -100,6 +100,11 @@ public class SimpleBrowser extends Activity {
 	CheckBox showZoomControl;
 	RadioButton btnFullScreen;
 	AlertDialog aboutDialog = null;
+
+	//snap dialog
+	ImageView snapView;
+	Bitmap bmp;
+	AlertDialog snapDialog = null;
 	
 	//menu dialog
 	AlertDialog menuDialog;// menu菜单Dialog
@@ -641,9 +646,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 
 @Override
 public boolean onMenuOpened(int featureId, Menu menu) {
-	if (menuDialog == null) 
-		menuDialog = new AlertDialog.Builder(this).setView(menuView).show();
-	
     menuDialog.show();
     
     return false;// show system menu if return true.
@@ -651,15 +653,8 @@ public boolean onMenuOpened(int featureId, Menu menu) {
 
 @Override
 public boolean onCreateOptionsMenu(Menu menu) {
-	menu.add("menu");//must create one menu
+	menu.add("menu");//must create one menu?
 	return super.onCreateOptionsMenu(menu);
-	/*menu.add(0, 0, 0, R.string.source).setAlphabeticShortcut('S');
-	menu.add(0, 1, 0, R.string.snap).setAlphabeticShortcut('N');
-	menu.add(0, 2, 0, R.string.shareurl).setAlphabeticShortcut('M');
-	menu.add(0, 3, 0, R.string.history_bookmark).setAlphabeticShortcut('H');
-	menu.add(0, 4, 0, R.string.copy).setAlphabeticShortcut('C');
-	menu.add(0, 5, 0, R.string.about).setAlphabeticShortcut('A');
-	return true;*/
 }
 
 
@@ -705,7 +700,41 @@ public void onCreate(Bundle savedInstanceState) {
 	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
 	setContentView(R.layout.browser);
 
+
 	
+	snapView = (ImageView) getLayoutInflater().inflate(R.layout.snap_browser, null);
+    snapDialog = new AlertDialog.Builder(this).
+    		setView(snapView).
+    		setTitle(R.string.browser_name).
+    		setIcon(R.drawable.explorer).
+    		setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {//share
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+	        		try {
+	        			String snap = downloadPath + "snap/snap.png";
+	        			FileOutputStream fos = new FileOutputStream(snap);
+	        			 
+	        	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
+	        	        fos.close();
+	        			
+	        	        Intent intent = new Intent(Intent.ACTION_SEND);
+	        	        intent.setType("image/*");  
+	        	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
+	        			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
+	        	        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
+	        		}
+	        		catch (Exception e) {
+	        			Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+	        		}
+				}
+			}).
+    		setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			}).
+    		create();
+
 	
 	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
     TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
@@ -739,7 +768,7 @@ public void onCreate(Bundle savedInstanceState) {
     		getString(R.string.copy), getString(R.string.about) };
     
 	menuView = View.inflate(this, R.layout.grid_menu, null);
-    // 创建AlertDialog
+    //create AlertDialog
     menuDialog = new AlertDialog.Builder(this).create();
     menuDialog.setView(menuView);
     menuDialog.getWindow().setGravity(Gravity.BOTTOM);
@@ -754,6 +783,26 @@ public void onCreate(Bundle savedInstanceState) {
     	
     });
 
+	m_sourceDialog = new AlertDialog.Builder(this).
+    		setTitle(R.string.browser_name).
+    		setIcon(R.drawable.explorer).
+    		setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {//share
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+	        		Intent intent = new Intent(Intent.ACTION_SENDTO);
+	        		intent.setData(Uri.fromParts("mailto", "", null));
+	        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
+	        		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
+	        		util.startActivity(intent, true, getBaseContext());
+				}
+			}).
+    		setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			}).
+    		create();
+
     menuGrid = (GridView) menuView.findViewById(R.id.gridview);
     menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
     menuGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -761,59 +810,36 @@ public void onCreate(Bundle savedInstanceState) {
                 long arg3) {
             switch (arg2) {
         	case 0://view page source
-        		Intent intent = new Intent(Intent.ACTION_SENDTO);
-        		intent.setData(Uri.fromParts("mailto", "", null));
-        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
-        		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
-        		if (!util.startActivity(intent, false, getBaseContext())) {
-        	    	if (m_sourceDialog == null) {
-        				m_sourceDialog = new AlertDialog.Builder(getBaseContext()).
-        				setMessage(serverWebs.get(webIndex).pageSource).create();
-        	        }
-        	    	else m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
-        	    	m_sourceDialog.show();
-        		}
+       	    	m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
+       	    	m_sourceDialog.show();
         		break;
-        	case 1://snap
-        		try {
-        			String snap = downloadPath + "snap/snap.png";
-        			FileOutputStream fos = new FileOutputStream(snap); 
-        			Picture pic = serverWebs.get(webIndex).capturePicture();
-        			Bitmap bmp;
-        			if (btnFullScreen.isChecked()) {
-        				Rect outRect = new Rect();
-        				serverWebs.get(webIndex).getWindowVisibleDisplayFrame(outRect);
-        				bmp = Bitmap.createBitmap(
-        						webpages.getWidth(), 
-        						webpages.getHeight(),
-        						Bitmap.Config.ARGB_8888);//only capture visiable webpage
-        			}
-        			else
-        				bmp = Bitmap.createBitmap(
-        						pic.getWidth(), 
-        						pic.getHeight(), 
-        						Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
-        			
-        			Canvas canvas = new Canvas(bmp); 
-        	        pic.draw(canvas);
-        	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
-        	        fos.close();
-        			
-        	        intent = new Intent(Intent.ACTION_SEND);
-        	        intent.setType("image/*");  
-        	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
-        			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
-        	        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
-        		}
-        		catch (Exception e) {
-        			Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-        		}
+        	case 1://view snap
+    			Picture pic = serverWebs.get(webIndex).capturePicture();
+    			if (btnFullScreen.isChecked()) {
+    				Rect outRect = new Rect();
+    				serverWebs.get(webIndex).getWindowVisibleDisplayFrame(outRect);
+    				bmp = Bitmap.createBitmap(
+    						webpages.getWidth(), 
+    						webpages.getHeight(),
+    						Bitmap.Config.ARGB_8888);//only capture visible webpage
+    			}
+    			else
+    				bmp = Bitmap.createBitmap(
+    						pic.getWidth(), 
+    						pic.getHeight(), 
+    						Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+    			
+    			Canvas canvas = new Canvas(bmp); 
+    	        pic.draw(canvas);
+        		snapView.setImageBitmap(bmp);
+        		snapDialog.show();
+        		
         		break;
         	case 2://share url
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
         	case 3://history/bookmark
-        		intent = new Intent("simple.home.jtbuaa.bookmark");
+        		Intent intent = new Intent("simple.home.jtbuaa.bookmark");
         		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
         		util.startActivity(intent, false, getBaseContext());
         		break;

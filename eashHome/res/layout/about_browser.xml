@@ -23,4 +23,33 @@
       	android:checked="false"
     />  
 
+    <RadioGroup android:id="@+id/snap_size"  
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"  
+    	android:orientation="vertical"
+		android:layout_margin="5dip"
+		android:background="@drawable/round_corner_light"
+    >  
+    <TextView
+    	android:layout_width="wrap_content"  
+	    android:layout_height="wrap_content"
+	    android:text="@string/snap_size"
+	    android:layout_marginTop="5dip"  
+		android:layout_marginLeft="43dip"
+      	android:textSize="16dip"
+      	android:textColor="#FFFFFFFF"
+        />
+    <RadioButton  
+        android:id="@+id/radio_fullscreen"
+        android:text="@string/full_screen"
+		android:layout_marginLeft="5dip"
+        android:checked="true"  
+        />  
+    <RadioButton  
+        android:id="@+id/radio_fullwebpage"
+        android:text="@string/full_webpage"
+		android:layout_marginLeft="5dip"
+        />  
+	</RadioGroup>           
+    
 </LinearLayout>

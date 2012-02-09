@@ -65,7 +65,10 @@
     <string name="bookmark">书签</string>
     <string name="history_bookmark">书签/历史</string>
     <string name="source">网页源码</string>
-    <string name="snap">分享截屏</string>
+    <string name="snap">网页截屏</string>
+    <string name="snap_size">截屏尺寸</string>
+    <string name="full_screen">全屏</string>
+    <string name="full_webpage">全网页</string>
     <string name="homepage">主页</string>
     <string name="shareurl">分享网址</string>
     <string name="recommend">推荐</string>

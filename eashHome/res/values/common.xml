@@ -66,7 +66,10 @@
     <string name="bookmark">Bookmark</string>
     <string name="history_bookmark">Bookmark/History</string>
     <string name="source">View Source</string>
-    <string name="snap">Share ScreenShot</string>
+    <string name="snap">ScreenShot</string>
+    <string name="snap_size">Size of Screen Shot</string>
+    <string name="full_screen">Full Screen</string>
+    <string name="full_webpage">Full Webpage</string>
     <string name="homepage">Home Page</string>
     <string name="shareurl">Share Url</string>
     <string name="recommend">Recommend</string>

@@ -29,6 +29,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -716,6 +717,7 @@ public void onCreate(Bundle savedInstanceState) {
 	        			 
 	        	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
 	        	        fos.close();
+	    				webpages.destroyDrawingCache();
 	        			
 	        	        Intent intent = new Intent(Intent.ACTION_SEND);
 	        	        intent.setType("image/*");  
@@ -731,6 +733,12 @@ public void onCreate(Bundle savedInstanceState) {
     		setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+    				webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
+				}
+			}).setOnCancelListener(new OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+    				webpages.destroyDrawingCache();
 				}
 			}).
     		create();
@@ -818,23 +826,21 @@ public void onCreate(Bundle savedInstanceState) {
        	    	m_sourceDialog.show();
         		break;
         	case 1://view snap
-    			Picture pic = serverWebs.get(webIndex).capturePicture();
     			if (btnFullScreen.isChecked()) {
-    				Rect outRect = new Rect();
-    				serverWebs.get(webIndex).getWindowVisibleDisplayFrame(outRect);
-    				bmp = Bitmap.createBitmap(
-    						webpages.getWidth(), 
-    						webpages.getHeight(),
-    						Bitmap.Config.ARGB_8888);//only capture visible webpage
+    				webpages.setDrawingCacheEnabled(true);
+    				bmp = webpages.getDrawingCache();
     			}
-    			else
+    			else {
+        			Picture pic = serverWebs.get(webIndex).capturePicture();
+
     				bmp = Bitmap.createBitmap(
     						pic.getWidth(), 
     						pic.getHeight(), 
     						Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
     			
-    			Canvas canvas = new Canvas(bmp); 
-    	        pic.draw(canvas);
+        			Canvas canvas = new Canvas(bmp); 
+        	        pic.draw(canvas);
+    			}
         		snapView.setImageBitmap(bmp);
         		snapDialog.show();
         		

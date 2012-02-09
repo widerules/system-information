@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -46,6 +47,7 @@ import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -75,11 +77,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -89,11 +93,16 @@ public class SimpleBrowser extends Activity {
 
 	boolean paid;
 
-	//for about dialog
+	//about dialog
 	View aboutView;
 	CheckBox showZoomControl;
 	AlertDialog aboutDialog = null;
 	
+	//menu dialog
+	AlertDialog menuDialog;// menu菜单Dialog
+    GridView menuGrid;
+    View menuView;
+    
 	//browser related
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -626,93 +635,45 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 
 }
 
+
+@Override
+public boolean onMenuOpened(int featureId, Menu menu) {
+	if (menuDialog == null) 
+		menuDialog = new AlertDialog.Builder(this).setView(menuView).show();
+	
+    menuDialog.show();
+    
+    return false;// show system menu if return true.
+}
+
 @Override
 public boolean onCreateOptionsMenu(Menu menu) {
-	super.onCreateOptionsMenu(menu);
-	menu.add(0, 0, 0, R.string.source).setAlphabeticShortcut('S');
+	menu.add("menu");//must create one menu
+	return super.onCreateOptionsMenu(menu);
+	/*menu.add(0, 0, 0, R.string.source).setAlphabeticShortcut('S');
 	menu.add(0, 1, 0, R.string.snap).setAlphabeticShortcut('N');
 	menu.add(0, 2, 0, R.string.shareurl).setAlphabeticShortcut('M');
 	menu.add(0, 3, 0, R.string.history_bookmark).setAlphabeticShortcut('H');
 	menu.add(0, 4, 0, R.string.copy).setAlphabeticShortcut('C');
 	menu.add(0, 5, 0, R.string.about).setAlphabeticShortcut('A');
-	return true;
+	return true;*/
 }
 
-public boolean onOptionsItemSelected(MenuItem item){
-	switch (item.getItemId()) {
-	case 0://view page source
-		Intent intent = new Intent(Intent.ACTION_SENDTO);
-		intent.setData(Uri.fromParts("mailto", "", null));
-		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
-		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
-		if (!util.startActivity(intent, false, getBaseContext())) {
-	    	if (m_sourceDialog == null) {
-				m_sourceDialog = new AlertDialog.Builder(this).
-				setMessage(serverWebs.get(webIndex).pageSource).create();
-	        }
-	    	else m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
-	    	m_sourceDialog.show();
-		}
-		break;
-	case 1://snap
-		try {
-			String snap = downloadPath + "snap/snap.png";
-			FileOutputStream fos = new FileOutputStream(snap); 
-			Picture pic = serverWebs.get(webIndex).capturePicture();
-			Bitmap bmp = Bitmap.createBitmap(serverWebs.get(webIndex).getWidth(), serverWebs.get(webIndex).getHeight(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
-			Canvas canvas = new Canvas(bmp); 
-	        pic.draw(canvas);
-	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
-	        fos.close();
-			
-	        intent = new Intent(Intent.ACTION_SEND);
-	        intent.setType("image/*");  
-	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
-			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
-	        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
-		}
-		catch (Exception e) {
-			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
-		}
-		break;
-	case 2://share url
-		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
-		break;
-	case 3://history/bookmark
-		intent = new Intent("simple.home.jtbuaa.bookmark");
-		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
-		util.startActivity(intent, false, getBaseContext());
-		break;
-	case 4://copy
-	    try {
-	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
-	    }
-	    catch (Exception e) {
-	    	e.printStackTrace();
-	    }
-	    break;
-	case 5://about
-		if (aboutDialog == null) {
-			aboutDialog = new AlertDialog.Builder(mContext).
-					setTitle(getString(R.string.browser_name) + util.getVersion(this)).
-					setIcon(R.drawable.explorer).
-					setView(aboutView).
-					setMessage(getString(R.string.browser_name) + getString(R.string.about_message) + getString(R.string.about_dialog_notes)).
-					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-						}
-					}).create();
-		}
-		showZoomControl.setChecked(serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
-		aboutDialog.show();
 
-		break;
-	}
-	return true;
+private SimpleAdapter getMenuAdapter(String[] menuNameArray,
+        int[] imageResourceArray) {
+    ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
+    for (int i = 0; i < menuNameArray.length; i++) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("itemImage", imageResourceArray[i]);
+        map.put("itemText", menuNameArray[i]);
+        data.add(map);
+    }
+    SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
+            R.layout.icon_list, new String[] { "itemImage", "itemText" },
+            new int[] { R.id.appicon, R.id.appname });
+    return simperAdapter;
 }
-
 
 private void shareUrl(String text)
 {
@@ -741,6 +702,8 @@ public void onCreate(Bundle savedInstanceState) {
 	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
 	setContentView(R.layout.browser);
 
+	
+	
 	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
     TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
     mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
@@ -759,7 +722,115 @@ public void onCreate(Bundle savedInstanceState) {
 			serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoomControl.isChecked());
 		}
 	});
-			
+	
+	
+	
+	//menu icon
+    int[] menu_image_array = { R.drawable.source, R.drawable.capture, 
+    		R.drawable.share, R.drawable.favorites_add, 
+    		R.drawable.copy, android.R.drawable.ic_menu_help };
+    //menu text
+    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), 
+    		getString(R.string.shareurl), getString(R.string.history_bookmark), 
+    		getString(R.string.copy), getString(R.string.about) };
+    
+	menuView = View.inflate(this, R.layout.grid_menu, null);
+    // 创建AlertDialog
+    menuDialog = new AlertDialog.Builder(this).create();
+    menuDialog.setView(menuView);
+    menuDialog.getWindow().setGravity(Gravity.BOTTOM);
+    menuDialog.setCanceledOnTouchOutside(true);
+    
+    menuDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+		@Override
+		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+			if (keyCode == KeyEvent.KEYCODE_MENU) dialog.dismiss();
+			return false;
+		}
+    	
+    });
+
+    menuGrid = (GridView) menuView.findViewById(R.id.gridview);
+    menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
+    menuGrid.setOnItemClickListener(new OnItemClickListener() {
+        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                long arg3) {
+            switch (arg2) {
+        	case 0://view page source
+        		Intent intent = new Intent(Intent.ACTION_SENDTO);
+        		intent.setData(Uri.fromParts("mailto", "", null));
+        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
+        		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
+        		if (!util.startActivity(intent, false, getBaseContext())) {
+        	    	if (m_sourceDialog == null) {
+        				m_sourceDialog = new AlertDialog.Builder(getBaseContext()).
+        				setMessage(serverWebs.get(webIndex).pageSource).create();
+        	        }
+        	    	else m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
+        	    	m_sourceDialog.show();
+        		}
+        		break;
+        	case 1://snap
+        		try {
+        			String snap = downloadPath + "snap/snap.png";
+        			FileOutputStream fos = new FileOutputStream(snap); 
+        			Picture pic = serverWebs.get(webIndex).capturePicture();
+        			Bitmap bmp = Bitmap.createBitmap(serverWebs.get(webIndex).getWidth(), serverWebs.get(webIndex).getHeight(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+        			Canvas canvas = new Canvas(bmp); 
+        	        pic.draw(canvas);
+        	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
+        	        fos.close();
+        			
+        	        intent = new Intent(Intent.ACTION_SEND);
+        	        intent.setType("image/*");  
+        	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share); 
+        			intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
+        	        util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);
+        		}
+        		catch (Exception e) {
+        			Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+        		}
+        		break;
+        	case 2://share url
+        		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
+        		break;
+        	case 3://history/bookmark
+        		intent = new Intent("simple.home.jtbuaa.bookmark");
+        		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
+        		util.startActivity(intent, false, getBaseContext());
+        		break;
+        	case 4://copy
+        	    try {
+        	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+        	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
+        	    }
+        	    catch (Exception e) {
+        	    	e.printStackTrace();
+        	    }
+        	    break;
+        	case 5://about
+        		if (aboutDialog == null) {
+        			aboutDialog = new AlertDialog.Builder(mContext).
+        					setTitle(getString(R.string.browser_name) + util.getVersion(getBaseContext())).
+        					setIcon(R.drawable.explorer).
+        					setView(aboutView).
+        					setMessage(getString(R.string.browser_name) + getString(R.string.about_message) + getString(R.string.about_dialog_notes)).
+        					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+        						@Override
+        						public void onClick(DialogInterface dialog, int which) {
+        						}
+        					}).create();
+        		}
+        		showZoomControl.setChecked(serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
+        		aboutDialog.show();
+        		break;
+            }
+            menuDialog.dismiss();
+        }
+    });
+    
+    
+    
     adview = (AdView) findViewById(R.id.adView);
     if (paid) {
     	LayoutParams lp = adview.getLayoutParams();
@@ -1116,11 +1187,6 @@ protected void onPause() {
 	}
 
 	super.onPause();
-}
-
-@Override
-public boolean onMenuOpened(int featureId, Menu menu) {
-    return true;// return true will show system menu
 }
 
 @Override

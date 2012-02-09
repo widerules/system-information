@@ -771,7 +771,11 @@ public void onCreate(Bundle savedInstanceState) {
     //create AlertDialog
     menuDialog = new AlertDialog.Builder(this).create();
     menuDialog.setView(menuView);
-    menuDialog.getWindow().setGravity(Gravity.BOTTOM);
+    //menuDialog.getWindow().setGravity(Gravity.BOTTOM);
+    WindowManager.LayoutParams params = menuDialog.getWindow().getAttributes();
+    params.y += 150;
+    menuDialog.getWindow().setAttributes(params);
+    
     menuDialog.setCanceledOnTouchOutside(true);
     
     menuDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {

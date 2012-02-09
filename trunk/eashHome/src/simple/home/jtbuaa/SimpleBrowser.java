@@ -37,6 +37,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -81,6 +82,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.SimpleAdapter;
@@ -96,6 +98,7 @@ public class SimpleBrowser extends Activity {
 	//about dialog
 	View aboutView;
 	CheckBox showZoomControl;
+	RadioButton btnFullScreen;
 	AlertDialog aboutDialog = null;
 	
 	//menu dialog
@@ -722,7 +725,8 @@ public void onCreate(Bundle savedInstanceState) {
 			serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoomControl.isChecked());
 		}
 	});
-	
+
+	btnFullScreen = (RadioButton) aboutView.findViewById(R.id.radio_fullscreen);
 	
 	
 	//menu icon
@@ -775,7 +779,21 @@ public void onCreate(Bundle savedInstanceState) {
         			String snap = downloadPath + "snap/snap.png";
         			FileOutputStream fos = new FileOutputStream(snap); 
         			Picture pic = serverWebs.get(webIndex).capturePicture();
-        			Bitmap bmp = Bitmap.createBitmap(serverWebs.get(webIndex).getWidth(), serverWebs.get(webIndex).getHeight(), Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+        			Bitmap bmp;
+        			if (btnFullScreen.isChecked()) {
+        				Rect outRect = new Rect();
+        				serverWebs.get(webIndex).getWindowVisibleDisplayFrame(outRect);
+        				bmp = Bitmap.createBitmap(
+        						webpages.getWidth(), 
+        						webpages.getHeight(),
+        						Bitmap.Config.ARGB_8888);//only capture visiable webpage
+        			}
+        			else
+        				bmp = Bitmap.createBitmap(
+        						pic.getWidth(), 
+        						pic.getHeight(), 
+        						Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+        			
         			Canvas canvas = new Canvas(bmp); 
         	        pic.draw(canvas);
         	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 

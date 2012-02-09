@@ -741,6 +741,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				Bitmap bmp = apps.getDrawingCache(); 
 		        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
 		        fos.close();
+		        apps.destroyDrawingCache();
 			} catch (Exception e) {
 			} 
 

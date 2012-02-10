@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-  android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:background="#F0404040"
   >
   
+    <LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+        >
+        
     <com.google.ads.AdView xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
         android:id="@+id/ads"
         android:layout_width="fill_parent" 
@@ -18,39 +23,57 @@
     <Button android:id="@+id/title"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-      	android:layout_below="@id/ads"
       	android:gravity="center_horizontal"
       	android:textSize="16dip"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />
   	
-  	<TextView android:id="@+id/mailto"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:layout_alignParentBottom="true"
-      	android:layout_centerHorizontal="true"
-      	android:layout_marginBottom="5dip"
-      	android:textSize="16dip"
-      	android:textColor="#F08080F0"
-    />
-    
-  	<Button android:id="@+id/share_wallpaper"
+    <TextView android:id="@+id/help"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-      	android:layout_above="@id/mailto"
       	android:textSize="16dip"
-      	android:text="@string/share_wallpaper"
+      	android:textColor="#FFFFFFFF"
+		android:layout_marginLeft="5dip"
+		android:layout_marginRight="5dip"
+		android:padding="5dip"
+		android:background="@drawable/round_corner_light"
+    />
+
+    <Button android:id="@+id/vote"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:text="@string/vote"
+		android:layout_margin="5dip"
+        android:background="@drawable/button_layout"
+    />
+
+  	<TextView android:id="@+id/info"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:textColor="#FFFFFFFF"
+		android:layout_marginLeft="5dip"
+		android:layout_marginRight="5dip"
+		android:padding="5dip"
+		android:background="@drawable/round_corner_light"
+    />
+
+  	<Button android:id="@+id/share_desktop"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:text="@string/share_desktop"
       	android:singleLine="true"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />
-  	
+
 <RelativeLayout android:id="@+id/cbWallpaper"
   android:orientation="horizontal"
   android:layout_width="fill_parent"
   android:layout_height="50dip"
-  android:layout_above="@id/share_wallpaper"
   >
 
     <CheckBox android:id="@+id/change_wallpaper"
@@ -84,60 +107,27 @@
     />			
   	</LinearLayout>	  
 </RelativeLayout>
-  	
-  	<Button android:id="@+id/share_desktop"
+
+  	<Button android:id="@+id/share_wallpaper"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-		android:layout_above="@id/cbWallpaper"
       	android:textSize="16dip"
-      	android:text="@string/share_desktop"
+      	android:text="@string/share_wallpaper"
       	android:singleLine="true"
 		android:layout_margin="5dip"
         android:background="@drawable/button_layout"
     />
-
-  	<TextView android:id="@+id/info"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-		android:layout_above="@id/share_desktop"
-      	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
-		android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip"
-		android:padding="5dip"
-		android:background="@drawable/round_corner_light"
-    />
-  		
-    <Button android:id="@+id/vote"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-		android:layout_above="@id/info"
-      	android:textSize="16dip"
-      	android:text="@string/vote"
-		android:layout_margin="5dip"
-        android:background="@drawable/button_layout"
-    />
-    
-<ScrollView 
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:layout_below="@id/title"
-  android:layout_above="@id/vote"
-  >
-    
-    <TextView android:id="@+id/help"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
-		android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip"
-		android:padding="5dip"
-		android:background="@drawable/round_corner_light"
-    />
   	
-</ScrollView>
-
+  	<TextView android:id="@+id/mailto"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:layout_gravity="center_horizontal"
+      	android:layout_marginBottom="5dip"
+      	android:textSize="16dip"
+      	android:textColor="#F08080F0"
+    />
+    
+    
 <!--
   		<TextView android:id="@+id/fellow"
       	android:layout_width="wrap_content"
@@ -148,5 +138,6 @@
     />
 -->
   	
+    </LinearLayout>
 
-</RelativeLayout>
+</ScrollView>

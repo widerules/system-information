@@ -779,7 +779,7 @@ public void onCreate(Bundle savedInstanceState) {
     //menu text
     String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), 
     		getString(R.string.shareurl), getString(R.string.history_bookmark), 
-    		getString(R.string.copy), getString(R.string.about) };
+    		getString(R.string.copy), getString(R.string.help) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);
@@ -1220,7 +1220,7 @@ protected void onResume() {
 			e.printStackTrace();
 		}
 	}
-	else if (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE)) 
+	else if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) 
 		if ((hCount != mHistory.size()) || (bCount != mBookMark.size())) loadPage(homePage());//reload home page if history/bookmark changed.
 		
 	

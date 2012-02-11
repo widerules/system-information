@@ -67,6 +67,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
 import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
@@ -123,6 +124,7 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout webControl, webtools_center;
 	TextView btnNewpage;
 	InputMethodManager imm;
+	ProgressBar loadProgress;
 
 	AlertDialog m_sourceDialog;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
@@ -130,7 +132,7 @@ public class SimpleBrowser extends Activity {
 	boolean historyChanged, bookmarkChanged;
 	ImageView imgAddFavo, imgGo;
 
-	ProgressBar loadProgress;
+	final String BLANK_PAGE = "about:blank";
 	
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
@@ -238,7 +240,7 @@ class MyWebview extends WebView {
 				
                 webControl.setVisibility(View.INVISIBLE);
 
-        		if (!url.equals("about:blank")) { 
+        		if (!url.equals(BLANK_PAGE)) { 
         			String site = "";
         			String[] tmp = url.split("/");
         			if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
@@ -911,7 +913,7 @@ public void onCreate(Bundle savedInstanceState) {
     imgGo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			if (!webAddress.getText().toString().equals("about:blank")) 
+			if (!webAddress.getText().toString().equals(BLANK_PAGE)) 
 				serverWebs.get(webIndex).loadUrl(webAddress.getText().toString());
 		}
     });
@@ -950,14 +952,24 @@ public void onCreate(Bundle savedInstanceState) {
 	imgNext.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			if (serverWebs.get(webIndex).canGoForward()) serverWebs.get(webIndex).goForward();
+			if (serverWebs.get(webIndex).canGoForward()) {
+				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl().equals(BLANK_PAGE))
+					loadPage(homePage());//goBack will show blank page at this time, so load the home page.
+				else serverWebs.get(webIndex).goForward();
+			}
 		}
 	});
 	imgPrev = (ImageView) findViewById(R.id.prev);
 	imgPrev.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
+			if (serverWebs.get(webIndex).canGoBack()) {
+				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl().equals(BLANK_PAGE))
+					loadPage(homePage());//goBack will show blank page at this time, so load the home page.
+				else serverWebs.get(webIndex).goBack(); 
+			}
 		}
 	});
 	imgRefresh = (ImageView) findViewById(R.id.refresh);
@@ -969,7 +981,7 @@ public void onCreate(Bundle savedInstanceState) {
 				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
-				if (!webAddress.getText().toString().equals("about:blank")) 
+				if (!webAddress.getText().toString().equals(BLANK_PAGE)) 
 					serverWebs.get(webIndex).reload();
 				else loadPage(homePage());
 			}
@@ -1127,22 +1139,6 @@ private void addFavo(final String url, final String title) {
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 	    		mBookMark.add(titleUrl);
 	    		
-				/*try {//save scaled snap
-					int width = serverWebs.get(webIndex).getWidth();
-					FileOutputStream fos = openFileOutput(title+".snap.png", 0);
-					Picture pic = serverWebs.get(webIndex).capturePicture();
-					Bitmap bmp = Bitmap.createBitmap(width, width*2/3, Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
-					Canvas canvas = new Canvas(bmp); 
-			        pic.draw(canvas);
-			        
-			        Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, width/4, width/6, false);
-			        scaledBmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
-			        fos.close();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}*/
-
 	    		bookmarkChanged = true;
 			}
 		}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -1176,8 +1172,8 @@ private void openNewPage(String url, String data) {
 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
-			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();
-			else if (serverWebs.get(webIndex).canGoBack()) serverWebs.get(webIndex).goBack();
+			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
+			else if (serverWebs.get(webIndex).canGoBack()) imgPrev.performClick();
 			else return super.onKeyDown(keyCode, event);
 			
 			return true;
@@ -1188,6 +1184,8 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 @Override
 protected void onResume() {
+	int hCount = mHistory.size();
+	int bCount = mBookMark.size();
 	FileInputStream fi = null;
 	try {
 		fi = openFileInput("history");
@@ -1216,12 +1214,14 @@ protected void onResume() {
 			if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
 				//open the url from intent in a new page if the old page is under reading.
 				loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
-			else if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals("about:blank"))) loadPage(homePage());
+			else if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) loadPage(homePage());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	else if (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE)) 
+		if ((hCount != mHistory.size()) || (bCount != mBookMark.size())) loadPage(homePage());//reload home page if history/bookmark changed.
 		
 	
 	super.onResume();

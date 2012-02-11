@@ -771,9 +771,9 @@ public void onCreate(Bundle savedInstanceState) {
 	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	
 	//menu icon
-    int[] menu_image_array = { R.drawable.source, R.drawable.capture, 
+    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture, 
     		R.drawable.share, R.drawable.favorites_add, 
-    		R.drawable.copy, android.R.drawable.ic_menu_help };
+    		R.drawable.copy, R.drawable.about };
     //menu text
     String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), 
     		getString(R.string.shareurl), getString(R.string.history_bookmark), 

@@ -65,7 +65,7 @@
     <string name="history">History</string>
     <string name="bookmark">Bookmark</string>
     <string name="history_bookmark">Bookmark/History</string>
-    <string name="source">View Source</string>
+    <string name="source">Page Source</string>
     <string name="snap">ScreenShot</string>
     <string name="snap_size">SnapSize</string>
     <string name="full_screen">FullScreen</string>

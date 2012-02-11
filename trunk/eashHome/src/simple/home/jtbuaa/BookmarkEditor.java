@@ -146,7 +146,7 @@ public class BookmarkEditor extends Activity{
             });
             
             final TextView btnVersion = (TextView) convertView.findViewById(R.id.appversion);
-			btnVersion.setText("delete");
+			btnVersion.setText(R.string.delete);
             btnVersion.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

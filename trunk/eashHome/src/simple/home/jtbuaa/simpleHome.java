@@ -100,7 +100,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 	final static int homeTab = 1;
 	
-	boolean paid;//paid or not 
+	boolean paid;//paid or not
+	
+	AlertDialog restartDialog = null;
 	
 	//wall paper related
 	String downloadPath;
@@ -280,10 +282,26 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 5, 0, getString(R.string.addtoFavo));
 			menu.add(0, 6, 0, getString(R.string.addtoShort));
 			menu.add(0, 7, 0, getString(R.string.hideapp));
-			mMenu = menu;
+			if (mainlayout.getCurrentItem() == 0) {
+				if (sysAlphaList.mIsGrid)
+					menu.add(0, 8, 0, getString(R.string.list_view));
+				else
+					menu.add(0, 8, 0, getString(R.string.grid_view));
+			}
+			else if (mainlayout.getCurrentItem() == 2) {
+				if (userAlphaList.mIsGrid)
+					menu.add(0, 8, 0, getString(R.string.list_view));
+				else
+					menu.add(0, 8, 0, getString(R.string.grid_view));
+			}
+			mMenu = menu; 
 			break;
 		case 3://on package list
-			menu.add(0, 8, 0, getString(R.string.appdetail));
+			menu.add(0, 9, 0, getString(R.string.appdetail));
+			if (packageAlphaList.mIsGrid)
+				menu.add(0, 8, 0, getString(R.string.list_view));
+			else
+				menu.add(0, 8, 0, getString(R.string.grid_view));
 		}
 	}
 	
@@ -386,7 +404,20 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				sysAlphaList.remove(info);
 			else userAlphaList.remove(info);
 			break;
-		case 8://get package detail info
+		case 8://switch view
+    		restartDialog.show();
+    		
+    		SharedPreferences.Editor editor = perferences.edit();
+			if (mainlayout.getCurrentItem() == 0) 
+	    		editor.putBoolean("system", !sysAlphaList.mIsGrid);
+			else if (mainlayout.getCurrentItem() == 2) 
+	    		editor.putBoolean("user", !userAlphaList.mIsGrid);
+			else if (mainlayout.getCurrentItem() == 3) 
+	    		editor.putBoolean("package", !packageAlphaList.mIsGrid);
+    		editor.commit();
+    		
+			break;
+		case 9://get package detail info
 			PackageInfo pi = (PackageInfo) selected_case.mRi;
 			showDetail(pi.applicationInfo.sourceDir, pi.packageName);
 			break;
@@ -499,10 +530,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	shortAppList = (ListView) home.findViewById(R.id.business);
     	shortAppList.bringToFront();
     	shortAppList.setVisibility(View.INVISIBLE);
-        
-    	sysAlphaList = new AppAlphaList(this, pm, packagesSize, true, dm.widthPixels > 480);
-    	userAlphaList = new AppAlphaList(this, pm, packagesSize, false, dm.widthPixels > 480);
-    	if (paid) packageAlphaList = new PkgAlphaList(this, pm, packagesSize, false, dm.widthPixels > 480);//package tab
+
+    	
+		boolean isGrid = perferences.getBoolean("system", true);
+    	sysAlphaList = new AppAlphaList(this, pm, packagesSize, isGrid, dm.widthPixels > 480);
+    	
+		isGrid = perferences.getBoolean("user", false);
+    	userAlphaList = new AppAlphaList(this, pm, packagesSize, isGrid, dm.widthPixels > 480);
+    	
+    	if (paid) {
+    		isGrid = perferences.getBoolean("package", false);
+    		packageAlphaList = new PkgAlphaList(this, pm, packagesSize, isGrid, dm.widthPixels > 480);//package tab
+    	}
+    	
     	
     	mListViews = new ArrayList<View>();
         mListViews.add(sysAlphaList.view);
@@ -614,13 +654,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         shortBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if ((shortAppList.getVisibility() == View.INVISIBLE) && !mShortApps.isEmpty()) {
+				if ((shortAppList.getVisibility() == View.INVISIBLE) && !mShortApps.isEmpty()) 
 					shortAppList.setVisibility(View.VISIBLE);
-				}
-				else {
-					shortAppList.setVisibility(View.INVISIBLE);
-				}
+				else shortAppList.setVisibility(View.INVISIBLE);
 			}
         });
 		setLayout(dm.widthPixels);
@@ -673,6 +709,27 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	//task for init, such as load webview, load package list
 		InitTask initTask = new InitTask();
         initTask.execute("");
+        
+		restartDialog = new AlertDialog.Builder(this).
+				setTitle(R.string.app_name).
+				setIcon(R.drawable.icon).
+				setMessage(R.string.restart).
+				setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = getIntent();
+					    overridePendingTransition(0, 0);
+					    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+					    finish();
+					    overridePendingTransition(0, 0);
+					    startActivity(intent);
+					}
+				}).
+				setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				}).create();
     }
 
     @Override 
@@ -918,7 +975,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				ois.close();
 				fi.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} catch (Exception e) {
@@ -1062,7 +1118,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    			break;
 	    		}
 	    	}
-	    	
+
 			return null;
 		}
 	}
@@ -1246,8 +1302,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 	@Override
 	public void onAccuracyChanged(Sensor arg0, int arg1) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

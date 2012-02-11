@@ -101,5 +101,9 @@
     <string name="download_fail">下载失败，点击查看</string>
     
     <string name="sorry">出现异常退出，出错日志为</string>
+
+    <string name="grid_view">图标视图</string>
+    <string name="list_view">列表视图</string>
+    <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
     
 </resources>

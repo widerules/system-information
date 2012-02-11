@@ -103,4 +103,8 @@
     
     <string name="sorry">" "crashed, error log is" "</string>
     
+    <string name="grid_view">Grid View</string>
+    <string name="list_view">List View</string>
+    <string name="restart">It need restart to change the view. \nRestart now?</string>
+    
 </resources>

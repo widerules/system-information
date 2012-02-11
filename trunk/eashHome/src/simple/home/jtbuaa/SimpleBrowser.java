@@ -759,6 +759,17 @@ public void onCreate(Bundle savedInstanceState) {
 		}
 	});
 
+    TextView downloads = (TextView) aboutView.findViewById(R.id.downloads);
+    downloads.setText(Html.fromHtml("<u>"+ getString(R.string.downloads) +"</u>"));
+    downloads.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
+			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
+			util.startActivity(intent, true, getBaseContext());
+		}
+	});
+    
 	showZoomControl = (CheckBox) aboutView.findViewById(R.id.show_zoom);
 	showZoomControl.setOnClickListener(new OnClickListener() {
 		@Override
@@ -873,10 +884,10 @@ public void onCreate(Bundle savedInstanceState) {
         	case 5://about
         		if (aboutDialog == null) {
         			aboutDialog = new AlertDialog.Builder(mContext).
-        					setTitle(getString(R.string.browser_name) + util.getVersion(getBaseContext())).
+        					setTitle(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext())).
         					setIcon(R.drawable.explorer).
         					setView(aboutView).
-        					setMessage(getString(R.string.browser_name) + getString(R.string.about_message) + getString(R.string.about_dialog_notes)).
+        					setMessage(getString(R.string.browser_name) + getString(R.string.about_message) + "\n\n" + getString(R.string.about_dialog_notes)).
         					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
         						@Override
         						public void onClick(DialogInterface dialog, int which) {

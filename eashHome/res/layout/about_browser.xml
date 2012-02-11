@@ -6,23 +6,43 @@
   android:layout_height="fill_parent"
   >
   
-  	<TextView android:id="@+id/downloads"
+  	<TextView android:id="@+id/mailto"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
-      	android:text="@string/downloads"
+      	android:text="@string/author"
       	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
+      	android:textColor="#F08080F0"
       	android:layout_marginLeft="20dip"
     />
-    
+
+  	
+  	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+  	    >
+  	    
     <CheckBox android:id="@+id/show_zoom"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/show_zoom"
       	android:layout_marginLeft="15dip"
       	android:checked="false"
-    />  
+    />
+      
+  	<TextView android:id="@+id/downloads"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:text="@string/downloads"
+      	android:textSize="16dip"
+      	android:textColor="#F08080F0"
+      	android:layout_marginLeft="10dip"
+      	android:layout_centerVertical="true"
+      	android:layout_toRightOf="@id/show_zoom"
+    />
 
+    </RelativeLayout>
+    
     <RadioGroup android:id="@+id/snap_size"  
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"  
@@ -51,13 +71,4 @@
         />  
 	</RadioGroup>           
 
-  	<TextView android:id="@+id/mailto"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:text="@string/author"
-      	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
-      	android:layout_marginLeft="20dip"
-    />
-    
 </LinearLayout>

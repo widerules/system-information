@@ -44,7 +44,7 @@
     <string name="home">Home</string>
     <string name="packages">Services/Providers</string>
     
-    <string name="show_zoom">Show Zoom Control</string>
+    <string name="show_zoom">Zoom Control</string>
     
     <string name="addtoFavo">Add to home</string>
     <string name="removeFromFavo">Delete</string>

@@ -121,7 +121,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	AppAlphaList sysAlphaList, userAlphaList;
 	PkgAlphaList packageAlphaList;
 	//alpha list related
-    RadioButton btnSystem, btnUser, btnHome, btnPackage;
+    RadioButton btnSystem, btnUser, btnHome, btnPackage, btnLast;
 
 	//app list related
 	private List<View> mListViews;
@@ -403,6 +403,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			if (mainlayout.getCurrentItem() == 0)
 				sysAlphaList.remove(info);
 			else userAlphaList.remove(info);
+			refreshRadioButton();
 			break;
 		case 8://switch view
     		restartDialog.show();
@@ -554,7 +555,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         btnUser = (RadioButton) findViewById(R.id.radio_user);
         btnHome = (RadioButton) findViewById(R.id.radio_home);
         btnPackage = (RadioButton) findViewById(R.id.radio_package);
-        final RadioButton btnLast;
         if (paid) btnLast = btnPackage;
         else {
         	btnLast = btnUser;
@@ -571,36 +571,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onPageScrollStateChanged(int state) {
 				if (state == ViewPager.SCROLL_STATE_SETTLING) {
-					switch(mainlayout.getCurrentItem()) {
-					case 0:
-						btnSystem.setChecked(true);
-						try {
-							btnLast.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
-						} catch(Exception e) {
-							btnLast.setText(R.string.systemapps);
-						}
-						break;
-					case 1:
-						btnHome.setChecked(true);
-						btnLast.setText(R.string.home);
-						break;
-					case 2:
-						btnUser.setChecked(true);
-						try {
-							btnLast.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
-						} catch(Exception e) {//catch null pointer error
-							btnLast.setText(R.string.userapps);
-						}
-						break;
-					case 3:
-						btnPackage.setChecked(true);
-						try {
-							btnLast.setText(getString(R.string.packages) + "(" + packageAlphaList.getCount() + ")");
-						} catch(Exception e) {//catch null pointer error
-							btnLast.setText(R.string.packages);
-						}
-						break;
-					}
+					refreshRadioButton();
 				}
 			}
 
@@ -818,6 +789,39 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         }
     };
 
+    void refreshRadioButton() {
+		switch(mainlayout.getCurrentItem()) {
+		case 0:
+			btnSystem.setChecked(true);
+			try {
+				btnLast.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
+			} catch(Exception e) {
+				btnLast.setText(R.string.systemapps);
+			}
+			break;
+		case 1:
+			btnHome.setChecked(true);
+			btnLast.setText(R.string.home);
+			break;
+		case 2:
+			btnUser.setChecked(true);
+			try {
+				btnLast.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
+			} catch(Exception e) {//catch null pointer error
+				btnLast.setText(R.string.userapps);
+			}
+			break;
+		case 3:
+			btnPackage.setChecked(true);
+			try {
+				btnLast.setText(getString(R.string.packages) + "(" + packageAlphaList.getCount() + ")");
+			} catch(Exception e) {//catch null pointer error
+				btnLast.setText(R.string.packages);
+			}
+			break;
+		}
+    }
+    
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -827,6 +831,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             if (action.equals(Intent.ACTION_PACKAGE_REMOVED)) {
             	ResolveInfo info = userAlphaList.remove(packageName);
             	if (info == null) info = sysAlphaList.remove(packageName);
+            	refreshRadioButton();
     			
             	if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {//not remove shortcut if it is just replace 
             		for (int i = 0; i < favoAdapter.getCount(); i++) {
@@ -878,6 +883,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
                     	}
                 	}
             	}
+            	refreshRadioButton();
             }
 		}
 		

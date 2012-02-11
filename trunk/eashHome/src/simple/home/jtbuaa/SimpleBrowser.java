@@ -767,6 +767,8 @@ public void onCreate(Bundle savedInstanceState) {
 
 	btnFullScreen = (RadioButton) aboutView.findViewById(R.id.radio_fullscreen);
 	
+	DisplayMetrics dm  = new DisplayMetrics();
+	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	
 	//menu icon
     int[] menu_image_array = { R.drawable.source, R.drawable.capture, 
@@ -777,13 +779,15 @@ public void onCreate(Bundle savedInstanceState) {
     		getString(R.string.shareurl), getString(R.string.history_bookmark), 
     		getString(R.string.copy), getString(R.string.about) };
     
-	menuView = View.inflate(this, R.layout.grid_menu, null);
     //create AlertDialog
+	menuView = View.inflate(this, R.layout.grid_menu, null);
     menuDialog = new AlertDialog.Builder(this).create();
     menuDialog.setView(menuView);
-    //menuDialog.getWindow().setGravity(Gravity.BOTTOM);
     WindowManager.LayoutParams params = menuDialog.getWindow().getAttributes();
-    params.y += 150;
+    //240 for 1024h, 140 for 800h, 70 for 480h, to show menu dialog in correct position
+    if (dm.heightPixels <= 480) params.y = 70;
+    else if (dm.heightPixels <= 800) params.y = 140;
+    else params.y = 240;
     menuDialog.getWindow().setAttributes(params);
     
     menuDialog.setCanceledOnTouchOutside(true);
@@ -939,8 +943,6 @@ public void onCreate(Bundle savedInstanceState) {
     webpages.addView(serverWebs.get(webIndex));
     
 	webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
-	DisplayMetrics dm  = new DisplayMetrics();
-	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	android.view.ViewGroup.LayoutParams lp = webtools_center.getLayoutParams();
 	lp.width = dm.widthPixels/2 + 40;
 	

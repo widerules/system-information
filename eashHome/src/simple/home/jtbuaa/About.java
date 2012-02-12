@@ -252,6 +252,16 @@ public class About extends Activity{
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});*/
+        Button btnSwitchHome = (Button) findViewById(R.id.switch_home);
+        btnSwitchHome.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+		    	Intent intent = new Intent(Intent.ACTION_MAIN, null);
+		    	intent.addCategory(Intent.CATEGORY_LAUNCHER);
+		    	intent.setClassName(myPackageName, myPackageName+".SelectHome");
+		    	util.startActivity(intent, false, getBaseContext());
+			}
+        });
 	}
 	
 	@Override

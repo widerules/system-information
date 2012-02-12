@@ -215,7 +215,7 @@ public class About extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/img?tn=bdidxiphone&ssid=0&from=844b&bd_page_type=1&uid=wiaui_1326248214_3176&pu=sz%401320_480&itj=41"));
-				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
+				intent.setClassName(myPackageName, "easy.lib.SimpleBrowser");
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});
@@ -225,7 +225,7 @@ public class About extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/img?tn=bdLISTIphone&word=%E9%BB%91%E4%B8%9D&st=103110&prest=11105i&pn=0&rn=10&vit=aladdin&from=844b&ssid=0&bd_page_type=1&ref=www_iphone&uid=wiaui_1325637338_1514"));
-				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
+				intent.setClassName(myPackageName, "easy.lib.SimpleBrowser");
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});

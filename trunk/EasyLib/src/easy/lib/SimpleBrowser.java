@@ -1170,12 +1170,13 @@ private void openNewPage(String url) {
 	else {
 		webAdapter.add(new MyWebview(mContext));
 		webIndex = webAdapter.getCount() - 1;
-		if (url.equals(""))	loadPage(true);
-		else serverWebs.get(webIndex).loadUrl(url);
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		webpages.getChildAt(webIndex).requestFocus();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));
+		
+		if (url.equals(""))	loadPage(true);
+		else serverWebs.get(webIndex).loadUrl(url);
 	}
 }
 
@@ -1278,7 +1279,7 @@ void setLayout() {
 
 void loadPage(boolean notJudge) {
 	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE)))
-		serverWebs.get(webIndex).loadDataWithBaseURL("", homePage(), "text/html", "utf-8", "");
+		serverWebs.get(webIndex).loadDataWithBaseURL(BLANK_PAGE, homePage(), "text/html", "utf-8", BLANK_PAGE);
 }
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link

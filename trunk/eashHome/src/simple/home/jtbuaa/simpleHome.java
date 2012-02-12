@@ -1093,15 +1093,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    	userAlphaList.sortAlpha();
 
 	    	
-	    	if (shortEmpty) {//add select home to short cut. I don't like to add it to menu
-		    	Intent intent = new Intent(Intent.ACTION_MAIN, null);
-		    	intent.addCategory(Intent.CATEGORY_LAUNCHER);
-		    	intent.setClassName(myPackageName, myPackageName+".SelectHome");
-		    	List<ResolveInfo> selectApps = pm.queryIntentActivities(intent, 0);
-		    	if (selectApps.size() == 1)
-		    		mShortApps.add(selectApps.get(0));
-	    	}
-	    	
         	Message msguser = mAppHandler.obtainMessage();
         	msguser.what = UPDATE_USER;
         	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.

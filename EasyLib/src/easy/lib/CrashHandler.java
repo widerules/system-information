@@ -1,4 +1,4 @@
-package simple.home.jtbuaa;
+package easy.lib;
 
 import java.io.File;
 import java.io.FileOutputStream;

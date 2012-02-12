@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import easy.lib.ricase;
+import easy.lib.util;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -616,7 +619,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_MAIN);
 				intent.addCategory(Intent.CATEGORY_LAUNCHER);
-				intent.setClassName(myPackageName, myPackageName+".SimpleBrowser");
+				intent.setClassName(myPackageName, "easy.lib.SimpleBrowser");
 				util.startActivity(intent, true, getBaseContext());
 			}
         });

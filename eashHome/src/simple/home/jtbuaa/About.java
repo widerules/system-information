@@ -30,6 +30,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import easy.lib.util;
+
 public class About extends Activity{
 	
 	CheckBox cbShake;

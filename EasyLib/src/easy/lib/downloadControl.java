@@ -1,6 +1,6 @@
-package simple.home.jtbuaa;
+package easy.lib;
 
-import simple.home.jtbuaa.SimpleBrowser.DownloadTask;
+import easy.lib.SimpleBrowser.DownloadTask;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;

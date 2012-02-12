@@ -362,7 +362,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 				}
 				else {//return to home page if only one page when click close button
 					webControl.setVisibility(View.INVISIBLE);
-					loadPage(homePage());
+					loadPage(true);
 					serverWebs.get(webIndex).title = getString(R.string.browser_name);
 					serverWebs.get(webIndex).clearHistory();
 				}
@@ -392,7 +392,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     			serverWebs.get(webIndex).loadUrl(url);
     			break;
     		case 4://open in new tab
-    			openNewPage(url, "");
+    			openNewPage(url);
     			break;
     		case 5://add bookmark
     			addFavo(url, url);
@@ -468,7 +468,7 @@ boolean startDownload(String url, String ext) {
 			Entry entry = (Entry) iter.next();
 			DownloadTask val = (DownloadTask) entry.getValue();
 			if ((val != null) && val.apkName.equals(apkName)) {
-				if (val.pauseDownload) val.pauseDownload = false;
+				if (val.pauseDownload) val.pauseDownload = false;//resume download if it paused
 				return true;//the file is downloading, not start a new download task.
 			}
 		}
@@ -969,7 +969,7 @@ public void onCreate(Bundle savedInstanceState) {
 			if (serverWebs.get(webIndex).canGoForward()) {
 				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl().equals(BLANK_PAGE))
-					loadPage(homePage());//goBack will show blank page at this time, so load the home page.
+					loadPage(true);//goBack will show blank page at this time, so load the home page.
 				else serverWebs.get(webIndex).goForward();
 			}
 		}
@@ -981,7 +981,7 @@ public void onCreate(Bundle savedInstanceState) {
 			if (serverWebs.get(webIndex).canGoBack()) {
 				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl().equals(BLANK_PAGE))
-					loadPage(homePage());//goBack will show blank page at this time, so load the home page.
+					loadPage(true);//goBack will show blank page at this time, so load the home page.
 				else serverWebs.get(webIndex).goBack(); 
 			}
 		}
@@ -997,7 +997,6 @@ public void onCreate(Bundle savedInstanceState) {
 			else {//reload the webpage
 				if (!webAddress.getText().toString().equals(BLANK_PAGE)) 
 					serverWebs.get(webIndex).reload();
-				else loadPage(homePage());
 			}
 		}
 	});
@@ -1005,7 +1004,7 @@ public void onCreate(Bundle savedInstanceState) {
 	imgHome.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			loadPage(homePage());
+			loadPage(false);
 		}
 	});
 	imgNew = (ImageView) findViewById(R.id.newpage);
@@ -1031,7 +1030,7 @@ public void onCreate(Bundle savedInstanceState) {
 	btnNewpage.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {//add a new page
-			openNewPage(homePage());
+			openNewPage("");
 		}
 	});
 	//web list
@@ -1129,6 +1128,7 @@ private void addFavo(final String url, final String title) {
 					//deleteFile(mBookMark.get(ii).m_title + ".snap.png");//delete snap too
 		    		mBookMark.remove(ii);
 		    		bookmarkChanged = true;
+		    		loadPage(false);
 				}
 			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 				@Override
@@ -1152,6 +1152,7 @@ private void addFavo(final String url, final String title) {
 				
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 	    		mBookMark.add(titleUrl);
+	    		loadPage(false);
 	    		
 	    		bookmarkChanged = true;
 			}
@@ -1163,17 +1164,13 @@ private void addFavo(final String url, final String title) {
 }
 
 
-private void openNewPage(String data) {
-	openNewPage("", data);
-}
-
-private void openNewPage(String url, String data) {
+private void openNewPage(String url) {
 	if (webAdapter.getCount() == 9) //max count is 9.
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 	else {
 		webAdapter.add(new MyWebview(mContext));
 		webIndex = webAdapter.getCount() - 1;
-		if (url.equals(""))	loadPage(data);
+		if (url.equals(""))	loadPage(true);
 		else serverWebs.get(webIndex).loadUrl(url);
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
@@ -1228,14 +1225,13 @@ protected void onResume() {
 			if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
 				//open the url from intent in a new page if the old page is under reading.
 				loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
-			else if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) loadPage(homePage());
+			else loadPage(false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	else if ((serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) 
-		if ((hCount != mHistory.size()) || (bCount != mBookMark.size())) loadPage(homePage());//reload home page if history/bookmark changed.
+	else if ((hCount != mHistory.size()) || (bCount != mBookMark.size())) loadPage(false);//reload home page if history/bookmark changed.
 		
 	
 	super.onResume();
@@ -1280,8 +1276,9 @@ void setLayout() {
     else lp.width = width/2-15;
 }
 
-void loadPage(String data) {
-    serverWebs.get(webIndex).loadDataWithBaseURL("", data, "text/html", "utf-8", "");
+void loadPage(boolean notJudge) {
+	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE)))
+		serverWebs.get(webIndex).loadDataWithBaseURL("", homePage(), "text/html", "utf-8", "");
 }
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link

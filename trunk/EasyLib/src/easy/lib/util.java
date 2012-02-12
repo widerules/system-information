@@ -1,4 +1,4 @@
-package simple.home.jtbuaa;
+package easy.lib;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
@@ -41,17 +41,6 @@ class TitleUrl {
 }
 
 
-class ricase<T> {
-	T mRi;
-	int mCase;
-	
-	ricase(T ri, int thecase) {
-		mRi = ri;
-		mCase = thecase;
-	}
-}
-   
-
 public class util {
 	
     static public boolean startActivity(Intent intent, boolean showToast, Context context) {
@@ -67,7 +56,7 @@ public class util {
 		}
     }
 
-	static boolean startApp(ResolveInfo info, Context context) {
+	static public boolean startApp(ResolveInfo info, Context context) {
 		Intent i = new Intent(Intent.ACTION_MAIN);
 		i.setComponent(new ComponentName(
 				info.activityInfo.applicationInfo.packageName,

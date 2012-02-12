@@ -2,6 +2,8 @@ package simple.home.jtbuaa;
 
 import java.util.Collections;
 import java.util.HashMap;
+
+import easy.lib.util;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;

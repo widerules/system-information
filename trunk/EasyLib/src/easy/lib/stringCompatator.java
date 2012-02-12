@@ -1,4 +1,4 @@
-package simple.home.jtbuaa;
+package easy.lib;
 
 import java.text.Collator;
 import java.util.Comparator;

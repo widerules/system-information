@@ -766,7 +766,10 @@ public void onCreate(Bundle savedInstanceState) {
 		public void onClick(View arg0) {
 			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
 			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
-			util.startActivity(intent, true, getBaseContext());
+			if (!util.startActivity(intent, false, getBaseContext())) {
+				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.estrongs.android.pop"));
+				util.startActivity(intent, true, getBaseContext());
+			}
 		}
 	});
     

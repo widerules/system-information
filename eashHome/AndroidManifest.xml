@@ -126,7 +126,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".downloadControl"
+        <activity android:name="easy.lib.downloadControl"
         	android:noHistory="true"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="true"
@@ -148,7 +148,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".BookmarkEditor"
+        <activity android:name="easy.lib.BookmarkEditor"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="true"
             android:configChanges="keyboard|keyboardHidden|orientation"

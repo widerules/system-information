@@ -872,7 +872,7 @@ public void onCreate(Bundle savedInstanceState) {
         		break;
         	case 3://history/bookmark
         		Intent intent = new Intent("simple.home.jtbuaa.bookmark");
-        		intent.setClassName(getPackageName(), getPackageName()+".BookmarkEditor");
+        		intent.setClassName(getPackageName(), "easy.lib.BookmarkEditor");
         		util.startActivity(intent, false, getBaseContext());
         		break;
         	case 4://copy

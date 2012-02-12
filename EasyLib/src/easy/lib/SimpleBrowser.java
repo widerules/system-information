@@ -1004,7 +1004,7 @@ public void onCreate(Bundle savedInstanceState) {
 	imgHome.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			loadPage(false);
+			loadPage(true);
 		}
 	});
 	imgNew = (ImageView) findViewById(R.id.newpage);

@@ -13,9 +13,13 @@
 	/>
 	
 	<GridView android:id="@+id/applist"
-		android:layout_width="match_parent"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:numColumns="4"
+		android:numColumns="auto_fit"
+		android:columnWidth="70dip"
+        android:horizontalSpacing="5dip"
+        android:verticalSpacing="15dip"
+        android:stretchMode="spacingWidth"	
 		android:layout_marginLeft="5dip"
 		android:layout_marginRight="5dip"
 		android:layout_marginTop="35dip"
@@ -23,6 +27,7 @@
 		android:fadingEdge="none"
 		android:scrollingCache="false"
 		android:fadeScrollbars="true"
+		android:layout_alignParentBottom="true"
 		android:background="@drawable/round_corner_light"
 	/>
 	   

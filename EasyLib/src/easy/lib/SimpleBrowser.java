@@ -780,20 +780,6 @@ public void onCreate(Bundle savedInstanceState) {
 		}
 	});
 
-    TextView downloads = (TextView) aboutView.findViewById(R.id.downloads);
-    downloads.setText(Html.fromHtml("<u>"+ getString(R.string.downloads) +"</u>"));
-    downloads.setOnClickListener(new OnClickListener() {
-		@Override
-		public void onClick(View arg0) {
-			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
-			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
-			if (!util.startActivity(intent, false, getBaseContext())) {
-				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.estrongs.android.pop"));
-				util.startActivity(intent, true, getBaseContext());
-			}
-		}
-	});
-    
 	showZoomControl = (CheckBox) aboutView.findViewById(R.id.show_zoom);
 	showZoomControl.setOnClickListener(new OnClickListener() {
 		@Override
@@ -809,10 +795,10 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	//menu icon
     int[] menu_image_array = { R.drawable.explorer, R.drawable.capture,	R.drawable.copy, 
-    		R.drawable.share, R.drawable.about, R.drawable.quit };
+    		R.drawable.downloads, R.drawable.share, R.drawable.about };
     //menu text
     String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), getString(R.string.copy), 
-    		getString(R.string.shareurl), getString(R.string.help), getString(R.string.exit) };
+    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.help) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);
@@ -895,10 +881,18 @@ public void onCreate(Bundle savedInstanceState) {
         	    	e.printStackTrace();
         	    }
         	    break;
-        	case 3://share url
+        	case 3://downloads
+    			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
+    			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
+    			if (!util.startActivity(intent, false, mContext)) {
+    				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.estrongs.android.pop"));
+    				util.startActivity(intent, true, getBaseContext());
+    			}
+        		break;
+        	case 4://share url
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
-        	case 4://about
+        	case 5://about
         		if (aboutDialog == null) {
         			aboutDialog = new AlertDialog.Builder(mContext).
         					setTitle(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext())).
@@ -914,8 +908,6 @@ public void onCreate(Bundle savedInstanceState) {
         		showZoomControl.setChecked(serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
         		aboutDialog.show();
         		break;
-        	case 5://exit
-        		finish();
             }
             menuDialog.dismiss();
         }

@@ -101,7 +101,7 @@
     <string name="downloading">downloading...</string>
     <string name="download_finish">download finished, click to check</string>
     <string name="download_fail">download failed, click to check</string>
-    <string name="downloads">Download Files</string>
+    <string name="downloads">Downloads</string>
     
     <string name="sorry">" "crashed, error log is" "</string>
     

@@ -809,11 +809,11 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	//menu icon
     int[] menu_image_array = { R.drawable.explorer, R.drawable.capture, 
-    		R.drawable.favorites_add, R.drawable.copy,
+    		R.drawable.copy,
     		R.drawable.share, R.drawable.about };
     //menu text
     String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), 
-    		getString(R.string.history_bookmark), getString(R.string.copy),
+    		getString(R.string.copy),
     		getString(R.string.shareurl), getString(R.string.help) };
     
     //create AlertDialog
@@ -888,12 +888,7 @@ public void onCreate(Bundle savedInstanceState) {
         		snapDialog.show();
         		
         		break;
-        	case 2://history/bookmark
-        		Intent intent = new Intent("simple.home.jtbuaa.bookmark");
-        		intent.setClassName(getPackageName(), "easy.lib.BookmarkEditor");
-        		util.startActivity(intent, false, getBaseContext());
-        		break;
-        	case 3://copy
+        	case 2://copy
         	    try {
         	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
         	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
@@ -902,10 +897,10 @@ public void onCreate(Bundle savedInstanceState) {
         	    	e.printStackTrace();
         	    }
         	    break;
-        	case 4://share url
+        	case 3://share url
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
-        	case 5://about
+        	case 4://about
         		if (aboutDialog == null) {
         			aboutDialog = new AlertDialog.Builder(mContext).
         					setTitle(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext())).

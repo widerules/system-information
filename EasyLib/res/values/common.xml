@@ -64,7 +64,6 @@
     <string name="nomore_pages">Sorry, can not create more than 9 pages. Please close old pages before create new one.</string>
     <string name="history">History</string>
     <string name="bookmark">Bookmark</string>
-    <string name="history_bookmark">Bookmark/History</string>
     <string name="source">Page Source</string>
     <string name="snap">Screen Shot</string>
     <string name="snap_size">SnapSize</string>
@@ -83,7 +82,7 @@
     <string name="view_img">View Image</string>
     <string name="share_img">Share Image</string>
     <string name="set_wallpaper">Set Wallpaper</string>
-    <string name="open_new">Open in new tab</string>
+    <string name="open_new">Open in new page</string>
     <string name="copy_url">Copy Url</string>
     <string name="copy">Copy</string>
     

@@ -391,18 +391,24 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     		case 1://view image
     			serverWebs.get(webIndex).loadUrl(url);
     			break;
-    		case 4://open in new tab
-    			openNewPage(url);
-    			break;
-    		case 5://add bookmark
-    			addFavo(url, url);
-    			break;
-    		case 6://share url
-    			shareUrl(url);
-    			break;
-    		case 7://copy url
+    		case 4://copy url
     			ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
     			ClipMan.setText(url);
+    			break;
+    		case 5://share url
+    			shareUrl(url);
+    			break;
+    		case 6://open in new tab
+    			openNewPage(url);
+    			break;
+    		case 7://add bookmark
+    			addFavo(url, url);
+    			break;
+    		case 8://remove bookmark
+    			removeFavo(item.getOrder()); 
+    			break;
+    		case 9://remove history
+    			removeHistory(item.getOrder());
     			break;
     		}
     		return true;
@@ -423,10 +429,25 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         // Menu options for a hyperlink.
         //set the header title to the link url
         menu.setHeaderTitle(result.getExtra());
-        menu.add(0, 4, 0, R.string.open_new).setOnMenuItemClickListener(handler);
-        menu.add(0, 5, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
-        menu.add(0, 6, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
-        menu.add(0, 7, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
+        menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
+        menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
+        menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+        
+        boolean foundBookmark = false;
+    	for (int i = mBookMark.size()-1; i >= 0; i--) 
+    		if (mBookMark.get(i).m_url.equals(url)) {
+    			foundBookmark = true;
+                menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
+    			break;
+    		}
+        if (!foundBookmark) 
+        	menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
+
+    	for (int i = mHistory.size()-1; i >= 0; i--) 
+    		if (mHistory.get(i).m_url.equals(url)) {
+    			menu.add(0, 9, i, R.string.remove_history).setOnMenuItemClickListener(handler);
+    			break;
+    		}
     }
 }
 
@@ -919,7 +940,16 @@ public void onCreate(Bundle savedInstanceState) {
     imgAddFavo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			addFavo(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
+	        boolean foundBookmark = false;
+	        String url = serverWebs.get(webIndex).getUrl();
+	    	for (int i = mBookMark.size()-1; i >= 0; i--) 
+	    		if (mBookMark.get(i).m_url.equals(url)) {
+	    			foundBookmark = true;
+	    			removeFavo(i);
+	    			break;
+	    		}
+	        if (!foundBookmark) 
+	        	addFavo(url, serverWebs.get(webIndex).getTitle());
 		}
     });
     
@@ -1110,33 +1140,49 @@ protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 	super.onNewIntent(intent); 
 }
 
+void removeFavo(final int order) {
+	new AlertDialog.Builder(mContext).
+	setTitle(R.string.remove_bookmark).
+	setMessage(mBookMark.get(order).m_title).
+	setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			//deleteFile(mBookMark.get(ii).m_title + ".snap.png");//delete snap too
+    		mBookMark.remove(order);
+    		bookmarkChanged = true;
+    		loadPage(false);
+		}
+	}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+		}
+	}).show();
+}
+
+void removeHistory(final int order) {
+	new AlertDialog.Builder(mContext).
+	setTitle(R.string.remove_history).
+	setMessage(mHistory.get(order).m_title).
+	setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			//deleteFile(mBookMark.get(ii).m_title + ".snap.png");//delete snap too
+    		mHistory.remove(order);
+    		historyChanged = true;
+    		loadPage(false);
+		}
+	}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+		}
+	}).show();
+}
+
 private void addFavo(final String url, final String title) {
 	if (url == null) {
 		Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
 		return;
 	}
-	
-	for (int i = mBookMark.size()-1; i >= 0; i--) 
-		if (mBookMark.get(i).m_url.equals(url)) {//ask user whether to delete the bookmark if already exist.
-			final int ii = i;
-			new AlertDialog.Builder(mContext).
-			setTitle(R.string.remove_bookmark).
-			setMessage(title).
-			setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					//deleteFile(mBookMark.get(ii).m_title + ".snap.png");//delete snap too
-		    		mBookMark.remove(ii);
-		    		bookmarkChanged = true;
-		    		loadPage(false);
-				}
-			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-				}
-			}).show();
-			return;//no need to add it again if always in bookmark
-		}
 	
 	//need user's confirm to add to bookmark
 	new AlertDialog.Builder(mContext).

@@ -76,6 +76,7 @@
     <string name="add_bookmark">添加书签</string>
     <string name="remove_bookmark">删除书签</string>
     <string name="view_bookmark">查看书签</string>
+    <string name="remove_history">删除历史</string>
     
     <string name="save_img">保存图片</string>
     <string name="view_img">查看图片</string>

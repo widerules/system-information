@@ -808,13 +808,11 @@ public void onCreate(Bundle savedInstanceState) {
 	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	
 	//menu icon
-    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture, 
-    		R.drawable.copy,
-    		R.drawable.share, R.drawable.about };
+    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture,	R.drawable.copy, 
+    		R.drawable.share, R.drawable.about, R.drawable.quit };
     //menu text
-    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), 
-    		getString(R.string.copy),
-    		getString(R.string.shareurl), getString(R.string.help) };
+    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), getString(R.string.copy), 
+    		getString(R.string.shareurl), getString(R.string.help), getString(R.string.exit) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);
@@ -916,6 +914,8 @@ public void onCreate(Bundle savedInstanceState) {
         		showZoomControl.setChecked(serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
         		aboutDialog.show();
         		break;
+        	case 5://exit
+        		finish();
             }
             menuDialog.dismiss();
         }

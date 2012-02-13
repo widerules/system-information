@@ -279,12 +279,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 1, 0, getString(R.string.removeFromShort));
 			break;
 		case 2://on app list
-			menu.add(0, 2, 0, getString(R.string.share));
-			menu.add(0, 3, 0, getString(R.string.backapp)).setEnabled(!downloadPath.startsWith(getFilesDir().getPath()));//no need to backup if no sdcard
-			menu.add(0, 4, 0, getString(R.string.appdetail));
-			menu.add(0, 5, 0, getString(R.string.addtoFavo));
-			menu.add(0, 6, 0, getString(R.string.addtoShort));
-			menu.add(0, 7, 0, getString(R.string.hideapp));
 			if (mainlayout.getCurrentItem() == 0) {
 				if (sysAlphaList.mIsGrid)
 					menu.add(0, 8, 0, getString(R.string.list_view));
@@ -297,14 +291,20 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				else
 					menu.add(0, 8, 0, getString(R.string.grid_view));
 			}
+			menu.add(0, 7, 0, getString(R.string.hideapp));
+			menu.add(0, 2, 0, getString(R.string.share));
+			menu.add(0, 3, 0, getString(R.string.backapp)).setEnabled(!downloadPath.startsWith(getFilesDir().getPath()));//no need to backup if no sdcard
+			menu.add(0, 4, 0, getString(R.string.appdetail));
+			menu.add(0, 5, 0, getString(R.string.addtoFavo));
+			menu.add(0, 6, 0, getString(R.string.addtoShort));
 			mMenu = menu; 
 			break;
 		case 3://on package list
-			menu.add(0, 9, 0, getString(R.string.appdetail));
 			if (packageAlphaList.mIsGrid)
 				menu.add(0, 8, 0, getString(R.string.list_view));
 			else
 				menu.add(0, 8, 0, getString(R.string.grid_view));
+			menu.add(0, 9, 0, getString(R.string.appdetail));
 		}
 	}
 	

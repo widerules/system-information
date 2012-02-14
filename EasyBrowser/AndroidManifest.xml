@@ -17,7 +17,6 @@
         <activity android:name="easy.lib.SimpleBrowser"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="false"
-        	android:process="easy.browser"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:windowSoftInputMode="stateUnchanged"
             android:icon="@drawable/explorer"
@@ -80,17 +79,6 @@
             android:label="@string/app_name">
             <intent-filter>
             	<action android:name="simple.home.jtbuaa.downloadControl"/>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        
-        <activity android:name="easy.lib.BookmarkEditor"
-        	android:launchMode="singleInstance"
-        	android:excludeFromRecents="true"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:label="@string/app_name">
-            <intent-filter>
-            	<action android:name="simple.home.jtbuaa.bookmark"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

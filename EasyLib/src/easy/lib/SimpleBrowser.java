@@ -836,7 +836,8 @@ public void onCreate(Bundle savedInstanceState) {
 	        		intent.setData(Uri.fromParts("mailto", "", null));
 	        		intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
 	        		intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
-	        		util.startActivity(intent, true, getBaseContext());
+	        		if (!util.startActivity(intent, false, getBaseContext()))
+						shareUrl(serverWebs.get(webIndex).pageSource);
 				}
 			}).
     		setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel

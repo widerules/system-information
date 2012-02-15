@@ -1194,6 +1194,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	case UPDATE_USER:
         		sysAlphaList.setAdapter();
         		userAlphaList.setAdapter();
+        		refreshRadioButton();//this will update the radio button with correct app number. only for very slow phone
         		
         		shortAdapter = new shortAppAdapter(getBaseContext(), mShortApps);
         		shortAppList.setAdapter(shortAdapter);

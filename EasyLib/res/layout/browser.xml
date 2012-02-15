@@ -5,6 +5,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#FFFFFFFF"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     >
     
     <com.google.ads.AdView xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"  

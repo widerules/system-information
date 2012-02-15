@@ -112,6 +112,7 @@ public class SimpleBrowser extends Activity {
 	AlertDialog menuDialog;// menu菜单Dialog
     GridView menuGrid;
     View menuView;
+    int historyIndex = -1;
     
 	//browser related
 	AutoCompleteTextView webAddress;
@@ -402,7 +403,8 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     			openNewPage(url);
     			break;
     		case 7://add bookmark
-    			addFavo(url, url);
+    			if (historyIndex > -1)	addFavo(url, mHistory.get(historyIndex).m_title);
+    			else addFavo(url, url);
     			break;
     		case 8://remove bookmark
     			removeFavo(item.getOrder()); 
@@ -433,6 +435,14 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
         menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
         
+        historyIndex = -1;
+    	for (int i = mHistory.size()-1; i >= 0; i--) 
+    		if (mHistory.get(i).m_url.equals(url)) {
+    			historyIndex = i;
+    			menu.add(0, 9, i, R.string.remove_history).setOnMenuItemClickListener(handler);
+    			break;
+    		}
+    	
         boolean foundBookmark = false;
     	for (int i = mBookMark.size()-1; i >= 0; i--) 
     		if (mBookMark.get(i).m_url.equals(url)) {
@@ -441,13 +451,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     			break;
     		}
         if (!foundBookmark) 
-        	menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
-
-    	for (int i = mHistory.size()-1; i >= 0; i--) 
-    		if (mHistory.get(i).m_url.equals(url)) {
-    			menu.add(0, 9, i, R.string.remove_history).setOnMenuItemClickListener(handler);
-    			break;
-    		}
+        		menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
     }
 }
 

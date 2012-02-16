@@ -26,6 +26,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 class TitleUrl {
@@ -161,11 +162,16 @@ public class util {
             countPaint.setTextSize(25f);  
             canvas.drawText(String.valueOf(count), iconSize/2-3, iconSize/2+13, countPaint);
         }
-        else {//for miss call and unread sms
+        else if (scheme == 1) {//for miss call and unread sms
             countPaint.setColor(Color.DKGRAY);  
             countPaint.setTextSize(25f);  
             countPaint.setTypeface(Typeface.DEFAULT_BOLD);  
             canvas.drawText(String.valueOf(count), iconSize-30, 20, countPaint);
+        }
+        else {//for easy browser. i don't know why the font change if invoke from easy browser. if from eash home, it is ok for 25f.
+            countPaint.setColor(Color.BLACK);  
+            countPaint.setTextSize(20f);  
+            canvas.drawText(String.valueOf(count), iconSize/2-3, iconSize/2+10, countPaint);
         }
         return contactIcon;  
     }  

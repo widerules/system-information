@@ -380,7 +380,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 					((MyWebview) webpages.getChildAt(position)).destroy();
 					webAdapter.remove((MyWebview) webpages.getChildAt(position));
 					webpages.removeViewAt(position);
-					imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));//show the changed page number
+					imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
 					if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 				}
 				else {//return to home page if only one page when click close button
@@ -1095,7 +1095,7 @@ public void onCreate(Bundle savedInstanceState) {
 		}
 	});
 	imgNew = (ImageView) findViewById(R.id.newpage);
-	imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), 1, 0, mContext));
+	imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), 1, 2, mContext));
 	imgNew.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
@@ -1276,7 +1276,7 @@ private void openNewPage(String url) {
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		webpages.getChildAt(webIndex).requestFocus();
-		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 0, mContext));
+		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));
 		
 		if (url.equals(""))	loadPage(true);
 		else serverWebs.get(webIndex).loadUrl(url);

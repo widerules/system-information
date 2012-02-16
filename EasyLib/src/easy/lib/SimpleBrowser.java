@@ -67,6 +67,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.DownloadListener;
 import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
@@ -96,6 +97,10 @@ import android.widget.ViewFlipper;
 public class SimpleBrowser extends Activity {
 
 	boolean paid;
+	final String BLANK_PAGE = "about:blank";
+
+	ListView webList;
+	Context mContext;
 
 	//about dialog
 	View aboutView;
@@ -127,14 +132,18 @@ public class SimpleBrowser extends Activity {
 	InputMethodManager imm;
 	ProgressBar loadProgress;
 
+	//upload related
+	private ValueCallback<Uri> mUploadMessage;
+	private final static int FILECHOOSER_RESULTCODE = 1001;
+
+	//bookmark and history
 	AlertDialog m_sourceDialog;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	boolean historyChanged, bookmarkChanged;
 	ImageView imgAddFavo, imgGo;
-
-	final String BLANK_PAGE = "about:blank";
 	
+	//ad
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
 
@@ -144,9 +153,6 @@ public class SimpleBrowser extends Activity {
 	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
 	
-	ListView webList;
-	Context mContext;
-
 	class packageIDpair {
 		String packageName;
 		File downloadedfile;
@@ -211,6 +217,22 @@ class MyWebview extends WebView {
         		loadProgress.setProgress(progress);
         		if (progress == 100) loadProgress.setVisibility(View.INVISIBLE);
         	}
+
+        	// For Android 3.0+
+            public void openFileChooser( ValueCallback<Uri> uploadMsg, String acceptType ) 
+            {
+                mUploadMessage = uploadMsg;  
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);  
+                i.addCategory(Intent.CATEGORY_OPENABLE);  
+                i.setType("*/*");  
+                startActivityForResult( Intent.createChooser( i, "File Chooser" ), FILECHOOSER_RESULTCODE );
+            }
+
+            // For Android < 3.0
+            public void openFileChooser( ValueCallback<Uri> uploadMsg ) 
+            {
+                openFileChooser( uploadMsg, "" );
+            }
 		});
         
 		setWebViewClient(new WebViewClient() {
@@ -373,6 +395,17 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         });
         
         return convertView;
+    }
+}
+
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    if (requestCode == FILECHOOSER_RESULTCODE) {
+        if (null == mUploadMessage) return;
+        Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
+        mUploadMessage.onReceiveValue(result);
+        mUploadMessage = null;
     }
 }
 
@@ -972,13 +1005,45 @@ public void onCreate(Bundle savedInstanceState) {
 			return false;
 		}
     });
-    
-    WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
+	FileInputStream fi = null;
+	try {
+		fi = openFileInput("history");
+		mHistory = util.readBookmark(fi);
+		fi = openFileInput("bookmark");
+		mBookMark = util.readBookmark(fi);		
+	} catch (FileNotFoundException e) {
+		e.printStackTrace();
+	}
+	historyChanged = false;
+	bookmarkChanged = false;
+
+	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+	for (int i = 0; i < mHistory.size(); i++) 
+		if (urlAdapter.getPosition(mHistory.get(i).m_site) < 0) urlAdapter.add(mHistory.get(i).m_site);
+	for (int i = 0; i < mBookMark.size(); i++) 
+		if (urlAdapter.getPosition(mBookMark.get(i).m_site) < 0) urlAdapter.add(mBookMark.get(i).m_site);
+	urlAdapter.sort(new stringCompatator());
+	
+	webAddress.setAdapter(urlAdapter);
+
+
+	WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
     webIndex = 0;
     serverWebs = new ArrayList<MyWebview>();
     serverWebs.add(new MyWebview(this));
     webpages = (ViewFlipper) findViewById(R.id.webpages);
     webpages.addView(serverWebs.get(webIndex));
+    
+	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
+		if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
+			//open the url from intent in a new page if the old page is under reading.
+			loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
+		else loadPage(false);
+	}
+	catch (Exception e) {
+		e.printStackTrace();
+	}
+    
     
 	webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 	android.view.ViewGroup.LayoutParams lp = webtools_center.getLayoutParams();
@@ -1230,50 +1295,6 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 		}	
 	}
 	return super.onKeyDown(keyCode, event);
-}
-
-@Override
-protected void onResume() {
-	int hCount = mHistory.size();
-	int bCount = mBookMark.size();
-	FileInputStream fi = null;
-	try {
-		fi = openFileInput("history");
-		mHistory = util.readBookmark(fi);
-		fi = openFileInput("bookmark");
-		mBookMark = util.readBookmark(fi);		
-	} catch (FileNotFoundException e) {
-		e.printStackTrace();
-	}
-	historyChanged = false;
-	bookmarkChanged = false;
-
-	//once set the adapter, the item count of the adapter is always 0, it is bug of Android?
-	//we can only set the adapter to the auto-complete edittext once, otherwise there will be duplicate items in it?
-	if (webAddress.getAdapter() == null) {
-		urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
-		for (int i = 0; i < mHistory.size(); i++) 
-			if (urlAdapter.getPosition(mHistory.get(i).m_site) < 0) urlAdapter.add(mHistory.get(i).m_site);
-		for (int i = 0; i < mBookMark.size(); i++) 
-			if (urlAdapter.getPosition(mBookMark.get(i).m_site) < 0) urlAdapter.add(mBookMark.get(i).m_site);
-		urlAdapter.sort(new stringCompatator());
-		
-		webAddress.setAdapter(urlAdapter);
-
-		try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-			if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
-				//open the url from intent in a new page if the old page is under reading.
-				loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
-			else loadPage(false);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	else if ((hCount != mHistory.size()) || (bCount != mBookMark.size())) loadPage(false);//reload home page if history/bookmark changed.
-		
-	
-	super.onResume();
 }
 
 @Override

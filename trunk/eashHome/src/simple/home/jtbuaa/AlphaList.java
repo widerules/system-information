@@ -199,10 +199,10 @@ public abstract class AlphaList<T> {
 		for (int i = 0; i < mApps.size(); i++) {  
 			info = mApps.get(i);
 			if (getPackageName(info).equals(packageName)) {
-    			removeAlpha(getAlpha(info));
 				mApps.remove(info);
 				if (mIsGrid) appGridAdapter.notifyDataSetChanged();
 				else appListAdapter.notifyDataSetChanged();
+    			removeAlpha(getAlpha(info));
 
 				return info;
 			}

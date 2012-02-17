@@ -173,7 +173,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	 */
 	private String saveCrashInfo2File(StringBuffer sb) {
 		
-		String path = util.preparePath(mContext.getFilesDir().getPath()) + "crash/";
+		String path = util.preparePath(mContext) + "crash/";
 		try {
 			long timestamp = System.currentTimeMillis();
 			String time = formatter.format(new Date());

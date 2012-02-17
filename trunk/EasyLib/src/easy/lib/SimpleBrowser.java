@@ -580,7 +580,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 		notification.setLatestEventInfo(mContext, apkName, getString(R.string.start_download), contentIntent);
         nManager.notify(NOTIFICATION_ID, notification);
         
-		intent.setAction("simple.home.jtbuaa.downloadControl");//this intent is to pause/stop download
+		intent.setAction(getPackageName() + ".downloadControl");//this intent is to pause/stop download
 		intent.putExtra("id", NOTIFICATION_ID);
 		intent.putExtra("name", apkName);
 		intent.putExtra("url", URL_str);
@@ -762,7 +762,6 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
 	setContentView(R.layout.browser);
-
 
 	
 	snapView = (ImageView) getLayoutInflater().inflate(R.layout.snap_browser, null);

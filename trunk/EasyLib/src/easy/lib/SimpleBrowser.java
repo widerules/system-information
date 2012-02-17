@@ -808,11 +808,11 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
     TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
-    mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
+    mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.feedback) +"</u>"));
     mailTo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.author), null));
+			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.feedback), null));
 			util.startActivity(intent, true, getBaseContext());
 		}
 	});

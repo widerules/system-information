@@ -1097,7 +1097,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	msguser.what = UPDATE_USER;
         	mAppHandler.sendMessage(msguser);//inform UI thread to update UI.
 	    	
-        	downloadPath = util.preparePath(getFilesDir().getPath());
+        	downloadPath = util.preparePath(getBaseContext());
         	
         	picList = new ArrayList();
         	picList_selected = new ArrayList();

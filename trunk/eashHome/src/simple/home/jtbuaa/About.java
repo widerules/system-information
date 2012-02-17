@@ -172,7 +172,7 @@ public class About extends Activity{
 			}
         });
 
-    	final String downloadPath = util.preparePath(getFilesDir().getPath());
+    	final String downloadPath = util.preparePath(getBaseContext());
 
         Button btnShareDesktop = (Button) findViewById(R.id.share_desktop);
         btnShareDesktop.setOnClickListener(new OnClickListener() {

@@ -93,7 +93,13 @@ public class util {
     	return version;
     }
     
-	static public String preparePath(String defaultPath) {
+	static public String preparePath(Context context) {
+		String defaultPath = "/data/data/" + context.getPackageName();
+		try {
+			defaultPath = context.getFilesDir().getPath(); 
+		}
+		catch (Exception e) {}
+		
 		String downloadPath = defaultPath + "/";
 		
     	String status = Environment.getExternalStorageState();

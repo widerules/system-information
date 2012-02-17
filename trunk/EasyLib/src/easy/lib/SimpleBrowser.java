@@ -1129,7 +1129,7 @@ public void onCreate(Bundle savedInstanceState) {
 	webList.setAdapter(webAdapter);
 
 	
-	downloadPath = util.preparePath(getFilesDir().getPath());
+	downloadPath = util.preparePath(mContext);
 
 	setLayout();
 	

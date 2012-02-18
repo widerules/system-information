@@ -67,6 +67,7 @@
     <string name="history">History</string>
     <string name="bookmark">Bookmark</string>
     <string name="source">Page Source</string>
+    <string name="not_avaiable">Sorry, not avaiable on Android2.3.3</string>
     <string name="snap">Screen Shot</string>
     <string name="snap_size">SnapSize</string>
     <string name="full_screen">FullScreen</string>

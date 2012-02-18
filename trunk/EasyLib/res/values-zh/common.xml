@@ -65,6 +65,7 @@
     <string name="history">历史</string>
     <string name="bookmark">书签</string>
     <string name="source">网页源码</string>
+    <string name="not_avaiable">抱歉，在安卓2.3.3上无法查看网页源码。</string>
     <string name="snap">网页截屏</string>
     <string name="snap_size">截屏尺寸：</string>
     <string name="full_screen">全屏</string>

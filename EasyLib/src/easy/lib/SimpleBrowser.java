@@ -255,7 +255,7 @@ class MyWebview extends WebView {
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);  
                 i.addCategory(Intent.CATEGORY_OPENABLE);  
                 i.setType("*/*");  
-                startActivityForResult( Intent.createChooser( i, "File Chooser" ), FILECHOOSER_RESULTCODE );
+                startActivityForResult( Intent.createChooser( i, getString(R.string.select_file)), FILECHOOSER_RESULTCODE );
             }
 
             // For Android < 3.0

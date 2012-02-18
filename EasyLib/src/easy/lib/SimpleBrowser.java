@@ -196,7 +196,7 @@ public class SimpleBrowser extends Activity {
 	
 class MyWebview extends WebView {
 	public String title = "";
-	public String pageSource;
+	public String pageSource = getString(R.string.not_avaiable);
 
 	class MyJavaScriptInterface
 	{
@@ -288,8 +288,10 @@ class MyWebview extends WebView {
         		loadProgress.setVisibility(View.INVISIBLE);//hide progressbar anyway
         		imgRefresh.setImageResource(R.drawable.refresh);
 
-				webAdapter.notifyDataSetChanged();//what this for?
-        		loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3        		
+				webAdapter.notifyDataSetChanged();//why notify it here?
+				
+        		if (!android.os.Build.VERSION.RELEASE.equals("2.3.3"))//it will cause webkit crash on 2.3.3
+        			loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
 				
                 webControl.setVisibility(View.INVISIBLE);
 

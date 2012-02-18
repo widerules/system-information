@@ -101,7 +101,7 @@
   		
     	<RelativeLayout android:id="@+id/urlline"
   	    android:layout_width="fill_parent"
-  	    android:layout_height="wrap_content"
+  	    android:layout_height="33dip"
   	    android:layout_below="@id/adView"
   	    android:orientation="horizontal"
   	    android:background="@drawable/round_corner_white"
@@ -126,6 +126,7 @@
 			<FrameLayout
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
+			    android:layout_centerInParent="true"
 			    android:layout_toRightOf="@id/addfavorite"
 			    android:layout_toLeftOf="@id/go"
 			    >

@@ -127,7 +127,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		Intent intent = new Intent(Intent.ACTION_SENDTO);
 		intent.setData(Uri.fromParts("mailto", mContext.getString(R.string.author), null));
 		intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
-		intent.putExtra(Intent.EXTRA_SUBJECT, mContext.getString(R.string.app_name) + mContext.getString(R.string.sorry));
+		intent.putExtra(Intent.EXTRA_SUBJECT, mContext.getPackageName() + mContext.getString(R.string.sorry));
 		if (!util.startActivity(intent, false, mContext)) {
 			//save the error log
 			final String path = saveCrashInfo2File(sb);
@@ -136,7 +136,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 				@Override
 				public void run() {
 					Looper.prepare();
-					Toast.makeText(mContext, mContext.getString(R.string.app_name) + mContext.getString(R.string.sorry) + path, Toast.LENGTH_LONG).show();
+					Toast.makeText(mContext, mContext.getPackageName() + mContext.getString(R.string.sorry) + path, Toast.LENGTH_LONG).show();
 					Looper.loop();
 				}
 			}.start();

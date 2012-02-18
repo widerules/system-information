@@ -94,6 +94,26 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+class wrapValueCallback {
+	ValueCallback<Uri> mInstance;
+	
+	wrapValueCallback() {}
+
+	static {
+	       try {
+	           Class.forName("android.webkit.ValueCallback");
+	       } catch (Exception ex) {
+	           throw new RuntimeException(ex);
+	       }
+	   }
+	
+	public static void checkAvailable() {}
+	
+	void onReceiveValue(Uri value) {
+		mInstance.onReceiveValue(value);
+	}
+}
+
 public class SimpleBrowser extends Activity {
 
 	boolean paid;
@@ -133,7 +153,16 @@ public class SimpleBrowser extends Activity {
 	ProgressBar loadProgress;
 
 	//upload related
-	private ValueCallback<Uri> mUploadMessage;
+	static boolean mValueCallbackAvailable;
+	static {
+	       try {
+	    	   wrapValueCallback.checkAvailable();
+	    	   mValueCallbackAvailable = true;
+	       } catch (Throwable t) {
+	    	   mValueCallbackAvailable = false;
+	       }
+	   }
+	private wrapValueCallback mUploadMessage;
 	private final static int FILECHOOSER_RESULTCODE = 1001;
 
 	//bookmark and history
@@ -221,7 +250,8 @@ class MyWebview extends WebView {
         	// For Android 3.0+
             public void openFileChooser( ValueCallback<Uri> uploadMsg, String acceptType ) 
             {
-                mUploadMessage = uploadMsg;  
+        		if (null == mUploadMessage) mUploadMessage = new wrapValueCallback();
+            	mUploadMessage.mInstance = uploadMsg;  
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);  
                 i.addCategory(Intent.CATEGORY_OPENABLE);  
                 i.setType("*/*");  
@@ -402,10 +432,10 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     if (requestCode == FILECHOOSER_RESULTCODE) {
-        if (null == mUploadMessage) return;
+        if ((null == mUploadMessage) || (null == mUploadMessage.mInstance)) return;
         Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
-        mUploadMessage.onReceiveValue(result);
-        mUploadMessage = null;
+        if (mValueCallbackAvailable) mUploadMessage.onReceiveValue(result);
+        mUploadMessage.mInstance = null;
     }
 }
 
@@ -807,11 +837,11 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
     TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
-    mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.feedback) +"</u>"));
+    mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
     mailTo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.feedback), null));
+			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.author), null));
 			util.startActivity(intent, true, getBaseContext());
 		}
 	});
@@ -1349,6 +1379,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<p><h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3></p>";
 	ret += "<p><h3><a href=\"http://www.baidu.com/\">百度</a></h3></p>";
 	ret += "<p><h3><a href=\"http://www.google.com/\">Google</a></h3></p>";
+	ret += "<p><h3><a href=\"http://www.apple.com/\">Apple</a></h3></p>";
 	ret += "<p><h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3></p>";
 	
 	ret += "<h3><p>" + getString(R.string.bookmark) + "</p></h3>";

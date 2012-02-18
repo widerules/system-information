@@ -1483,12 +1483,13 @@ class SmsChangeObserver extends ContentObserver {
 	
 	public int countUnread() {
     	//get sms unread count
+		int ret = 0;
     	Cursor csr = mCR.query(Uri.parse("content://sms"),
     	                new String[] {"thread_id"},
     	                "read=0",
     	                null,
     	                null);
-    	int ret = csr.getCount();
+    	if (csr != null) ret = csr.getCount();
     	
     	//get mms unread count
     	csr = mCR.query(Uri.parse("content://mms"),
@@ -1496,7 +1497,8 @@ class SmsChangeObserver extends ContentObserver {
     	                "read=0",
     	                null,
     	                null);
-    	return ret + csr.getCount();
+    	if (csr != null) ret += csr.getCount();
+    	return ret;
 	}
 	
 	@Override
@@ -1525,7 +1527,8 @@ class CallObserver extends ContentObserver {
     			new String[] {Calls.NUMBER, Calls.TYPE, Calls.NEW}, 
     			Calls.TYPE + "=" + Calls.MISSED_TYPE + " AND " + Calls.NEW + "=1", 
     			null, Calls.DEFAULT_SORT_ORDER);
-    	return csr.getCount();
+    	if (csr != null) return csr.getCount();
+    	else return 0;
 	}
 	
 	@Override

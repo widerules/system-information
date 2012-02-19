@@ -963,8 +963,10 @@ public void onCreate(Bundle savedInstanceState) {
         		break;
         	case 5://about
         		if (aboutDialog == null) {
+        			String title = getString(R.string.browser_name);
+        			if (getPackageName().equals("easy.browser")) title += " " + util.getVersion(getBaseContext());
         			aboutDialog = new AlertDialog.Builder(mContext).
-        					setTitle(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext())).
+        					setTitle(title).
         					setIcon(R.drawable.explorer).
         					setView(aboutView).
         					setMessage(getString(R.string.browser_name) + getString(R.string.about_message) + "\n\n" + getString(R.string.about_dialog_notes)).

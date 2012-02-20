@@ -693,7 +693,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					public void onClick(DialogInterface dialog, int which) {
 						Intent intent = getIntent();
 					    overridePendingTransition(0, 0);
-					    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 					    finish();
 					    overridePendingTransition(0, 0);
 					    startActivity(intent);

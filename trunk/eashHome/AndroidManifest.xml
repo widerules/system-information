@@ -19,7 +19,9 @@
         android:anyDensity="true"
         android:smallScreens="true"
         android:normalScreens="true"
-        android:largeScreens="true"/>
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+        />
 
     <application android:icon="@drawable/icon"
     	android:persistent="true"

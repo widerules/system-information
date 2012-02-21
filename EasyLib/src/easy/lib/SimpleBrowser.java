@@ -298,7 +298,7 @@ class MyWebview extends WebView {
         		if (!url.equals(BLANK_PAGE)) { 
         			String site = "";
         			String[] tmp = url.split("/");
-        			if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+        			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
         			else site = tmp[0];
         			boolean found = false;
             		for (int i = mHistory.size()-1; i >= 0; i--) {

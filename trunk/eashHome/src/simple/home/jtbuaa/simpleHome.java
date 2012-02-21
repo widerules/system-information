@@ -3,7 +3,6 @@ package simple.home.jtbuaa;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -20,12 +19,9 @@ import easy.lib.ricase;
 import easy.lib.util;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -39,7 +35,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageStats;
 import android.content.pm.ResolveInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -47,7 +42,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
@@ -71,10 +65,8 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,21 +75,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class simpleHome extends Activity implements SensorEventListener, sizedRelativeLayout.OnResizeChangeListener {
 
@@ -106,6 +93,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	boolean paid;//paid or not
 	
 	AlertDialog restartDialog = null;
+	AlertDialog hintDialog = null;
 	
 	//wall paper related
 	String downloadPath;
@@ -343,7 +331,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			fos.close();
 			fis.close();
 		} catch (Exception e) {
-			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+			hintDialog.setMessage(e.toString());
+			hintDialog.show();
 			return false;
 		}
 		return true;
@@ -378,17 +367,23 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			String sourceDir = info.activityInfo.applicationInfo.sourceDir;
 			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
 			if (backup(sourceDir)) {
-				Toast.makeText(this, 
-						getString(R.string.backapp) + " " + getString(R.string.to) + " " + 
-						downloadPath + "apk/" + apk, Toast.LENGTH_LONG).show();
-				
 				String odex = sourceDir.replace(".apk", ".odex");
 				File target = new File(odex);
-				if (target.exists()) backup(odex);//backup odex if any
+				boolean backupOdex = true;
+				if (target.exists()) 
+					if (!backup(odex)) backupOdex = false;//backup odex if any
+				
+				if (backupOdex) {
+					hintDialog.setMessage(getString(R.string.backapp) + 
+							" " + info.loadLabel(pm) + " " + 
+							getString(R.string.to) + " " + 
+							downloadPath + "apk/" + apk);
+					hintDialog.show();
+				}
 			}
 			break;
 		case 4://get app detail info
-			showDetail(info.activityInfo.applicationInfo.sourceDir, info.activityInfo.packageName);
+			showDetail(info.activityInfo.applicationInfo.sourceDir, info.activityInfo.packageName, info.loadLabel(pm));
 			break;
 		case 5://add to home
 			if (favoAdapter.getPosition(info) < 0) { 
@@ -422,30 +417,39 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     		
 			break;
 		case 9://get package detail info
-			PackageInfo pi = (PackageInfo) selected_case.mRi;
-			showDetail(pi.applicationInfo.sourceDir, pi.packageName);
+			PackageInfo pi = (PackageInfo) selected_case.mRi; 
+			showDetail(pi.applicationInfo.sourceDir, pi.packageName, pi.applicationInfo.loadLabel(pm));
 			break;
 		}
 		return false;
 	}
 
-	void showDetail(String sourceDir, String packageName) {
-		String source = sourceDir 
-				+ "\n\n" 
-				+ packageName;
-        	Toast.makeText(getBaseContext(), source, Toast.LENGTH_LONG).show();
-
-        	Intent intent;
-			if (appDetail != null) {
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
-				intent.putExtra("pkg", packageName);
-				intent.putExtra("com.android.settings.ApplicationPkgName", packageName);
-			}
-			else {//2.6 tahiti change the action.
-				intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", packageName, null));
-			}
-			util.startActivity(intent, true, getBaseContext());
+	void showDetail(String sourceDir, final String packageName, CharSequence label) {
+		AlertDialog detailDlg = new AlertDialog.Builder(this).
+				setTitle(label).
+				setMessage(packageName + "\n" + sourceDir).
+				setPositiveButton(R.string.more, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+			        	Intent intent;
+						if (appDetail != null) {
+							intent = new Intent(Intent.ACTION_VIEW);
+							intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
+							intent.putExtra("pkg", packageName);
+							intent.putExtra("com.android.settings.ApplicationPkgName", packageName);
+						}
+						else {//2.6 tahiti change the action.
+							intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", packageName, null));
+						}
+						util.startActivity(intent, true, getBaseContext());
+					}
+				}).
+				setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+					}
+				}).create();
+		detailDlg.show();
 	}
 	
     @SuppressWarnings("unchecked")
@@ -700,6 +704,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					}
 				}).
 				setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				}).create();
+		
+		hintDialog = new AlertDialog.Builder(this).
+				setNegativeButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 					}

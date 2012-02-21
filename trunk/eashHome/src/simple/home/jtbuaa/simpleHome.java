@@ -280,8 +280,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					menu.add(0, 8, 0, getString(R.string.grid_view));
 			}
 			menu.add(0, 7, 0, getString(R.string.hideapp));
-			menu.add(0, 2, 0, getString(R.string.share));
-			menu.add(0, 3, 0, getString(R.string.backapp)).setEnabled(!downloadPath.startsWith(getFilesDir().getPath()));//no need to backup if no sdcard
 			menu.add(0, 4, 0, getString(R.string.appdetail));
 			menu.add(0, 5, 0, getString(R.string.addtoFavo));
 			menu.add(0, 6, 0, getString(R.string.addtoShort));
@@ -351,37 +349,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			shortAdapter.remove(info);
 			writeFile("short");	//save shortcut to file
 			break;
-		case 2://share app name and link
-	        Intent intent = new Intent(Intent.ACTION_SEND);
-	        intent.setType("text/plain");  
-	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-	        String text = info.loadLabel(pm) + getString(R.string.app_share_text) + getString(R.string.share_text1) 
-	        	+ "http://opda.co/?s=D/" + info.activityInfo.packageName
-	        	+ getString(R.string.share_text2)
-	        	+ "https://market.android.com/details?id=" + info.activityInfo.packageName
-	        	+ getString(R.string.share_text3);
-    		intent.putExtra(Intent.EXTRA_TEXT, text);
-   			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
-			break;
-		case 3://backup app
-			String sourceDir = info.activityInfo.applicationInfo.sourceDir;
-			String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
-			if (backup(sourceDir)) {
-				String odex = sourceDir.replace(".apk", ".odex");
-				File target = new File(odex);
-				boolean backupOdex = true;
-				if (target.exists()) 
-					if (!backup(odex)) backupOdex = false;//backup odex if any
-				
-				if (backupOdex) {
-					hintDialog.setMessage(getString(R.string.backapp) + 
-							" " + info.loadLabel(pm) + " " + 
-							getString(R.string.to) + " " + 
-							downloadPath + "apk/" + apk);
-					hintDialog.show();
-				}
-			}
-			break;
 		case 4://get app detail info
 			showDetail(info.activityInfo.applicationInfo.sourceDir, info.activityInfo.packageName, info.loadLabel(pm));
 			break;
@@ -424,13 +391,47 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		return false;
 	}
 
-	void showDetail(String sourceDir, final String packageName, CharSequence label) {
+	void showDetail(final String sourceDir, final String packageName, final CharSequence label) {
 		AlertDialog detailDlg = new AlertDialog.Builder(this).
 				setTitle(label).
 				setMessage(packageName + "\n" + sourceDir).
-				setPositiveButton(R.string.more, new DialogInterface.OnClickListener() {
+				setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+				        Intent intent = new Intent(Intent.ACTION_SEND);
+				        intent.setType("text/plain");  
+				        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+				        String text = label + getString(R.string.app_share_text) + getString(R.string.share_text1) 
+				        	+ "http://opda.co/?s=D/" + packageName
+				        	+ getString(R.string.share_text2)
+				        	+ "https://market.android.com/details?id=" + packageName
+				        	+ getString(R.string.share_text3);
+			    		intent.putExtra(Intent.EXTRA_TEXT, text);
+			   			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
+					}
+				}).setNeutralButton(R.string.backapp, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String apk = sourceDir.split("/")[sourceDir.split("/").length-1];
+						if (backup(sourceDir)) {
+							String odex = sourceDir.replace(".apk", ".odex");
+							File target = new File(odex);
+							boolean backupOdex = true;
+							if (target.exists()) 
+								if (!backup(odex)) backupOdex = false;//backup odex if any
+							
+							if (backupOdex) {
+								hintDialog.setMessage(getString(R.string.backapp) +	" " + 
+										label + " " + getString(R.string.to) + " " + 
+										downloadPath + "apk/" + apk);
+								hintDialog.show();
+							}
+						}
+					}
+				}).
+				setNegativeButton(R.string.more, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
 			        	Intent intent;
 						if (appDetail != null) {
 							intent = new Intent(Intent.ACTION_VIEW);
@@ -442,11 +443,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 							intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", packageName, null));
 						}
 						util.startActivity(intent, true, getBaseContext());
-					}
-				}).
-				setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
 					}
 				}).create();
 		detailDlg.show();

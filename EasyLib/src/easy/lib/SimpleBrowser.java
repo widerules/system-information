@@ -211,13 +211,16 @@ class MyWebview extends WebView {
 		super(context);
 		title = getString(R.string.browser_name);
 		
-        setScrollBarStyle(0);
+        setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);//no white blank on the right of webview
+        setScrollbarFadingEnabled(true);//hide scroll bar when not scroll
+        
         WebSettings webSettings = getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
+        webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage?
         
         registerForContextMenu(this);
 

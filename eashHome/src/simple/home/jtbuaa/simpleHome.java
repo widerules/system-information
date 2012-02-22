@@ -339,7 +339,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	public boolean onContextItemSelected(MenuItem item){
 		super.onContextItemSelected(item);
 		ResolveInfo info = null;
-		if (item.getItemId() != 8) info = (ResolveInfo) selected_case.mRi;
+		if (item.getItemId() < 8) info = (ResolveInfo) selected_case.mRi;
 		switch (item.getItemId()) {
 		case 0://remove from home
 			favoAdapter.remove(info);
@@ -350,7 +350,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			writeFile("short");	//save shortcut to file
 			break;
 		case 4://get app detail info
-			showDetail(info.activityInfo.applicationInfo.sourceDir, info.activityInfo.packageName, info.loadLabel(pm));
+			showDetail(info.activityInfo.applicationInfo.sourceDir, info.activityInfo.packageName, info.loadLabel(pm), info.loadIcon(pm));
 			break;
 		case 5://add to home
 			if (favoAdapter.getPosition(info) < 0) { 
@@ -385,16 +385,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			break;
 		case 9://get package detail info
 			PackageInfo pi = (PackageInfo) selected_case.mRi; 
-			showDetail(pi.applicationInfo.sourceDir, pi.packageName, pi.applicationInfo.loadLabel(pm));
+			showDetail(pi.applicationInfo.sourceDir, pi.packageName, pi.applicationInfo.loadLabel(pm), pi.applicationInfo.loadIcon(pm));
 			break;
 		}
 		return false;
 	}
 
-	void showDetail(final String sourceDir, final String packageName, final CharSequence label) {
+	void showDetail(final String sourceDir, final String packageName, final CharSequence label, Drawable icon) {
 		AlertDialog detailDlg = new AlertDialog.Builder(this).
 				setTitle(label).
-				setMessage(packageName + "\n" + sourceDir).
+				setIcon(icon).
+				setMessage(packageName + "\n\n" + sourceDir).
 				setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -543,7 +544,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	userAlphaList = new AppAlphaList(this, pm, packagesSize, isGrid, dm.widthPixels > 480);
     	
     	if (paid) {
-    		isGrid = perferences.getBoolean("package", false);
+    		isGrid = perferences.getBoolean("package", true);
     		packageAlphaList = new PkgAlphaList(this, pm, packagesSize, isGrid, dm.widthPixels > 480);//package tab
     	}
     	

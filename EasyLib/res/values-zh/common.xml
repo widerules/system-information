@@ -53,7 +53,7 @@
     <string name="removeFromShort">删除快捷方式</string>
     <string name="appdetail">详细信息...</string>
     <string name="killapp">终止该应用</string>
-    <string name="backapp">应用备份</string>
+    <string name="backapp">备份</string>
     <string name="to">至</string>
     <string name="more">更多...</string>
     <string name="delete">删除</string>

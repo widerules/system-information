@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,24 +20,20 @@ import com.google.ads.AdView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -47,9 +42,7 @@ import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -57,7 +50,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -80,7 +72,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -1325,6 +1316,7 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
+			else if (webAddress.getText().toString().equals(BLANK_PAGE)) return super.onKeyDown(keyCode, event);//leave this activity if press back key in homepage
 			else if (serverWebs.get(webIndex).canGoBack()) imgPrev.performClick();
 			else return super.onKeyDown(keyCode, event);
 			

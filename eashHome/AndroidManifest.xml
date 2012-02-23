@@ -33,7 +33,6 @@
         <activity android:name=".simpleHome"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="true"
-        	android:process="eash.home"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/app_name">
                   
@@ -47,7 +46,6 @@
             
         <activity android:name=".SelectHome"
         	android:launchMode="singleTask"
-        	android:process="eash.switcher"
         	android:label="@string/switcher_name" 
         	android:icon="@drawable/icon_switcher">
             

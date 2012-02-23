@@ -211,8 +211,9 @@ class MyWebview extends WebView {
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
-        webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage?
-        //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage
+        webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
+        webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage
+        //webSettings.setLightTouchEnabled(true);
         
         registerForContextMenu(this);
 

@@ -446,7 +446,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 						util.startActivity(intent, true, getBaseContext());
 					}
 				}).create();
+		boolean canBackup = !downloadPath.startsWith(getFilesDir().getPath());
 		detailDlg.show();
+		detailDlg.getButton(DialogInterface.BUTTON_NEUTRAL).setEnabled(canBackup);//not backup if no SDcard.
 	}
 	
     @SuppressWarnings("unchecked")

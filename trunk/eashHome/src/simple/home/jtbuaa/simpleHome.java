@@ -365,9 +365,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 			break;
 		case 7://hide the ri
-			if (mainlayout.getCurrentItem() == 0)
-				sysAlphaList.remove(info);
-			else userAlphaList.remove(info);
+			if (mainlayout.getCurrentItem() == 0) {
+				sysAlphaList.remove(info.activityInfo.packageName);
+			}
+			else {
+				userAlphaList.remove(info.activityInfo.packageName);
+			}
 			refreshRadioButton();
 			break;
 		case 8://switch view

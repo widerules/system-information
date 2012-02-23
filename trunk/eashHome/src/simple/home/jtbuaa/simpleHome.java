@@ -872,43 +872,38 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		if (sysAlphaList.index > -1) btnSystem.setVisibility(View.VISIBLE);
 		else btnSystem.setVisibility(View.INVISIBLE);
 		
-		if (userAlphaList.index > -1) btnUser.setVisibility(View.VISIBLE);
+		btnLast = btnHome;
+		
+		if (userAlphaList.index > -1) {
+			btnUser.setVisibility(View.VISIBLE);
+			btnLast = btnUser;
+		}
 		else btnUser.setVisibility(View.INVISIBLE);
 		
 		if (paid) {
-			if (packageAlphaList.index > -1) btnPackage.setVisibility(View.VISIBLE);
+			if (packageAlphaList.index > -1) {
+				btnPackage.setVisibility(View.VISIBLE);
+				btnLast = btnPackage;
+			}
 			else btnPackage.setVisibility(View.INVISIBLE);
 		}
 		
-		switch(mainlayout.getCurrentItem()) {
-		case 0:
+		int current = mainlayout.getCurrentItem();
+		if (current == sysAlphaList.index) {
 			btnSystem.setChecked(true);
-			try {
-				btnLast.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
-			} catch(Exception e) {
-				btnLast.setText(R.string.systemapps);
-			}
-			break;
-		case 1:
+			btnLast.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
+		}
+		else if (current == userAlphaList.index) {
+			btnUser.setChecked(true);
+			btnLast.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
+		}
+		else if ((paid) && (current == packageAlphaList.index)) {
+			btnPackage.setChecked(true);
+			btnLast.setText(getString(R.string.packages) + "(" + packageAlphaList.getCount() + ")");
+		}
+		else {
 			btnHome.setChecked(true);
 			btnLast.setText(R.string.home);
-			break;
-		case 2:
-			btnUser.setChecked(true);
-			try {
-				btnLast.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
-			} catch(Exception e) {//catch null pointer error
-				btnLast.setText(R.string.userapps);
-			}
-			break;
-		case 3:
-			btnPackage.setChecked(true);
-			try {
-				btnLast.setText(getString(R.string.packages) + "(" + packageAlphaList.getCount() + ")");
-			} catch(Exception e) {//catch null pointer error
-				btnLast.setText(R.string.packages);
-			}
-			break;
 		}
     }
     

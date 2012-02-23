@@ -188,12 +188,6 @@ public abstract class AlphaList<T> {
 		}		
 	}
 	
-	void remove(T info) {
-		removeAlpha(getAlpha(info));
-		if (mIsGrid) appGridAdapter.remove(info);
-		else appListAdapter.remove(info);
-	}
-	
 	T remove(String packageName) {
     	T info = null;
 		for (int i = 0; i < mApps.size(); i++) {  

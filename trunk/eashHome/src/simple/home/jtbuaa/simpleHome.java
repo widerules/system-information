@@ -872,6 +872,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		if (sysAlphaList.index > -1) btnSystem.setVisibility(View.VISIBLE);
 		else btnSystem.setVisibility(View.INVISIBLE);
 		
+		RadioButton tmp = btnLast;
 		btnLast = btnHome;
 		
 		if (userAlphaList.index > -1) {
@@ -887,6 +888,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 			else btnPackage.setVisibility(View.INVISIBLE);
 		}
+		
+		if (tmp.getText() != btnLast.getText()) tmp.setText("");
 		
 		int current = mainlayout.getCurrentItem();
 		if (current == sysAlphaList.index) {

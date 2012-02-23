@@ -1372,10 +1372,13 @@ void loadPage(boolean notJudge) {
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
 	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
+	ret += "<meta name=\"viewport\" content=\"width=device-width, user-scalable=yes\">";
 	ret += "<html>";
+	ret += "<head>";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
+	ret += "</head>";
 	ret += "<body>";
-	
+
 	ret += "<p><h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3></p>";
 	ret += "<p><h3><a href=\"http://www.baidu.com/\">百度</a></h3></p>";
 	ret += "<p><h3><a href=\"http://www.google.com/\">Google</a></h3></p>";
@@ -1392,20 +1395,6 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += imgHref;
 	}
 	ret += "</dl>";
-	/*ret += "<table border=\"0\" width=\"100%\" cellpadding=\"10\">";//the effect of snap is not clear. so use list
-	ret += "<tr>"; 
-	for (int i = 0; i < mBookMark.size(); i++) {
-		if ((i%2 == 0) && (i > 0)) ret += "</tr><tr>"; //three item per row
-		String imgHref = "<td width=\"50%\" valign=\"top\">";
-		String title = mBookMark.get(i).m_title;
-		imgHref += "<p><pre>" + title.substring(0, Math.min(14, title.length())) + "</pre></p>";//control the display length of title not more than 15 character
-		imgHref += "<p><a href=\"" + mBookMark.get(i).m_url + "\">";
-		imgHref += "<img src=\"file://" + getFilesDir() + "/" + mBookMark.get(i).m_title + ".snap.png\"/>";
-		imgHref += "</a></p>";
-		imgHref += "</td>";
-		ret += imgHref;
-	}
-	ret += "</tr></table>";*/
 	
 	ret += "<h3><p>" + getString(R.string.history) + "</p></h3>";
 	ret += "<dl type=\"disc\">";

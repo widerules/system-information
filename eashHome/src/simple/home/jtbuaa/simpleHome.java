@@ -297,6 +297,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			else
 				menu.add(0, 8, 0, getString(R.string.grid_view));
 			menu.add(0, 9, 0, getString(R.string.appdetail));
+			menu.add(0, 10, 0, getString(R.string.hidepage));
 		}
 	}
 	
@@ -395,6 +396,17 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		case 9://get package detail info
 			PackageInfo pi = (PackageInfo) selected_case.mRi; 
 			showDetail(pi.applicationInfo.sourceDir, pi.packageName, pi.applicationInfo.loadLabel(pm), pi.applicationInfo.loadIcon(pm));
+			break;
+		case 10://hide current page
+			if (mainlayout.getCurrentItem() == sysAlphaList.index)
+				sysAlphaList.mApps.clear();
+			else if (mainlayout.getCurrentItem() == userAlphaList.index)
+				userAlphaList.mApps.clear();
+			else if (mainlayout.getCurrentItem() == packageAlphaList.index)
+				packageAlphaList.mApps.clear();
+			
+			refreshRadioButton();
+			
 			break;
 		}
 		return false;

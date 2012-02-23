@@ -121,6 +121,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
+	MyPagerAdapter myPagerAdapter;
 	RelativeLayout home;
 	ResolveInfo appDetail;
 	List<ResolveInfo> mAllApps, mFavoApps, mSysApps, mUserApps, mShortApps;
@@ -159,8 +160,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	 
 	class MyPagerAdapter extends PagerAdapter{
 	    @Override
-	    public void destroyItem(View arg0, int arg1, Object arg2) {
-	        ((ViewPager) arg0).removeView(mListViews.get(arg1));
+	    public void destroyItem(View collection, int arg1, Object view) {
+	        ((ViewPager) collection).removeView((View) view);
 	    }
 	    
 	    @Override
@@ -174,7 +175,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 	    @Override
 	    public Object instantiateItem(View arg0, int arg1) {
-	        ((ViewPager) arg0).addView(mListViews.get(arg1),0);
+	        ((ViewPager) arg0).addView(mListViews.get(arg1), 0);
 	        return mListViews.get(arg1);
 	    }
 
@@ -194,6 +195,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 	    @Override
 	    public void startUpdate(View arg0) {
+	    }
+	    
+	    @Override
+	    public int getItemPosition(Object object) {
+	        return POSITION_NONE;
 	    }
 	}
 
@@ -556,9 +562,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	
     	mListViews = new ArrayList<View>();
         mListViews.add(sysAlphaList.view);
+        sysAlphaList.index = 0;
         mListViews.add(home);
         mListViews.add(userAlphaList.view);
-        if (paid) mListViews.add(packageAlphaList.view);
+        userAlphaList.index = 2;
+        if (paid) {
+        	mListViews.add(packageAlphaList.view);
+        	packageAlphaList.index = 3;
+        }
         
         btnSystem = (RadioButton) findViewById(R.id.radio_system);
         btnUser = (RadioButton) findViewById(R.id.radio_user);
@@ -574,8 +585,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         
         mainlayout = (ViewPager)findViewById(R.id.mainFrame);
         mainlayout.setLongClickable(true);
-        MyPagerAdapter myAdapter = new MyPagerAdapter();
-        mainlayout.setAdapter(myAdapter);
+        myPagerAdapter = new MyPagerAdapter();
+        mainlayout.setAdapter(myPagerAdapter);
         mainlayout.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrollStateChanged(int state) {
@@ -806,6 +817,69 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     };
 
     void refreshRadioButton() {
+    	int count = sysAlphaList.getCount();
+    	if (count == 0) {
+    		if (sysAlphaList.index > -1) {//should hide it if it is visiable
+    			mListViews.remove(sysAlphaList.index);
+    			sysAlphaList.index = -1;
+    			
+    			if (userAlphaList.index > -1) userAlphaList.index -= 1;
+    			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index -= 1;
+    		}
+    	}
+    	else if (sysAlphaList.index == -1) {//show it if it was hided.
+			sysAlphaList.index = 0;
+    		mListViews.add(sysAlphaList.index, sysAlphaList.view);
+			
+			if (userAlphaList.index > -1) userAlphaList.index += 1;
+			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index += 1;
+    	}
+    	
+    	count = userAlphaList.getCount();
+    	if (count == 0) {
+    		if (userAlphaList.index > -1) {//should hide it if it is visiable
+    			mListViews.remove(userAlphaList.index);
+    			userAlphaList.index = -1;
+    			
+    			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index -= 1;
+    		}
+    	}
+    	else if (userAlphaList.index == -1) {//show it if it was hided.
+			userAlphaList.index = 2+sysAlphaList.index;
+    		mListViews.add(userAlphaList.index, userAlphaList.view);
+			
+			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index += 1;
+    	}
+    	
+    	if (paid) {
+        	count = packageAlphaList.getCount();
+        	if (count == 0) {
+        		if (packageAlphaList.index > -1) {//should hide it if it is visiable
+        			mListViews.remove(packageAlphaList.index);
+        			packageAlphaList.index = -1;
+        		}
+        	}
+        	else if (packageAlphaList.index == -1) {//show it if it was hided.
+        		int tmp = 0;
+        		if (userAlphaList.index < 0) tmp += userAlphaList.index;
+    			packageAlphaList.index = 3 + sysAlphaList.index + tmp;
+        		mListViews.add(packageAlphaList.index, packageAlphaList.view);
+        	}
+    	}
+    	
+		myPagerAdapter.notifyDataSetChanged();
+    	
+		if (sysAlphaList.index > -1) btnSystem.setVisibility(View.VISIBLE);
+		else btnSystem.setVisibility(View.INVISIBLE);
+		
+		if (userAlphaList.index > -1) btnUser.setVisibility(View.VISIBLE);
+		else btnUser.setVisibility(View.INVISIBLE);
+		
+		if (paid) {
+			if (packageAlphaList.index > -1) btnPackage.setVisibility(View.VISIBLE);
+			else btnPackage.setVisibility(View.INVISIBLE);
+		}
+		
 		switch(mainlayout.getCurrentItem()) {
 		case 0:
 			btnSystem.setChecked(true);

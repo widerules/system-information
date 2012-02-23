@@ -50,7 +50,7 @@ public abstract class AlphaList<T> {
 	
 	int tag = 2;
 	
-	int index;//the page index of this view in viewpager
+	int index = -1;//the page index of this view in viewpager
 	
 	//layout
 	RelativeLayout view;

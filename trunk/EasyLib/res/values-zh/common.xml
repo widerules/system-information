@@ -58,6 +58,7 @@
     <string name="more">更多...</string>
     <string name="delete">删除</string>
     <string name="hideapp">隐藏</string>
+    <string name="hidepage">隐藏当前页</string>
     
     <string name="back">前一页</string>
     <string name="next">下一页</string>

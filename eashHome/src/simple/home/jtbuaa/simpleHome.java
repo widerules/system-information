@@ -88,7 +88,7 @@ import android.widget.TextView;
 
 public class simpleHome extends Activity implements SensorEventListener, sizedRelativeLayout.OnResizeChangeListener {
 
-	final static int homeTab = 1;
+	int homeTab = 1;
 	
 	boolean paid;//paid or not
 	
@@ -273,13 +273,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 1, 0, getString(R.string.removeFromShort));
 			break;
 		case 2://on app list
-			if (mainlayout.getCurrentItem() == 0) {
+			if (mainlayout.getCurrentItem() == sysAlphaList.index) {
 				if (sysAlphaList.mIsGrid)
 					menu.add(0, 8, 0, getString(R.string.list_view));
 				else
 					menu.add(0, 8, 0, getString(R.string.grid_view));
 			}
-			else if (mainlayout.getCurrentItem() == 2) {
+			else if (mainlayout.getCurrentItem() == userAlphaList.index) {
 				if (userAlphaList.mIsGrid)
 					menu.add(0, 8, 0, getString(R.string.list_view));
 				else
@@ -371,7 +371,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 			break;
 		case 7://hide the ri
-			if (mainlayout.getCurrentItem() == 0) {
+			if (mainlayout.getCurrentItem() == sysAlphaList.index) {
 				sysAlphaList.remove(info.activityInfo.packageName);
 			}
 			else {
@@ -383,11 +383,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     		restartDialog.show();
     		
     		SharedPreferences.Editor editor = perferences.edit();
-			if (mainlayout.getCurrentItem() == 0) 
+			if (mainlayout.getCurrentItem() == sysAlphaList.index) 
 	    		editor.putBoolean("system", !sysAlphaList.mIsGrid);
-			else if (mainlayout.getCurrentItem() == 2) 
+			else if (mainlayout.getCurrentItem() == userAlphaList.index) 
 	    		editor.putBoolean("user", !userAlphaList.mIsGrid);
-			else if (mainlayout.getCurrentItem() == 3) 
+			else if (mainlayout.getCurrentItem() == packageAlphaList.index) 
 	    		editor.putBoolean("package", !packageAlphaList.mIsGrid);
     		editor.commit();
     		
@@ -869,8 +869,14 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	
 		myPagerAdapter.notifyDataSetChanged();
     	
-		if (sysAlphaList.index > -1) btnSystem.setVisibility(View.VISIBLE);
-		else btnSystem.setVisibility(View.INVISIBLE);
+		if (sysAlphaList.index > -1) {
+			btnSystem.setVisibility(View.VISIBLE);
+			homeTab = 1;
+		}
+		else {
+			btnSystem.setVisibility(View.INVISIBLE);
+			homeTab = 0;
+		}
 		
 		RadioButton tmp = btnLast;
 		btnLast = btnHome;

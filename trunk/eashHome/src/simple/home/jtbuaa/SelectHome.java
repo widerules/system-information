@@ -3,6 +3,11 @@ package simple.home.jtbuaa;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
+
+import easy.lib.R;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -14,6 +19,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -129,6 +135,14 @@ public class SelectHome extends Activity{
     	
         setContentView(R.layout.select_home);
     	
+        AdView adview = (AdView) findViewById(R.id.adBoard);
+        boolean paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
+        if (paid) adview.setVisibility(View.INVISIBLE);
+        else {
+        	AdRequest adRequest = new AdRequest();
+        	adview.loadAd(adRequest);
+        }
+        
         Button btnSelect = (Button) findViewById(R.id.select);
         btnSelect.setOnClickListener(new OnClickListener() {
 			@Override

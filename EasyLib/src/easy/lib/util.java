@@ -8,8 +8,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -50,9 +52,23 @@ public class util {
 			context.startActivity(intent);
 			return true;
 		} catch (Exception e) {
-			if (showToast)
-				Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
 			e.printStackTrace();
+			if (showToast)
+				try {
+					AlertDialog dlg = new AlertDialog.Builder(context).
+							setMessage(e.toString()).
+							setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							}).
+							create();
+					dlg.show();
+				}
+				catch (Exception ee) {
+					ee.printStackTrace();
+					Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+				}
 			return false;
 		}
     }

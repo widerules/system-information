@@ -10,7 +10,7 @@
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content"
     	android:layout_alignParentTop="true"
-    	ads:loadAdOnCreate="true"
+    	ads:loadAdOnCreate="false"
     	ads:adUnitId="a14e79197567476"
     	ads:adSize="IAB_MRECT"/>
   

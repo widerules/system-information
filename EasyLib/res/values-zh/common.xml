@@ -104,6 +104,8 @@
     <string name="download_finish">下载完成，点击查看</string>
     <string name="download_fail">下载失败，点击查看</string>
     <string name="downloads">下载的文件</string>
+    <string name="downloads_to">下载的文件位于</string>
+    <string name="downloads_open">。您可以使用ES文件浏览器或其他文件管理器查看该目录。点确定下载ES文件管理器。</string>
     
     <string name="sorry">出现异常退出，出错日志为</string>
 

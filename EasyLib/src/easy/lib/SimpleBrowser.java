@@ -85,6 +85,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+//for get webpage source on cupcake
 class wrapValueCallback {
 	ValueCallback<Uri> mInstance;
 	
@@ -129,6 +130,7 @@ public class SimpleBrowser extends Activity {
     GridView menuGrid;
     View menuView;
     int historyIndex = -1;
+    AlertDialog downloadsDialog = null;
     
 	//browser related
 	AutoCompleteTextView webAddress;
@@ -157,7 +159,7 @@ public class SimpleBrowser extends Activity {
 	private final static int FILECHOOSER_RESULTCODE = 1001;
 
 	//bookmark and history
-	AlertDialog m_sourceDialog;
+	AlertDialog m_sourceDialog = null;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	boolean historyChanged, bookmarkChanged;
@@ -949,8 +951,22 @@ public void onCreate(Bundle savedInstanceState) {
     			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
     			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
     			if (!util.startActivity(intent, false, mContext)) {
-    				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.estrongs.android.pop"));
-    				util.startActivity(intent, true, getBaseContext());
+    				if (downloadsDialog == null) 
+    					downloadsDialog = new AlertDialog.Builder(mContext).
+    						setMessage(getString(R.string.downloads_to) + downloadPath + getString(R.string.downloads_open)).
+    						setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+				    				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.estrongs.android.pop"));
+				    				util.startActivity(intent, true, getBaseContext());
+								}
+							}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							}).
+    						create();
+    				downloadsDialog.show();
     			}
         		break;
         	case 4://share url

@@ -890,10 +890,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			homeTab = 0;
 		}
 		
-		RadioButton tmp = btnLast;
-		btnLast = btnHome;
+		btnLast = btnSystem;
 		
 		if (userAlphaList.index > -1) {
+			btnLast.setText("");
 			btnUser.setVisibility(View.VISIBLE);
 			btnLast = btnUser;
 		}
@@ -901,13 +901,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		
 		if (paid) {
 			if (packageAlphaList.index > -1) {
+				btnLast.setText("");
 				btnPackage.setVisibility(View.VISIBLE);
 				btnLast = btnPackage;
 			}
 			else btnPackage.setVisibility(View.INVISIBLE);
 		}
-		
-		if (tmp.getText() != btnLast.getText()) tmp.setText("");
 		
 		int current = mainlayout.getCurrentItem();
 		if (current == sysAlphaList.index) {

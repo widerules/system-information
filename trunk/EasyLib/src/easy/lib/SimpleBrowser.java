@@ -203,7 +203,7 @@ class MyWebview extends WebView {
 		title = getString(R.string.browser_name);
 		
         setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);//no white blank on the right of webview
-        setScrollbarFadingEnabled(true);//hide scroll bar when not scroll
+        //setScrollbarFadingEnabled(true);//hide scroll bar when not scroll. from API5, not work on cupcake.
         
         WebSettings webSettings = getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -212,8 +212,7 @@ class MyWebview extends WebView {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
         webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
-        webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage
-        //webSettings.setLightTouchEnabled(true);
+        //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         
         registerForContextMenu(this);
 
@@ -1373,7 +1372,7 @@ void loadPage(boolean notJudge) {
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
 	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
-	ret += "<meta name=\"viewport\" content=\"width=device-width, user-scalable=yes\">";
+	ret += "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\">";
 	ret += "<html>";
 	ret += "<head>";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";

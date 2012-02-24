@@ -27,19 +27,26 @@
     <RadioButton  
         android:id="@+id/radio_system"  
         android:button="@drawable/radio"
+        android:text="@string/blank_string"
+        android:textColor="#80000000"
         />  
     <RadioButton  
         android:id="@+id/radio_home"
         android:checked="true"  
         android:button="@drawable/radio"
+        android:text="@string/blank_string"
+        android:textColor="#80000000"
         />  
     <RadioButton  
         android:id="@+id/radio_user"  
         android:button="@drawable/radio"
+        android:text="@string/blank_string"
+        android:textColor="#80000000"
         />     
     <RadioButton  
         android:id="@+id/radio_package"  
         android:button="@drawable/radio"
+        android:text="@string/blank_string"
         android:textColor="#80000000"
         />     
 </RadioGroup>           

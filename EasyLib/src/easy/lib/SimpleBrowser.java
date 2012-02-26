@@ -42,6 +42,7 @@ import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -188,7 +189,6 @@ public class SimpleBrowser extends Activity {
 	}
 	
 class MyWebview extends WebView {
-	public String title = "";
 	public String pageSource = getString(R.string.not_avaiable);
 
 	class MyJavaScriptInterface
@@ -202,7 +202,6 @@ class MyWebview extends WebView {
 	
 	public MyWebview(Context context) {
 		super(context);
-		title = getString(R.string.browser_name);
 		
         setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);//no white blank on the right of webview
         //setScrollbarFadingEnabled(true);//hide scroll bar when not scroll. from API5, not work on cupcake.
@@ -387,7 +386,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         TextView webname = (TextView) convertView.findViewById(R.id.webname);
         if ((wv.getTitle() != null) && (!wv.getTitle().equals("")))
         	webname.setText(wv.getTitle());
-        else webname.setText(wv.title);
+        else webname.setText(wv.getUrl());
         
         webname.setOnClickListener(new OnClickListener() {
 			@Override
@@ -415,7 +414,6 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 				else {//return to home page if only one page when click close button
 					webControl.setVisibility(View.INVISIBLE);
 					loadPage(true);
-					serverWebs.get(webIndex).title = getString(R.string.browser_name);
 					serverWebs.get(webIndex).clearHistory();
 				}
 				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
@@ -1078,16 +1076,6 @@ public void onCreate(Bundle savedInstanceState) {
     webpages = (ViewFlipper) findViewById(R.id.webpages);
     webpages.addView(serverWebs.get(webIndex));
     
-	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-		if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
-			//open the url from intent in a new page if the old page is under reading.
-			loadNewPage(getIntent().getDataString(), getIntent().getBooleanExtra("update", false));
-		else loadPage(false);
-	}
-	catch (Exception e) {
-		e.printStackTrace();
-	}
-    
     
 	webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 	android.view.ViewGroup.LayoutParams lp = webtools_center.getLayoutParams();
@@ -1177,6 +1165,16 @@ public void onCreate(Bundle savedInstanceState) {
 
 	setLayout();
 	
+	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
+		if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
+			//open the url from intent in a new page if the old page is under reading.
+			loadNewPage(getIntent().getDataString());
+		else loadPage(false);
+	}
+	catch (Exception e) {
+		e.printStackTrace();
+	}
+    
 	//for package added
 	IntentFilter filter = new IntentFilter();
 	filter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -1202,12 +1200,8 @@ BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	}
 };
 
-private void loadNewPage(String url, boolean update) {
-	if (!update)//only open new page if not update from bookmark/history
-		if ((!serverWebs.get(webIndex).title.equals(getString(R.string.browser_name))) || serverWebs.get(webIndex).canGoBack()) 
-		btnNewpage.performClick();//open the url in a new page if current page is not the main page
+private void loadNewPage(String url) {
 	serverWebs.get(webIndex).loadUrl(url);
-	serverWebs.get(webIndex).title = url; 
 	serverWebs.get(webIndex).requestFocus();
 }
 
@@ -1237,7 +1231,7 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 @Override
 protected void onNewIntent(Intent intent) {//go back to home if press Home key.
 	if (intent.getAction().equals(Intent.ACTION_VIEW)) //view webpages
-		loadNewPage(intent.getDataString(), intent.getBooleanExtra("update", false));
+		loadNewPage(intent.getDataString());
 	super.onNewIntent(intent); 
 }
 

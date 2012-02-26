@@ -65,6 +65,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -83,6 +84,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -112,7 +114,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	AppAlphaList sysAlphaList, userAlphaList;
 	PkgAlphaList packageAlphaList;
 	//alpha list related
-    RadioButton btnSystem, btnUser, btnHome, btnPackage, btnLast;
+    RadioButton radioBtn;
+    TextView radioText;
+    RadioGroup radioGroup;
 
 	//app list related
 	private List<View> mListViews;
@@ -582,16 +586,11 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	mListViews.add(packageAlphaList.view);
         	packageAlphaList.index = 3;
         }
-        
-        btnSystem = (RadioButton) findViewById(R.id.radio_system);
-        btnUser = (RadioButton) findViewById(R.id.radio_user);
-        btnHome = (RadioButton) findViewById(R.id.radio_home);
-        btnPackage = (RadioButton) findViewById(R.id.radio_package);
-        if (paid) btnLast = btnPackage;
-        else {
-        	btnLast = btnUser;
-        	btnPackage.setVisibility(View.INVISIBLE);
-        }
+
+        radioText = (TextView) findViewById(R.id.radio_text);
+        radioBtn = (RadioButton) findViewById(R.id.radio_system);
+        radioGroup = (RadioGroup) findViewById(R.id.radio_hint);
+        if (!paid) radioGroup.removeViewAt(0);
         
         mWallpaperManager = WallpaperManager.getInstance(this);
         
@@ -879,50 +878,24 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	
 		myPagerAdapter.notifyDataSetChanged();
     	
-		if (sysAlphaList.index > -1) {
-			btnSystem.setVisibility(View.VISIBLE);
+		if (sysAlphaList.index > -1) 
 			homeTab = 1;
-		}
-		else {
-			btnSystem.setVisibility(View.INVISIBLE);
-			homeTab = 0;
-		}
-		
-		btnLast = btnSystem;
-		
-		if (userAlphaList.index > -1) {
-			btnLast.setText("");
-			btnUser.setVisibility(View.VISIBLE);
-			btnLast = btnUser;
-		}
-		else btnUser.setVisibility(View.INVISIBLE);
-		
-		if (paid) {
-			if (packageAlphaList.index > -1) {
-				btnLast.setText("");
-				btnPackage.setVisibility(View.VISIBLE);
-				btnLast = btnPackage;
-			}
-			else btnPackage.setVisibility(View.INVISIBLE);
-		}
+		else homeTab = 0;
+
+		while (radioGroup.getChildCount() < myPagerAdapter.getCount()+1)
+			radioGroup.addView(radioBtn, 0);
+		while (radioGroup.getChildCount() > myPagerAdapter.getCount()+1)
+			radioGroup.removeViewAt(0);
 		
 		int current = mainlayout.getCurrentItem();
-		if (current == sysAlphaList.index) {
-			btnSystem.setChecked(true);
-			btnLast.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
-		}
-		else if (current == userAlphaList.index) {
-			btnUser.setChecked(true);
-			btnLast.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
-		}
-		else if ((paid) && (current == packageAlphaList.index)) {
-			btnPackage.setChecked(true);
-			btnLast.setText(getString(R.string.packages) + "(" + packageAlphaList.getCount() + ")");
-		}
-		else {
-			btnHome.setChecked(true);
-			btnLast.setText(R.string.home);
-		}
+		((RadioButton) radioGroup.getChildAt(current)).setChecked(true);
+		if (current == sysAlphaList.index) 
+			radioText.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
+		else if (current == userAlphaList.index) 
+			radioText.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
+		else if ((paid) && (current == packageAlphaList.index)) 
+			radioText.setText(getString(R.string.packages) + "(" + packageAlphaList.getCount() + ")");
+		else radioText.setText(R.string.home);
     }
     
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {

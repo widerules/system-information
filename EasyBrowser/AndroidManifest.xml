@@ -25,7 +25,7 @@
         <activity android:name="easy.lib.SimpleBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:icon="@drawable/explorer"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:label="@string/browser_name">
             
             <intent-filter>

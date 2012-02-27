@@ -75,6 +75,25 @@ public class util {
     }
 
 	static public boolean startApp(ResolveInfo info, Context context) {
+		if (info == null) {
+			try {
+				AlertDialog dlg = new AlertDialog.Builder(context).
+						setMessage("null pointer error of resolveInfo").
+						setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						}).
+						create();
+				dlg.show();
+			}
+			catch (Exception ee) {
+				ee.printStackTrace();
+				Toast.makeText(context, "null pointer error of resolveInfo", Toast.LENGTH_LONG).show();
+			}
+			return false;
+		}
+		
 		Intent i = new Intent(Intent.ACTION_MAIN);
 		i.setComponent(new ComponentName(
 				info.activityInfo.applicationInfo.packageName,

@@ -1159,7 +1159,7 @@ public void onCreate(Bundle savedInstanceState) {
 	webList.setFadingEdgeLength(0);//no shadow when scroll
 	webList.setScrollingCacheEnabled(false);
 	webList.setAdapter(webAdapter);
-
+	
 	
 	downloadPath = util.preparePath(mContext);
 
@@ -1167,14 +1167,13 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
 		if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
-			//open the url from intent in a new page if the old page is under reading.
-			loadNewPage(getIntent().getDataString());
+			serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
 		else loadPage(false);
 	}
 	catch (Exception e) {
 		e.printStackTrace();
-	}
-    
+	}    
+
 	//for package added
 	IntentFilter filter = new IntentFilter();
 	filter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -1200,11 +1199,6 @@ BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	}
 };
 
-private void loadNewPage(String url) {
-	serverWebs.get(webIndex).loadUrl(url);
-	serverWebs.get(webIndex).requestFocus();
-}
-
 BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 	@Override
@@ -1229,9 +1223,17 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 };
 
 @Override
-protected void onNewIntent(Intent intent) {//go back to home if press Home key.
-	if (intent.getAction().equals(Intent.ACTION_VIEW)) //view webpages
-		loadNewPage(intent.getDataString());
+protected void onNewIntent(Intent intent) {//open file from sdcard
+	if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+		Uri newUri = intent.getData();
+		if (newUri == null) return;
+		Uri oldUri = getIntent().getData();
+		if ((oldUri == null) || ((oldUri != null) && (!newUri.equals(oldUri)))) {
+			openNewPage(intent.getDataString());
+			setIntent(intent);
+		}
+	}
+	
 	super.onNewIntent(intent); 
 }
 
@@ -1306,8 +1308,10 @@ private void addFavo(final String url, final String title) {
 
 
 private void openNewPage(String url) {
-	if (webAdapter.getCount() == 9) //max count is 9.
+	if (webAdapter.getCount() == 9) {//max count is 9.
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
+		if (!url.equals("")) serverWebs.get(webIndex).loadUrl(url);
+	}
 	else {
 		webAdapter.add(new MyWebview(mContext));
 		webIndex = webAdapter.getCount() - 1;

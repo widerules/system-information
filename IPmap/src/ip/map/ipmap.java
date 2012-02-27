@@ -122,6 +122,10 @@ public class ipmap extends MapActivity implements AdListener{
     
     String errmsg;
     
+	//ad
+	AdView adview;
+	AdRequest adRequest = new AdRequest();
+	
     final Handler mHandler = new Handler();
     
     final Runnable mUpdateResults = new Runnable() {
@@ -136,11 +140,9 @@ public class ipmap extends MapActivity implements AdListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);      
         
-     // Look up the AdView as a resource and load a request.
-        AdView adView = (AdView)this.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest();
+        // Look up the AdView as a resource and load a request.
+        adview = (AdView)this.findViewById(R.id.adView);
         //adRequest.addTestDevice("224902DD10187A82256A507A0007230D");
-        adView.loadAd(adRequest);
 
 
         mapView = (MapView) findViewById(R.id.IPmap);
@@ -153,8 +155,10 @@ public class ipmap extends MapActivity implements AdListener{
 			public boolean onKey(View view, int keyCode, KeyEvent event) {
 				if ((event.getAction() == android.view.KeyEvent.ACTION_DOWN) 
 						&& ((keyCode == android.view.KeyEvent.KEYCODE_SEARCH)
-								|| (keyCode == android.view.KeyEvent.KEYCODE_ENTER))) 
+								|| (keyCode == android.view.KeyEvent.KEYCODE_ENTER))) { 
 					showOnMap(false);
+					adview.loadAd(adRequest);
+				}
 				return false;
 			}
 		});

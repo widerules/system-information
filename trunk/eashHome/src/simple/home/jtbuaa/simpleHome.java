@@ -114,7 +114,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	AppAlphaList sysAlphaList, userAlphaList;
 	PkgAlphaList packageAlphaList;
 	//alpha list related
-    RadioButton radioBtn;
     TextView radioText;
     RadioGroup radioGroup;
 
@@ -579,7 +578,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         }
 
         radioText = (TextView) findViewById(R.id.radio_text);
-        radioBtn = (RadioButton) findViewById(R.id.radio_system);
         radioGroup = (RadioGroup) findViewById(R.id.radio_hint);
         if (!paid) radioGroup.removeViewAt(0);
         
@@ -886,8 +884,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			homeTab = 1;
 		else homeTab = 0;
 
-		while (radioGroup.getChildCount() < myPagerAdapter.getCount()+1)
-			radioGroup.addView(radioBtn, 0);
+		while (radioGroup.getChildCount() < myPagerAdapter.getCount()+1) {
+			RadioButton view = new RadioButton(getBaseContext());
+			view.setButtonDrawable(R.drawable.radio);
+			view.setChecked(false);
+			radioGroup.addView(view, 0);
+		}
 		while (radioGroup.getChildCount() > myPagerAdapter.getCount()+1)
 			radioGroup.removeViewAt(0);
 		

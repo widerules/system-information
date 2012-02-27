@@ -392,10 +392,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 			@Override
 			public void onClick(View arg0) {
 				webControl.setVisibility(View.INVISIBLE);
-				webIndex = position;
-				while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
-				webpages.getChildAt(webIndex).requestFocus();
+				changePage(position);
 			}
 		});
         
@@ -1222,16 +1219,29 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 	}
 };
 
+void changePage(int position) {
+	webIndex = position;
+	while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
+	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
+	webpages.getChildAt(webIndex).requestFocus();
+}
+
 @Override
 protected void onNewIntent(Intent intent) {//open file from sdcard
 	if (intent.getAction().equals(Intent.ACTION_VIEW)) {
-		Uri newUri = intent.getData();
-		if (newUri == null) return;
-		Uri oldUri = getIntent().getData();
-		if ((oldUri == null) || ((oldUri != null) && (!newUri.equals(oldUri)))) {
-			openNewPage(intent.getDataString());
-			setIntent(intent);
+		Uri uri = intent.getData();
+		if (uri == null) return;
+		
+		boolean found = false;
+		for (int i = 0; i < serverWebs.size(); i++) {
+			if (serverWebs.get(i).getUrl().equals(uri.toString())) {
+				changePage(i);  //show correct page
+				found = true;
+				break;
+			}
 		}
+		
+		if (!found) openNewPage(intent.getDataString());
 	}
 	
 	super.onNewIntent(intent); 

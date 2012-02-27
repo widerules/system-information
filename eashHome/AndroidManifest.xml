@@ -24,7 +24,6 @@
         />
 
     <application android:icon="@drawable/icon"
-    	android:persistent="true"
     	android:debuggable="false"
     	android:name="easy.lib.MyApp" 
        	android:theme="@style/Theme"
@@ -32,6 +31,7 @@
     	
         <activity android:name=".simpleHome"
         	android:excludeFromRecents="true"
+        	android:launchMode="singleTask"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:label="@string/app_name">
                   

@@ -25,20 +25,16 @@
     android:layout_centerHorizontal="true"
     android:orientation="horizontal" >  
     <RadioButton  
-        android:id="@+id/radio_system"  
         android:button="@drawable/radio"
         />  
     <RadioButton  
-        android:id="@+id/radio_home"
         android:checked="true"  
         android:button="@drawable/radio"
         />  
     <RadioButton  
-        android:id="@+id/radio_user"  
         android:button="@drawable/radio"
         />     
     <RadioButton  
-        android:id="@+id/radio_package"  
         android:button="@drawable/radio"
         />
     <TextView

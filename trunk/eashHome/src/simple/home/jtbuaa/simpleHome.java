@@ -387,15 +387,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		case 8://switch view
     		restartDialog.show();
     		
-    		SharedPreferences.Editor editor = perferences.edit();
-			if (mainlayout.getCurrentItem() == sysAlphaList.index) 
-	    		editor.putBoolean("system", !sysAlphaList.mIsGrid);
-			else if (mainlayout.getCurrentItem() == userAlphaList.index) 
-	    		editor.putBoolean("user", !userAlphaList.mIsGrid);
-			else if (mainlayout.getCurrentItem() == packageAlphaList.index) 
-	    		editor.putBoolean("package", !packageAlphaList.mIsGrid);
-    		editor.commit();
-    		
 			break;
 		case 9://get package detail info
 			PackageInfo pi = (PackageInfo) selected_case.mRi; 
@@ -719,10 +710,23 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-					    finish();
-				        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-				        homeIntent.addCategory(Intent.CATEGORY_HOME);
-				        startActivity(homeIntent);
+						//save the layout
+			    		SharedPreferences.Editor editor = perferences.edit();
+						if (mainlayout.getCurrentItem() == sysAlphaList.index) 
+				    		editor.putBoolean("system", !sysAlphaList.mIsGrid);
+						else if (mainlayout.getCurrentItem() == userAlphaList.index) 
+				    		editor.putBoolean("user", !userAlphaList.mIsGrid);
+						else if (mainlayout.getCurrentItem() == packageAlphaList.index) 
+				    		editor.putBoolean("package", !packageAlphaList.mIsGrid);
+			    		editor.commit();
+			    		
+			    		//restart the activity. note if set singleinstance or singletask of activity, below will not work on some device.
+						Intent intent = getIntent();
+						overridePendingTransition(0, 0);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+						finish();
+						overridePendingTransition(0, 0);
+						startActivity(intent);
 					}
 				}).
 				setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {

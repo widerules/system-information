@@ -385,8 +385,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			break;
 		case 8://switch view
     		restartDialog.show();
-    		
-			break;
+    		return true;//break can't finish on some device?
 		case 9://get package detail info
 			PackageInfo pi = (PackageInfo) selected_case.mRi; 
 			showDetail(pi.applicationInfo.sourceDir, pi.packageName, pi.applicationInfo.loadLabel(pm), pi.applicationInfo.loadIcon(pm));
@@ -894,6 +893,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			radioGroup.removeViewAt(0);
 		
 		int current = mainlayout.getCurrentItem();
+		radioGroup.clearCheck();
 		((RadioButton) radioGroup.getChildAt(current)).setChecked(true);
 		if (current == sysAlphaList.index) 
 			radioText.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");

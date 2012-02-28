@@ -240,7 +240,7 @@ public class ipmap extends MapActivity implements AdListener{
     					setTitle(title).
     					setIcon(R.drawable.icon).
     					setView(aboutView).
-    					setMessage(getString(R.string.help_text) + "\n" + getString(R.string.help_text2) + " http://www.geoiptool.com").
+    					setMessage(getString(R.string.help_text) + "\n\n" + getString(R.string.help_text2) + " http://www.geoiptool.com").
     					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
     						@Override
     						public void onClick(DialogInterface dialog, int which) {
@@ -404,8 +404,8 @@ public class ipmap extends MapActivity implements AdListener{
     	//http://www.droidnova.com/get-the-ip-address-of-your-device,304.html
     	//if use wifi, then can only get internal IP address instead of external IP address by local API.
     	//so get it from www.whatismyip.com
-    	//they recommand to use curl "http://whatismyip.com/automation/n09230945NL.asp"
-    	return httpGet("http://whatismyip.com/automation/n09230945NL.asp");
+    	//they recommand to use curl "http://whatismyip.com/automation/n09230945.asp"
+    	return httpGet("http://automation.whatismyip.com/n09230945.asp");
     }
 
     private String[] getLocationFromIPaddress(String host) {

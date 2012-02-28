@@ -15,7 +15,7 @@
     <string name="country">国家:\t</string>
     <string name="city">城市:\t</string>
     <string name="address">地址:\t</string>
-    <string name="ip">IP地址:\t</string>
+    <string name="ip">您的IP是:\t</string>
     
     <string name="unknownaddress">查询不到地址</string>
 </resources>

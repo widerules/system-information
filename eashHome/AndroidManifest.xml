@@ -55,10 +55,12 @@
             </intent-filter>
         </activity>
                   
+        <!-- in EasyBrowser, just use singleTask is OK. but here must use singleInstance, otherwise it will return to homepage every time. -->
         <activity android:name="easy.lib.SimpleBrowser"
         	android:process="easy.browser"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:icon="@drawable/explorer"
+            android:launchMode="singleInstance" 
             android:label="@string/browser_name">
             
             <intent-filter>

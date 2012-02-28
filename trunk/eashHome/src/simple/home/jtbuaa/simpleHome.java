@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import easy.lib.ricase;
 import easy.lib.util;
 
 import android.app.Activity;
@@ -299,8 +298,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				menu.add(0, 8, 0, getString(R.string.list_view));
 			else
 				menu.add(0, 8, 0, getString(R.string.grid_view));
-			menu.add(0, 9, 0, getString(R.string.appdetail));
 			menu.add(0, 10, 0, getString(R.string.hidepage));
+			menu.add(0, 9, 0, getString(R.string.appdetail));
 		}
 	}
 	

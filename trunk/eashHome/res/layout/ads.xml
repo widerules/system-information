@@ -28,7 +28,6 @@
         android:button="@drawable/radio"
         />  
     <RadioButton  
-        android:checked="true"  
         android:button="@drawable/radio"
         />  
     <RadioButton  

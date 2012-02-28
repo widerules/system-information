@@ -1,13 +1,5 @@
 package easy.lib;
 
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -28,21 +19,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
-
-class TitleUrl {
-	String m_title;
-	String m_url;
-	String m_site;
-	
-	TitleUrl(String title, String url, String site) {
-		if (title != null) m_title = title;
-		else m_title = url;
-		m_url = url;
-		m_site = site;
-	}
-}
 
 
 public class util {
@@ -217,50 +194,5 @@ public class util {
         }
         return contactIcon;  
     }  
-
-    
-    static void writeBookmark(FileOutputStream fo, ArrayList<TitleUrl> bookmark) {
-    	try {
-    		ObjectOutputStream oos = new ObjectOutputStream(fo);
-    		TitleUrl tu;
-    			for (int i = 0; i < bookmark.size(); i++) {
-    				tu = bookmark.get(i);
-    				oos.writeObject(tu.m_title);
-    				oos.writeObject(tu.m_url);
-    				oos.writeObject(tu.m_site);
-    			}
-    		oos.flush();
-    		oos.close();
-    		fo.close();
-    	} catch (Exception e) {}
-    }
-
-    static ArrayList<TitleUrl> readBookmark(FileInputStream fi) 
-    {
-    	ArrayList<TitleUrl> bookmark = new ArrayList<TitleUrl>();
-    	ObjectInputStream ois = null;
-    	try {//read favorite or shortcut data
-    		ois = new ObjectInputStream(fi);
-    		TitleUrl tu;
-    		String title, url, site;
-    		while ((title = (String) ois.readObject()) != null) {
-    			url = (String) ois.readObject();
-    			site = (String) ois.readObject();
-    			tu = new TitleUrl(title, url, site);
-    			bookmark.add(tu);
-    		}
-    	} catch (EOFException e) {//only when read eof need send out msg.
-    		try {
-    			ois.close();
-    			fi.close();
-    		} catch (IOException e1) {
-    			// TODO Auto-generated catch block
-    			e1.printStackTrace();
-    		}
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    	return bookmark;
-    }
 
 }

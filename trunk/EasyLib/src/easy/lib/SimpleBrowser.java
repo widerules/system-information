@@ -1,11 +1,14 @@
 package easy.lib;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -85,6 +88,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+
 
 //for get webpage source on cupcake
 class wrapValueCallback {
@@ -1047,9 +1051,9 @@ public void onCreate(Bundle savedInstanceState) {
 	FileInputStream fi = null;
 	try {
 		fi = openFileInput("history");
-		mHistory = util.readBookmark(fi);
+		mHistory = readBookmark(fi);
 		fi = openFileInput("bookmark");
-		mBookMark = util.readBookmark(fi);		
+		mBookMark = readBookmark(fi);		
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
 	}
@@ -1356,12 +1360,12 @@ protected void onPause() {
 	try {
 		if (historyChanged) {
 			fo = this.openFileOutput("history", 0);
-			util.writeBookmark(fo, mHistory);
+			writeBookmark(fo, mHistory);
 		}
 		
 		if (bookmarkChanged) {
 			fo = this.openFileOutput("bookmark", 0);
-			util.writeBookmark(fo, mBookMark);
+			writeBookmark(fo, mBookMark);
 		}
 	} catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -1434,6 +1438,63 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</body>";
 	ret += "</html>";
 	return ret;
+}
+
+class TitleUrl {
+	String m_title;
+	String m_url;
+	String m_site;
+	
+	TitleUrl(String title, String url, String site) {
+		if (title != null) m_title = title;
+		else m_title = url;
+		m_url = url;
+		m_site = site;
+	}
+}
+
+void writeBookmark(FileOutputStream fo, ArrayList<TitleUrl> bookmark) {
+	try {
+		ObjectOutputStream oos = new ObjectOutputStream(fo);
+		TitleUrl tu;
+			for (int i = 0; i < bookmark.size(); i++) {
+				tu = bookmark.get(i);
+				oos.writeObject(tu.m_title);
+				oos.writeObject(tu.m_url);
+				oos.writeObject(tu.m_site);
+			}
+		oos.flush();
+		oos.close();
+		fo.close();
+	} catch (Exception e) {}
+}
+
+ArrayList<TitleUrl> readBookmark(FileInputStream fi) 
+{
+	ArrayList<TitleUrl> bookmark = new ArrayList<TitleUrl>();
+	ObjectInputStream ois = null;
+	try {//read favorite or shortcut data
+		ois = new ObjectInputStream(fi);
+		TitleUrl tu;
+		String title, url, site;
+		while ((title = (String) ois.readObject()) != null) {
+			url = (String) ois.readObject();
+			site = (String) ois.readObject();
+			tu = new TitleUrl(title, url, site);
+			bookmark.add(tu);
+		}
+	} catch (EOFException e) {//only when read eof need send out msg.
+		try {
+			ois.close();
+			fi.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return bookmark;
 }
 
 }

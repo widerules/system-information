@@ -4,21 +4,11 @@ import java.io.BufferedReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.URI;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -29,31 +19,26 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import com.google.ads.Ad;
 import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 import com.google.ads.AdRequest.ErrorCode;
-import com.google.ads.AdSize;
 import com.google.ads.AdView;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -67,20 +52,19 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Html;
 import android.util.Log;
-import android.util.Xml;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 public class ipmap extends MapActivity implements AdListener{
 	protected class BluePoint extends Overlay {
@@ -126,6 +110,10 @@ public class ipmap extends MapActivity implements AdListener{
 	AdView adview;
 	AdRequest adRequest = new AdRequest();
 	
+	AlertDialog aboutDialog = null;
+	View aboutView;
+	Context mContext;
+
     final Handler mHandler = new Handler();
     
     final Runnable mUpdateResults = new Runnable() {
@@ -138,12 +126,39 @@ public class ipmap extends MapActivity implements AdListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+    	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
         setContentView(R.layout.main);      
         
         // Look up the AdView as a resource and load a request.
         adview = (AdView)this.findViewById(R.id.adView);
         //adRequest.addTestDevice("224902DD10187A82256A507A0007230D");
 
+        mContext = this;
+        
+    	aboutView = getLayoutInflater().inflate(R.layout.about, null);
+        TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
+        mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
+        mailTo.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+    			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.author), null));
+    			try {
+    				startActivity(intent);
+    			} catch (Exception e) {
+    				e.printStackTrace();
+					AlertDialog dlg = new AlertDialog.Builder(mContext).
+							setMessage(e.toString()).
+							setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							}).
+							create();
+					dlg.show();
+    			}
+    		}
+    	});
 
         mapView = (MapView) findViewById(R.id.IPmap);
         mapView.setBuiltInZoomControls(true);
@@ -218,15 +233,24 @@ public class ipmap extends MapActivity implements AdListener{
             	version = "v" + pi.versionName;
         	} catch (NameNotFoundException e) {
         		e.printStackTrace();
-        	}    
-        	return new AlertDialog.Builder(this).
-        	setMessage(getString(R.string.app_name) + " " + version + "\n\n" 
-        			+ getString(R.string.help_text) + "\n" + getString(R.string.help_text2) 
-        			+ " http://www.geoiptool.com\n\n\njtbuaa@gmail.com").
-        	setPositiveButton("Ok",
-	          new DialogInterface.OnClickListener() {
-	        	  public void onClick(DialogInterface dialog, int which) {}
-	          }).create();
+        	}
+    		if (aboutDialog == null) {
+    			String title = getString(R.string.app_name) + version;
+    			aboutDialog = new AlertDialog.Builder(this).
+    					setTitle(title).
+    					setIcon(R.drawable.icon).
+    					setView(aboutView).
+    					setMessage(getString(R.string.help_text) + "\n" + getString(R.string.help_text2) + " http://www.geoiptool.com").
+    					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+    						@Override
+    						public void onClick(DialogInterface dialog, int which) {
+    						}
+    					}).setPositiveButton("Ok",
+    		      	          new DialogInterface.OnClickListener() {
+    		      	        	  public void onClick(DialogInterface dialog, int which) {}
+    		      	          }).create();
+    		}
+    		return aboutDialog;
         }
         case 2: {//message dialog
         	if (m_msgDialog == null) {

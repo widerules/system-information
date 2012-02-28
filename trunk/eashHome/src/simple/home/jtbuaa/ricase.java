@@ -1,4 +1,4 @@
-package easy.lib;
+package simple.home.jtbuaa;
 
 public class ricase<T> {
 	public T mRi;

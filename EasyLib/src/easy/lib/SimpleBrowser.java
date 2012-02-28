@@ -290,8 +290,12 @@ class MyWebview extends WebView {
 
 				webAdapter.notifyDataSetChanged();//why notify it here?
 				
-        		if (!android.os.Build.VERSION.RELEASE.equals("2.3.3"))//it will cause webkit crash on 2.3.3
-        			loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
+        		if (!android.os.Build.VERSION.RELEASE.equals("2.3.3")) {//it will cause webkit crash on 2.3.3
+        			if (url.equals(BLANK_PAGE))
+        				pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
+        			else
+        				loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
+        		}
 				
                 webControl.setVisibility(View.INVISIBLE);
 

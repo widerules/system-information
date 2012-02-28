@@ -200,6 +200,29 @@ public class ipmap extends MapActivity implements AdListener{
             m_msgDialog.show();//show the help info at first.
         }
         
+    	String version = "";
+        PackageManager pm = getPackageManager();
+        try {
+        	PackageInfo pi = pm.getPackageInfo("ip.map", 0);
+        	version = " " + pi.versionName;
+    	} catch (NameNotFoundException e) {
+    		e.printStackTrace();
+    	}
+		if (aboutDialog == null) {
+			String title = getString(R.string.app_name) + version;
+			aboutDialog = new AlertDialog.Builder(this).
+					setTitle(title).
+					setIcon(R.drawable.icon).
+					setView(aboutView).
+					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					}).setPositiveButton("Ok",
+		      	          new DialogInterface.OnClickListener() {
+		      	        	  public void onClick(DialogInterface dialog, int which) {}
+		      	          }).create();
+		}
     }
 
     private void setMark(GeoPoint p) {
@@ -224,33 +247,6 @@ public class ipmap extends MapActivity implements AdListener{
             m_dialog.setIndeterminate(true);
             m_dialog.setCancelable(true);
             return m_dialog;
-        }
-        case 1: {//about dialog
-        	String version = "";
-            PackageManager pm = getPackageManager();
-            try {
-            	PackageInfo pi = pm.getPackageInfo("ip.map", 0);
-            	version = "v" + pi.versionName;
-        	} catch (NameNotFoundException e) {
-        		e.printStackTrace();
-        	}
-    		if (aboutDialog == null) {
-    			String title = getString(R.string.app_name) + version;
-    			aboutDialog = new AlertDialog.Builder(this).
-    					setTitle(title).
-    					setIcon(R.drawable.icon).
-    					setView(aboutView).
-    					setMessage(getString(R.string.help_text) + "\n\n" + getString(R.string.help_text2) + " http://www.geoiptool.com").
-    					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-    						@Override
-    						public void onClick(DialogInterface dialog, int which) {
-    						}
-    					}).setPositiveButton("Ok",
-    		      	          new DialogInterface.OnClickListener() {
-    		      	        	  public void onClick(DialogInterface dialog, int which) {}
-    		      	          }).create();
-    		}
-    		return aboutDialog;
         }
         case 2: {//message dialog
         	if (m_msgDialog == null) {
@@ -281,22 +277,27 @@ public class ipmap extends MapActivity implements AdListener{
 
 	public boolean onOptionsItemSelected(MenuItem item){
 		switch (item.getItemId()) {
-		case 0:
+		case 0://locate
 			showOnMap(false);
-			return true;
+			break;
 		case 1://street view
 			showOnMap(true);
-			return true;
-		case 2:
-			showDialog(1);
-			return true;
+			break;
+		case 2://about
+            String myIP = getMyIP();
+			aboutDialog.setMessage(getString(R.string.help_text) + "\n\n" + 
+					getString(R.string.help_text2) + 
+					" http://www.geoiptool.com\n\n" + 
+					getString(R.string.ip) + myIP);
+			aboutDialog.show();
+			break;
 		case 3:
 			finish();
 			System.exit(0);
-			return true;
+			break;
 		case 4:
 			sendIntent("market://search?q=ip.map");
-			return true;
+			break;
 		}
 		return true;
 	}

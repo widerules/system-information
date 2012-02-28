@@ -18,7 +18,7 @@
     <string name="country">Country:\t</string>
     <string name="city">City:\t</string>
     <string name="address">Address:\t</string>
-    <string name="ip">IP:\t</string>
+    <string name="ip">Your IP is:\t</string>
     <string name="author"><b><i>clickclick.home@gmail.com</i></b></string>
     
     <string name="unknownaddress">unable to query address.</string>

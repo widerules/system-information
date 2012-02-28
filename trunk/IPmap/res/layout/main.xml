@@ -20,7 +20,8 @@
 	android:singleLine="true"
 	android:hint="@string/hint"
 	android:autoText="true"
-	android:imeOptions="actionSearch"
+	android:imeOptions="actionGo"
+    android:inputType="textUri"
 	android:layout_width="fill_parent" 
 	android:layout_height="wrap_content">
 </EditText>

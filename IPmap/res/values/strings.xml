@@ -4,7 +4,9 @@
 	<string name="hint">www.google.com</string>
 	<string name="wait_msg">please wait while locating...</string>
 	
-    <string name="about">About</string>
+    <string name="ok">OK</string>
+    
+	<string name="about">About</string>
     <string name="exit">Exit</string>
     <string name="map">Locate...</string>
     <string name="street">Street View...</string>
@@ -17,7 +19,7 @@
     <string name="city">City:\t</string>
     <string name="address">Address:\t</string>
     <string name="ip">IP:\t</string>
-    <string name="email"><b><i>jtbuaa@gmail.com</i></b></string>
+    <string name="author"><b><i>clickclick.home@gmail.com</i></b></string>
     
     <string name="unknownaddress">unable to query address.</string>
 </resources>

@@ -637,7 +637,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_MAIN);
-				intent.addCategory(Intent.CATEGORY_LAUNCHER);
 				intent.setClassName(myPackageName, "easy.lib.SimpleBrowser");
 				util.startActivity(intent, true, getBaseContext());
 			}

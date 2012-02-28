@@ -275,17 +275,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 1, 0, getString(R.string.removeFromShort));
 			break;
 		case 2://on app list
-			if (mainlayout.getCurrentItem() == sysAlphaList.index) {
-				if (sysAlphaList.mIsGrid)
-					menu.add(0, 8, 0, getString(R.string.list_view));
-				else
-					menu.add(0, 8, 0, getString(R.string.grid_view));
-			}
-			else if (mainlayout.getCurrentItem() == userAlphaList.index) {
-				if (userAlphaList.mIsGrid)
-					menu.add(0, 8, 0, getString(R.string.list_view));
-				else
-					menu.add(0, 8, 0, getString(R.string.grid_view));
+			if (paid) {
+				if (mainlayout.getCurrentItem() == sysAlphaList.index) {
+					if (sysAlphaList.mIsGrid)
+						menu.add(0, 8, 0, getString(R.string.list_view));
+					else
+						menu.add(0, 8, 0, getString(R.string.grid_view));
+				}
+				else if (mainlayout.getCurrentItem() == userAlphaList.index) {
+					if (userAlphaList.mIsGrid)
+						menu.add(0, 8, 0, getString(R.string.list_view));
+					else
+						menu.add(0, 8, 0, getString(R.string.grid_view));
+				}
 			}
 			menu.add(0, 7, 0, getString(R.string.hideapp));
 			menu.add(0, 4, 0, getString(R.string.appdetail));
@@ -294,10 +296,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			mMenu = menu; 
 			break;
 		case 3://on package list
-			if (packageAlphaList.mIsGrid)
-				menu.add(0, 8, 0, getString(R.string.list_view));
-			else
-				menu.add(0, 8, 0, getString(R.string.grid_view));
+			if (paid) {
+				if (packageAlphaList.mIsGrid)
+					menu.add(0, 8, 0, getString(R.string.list_view));
+				else
+					menu.add(0, 8, 0, getString(R.string.grid_view));
+			}
 			menu.add(0, 10, 0, getString(R.string.hidepage));
 			menu.add(0, 9, 0, getString(R.string.appdetail));
 		}

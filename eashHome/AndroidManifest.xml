@@ -61,7 +61,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:icon="@drawable/explorer"
             android:launchMode="singleInstance" 
-            android:label="@string/browser_name">
+            android:label="@string/embed_browser_name">
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

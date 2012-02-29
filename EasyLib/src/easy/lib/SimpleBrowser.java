@@ -75,6 +75,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -146,7 +147,7 @@ public class SimpleBrowser extends Activity {
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	RelativeLayout webControl, webtools_center;
-	TextView btnNewpage;
+	Button btnNewpage;
 	InputMethodManager imm;
 	ProgressBar loadProgress;
 
@@ -415,6 +416,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 					webpages.removeViewAt(position);
 					imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
 					if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
+					refreshWebnameColor();
 				}
 				else {//return to home page if only one page when click close button
 					webControl.setVisibility(View.INVISIBLE);
@@ -430,6 +432,14 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
     }
 }
 
+void refreshWebnameColor() {
+    for (int i = 0; i < webList.getCount(); i++) {
+    	if (i == webIndex)
+    		webList.getChildAt(i).setBackgroundColor(0xAA808080);
+    	else
+    		webList.getChildAt(i).setBackgroundColor(0xAA222222);
+    }
+}
 
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -1138,6 +1148,7 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			if (webControl.getVisibility() == View.INVISIBLE) {
+				refreshWebnameColor();
 		        webControl.setVisibility(View.VISIBLE);
 		        webControl.bringToFront();
 			}
@@ -1151,7 +1162,7 @@ public void onCreate(Bundle savedInstanceState) {
 	//web control
 	webControl = (RelativeLayout) findViewById(R.id.webcontrol);
 	
-	btnNewpage = (TextView) findViewById(R.id.opennewpage);
+	btnNewpage = (Button) findViewById(R.id.opennewpage);
 	btnNewpage.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {//add a new page

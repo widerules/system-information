@@ -77,13 +77,13 @@
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content">
   			
-			<TextView android:id="@+id/opennewpage"
+			<Button android:id="@+id/opennewpage"
 				android:text="@string/newpage"
 				android:layout_centerHorizontal="true"
 				android:layout_alignParentBottom="true"
 				android:gravity="center"
 				android:textSize="20dip"
-				android:background="#EE222222"
+				android:background="#AA222222"
 				android:textColor="#FF96c732"
 				android:textStyle="bold"
 				android:layout_width="250dip"

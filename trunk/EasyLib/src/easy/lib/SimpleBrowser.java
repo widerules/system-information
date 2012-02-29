@@ -388,6 +388,10 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
             final LayoutInflater inflater = getLayoutInflater();
             convertView = inflater.inflate(R.layout.web_list, parent, false);
         }
+    	if (position == webIndex) 
+    		convertView.setBackgroundColor(0xAA808080);
+    	else
+    		convertView.setBackgroundColor(0xAA222222);
 
         final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
         btnIcon.setImageBitmap(wv.getFavicon());
@@ -411,12 +415,13 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 			public void onClick(View arg0) {
 				serverWebs.get(webIndex).stopLoading();//remove current page, so stop loading at first
 				if (webAdapter.getCount() > 1) {
-					((MyWebview) webpages.getChildAt(position)).destroy();
-					webAdapter.remove((MyWebview) webpages.getChildAt(position));
+					MyWebview tmp = (MyWebview) webpages.getChildAt(position);
+					webAdapter.remove(tmp);
+					webAdapter.notifyDataSetInvalidated();
 					webpages.removeViewAt(position);
+					tmp.destroy();
 					imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
 					if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
-					refreshWebnameColor();
 				}
 				else {//return to home page if only one page when click close button
 					webControl.setVisibility(View.INVISIBLE);
@@ -434,7 +439,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 
 void refreshWebnameColor() {
     for (int i = 0; i < webList.getCount(); i++) {
-    	if (i == webIndex)
+    	if (i == webIndex) 
     		webList.getChildAt(i).setBackgroundColor(0xAA808080);
     	else
     		webList.getChildAt(i).setBackgroundColor(0xAA222222);
@@ -1343,6 +1348,7 @@ private void openNewPage(String url) {
 	}
 	else {
 		webAdapter.add(new MyWebview(mContext));
+		webAdapter.notifyDataSetInvalidated();
 		webIndex = webAdapter.getCount() - 1;
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();

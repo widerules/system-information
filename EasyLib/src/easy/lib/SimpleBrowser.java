@@ -1059,7 +1059,7 @@ public void onCreate(Bundle savedInstanceState) {
 		mHistory = readBookmark(fi);
 		fi = openFileInput("bookmark");
 		mBookMark = readBookmark(fi);		
-	} catch (FileNotFoundException e) {
+	} catch (Exception e) {
 		e.printStackTrace();
 	}
 	historyChanged = false;
@@ -1372,7 +1372,7 @@ protected void onPause() {
 			fo = this.openFileOutput("bookmark", 0);
 			writeBookmark(fo, mBookMark);
 		}
-	} catch (FileNotFoundException e) {
+	} catch (Exception e) {
 		e.printStackTrace();
 	}
 

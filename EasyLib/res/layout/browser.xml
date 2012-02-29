@@ -74,6 +74,7 @@
 			android:layout_centerHorizontal="true"
 			android:orientation="vertical"
 			android:visibility="invisible"
+			android:layout_margin="10dip"
   			android:layout_width="wrap_content"
   			android:layout_height="wrap_content">
   			
@@ -86,15 +87,16 @@
 				android:background="#AA222222"
 				android:textColor="#FF96c732"
 				android:textStyle="bold"
-				android:layout_width="250dip"
+				android:layout_width="fill_parent"
 				android:layout_height="35dip"/>
 				
 			<ListView android:id="@+id/weblist"
-				android:background="@drawable/border"
+			    android:background="@drawable/border"
 				android:layout_centerHorizontal="true"
 				android:layout_above="@id/opennewpage"
-				android:layout_width="250dip"
-				android:layout_height="wrap_content"/>
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				/>
 				
 		</RelativeLayout>
 

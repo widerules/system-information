@@ -1172,9 +1172,8 @@ public void onCreate(Bundle savedInstanceState) {
 	setLayout();
 	
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-		if (getIntent().getAction().equals(Intent.ACTION_VIEW)) 
-			serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
-		else loadPage(false);
+		if (getIntent().getAction().equals(Intent.ACTION_MAIN))	loadPage(false);
+		else serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
 	}
 	catch (Exception e) {
 		e.printStackTrace();
@@ -1237,7 +1236,7 @@ void changePage(int position) {
 
 @Override
 protected void onNewIntent(Intent intent) {//open file from sdcard
-	if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+	if (!intent.getAction().equals(Intent.ACTION_MAIN)) {
 		Uri uri = intent.getData();
 		if (uri == null) return;
 		

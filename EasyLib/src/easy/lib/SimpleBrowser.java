@@ -978,7 +978,8 @@ public void onCreate(Bundle savedInstanceState) {
         	case 5://about
         		if (aboutDialog == null) {
         			String title = getString(R.string.embed_browser_name);
-        			if (getPackageName().equals("easy.browser")) title += " " + util.getVersion(getBaseContext());
+        			if (getPackageName().equals("easy.browser")) 
+        				title = getString(R.string.browser_name) + " " + util.getVersion(getBaseContext());
         			aboutDialog = new AlertDialog.Builder(mContext).
         					setTitle(title).
         					setIcon(R.drawable.explorer).

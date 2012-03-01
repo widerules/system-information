@@ -1040,8 +1040,11 @@ public void onCreate(Bundle savedInstanceState) {
     imgGo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			if (!webAddress.getText().toString().equals(BLANK_PAGE)) 
-				serverWebs.get(webIndex).loadUrl(webAddress.getText().toString());
+			String url = webAddress.getText().toString();
+			if (!url.equals(BLANK_PAGE)) {
+				if (!url.contains("://")) url = "http://" + url;
+				serverWebs.get(webIndex).loadUrl(url);
+			}
 		}
     });
     
@@ -1057,9 +1060,7 @@ public void onCreate(Bundle savedInstanceState) {
     webAddress.setOnEditorActionListener(new OnEditorActionListener() {
 		@Override
 		public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-			String url = webAddress.getText().toString();
-			if (!url.startsWith("http") && !url.startsWith("file")) url = "http://" + url;
-			serverWebs.get(webIndex).loadUrl(url);
+			imgGo.performClick();
 			return false;
 		}
     });

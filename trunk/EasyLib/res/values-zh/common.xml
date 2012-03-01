@@ -64,7 +64,7 @@
     <string name="back">前一页</string>
     <string name="next">下一页</string>
     <string name="newpage">新建窗口</string>
-    <string name="nomore_pages">页面数不能大于9个。请先关掉不用的页面吧。</string>
+    <string name="nomore_pages">打开的页面太多了。请先关掉不用的页面吧。</string>
     <string name="history">历史</string>
     <string name="bookmark">书签</string>
     <string name="source">网页源码</string>

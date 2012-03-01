@@ -32,6 +32,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -114,7 +115,7 @@ class wrapValueCallback {
 
 public class SimpleBrowser extends Activity {
 
-	boolean paid;
+	boolean paid, debug;
 	final String BLANK_PAGE = "about:blank";
 
 	ListView webList;
@@ -292,7 +293,7 @@ class MyWebview extends WebView {
 				webAdapter.notifyDataSetChanged();//why notify it here?
 				
         		if (!android.os.Build.VERSION.RELEASE.equals("2.3.3")) {//it will cause webkit crash on 2.3.3
-        			if (url.equals(BLANK_PAGE))
+        			if (url.equals(BLANK_PAGE) && (!debug)) 
         				pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
         			else
         				loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
@@ -789,7 +790,10 @@ public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
     mContext = this;
-    paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
+    
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+    paid = sp.getBoolean("paid", false);
+    debug = sp.getBoolean("debug", false);
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1333,7 +1337,9 @@ private void addFavo(final String url, final String title) {
 
 
 private void openNewPage(String url) {
-	if (webAdapter.getCount() == 9) {//max count is 9.
+	int maxPages = 6;//max count is 6 for free version.
+	if (paid) maxPages = 9;//9 for paid version.
+	if (webAdapter.getCount() == maxPages) {
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 		if (!url.equals("")) serverWebs.get(webIndex).loadUrl(url);
 	}

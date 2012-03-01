@@ -65,7 +65,7 @@
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="newpage">New</string>
-    <string name="nomore_pages">Sorry, can not create more than 9 pages. Please close old pages before create new one.</string>
+    <string name="nomore_pages">Sorry, too many pages opened. Please close old pages before create new one.</string>
     <string name="history">History</string>
     <string name="bookmark">Bookmark</string>
     <string name="source">Page Source</string>

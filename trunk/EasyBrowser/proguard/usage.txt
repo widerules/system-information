@@ -1,0 +1,188 @@
+com.google.ads.Ad:
+    public abstract boolean isReady()
+    public abstract void loadAd(com.google.ads.AdRequest)
+    public abstract void setAdListener(com.google.ads.AdListener)
+    public abstract void stopLoading()
+com.google.ads.AdActivity:
+    public static final java.lang.String BASE_URL_PARAM
+    public static final java.lang.String HTML_PARAM
+    public static final java.lang.String URL_PARAM
+    public static final java.lang.String INTENT_ACTION_PARAM
+    public static final java.lang.String TYPE_PARAM
+    public static final java.lang.String ORIENTATION_PARAM
+com.google.ads.AdRequest:
+    public static final java.lang.String VERSION
+    public static final java.lang.String LOGTAG
+    173:174:public void setGender(com.google.ads.AdRequest$Gender)
+    184:185:public void setBirthday(java.lang.String)
+    196:197:public void setPlusOneOptOut(boolean)
+    208:209:public void setKeywords(java.util.Set)
+    238:239:public void setExtras(java.util.Map)
+    267:268:public void setLocation(android.location.Location)
+    281:282:public void setTesting(boolean)
+    385:386:public void setTestDevices(java.util.Set)
+com.google.ads.AdSize:
+    38:39:public AdSize(int,int)
+com.google.ads.AdView:
+    78:87:public AdView(android.app.Activity,com.google.ads.AdSize,java.lang.String)
+    237:238:public void destroy()
+    478:482:public boolean isReady()
+    523:524:public void setAdListener(com.google.ads.AdListener)
+    535:536:public void stopLoading()
+com.google.ads.InterstitialAd:
+    private com.google.ads.d a
+    73:74:public InterstitialAd(android.app.Activity,java.lang.String)
+    88:91:public InterstitialAd(android.app.Activity,java.lang.String,boolean)
+    100:100:public boolean isReady()
+    112:113:public void loadAd(com.google.ads.AdRequest)
+    122:135:public void show()
+    146:147:public void setAdListener(com.google.ads.AdListener)
+    156:157:public void stopLoading()
+com.google.ads.R
+com.google.ads.R$attr
+com.google.ads.R$id
+com.google.ads.R$layout
+com.google.ads.c:
+    371:387:final void a()
+com.google.ads.d:
+    276:279:public final synchronized void b()
+    464:464:public final synchronized boolean o()
+    748:749:public final synchronized void a(com.google.ads.AdListener)
+    777:778:public final synchronized void y()
+    809:816:public final synchronized void z()
+com.google.ads.searchads.SearchAdRequest:
+    88:89:public void setQuery(java.lang.String)
+    98:104:public void setBackgroundColor(int)
+    116:122:public void setBackgroundGradient(int,int)
+    132:133:public void setHeaderTextColor(int)
+    143:144:public void setDescriptionTextColor(int)
+    154:155:public void setAnchorTextColor(int)
+    163:164:public void setFontFace(java.lang.String)
+    173:174:public void setHeaderTextSize(int)
+    184:185:public void setBorderColor(int)
+    192:193:public void setBorderType(com.google.ads.searchads.SearchAdRequest$BorderType)
+    202:203:public void setBorderThickness(int)
+easy.browser.R
+easy.browser.R$attr
+easy.browser.R$drawable
+easy.browser.R$id
+easy.browser.R$layout
+easy.browser.R$string
+easy.browser.R$styleable
+easy.lib.R$attr
+easy.lib.R$drawable:
+    public static final int border
+    public static final int button_layout
+    public static final int button_layout_unselected
+    public static final int circle_transparent
+    public static final int favorites_add
+    public static final int go
+    public static final int home
+    public static final int next
+    public static final int prev
+    public static final int round_corner
+    public static final int round_corner_light
+    public static final int round_corner_white
+easy.lib.R$id:
+    public static final int BANNER
+    public static final int IAB_BANNER
+    public static final int IAB_LEADERBOARD
+    public static final int IAB_MRECT
+    public static final int adsParent
+    public static final int control_buttons
+    public static final int pause_download
+    public static final int radio_fullwebpage
+    public static final int snap_size
+    public static final int urlline
+    public static final int web_list
+    public static final int webtools
+easy.lib.R$string:
+    public static final int about
+    public static final int about_dialog
+    public static final int about_dialog_text2
+    public static final int addtoFavo
+    public static final int addtoShort
+    public static final int app_name
+    public static final int app_share_text
+    public static final int appdetail
+    public static final int apps
+    public static final int auto_change_wallpaper
+    public static final int back
+    public static final int backapp
+    public static final int brief
+    public static final int delete
+    public static final int exit
+    public static final int favoriteapps
+    public static final int full_screen
+    public static final int full_webpage
+    public static final int grid_view
+    public static final int hardware
+    public static final int health
+    public static final int help_message
+    public static final int hideapp
+    public static final int hidepage
+    public static final int home
+    public static final int homepage
+    public static final int justreturn
+    public static final int killapp
+    public static final int latitude
+    public static final int level
+    public static final int list_view
+    public static final int loading
+    public static final int locationHint
+    public static final int longitude
+    public static final int memerr
+    public static final int memtotal
+    public static final int menu_choose_home
+    public static final int more
+    public static final int nApk
+    public static final int nProcess
+    public static final int newpage
+    public static final int next
+    public static final int online
+    public static final int packages
+    public static final int pixels
+    public static final int plugged
+    public static final int recommend
+    public static final int refresh
+    public static final int removeFromFavo
+    public static final int removeFromShort
+    public static final int resolution
+    public static final int restart
+    public static final int scale
+    public static final int sdk
+    public static final int select
+    public static final int settings
+    public static final int share_desktop
+    public static final int share_text1
+    public static final int share_text2
+    public static final int share_text3
+    public static final int share_wallpaper
+    public static final int sharetext
+    public static final int show_zoom
+    public static final int snap_size
+    public static final int status
+    public static final int stop
+    public static final int switcher_name
+    public static final int systemapps
+    public static final int technology
+    public static final int temperature
+    public static final int to
+    public static final int ulfail
+    public static final int ulsuccess
+    public static final int upload
+    public static final int userapps
+    public static final int vendor
+    public static final int view_bookmark
+    public static final int voltage
+    public static final int vote
+    public static final int wait
+    public static final int wallpaper
+    public static final int wallpaper_beauty
+    public static final int wallpaper_scene
+    public static final int warning
+    public static final int wlan
+easy.lib.R$styleable
+easy.lib.util:
+    55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
+easy.lib.util$2

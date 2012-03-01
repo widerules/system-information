@@ -19,7 +19,6 @@ public class downloadControl extends Activity{
 	Button btnPause, btnStop;
 	boolean pause = false, stop = false, failed = false;
 	TextView tv;
-	Intent intent;
 	MyApp appstate;
 	int id;
 	DownloadTask dlt;

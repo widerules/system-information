@@ -29,8 +29,6 @@ import android.widget.Toast;
  */
 public class CrashHandler implements UncaughtExceptionHandler {
 	
-	public static final String TAG = "CrashHandler";
-	
 	//系统默认的UncaughtException处理类 
 	private Thread.UncaughtExceptionHandler mDefaultHandler;
 	//CrashHandler实例
@@ -78,7 +76,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
-				Log.e(TAG, "error : ", e);
+				e.printStackTrace();
 			}
 			//退出程序
 			android.os.Process.killProcess(android.os.Process.myPid());
@@ -151,9 +149,8 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			try {
 				field.setAccessible(true);
 				infos.put(field.getName(), field.get(null).toString());
-				Log.d(TAG, field.getName() + " : " + field.get(null));
 			} catch (Exception e) {
-				Log.e(TAG, "an error occured when collect crash info", e);
+				e.printStackTrace();
 			}
 		}
 
@@ -183,7 +180,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			fos.close();
 			return path + fileName;
 		} catch (Exception e) {
-			Log.e(TAG, "an error occured while writing file...", e);
+			e.printStackTrace();
 		}
 		return "";
 	}

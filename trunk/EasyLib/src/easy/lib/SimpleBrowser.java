@@ -390,9 +390,9 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
             convertView = inflater.inflate(R.layout.web_list, parent, false);
         }
     	if (position == webIndex) 
-    		convertView.setBackgroundColor(0xAA808080);
-    	else
     		convertView.setBackgroundColor(0xAA222222);
+    	else
+    		convertView.setBackgroundColor(0xDD111111);
 
         final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
         btnIcon.setImageBitmap(wv.getFavicon());

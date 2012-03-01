@@ -84,7 +84,7 @@
 				android:layout_alignParentBottom="true"
 				android:gravity="center"
 				android:textSize="20dip"
-				android:background="#AA222222"
+				android:background="#DD111111"
 				android:textColor="#FF96c732"
 				android:textStyle="bold"
 				android:layout_width="fill_parent"

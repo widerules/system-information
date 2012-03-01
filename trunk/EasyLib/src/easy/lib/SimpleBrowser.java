@@ -437,15 +437,6 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
     }
 }
 
-void refreshWebnameColor() {
-    for (int i = 0; i < webList.getCount(); i++) {
-    	if (i == webIndex) 
-    		webList.getChildAt(i).setBackgroundColor(0xAA808080);
-    	else
-    		webList.getChildAt(i).setBackgroundColor(0xAA222222);
-    }
-}
-
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
     if (requestCode == FILECHOOSER_RESULTCODE) {
@@ -1153,7 +1144,7 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			if (webControl.getVisibility() == View.INVISIBLE) {
-				refreshWebnameColor();
+				webAdapter.notifyDataSetInvalidated();
 		        webControl.setVisibility(View.VISIBLE);
 		        webControl.bringToFront();
 			}

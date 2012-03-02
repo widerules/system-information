@@ -23,7 +23,7 @@
         android:label="@string/browser_name" >
         
         <activity android:name="easy.lib.SimpleBrowser"
-            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:icon="@drawable/explorer"
             android:launchMode="singleTask"
             android:label="@string/browser_name">
@@ -79,6 +79,7 @@
         </activity>
         
         <activity android:name="easy.lib.downloadControl"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         	android:noHistory="true"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="true"

@@ -69,6 +69,7 @@ import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
@@ -220,6 +221,8 @@ class MyWebview extends WebView {
         webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
         webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
+        //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
+		
         
         registerForContextMenu(this);
 

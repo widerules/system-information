@@ -293,7 +293,7 @@ class MyWebview extends WebView {
         		loadProgress.setVisibility(View.INVISIBLE);//hide progressbar anyway
         		imgRefresh.setImageResource(R.drawable.refresh);
 
-				webAdapter.notifyDataSetChanged();//why notify it here?
+				webAdapter.notifyDataSetChanged();//update the page title in webList
 				
         		if (!android.os.Build.VERSION.RELEASE.equals("2.3.3")) {//it will cause webkit crash on 2.3.3
         			if (url.equals(BLANK_PAGE) && (!debug)) 
@@ -365,13 +365,17 @@ class MyWebview extends WebView {
 			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (!url.startsWith("http")) {
-					Uri uri = Uri.parse(url);
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					intent.addCategory(Intent.CATEGORY_BROWSABLE);
-					return util.startActivity(intent, false, mContext);
-				}
-				else return startDownload(url);
+				if(view.getHitTestResult().getType() > 0)
+			         return false;// From a user click, handle it by webview.
+			    else {
+					if (!url.startsWith("http")) {
+						Uri uri = Uri.parse(url);
+						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+						intent.addCategory(Intent.CATEGORY_BROWSABLE);
+						return util.startActivity(intent, false, mContext);
+					}
+					else return startDownload(url);
+			    }
 			}
 		});
 	}
@@ -478,7 +482,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     			openNewPage(url);
     			break;
     		case 7://add bookmark
-    			if (historyIndex > -1)	addFavo(url, mHistory.get(historyIndex).m_title);
+    			if (historyIndex > -1) addFavo(url, mHistory.get(historyIndex).m_title);
     			else addFavo(url, url);
     			break;
     		case 8://remove bookmark
@@ -492,11 +496,11 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         }
     };
 
+    //set the header title to the image url
+    menu.setHeaderTitle(result.getExtra());
     if (result.getType() == HitTestResult.IMAGE_TYPE ||
             result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
         // Menu options for an image.
-        //set the header title to the image url
-        menu.setHeaderTitle(result.getExtra());
         menu.add(0, 0, 0, R.string.save_img).setOnMenuItemClickListener(handler);
         menu.add(0, 1, 0, R.string.view_img).setOnMenuItemClickListener(handler);
         menu.add(0, 2, 0, R.string.share_img).setOnMenuItemClickListener(handler).setVisible(false);
@@ -504,8 +508,6 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     } else if (result.getType() == HitTestResult.ANCHOR_TYPE ||
             result.getType() == HitTestResult.SRC_ANCHOR_TYPE) {
         // Menu options for a hyperlink.
-        //set the header title to the link url
-        menu.setHeaderTitle(result.getExtra());
         menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
         menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
         menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
@@ -527,7 +529,8 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     		}
         if (!foundBookmark) 
         		menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
-    }
+    } else if (url != null)
+        menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
 }
 
 boolean startDownload(String url) {

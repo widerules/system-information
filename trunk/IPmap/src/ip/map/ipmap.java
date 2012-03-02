@@ -34,6 +34,8 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
+import easy.lib.util;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -143,20 +145,7 @@ public class ipmap extends MapActivity implements AdListener{
     		@Override
     		public void onClick(View arg0) {
     			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.author), null));
-    			try {
-    				startActivity(intent);
-    			} catch (Exception e) {
-    				e.printStackTrace();
-					AlertDialog dlg = new AlertDialog.Builder(mContext).
-							setMessage(e.toString()).
-							setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-								}
-							}).
-							create();
-					dlg.show();
-    			}
+    			util.startActivity(intent, true, getBaseContext());
     		}
     	});
 

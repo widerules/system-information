@@ -149,6 +149,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			try {
 				field.setAccessible(true);
 				infos.put(field.getName(), field.get(null).toString());
+				Log.d(field.getName(), field.get(null).toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

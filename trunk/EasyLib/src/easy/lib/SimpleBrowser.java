@@ -817,10 +817,9 @@ public void onCreate(Bundle savedInstanceState) {
 	        		try {
 	        			String snap = downloadPath + "snap/snap.png";
 	        			FileOutputStream fos = new FileOutputStream(snap);
-	        			 
+	        			
 	        	        bmp.compress(Bitmap.CompressFormat.PNG, 90, fos); 
 	        	        fos.close();
-	    				webpages.destroyDrawingCache();
 	        			
 	        	        Intent intent = new Intent(Intent.ACTION_SEND);
 	        	        intent.setType("image/*");  
@@ -832,19 +831,11 @@ public void onCreate(Bundle savedInstanceState) {
 	        			Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 	        		}
 				}
-			}).
-    		setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
+			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-    				webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
 				}
-			}).setOnCancelListener(new OnCancelListener() {
-				@Override
-				public void onCancel(DialogInterface dialog) {
-    				webpages.destroyDrawingCache();
-				}
-			}).
-    		create();
+			}).create();
 
 	
 	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
@@ -933,6 +924,7 @@ public void onCreate(Bundle savedInstanceState) {
         		break;
         	case 1://view snap
     			if (btnFullScreen.isChecked()) {
+					webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
     				webpages.setDrawingCacheEnabled(true);
     				bmp = webpages.getDrawingCache();
     			}

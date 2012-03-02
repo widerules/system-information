@@ -32,7 +32,7 @@
         <activity android:name=".simpleHome"
         	android:excludeFromRecents="true"
         	android:launchMode="singleTask"
-            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:label="@string/app_name">
                   
             <intent-filter>
@@ -44,6 +44,7 @@
         </activity>
             
         <activity android:name=".SelectHome"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         	android:launchMode="singleTask"
         	android:label="@string/switcher_name" 
         	android:icon="@drawable/icon_switcher">
@@ -58,7 +59,7 @@
         <!-- in EasyBrowser, just use singleTask is OK. but here must use singleInstance, otherwise it will return to homepage every time. -->
         <activity android:name="easy.lib.SimpleBrowser"
         	android:process="easy.browser"
-            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:icon="@drawable/explorer"
             android:launchMode="singleInstance" 
             android:label="@string/embed_browser_name">
@@ -81,6 +82,7 @@
         </activity>
         
         <activity android:name="easy.lib.downloadControl"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         	android:noHistory="true"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="true"
@@ -93,6 +95,7 @@
         </activity>
         
         <activity android:name=".About"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         	android:noHistory="true"
         	android:launchMode="singleInstance"
         	android:excludeFromRecents="true"

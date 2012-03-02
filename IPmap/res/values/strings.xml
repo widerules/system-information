@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IPmap</string>
+    <string name="map_app_name">IPmap</string>
 	<string name="hint">www.google.com</string>
 	<string name="wait_msg">please wait while locating...</string>
 	

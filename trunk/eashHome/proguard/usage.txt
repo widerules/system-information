@@ -1,8 +1,3 @@
-android.content.pm.IPackageStatsObserver$Stub:
-    private static final java.lang.String DESCRIPTOR
-    static final int TRANSACTION_onGetStatsCompleted
-    29:36:public static android.content.pm.IPackageStatsObserver asInterface(android.os.IBinder)
-android.content.pm.IPackageStatsObserver$Stub$Proxy
 android.support.v4.accessibilityservice.AccessibilityServiceInfoCompat
 android.support.v4.accessibilityservice.AccessibilityServiceInfoCompat$AccessibilityServiceInfoIcsImpl
 android.support.v4.accessibilityservice.AccessibilityServiceInfoCompat$AccessibilityServiceInfoStubImpl

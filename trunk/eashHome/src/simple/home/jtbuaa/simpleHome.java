@@ -500,7 +500,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
         try {
         	getPackageSizeInfo = PackageManager.class.getMethod(
-        		    "getPackageSizeInfo", String.class, IPackageStatsObserver.class);
+        		    "getPackageSizeInfo", new Class[] {String.class, IPackageStatsObserver.class});
         } catch (Exception e) {
         	e.printStackTrace();
         }
@@ -510,7 +510,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			public void onGetStatsCompleted(PackageStats pStats,
 					boolean succeeded) throws RemoteException {
 				
-				long size = pStats.codeSize + pStats.cacheSize + pStats.dataSize;
+				long size = pStats.codeSize;
 		        String ssize = new String();
 		        if (size > 10 * sizeM) 		ssize = size / sizeM + "M";
 		        else if (size > 10 * 1024)	ssize = size / 1024 + "K";

@@ -1,8 +1,16 @@
-android.content.pm.IPackageStatsObserver -> android.a.a.a:
-    void onGetStatsCompleted$2dcd0763(android.content.pm.PackageStats) -> a
-android.content.pm.IPackageStatsObserver$Stub -> android.a.a.b:
+android.content.pm.IPackageStatsObserver -> android.content.pm.IPackageStatsObserver:
+    void onGetStatsCompleted(android.content.pm.PackageStats,boolean) -> onGetStatsCompleted
+android.content.pm.IPackageStatsObserver$Stub -> android.content.pm.IPackageStatsObserver$Stub:
+    java.lang.String DESCRIPTOR -> DESCRIPTOR
+    int TRANSACTION_onGetStatsCompleted -> TRANSACTION_onGetStatsCompleted
+    android.content.pm.IPackageStatsObserver asInterface(android.os.IBinder) -> asInterface
     android.os.IBinder asBinder() -> asBinder
     boolean onTransact(int,android.os.Parcel,android.os.Parcel,int) -> onTransact
+android.content.pm.IPackageStatsObserver$Stub$Proxy -> android.content.pm.IPackageStatsObserver$Stub$Proxy:
+    android.os.IBinder mRemote -> a
+    android.os.IBinder asBinder() -> asBinder
+    java.lang.String getInterfaceDescriptor() -> getInterfaceDescriptor
+    void onGetStatsCompleted(android.content.pm.PackageStats,boolean) -> onGetStatsCompleted
 android.support.v4.app.BackStackRecord -> android.support.v4.app.d:
     android.support.v4.app.FragmentManagerImpl mManager -> q
     android.support.v4.app.BackStackRecord$Op mHead -> a
@@ -1527,38 +1535,38 @@ simple.home.jtbuaa.About -> simple.home.jtbuaa.About:
     java.lang.String runCmd(java.lang.String,java.lang.String) -> a
     void onCreate(android.os.Bundle) -> onCreate
     void onResume() -> onResume
-simple.home.jtbuaa.About$1 -> simple.home.jtbuaa.be:
+simple.home.jtbuaa.About$1 -> simple.home.jtbuaa.bd:
     simple.home.jtbuaa.About this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$2 -> simple.home.jtbuaa.bc:
+simple.home.jtbuaa.About$2 -> simple.home.jtbuaa.bb:
     simple.home.jtbuaa.About this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$3 -> simple.home.jtbuaa.bd:
+simple.home.jtbuaa.About$3 -> simple.home.jtbuaa.bc:
     simple.home.jtbuaa.About this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$4 -> simple.home.jtbuaa.ba:
+simple.home.jtbuaa.About$4 -> simple.home.jtbuaa.az:
     simple.home.jtbuaa.About this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$5 -> simple.home.jtbuaa.bb:
+simple.home.jtbuaa.About$5 -> simple.home.jtbuaa.ba:
     simple.home.jtbuaa.About this$0 -> a
     java.lang.String val$downloadPath -> b
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$6 -> simple.home.jtbuaa.af:
+simple.home.jtbuaa.About$6 -> simple.home.jtbuaa.ae:
     simple.home.jtbuaa.About this$0 -> a
     java.lang.String val$myPackageName -> b
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$7 -> simple.home.jtbuaa.ag:
+simple.home.jtbuaa.About$7 -> simple.home.jtbuaa.af:
     simple.home.jtbuaa.About this$0 -> a
     java.lang.String val$myPackageName -> b
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$8 -> simple.home.jtbuaa.ad:
+simple.home.jtbuaa.About$8 -> simple.home.jtbuaa.ac:
     simple.home.jtbuaa.About this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.About$9 -> simple.home.jtbuaa.ae:
+simple.home.jtbuaa.About$9 -> simple.home.jtbuaa.ad:
     simple.home.jtbuaa.About this$0 -> a
     java.lang.String val$myPackageName -> b
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.AlphaList -> simple.home.jtbuaa.ac:
+simple.home.jtbuaa.AlphaList -> simple.home.jtbuaa.ab:
     int tag -> a
     int index -> b
     android.widget.RelativeLayout view -> c
@@ -1601,29 +1609,29 @@ simple.home.jtbuaa.AlphaList -> simple.home.jtbuaa.ac:
     void setColumns() -> e
     int getCount() -> d
     void showDelDialog(java.lang.String) -> b
-simple.home.jtbuaa.AlphaList$1 -> simple.home.jtbuaa.aj:
+simple.home.jtbuaa.AlphaList$1 -> simple.home.jtbuaa.ai:
     simple.home.jtbuaa.AlphaList this$0 -> a
     void onScroll(android.widget.AbsListView,int,int,int) -> onScroll
     void onScrollStateChanged(android.widget.AbsListView,int) -> onScrollStateChanged
-simple.home.jtbuaa.AlphaList$2 -> simple.home.jtbuaa.ak:
+simple.home.jtbuaa.AlphaList$2 -> simple.home.jtbuaa.aj:
     simple.home.jtbuaa.AlphaList this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.AlphaList$3 -> simple.home.jtbuaa.ai:
+simple.home.jtbuaa.AlphaList$3 -> simple.home.jtbuaa.ah:
     simple.home.jtbuaa.AlphaList this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.AlphaList$AlphaAdapter -> simple.home.jtbuaa.q:
+simple.home.jtbuaa.AlphaList$AlphaAdapter -> simple.home.jtbuaa.p:
     java.util.ArrayList localList -> a
     simple.home.jtbuaa.AlphaList this$0 -> b
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-simple.home.jtbuaa.AlphaList$AlphaAdapter$1 -> simple.home.jtbuaa.bj:
+simple.home.jtbuaa.AlphaList$AlphaAdapter$1 -> simple.home.jtbuaa.bi:
     simple.home.jtbuaa.AlphaList$AlphaAdapter this$1 -> a
     int val$position -> b
     boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
-simple.home.jtbuaa.AlphaList$AppGridAdapter -> simple.home.jtbuaa.ah:
+simple.home.jtbuaa.AlphaList$AppGridAdapter -> simple.home.jtbuaa.ag:
     java.util.ArrayList localApplist -> a
     simple.home.jtbuaa.AlphaList this$0 -> b
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-simple.home.jtbuaa.AlphaList$AppGridAdapter$1 -> simple.home.jtbuaa.o:
+simple.home.jtbuaa.AlphaList$AppGridAdapter$1 -> simple.home.jtbuaa.n:
     simple.home.jtbuaa.AlphaList$AppGridAdapter this$1 -> a
     java.lang.Object val$info -> b
     boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
@@ -1631,23 +1639,23 @@ simple.home.jtbuaa.AlphaList$AppListAdapter -> simple.home.jtbuaa.e:
     java.util.ArrayList localApplist -> a
     simple.home.jtbuaa.AlphaList this$0 -> b
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-simple.home.jtbuaa.AlphaList$AppListAdapter$1 -> simple.home.jtbuaa.aw:
+simple.home.jtbuaa.AlphaList$AppListAdapter$1 -> simple.home.jtbuaa.av:
     simple.home.jtbuaa.AlphaList$AppListAdapter this$1 -> a
     java.lang.Object val$info -> b
     android.widget.TextView val$textView1 -> c
     boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
-simple.home.jtbuaa.AlphaList$AppListAdapter$2 -> simple.home.jtbuaa.ax:
+simple.home.jtbuaa.AlphaList$AppListAdapter$2 -> simple.home.jtbuaa.aw:
     simple.home.jtbuaa.AlphaList$AppListAdapter this$1 -> a
     java.lang.Object val$info -> b
     android.widget.TextView val$textView1 -> c
     boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
-simple.home.jtbuaa.AlphaList$AppListAdapter$3 -> simple.home.jtbuaa.ay:
+simple.home.jtbuaa.AlphaList$AppListAdapter$3 -> simple.home.jtbuaa.ax:
     simple.home.jtbuaa.AlphaList$AppListAdapter this$1 -> a
     boolean val$isUser -> b
     java.lang.Object val$info -> c
     android.widget.TextView val$btnVersion -> d
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.AppAlphaList -> simple.home.jtbuaa.bf:
+simple.home.jtbuaa.AppAlphaList -> simple.home.jtbuaa.be:
     void sort() -> a
     java.lang.String getProcessName(java.lang.Object) -> c
     java.lang.String getAlpha(java.lang.Object) -> a
@@ -1661,7 +1669,7 @@ simple.home.jtbuaa.CallObserver -> simple.home.jtbuaa.a:
     android.content.ContentResolver mCR -> a
     android.os.Handler mHandler -> b
     void onChange(boolean) -> onChange
-simple.home.jtbuaa.ClippedDrawable -> simple.home.jtbuaa.n:
+simple.home.jtbuaa.ClippedDrawable -> simple.home.jtbuaa.m:
     android.graphics.drawable.Drawable mWallpaper -> a
     int screenWidth -> b
     int screenHeight -> c
@@ -1673,7 +1681,7 @@ simple.home.jtbuaa.ClippedDrawable -> simple.home.jtbuaa.n:
     int getOpacity() -> getOpacity
 simple.home.jtbuaa.FakeHome -> simple.home.jtbuaa.FakeHome:
     void onCreate(android.os.Bundle) -> onCreate
-simple.home.jtbuaa.HanziToPinyin -> simple.home.jtbuaa.au:
+simple.home.jtbuaa.HanziToPinyin -> simple.home.jtbuaa.at:
     char[] UNIHANS -> a
     byte[][] PINYINS -> b
     java.text.Collator COLLATOR -> c
@@ -1681,14 +1689,14 @@ simple.home.jtbuaa.HanziToPinyin -> simple.home.jtbuaa.au:
     boolean mHasChinaCollator -> e
     simple.home.jtbuaa.HanziToPinyin getInstance() -> a
     simple.home.jtbuaa.HanziToPinyin$Token getToken(char) -> a
-simple.home.jtbuaa.HanziToPinyin$Token -> simple.home.jtbuaa.p:
+simple.home.jtbuaa.HanziToPinyin$Token -> simple.home.jtbuaa.o:
     int type -> a
     java.lang.String source -> b
     java.lang.String target -> c
-simple.home.jtbuaa.PackageComparator -> simple.home.jtbuaa.r:
+simple.home.jtbuaa.PackageComparator -> simple.home.jtbuaa.q:
     java.text.Collator sCollator -> a
     int compare(java.lang.Object,java.lang.Object) -> compare
-simple.home.jtbuaa.PkgAlphaList -> simple.home.jtbuaa.bk:
+simple.home.jtbuaa.PkgAlphaList -> simple.home.jtbuaa.bj:
     void sort() -> a
     java.lang.String getProcessName(java.lang.Object) -> c
     java.lang.String getAlpha(java.lang.Object) -> a
@@ -1708,25 +1716,25 @@ simple.home.jtbuaa.SelectHome -> simple.home.jtbuaa.SelectHome:
     int access$1(simple.home.jtbuaa.SelectHome) -> b
     void access$2(simple.home.jtbuaa.SelectHome) -> c
     void access$3(simple.home.jtbuaa.SelectHome) -> d
-simple.home.jtbuaa.SelectHome$1 -> simple.home.jtbuaa.as:
+simple.home.jtbuaa.SelectHome$1 -> simple.home.jtbuaa.ar:
     simple.home.jtbuaa.SelectHome this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.SelectHome$2 -> simple.home.jtbuaa.ar:
+simple.home.jtbuaa.SelectHome$2 -> simple.home.jtbuaa.aq:
     simple.home.jtbuaa.SelectHome this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.SelectHome$3 -> simple.home.jtbuaa.ap:
+simple.home.jtbuaa.SelectHome$3 -> simple.home.jtbuaa.ao:
     simple.home.jtbuaa.SelectHome this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.ShellInterface -> simple.home.jtbuaa.bl:
+simple.home.jtbuaa.ShellInterface -> simple.home.jtbuaa.bk:
     java.lang.String doExec(java.lang.String[],boolean) -> a
-simple.home.jtbuaa.SmsChangeObserver -> simple.home.jtbuaa.bi:
+simple.home.jtbuaa.SmsChangeObserver -> simple.home.jtbuaa.bh:
     android.content.ContentResolver mCR -> a
     android.os.Handler mHandler -> b
     void onChange(boolean) -> onChange
-simple.home.jtbuaa.myComparator -> simple.home.jtbuaa.at:
+simple.home.jtbuaa.myComparator -> simple.home.jtbuaa.as:
     java.text.Collator sCollator -> a
     int compare(java.lang.Object,java.lang.Object) -> compare
-simple.home.jtbuaa.ricase -> simple.home.jtbuaa.bg:
+simple.home.jtbuaa.ricase -> simple.home.jtbuaa.bf:
     java.lang.Object mRi -> a
     int mCase -> b
 simple.home.jtbuaa.simpleHome -> simple.home.jtbuaa.simpleHome:
@@ -1821,61 +1829,61 @@ simple.home.jtbuaa.simpleHome -> simple.home.jtbuaa.simpleHome:
     void onAccuracyChanged(android.hardware.Sensor,int) -> onAccuracyChanged
     void onSensorChanged(android.hardware.SensorEvent) -> onSensorChanged
     java.util.List access$0(simple.home.jtbuaa.simpleHome) -> a
-simple.home.jtbuaa.simpleHome$1 -> simple.home.jtbuaa.z:
+simple.home.jtbuaa.simpleHome$1 -> simple.home.jtbuaa.y:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-simple.home.jtbuaa.simpleHome$10 -> simple.home.jtbuaa.f:
+simple.home.jtbuaa.simpleHome$10 -> simple.home.jtbuaa.simpleHome$10:
     simple.home.jtbuaa.simpleHome this$0 -> a
-    void onGetStatsCompleted$2dcd0763(android.content.pm.PackageStats) -> a
-simple.home.jtbuaa.simpleHome$11 -> simple.home.jtbuaa.g:
+    void onGetStatsCompleted(android.content.pm.PackageStats,boolean) -> onGetStatsCompleted
+simple.home.jtbuaa.simpleHome$11 -> simple.home.jtbuaa.f:
     simple.home.jtbuaa.simpleHome this$0 -> a
     boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
-simple.home.jtbuaa.simpleHome$12 -> simple.home.jtbuaa.h:
+simple.home.jtbuaa.simpleHome$12 -> simple.home.jtbuaa.g:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onPageScrollStateChanged(int) -> a
     void onPageScrolled$486775f1(int,float) -> a
     void onPageSelected$13462e() -> a
-simple.home.jtbuaa.simpleHome$13 -> simple.home.jtbuaa.i:
+simple.home.jtbuaa.simpleHome$13 -> simple.home.jtbuaa.h:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.simpleHome$14 -> simple.home.jtbuaa.j:
+simple.home.jtbuaa.simpleHome$14 -> simple.home.jtbuaa.i:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.simpleHome$15 -> simple.home.jtbuaa.k:
+simple.home.jtbuaa.simpleHome$15 -> simple.home.jtbuaa.j:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.simpleHome$16 -> simple.home.jtbuaa.l:
+simple.home.jtbuaa.simpleHome$16 -> simple.home.jtbuaa.k:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.simpleHome$17 -> simple.home.jtbuaa.m:
+simple.home.jtbuaa.simpleHome$17 -> simple.home.jtbuaa.l:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.simpleHome$2 -> simple.home.jtbuaa.ab:
+simple.home.jtbuaa.simpleHome$2 -> simple.home.jtbuaa.aa:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-simple.home.jtbuaa.simpleHome$3 -> simple.home.jtbuaa.aa:
+simple.home.jtbuaa.simpleHome$3 -> simple.home.jtbuaa.z:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-simple.home.jtbuaa.simpleHome$4 -> simple.home.jtbuaa.u:
+simple.home.jtbuaa.simpleHome$4 -> simple.home.jtbuaa.t:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-simple.home.jtbuaa.simpleHome$5 -> simple.home.jtbuaa.v:
+simple.home.jtbuaa.simpleHome$5 -> simple.home.jtbuaa.u:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-simple.home.jtbuaa.simpleHome$6 -> simple.home.jtbuaa.s:
+simple.home.jtbuaa.simpleHome$6 -> simple.home.jtbuaa.r:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-simple.home.jtbuaa.simpleHome$7 -> simple.home.jtbuaa.t:
+simple.home.jtbuaa.simpleHome$7 -> simple.home.jtbuaa.s:
     simple.home.jtbuaa.simpleHome this$0 -> a
     java.lang.CharSequence val$label -> b
     java.lang.String val$packageName -> c
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.simpleHome$8 -> simple.home.jtbuaa.w:
+simple.home.jtbuaa.simpleHome$8 -> simple.home.jtbuaa.v:
     simple.home.jtbuaa.simpleHome this$0 -> a
     java.lang.String val$sourceDir -> b
     java.lang.CharSequence val$label -> c
     void onClick(android.content.DialogInterface,int) -> onClick
-simple.home.jtbuaa.simpleHome$9 -> simple.home.jtbuaa.x:
+simple.home.jtbuaa.simpleHome$9 -> simple.home.jtbuaa.w:
     simple.home.jtbuaa.simpleHome this$0 -> a
     java.lang.String val$packageName -> b
     void onClick(android.content.DialogInterface,int) -> onClick
@@ -1883,7 +1891,7 @@ simple.home.jtbuaa.simpleHome$InitTask -> simple.home.jtbuaa.c:
     simple.home.jtbuaa.simpleHome this$0 -> a
     java.lang.String doInBackground$4af589aa() -> a
     java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-simple.home.jtbuaa.simpleHome$MyPagerAdapter -> simple.home.jtbuaa.az:
+simple.home.jtbuaa.simpleHome$MyPagerAdapter -> simple.home.jtbuaa.ay:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void destroyItem$7e55ba3e(android.view.View,java.lang.Object) -> a
     int getCount() -> a
@@ -1893,31 +1901,31 @@ simple.home.jtbuaa.simpleHome$MyPagerAdapter -> simple.home.jtbuaa.az:
 simple.home.jtbuaa.simpleHome$OnlyPic -> simple.home.jtbuaa.b:
     simple.home.jtbuaa.simpleHome this$0 -> a
     boolean accept(java.io.File,java.lang.String) -> accept
-simple.home.jtbuaa.simpleHome$appHandler -> simple.home.jtbuaa.av:
+simple.home.jtbuaa.simpleHome$appHandler -> simple.home.jtbuaa.au:
     simple.home.jtbuaa.simpleHome this$0 -> a
     void handleMessage(android.os.Message) -> handleMessage
-simple.home.jtbuaa.simpleHome$appHandler$1 -> simple.home.jtbuaa.aq:
+simple.home.jtbuaa.simpleHome$appHandler$1 -> simple.home.jtbuaa.ap:
     simple.home.jtbuaa.simpleHome$appHandler this$1 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.simpleHome$appHandler$2 -> simple.home.jtbuaa.ao:
+simple.home.jtbuaa.simpleHome$appHandler$2 -> simple.home.jtbuaa.an:
     simple.home.jtbuaa.simpleHome$appHandler this$1 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.simpleHome$appHandler$3 -> simple.home.jtbuaa.an:
+simple.home.jtbuaa.simpleHome$appHandler$3 -> simple.home.jtbuaa.am:
     simple.home.jtbuaa.simpleHome$appHandler this$1 -> a
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.simpleHome$favoAppAdapter -> simple.home.jtbuaa.y:
+simple.home.jtbuaa.simpleHome$favoAppAdapter -> simple.home.jtbuaa.x:
     java.util.ArrayList localApplist -> b
     simple.home.jtbuaa.simpleHome this$0 -> a
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-simple.home.jtbuaa.simpleHome$favoAppAdapter$1 -> simple.home.jtbuaa.al:
+simple.home.jtbuaa.simpleHome$favoAppAdapter$1 -> simple.home.jtbuaa.ak:
     simple.home.jtbuaa.simpleHome$favoAppAdapter this$1 -> a
     android.content.pm.ResolveInfo val$info -> b
     void onClick(android.view.View) -> onClick
-simple.home.jtbuaa.simpleHome$shortAppAdapter -> simple.home.jtbuaa.am:
+simple.home.jtbuaa.simpleHome$shortAppAdapter -> simple.home.jtbuaa.al:
     java.util.ArrayList localApplist -> b
     simple.home.jtbuaa.simpleHome this$0 -> a
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-simple.home.jtbuaa.simpleHome$shortAppAdapter$1 -> simple.home.jtbuaa.bh:
+simple.home.jtbuaa.simpleHome$shortAppAdapter$1 -> simple.home.jtbuaa.bg:
     simple.home.jtbuaa.simpleHome$shortAppAdapter this$1 -> a
     android.content.pm.ResolveInfo val$info -> b
     void onClick(android.view.View) -> onClick

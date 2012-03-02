@@ -22,10 +22,29 @@ com.google.ads.AdRequest$Gender: com.google.ads.AdRequest$Gender[] values()
 com.google.ads.AdRequest$Gender: com.google.ads.AdRequest$Gender valueOf(java.lang.String)
 com.google.ads.AdRequest$ErrorCode: com.google.ads.AdRequest$ErrorCode[] values()
 com.google.ads.AdRequest$ErrorCode: com.google.ads.AdRequest$ErrorCode valueOf(java.lang.String)
+simple.home.jtbuaa.simpleHome$10: void onGetStatsCompleted(android.content.pm.PackageStats,boolean)
+android.content.pm.IPackageStatsObserver$Stub: int TRANSACTION_onGetStatsCompleted
+android.content.pm.IPackageStatsObserver$Stub: java.lang.String DESCRIPTOR
+android.content.pm.IPackageStatsObserver$Stub: android.content.pm.IPackageStatsObserver asInterface(android.os.IBinder)
+android.content.pm.IPackageStatsObserver$Stub: boolean onTransact(int,android.os.Parcel,android.os.Parcel,int)
 easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback,java.lang.String)
 easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback)
+android.content.pm.IPackageStatsObserver$Stub$Proxy: java.lang.String getInterfaceDescriptor()
+android.content.pm.IPackageStatsObserver$Stub$Proxy: void onGetStatsCompleted(android.content.pm.PackageStats,boolean)
+com.android.internal.telephony.ITelephony$Stub$Proxy: java.lang.String getInterfaceDescriptor()
+android.content.pm.IPackageStatsObserver: void onGetStatsCompleted(android.content.pm.PackageStats,boolean)
+com.android.internal.telephony.ITelephony$Stub: java.lang.String DESCRIPTOR
+com.android.internal.telephony.ITelephony$Stub: boolean onTransact(int,android.os.Parcel,android.os.Parcel,int)
+android.content.pm.IPackageStatsObserver$Stub: int TRANSACTION_onGetStatsCompleted
+android.content.pm.IPackageStatsObserver$Stub: java.lang.String DESCRIPTOR
+android.content.pm.IPackageStatsObserver$Stub: android.content.pm.IPackageStatsObserver asInterface(android.os.IBinder)
+android.content.pm.IPackageStatsObserver$Stub: boolean onTransact(int,android.os.Parcel,android.os.Parcel,int)
 easy.lib.SimpleBrowser: int FILECHOOSER_RESULTCODE
 easy.lib.SimpleBrowser$MyWebview$MyJavaScriptInterface: void processHTML(java.lang.String)
+android.content.pm.IPackageStatsObserver
+android.content.pm.IPackageStatsObserver$Stub$Proxy
+android.content.pm.IPackageStatsObserver$Stub
+simple.home.jtbuaa.simpleHome$10
 com.google.ads.AdActivity
 easy.lib.SimpleBrowser
 simple.home.jtbuaa.FakeHome

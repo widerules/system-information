@@ -116,27 +116,27 @@ public class util {
 		String downloadPath = defaultPath + "/";
 		
     	String status = Environment.getExternalStorageState();
-    	if (status.equals(Environment.MEDIA_MOUNTED)) {
-    		downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/";   
-			java.io.File myFilePath = new java.io.File(downloadPath);
-			try
-			{
-			    if(myFilePath.isDirectory()) ;//folder exist
-			    else myFilePath.mkdir();//create folder
-			    
-				java.io.File snapPath = new java.io.File(downloadPath + "snap/");
-			    if(snapPath.isDirectory()) ;//folder exist
-			    else snapPath.mkdir();//create folder
-			    
-				java.io.File apkPath = new java.io.File(downloadPath + "apk/");
-			    if(apkPath.isDirectory()) ;//folder exist
-			    else apkPath.mkdir();//create folder
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-				downloadPath = defaultPath + "/";
-			}
-    	}
+    	if (status.equals(Environment.MEDIA_MOUNTED)) 
+    		downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/";
+    	
+		java.io.File myFilePath = new java.io.File(downloadPath);
+		try
+		{
+		    if(myFilePath.isDirectory()) ;//folder exist
+		    else myFilePath.mkdir();//create folder
+		    
+			java.io.File snapPath = new java.io.File(downloadPath + "snap/");
+		    if(snapPath.isDirectory()) ;//folder exist
+		    else snapPath.mkdir();//create folder
+		    
+			java.io.File apkPath = new java.io.File(downloadPath + "apk/");
+		    if(apkPath.isDirectory()) ;//folder exist
+		    else apkPath.mkdir();//create folder
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			downloadPath = defaultPath + "/";
+		}
     	
     	return downloadPath;
 	}

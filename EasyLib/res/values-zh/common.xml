@@ -89,6 +89,7 @@
     <string name="open_new">在新窗口中打开</string>
     <string name="copy_url">复制链接</string>
     <string name="copy">复制</string>
+    <string name="copy_hint">试试在要复制的文字上长按</string>
     
     <string name="sdcard_needed">没有SD卡，下载的文件可能打不开。</string>
     

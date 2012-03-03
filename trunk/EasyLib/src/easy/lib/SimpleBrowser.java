@@ -1069,10 +1069,12 @@ public void onCreate(Bundle savedInstanceState) {
     
     if (!paid && mAdAvailable) {
     	LinearLayout layout = (LinearLayout) findViewById(R.id.adContainer);
-    	if (dm.widthPixels <= 702)
-    		adview = new wrapAdView(this, AdSize.BANNER, "a14f3f6bc126143");
+    	if (dm.widthPixels <= 320)
+    		adview = new wrapAdView(this, AdSize.BANNER, "a14f3f6bc126143");//320*50
+    	else if (dm.widthPixels < 728) 
+    		adview = new wrapAdView(this, AdSize.IAB_BANNER, "a14f3f6bc126143");//468*60
     	else
-    		adview = new wrapAdView(this, AdSize.IAB_BANNER, "a14f3f6bc126143");
+    		adview = new wrapAdView(this, AdSize.IAB_LEADERBOARD, "a14f3f6bc126143");//728*90
     	layout.addView(adview.mInstance);
     	adRequest = new wrapAdRequest();
     }

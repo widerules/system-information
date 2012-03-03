@@ -1008,8 +1008,14 @@ public void onCreate(Bundle savedInstanceState) {
         		
         		break;
         	case 2://copy
-        		if (android.os.Build.VERSION.SDK_INT > 10) 
-        			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
+        		try {
+            		if (Integer.decode(android.os.Build.VERSION.SDK) > 10) 
+            			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
+        		}
+        	    catch (Exception e) {
+        	    	e.printStackTrace();
+        	    }
+        		
         	    try {
         	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
         	        shiftPressEvent.dispatch(serverWebs.get(webIndex));

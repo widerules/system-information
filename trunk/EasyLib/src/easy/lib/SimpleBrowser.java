@@ -186,6 +186,8 @@ public class SimpleBrowser extends Activity {
 	//browser related
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
+	ArrayList<String> siteArray;
+	
 	ArrayList<MyWebview> serverWebs;
 	int webIndex;
 	ViewFlipper webpages;
@@ -361,17 +363,18 @@ class MyWebview extends WebView {
         			String[] tmp = url.split("/");
         			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
         			else site = tmp[0];
-        			boolean found = false;
             		for (int i = mHistory.size()-1; i >= 0; i--) {
             			if (mHistory.get(i).m_url.equals(url)) return;//record one url only once in the history list.
             			else if (mHistory.get(i).m_site.equals(site)) {
-            				found = true;
             				mHistory.remove(i);//only keep the latest history of the same site.
             				break;
             			}
             		}
             		
-            		if (!found) urlAdapter.add(site);//update the auto-complete edittext, no duplicate
+            		if (siteArray.indexOf(site) < 0) {
+            			urlAdapter.add(site);//update the auto-complete edittext without duplicate
+            			siteArray.add(site);//the adapter will always return 0 when get count or search, so we use an array to store the site.
+            		}
             			
     				try {//try to open the png, if can't open, then need save
 						FileInputStream fis = openFileInput(site+".png");
@@ -395,7 +398,7 @@ class MyWebview extends WebView {
             			site = mHistory.get(0).m_site;
             			mHistory.remove(0);//delete the first history if list larger than 16;
             			
-            			found = false;
+            			boolean found = false;
             			for (int i = mHistory.size()-1; i >= 0; i--) {
             				if (mHistory.get(i).m_site.equals(site)) {
             					found = true;
@@ -1129,11 +1132,14 @@ public void onCreate(Bundle savedInstanceState) {
 	historyChanged = false;
 	bookmarkChanged = false;
 
-	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+	siteArray = new ArrayList<String>();
 	for (int i = 0; i < mHistory.size(); i++) 
-		if (urlAdapter.getPosition(mHistory.get(i).m_site) < 0) urlAdapter.add(mHistory.get(i).m_site);
+		if (siteArray.indexOf(mHistory.get(i).m_site) < 0) siteArray.add(mHistory.get(i).m_site);
 	for (int i = 0; i < mBookMark.size(); i++) 
-		if (urlAdapter.getPosition(mBookMark.get(i).m_site) < 0) urlAdapter.add(mBookMark.get(i).m_site);
+		if (siteArray.indexOf(mBookMark.get(i).m_site) < 0) siteArray.add(mBookMark.get(i).m_site);
+	
+	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+	urlAdapter.addAll(siteArray);
 	urlAdapter.sort(new stringCompatator());
 	
 	webAddress.setAdapter(urlAdapter);
@@ -1472,7 +1478,7 @@ void loadPage(boolean notJudge) {
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
 	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
-	ret += "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no\">";
+	ret += "<meta name=\"viewport\" content=\"width=device-width\">";
 	ret += "<html>";
 	ret += "<head>";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";

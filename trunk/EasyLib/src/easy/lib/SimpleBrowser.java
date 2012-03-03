@@ -349,16 +349,19 @@ class MyWebview extends WebView {
 
 				webAdapter.notifyDataSetChanged();//update the page title in webList
 				
+				String title = view.getTitle();
+				if (title == null) title = url;
+				
         		if (!android.os.Build.VERSION.RELEASE.equals("2.3.3")) {//it will cause webkit crash on 2.3.3
-        			if (url.equals(BLANK_PAGE) && (!debug)) 
+        			if (url.equals(BLANK_PAGE) || title.equals(getString(R.string.browser_name)) && (!debug)) 
         				pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
-        			else
+        			else //not work for wml. some webkit even not parse wml.
         				loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
         		}
 				
                 webControl.setVisibility(View.INVISIBLE);
 
-        		if (!url.equals(BLANK_PAGE) && !view.getTitle().equals(getString(R.string.browser_name))) { 
+        		if (!url.equals(BLANK_PAGE) && !title.equals(getString(R.string.browser_name))) { 
         			String site = "";
         			String[] tmp = url.split("/");
         			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
@@ -390,7 +393,7 @@ class MyWebview extends WebView {
             			} 
 					}
             		
-        			TitleUrl titleUrl = new TitleUrl(view.getTitle(), url, site);
+        			TitleUrl titleUrl = new TitleUrl(title, url, site);
             		mHistory.add(titleUrl);
             		historyChanged = true;
             		

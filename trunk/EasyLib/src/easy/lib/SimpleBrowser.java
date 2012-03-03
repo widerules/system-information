@@ -358,7 +358,7 @@ class MyWebview extends WebView {
 				
                 webControl.setVisibility(View.INVISIBLE);
 
-        		if (!url.equals(BLANK_PAGE)) { 
+        		if (!url.equals(BLANK_PAGE) && !view.getTitle().equals(getString(R.string.browser_name))) { 
         			String site = "";
         			String[] tmp = url.split("/");
         			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com

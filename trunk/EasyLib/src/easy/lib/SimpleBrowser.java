@@ -1133,15 +1133,24 @@ public void onCreate(Bundle savedInstanceState) {
 	bookmarkChanged = false;
 
 	siteArray = new ArrayList<String>();
-	for (int i = 0; i < mHistory.size(); i++) 
-		if (siteArray.indexOf(mHistory.get(i).m_site) < 0) siteArray.add(mHistory.get(i).m_site);
-	for (int i = 0; i < mBookMark.size(); i++) 
-		if (siteArray.indexOf(mBookMark.get(i).m_site) < 0) siteArray.add(mBookMark.get(i).m_site);
-	
 	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
-	urlAdapter.addAll(siteArray);
-	urlAdapter.sort(new stringCompatator());
+	String site;
+	for (int i = 0; i < mHistory.size(); i++) {
+		site = mHistory.get(i).m_site;
+		if (siteArray.indexOf(site) < 0) {
+			siteArray.add(site);
+			urlAdapter.add(site);
+		}
+	}
+	for (int i = 0; i < mBookMark.size(); i++) {
+		site = mBookMark.get(i).m_site;
+		if (siteArray.indexOf(mBookMark.get(i).m_site) < 0) {
+			siteArray.add(site);
+			urlAdapter.add(site);
+		}
+	}
 	
+	urlAdapter.sort(new stringCompatator());
 	webAddress.setAdapter(urlAdapter);
 
 

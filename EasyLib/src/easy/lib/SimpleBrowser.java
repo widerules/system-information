@@ -19,6 +19,7 @@ import java.util.Random;
 import java.util.Map.Entry;
 
 import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
 import com.google.ads.AdView;
 
 import android.app.Activity;
@@ -45,6 +46,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.text.Html;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -81,6 +83,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -111,6 +114,46 @@ class wrapValueCallback {
 	
 	void onReceiveValue(Uri value) {
 		mInstance.onReceiveValue(value);
+	}
+}
+
+class wrapAdRequest {
+	AdRequest mInstance;
+	
+	wrapAdRequest() {
+		mInstance = new AdRequest();
+	}
+
+	static {
+	       try {
+	           Class.forName("com.google.ads.AdRequest");
+	       } catch (Exception ex) {
+	           throw new RuntimeException(ex);
+	       }
+	   }
+	
+	public static void checkAvailable() {}
+}
+
+class wrapAdView {
+	AdView mInstance;
+	
+	wrapAdView(Activity activity, AdSize size, String deviceID) {
+		mInstance = new AdView(activity, size, deviceID);
+	}
+
+	static {
+	       try {
+	           Class.forName("com.google.ads.AdView");
+	       } catch (Exception ex) {
+	           throw new RuntimeException(ex);
+	       }
+	   }
+	
+	public static void checkAvailable() {}
+	
+	void loadAd(wrapAdRequest adRequest) {
+		mInstance.loadAd(adRequest.mInstance);
 	}
 }
 
@@ -174,8 +217,17 @@ public class SimpleBrowser extends Activity {
 	ImageView imgAddFavo, imgGo;
 	
 	//ad
-	AdView adview;
-	AdRequest adRequest = new AdRequest();
+	static boolean mAdAvailable;
+	static {
+	       try {
+	    	   wrapAdView.checkAvailable();
+	    	   mAdAvailable = true;
+	       } catch (Throwable t) {
+	    	   mAdAvailable = false;
+	       }
+	   }
+	wrapAdView adview;
+	wrapAdRequest adRequest;
 
 	//download related
 	String downloadPath;
@@ -283,7 +335,7 @@ class MyWebview extends WebView {
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
-				if (!paid) adview.loadAd(adRequest);
+				if (!paid && mAdAvailable) adview.loadAd(adRequest);
 
 				super.onPageStarted(view, url, favicon);
 			}
@@ -1009,11 +1061,14 @@ public void onCreate(Bundle savedInstanceState) {
     
     
     
-    adview = (AdView) findViewById(R.id.adView);
-    if (paid) {
-    	LayoutParams lp = adview.getLayoutParams();
-    	lp.height = 0;
+    if (!paid && mAdAvailable) {
+    	//ViewGroup layout = new RelativeLayout(mContext);
+    	LinearLayout layout = (LinearLayout) findViewById(R.id.adContainer);
+    	adview = new wrapAdView(this, AdSize.BANNER, "a14f3f6bc126143");
+    	layout.addView(adview.mInstance);
+    	adRequest = new wrapAdRequest();
     }
+
 
     loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
     

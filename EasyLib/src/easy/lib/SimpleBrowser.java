@@ -113,26 +113,9 @@ class wrapValueCallback {
 	}
 }
 
-class wrapAdRequest {
-	AdRequest mInstance;
-	
-	wrapAdRequest() {
-		mInstance = new AdRequest();
-	}
-
-	static {
-	       try {
-	           Class.forName("com.google.ads.AdRequest");
-	       } catch (Exception ex) {
-	           throw new RuntimeException(ex);
-	       }
-	   }
-	
-	public static void checkAvailable() {}
-}
-
 class wrapAdView {
 	AdView mInstance;
+	AdRequest adRequest;
 	
 	wrapAdView(Activity activity, int size, String deviceID) {
 		switch(size) {
@@ -146,6 +129,8 @@ class wrapAdView {
 			mInstance = new AdView(activity, AdSize.IAB_LEADERBOARD, deviceID);
 			break;
 		}
+		adRequest = new AdRequest();
+		//adRequest.addTestDevice("E3CE9F94F56824C07AE1C3A5B434F664");//for test
 	}
 
 	static {
@@ -158,8 +143,8 @@ class wrapAdView {
 	
 	public static void checkAvailable() {}
 	
-	void loadAd(wrapAdRequest adRequest) {
-		mInstance.loadAd(adRequest.mInstance);
+	void loadAd() {
+		mInstance.loadAd(adRequest);
 	}
 	
 	void destroy() {
@@ -243,7 +228,6 @@ public class SimpleBrowser extends Activity {
 	       }
 	   }
 	wrapAdView adview;
-	wrapAdRequest adRequest;
 
 	//download related
 	String downloadPath;
@@ -351,7 +335,7 @@ class MyWebview extends WebView {
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
-				if (!paid && mAdAvailable) adview.loadAd(adRequest);
+				if (!paid && mAdAvailable) adview.loadAd();
 
 				super.onPageStarted(view, url, favicon);
 			}
@@ -1098,7 +1082,6 @@ public void onCreate(Bundle savedInstanceState) {
     	else
     		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135
     	layout.addView(adview.getInstance());
-    	adRequest = new wrapAdRequest();
     }
 
 

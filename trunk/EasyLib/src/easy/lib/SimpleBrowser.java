@@ -46,6 +46,7 @@ import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -68,6 +69,7 @@ import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.TextSize;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
@@ -337,6 +339,11 @@ class MyWebview extends WebView {
         		
 				if (!paid && mAdAvailable) adview.loadAd();
 
+				if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
+					view.getSettings().setTextSize(TextSize.NORMAL);
+				else
+					view.getSettings().setTextSize(TextSize.SMALLER);
+				
 				super.onPageStarted(view, url, favicon);
 			}
 			 

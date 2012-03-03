@@ -275,7 +275,6 @@ class MyWebview extends WebView {
         webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
-		
         
         registerForContextMenu(this);
 
@@ -345,8 +344,9 @@ class MyWebview extends WebView {
 			public void onPageFinished(WebView view, String url) {
         		loadProgress.setVisibility(View.INVISIBLE);//hide progressbar anyway
         		imgRefresh.setImageResource(R.drawable.refresh);
-
 				webAdapter.notifyDataSetChanged();//update the page title in webList
+				
+				view.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//use cache if avaiable for next load
 				
 				String title = view.getTitle();
 				if (title == null) title = url;
@@ -1201,6 +1201,7 @@ public void onCreate(Bundle savedInstanceState) {
 			}
 			else {//reload the webpage
 				if (!webAddress.getText().toString().equals(BLANK_PAGE)) 
+					serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);//not use cache when refresh
 					serverWebs.get(webIndex).reload();
 			}
 		}

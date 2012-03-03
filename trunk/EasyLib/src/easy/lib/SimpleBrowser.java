@@ -228,7 +228,8 @@ public class SimpleBrowser extends Activity {
 	       }
 	   }
 	wrapAdView adview;
-
+	LinearLayout adContainer;
+	
 	//download related
 	String downloadPath;
 	NotificationManager nManager;
@@ -1073,18 +1074,6 @@ public void onCreate(Bundle savedInstanceState) {
     
     
     
-    if (!paid && mAdAvailable) {
-    	LinearLayout layout = (LinearLayout) findViewById(R.id.adContainer);
-    	if (dm.widthPixels <= 702)
-    		adview = new wrapAdView(this, 0, "a14f3f6bc126143");//AdSize.IAB_BANNER require 350*50 and return 350*50
-		else if (dm.widthPixels < 1092) 
-    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90
-    	else
-    		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135
-    	layout.addView(adview.getInstance());
-    }
-
-
     loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
     
     imgAddFavo = (ImageView) findViewById(R.id.addfavorite);
@@ -1261,6 +1250,7 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	downloadPath = util.preparePath(mContext);
 
+	adContainer = (LinearLayout) findViewById(R.id.adContainer);
 	setLayout();
 	
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
@@ -1492,6 +1482,23 @@ void setLayout() {
     if (width >= 320)
     	lp.width = width/2 + 30;//15
     else lp.width = width/2-15;
+    
+    if (!paid && mAdAvailable) {
+    	if (adContainer.getChildCount() > 0) {
+    		adContainer.removeViewAt(0);
+    		adview.destroy();
+    	}
+    	
+    	if (dm.widthPixels <= 702)
+    		adview = new wrapAdView(this, 0, "a14f3f6bc126143");//AdSize.IAB_BANNER require 350*50 and return 350*50
+		else if (dm.widthPixels < 1092) 
+    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90
+    	else
+    		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135
+    	
+    	adContainer.addView(adview.getInstance());
+    	adview.loadAd();
+    }
 }
 
 void loadPage(boolean notJudge) {

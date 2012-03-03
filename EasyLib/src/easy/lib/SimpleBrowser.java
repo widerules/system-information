@@ -30,7 +30,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -46,9 +45,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.text.Html;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -71,7 +68,6 @@ import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
@@ -138,8 +134,18 @@ class wrapAdRequest {
 class wrapAdView {
 	AdView mInstance;
 	
-	wrapAdView(Activity activity, AdSize size, String deviceID) {
-		mInstance = new AdView(activity, size, deviceID);
+	wrapAdView(Activity activity, int size, String deviceID) {
+		switch(size) {
+		case 0:
+			mInstance = new AdView(activity, AdSize.BANNER, deviceID);
+			break;
+		case 1:
+			mInstance = new AdView(activity, AdSize.IAB_BANNER, deviceID);
+			break;
+		case 2:
+			mInstance = new AdView(activity, AdSize.IAB_LEADERBOARD, deviceID);
+			break;
+		}
 	}
 
 	static {
@@ -154,6 +160,14 @@ class wrapAdView {
 	
 	void loadAd(wrapAdRequest adRequest) {
 		mInstance.loadAd(adRequest.mInstance);
+	}
+	
+	void destroy() {
+		mInstance.destroy();
+	}
+	
+	View getInstance() {
+		return mInstance;
 	}
 }
 
@@ -1078,12 +1092,12 @@ public void onCreate(Bundle savedInstanceState) {
     if (!paid && mAdAvailable) {
     	LinearLayout layout = (LinearLayout) findViewById(R.id.adContainer);
     	if (dm.widthPixels <= 702)
-    		adview = new wrapAdView(this, AdSize.BANNER, "a14f3f6bc126143");//320*50
-    	else if (dm.widthPixels < 1092) 
-    		adview = new wrapAdView(this, AdSize.IAB_BANNER, "a14f3f6bc126143");//require 468*60 but return 702*90
+    		adview = new wrapAdView(this, 0, "a14f3f6bc126143");//AdSize.IAB_BANNER require 350*50 and return 350*50
+		else if (dm.widthPixels < 1092) 
+    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90
     	else
-    		adview = new wrapAdView(this, AdSize.IAB_LEADERBOARD, "a14f3f6bc126143");//require 728*90, return 1092*135
-    	layout.addView(adview.mInstance);
+    		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135
+    	layout.addView(adview.getInstance());
     	adRequest = new wrapAdRequest();
     }
 
@@ -1288,6 +1302,8 @@ public void onCreate(Bundle savedInstanceState) {
 protected void onDestroy() {
 	unregisterReceiver(packageReceiver);
 	unregisterReceiver(downloadReceiver);
+	
+	if (!paid && mAdAvailable) adview.destroy();
 	
 	super.onDestroy();
 }

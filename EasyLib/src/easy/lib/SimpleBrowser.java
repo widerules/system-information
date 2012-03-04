@@ -255,6 +255,8 @@ public class SimpleBrowser extends Activity {
 class MyWebview extends WebView {
 	public String pageSource = getString(R.string.not_avaiable);
 
+	WebSettings webSettings;
+	
 	class MyJavaScriptInterface
 	{
 	    @SuppressWarnings("unused")
@@ -263,14 +265,35 @@ class MyWebview extends WebView {
 	    	pageSource = html;//to get page source, part 1
 	    }
 	}
-	
+
+    void setTextSize(String url) {
+		if (dm.density < 1) {//the text size on home page should not be so big, otherwise looks strange?
+			if (url.equals(BLANK_PAGE))
+				webSettings.setTextSize(TextSize.SMALLEST);
+			else
+				webSettings.setTextSize(TextSize.SMALLER);
+		}
+		else if (dm.density == 1.0) {
+			if (url.equals(BLANK_PAGE))
+				webSettings.setTextSize(TextSize.SMALLER);
+			else
+				webSettings.setTextSize(TextSize.NORMAL);
+		}
+		else {
+			if (url.equals(BLANK_PAGE))
+				webSettings.setTextSize(TextSize.NORMAL);
+			else
+				webSettings.setTextSize(TextSize.LARGER);
+		}
+    }
+    
 	public MyWebview(Context context) {
 		super(context);
 		
         setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);//no white blank on the right of webview
         //setScrollbarFadingEnabled(true);//hide scroll bar when not scroll. from API5, not work on cupcake.
         
-        WebSettings webSettings = getSettings();
+        webSettings = getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
@@ -339,27 +362,10 @@ class MyWebview extends WebView {
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
+				setTextSize(url);
+				
 				if (!paid && mAdAvailable) adview.loadAd();
 
-				if (dm.density < 1) {
-					if (url.equals(BLANK_PAGE))
-						view.getSettings().setTextSize(TextSize.SMALLEST);
-					else
-						view.getSettings().setTextSize(TextSize.SMALLER);
-				}
-				else if (dm.density == 1.0) {
-					if (url.equals(BLANK_PAGE))
-						view.getSettings().setTextSize(TextSize.SMALLER);
-					else
-						view.getSettings().setTextSize(TextSize.NORMAL);
-				}
-				else {
-					if (url.equals(BLANK_PAGE))
-						view.getSettings().setTextSize(TextSize.NORMAL);
-					else
-						view.getSettings().setTextSize(TextSize.LARGER);
-				}
-				
 				super.onPageStarted(view, url, favicon);
 			}
 			 
@@ -370,7 +376,7 @@ class MyWebview extends WebView {
 				webAdapter.notifyDataSetChanged();//update the page title in webList
 				
 				view.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//use cache if avaiable for next load
-				
+
 				String title = view.getTitle();
 				if (title == null) title = url;
 				
@@ -383,62 +389,68 @@ class MyWebview extends WebView {
 				
                 webControl.setVisibility(View.INVISIBLE);
 
-        		if (!url.equals(BLANK_PAGE) && !title.equals(getString(R.string.browser_name))) { 
-        			String site = "";
-        			String[] tmp = url.split("/");
-        			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-        			else site = tmp[0];
-            		for (int i = mHistory.size()-1; i >= 0; i--) {
-            			if (mHistory.get(i).m_url.equals(url)) return;//record one url only once in the history list.
-            			else if (mHistory.get(i).m_site.equals(site)) {
-            				mHistory.remove(i);//only keep the latest history of the same site.
-            				break;
-            			}
-            		}
-            		
-            		if (siteArray.indexOf(site) < 0) {
-            			urlAdapter.add(site);//update the auto-complete edittext without duplicate
-            			siteArray.add(site);//the adapter will always return 0 when get count or search, so we use an array to store the site.
-            		}
-            			
-    				try {//try to open the png, if can't open, then need save
-						FileInputStream fis = openFileInput(site+".png");
-						try {fis.close();} 
-						catch (IOException e) {;}
-					} catch (FileNotFoundException e1) {
-            			try {//save the Favicon
-            				FileOutputStream fos = openFileOutput(site+".png", 0);
-            				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
-            		        fos.close();
-            			} catch (Exception e) {
-            				e.printStackTrace();
-            			} 
-					}
-            		
-        			TitleUrl titleUrl = new TitleUrl(title, url, site);
-            		mHistory.add(titleUrl);
-            		historyChanged = true;
-            		
-            		if (mHistory.size() > 16) {//remove oldest history
-            			site = mHistory.get(0).m_site;
-            			mHistory.remove(0);//delete the first history if list larger than 16;
-            			
-            			boolean found = false;
-            			for (int i = mHistory.size()-1; i >= 0; i--) {
-            				if (mHistory.get(i).m_site.equals(site)) {
-            					found = true;
-            					break;
-            				}
-            			}
-            			if (!found) {
-                			for (int i = mBookMark.size()-1; i >= 0; i--) {
-                				if (mBookMark.get(i).m_site.equals(site)) {
+        		if (!url.equals(BLANK_PAGE)) {
+        			if(title.equals(getString(R.string.browser_name)))//if title and url not sync, then sync it.
+        				webAddress.setText(BLANK_PAGE);
+        			else {//handle the bookmark/history after load new page
+        				setTextSize(url);
+        				
+            			String site = "";
+            			String[] tmp = url.split("/");
+            			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+            			else site = tmp[0];
+                		for (int i = mHistory.size()-1; i >= 0; i--) {
+                			if (mHistory.get(i).m_url.equals(url)) return;//record one url only once in the history list.
+                			else if (mHistory.get(i).m_site.equals(site)) {
+                				mHistory.remove(i);//only keep the latest history of the same site.
+                				break;
+                			}
+                		}
+                		
+                		if (siteArray.indexOf(site) < 0) {
+                			urlAdapter.add(site);//update the auto-complete edittext without duplicate
+                			siteArray.add(site);//the adapter will always return 0 when get count or search, so we use an array to store the site.
+                		}
+                			
+        				try {//try to open the png, if can't open, then need save
+    						FileInputStream fis = openFileInput(site+".png");
+    						try {fis.close();} 
+    						catch (IOException e) {;}
+    					} catch (FileNotFoundException e1) {
+                			try {//save the Favicon
+                				FileOutputStream fos = openFileOutput(site+".png", 0);
+                				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
+                		        fos.close();
+                			} catch (Exception e) {
+                				e.printStackTrace();
+                			} 
+    					}
+                		
+            			TitleUrl titleUrl = new TitleUrl(title, url, site);
+                		mHistory.add(titleUrl);
+                		historyChanged = true;
+                		
+                		if (mHistory.size() > 16) {//remove oldest history
+                			site = mHistory.get(0).m_site;
+                			mHistory.remove(0);//delete the first history if list larger than 16;
+                			
+                			boolean found = false;
+                			for (int i = mHistory.size()-1; i >= 0; i--) {
+                				if (mHistory.get(i).m_site.equals(site)) {
                 					found = true;
                 					break;
                 				}
                 			}
-            				if (!found) deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon if not any reference 
-            			}
+                			if (!found) {
+                    			for (int i = mBookMark.size()-1; i >= 0; i--) {
+                    				if (mBookMark.get(i).m_site.equals(site)) {
+                    					found = true;
+                    					break;
+                    				}
+                    			}
+                				if (!found) deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon if not any reference 
+                			}
+                		}
             		}
         		}
 			}         

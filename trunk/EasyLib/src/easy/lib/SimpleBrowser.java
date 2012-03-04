@@ -232,6 +232,7 @@ public class SimpleBrowser extends Activity {
 	   }
 	wrapAdView adview;
 	LinearLayout adContainer;
+	DisplayMetrics dm;
 	
 	//download related
 	String downloadPath;
@@ -340,10 +341,24 @@ class MyWebview extends WebView {
         		
 				if (!paid && mAdAvailable) adview.loadAd();
 
-				if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
-					view.getSettings().setTextSize(TextSize.NORMAL);
-				else
-					view.getSettings().setTextSize(TextSize.SMALLER);
+				if (dm.density == 1.0) {
+					if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
+						view.getSettings().setTextSize(TextSize.NORMAL);
+					else
+						view.getSettings().setTextSize(TextSize.SMALLER);
+				}
+				else if (dm.density < 1) {
+					if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
+						view.getSettings().setTextSize(TextSize.SMALLER);
+					else
+						view.getSettings().setTextSize(TextSize.SMALLEST);
+				}
+				else {
+					if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
+						view.getSettings().setTextSize(TextSize.LARGER);
+					else
+						view.getSettings().setTextSize(TextSize.NORMAL);
+				}
 				
 				super.onPageStarted(view, url, favicon);
 			}
@@ -929,10 +944,7 @@ public void onCreate(Bundle savedInstanceState) {
 	});
 
 	btnFullScreen = (RadioButton) aboutView.findViewById(R.id.radio_fullscreen);
-	
-	DisplayMetrics dm  = new DisplayMetrics();
-	getWindowManager().getDefaultDisplay().getMetrics(dm);
-	
+		
 	//menu icon
     int[] menu_image_array = { R.drawable.explorer, R.drawable.capture,	R.drawable.copy, 
     		R.drawable.downloads, R.drawable.share, R.drawable.about };
@@ -946,6 +958,8 @@ public void onCreate(Bundle savedInstanceState) {
     menuDialog.setView(menuView);
     WindowManager.LayoutParams params = menuDialog.getWindow().getAttributes();
     //240 for 1024h, 140 for 800h, 70 for 480h, to show menu dialog in correct position
+    dm = new DisplayMetrics();
+	getWindowManager().getDefaultDisplay().getMetrics(dm);
     if (dm.heightPixels <= 480) params.y = 70;
     else if (dm.heightPixels <= 800) params.y = 140;
     else params.y = 240;
@@ -1172,8 +1186,6 @@ public void onCreate(Bundle savedInstanceState) {
     
     
 	webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
-	android.view.ViewGroup.LayoutParams lp = webtools_center.getLayoutParams();
-	lp.width = dm.widthPixels/2 + 40;
 	
 	imgNext = (ImageView) findViewById(R.id.next);
 	imgNext.setOnClickListener(new OnClickListener() {
@@ -1481,7 +1493,6 @@ public void onConfigurationChanged(Configuration newConfig) {
 }
 
 void setLayout() {
-	DisplayMetrics dm = new DisplayMetrics();  
 	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	
 	int width = dm.widthPixels;

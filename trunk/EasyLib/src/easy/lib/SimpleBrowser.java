@@ -341,14 +341,23 @@ class MyWebview extends WebView {
         		
 				if (!paid && mAdAvailable) adview.loadAd();
 
-				if (dm.density == 1.0) {
-					view.getSettings().setTextSize(TextSize.NORMAL);
+				if (dm.density < 1) {
+					if (url.equals(BLANK_PAGE))
+						view.getSettings().setTextSize(TextSize.SMALLEST);
+					else
+						view.getSettings().setTextSize(TextSize.SMALLER);
 				}
-				else if (dm.density < 1) {
-					view.getSettings().setTextSize(TextSize.SMALLER);
+				else if (dm.density == 1.0) {
+					if (url.equals(BLANK_PAGE))
+						view.getSettings().setTextSize(TextSize.SMALLER);
+					else
+						view.getSettings().setTextSize(TextSize.NORMAL);
 				}
 				else {
-					view.getSettings().setTextSize(TextSize.LARGER);
+					if (url.equals(BLANK_PAGE))
+						view.getSettings().setTextSize(TextSize.NORMAL);
+					else
+						view.getSettings().setTextSize(TextSize.LARGER);
 				}
 				
 				super.onPageStarted(view, url, favicon);
@@ -1527,40 +1536,43 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</head>";
 	ret += "<body>";
 
+	ret += "<h4><p>" + getString(R.string.top) + "</p></h4>";
+	ret += "<ul type=\"disc\">";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
-		ret += "<p><h6><a href=\"http://www.appchina.com\">AppChina应用汇</a></h6></p>";
-		ret += "<p><h6><a href=\"http://weibo.com/\">新浪微博</a></h6></p>";
-		ret += "<p><h6><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h6></p>";
-		ret += "<p><h6><a href=\"http://www.baidu.com/\">百度</a></h6></p>";
-		ret += "<p><h6><a href=\"http://www.taobao.com/\">淘宝</a></h6></p>";
+		ret += "<li><p><h5><a href=\"http://www.appchina.com\">AppChina应用汇</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://weibo.com/\">新浪微博</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://www.baidu.com/\">百度</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></p></li>";
 	}
 	else {
-		ret += "<p><h6><a href=\"http://www.amazon.com/\">Amazon</a></h6></p>";
-		ret += "<p><h6><a href=\"http://www.apple.com/\">Apple</a></h6></p>";
-		ret += "<p><h6><a href=\"http://www.facebook.com/\">Facebook</a></h6></p>";
-		ret += "<p><h6><a href=\"http://www.google.com/\">Google</a></h6></p>";
-		ret += "<p><h6><a href=\"http://www.wikipedia.org/\">Wikipedia</a></h6></p>";
+		ret += "<li><p><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://www.apple.com/\">Apple</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://www.facebook.com/\">Facebook</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://www.google.com/\">Google</a></h5></p></li>";
+		ret += "<li><p><h5><a href=\"http://www.wikipedia.org/\">Wikipedia</a></h5></p></li>";
 	}
+	ret += "</ul>";
 	
-	ret += "<h5><p>" + getString(R.string.bookmark) + "</p></h5>";
+	ret += "<h4><p>" + getString(R.string.bookmark) + "</p></h4>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mBookMark.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
-				+ "<h6><a href=\"" + mBookMark.get(i).m_url + "\">";
+				+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
 		imgHref += mBookMark.get(i).m_title;
-		imgHref += "</a></h6></li>";
+		imgHref += "</a></h5></li>";
 		ret += imgHref;
 	}
 	ret += "</dl>";
 	
-	ret += "<h5><p>" + getString(R.string.history) + "</p></h5>";
+	ret += "<h4><p>" + getString(R.string.history) + "</p></h4>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mHistory.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
-				+ "<h6><a href=\"" + mHistory.get(i).m_url + "\">";
+				+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
 		imgHref += mHistory.get(i).m_title;
-		imgHref += "</a></h6></li>";
+		imgHref += "</a></h5></li>";
 		ret += imgHref;
 	}
 	ret += "</dl>";

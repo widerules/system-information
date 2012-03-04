@@ -1533,29 +1533,33 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<html>";
 	ret += "<head>";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
+	ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/jquery.mobile-1.0.1.min.css\" />";
+	ret += "<script src=\"file:///android_asset/jquery-1.7.1.min.js\"></script>";
+	ret += "<script src=\"file:///android_asset/jquery.mobile-1.0.1.min.js\"></script>";
 	ret += "</head>";
 	ret += "<body>";
 
-	ret += "<h4><p>" + getString(R.string.top) + "</p></h4>";
+	ret += "<h5><p>" + getString(R.string.top) + "</p></h5>";
 	ret += "<ul type=\"disc\">";
+	//ret += "<li data-role=\"list-divider\">" + getString(R.string.top) + "</li>";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
-		ret += "<li><p><h5><a href=\"http://www.appchina.com\">AppChina应用汇</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://weibo.com/\">新浪微博</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://www.baidu.com/\">百度</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></p></li>";
+		ret += "<h5><li><a href=\"http://www.appchina.com\">AppChina应用汇</a></li></h5>";
+		ret += "<h5><li><a href=\"http://weibo.com/\">新浪微博</a></li></h5>";
+		ret += "<h5><li><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.baidu.com/\">百度</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.taobao.com/\">淘宝</a></li></h5>";
 	}
 	else {
-		ret += "<li><p><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://www.apple.com/\">Apple</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://www.facebook.com/\">Facebook</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://www.google.com/\">Google</a></h5></p></li>";
-		ret += "<li><p><h5><a href=\"http://www.wikipedia.org/\">Wikipedia</a></h5></p></li>";
+		ret += "<h5><li><a href=\"http://www.amazon.com/\">Amazon</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.apple.com/\">Apple</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.facebook.com/\">Facebook</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.google.com/\">Google</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.wikipedia.org/\">Wikipedia</a></li></h5>";
 	}
 	ret += "</ul>";
 	
-	ret += "<h4><p>" + getString(R.string.bookmark) + "</p></h4>";
+	ret += "<h5><p>" + getString(R.string.bookmark) + "</p></h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mBookMark.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
@@ -1566,7 +1570,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	}
 	ret += "</dl>";
 	
-	ret += "<h4><p>" + getString(R.string.history) + "</p></h4>";
+	ret += "<h5><p>" + getString(R.string.history) + "</p></h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mHistory.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 

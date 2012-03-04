@@ -940,11 +940,18 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
     TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
-    mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
+	if (getPackageName().equals("easy.browser")) 
+		mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.browser_author) +"</u>"));
+	else
+		mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
     mailTo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", getString(R.string.author), null));
+			Intent intent = new Intent(Intent.ACTION_SENDTO);
+			if (getPackageName().equals("easy.browser")) 
+				intent.setData(Uri.fromParts("mailto", getString(R.string.browser_author), null));
+			else
+				intent.setData(Uri.fromParts("mailto", getString(R.string.author), null));
 			util.startActivity(intent, true, getBaseContext());
 		}
 	});
@@ -1553,7 +1560,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</head>";
 	ret += "<body>";
 
-	ret += "<div data-role=\"collapsible\" data-collapsed=\"false\" data-theme=\"c\" data-content-theme=\"b\">";
+	ret += "<div data-role=\"collapsible\" data-collapsed=\"false\" data-theme=\"b\" data-content-theme=\"d\">";
 	ret += "<h5>" + getString(R.string.top) + "</h5>";
 	ret += "<ul type=\"disc\">";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
@@ -1575,7 +1582,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</ul>";
 	ret += "</div>";
 	
-	ret += "<div data-role=\"collapsible\" data-theme=\"d\" data-content-theme=\"b\"";
+	ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
 	if (mBookMark.size() > 0) ret += "data-collapsed=\"false\">";
 	else ret += ">";
 	ret += "<h5>" + getString(R.string.bookmark) + "</h5>";
@@ -1590,7 +1597,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</dl>";
 	ret += "</div>";
 	
-	ret += "<div data-role=\"collapsible\" data-content-theme=\"b\"";
+	ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
 	if (mHistory.size() > 0) ret += "data-collapsed=\"false\">";
 	else ret += ">";
 	ret += "<h5>" + getString(R.string.history) + "</h5>";

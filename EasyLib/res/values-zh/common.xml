@@ -67,7 +67,7 @@
     <string name="nomore_pages">打开的页面太多了。请先关掉不用的页面吧。</string>
     <string name="history">历史</string>
     <string name="bookmark">书签</string>
-    <string name="top">推荐</string>
+    <string name="top">常用</string>
     <string name="source">网页源码</string>
     <string name="not_avaiable">抱歉，在安卓2.3.3上无法查看网页源码。</string>
     <string name="snap">网页截屏</string>

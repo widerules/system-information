@@ -268,21 +268,21 @@ class MyWebview extends WebView {
 
     void setTextSize(String url) {
 		if (dm.density < 1) {//the text size on home page should not be so big, otherwise looks strange?
-			if (url.equals(BLANK_PAGE))
-				webSettings.setTextSize(TextSize.SMALLEST);
-			else
+			//if (url.equals(BLANK_PAGE))
+				//webSettings.setTextSize(TextSize.SMALLEST);
+			//else
 				webSettings.setTextSize(TextSize.SMALLER);
 		}
 		else if (dm.density == 1.0) {
-			if (url.equals(BLANK_PAGE))
-				webSettings.setTextSize(TextSize.SMALLER);
-			else
+			//if (url.equals(BLANK_PAGE))
+				//webSettings.setTextSize(TextSize.SMALLER);
+			//else
 				webSettings.setTextSize(TextSize.NORMAL);
 		}
 		else {
-			if (url.equals(BLANK_PAGE))
-				webSettings.setTextSize(TextSize.NORMAL);
-			else
+			//if (url.equals(BLANK_PAGE))
+				//webSettings.setTextSize(TextSize.NORMAL);
+			//else
 				webSettings.setTextSize(TextSize.LARGER);
 		}
     }
@@ -302,6 +302,8 @@ class MyWebview extends WebView {
         webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
+        webSettings.setPluginsEnabled(true);
+        //webSettings.setAppCacheEnabled(true);//API7
         
         registerForContextMenu(this);
 
@@ -1551,9 +1553,9 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</head>";
 	ret += "<body>";
 
-	ret += "<h5><p>" + getString(R.string.top) + "</p></h5>";
+	ret += "<div data-role=\"collapsible\" data-collapsed=\"false\" data-theme=\"c\" data-content-theme=\"b\">";
+	ret += "<h5>" + getString(R.string.top) + "</h5>";
 	ret += "<ul type=\"disc\">";
-	//ret += "<li data-role=\"list-divider\">" + getString(R.string.top) + "</li>";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
 		ret += "<h5><li><a href=\"http://www.appchina.com\">AppChina应用汇</a></li></h5>";
@@ -1571,8 +1573,12 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<h5><li><a href=\"http://www.wikipedia.org/\">Wikipedia</a></li></h5>";
 	}
 	ret += "</ul>";
+	ret += "</div>";
 	
-	ret += "<h5><p>" + getString(R.string.bookmark) + "</p></h5>";
+	ret += "<div data-role=\"collapsible\" data-theme=\"d\" data-content-theme=\"b\"";
+	if (mBookMark.size() > 0) ret += "data-collapsed=\"false\">";
+	else ret += ">";
+	ret += "<h5>" + getString(R.string.bookmark) + "</h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mBookMark.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
@@ -1582,8 +1588,12 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += imgHref;
 	}
 	ret += "</dl>";
+	ret += "</div>";
 	
-	ret += "<h5><p>" + getString(R.string.history) + "</p></h5>";
+	ret += "<div data-role=\"collapsible\" data-content-theme=\"b\"";
+	if (mHistory.size() > 0) ret += "data-collapsed=\"false\">";
+	else ret += ">";
+	ret += "<h5>" + getString(R.string.history) + "</h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mHistory.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
@@ -1593,6 +1603,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += imgHref;
 	}
 	ret += "</dl>";
+	ret += "</div>";
 	
 	ret += "</body>";
 	ret += "</html>";

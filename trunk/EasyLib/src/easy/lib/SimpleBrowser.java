@@ -342,22 +342,13 @@ class MyWebview extends WebView {
 				if (!paid && mAdAvailable) adview.loadAd();
 
 				if (dm.density == 1.0) {
-					if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
-						view.getSettings().setTextSize(TextSize.NORMAL);
-					else
-						view.getSettings().setTextSize(TextSize.SMALLER);
+					view.getSettings().setTextSize(TextSize.NORMAL);
 				}
 				else if (dm.density < 1) {
-					if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
-						view.getSettings().setTextSize(TextSize.SMALLER);
-					else
-						view.getSettings().setTextSize(TextSize.SMALLEST);
+					view.getSettings().setTextSize(TextSize.SMALLER);
 				}
 				else {
-					if (url.contains("m.cnbeta.com")) //but how to judge whether it is too small?
-						view.getSettings().setTextSize(TextSize.LARGER);
-					else
-						view.getSettings().setTextSize(TextSize.NORMAL);
+					view.getSettings().setTextSize(TextSize.LARGER);
 				}
 				
 				super.onPageStarted(view, url, favicon);
@@ -1220,9 +1211,10 @@ public void onCreate(Bundle savedInstanceState) {
 				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
-				if (!webAddress.getText().toString().equals(BLANK_PAGE)) 
+				if (!webAddress.getText().toString().equals(BLANK_PAGE)) { 
 					serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);//not use cache when refresh
 					serverWebs.get(webIndex).reload();
+				}
 			}
 		}
 	});
@@ -1537,38 +1529,38 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
-	ret += "<p><h3><a href=\"http://www.baidu.com/\">百度</a></h3></p>";
-	ret += "<p><h3><a href=\"http://www.taobao.com/\">淘宝</a></h3></p>";
-	ret += "<p><h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3></p>";
-	ret += "<p><h3><a href=\"http://weibo.com/\">新浪微博</a></h3></p>";
-	ret += "<p><h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3></p>";
+		ret += "<p><h6><a href=\"http://www.appchina.com\">AppChina应用汇</a></h6></p>";
+		ret += "<p><h6><a href=\"http://weibo.com/\">新浪微博</a></h6></p>";
+		ret += "<p><h6><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h6></p>";
+		ret += "<p><h6><a href=\"http://www.baidu.com/\">百度</a></h6></p>";
+		ret += "<p><h6><a href=\"http://www.taobao.com/\">淘宝</a></h6></p>";
 	}
 	else {
-		ret += "<p><h3><a href=\"http://www.amazon.com/\">Amazon</a></h3></p>";
-		ret += "<p><h3><a href=\"http://www.apple.com/\">Apple</a></h3></p>";
-		ret += "<p><h3><a href=\"http://www.facebook.com/\">Facebook</a></h3></p>";
-		ret += "<p><h3><a href=\"http://www.google.com/\">Google</a></h3></p>";
-		ret += "<p><h3><a href=\"http://www.wikipedia.org/\">Wikipedia</a></h3></p>";
+		ret += "<p><h6><a href=\"http://www.amazon.com/\">Amazon</a></h6></p>";
+		ret += "<p><h6><a href=\"http://www.apple.com/\">Apple</a></h6></p>";
+		ret += "<p><h6><a href=\"http://www.facebook.com/\">Facebook</a></h6></p>";
+		ret += "<p><h6><a href=\"http://www.google.com/\">Google</a></h6></p>";
+		ret += "<p><h6><a href=\"http://www.wikipedia.org/\">Wikipedia</a></h6></p>";
 	}
 	
-	ret += "<h3><p>" + getString(R.string.bookmark) + "</p></h3>";
+	ret += "<h5><p>" + getString(R.string.bookmark) + "</p></h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mBookMark.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
-				+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
+				+ "<h6><a href=\"" + mBookMark.get(i).m_url + "\">";
 		imgHref += mBookMark.get(i).m_title;
-		imgHref += "</a></h5></li>";
+		imgHref += "</a></h6></li>";
 		ret += imgHref;
 	}
 	ret += "</dl>";
 	
-	ret += "<h3><p>" + getString(R.string.history) + "</p></h3>";
+	ret += "<h5><p>" + getString(R.string.history) + "</p></h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mHistory.size(); i++) {
 		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
-				+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
+				+ "<h6><a href=\"" + mHistory.get(i).m_url + "\">";
 		imgHref += mHistory.get(i).m_title;
-		imgHref += "</a></h5></li>";
+		imgHref += "</a></h6></li>";
 		ret += imgHref;
 	}
 	ret += "</dl>";

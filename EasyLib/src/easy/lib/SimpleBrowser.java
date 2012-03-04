@@ -1537,15 +1537,17 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
-	ret += "<p><h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3></p>";
 	ret += "<p><h3><a href=\"http://www.baidu.com/\">百度</a></h3></p>";
+	ret += "<p><h3><a href=\"http://www.taobao.com/\">淘宝</a></h3></p>";
 	ret += "<p><h3><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h3></p>";
+	ret += "<p><h3><a href=\"http://weibo.com/\">新浪微博</a></h3></p>";
+	ret += "<p><h3><a href=\"http://www.appchina.com\">AppChina应用汇</a></h3></p>";
 	}
 	else {
-		ret += "<p><h3><a href=\"http://www.google.com/\">Google</a></h3></p>";
+		ret += "<p><h3><a href=\"http://www.amazon.com/\">Amazon</a></h3></p>";
 		ret += "<p><h3><a href=\"http://www.apple.com/\">Apple</a></h3></p>";
 		ret += "<p><h3><a href=\"http://www.facebook.com/\">Facebook</a></h3></p>";
-		ret += "<p><h3><a href=\"http://www.amazon.com/\">Amazon</a></h3></p>";
+		ret += "<p><h3><a href=\"http://www.google.com/\">Google</a></h3></p>";
 		ret += "<p><h3><a href=\"http://www.wikipedia.org/\">Wikipedia</a></h3></p>";
 	}
 	

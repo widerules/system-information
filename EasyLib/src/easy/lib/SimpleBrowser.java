@@ -379,7 +379,11 @@ class MyWebview extends WebView {
 		super(context);
 		
         setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);//no white blank on the right of webview
-        //setScrollbarFadingEnabled(true);//hide scroll bar when not scroll. from API5, not work on cupcake.
+    	try {
+    		Method method = WebView.class.getMethod("setScrollbarFadingEnabled", new Class[] {boolean.class});
+    		method.invoke(this, true);//hide scroll bar when not scroll. from API5, not work on cupcake.
+    	}
+    	catch(Exception e) {e.printStackTrace();}
         
         webSettings = new wrapWebSettings(getSettings());
         webSettings.setJavaScriptEnabled(true);

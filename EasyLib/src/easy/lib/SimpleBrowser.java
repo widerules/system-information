@@ -264,12 +264,6 @@ public class SimpleBrowser extends Activity {
 	ListView webList;
 	Context mContext;
 
-	//about dialog
-	View aboutView;
-	CheckBox showZoomControl;
-	RadioButton btnFullScreen;
-	AlertDialog aboutDialog = null;
-
 	//snap dialog
 	ImageView snapView;
 	Bitmap bmp;
@@ -390,7 +384,7 @@ class MyWebview extends WebView {
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
-        webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
+        //webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
         webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
         webSettings.setPluginsEnabled(true);
         webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
@@ -1041,34 +1035,6 @@ public void onCreate(Bundle savedInstanceState) {
 			}).create();
 
 	
-	aboutView = getLayoutInflater().inflate(R.layout.about_browser, null);
-    TextView mailTo = (TextView) aboutView.findViewById(R.id.mailto);
-	if (getPackageName().equals("easy.browser")) 
-		mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.browser_author) +"</u>"));
-	else
-		mailTo.setText(Html.fromHtml("<u>"+ getString(R.string.author) +"</u>"));
-    mailTo.setOnClickListener(new OnClickListener() {
-		@Override
-		public void onClick(View arg0) {
-			Intent intent = new Intent(Intent.ACTION_SENDTO);
-			if (getPackageName().equals("easy.browser")) 
-				intent.setData(Uri.fromParts("mailto", getString(R.string.browser_author), null));
-			else
-				intent.setData(Uri.fromParts("mailto", getString(R.string.author), null));
-			util.startActivity(intent, true, getBaseContext());
-		}
-	});
-
-	showZoomControl = (CheckBox) aboutView.findViewById(R.id.show_zoom);
-	showZoomControl.setOnClickListener(new OnClickListener() {
-		@Override
-		public void onClick(View arg0) {
-			serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoomControl.isChecked());
-		}
-	});
-
-	btnFullScreen = (RadioButton) aboutView.findViewById(R.id.radio_fullscreen);
-		
 	//menu icon
     int[] menu_image_array = { R.drawable.explorer, R.drawable.capture,	R.drawable.copy, 
     		R.drawable.downloads, R.drawable.share, R.drawable.about };
@@ -1132,11 +1098,11 @@ public void onCreate(Bundle savedInstanceState) {
        	    	m_sourceDialog.show();
         		break;
         	case 1://view snap
-    			if (btnFullScreen.isChecked()) {
+    			//if (btnFullScreen.isChecked()) {
 					webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
     				webpages.setDrawingCacheEnabled(true);
     				bmp = webpages.getDrawingCache();
-    			}
+    			/*}
     			else {
         			Picture pic = serverWebs.get(webIndex).capturePicture();
 
@@ -1147,7 +1113,7 @@ public void onCreate(Bundle savedInstanceState) {
     			
         			Canvas canvas = new Canvas(bmp); 
         	        pic.draw(canvas);
-    			}
+    			}*/
         		snapView.setImageBitmap(bmp);
         		snapDialog.show();
         		
@@ -1195,24 +1161,9 @@ public void onCreate(Bundle savedInstanceState) {
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
         	case 5://about
-        		if (aboutDialog == null) {
-        			String title = getString(R.string.embed_browser_name);
-        			if (getPackageName().equals("easy.browser")) 
-        				title = getString(R.string.browser_name) + " " + util.getVersion(getBaseContext());
-        			aboutDialog = new AlertDialog.Builder(mContext).
-        					setTitle(title).
-        					setIcon(R.drawable.explorer).
-        					setView(aboutView).
-        					setMessage(getString(R.string.browser_name) + getString(R.string.about_message) + "\n\n" + getString(R.string.about_dialog_notes)).
-        					setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-        						@Override
-        						public void onClick(DialogInterface dialog, int which) {
-        						}
-        					}).create();
-        		}
-        		showZoomControl.setChecked(serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
-        		aboutDialog.show();
-        		break;
+    			intent = new Intent("easy.lib.about");
+    			util.startActivity(intent, false, getBaseContext());
+    			break;
             }
             menuDialog.dismiss();
         }

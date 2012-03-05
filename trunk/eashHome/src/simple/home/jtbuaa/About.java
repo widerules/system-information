@@ -155,6 +155,7 @@ public class About extends Activity{
         tvInfo.setText(aboutMsg());
         
         Button btnShareHome = (Button) findViewById(R.id.title);
+        btnShareHome.setText(getString(R.string.app_name) + " " + getIntent().getStringExtra("version"));
         btnShareHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

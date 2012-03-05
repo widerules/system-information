@@ -198,7 +198,7 @@ class wrapWebSettings {
     	mInstance.setPluginsEnabled(flag);
     }
 
-	synchronized void setLoadWithOverviewMode(boolean overview) {//from API7
+	synchronized void setLoadWithOverviewMode(boolean overview) {//from API 7
     	try {
     		Method method = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] {boolean.class});
     		method.invoke(mInstance, overview);
@@ -206,7 +206,7 @@ class wrapWebSettings {
     	catch(Exception e) {e.printStackTrace();}
     }    
     
-	synchronized void setAppCacheEnabled(boolean flag) {//API7
+	synchronized void setAppCacheEnabled(boolean flag) {//API 7
     	try {
     		Method method = WebSettings.class.getMethod("setAppCacheEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
@@ -214,7 +214,7 @@ class wrapWebSettings {
     	catch(Exception e) {e.printStackTrace();}
     }
     
-	synchronized void setDomStorageEnabled(boolean flag) {
+	synchronized void setDomStorageEnabled(boolean flag) {//API 7
     	try {
     		Method method = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
@@ -222,7 +222,23 @@ class wrapWebSettings {
     	catch(Exception e) {e.printStackTrace();}
     }
 	
-	void setGeolocationEnabled(boolean flag) {//API 5
+	synchronized void setDatabaseEnabled(boolean flag) {//API 5
+    	try {
+    		Method method = WebSettings.class.getMethod("setDatabaseEnabled", new Class[] {boolean.class});
+    		method.invoke(mInstance, flag);
+    	}
+    	catch(Exception e) {e.printStackTrace();}
+    }
+    
+	synchronized void setDatabasePath(String databasePath) {//API 5
+    	try {
+    		Method method = WebSettings.class.getMethod("setDatabasePath", new Class[] {String.class});
+    		method.invoke(mInstance, databasePath);
+    	}
+    	catch(Exception e) {e.printStackTrace();}
+    }
+
+	synchronized void setGeolocationEnabled(boolean flag) {//API 5
     	try {
     		Method method = WebSettings.class.getMethod("setGeolocationEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
@@ -230,7 +246,7 @@ class wrapWebSettings {
     	catch(Exception e) {e.printStackTrace();}
 	}
 	
-	void setGeolocationDatabasePath(String databasePath) {//API 5
+	synchronized void setGeolocationDatabasePath(String databasePath) {//API 5
     	try {
     		Method method = WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[] {String.class});
     		method.invoke(mInstance, databasePath);
@@ -377,8 +393,10 @@ class MyWebview extends WebView {
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         webSettings.setAppCacheEnabled(true);//API7
         webSettings.setDomStorageEnabled(true);//API7, enable gmail
-        webSettings.setGeolocationEnabled(true);
-        webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());
+        webSettings.setDatabaseEnabled(true);//API5
+        webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+        webSettings.setGeolocationEnabled(true);//API5
+        webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 
         
         registerForContextMenu(this);
@@ -426,10 +444,10 @@ class MyWebview extends WebView {
                 openFileChooser( uploadMsg, "" );
             }
             
-	        @Override
+	        /*@Override
 	        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 	            callback.invoke(origin, true, false);
-	        }
+	        }//I don't know how to reflect a Interface, so it will carsh on cupcake*/
 		});
         
 		setWebViewClient(new WebViewClient() {
@@ -1279,7 +1297,7 @@ public void onCreate(Bundle savedInstanceState) {
 	webAddress.setAdapter(urlAdapter);
 
 
-	WebIconDatabase.getInstance().open(getDir("icons", MODE_PRIVATE).getPath());
+	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;
     serverWebs = new ArrayList<MyWebview>();
     serverWebs.add(new MyWebview(this));

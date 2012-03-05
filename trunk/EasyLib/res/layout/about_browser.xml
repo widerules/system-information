@@ -7,7 +7,7 @@
     <LinearLayout
 		android:orientation="vertical"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_height="wrap_content"
         >
         
     <Button android:id="@+id/title"
@@ -37,15 +37,6 @@
       	android:textSize="16dip"
       	android:textColor="#F08080F0"
       	android:layout_marginLeft="20dip"
-    />
-
-    <Button android:id="@+id/vote"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:text="@string/vote"
-		android:layout_margin="5dip"
-        android:background="@drawable/button_layout"
     />
 
   	
@@ -84,6 +75,15 @@
 		android:layout_marginLeft="5dip"
         />  
 	</RadioGroup>           
+
+    <Button android:id="@+id/vote"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:text="@string/vote"
+		android:layout_margin="5dip"
+        android:background="@drawable/button_layout"
+    />
 
     </LinearLayout>
 

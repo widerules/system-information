@@ -33,7 +33,7 @@ public class AboutBrowser extends Activity{
         btnShare.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-    	        String text = getString(R.string.sharetext) + getString(R.string.share_text1) 
+    	        String text = getString(R.string.browser_name) + ", " + getString(R.string.sharetext) + getString(R.string.share_text1) 
        	        		+ "http://opda.co/?s=D/easy.browser"//opda will do the webpage reload for us.
        	        		+ getString(R.string.share_text2)
        	        		+ "https://market.android.com/details?id=easy.browser"

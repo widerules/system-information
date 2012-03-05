@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.TextSize;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
@@ -158,6 +160,68 @@ class wrapAdView {
 		return mInstance;
 	}
 }
+
+
+class wrapWebSettings {
+	WebSettings mInstance;
+	
+	wrapWebSettings(WebSettings settings) {
+		mInstance = settings;
+	}
+
+	synchronized void setJavaScriptEnabled(boolean enabled) {
+    	mInstance.setJavaScriptEnabled(enabled);
+    }
+    
+	synchronized void setSaveFormData(boolean save) {
+    	mInstance.setSaveFormData(save);
+    }
+    
+	synchronized void setTextSize(TextSize t) {
+    	mInstance.setTextSize(t);
+    }
+    
+	synchronized void setSupportZoom(boolean support) {
+    	mInstance.setSupportZoom(support);
+    }
+    
+	synchronized void setBuiltInZoomControls(boolean enabled) {
+    	mInstance.setBuiltInZoomControls(enabled);
+    }
+    
+	synchronized void setUseWideViewPort(boolean use) {
+    	mInstance.setUseWideViewPort(use);
+    }
+    
+	synchronized void setPluginsEnabled(boolean flag) {
+    	mInstance.setPluginsEnabled(flag);
+    }
+
+	synchronized void setLoadWithOverviewMode(boolean overview) {//from API7
+    	try {
+    		Method method = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] {boolean.class});
+    		method.invoke(mInstance, overview);
+    	}
+    	catch(Exception e) {}
+    }    
+    
+	synchronized void setAppCacheEnabled(boolean flag) {//API7
+    	try {
+    		Method method = WebSettings.class.getMethod("setAppCacheEnabled", new Class[] {boolean.class});
+    		method.invoke(mInstance, flag);
+    	}
+    	catch(Exception e) {}
+    }
+    
+	synchronized void setDomStorageEnabled(boolean flag) {
+    	try {
+    		Method method = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] {boolean.class});
+    		method.invoke(mInstance, flag);
+    	}
+    	catch(Exception e) {}
+    }
+}
+
 
 public class SimpleBrowser extends Activity {
 
@@ -255,7 +319,7 @@ public class SimpleBrowser extends Activity {
 class MyWebview extends WebView {
 	public String pageSource = getString(R.string.not_avaiable);
 
-	WebSettings webSettings;
+	wrapWebSettings webSettings;
 	
 	class MyJavaScriptInterface
 	{
@@ -268,22 +332,13 @@ class MyWebview extends WebView {
 
     void setTextSize(String url) {
 		if (dm.density < 1) {//the text size on home page should not be so big, otherwise looks strange?
-			//if (url.equals(BLANK_PAGE))
-				//webSettings.setTextSize(TextSize.SMALLEST);
-			//else
-				webSettings.setTextSize(TextSize.SMALLER);
+			webSettings.setTextSize(TextSize.SMALLER);
 		}
 		else if (dm.density == 1.0) {
-			//if (url.equals(BLANK_PAGE))
-				//webSettings.setTextSize(TextSize.SMALLER);
-			//else
-				webSettings.setTextSize(TextSize.NORMAL);
+			webSettings.setTextSize(TextSize.NORMAL);
 		}
 		else {
-			//if (url.equals(BLANK_PAGE))
-				//webSettings.setTextSize(TextSize.NORMAL);
-			//else
-				webSettings.setTextSize(TextSize.LARGER);
+			webSettings.setTextSize(TextSize.LARGER);
 		}
     }
     
@@ -293,17 +348,18 @@ class MyWebview extends WebView {
         setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);//no white blank on the right of webview
         //setScrollbarFadingEnabled(true);//hide scroll bar when not scroll. from API5, not work on cupcake.
         
-        webSettings = getSettings();
+        webSettings = new wrapWebSettings(getSettings());
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSaveFormData(true);
         webSettings.setTextSize(WebSettings.TextSize.SMALLER);
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
         webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
-        //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
-        //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         webSettings.setPluginsEnabled(true);
-        //webSettings.setAppCacheEnabled(true);//API7
+        webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
+        //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
+        webSettings.setAppCacheEnabled(true);//API7
+        webSettings.setDomStorageEnabled(true);//API7, enable gmail
         
         registerForContextMenu(this);
 

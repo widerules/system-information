@@ -95,6 +95,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+import android.webkit.GeolocationPermissions;
 
 
 //for get webpage source on cupcake
@@ -202,7 +203,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] {boolean.class});
     		method.invoke(mInstance, overview);
     	}
-    	catch(Exception e) {}
+    	catch(Exception e) {e.printStackTrace();}
     }    
     
 	synchronized void setAppCacheEnabled(boolean flag) {//API7
@@ -210,7 +211,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setAppCacheEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
     	}
-    	catch(Exception e) {}
+    	catch(Exception e) {e.printStackTrace();}
     }
     
 	synchronized void setDomStorageEnabled(boolean flag) {
@@ -218,8 +219,24 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
     	}
-    	catch(Exception e) {}
+    	catch(Exception e) {e.printStackTrace();}
     }
+	
+	void setGeolocationEnabled(boolean flag) {//API 5
+    	try {
+    		Method method = WebSettings.class.getMethod("setGeolocationEnabled", new Class[] {boolean.class});
+    		method.invoke(mInstance, flag);
+    	}
+    	catch(Exception e) {e.printStackTrace();}
+	}
+	
+	void setGeolocationDatabasePath(String databasePath) {//API 5
+    	try {
+    		Method method = WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[] {String.class});
+    		method.invoke(mInstance, databasePath);
+    	}
+    	catch(Exception e) {e.printStackTrace();}
+	}
 }
 
 
@@ -360,6 +377,9 @@ class MyWebview extends WebView {
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         webSettings.setAppCacheEnabled(true);//API7
         webSettings.setDomStorageEnabled(true);//API7, enable gmail
+        webSettings.setGeolocationEnabled(true);
+        webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());
+
         
         registerForContextMenu(this);
 
@@ -405,6 +425,11 @@ class MyWebview extends WebView {
             {
                 openFileChooser( uploadMsg, "" );
             }
+            
+	        @Override
+	        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+	            callback.invoke(origin, true, false);
+	        }
 		});
         
 		setWebViewClient(new WebViewClient() {

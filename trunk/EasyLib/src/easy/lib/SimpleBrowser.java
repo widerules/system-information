@@ -379,7 +379,7 @@ class MyWebview extends WebView {
 			@Override
 			public void onDownloadStart(String url, String ua, String contentDisposition,
 					String mimetype, long contentLength) {
-				startDownload(url, mimetype);
+				startDownload(url);
 			}
         });
         
@@ -704,10 +704,6 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
 }
 
 boolean startDownload(String url) {
-	return startDownload(url, null);
-}
-
-boolean startDownload(String url, String mimeType) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
 	String realUrl = URLDecoder.decode(url);// replace %3A%2F%2F to :// if any
@@ -741,7 +737,7 @@ boolean startDownload(String url, String mimeType) {
 	DownloadTask dltask = new DownloadTask();
 	dltask.NOTIFICATION_ID = id;
 	appstate.downloadState.put(id, dltask);
-	dltask.execute(url, apkName, mimeType);
+	dltask.execute(url, apkName);
 	return true;
 }
 
@@ -789,11 +785,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 		contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
         notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
         
-        String mimeType = params[2];
-        if (mimeType == null) {
-    		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-    		mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName));
-        }
+   		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+   		String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName));
 		
     	FileOutputStream fos = null; //文件输出流
     	InputStream is = null; //网络文件输入流
@@ -1486,7 +1479,12 @@ private void openNewPage(String url) {
 	if (paid) maxPages = 9;//9 for paid version.
 	if (webAdapter.getCount() == maxPages) {
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
-		if (!url.equals("")) serverWebs.get(webIndex).loadUrl(url);
+		if (!url.equals("")) {
+			if (url.endsWith(".pdf"))//open pdf by google doc
+				serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
+			else
+				serverWebs.get(webIndex).loadUrl(url);
+		}
 	}
 	else {
 		webAdapter.add(new MyWebview(mContext));
@@ -1566,7 +1564,7 @@ protected void onResume() {
     String encoding = "";
     switch (iEncoding) {
     case 1:
-    	serverWebs.get(webIndex).reload();
+    	//serverWebs.get(webIndex).reload();
     	break;
     case 2:
     	encoding = "";
@@ -1579,6 +1577,19 @@ protected void onResume() {
     	//sEdit.commit();
     }
 
+    String searchText = sp.getString("search_text", "");
+    if (!searchText.equals("")) {
+    	serverWebs.get(webIndex).findAll(searchText);
+    	try
+    	{
+    	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+    	    m.invoke(serverWebs.get(webIndex), true);
+    	}
+    	catch (Throwable ignored){}
+
+    	sEdit.putString("search_text", "");
+    	sEdit.commit();
+    }
     
     super.onResume();
 }

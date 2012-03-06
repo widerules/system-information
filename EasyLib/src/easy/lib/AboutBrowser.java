@@ -5,25 +5,34 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbZoomControl;
+	CheckBox cbZoomControl, cbCss;
+	RadioGroup fontSize, historyCount, encodingType, snapSize;
+	
 	SharedPreferences perferences;
+	SharedPreferences.Editor editor;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.about_browser);
+        
+		perferences = PreferenceManager.getDefaultSharedPreferences(this);
+		editor = perferences.edit();
 
         Button btnShare = (Button) findViewById(R.id.title);
 		String title = getString(R.string.embed_browser_name);
@@ -81,23 +90,70 @@ public class AboutBrowser extends Activity{
 			}
 		});
 
-    	CheckBox showZoomControl = (CheckBox) findViewById(R.id.show_zoom);
-    	showZoomControl.setOnClickListener(new OnClickListener() {
+    	cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
+    	cbZoomControl.setOnClickListener(new OnClickListener() {
     		@Override
     		public void onClick(View arg0) {
-    			//serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoomControl.isChecked());
+        		editor.putBoolean("show_zoom", cbZoomControl.isChecked());
+        		editor.commit();
     		}
     	});
 
-    	RadioButton btnFullScreen = (RadioButton) findViewById(R.id.radio_fullscreen);
-		//showZoomControl.setChecked(serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
+    	cbCss = (CheckBox) findViewById(R.id.homepage_css);
+    	cbCss.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("css", cbCss.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	
+    	fontSize = (RadioGroup) findViewById(R.id.font_size);
+    	fontSize.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup arg0, int arg1) {
+        		editor.putInt("textsize", fontSize.indexOfChild(findViewById(fontSize.getCheckedRadioButtonId())));
+        		editor.commit();
+			}
+    	});
+    	
+    	historyCount = (RadioGroup) findViewById(R.id.max_history);
+    	historyCount.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup arg0, int arg1) {
+        		editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
+        		editor.commit();
+			}
+    	});
+    	
+    	encodingType = (RadioGroup) findViewById(R.id.encoding);
+    	encodingType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup arg0, int arg1) {
+        		editor.putInt("encoding", encodingType.indexOfChild(findViewById(encodingType.getCheckedRadioButtonId())));
+        		editor.commit();
+			}
+    	});
+    	
+    	snapSize = (RadioGroup) findViewById(R.id.snap_size);
+    	snapSize.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup arg0, int arg1) {
+        		editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));
+        		editor.commit();
+			}
+    	});
 
 	}
 	
 	@Override
 	protected void onResume() {
-        //cbShake.setEnabled(perferences.getBoolean("shake_enabled", false));
-        //cbShake.setChecked(perferences.getBoolean("shake", false));
+		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
+		cbCss.setChecked(perferences.getBoolean("css", false));
+		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 1))).setChecked(true);
+		((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
+		((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 1))).setChecked(true);
+		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
         
 		super.onResume();
 	}

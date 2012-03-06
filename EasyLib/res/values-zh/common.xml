@@ -71,9 +71,6 @@
     <string name="source">网页源码</string>
     <string name="not_avaiable">抱歉，在安卓2.3.3上无法查看网页源码。</string>
     <string name="snap">网页截屏</string>
-    <string name="snap_size">截屏尺寸：</string>
-    <string name="full_screen">全屏</string>
-    <string name="full_webpage">全网页</string>
     <string name="homepage">主页</string>
     <string name="shareurl">分享网址</string>
     <string name="recommend">推荐</string>
@@ -115,5 +112,17 @@
     <string name="grid_view">图标视图</string>
     <string name="list_view">列表视图</string>
     <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
+    
+    <string name="snap_size">截屏尺寸</string>
+    <string name="full_screen">全屏</string>
+    <string name="full_webpage">全网页</string>
+    <string name="homepage_css">主页特效</string>
+    <string name="max_history">历史记录</string>
+    <string name="font_size">字体大小</string>
+    <string name="font_smallest">最小</string>
+    <string name="font_smaller">小</string>
+    <string name="font_normal">中</string>
+    <string name="font_larger">大</string>
+    <string name="font_largest">最大</string>
     
 </resources>

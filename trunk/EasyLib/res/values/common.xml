@@ -118,5 +118,16 @@
     <string name="grid_view">Grid View</string>
     <string name="list_view">List View</string>
     <string name="restart">It need restart to change the view. \nRestart now?</string>
+
+    <string name="homepage_css">cool homepage</string>
+    <string name="max_history">History</string>
+    <string name="history_8">8</string>
+    <string name="history_16">16</string>
+    <string name="font_size">Font</string>
+    <string name="font_smallest">smallest</string>
+    <string name="font_smaller">small</string>
+    <string name="font_normal">normal</string>
+    <string name="font_larger">large</string>
+    <string name="font_largest">largest</string>
     
 </resources>

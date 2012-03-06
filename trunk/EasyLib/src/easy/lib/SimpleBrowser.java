@@ -385,7 +385,7 @@ class MyWebview extends WebView {
 			@Override
 			public void onDownloadStart(String url, String ua, String contentDisposition,
 					String mimetype, long contentLength) {
-				startDownload(url);
+				startDownload(url, mimetype);
 			}
         });
         
@@ -644,7 +644,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://save image
-    			startDownload(url, ".jpg");
+    			startDownload(url);
     			break;
     		case 1://view image
     			serverWebs.get(webIndex).loadUrl(url);
@@ -712,52 +712,45 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
 }
 
 boolean startDownload(String url) {
-	return startDownload(url, "");
+	return startDownload(url, null);
 }
 
-boolean startDownload(String url, String ext) {
+boolean startDownload(String url, String mimeType) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
-	url = URLDecoder.decode(url);// replace %3A%2F%2F to :// if any
+	String realUrl = URLDecoder.decode(url);// replace %3A%2F%2F to :// if any
 	
-	posQ = url.indexOf("?");
-	if (posQ > 0) url = url.substring(0, posQ);//cut off post paras if any.
+	posQ = realUrl.indexOf("?");
+	if (posQ > 0) realUrl = realUrl.substring(0, posQ);//cut off post paras if any.
 
-	String ss[] = url.split("/");
+	String ss[] = realUrl.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if ((apkName.endsWith(".txt")) || (apkName.endsWith(".html")) || (apkName.endsWith(".htm"))) return false;//should not download txt and html file.
-Log.d("===============", apkName);	
-	if (!apkName.contains(".")) {
-		if (!ext.equals("")) apkName = apkName + ext;
-		else return false;//not a file
+	
+	if (!apkName.contains(".")) return false;//not a file
+	
+	if (downloadPath.startsWith(getFilesDir().getPath())) 
+		Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
+	
+	Iterator iter = appstate.downloadState.entrySet().iterator();
+	while (iter.hasNext()) {
+		Entry entry = (Entry) iter.next();
+		DownloadTask val = (DownloadTask) entry.getValue();
+		if ((val != null) && val.apkName.equals(apkName)) {
+			if (val.pauseDownload) val.pauseDownload = false;//resume download if it paused
+			return true;//the file is downloading, not start a new download task.
+		}
 	}
 	
-	MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-	if (mimeTypeMap.hasExtension(mimeTypeMap.getFileExtensionFromUrl(apkName))) {//files need download
-		if (downloadPath.startsWith(getFilesDir().getPath())) 
-			Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
-		
-		Iterator iter = appstate.downloadState.entrySet().iterator();
-		while (iter.hasNext()) {
-			Entry entry = (Entry) iter.next();
-			DownloadTask val = (DownloadTask) entry.getValue();
-			if ((val != null) && val.apkName.equals(apkName)) {
-				if (val.pauseDownload) val.pauseDownload = false;//resume download if it paused
-				return true;//the file is downloading, not start a new download task.
-			}
-		}
-		
-    	Random random = new Random();
-    	int id = random.nextInt() + 1000;
-    	
-		DownloadTask dltask = new DownloadTask();
-		dltask.NOTIFICATION_ID = id;
-		appstate.downloadState.put(id, dltask);
-		dltask.execute(url, apkName);
-		return true;
-	}
-	else return false;
+	Random random = new Random();
+	int id = random.nextInt() + 1000;
+	
+	DownloadTask dltask = new DownloadTask();
+	dltask.NOTIFICATION_ID = id;
+	appstate.downloadState.put(id, dltask);
+	dltask.execute(url, apkName, mimeType);
+	return true;
 }
 
 class DownloadTask extends AsyncTask<String, Integer, String> {
@@ -804,21 +797,31 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 		contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
         notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
         
-		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-		String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName));
+        String mimeType = params[2];
+        if (mimeType == null) {
+    		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+    		mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName));
+        }
 		
     	FileOutputStream fos = null; //文件输出流
     	InputStream is = null; //网络文件输入流
     	URL url = null;
     	try {
+    		download_file = new File(downloadPath + apkName);
+    		if (mimeType != null) {
+    			intent.setAction(Intent.ACTION_VIEW);
+    			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
+    		}
+    		else {
+    			intent.setAction("com.estrongs.action.PICK_FILE");
+    			intent.setData(Uri.fromFile(download_file));
+    		}
+    		
         	url = new URL(URL_str); //网络歌曲的url
         	HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection(); //打开网络连接
-    		download_file = new File(downloadPath + apkName);
         	apk_length = httpConnection.getContentLength(); //file size need to download
     		if (download_file.length() == apk_length) {//found local file with same name and length, no need to download, just send intent to view it
             	String[] tmp = apkName.split("\\.");
-    			intent.setAction(Intent.ACTION_VIEW);
-    			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
 				util.startActivity(intent, false, mContext);
             	appstate.downloadState.remove(NOTIFICATION_ID);
         		nManager.cancel(NOTIFICATION_ID);
@@ -881,9 +884,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	else {//download success. change notification, start package manager to install package
             	notification.icon = android.R.drawable.stat_sys_download_done;
 
-    			intent = new Intent();
-    			intent.setAction(Intent.ACTION_VIEW);
-    			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
     	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
     	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
     	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_finish), contentIntent);//click listener for download progress bar
@@ -899,7 +899,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 				}
 				else if (apkName.toLowerCase().endsWith("apk")) {
 					PackageInfo pi = getPackageManager().getPackageArchiveInfo(downloadPath + apkName, 0);
-					//PackageParser packageParser  =  PackageParser(downloadPath + apkName);
         			downloadAppID.add(new packageIDpair(pi.packageName, NOTIFICATION_ID, download_file));
 				}
 
@@ -1537,19 +1536,19 @@ void readTextSize(SharedPreferences sp) {
     		textSize = TextSize.LARGER;
     }
     else switch(iTextSize) {
-    case 0:
+    case 1:
     	textSize = TextSize.SMALLEST;
     	break;
-    case 1:
+    case 2:
 		textSize = TextSize.SMALLER;
     	break;
-    case 2:
+    case 3:
 		textSize = TextSize.NORMAL;
     	break;
-    case 3:
+    case 4:
 		textSize = TextSize.LARGER;
     	break;
-    case 4:
+    case 5:
 		textSize = TextSize.LARGEST;
     	break;
     }	
@@ -1561,8 +1560,8 @@ protected void onResume() {
 	Editor sEdit = sp.edit();
     
     css = sp.getBoolean("css", false);
-    historyCount = sp.getInt("history_count", 10);
-    snapFullScreen = sp.getBoolean("full_screen", true);
+    historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
+    snapFullScreen = (sp.getInt("full_screen", 1) == 1);
     
     boolean showZoom = sp.getBoolean("show_zoom", false);
     serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoom);
@@ -1576,10 +1575,10 @@ protected void onResume() {
     int iEncoding = sp.getInt("encoding", -1);
     String encoding = "";
     switch (iEncoding) {
-    case 0:
+    case 1:
     	serverWebs.get(webIndex).reload();
     	break;
-    case 1:
+    case 2:
     	encoding = "";
     	break;
     }

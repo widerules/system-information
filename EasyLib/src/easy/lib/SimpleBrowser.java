@@ -48,9 +48,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
-import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -74,7 +72,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.TextSize;
-import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
@@ -83,23 +80,18 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import android.widget.VideoView;
 import android.widget.ViewFlipper;
-import android.webkit.GeolocationPermissions;
 
 
 //for get webpage source on cupcake
@@ -174,7 +166,7 @@ class wrapWebSettings {
 		mInstance = settings;
 	}
 
-	synchronized void setLoadWithOverviewMode(boolean overview) {//from API 7
+	synchronized void setLoadWithOverviewMode(boolean overview) {//API 7
     	try {
     		Method method = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] {boolean.class});
     		method.invoke(mInstance, overview);
@@ -356,9 +348,11 @@ class MyWebview extends WebView {
     	localSettings.setSupportZoom(true);
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
+		localSettings.setTextSize(textSize);
+		
         
         webSettings = new wrapWebSettings(localSettings);
-        webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
+        //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         webSettings.setAppCacheEnabled(true);//API7
         webSettings.setDomStorageEnabled(true);//API7, enable gmail
@@ -450,8 +444,6 @@ class MyWebview extends WebView {
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
-        		view.getSettings().setTextSize(textSize);
-				
 				if (!paid && mAdAvailable) adview.loadAd();
 
 				super.onPageStarted(view, url, favicon);
@@ -1530,10 +1522,8 @@ void readTextSize(SharedPreferences sp) {
     if (iTextSize < 0) {
     	if (dm.density < 1) 
     		textSize = TextSize.SMALLER;
-    	else if (dm.density == 1.0) 
+    	else  
     		textSize = TextSize.NORMAL;
-    	else 
-    		textSize = TextSize.LARGER;
     }
     else switch(iTextSize) {
     case 1:
@@ -1585,8 +1575,8 @@ protected void onResume() {
     if (iEncoding > 0) {//make it work only on current page.
 		//serverWebs.get(webIndex).loadDataWithBaseURL(, , null, encoding, );
 		
-    	sEdit.putInt("encoding", 0);//set it to auto again after reload
-    	sEdit.commit();
+    	//sEdit.putInt("encoding", 0);//set it to auto again after reload
+    	//sEdit.commit();
     }
 
     
@@ -1623,12 +1613,11 @@ void setLayout() {
 	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	
 	int width = dm.widthPixels;
-	if (width < 100) return;//can't work on so small screen.
 	
     LayoutParams lp = webtools_center.getLayoutParams();
     if (width >= 320)
-    	lp.width = width/2 + 30;//15
-    else lp.width = width/2-15;
+    	lp.width = width/2 + 30;
+    else lp.width = width/2 + 20;
     
     if (!paid && mAdAvailable) {
     	if (adContainer.getChildCount() > 0) {

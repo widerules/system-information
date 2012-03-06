@@ -38,6 +38,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -379,7 +380,7 @@ class MyWebview extends WebView {
 			@Override
 			public void onDownloadStart(String url, String ua, String contentDisposition,
 					String mimetype, long contentLength) {
-				startDownload(url);
+				startDownload(url, true);
 			}
         });
         
@@ -544,7 +545,7 @@ class MyWebview extends WebView {
 						intent.addCategory(Intent.CATEGORY_BROWSABLE);
 						return util.startActivity(intent, false, mContext);
 					}
-					else return startDownload(url);
+					else return startDownload(url, false);
 			    }
 			}
 		});
@@ -636,7 +637,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://save image
-    			startDownload(url);
+    			startDownload(url, true);
     			break;
     		case 1://view image
     			serverWebs.get(webIndex).loadUrl(url);
@@ -703,18 +704,22 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
 }
 
-boolean startDownload(String url) {
+boolean startDownload(String url, boolean anyfile) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
-	String realUrl = URLDecoder.decode(url);// replace %3A%2F%2F to :// if any
+	String readableUrl = URLDecoder.decode(url);// replace %3A%2F%2F to :// if any
 	
-	posQ = realUrl.indexOf("?");
-	if (posQ > 0) realUrl = realUrl.substring(0, posQ);//cut off post paras if any.
+	posQ = readableUrl.indexOf("?");
+	if (posQ > 0) readableUrl = readableUrl.substring(0, posQ);//cut off post paras if any.
 
-	String ss[] = realUrl.split("/");
+	String ss[] = readableUrl.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
-	if ((apkName.endsWith(".txt")) || (apkName.endsWith(".html")) || (apkName.endsWith(".htm"))) return false;//should not download txt and html file.
+	if (!anyfile)
+		if (apkName.endsWith(".txt") || apkName.endsWith(".html") || apkName.endsWith(".htm") || 
+				apkName.endsWith(".php") || 
+				apkName.endsWith(".com") || apkName.endsWith(".net") || apkName.endsWith(".org")) 
+			return false;//should not download txt and html file.
 	
 	if (!apkName.contains(".")) return false;//not a file
 	
@@ -793,11 +798,14 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
     	URL url = null;
     	try {
     		download_file = new File(downloadPath + apkName);
+    		boolean found = false;
     		if (mimeType != null) {
     			intent.setAction(Intent.ACTION_VIEW);
     			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
+    			List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
+    			if ((list != null) && !list.isEmpty()) found = true;  
     		}
-    		else {
+    		if (!found) {
     			intent.setAction("com.estrongs.action.PICK_FILE");
     			intent.setData(Uri.fromFile(download_file));
     		}
@@ -1349,7 +1357,7 @@ protected void onDestroy() {
 BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
-		startDownload(intent.getStringExtra("url"));
+		startDownload(intent.getStringExtra("url"), true);
 	}
 };
 

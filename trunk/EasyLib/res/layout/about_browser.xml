@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
+  android:fadeScrollbars="true"
   >
   
     <LinearLayout
@@ -19,6 +20,16 @@
         android:background="@drawable/button_layout"
     />
 
+    <TextView android:id="@+id/mailto"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/author"
+      	android:textSize="16dip"
+      	android:textColor="#F08080F0"
+      	android:layout_marginBottom="10dip"
+      	android:layout_gravity="center_horizontal"
+    />
+
     <TextView android:id="@+id/help"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
@@ -30,7 +41,16 @@
 		android:background="@drawable/round_corner_light"
     />
 
-  	
+    <Button android:id="@+id/vote"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:text="@string/vote"
+		android:layout_margin="5dip"
+        android:background="@drawable/button_layout"
+    />
+
+    	
   	<CheckBox android:id="@+id/show_zoom"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
@@ -47,6 +67,7 @@
       	android:checked="false"
     />
       
+    
     <RadioGroup android:id="@+id/font_size"  
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"  
@@ -108,12 +129,17 @@
         />  
 	</RadioGroup>           
 
+    <HorizontalScrollView
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:fadeScrollbars="true"
+		android:layout_margin="5dip"
+		android:background="@drawable/round_corner_light"
+        >
     <RadioGroup android:id="@+id/encoding"  
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"  
     	android:orientation="horizontal"
-		android:layout_margin="5dip"
-		android:background="@drawable/round_corner_light"
     >  
     <TextView
     	android:layout_width="wrap_content"  
@@ -133,14 +159,31 @@
         android:id="@+id/radio_utf8"
         android:text="@string/encoding_utf8"
 		android:layout_marginLeft="5dip"
-        />  
+        />
     <RadioButton  
         android:id="@+id/radio_gbk"
         android:text="@string/encoding_gbk"
 		android:layout_marginLeft="5dip"
+        />
+    <RadioButton  
+        android:id="@+id/radio_gb2312"
+        android:text="@string/encoding_gb2312"
+		android:layout_marginLeft="5dip"
         />  
+    <RadioButton  
+        android:id="@+id/radio_big5"
+        android:text="@string/encoding_big5"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:id="@+id/radio_latin1"
+        android:text="@string/encoding_latin1"
+		android:layout_marginLeft="5dip"
+        />  
+    
 	</RadioGroup>           
-
+    </HorizontalScrollView>
+    
     <RadioGroup android:id="@+id/snap_size"  
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"  
@@ -168,24 +211,6 @@
 		android:layout_marginLeft="5dip"
         />  
 	</RadioGroup>           
-
-    <TextView android:id="@+id/mailto"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/author"
-      	android:textSize="16dip"
-      	android:textColor="#F08080F0"
-      	android:layout_gravity="center_horizontal"
-    />
-
-    <Button android:id="@+id/vote"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:text="@string/vote"
-		android:layout_margin="5dip"
-        android:background="@drawable/button_layout"
-    />
 
     </LinearLayout>
 

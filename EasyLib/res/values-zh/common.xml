@@ -46,8 +46,6 @@
     <string name="home">首屏</string>
     <string name="packages">其它</string>
     
-    <string name="show_zoom">显示缩放按钮</string>
-    
     <string name="addtoFavo">添加到首屏</string>
     <string name="removeFromFavo">从首屏删除</string>
     <string name="addtoShort">添加到快捷方式</string>
@@ -116,7 +114,8 @@
     <string name="snap_size">截屏尺寸</string>
     <string name="full_screen">全屏</string>
     <string name="full_webpage">全网页</string>
-    <string name="homepage_css">主页特效(网速慢时不要打开)</string>
+    <string name="show_zoom">缩放按钮</string>
+    <string name="homepage_css">主页特效，会稍稍有点慢</string>
     <string name="max_history">历史记录</string>
     <string name="font_size">字体大小</string>
     <string name="font_smallest">最小</string>

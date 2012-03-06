@@ -49,8 +49,6 @@
     <string name="home">Home</string>
     <string name="packages">Services/Providers</string>
     
-    <string name="show_zoom">Show Zoom Control</string>
-    
     <string name="addtoFavo">Add to home</string>
     <string name="removeFromFavo">Delete</string>
     <string name="addtoShort">Add to shortcut</string>
@@ -119,7 +117,8 @@
     <string name="snap_size">Snap Size</string>
     <string name="full_screen">FullScreen</string>
     <string name="full_webpage">FullWeb</string>
-    <string name="homepage_css">Cool but slower Homepage</string>
+    <string name="show_zoom">Zoom Control</string>
+    <string name="homepage_css">Cool Homepage, but a little slow</string>
     <string name="max_history">History</string>
     <string name="history_8">10</string>
     <string name="history_16">15</string>

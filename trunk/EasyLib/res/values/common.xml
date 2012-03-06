@@ -119,7 +119,7 @@
     <string name="snap_size">Snap Size</string>
     <string name="full_screen">FullScreen</string>
     <string name="full_webpage">FullWeb</string>
-    <string name="homepage_css">Cool but Slow Homepage</string>
+    <string name="homepage_css">Cool but slower Homepage</string>
     <string name="max_history">History</string>
     <string name="history_8">10</string>
     <string name="history_16">15</string>

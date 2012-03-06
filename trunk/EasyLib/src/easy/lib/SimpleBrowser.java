@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -82,6 +84,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,6 +97,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import android.widget.VideoView;
 import android.widget.ViewFlipper;
 import android.webkit.GeolocationPermissions;
 
@@ -170,34 +174,6 @@ class wrapWebSettings {
 		mInstance = settings;
 	}
 
-	synchronized void setJavaScriptEnabled(boolean enabled) {
-    	mInstance.setJavaScriptEnabled(enabled);
-    }
-    
-	synchronized void setSaveFormData(boolean save) {
-    	mInstance.setSaveFormData(save);
-    }
-    
-	synchronized void setTextSize(TextSize t) {
-    	mInstance.setTextSize(t);
-    }
-    
-	synchronized void setSupportZoom(boolean support) {
-    	mInstance.setSupportZoom(support);
-    }
-    
-	synchronized void setBuiltInZoomControls(boolean enabled) {
-    	mInstance.setBuiltInZoomControls(enabled);
-    }
-    
-	synchronized void setUseWideViewPort(boolean use) {
-    	mInstance.setUseWideViewPort(use);
-    }
-    
-	synchronized void setPluginsEnabled(boolean flag) {
-    	mInstance.setPluginsEnabled(flag);
-    }
-
 	synchronized void setLoadWithOverviewMode(boolean overview) {//from API 7
     	try {
     		Method method = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] {boolean.class});
@@ -264,6 +240,12 @@ public class SimpleBrowser extends Activity {
 	ListView webList;
 	Context mContext;
 
+	//settings
+	boolean css;
+	boolean snapFullScreen;
+	TextSize textSize;
+	int historyCount;
+	
 	//snap dialog
 	ImageView snapView;
 	Bitmap bmp;
@@ -357,18 +339,6 @@ class MyWebview extends WebView {
 	    }
 	}
 
-    void setTextSize(String url) {
-		if (dm.density < 1) {//the text size on home page should not be so big, otherwise looks strange?
-			webSettings.setTextSize(TextSize.SMALLER);
-		}
-		else if (dm.density == 1.0) {
-			webSettings.setTextSize(TextSize.NORMAL);
-		}
-		else {
-			webSettings.setTextSize(TextSize.LARGER);
-		}
-    }
-    
 	public MyWebview(Context context) {
 		super(context);
 		
@@ -378,15 +348,16 @@ class MyWebview extends WebView {
     		method.invoke(this, true);//hide scroll bar when not scroll. from API5, not work on cupcake.
     	}
     	catch(Exception e) {e.printStackTrace();}
+
+    	WebSettings localSettings = getSettings();
+    	localSettings.setJavaScriptEnabled(true);
+    	localSettings.setSaveFormData(true);
+    	localSettings.setTextSize(textSize);
+    	localSettings.setSupportZoom(true);
+    	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
+    	localSettings.setPluginsEnabled(true);
         
-        webSettings = new wrapWebSettings(getSettings());
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setSaveFormData(true);
-        webSettings.setTextSize(WebSettings.TextSize.SMALLER);
-        webSettings.setSupportZoom(true);
-        //webSettings.setBuiltInZoomControls(showZoomControl.isChecked());
-        webSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
-        webSettings.setPluginsEnabled(true);
+        webSettings = new wrapWebSettings(localSettings);
         webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         webSettings.setAppCacheEnabled(true);//API7
@@ -446,6 +417,24 @@ class MyWebview extends WebView {
 	        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 	            callback.invoke(origin, true, false);
 	        }//I don't know how to reflect a Interface, so it will carsh on cupcake*/
+            
+            
+            /*@Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                super.onShowCustomView(view, callback);
+                if (view instanceof FrameLayout){
+                    FrameLayout frame = (FrameLayout) view;
+                    if (frame.getFocusedChild() instanceof VideoView){
+                        VideoView video = (VideoView) frame.getFocusedChild();
+                        //video.setOnErrorListener(this);
+                        //video.setOnCompletionListener(this);
+                        video.start();
+                        //video.stopPlayback();//call these 2 line when stop or change to other url
+                        //callback.onCustomViewHidden();
+                    }
+                }
+            }API 7 */
+            
 		});
         
 		setWebViewClient(new WebViewClient() {
@@ -461,7 +450,7 @@ class MyWebview extends WebView {
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
-				setTextSize(url);
+        		view.getSettings().setTextSize(textSize);
 				
 				if (!paid && mAdAvailable) adview.loadAd();
 
@@ -492,8 +481,6 @@ class MyWebview extends WebView {
         			if(title.equals(getString(R.string.browser_name)))//if title and url not sync, then sync it.
         				webAddress.setText(BLANK_PAGE);
         			else {//handle the bookmark/history after load new page
-        				setTextSize(url);
-        				
             			String site = "";
             			String[] tmp = url.split("/");
             			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
@@ -529,9 +516,9 @@ class MyWebview extends WebView {
                 		mHistory.add(titleUrl);
                 		historyChanged = true;
                 		
-                		if (mHistory.size() > 16) {//remove oldest history
+                		if (mHistory.size() > historyCount) {//remove oldest history
                 			site = mHistory.get(0).m_site;
-                			mHistory.remove(0);//delete the first history if list larger than 16;
+                			mHistory.remove(0);//delete the first history if list larger than historyCount;
                 			
                 			boolean found = false;
                 			for (int i = mHistory.size()-1; i >= 0; i--) {
@@ -731,13 +718,7 @@ boolean startDownload(String url) {
 boolean startDownload(String url, String ext) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
-	url = url.replace("%2D", "-");
-	url = url.replace("%5F", "_");
-	url = url.replace("%3F", "?");
-	url = url.replace("%3D", "=");
-	url = url.replace("%2E", ".");
-	url = url.replace("%2F", "/");
-	url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
+	url = URLDecoder.decode(url);// replace %3A%2F%2F to :// if any
 	
 	posQ = url.indexOf("?");
 	if (posQ > 0) url = url.substring(0, posQ);//cut off post paras if any.
@@ -746,7 +727,7 @@ boolean startDownload(String url, String ext) {
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if ((apkName.endsWith(".txt")) || (apkName.endsWith(".html")) || (apkName.endsWith(".htm"))) return false;//should not download txt and html file.
-	
+Log.d("===============", apkName);	
 	if (!apkName.contains(".")) {
 		if (!ext.equals("")) apkName = apkName + ext;
 		else return false;//not a file
@@ -991,6 +972,8 @@ public void onCreate(Bundle savedInstanceState) {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
+    css = sp.getBoolean("css", false);
+
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1098,11 +1081,11 @@ public void onCreate(Bundle savedInstanceState) {
        	    	m_sourceDialog.show();
         		break;
         	case 1://view snap
-    			//if (btnFullScreen.isChecked()) {
+    			if (snapFullScreen) {
 					webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
     				webpages.setDrawingCacheEnabled(true);
     				bmp = webpages.getDrawingCache();
-    			/*}
+    			}
     			else {
         			Picture pic = serverWebs.get(webIndex).capturePicture();
 
@@ -1113,7 +1096,7 @@ public void onCreate(Bundle savedInstanceState) {
     			
         			Canvas canvas = new Canvas(bmp); 
         	        pic.draw(canvas);
-    			}*/
+    			}
         		snapView.setImageBitmap(bmp);
         		snapDialog.show();
         		
@@ -1252,6 +1235,7 @@ public void onCreate(Bundle savedInstanceState) {
 	webAddress.setAdapter(urlAdapter);
 
 
+    readTextSize(sp);//init the text size
 	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;
     serverWebs = new ArrayList<MyWebview>();
@@ -1542,6 +1526,74 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	return super.onKeyDown(keyCode, event);
 }
 
+void readTextSize(SharedPreferences sp) {
+    int iTextSize = sp.getInt("textsize", -1);
+    if (iTextSize < 0) {
+    	if (dm.density < 1) 
+    		textSize = TextSize.SMALLER;
+    	else if (dm.density == 1.0) 
+    		textSize = TextSize.NORMAL;
+    	else 
+    		textSize = TextSize.LARGER;
+    }
+    else switch(iTextSize) {
+    case 0:
+    	textSize = TextSize.SMALLEST;
+    	break;
+    case 1:
+		textSize = TextSize.SMALLER;
+    	break;
+    case 2:
+		textSize = TextSize.NORMAL;
+    	break;
+    case 3:
+		textSize = TextSize.LARGER;
+    	break;
+    case 4:
+		textSize = TextSize.LARGEST;
+    	break;
+    }	
+}
+
+@Override 
+protected void onResume() {
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+	Editor sEdit = sp.edit();
+    
+    css = sp.getBoolean("css", false);
+    historyCount = sp.getInt("history_count", 10);
+    snapFullScreen = sp.getBoolean("full_screen", true);
+    
+    boolean showZoom = sp.getBoolean("show_zoom", false);
+    serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoom);
+    if (showZoom) {//make it work only on current page, for zoomControl is noisy in most of cases.
+    	sEdit.putBoolean("show_zoom", false);
+    	sEdit.commit();
+    }
+    
+    readTextSize(sp);
+
+    int iEncoding = sp.getInt("encoding", -1);
+    String encoding = "";
+    switch (iEncoding) {
+    case 0:
+    	serverWebs.get(webIndex).reload();
+    	break;
+    case 1:
+    	encoding = "";
+    	break;
+    }
+    if (iEncoding > 0) {//make it work only on current page.
+		//serverWebs.get(webIndex).loadDataWithBaseURL(, , null, encoding, );
+		
+    	sEdit.putInt("encoding", 0);//set it to auto again after reload
+    	sEdit.commit();
+    }
+
+    
+    super.onResume();
+}
+
 @Override
 protected void onPause() {
 	FileOutputStream fo;
@@ -1608,9 +1660,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<html>";
 	ret += "<head>";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
-	ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/jquery.mobile-1.0.1.min.css\" />";
-	ret += "<script src=\"file:///android_asset/jquery-1.7.1.min.js\"></script>";
-	ret += "<script src=\"file:///android_asset/jquery.mobile-1.0.1.min.js\"></script>";
+	if (css) {
+		ret += "<link rel=\"stylesheet\" href=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.css\" />";
+	    ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js\"></script>";
+	    ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.js\"></script>";
+	}
 	ret += "</head>";
 	ret += "<body>";
 

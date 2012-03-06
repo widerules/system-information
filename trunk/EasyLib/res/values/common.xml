@@ -73,10 +73,6 @@
     <string name="top">Top</string>
     <string name="source">Page Source</string>
     <string name="not_avaiable">Sorry, not avaiable on Android2.3.3</string>
-    <string name="snap">Snap Shot</string>
-    <string name="snap_size">SnapSize</string>
-    <string name="full_screen">FullScreen</string>
-    <string name="full_webpage">FullWeb</string>
     <string name="homepage">Home Page</string>
     <string name="shareurl">Share Url</string>
     <string name="recommend">Recommend</string>
@@ -119,15 +115,26 @@
     <string name="list_view">List View</string>
     <string name="restart">It need restart to change the view. \nRestart now?</string>
 
-    <string name="homepage_css">cool homepage</string>
+    <string name="snap">Snap Shot</string>
+    <string name="snap_size">Snap Size</string>
+    <string name="full_screen">FullScreen</string>
+    <string name="full_webpage">FullWeb</string>
+    <string name="homepage_css">Cool but Slow Homepage</string>
     <string name="max_history">History</string>
-    <string name="history_8">8</string>
-    <string name="history_16">16</string>
+    <string name="history_8">10</string>
+    <string name="history_16">15</string>
     <string name="font_size">Font</string>
     <string name="font_smallest">smallest</string>
     <string name="font_smaller">small</string>
     <string name="font_normal">normal</string>
     <string name="font_larger">large</string>
     <string name="font_largest">largest</string>
+    <string name="encoding">Encoding</string>
+    <string name="encoding_auto">Auto</string>
+    <string name="encoding_utf8">UTF-8</string>
+    <string name="encoding_gb2312">GB2312</string>
+    <string name="encoding_big5">BIG5</string>
+    <string name="encoding_gbk">GBK</string>
+    <string name="encoding_latin1">ISO-8859-1</string>
     
 </resources>

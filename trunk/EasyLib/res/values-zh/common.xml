@@ -116,7 +116,7 @@
     <string name="snap_size">截屏尺寸</string>
     <string name="full_screen">全屏</string>
     <string name="full_webpage">全网页</string>
-    <string name="homepage_css">主页特效</string>
+    <string name="homepage_css">主页特效(网速慢时不要打开)</string>
     <string name="max_history">历史记录</string>
     <string name="font_size">字体大小</string>
     <string name="font_smallest">最小</string>
@@ -124,5 +124,7 @@
     <string name="font_normal">中</string>
     <string name="font_larger">大</string>
     <string name="font_largest">最大</string>
+    <string name="encoding">文字编码</string>
+    <string name="encoding_auto">自动</string>
     
 </resources>

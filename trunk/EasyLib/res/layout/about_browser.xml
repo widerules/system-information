@@ -31,14 +31,6 @@
     />
 
   	
-    <CheckBox android:id="@+id/homepage_css"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/homepage_css"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    />
-      
   	<CheckBox android:id="@+id/show_zoom"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
@@ -47,34 +39,14 @@
       	android:checked="false"
     />
       
-    <RadioGroup android:id="@+id/snap_size"  
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"  
-    	android:orientation="horizontal"
-		android:layout_margin="5dip"
-		android:background="@drawable/round_corner_light"
-    >  
-    <TextView
-    	android:layout_width="wrap_content"  
-	    android:layout_height="wrap_content"
-	    android:text="@string/snap_size"
-		android:layout_marginLeft="5dip"
-      	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
-        />
-    <RadioButton  
-        android:id="@+id/radio_fullscreen"
-        android:text="@string/full_screen"
-		android:layout_marginLeft="5dip"
-        android:checked="true"  
-        />  
-    <RadioButton  
-        android:id="@+id/radio_fullwebpage"
-        android:text="@string/full_webpage"
-		android:layout_marginLeft="5dip"
-        />  
-	</RadioGroup>           
-
+    <CheckBox android:id="@+id/homepage_css"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/homepage_css"
+      	android:layout_marginLeft="15dip"
+      	android:checked="false"
+    />
+      
     <RadioGroup android:id="@+id/font_size"  
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"  
@@ -136,7 +108,68 @@
         />  
 	</RadioGroup>           
 
-  	<TextView android:id="@+id/mailto"
+    <RadioGroup android:id="@+id/encoding"  
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"  
+    	android:orientation="horizontal"
+		android:layout_margin="5dip"
+		android:background="@drawable/round_corner_light"
+    >  
+    <TextView
+    	android:layout_width="wrap_content"  
+	    android:layout_height="wrap_content"
+	    android:text="@string/encoding"
+		android:layout_marginLeft="5dip"
+      	android:textSize="16dip"
+      	android:textColor="#FFFFFFFF"
+        />
+    <RadioButton  
+        android:id="@+id/radio_auto"
+        android:text="@string/encoding_auto"
+		android:layout_marginLeft="5dip"
+        android:checked="true"  
+        />  
+    <RadioButton  
+        android:id="@+id/radio_utf8"
+        android:text="@string/encoding_utf8"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:id="@+id/radio_gbk"
+        android:text="@string/encoding_gbk"
+		android:layout_marginLeft="5dip"
+        />  
+	</RadioGroup>           
+
+    <RadioGroup android:id="@+id/snap_size"  
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"  
+    	android:orientation="horizontal"
+		android:layout_margin="5dip"
+		android:background="@drawable/round_corner_light"
+    >  
+    <TextView
+    	android:layout_width="wrap_content"  
+	    android:layout_height="wrap_content"
+	    android:text="@string/snap_size"
+		android:layout_marginLeft="5dip"
+      	android:textSize="16dip"
+      	android:textColor="#FFFFFFFF"
+        />
+    <RadioButton  
+        android:id="@+id/radio_fullscreen"
+        android:text="@string/full_screen"
+		android:layout_marginLeft="5dip"
+        android:checked="true"  
+        />  
+    <RadioButton  
+        android:id="@+id/radio_fullwebpage"
+        android:text="@string/full_webpage"
+		android:layout_marginLeft="5dip"
+        />  
+	</RadioGroup>           
+
+    <TextView android:id="@+id/mailto"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/author"

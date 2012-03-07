@@ -735,8 +735,6 @@ boolean startDownload(String url, boolean anyfile) {
 				apkName.endsWith(".com") || apkName.endsWith(".net") || apkName.endsWith(".org")) 
 			return false;//should not download txt and html file.
 	
-	if (!apkName.contains(".")) return false;//not a file
-	
 	if (downloadPath.startsWith(getFilesDir().getPath())) 
 		Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
 	
@@ -805,7 +803,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
         
    		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-   		String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName));
+   		String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName)) + "";
 		
     	FileOutputStream fos = null; //文件输出流
     	InputStream is = null; //网络文件输入流
@@ -813,15 +811,15 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
     	try {
     		download_file = new File(downloadPath + apkName);
     		boolean found = false;
-    		if (mimeType != null) {
+    		if (!mimeType.isEmpty()) {
     			intent.setAction(Intent.ACTION_VIEW);
     			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
     			List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
-    			if ((list != null) && !list.isEmpty()) found = true;  
+    			if ((list != null) && !list.isEmpty()) found = true;
     		}
     		if (!found) {
     			intent.setAction("com.estrongs.action.PICK_FILE");
-    			intent.setData(Uri.fromFile(download_file));
+    			intent.setData(Uri.fromFile(new File(downloadPath)));
     		}
     		
         	url = new URL(URL_str); //网络歌曲的url
@@ -899,12 +897,12 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
     			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//change file property, for on some device the property is wrong
     			p.waitFor();
     			
-				if ((apkName.toLowerCase().endsWith("jpg")) || (apkName.toLowerCase().endsWith("png"))) {
+				if (mimeType.startsWith("image")) {
 					Intent intentAddPic = new Intent("simpleHome.action.PIC_ADDED");
 					intentAddPic.putExtra("picFile", apkName);
 	                sendBroadcast(intentAddPic);//add to picture list and enable change background by shake
 				}
-				else if (apkName.toLowerCase().endsWith("apk")) {
+				else if (mimeType.startsWith("application")) {
 					PackageInfo pi = getPackageManager().getPackageArchiveInfo(downloadPath + apkName, 0);
         			downloadAppID.add(new packageIDpair(pi.packageName, NOTIFICATION_ID, download_file));
 				}

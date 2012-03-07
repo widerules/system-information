@@ -750,9 +750,9 @@ boolean startDownload(String url, boolean anyfile) {
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if (!anyfile)
 		if (apkName.endsWith(".txt") || apkName.endsWith("html") || apkName.endsWith("htm") || 
-				apkName.endsWith(".php") || 
+				apkName.endsWith(".php") || !apkName.contains(".") ||
 				apkName.endsWith(".com") || apkName.endsWith(".net") || apkName.endsWith(".org")) 
-			return false;//should not download txt and html file.
+			return false;//should not download these files automatically.
 	
 	if (downloadPath.startsWith(getFilesDir().getPath())) 
 		Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
@@ -830,7 +830,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
     	try {
     		download_file = new File(downloadPath + apkName);
     		boolean found = false;
-    		if (!mimeType.isEmpty()) {
+    		if (!mimeType.equals("")) {
     			intent.setAction(Intent.ACTION_VIEW);
     			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
     			List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);

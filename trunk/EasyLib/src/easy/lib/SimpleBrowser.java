@@ -446,7 +446,7 @@ class MyWebview extends WebView {
 				if (ws.getCacheMode() != WebSettings.LOAD_NORMAL) {
 					if(cm.getActiveNetworkInfo().isConnected())
 						ws.setCacheMode(WebSettings.LOAD_NORMAL);
-					else//use cache if not connect
+					else//use cache if no connection
 						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 				}
 				super.onPageStarted(view, url, favicon);
@@ -465,10 +465,6 @@ class MyWebview extends WebView {
         		imgRefresh.setImageResource(R.drawable.refresh);
 				webAdapter.notifyDataSetChanged();//update the page title in webList
 				
-				//from android doc, For a normal page load, the cache is checked and content is re-validated as needed. 
-				//When navigating back, content is not revalidated, instead the content is just pulled from the cache.
-				//view.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//so don't change the default cache mode.
-
 				String title = view.getTitle();
 				if (title == null) title = url;
 				
@@ -718,7 +714,14 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
 boolean startDownload(String url, boolean anyfile) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
-	String readableUrl = URLDecoder.decode(url);// replace %3A%2F%2F to :// if any
+	url = url.replace("%2D", "-");
+	url = url.replace("%5F", "_");
+	url = url.replace("%3F", "?");
+	url = url.replace("%3D", "=");
+	url = url.replace("%2E", ".");
+	url = url.replace("%2F", "/");
+	url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
+	String readableUrl = URLDecoder.decode(url);
 	
 	posQ = readableUrl.indexOf("?");
 	if (posQ > 0) readableUrl = readableUrl.substring(0, posQ);//cut off post paras if any.

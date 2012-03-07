@@ -456,7 +456,9 @@ class MyWebview extends WebView {
         		imgRefresh.setImageResource(R.drawable.refresh);
 				webAdapter.notifyDataSetChanged();//update the page title in webList
 				
-				view.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//use cache if avaiable for next load
+				//from android doc, For a normal page load, the cache is checked and content is re-validated as needed. 
+				//When navigating back, content is not revalidated, instead the content is just pulled from the cache.
+				//view.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//so don't change the default cache mode.
 
 				String title = view.getTitle();
 				if (title == null) title = url;
@@ -1271,7 +1273,6 @@ public void onCreate(Bundle savedInstanceState) {
 			}
 			else {//reload the webpage
 				if (!webAddress.getText().toString().equals(BLANK_PAGE)) { 
-					serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);//not use cache when refresh
 					serverWebs.get(webIndex).reload();
 				}
 			}

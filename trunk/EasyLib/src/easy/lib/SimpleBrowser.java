@@ -43,6 +43,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -266,7 +267,8 @@ public class SimpleBrowser extends Activity {
 	Button btnNewpage;
 	InputMethodManager imm;
 	ProgressBar loadProgress;
-
+	ConnectivityManager cm;
+	
 	//upload related
 	static boolean mValueCallbackAvailable;
 	static {
@@ -440,14 +442,21 @@ class MyWebview extends WebView {
 			
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				WebSettings ws = view.getSettings();
+				if (ws.getCacheMode() != WebSettings.LOAD_NORMAL) {
+					if(cm.getActiveNetworkInfo().isConnected())
+						ws.setCacheMode(WebSettings.LOAD_NORMAL);
+					else//use cache if not connect
+						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+				}
+				super.onPageStarted(view, url, favicon);
+
 				imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
         		loadProgress.setVisibility(View.VISIBLE);
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
 				if (!paid && mAdAvailable) adview.loadAd();
-
-				super.onPageStarted(view, url, favicon);
 			}
 			 
 			@Override
@@ -1229,6 +1238,7 @@ public void onCreate(Bundle savedInstanceState) {
 	webAddress.setAdapter(urlAdapter);
 
 
+	cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
     readTextSize(sp);//init the text size
 	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;

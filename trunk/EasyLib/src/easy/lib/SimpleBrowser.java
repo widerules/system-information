@@ -236,7 +236,7 @@ public class SimpleBrowser extends Activity {
 	//settings
 	boolean css;
 	boolean snapFullScreen;
-	TextSize textSize;
+	TextSize textSize = TextSize.SMALLER;
 	int historyCount;
 	
 	//snap dialog
@@ -349,7 +349,6 @@ class MyWebview extends WebView {
     	localSettings.setSupportZoom(true);
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
-		localSettings.setTextSize(textSize);
 		
         
         webSettings = new wrapWebSettings(localSettings);
@@ -1523,7 +1522,9 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	return super.onKeyDown(keyCode, event);
 }
 
-void readTextSize(SharedPreferences sp) {
+boolean readTextSize(SharedPreferences sp) {
+	TextSize oldt = textSize;
+	
     int iTextSize = sp.getInt("textsize", -1);
     if (iTextSize < 0) {
     	if (dm.density < 1) 
@@ -1547,7 +1548,8 @@ void readTextSize(SharedPreferences sp) {
     case 5:
 		textSize = TextSize.LARGEST;
     	break;
-    }	
+    }
+    return oldt != textSize;
 }
 
 @Override 
@@ -1555,7 +1557,6 @@ protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
     
-    css = sp.getBoolean("css", false);
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);
     
@@ -1566,23 +1567,51 @@ protected void onResume() {
     	sEdit.commit();
     }
     
-    readTextSize(sp);
+    
+    
+	String url = serverWebs.get(webIndex).getUrl();
+	
+    boolean oldCss = css;
+    css = sp.getBoolean("css", false);
+	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
+    
+    if (readTextSize(sp)) {//reload page if fontSize changed
+    	serverWebs.get(webIndex).getSettings().setTextSize(textSize);
+    	if (url.equals(BLANK_PAGE)) loadPage(true);
+    	else serverWebs.get(webIndex).reload();
+    }
 
     int iEncoding = sp.getInt("encoding", -1);
     String encoding = "";
     switch (iEncoding) {
-    case 1:
-    	//serverWebs.get(webIndex).reload();
-    	break;
     case 2:
-    	encoding = "";
+    	encoding = "utf-8";
+    	break;
+    case 3:
+    	encoding = "gbk";
+    	break;
+    case 4:
+    	encoding = "gb2312";
+    	break;
+    case 5:
+    	encoding = "big5";
+    	break;
+    case 6:
+    	encoding = "iso-8859-1";
     	break;
     }
-    if (iEncoding > 0) {//make it work only on current page.
-		//serverWebs.get(webIndex).loadDataWithBaseURL(, , null, encoding, );
+    if (iEncoding > 1) {//reload page if encoding changed. but make it work only once on current page, if not homepage.
+    	if (!url.equals(BLANK_PAGE)) {
+        	String base = null;
+    		if (serverWebs.get(webIndex).canGoBack()) {
+    			WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+    			base = wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl();
+    		}
+    		serverWebs.get(webIndex).loadDataWithBaseURL(url, null, null, encoding, base);
+    	}
 		
-    	//sEdit.putInt("encoding", 0);//set it to auto again after reload
-    	//sEdit.commit();
+    	sEdit.putInt("encoding", 1);//set it to auto again after reload
+    	sEdit.commit();
     }
 
     String searchText = sp.getString("search_text", "");

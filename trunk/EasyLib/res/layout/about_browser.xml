@@ -77,7 +77,7 @@
 		android:background="@drawable/round_corner_light"
         >
     <RadioGroup android:id="@+id/max_history"  
-    	android:layout_width="match_parent"
+    	android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"  
     	android:orientation="horizontal"
     >  
@@ -110,7 +110,7 @@
 		android:background="@drawable/round_corner_light"
         >
     <RadioGroup android:id="@+id/encoding"  
-    	android:layout_width="match_parent"
+    	android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"  
     	android:orientation="horizontal"
     >  
@@ -165,7 +165,7 @@
         >
     
     <RadioGroup android:id="@+id/font_size"  
-    	android:layout_width="match_parent"
+    	android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"  
     	android:orientation="horizontal"
     >  
@@ -178,7 +178,7 @@
       	android:textColor="#FFFFFFFF"
         />
     <RadioButton  
-        android:id="@+id/radio_smaller"
+        android:id="@+id/radio_smallest"
         android:text="@string/font_smallest"
 		android:layout_marginLeft="5dip"
         />  
@@ -213,7 +213,7 @@
 		android:background="@drawable/round_corner_light"
         >
     <RadioGroup android:id="@+id/snap_size"  
-    	android:layout_width="match_parent"
+    	android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"  
     	android:orientation="horizontal"
     >  

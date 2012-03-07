@@ -159,7 +159,7 @@ public class AboutBrowser extends Activity{
 	@Override
 	protected void onResume() {
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
-		cbCss.setChecked(perferences.getBoolean("css", true));
+		cbCss.setChecked(perferences.getBoolean("css", false));
 		
     	if (dm.density < 1) 
     		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//smaller

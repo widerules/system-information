@@ -964,7 +964,7 @@ public void onCreate(Bundle savedInstanceState) {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
-    css = sp.getBoolean("css", true);
+    css = sp.getBoolean("css", false);
 
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

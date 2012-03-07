@@ -257,7 +257,7 @@ public class SimpleBrowser extends Activity {
 	ArrayAdapter<String> urlAdapter;
 	ArrayList<String> siteArray;
 	
-	ArrayList<MyWebview> serverWebs;
+	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
 	ViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
@@ -716,7 +716,7 @@ boolean startDownload(String url, boolean anyfile) {
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if (!anyfile)
-		if (apkName.endsWith(".txt") || apkName.endsWith(".html") || apkName.endsWith(".htm") || 
+		if (apkName.endsWith(".txt") || apkName.endsWith("html") || apkName.endsWith("htm") || 
 				apkName.endsWith(".php") || 
 				apkName.endsWith(".com") || apkName.endsWith(".net") || apkName.endsWith(".org")) 
 			return false;//should not download txt and html file.
@@ -1230,7 +1230,6 @@ public void onCreate(Bundle savedInstanceState) {
     readTextSize(sp);//init the text size
 	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;
-    serverWebs = new ArrayList<MyWebview>();
     serverWebs.add(new MyWebview(this));
     webpages = (ViewFlipper) findViewById(R.id.webpages);
     webpages.addView(serverWebs.get(webIndex));

@@ -68,12 +68,11 @@
       	android:checked="false"
     />
       
-
     <HorizontalScrollView
     	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
+	    android:layout_height="0dip"
 	    android:fadeScrollbars="true"
-		android:layout_margin="5dip"
+		android:layout_margin="0dip"
 		android:background="@drawable/round_corner_light"
         >
     <RadioGroup android:id="@+id/max_history"  
@@ -104,9 +103,9 @@
     
     <HorizontalScrollView
     	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
+	    android:layout_height="0dip"
 	    android:fadeScrollbars="true"
-		android:layout_margin="5dip"
+		android:layout_margin="0dip"
 		android:background="@drawable/round_corner_light"
         >
     <RadioGroup android:id="@+id/encoding"  
@@ -240,9 +239,9 @@
     
     <LinearLayout
     	android:layout_width="match_parent"
-   	    android:layout_height="wrap_content"
+   	    android:layout_height="0dip"
     	android:orientation="horizontal"
-    	android:layout_margin="5dip"
+    	android:layout_margin="0dip"
 		android:descendantFocusability="beforeDescendants"
 		android:focusableInTouchMode="true"
 	    >

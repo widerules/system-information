@@ -50,6 +50,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -237,7 +238,7 @@ public class SimpleBrowser extends Activity {
 	boolean css;
 	boolean snapFullScreen;
 	TextSize textSize = TextSize.SMALLER;
-	int historyCount;
+	int historyCount = 16;
 	
 	//snap dialog
 	ImageView snapView;
@@ -1557,7 +1558,7 @@ protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
     
-    historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
+	
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);
     
     boolean showZoom = sp.getBoolean("show_zoom", false);
@@ -1569,8 +1570,8 @@ protected void onResume() {
     
     
     
-	String url = serverWebs.get(webIndex).getUrl();
-	
+	String url = serverWebs.get(webIndex).getUrl() + "";
+
     boolean oldCss = css;
     css = sp.getBoolean("css", false);
 	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
@@ -1581,6 +1582,8 @@ protected void onResume() {
     	else serverWebs.get(webIndex).reload();
     }
 
+    /*disable setting of historyCount, encoding and search
+    historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     int iEncoding = sp.getInt("encoding", -1);
     String encoding = "";
     switch (iEncoding) {
@@ -1626,7 +1629,7 @@ protected void onResume() {
 
     	sEdit.putString("search_text", "");
     	sEdit.commit();
-    }
+    }*/
     
     super.onResume();
 }

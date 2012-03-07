@@ -256,6 +256,7 @@ public class SimpleBrowser extends Activity {
 	boolean snapFullScreen;
 	TextSize textSize = TextSize.SMALLER;
 	int historyCount = 16;
+	long html5cacheMaxSize = 1024*1024*8;
 	
 	//snap dialog
 	ImageView snapView;
@@ -375,10 +376,10 @@ class MyWebview extends WebView {
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         webSettings.setAppCacheEnabled(true);//API7
         webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
-        webSettings.setAppCacheMaxSize(Long.MAX_VALUE);//will cause crash on OPhone if not set the max size
+        webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
         webSettings.setDomStorageEnabled(true);//API7, enable gmail
         webSettings.setDatabaseEnabled(true);//API5
-        webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+        webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
         webSettings.setGeolocationEnabled(true);//API5
         webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 
@@ -1167,6 +1168,7 @@ public void onCreate(Bundle savedInstanceState) {
         		break;
         	case 5://about
     			intent = new Intent("easy.lib.about");
+    			intent.setPackage(getPackageName());
     			util.startActivity(intent, false, getBaseContext());
     			break;
             }

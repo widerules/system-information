@@ -185,6 +185,22 @@ class wrapWebSettings {
     	catch(Exception e) {e.printStackTrace();}
     }
     
+	synchronized void setAppCachePath(String databasePath) {//API 7
+    	try {
+    		Method method = WebSettings.class.getMethod("setAppCachePath", new Class[] {String.class});
+    		method.invoke(mInstance, databasePath);
+    	}
+    	catch(Exception e) {e.printStackTrace();}
+    }
+    
+	synchronized void setAppCacheMaxSize(long max) {//API 7
+    	try {
+    		Method method = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] {Long.class});
+    		method.invoke(mInstance, max);
+    	}
+    	catch(Exception e) {e.printStackTrace();}
+    }
+    
 	synchronized void setDomStorageEnabled(boolean flag) {//API 7
     	try {
     		Method method = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] {boolean.class});
@@ -358,6 +374,8 @@ class MyWebview extends WebView {
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         webSettings.setAppCacheEnabled(true);//API7
+        webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
+        webSettings.setAppCacheMaxSize(Long.MAX_VALUE);//will cause crash on OPhone if not set the max size
         webSettings.setDomStorageEnabled(true);//API7, enable gmail
         webSettings.setDatabaseEnabled(true);//API5
         webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5

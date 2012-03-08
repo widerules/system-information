@@ -195,7 +195,7 @@ class wrapWebSettings {
     
 	synchronized void setAppCacheMaxSize(long max) {//API 7
     	try {
-    		Method method = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] {Long.class});
+    		Method method = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] {long.class});
     		method.invoke(mInstance, max);
     	}
     	catch(Exception e) {e.printStackTrace();}
@@ -311,6 +311,7 @@ public class SimpleBrowser extends Activity {
 	static {
 	       try {
 	    	   wrapAdView.checkAvailable();
+	           Class.forName("com.google.ads.AdView");
 	    	   mAdAvailable = true;
 	       } catch (Throwable t) {
 	    	   mAdAvailable = false;

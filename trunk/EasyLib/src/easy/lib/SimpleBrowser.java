@@ -754,13 +754,14 @@ boolean startDownload(String url, boolean anyfile) {
 	posQ = readableUrl.indexOf("?");
 	if (posQ > 0) readableUrl = readableUrl.substring(0, posQ);//cut off post paras if any.
 
+	if (url.endsWith("/")) return false; //such as http://m.cnbeta.com/, http://www.google.com.hk/ 
+	
 	String ss[] = readableUrl.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if (!anyfile)
 		if (apkName.endsWith(".txt") || apkName.endsWith("html") || apkName.endsWith("htm") || 
-				apkName.endsWith(".php") || !apkName.contains(".") ||
-				apkName.endsWith(".com") || apkName.endsWith(".net") || apkName.endsWith(".org")) 
+				apkName.endsWith(".php") || !apkName.contains("."))
 			return false;//should not download these files automatically.
 	
 	if (downloadPath.startsWith(getFilesDir().getPath())) 

@@ -369,6 +369,7 @@ class MyWebview extends WebView {
     	localSettings.setSupportZoom(true);
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
+    	//setInitialScale(1);
 		
         
         webSettings = new wrapWebSettings(localSettings);
@@ -505,7 +506,10 @@ class MyWebview extends WebView {
             			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
             			else site = tmp[0];
                 		for (int i = mHistory.size()-1; i >= 0; i--) {
-                			if (mHistory.get(i).m_url.equals(url)) return;//record one url only once in the history list.
+                			if (mHistory.get(i).m_url.equals(url)) {
+                				mHistory.get(i).m_title = title; 
+                				return;//record one url only once in the history list.
+                			}
                 			else if (mHistory.get(i).m_site.equals(site)) {
                 				mHistory.remove(i);//only keep the latest history of the same site.
                 				break;
@@ -1738,6 +1742,9 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<link rel=\"stylesheet\" href=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.css\" />";
 	    ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js\"></script>";
 	    ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.js\"></script>";
+		//ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/jquery.mobile-1.0.1.min.css\" />";
+	    //ret += "<script src=\"file:///android_asset/jquery-1.7.1.min.js\"></script>";
+	    //ret += "<script src=\"file:///android_asset/jquery.mobile-1.0.1.min.js\"></script>";
 	}
 	ret += "</head>";
 	ret += "<body>";

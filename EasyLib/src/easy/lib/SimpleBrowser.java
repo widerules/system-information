@@ -463,7 +463,7 @@ class MyWebview extends WebView {
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				WebSettings ws = view.getSettings();
 				if (ws.getCacheMode() != WebSettings.LOAD_NORMAL) {
-					if(cm.getActiveNetworkInfo().isConnected())
+					if((cm.getActiveNetworkInfo() != null) && cm.getActiveNetworkInfo().isConnected())
 						ws.setCacheMode(WebSettings.LOAD_NORMAL);
 					else//use cache if no connection
 						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
@@ -1742,7 +1742,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</head>";
 	ret += "<body>";
 
-	ret += "<div data-role=\"collapsible\" data-collapsed=\"false\" data-theme=\"b\" data-content-theme=\"d\">";
+	if (css) ret += "<div data-role=\"collapsible\" data-collapsed=\"false\" data-theme=\"b\" data-content-theme=\"d\">";
 	ret += "<h5>" + getString(R.string.top) + "</h5>";
 	ret += "<ul type=\"disc\">";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
@@ -1764,9 +1764,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</ul>";
 	ret += "</div>";
 	
-	ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
-	if (mBookMark.size() > 0) ret += "data-collapsed=\"false\">";
-	else ret += ">";
+	if (css) {
+		ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
+		if (mBookMark.size() > 0) ret += "data-collapsed=\"false\">";
+		else ret += ">";
+	}
 	ret += "<h5>" + getString(R.string.bookmark) + "</h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mBookMark.size(); i++) {
@@ -1778,10 +1780,13 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	}
 	ret += "</dl>";
 	ret += "</div>";
+
 	
-	ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
-	if (mHistory.size() > 0) ret += "data-collapsed=\"false\">";
-	else ret += ">";
+	if (css) {
+		ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
+		if (mHistory.size() > 0) ret += "data-collapsed=\"false\">";
+		else ret += ">";
+	}
 	ret += "<h5>" + getString(R.string.history) + "</h5>";
 	ret += "<dl type=\"disc\">";
 	for (int i = 0; i < mHistory.size(); i++) {

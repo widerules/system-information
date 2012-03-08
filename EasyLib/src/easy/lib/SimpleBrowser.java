@@ -1178,7 +1178,7 @@ public void onCreate(Bundle savedInstanceState) {
         		break;
         	case 5://about
     			intent = new Intent("easy.lib.about");
-    			intent.setPackage(getPackageName());
+    			intent.setClassName(getPackageName(), "easy.lib.AboutBrowser");
     			util.startActivity(intent, false, getBaseContext());
     			break;
             }
@@ -1717,12 +1717,12 @@ void setLayout() {
     		adview.destroy();
     	}
     	
-    	if (dm.widthPixels <= 702)
-    		adview = new wrapAdView(this, 0, "a14f3f6bc126143");//AdSize.IAB_BANNER require 350*50 and return 350*50
-		else if (dm.widthPixels < 1092) 
-    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90
+    	if (width < 702)
+    		adview = new wrapAdView(this, 0, "a14f3f6bc126143");//AdSize.BANNER require 320*50
+		else if (width < 1092) 
+    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1
     	else
-    		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135
+    		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
     	
     	adContainer.addView(adview.getInstance());
     	adview.loadAd();

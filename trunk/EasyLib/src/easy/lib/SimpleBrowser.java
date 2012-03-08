@@ -563,10 +563,10 @@ class MyWebview extends WebView {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				if (url.equals(BLANK_PAGE)) {
-					loadPage(true);;
-					return false;
+					loadPage(true);
+					return true;
 				}
-				if(view.getHitTestResult().getType() > 0)
+				else if(view.getHitTestResult().getType() > 0)
 			         return false;// From a user click, handle it by webview.
 			    else {
 					if (!url.startsWith("http")) {

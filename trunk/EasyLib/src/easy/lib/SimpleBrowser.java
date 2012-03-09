@@ -803,14 +803,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 	boolean downloadFailed = false;
 
 	@Override
-	protected void onPostExecute(String result) {
-		if (result != null) {
-			String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-			serverWebs.get(webIndex).loadData(header + result, "text/html", "UTF-8");
-		}
-	}
-	
-	@Override
 	protected String doInBackground(String... params) {//download here
     	URL_str = params[0]; //get download url
     	if (URL_str.startsWith("file")) return URL_str;//not download local file 

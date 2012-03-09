@@ -134,7 +134,7 @@ public class About extends Activity{
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=simple.home.jtbuaa"));
 				if (!util.startActivity(intent, false, getBaseContext())) {
 					intent.setAction(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse("https://market.android.com/details?id=simple.home.jtbuaa"));
+					intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=simple.home.jtbuaa"));
 					intent.setComponent(getComponentName());
 					util.startActivity(intent, true, getBaseContext());
 				}

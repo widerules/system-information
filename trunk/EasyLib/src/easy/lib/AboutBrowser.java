@@ -71,9 +71,10 @@ public class AboutBrowser extends Activity{
 			public void onClick(View v) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=easy.browser"));
 				if (!util.startActivity(intent, false, getBaseContext())) {
+					finish();
 					intent.setAction(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse("https://market.android.com/details?id=easy.browser"));
-					intent.setComponent(getComponentName());
+					intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=easy.browser"));
+	    			intent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 					util.startActivity(intent, true, getBaseContext());
 				}
 			}

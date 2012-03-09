@@ -377,6 +377,7 @@ class MyWebview extends WebView {
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
     	//setInitialScale(1);
+    	localSettings.setSupportMultipleWindows(true);
 		
         
         webSettings = new wrapWebSettings(localSettings);
@@ -459,6 +460,13 @@ class MyWebview extends WebView {
                 }
             }API 7 */
             
+            @Override
+            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, android.os.Message resultMsg) {
+            	openNewPage(null);
+				((WebView.WebViewTransport) resultMsg.obj).setWebView(serverWebs.get(webIndex));
+				resultMsg.sendToTarget();
+				return true;
+            }
 		});
         
 		setWebViewClient(new WebViewClient() {
@@ -1533,7 +1541,7 @@ private void openNewPage(String url) {
 	if (paid) maxPages = 9;//9 for paid version.
 	if (webAdapter.getCount() == maxPages) {
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
-		if (!url.equals("")) {
+		if ((url != null) && !url.equals("")) {
 			if (url.endsWith(".pdf"))//open pdf by google doc
 				serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
 			else
@@ -1549,8 +1557,10 @@ private void openNewPage(String url) {
 		webpages.getChildAt(webIndex).requestFocus();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));
 		
-		if (url.equals(""))	loadPage(true);
-		else serverWebs.get(webIndex).loadUrl(url);
+		if (url != null) {
+			if (url.equals(""))	loadPage(true);
+			else serverWebs.get(webIndex).loadUrl(url);
+		}
 	}
 }
 

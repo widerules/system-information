@@ -410,7 +410,14 @@ class MyWebview extends WebView {
 			@Override
 			public void onDownloadStart(String url, String ua, String contentDisposition,
 					String mimetype, long contentLength) {
-				startDownload(url, true);
+				//still need guess, not sure to download. 
+				//for example, I don't know how to handle this http://yunfile.com/file/murongmr/5a0574ad/
+				//url: http://dl33.yunfile.com/file/downfile/murongmr/876b15e4/c7c3002a
+				//ua: Mozilla/5.0 (Linux; U; Android 2.3.3; en-us; sdk Build/GRI34) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1
+				//contentDisposition: attachment; filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
+				//mimetype: application/octet-stream
+				//contentLength: 463624
+				startDownload(url, false);
 			}
         });
         
@@ -775,9 +782,10 @@ boolean startDownload(String url, boolean anyfile) {
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if (!anyfile)
 		if (apkName.endsWith(".txt") || apkName.endsWith("html") || apkName.endsWith("htm") || 
-				apkName.endsWith(".php") || !apkName.contains("."))
+				apkName.endsWith(".php") || apkName.endsWith(".asp") || apkName.endsWith(".aspx") || 
+				apkName.endsWith(".jsp") || !apkName.contains("."))
 			return false;//should not download these files automatically.
-	
+	 
 	if (downloadPath.startsWith(getFilesDir().getPath())) 
 		Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
 	

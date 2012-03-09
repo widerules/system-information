@@ -1498,6 +1498,7 @@ private void addFavo(final String url, final String title) {
 	LinearLayout favoView = (LinearLayout) getLayoutInflater().inflate(R.layout.addfavo_browser, null);
 	titleText = (EditText) favoView.findViewById(R.id.edit_favo);
 	titleText.setText(title);
+	titleText.setSelection(titleText.getText().length());
 			
 	//need user's confirm to add to bookmark
 	new AlertDialog.Builder(mContext).

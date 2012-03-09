@@ -1412,11 +1412,10 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
             String packageName = intent.getDataString().split(":")[1];//it always in the format of package:x.y.z
         	for (int i = 0; i < downloadAppID.size(); i++) {//cancel download notification if install succeed
         		if (downloadAppID.get(i).packageName.equals(packageName))
-        		{
+        		{   //only remove the notification internal id, not delete file. 
+        			//otherwise when user click the ad again, it will download again. 
+        			//traffic is important than storage. user can download it manually when click downloads
             		nManager.cancel(downloadAppID.get(i).notificationID);
-            		try {
-            			downloadAppID.get(i).downloadedfile.delete();
-            		} catch(Exception e) {};
             		downloadAppID.remove(i);
             		break;
         		}

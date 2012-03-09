@@ -83,6 +83,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -262,6 +263,11 @@ public class SimpleBrowser extends Activity {
 	ImageView snapView;
 	Bitmap bmp;
 	AlertDialog snapDialog = null;
+
+	//favo dialog
+	//LinearLayout favoView;
+	EditText titleText;
+	//AlertDialog favoDialog = null;
 	
 	//menu dialog
 	AlertDialog menuDialog;// menu菜单Dialog
@@ -1011,7 +1017,6 @@ public void onCreate(Bundle savedInstanceState) {
 	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
 	setContentView(R.layout.browser);
 
-	
 	snapView = (ImageView) getLayoutInflater().inflate(R.layout.snap_browser, null);
     snapDialog = new AlertDialog.Builder(this).
     		setView(snapView).
@@ -1433,7 +1438,7 @@ protected void onNewIntent(Intent intent) {//open file from sdcard
 		boolean found = false;
 		for (int i = 0; i < serverWebs.size(); i++) {
 			String url = serverWebs.get(i).getUrl();
-			if ((url != null) && url.equals(uri.toString())) {
+			if ((url != null) && url.equals(uri.toString())) {//?fc once?
 				changePage(i);  //show correct page
 				found = true;
 				break;
@@ -1489,30 +1494,36 @@ private void addFavo(final String url, final String title) {
 		Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
 		return;
 	}
-	
+
+	LinearLayout favoView = (LinearLayout) getLayoutInflater().inflate(R.layout.addfavo_browser, null);
+	titleText = (EditText) favoView.findViewById(R.id.edit_favo);
+	titleText.setText(title);
+			
 	//need user's confirm to add to bookmark
 	new AlertDialog.Builder(mContext).
-		setTitle(R.string.add_bookmark).
-		setMessage(title).
-		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String site = "";
-				String[] tmp = url.split("/");
-				if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-				else site = tmp[0];
-				
-				TitleUrl titleUrl = new TitleUrl(title, url, site);
-	    		mBookMark.add(titleUrl);
-	    		loadPage(false);
-	    		
-	    		bookmarkChanged = true;
-			}
-		}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		}).show();	
+			setView(favoView).
+			setTitle(R.string.add_bookmark).
+			setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					String site = "";
+					String[] tmp = url.split("/");
+					if (tmp.length >= 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+					else site = tmp[0];
+					
+					String title = titleText.getText().toString();
+					if (title.equals("")) title += (char)0xa0;//add a blank character to occupy the space
+					TitleUrl titleUrl = new TitleUrl(title, url, site);
+		    		mBookMark.add(titleUrl);
+		    		loadPage(false);
+		    		
+		    		bookmarkChanged = true;
+				}
+			}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			}).show();	
 }
 
 

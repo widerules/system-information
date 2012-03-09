@@ -947,8 +947,9 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 			contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
     		notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_fail), contentIntent);
     		nManager.notify(NOTIFICATION_ID, notification);
-    		
-	        if (download_file.length() == 0) download_file.delete();//delete empty file
+
+    		//below line will cause error simetime, reported by emilio. so commented it. may not a big issue to keep zero file.
+	        //if (download_file.length() == 0) download_file.delete();//delete empty file
     	}
 
     	return null;

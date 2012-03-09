@@ -1791,7 +1791,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		//ret += "<h5><li><a href=\"http://www.facebook.com/\">Facebook</a></li></h5>";//need try with proxy at first
 		ret += "<h5><li><a href=\"http://www.google.com/\">Google</a></li></h5>";
 		ret += "<h5><li><a href=\"http://www.twitter.org/\">Twitter</a></li></h5>";
-		ret += "<h5><li><a href=\"http://www.wikipedia.org/\">Wikipedia</a></li></h5>";
+		ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
 	}
 	ret += "</ul>";
 	ret += "</div>";

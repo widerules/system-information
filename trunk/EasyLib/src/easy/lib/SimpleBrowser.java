@@ -485,9 +485,9 @@ class MyWebview extends WebView {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				WebSettings ws = view.getSettings();
-				if (ws.getCacheMode() != WebSettings.LOAD_NORMAL) {
+				if (ws.getCacheMode() != WebSettings.LOAD_DEFAULT) {
 					if((cm.getActiveNetworkInfo() != null) && cm.getActiveNetworkInfo().isConnected())
-						ws.setCacheMode(WebSettings.LOAD_NORMAL);
+						ws.setCacheMode(WebSettings.LOAD_DEFAULT);
 					else//use cache if no connection
 						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 				}

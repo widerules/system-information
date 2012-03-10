@@ -1524,6 +1524,7 @@ private void addFavo(final String url, final String title) {
 	//need user's confirm to add to bookmark
 	new AlertDialog.Builder(mContext).
 			setView(favoView).
+			setMessage(url).
 			setTitle(R.string.add_bookmark).
 			setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				@Override

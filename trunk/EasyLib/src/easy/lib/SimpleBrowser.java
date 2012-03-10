@@ -701,9 +701,6 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     		case 5://share url
     			shareUrl(url);
     			break;
-    		case 6://open in new tab
-    			openNewPage(url);
-    			break;
     		case 7://add bookmark
     			if (historyIndex > -1) addFavo(url, mHistory.get(historyIndex).m_title);
     			else addFavo(url, url);
@@ -714,6 +711,9 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     		case 9://remove history
     			removeHistory(item.getOrder());
     			break;
+    		case 10://open in new tab
+    			openNewPage(url);
+    			break;
     		}
     		return true;
         }
@@ -722,19 +722,10 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     //set the header title to the image url
     menu.setHeaderTitle(result.getExtra());
     if (url != null) {
-        menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
         menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
         menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
         menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
         
-        historyIndex = -1;
-    	for (int i = mHistory.size()-1; i >= 0; i--) 
-    		if (mHistory.get(i).m_url.equals(url)) {
-    			historyIndex = i;
-    			menu.add(0, 9, i, R.string.remove_history).setOnMenuItemClickListener(handler);
-    			break;
-    		}
-    	
         boolean foundBookmark = false;
     	for (int i = mBookMark.size()-1; i >= 0; i--) 
     		if (mBookMark.get(i).m_url.equals(url)) {
@@ -744,6 +735,16 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     		}
         if (!foundBookmark) 
         		menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
+        
+        historyIndex = -1;
+    	for (int i = mHistory.size()-1; i >= 0; i--) 
+    		if (mHistory.get(i).m_url.equals(url)) {
+    			historyIndex = i;
+    			menu.add(0, 9, i, R.string.remove_history).setOnMenuItemClickListener(handler);
+    			break;
+    		}
+    	
+        menu.add(0, 10, 0, R.string.open_new).setOnMenuItemClickListener(handler);
     }
 }
 

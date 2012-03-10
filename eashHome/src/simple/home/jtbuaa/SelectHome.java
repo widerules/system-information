@@ -3,10 +3,8 @@ package simple.home.jtbuaa;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
-
 import easy.lib.R;
+import easy.lib.wrapAdView;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -24,8 +22,23 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 public class SelectHome extends Activity{
+	
+	static boolean mAdAvailable;
+	static {
+	       try {
+	    	   wrapAdView.checkAvailable();
+	           Class.forName("com.google.ads.AdView");
+	    	   mAdAvailable = true;
+	       } catch (Throwable t) {
+	    	   mAdAvailable = false;
+	       }
+	   }
+	wrapAdView adview;
+	LinearLayout adContainer;
+
 	private List<ResolveInfo> mHomeList;
 	private int currentHomeIndex = 0;
 	String mPackageName;
@@ -135,12 +148,12 @@ public class SelectHome extends Activity{
     	
         setContentView(R.layout.select_home);
     	
-        AdView adview = (AdView) findViewById(R.id.adBoard);
         boolean paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
-        if (paid) adview.setVisibility(View.INVISIBLE);
-        else {
-        	AdRequest adRequest = new AdRequest();
-        	adview.loadAd(adRequest);
+        if (!paid && mAdAvailable) {
+    		adview = new wrapAdView(this, 3, "a14e79197567476");
+    		adContainer = (LinearLayout) findViewById(R.id.adContainer);
+    		adContainer.addView(adview.getInstance());
+    		adview.loadAd();
         }
         
         Button btnSelect = (Button) findViewById(R.id.select);

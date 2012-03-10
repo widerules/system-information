@@ -1582,7 +1582,13 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
-			else if (webAddress.getText().toString().equals(BLANK_PAGE)) ;//hide this activity if press back key in homepage
+			else if (webAddress.getText().toString().equals(BLANK_PAGE)) {
+				//hide browser when click back key on homepage. 
+				//this is a singleTask activity, so if return super.onKeyDown(keyCode, event), app will exit.
+				//when use click browser icon again, it will call onCreate, user's page will not reopen. 
+				//singleInstance will work here, but it will cause downloadControl not work? or select file not work?
+				moveTaskToBack(true);
+			}
 			else if (serverWebs.get(webIndex).canGoBack()) imgPrev.performClick();
 			else loadPage(true);
 			

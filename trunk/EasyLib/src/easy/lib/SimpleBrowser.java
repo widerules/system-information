@@ -484,13 +484,6 @@ class MyWebview extends WebView {
 			
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				WebSettings ws = view.getSettings();
-				if (ws.getCacheMode() != WebSettings.LOAD_DEFAULT) {
-					if((cm.getActiveNetworkInfo() != null) && cm.getActiveNetworkInfo().isConnected())
-						ws.setCacheMode(WebSettings.LOAD_DEFAULT);
-					else//use cache if no connection
-						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-				}
 				super.onPageStarted(view, url, favicon);
 
 				imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
@@ -506,6 +499,16 @@ class MyWebview extends WebView {
         		loadProgress.setVisibility(View.INVISIBLE);//hide progressbar anyway
         		imgRefresh.setImageResource(R.drawable.refresh);
 				webAdapter.notifyDataSetChanged();//update the page title in webList
+                webControl.setVisibility(View.INVISIBLE);
+
+				
+				WebSettings ws = view.getSettings();
+				if (ws.getCacheMode() != WebSettings.LOAD_DEFAULT) {
+					if((cm.getActiveNetworkInfo() != null) && cm.getActiveNetworkInfo().isConnected())
+						ws.setCacheMode(WebSettings.LOAD_DEFAULT);
+					else//use cache if no connection
+						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+				}
 				
 				String title = view.getTitle();
 				if (title == null) title = url;
@@ -517,8 +520,6 @@ class MyWebview extends WebView {
         				loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
         		}
 				
-                webControl.setVisibility(View.INVISIBLE);
-
         		if (!url.equals(BLANK_PAGE)) {
         			if(title.equals(getString(R.string.browser_name)))//if title and url not sync, then sync it.
         				webAddress.setText(BLANK_PAGE);
@@ -1300,7 +1301,10 @@ public void onCreate(Bundle savedInstanceState) {
 				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl().equals(BLANK_PAGE))
 					loadPage(true);//goBack will show blank page at this time, so load the home page.
-				else serverWebs.get(webIndex).goForward();
+				else {
+					serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+					serverWebs.get(webIndex).goForward();
+				}
 			}
 		}
 	});
@@ -1312,7 +1316,10 @@ public void onCreate(Bundle savedInstanceState) {
 				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl().equals(BLANK_PAGE))
 					loadPage(true);//goBack will show blank page at this time, so load the home page.
-				else serverWebs.get(webIndex).goBack(); 
+				else {
+					serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+					serverWebs.get(webIndex).goBack(); 
+				}
 			}
 		}
 	});
@@ -1575,9 +1582,9 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
-			else if (webAddress.getText().toString().equals(BLANK_PAGE)) return super.onKeyDown(keyCode, event);//leave this activity if press back key in homepage
+			else if (webAddress.getText().toString().equals(BLANK_PAGE)) ;//hide this activity if press back key in homepage
 			else if (serverWebs.get(webIndex).canGoBack()) imgPrev.performClick();
-			else return super.onKeyDown(keyCode, event);
+			else loadPage(true);
 			
 			return true;
 		}	

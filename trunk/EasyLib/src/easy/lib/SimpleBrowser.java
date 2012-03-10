@@ -691,11 +691,8 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
-    		case 0://save image
+    		case 0://download
     			startDownload(url, true);
-    			break;
-    		case 1://view image
-    			serverWebs.get(webIndex).loadUrl(url);
     			break;
     		case 4://copy url
     			ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -724,19 +721,11 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
 
     //set the header title to the image url
     menu.setHeaderTitle(result.getExtra());
-    if (result.getType() == HitTestResult.IMAGE_TYPE ||
-            result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
-        // Menu options for an image.
-        menu.add(0, 0, 0, R.string.save_img).setOnMenuItemClickListener(handler);
-        menu.add(0, 1, 0, R.string.view_img).setOnMenuItemClickListener(handler);
-        menu.add(0, 2, 0, R.string.share_img).setOnMenuItemClickListener(handler).setVisible(false);
-        menu.add(0, 3, 0, R.string.set_wallpaper).setOnMenuItemClickListener(handler).setVisible(false);
-    } else if (result.getType() == HitTestResult.ANCHOR_TYPE ||
-            result.getType() == HitTestResult.SRC_ANCHOR_TYPE) {
-        // Menu options for a hyperlink.
+    if (url != null) {
+        menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
         menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
         menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
-        menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+        menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
         
         historyIndex = -1;
     	for (int i = mHistory.size()-1; i >= 0; i--) 
@@ -755,8 +744,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     		}
         if (!foundBookmark) 
         		menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
-    } else if (url != null)
-        menu.add(0, 6, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+    }
 }
 
 boolean startDownload(String url, boolean anyfile) {

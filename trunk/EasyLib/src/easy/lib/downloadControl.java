@@ -13,9 +13,24 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class downloadControl extends Activity{
+	static boolean mAdAvailable;
+	static {
+	       try {
+	    	   wrapAdView.checkAvailable();
+	           Class.forName("com.google.ads.AdView");
+	    	   mAdAvailable = true;
+	       } catch (Throwable t) {
+	    	   mAdAvailable = false;
+	       }
+	   }
+	wrapAdView adview;
+	LinearLayout adContainer;
+	
+	
 	Button btnPause, btnStop;
 	boolean pause = false, stop = false, failed = false;
 	TextView tv;
@@ -35,12 +50,12 @@ public class downloadControl extends Activity{
         
         this.setContentView(R.layout.pause);
 
-        AdView adview = (AdView) findViewById(R.id.adBoard);
         boolean paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
-        if (paid) adview.setVisibility(View.INVISIBLE);
-        else {
-        	AdRequest adRequest = new AdRequest();
-        	adview.loadAd(adRequest);
+        if (!paid && mAdAvailable) {
+    		adview = new wrapAdView(this, 3, "a14f3f6bc126143");
+    		adContainer = (LinearLayout) findViewById(R.id.adContainer);
+    		adContainer.addView(adview.getInstance());
+    		adview.loadAd();
         }
 
         init(getIntent());

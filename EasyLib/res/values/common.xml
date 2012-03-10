@@ -80,10 +80,7 @@
     <string name="view_bookmark">View Bookmark</string>
     <string name="remove_history">Remove from History</string>
     
-    <string name="save_img">Save Image</string>
-    <string name="view_img">View Image</string>
-    <string name="share_img">Share Image</string>
-    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="save">Save as file</string>
     <string name="open_new">Open in new page</string>
     <string name="copy_url">Copy Url</string>
     <string name="copy">Copy</string>

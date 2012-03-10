@@ -592,17 +592,15 @@ class MyWebview extends WebView {
 					loadPage(true);
 					return true;
 				}
+				else if (!url.startsWith("http")) {
+					Uri uri = Uri.parse(url);
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					intent.addCategory(Intent.CATEGORY_BROWSABLE);
+					return util.startActivity(intent, false, mContext);
+				}
 				else if(view.getHitTestResult().getType() > 0)
 			         return false;// From a user click, handle it by webview.
-			    else {
-					if (!url.startsWith("http")) {
-						Uri uri = Uri.parse(url);
-						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-						intent.addCategory(Intent.CATEGORY_BROWSABLE);
-						return util.startActivity(intent, false, mContext);
-					}
-					else return startDownload(url, false);
-			    }
+			    else return startDownload(url, false);
 			}
 		});
 	}

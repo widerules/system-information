@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings.TextSize;
 import android.widget.Button;
@@ -35,6 +36,7 @@ public class AboutBrowser extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+    	requestWindowFeature(Window.FEATURE_NO_TITLE); //hide titlebar of application, must be before setting the layout
         setContentView(R.layout.about_browser);
         
 		perferences = PreferenceManager.getDefaultSharedPreferences(this);

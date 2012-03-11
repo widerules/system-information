@@ -159,11 +159,9 @@ public class About extends Activity{
         btnShareHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-    	        String text = getString(R.string.app_name) + ", " + getString(R.string.sharetext) + getString(R.string.share_text1) 
-       	        		+ "http://opda.co/?s=D/simple.home.jtbuaa"//opda will do the webpage reload for us.
-       	        		+ getString(R.string.share_text2)
-       	        		+ "https://market.android.com/details?id=simple.home.jtbuaa"
-       	        		+ getString(R.string.share_text3);
+    	        String text = getString(R.string.app_name) + ", " 
+    	        		+ getString(R.string.sharetext)
+       	        		+ "https://market.android.com/details?id=simple.home.jtbuaa";
         	        
     	        Intent intent = new Intent(Intent.ACTION_SEND);
     	        intent.setType("text/plain");  

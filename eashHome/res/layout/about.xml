@@ -15,8 +15,9 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/explorer"
+        android:src="@drawable/icon"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dip"
         />
     
     <Button android:id="@+id/title"

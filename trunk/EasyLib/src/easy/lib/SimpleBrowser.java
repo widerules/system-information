@@ -983,7 +983,6 @@ public void onCreate(Bundle savedInstanceState) {
     snapDialog = new AlertDialog.Builder(this).
     		setView(snapView).
     		setTitle(R.string.browser_name).
-    		setIcon(R.drawable.explorer).
     		setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {//share
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -1044,7 +1043,6 @@ public void onCreate(Bundle savedInstanceState) {
 
 	m_sourceDialog = new AlertDialog.Builder(this).
     		setTitle(R.string.browser_name).
-    		setIcon(R.drawable.explorer).
     		setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {//share
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -1071,7 +1069,7 @@ public void onCreate(Bundle savedInstanceState) {
             switch (arg2) {
         	case 0://view page source
         		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
-        		if (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))
+        		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
         			m_sourceDialog.setIcon(R.drawable.explorer);
         		else
         			m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
@@ -1097,7 +1095,7 @@ public void onCreate(Bundle savedInstanceState) {
     			}
         		snapView.setImageBitmap(bmp);
         		snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
-        		if (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))
+        		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
         			snapDialog.setIcon(R.drawable.explorer);
         		else
         			snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));

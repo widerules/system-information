@@ -161,7 +161,7 @@ public class About extends Activity{
 			public void onClick(View v) {
     	        String text = getString(R.string.app_name) + ", " 
     	        		+ getString(R.string.sharetext)
-       	        		+ "https://market.android.com/details?id=simple.home.jtbuaa";
+       	        		+ " https://https://play.google.com/store/apps/details?id=simple.home.jtbuaa";
         	        
     	        Intent intent = new Intent(Intent.ACTION_SEND);
     	        intent.setType("text/plain");  

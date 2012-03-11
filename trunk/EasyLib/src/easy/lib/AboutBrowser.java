@@ -51,8 +51,8 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onClick(View v) {
     	        String text = getString(R.string.browser_name) + ", "
-    	        		+ getString(R.string.sharetext) + 
-       	        		"https://market.android.com/details?id=easy.browser";
+    	        		+ getString(R.string.sharetext)
+       	        		+ " https://play.google.com/store/apps/details?id=easy.browser";
         	        
     	        Intent intent = new Intent(Intent.ACTION_SEND);
     	        intent.setType("text/plain");  

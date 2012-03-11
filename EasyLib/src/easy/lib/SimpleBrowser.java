@@ -1071,7 +1071,10 @@ public void onCreate(Bundle savedInstanceState) {
             switch (arg2) {
         	case 0://view page source
         		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
-        		m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+        		if (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))
+        			m_sourceDialog.setIcon(R.drawable.explorer);
+        		else
+        			m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
        	    	m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
        	    	m_sourceDialog.show();
         		break;
@@ -1094,7 +1097,10 @@ public void onCreate(Bundle savedInstanceState) {
     			}
         		snapView.setImageBitmap(bmp);
         		snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
-        		snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+        		if (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))
+        			snapDialog.setIcon(R.drawable.explorer);
+        		else
+        			snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
         		snapDialog.show();
         		
         		break;

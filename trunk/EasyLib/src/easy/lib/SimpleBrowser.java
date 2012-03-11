@@ -1194,15 +1194,9 @@ public void onCreate(Bundle savedInstanceState) {
 			return false;
 		}
     });
-	FileInputStream fi = null;
-	try {
-		fi = openFileInput("history");
-		mHistory = readBookmark(fi);
-		fi = openFileInput("bookmark");
-		mBookMark = readBookmark(fi);		
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
+    
+	mHistory = readBookmark("history");
+	mBookMark = readBookmark("bookmark");		
 	historyChanged = false;
 	bookmarkChanged = false;
 
@@ -1658,20 +1652,8 @@ protected void onResume() {
 
 @Override
 protected void onPause() {
-	FileOutputStream fo;
-	try {
-		if (historyChanged) {
-			fo = this.openFileOutput("history", 0);
-			writeBookmark(fo, mHistory);
-		}
-		
-		if (bookmarkChanged) {
-			fo = this.openFileOutput("bookmark", 0);
-			writeBookmark(fo, mBookMark);
-		}
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
+	if (historyChanged) writeBookmark("history", mHistory);
+	if (bookmarkChanged) writeBookmark("bookmark", mBookMark);
 
 	super.onPause();
 }
@@ -1807,8 +1789,9 @@ class TitleUrl {
 	}
 }
 
-void writeBookmark(FileOutputStream fo, ArrayList<TitleUrl> bookmark) {
+void writeBookmark(String filename, ArrayList<TitleUrl> bookmark) {
 	try {
+		FileOutputStream fo = openFileOutput(filename, 0);
 		ObjectOutputStream oos = new ObjectOutputStream(fo);
 		TitleUrl tu;
 			for (int i = 0; i < bookmark.size(); i++) {
@@ -1823,11 +1806,13 @@ void writeBookmark(FileOutputStream fo, ArrayList<TitleUrl> bookmark) {
 	} catch (Exception e) {}
 }
 
-ArrayList<TitleUrl> readBookmark(FileInputStream fi) 
+ArrayList<TitleUrl> readBookmark(String filename) 
 {
 	ArrayList<TitleUrl> bookmark = new ArrayList<TitleUrl>();
 	ObjectInputStream ois = null;
+	FileInputStream fi = null;
 	try {//read favorite or shortcut data
+		fi = openFileInput(filename);
 		ois = new ObjectInputStream(fi);
 		TitleUrl tu;
 		String title, url, site;

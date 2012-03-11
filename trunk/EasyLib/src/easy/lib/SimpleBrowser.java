@@ -702,7 +702,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     			break;
     		}
     	
-        menu.add(0, 10, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+        menu.add(0, 10, 1000, R.string.open_new).setOnMenuItemClickListener(handler);
     }
 }
 

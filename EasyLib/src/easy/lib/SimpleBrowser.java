@@ -43,6 +43,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -1069,6 +1070,8 @@ public void onCreate(Bundle savedInstanceState) {
                 long arg3) {
             switch (arg2) {
         	case 0://view page source
+        		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
+        		m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
        	    	m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
        	    	m_sourceDialog.show();
         		break;
@@ -1090,6 +1093,8 @@ public void onCreate(Bundle savedInstanceState) {
         	        pic.draw(canvas);
     			}
         		snapView.setImageBitmap(bmp);
+        		snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
+        		snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
         		snapDialog.show();
         		
         		break;

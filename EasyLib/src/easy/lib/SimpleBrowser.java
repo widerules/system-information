@@ -1689,10 +1689,12 @@ void setLayout() {
     		adview.destroy();
     	}
     	
-    	if (width < 702)
+    	float width_density = width / dm.density;
+    	if (width_density < 320) ;//do nothing for it is too narrow
+    	else if (width_density < 468)
     		adview = new wrapAdView(this, 0, "a14f3f6bc126143");//AdSize.BANNER require 320*50
-		else if (width < 1092) 
-    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1
+		else if (width_density < 728) 
+    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1. return width = request width * density.
     	else
     		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
     	

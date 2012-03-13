@@ -548,7 +548,9 @@ class MyWebview extends WebView {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				if (url.equals(BLANK_PAGE)) {
-					loadPage(true);
+					if (view.getHitTestResult().getType() > 0)
+						loadPage(true);
+					else ;//should do nothing here, otherwise it will not login php site correctly
 					return true;
 				}
 				else if (!url.startsWith("http")) {

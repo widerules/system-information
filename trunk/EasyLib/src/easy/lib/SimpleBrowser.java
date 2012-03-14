@@ -560,7 +560,7 @@ class MyWebview extends WebView {
 					return util.startActivity(intent, false, mContext);
 				}
 				else if(view.getHitTestResult().getType() > 0)
-			         return false;// From a user click, handle it by webview.
+			        return false;// From a user click, handle it by webview.
 			    else return startDownload(url, false);
 			}
 		});
@@ -1504,15 +1504,8 @@ private void addFavo(final String url, final String title) {
 private void openNewPage(String url) {
 	int maxPages = 6;//max count is 6 for free version.
 	if (paid) maxPages = 9;//9 for paid version.
-	if (webAdapter.getCount() == maxPages) {
+	if (webAdapter.getCount() == maxPages) 
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
-		if ((url != null) && !url.equals("")) {
-			if (url.endsWith(".pdf"))//open pdf by google doc
-				serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
-			else
-				serverWebs.get(webIndex).loadUrl(url);
-		}
-	}
 	else {
 		webAdapter.add(new MyWebview(mContext));
 		webAdapter.notifyDataSetInvalidated();
@@ -1521,11 +1514,13 @@ private void openNewPage(String url) {
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
 		webpages.getChildAt(webIndex).requestFocus();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));
-		
-		if (url != null) {
-			if (url.equals(""))	loadPage(true);
-			else serverWebs.get(webIndex).loadUrl(url);
-		}
+	}
+	
+	if (url != null) {
+		if (url.equals(""))	loadPage(true);
+		if (url.endsWith(".pdf"))//open pdf by google doc
+			serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
+		else serverWebs.get(webIndex).loadUrl(url);
 	}
 }
 

@@ -28,10 +28,13 @@
     	android:name="easy.lib.MyApp" 
        	android:theme="@style/Theme"
     	android:label="@string/app_name">
-    	
+
+        <!-- home is singleInstance and embedded browser is singleTask. -->
+        <!-- if browser is singleInstance, then can't return to browser after click admob banner -->
+        <!-- if both are singleTask, then it will call onCreate of browser after click admob banner -->
         <activity android:name=".simpleHome"
         	android:excludeFromRecents="true"
-        	android:launchMode="singleTask"
+        	android:launchMode="singleInstance"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:label="@string/app_name">
                   
@@ -56,11 +59,10 @@
             </intent-filter>
         </activity>
                   
-        <!-- in EasyBrowser, just use singleTask is OK. but here must use singleInstance, otherwise it will do onCreate each time when launch. -->
         <activity android:name="easy.lib.SimpleBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:icon="@drawable/explorer"
-            android:launchMode="singleInstance" 
+            android:launchMode="singleTask"
             android:process="easy.browser"
             android:label="@string/embed_browser_name">
             

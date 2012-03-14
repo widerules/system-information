@@ -217,25 +217,25 @@
       	android:textColor="#FFFFFFFF"
         />
     <RadioButton  
-        android:id="@+id/radio_smallest"
-        android:text="@string/font_smallest"
-		android:layout_marginLeft="5dip"
-        />  
-    <RadioButton  
-        android:id="@+id/radio_smaller"
-        android:text="@string/font_smaller"
-		android:layout_marginLeft="5dip"
-        />  
-    <RadioButton  
-        android:id="@+id/radio_normal"
-        android:text="@string/font_normal"
-		android:layout_marginLeft="5dip"
-        />  
-    <RadioButton  
         android:id="@+id/radio_larger"
         android:text="@string/font_larger"
 		android:layout_marginLeft="5dip"
         />
+    <RadioButton  
+        android:id="@+id/radio_normal"
+        android:text="@string/font_normal"
+		android:layout_marginLeft="5dip"
+        />
+    <RadioButton  
+        android:id="@+id/radio_smaller"
+        android:text="@string/font_smaller"
+		android:layout_marginLeft="5dip"
+        />
+    <RadioButton  
+        android:id="@+id/radio_smallest"
+        android:text="@string/font_smallest"
+		android:layout_marginLeft="5dip"
+        />  
     <RadioButton  
         android:id="@+id/radio_largest"
         android:text="@string/font_largest"

@@ -1520,7 +1520,7 @@ private void openNewPage(String url) {
 		if (url.equals(""))	loadPage(true);
 		if (url.endsWith(".pdf"))//open pdf by google doc
 			serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
-		else serverWebs.get(webIndex).loadUrl(url);
+		else serverWebs.get(webIndex).loadUrl(URLDecoder.decode(url));
 	}
 }
 
@@ -1557,16 +1557,16 @@ boolean readTextSize(SharedPreferences sp) {
     }
     else switch(iTextSize) {
     case 1:
-    	textSize = TextSize.SMALLEST;
+		textSize = TextSize.LARGER;
     	break;
     case 2:
-		textSize = TextSize.SMALLER;
-    	break;
-    case 3:
 		textSize = TextSize.NORMAL;
     	break;
+    case 3:
+		textSize = TextSize.SMALLER;
+    	break;
     case 4:
-		textSize = TextSize.LARGER;
+    	textSize = TextSize.SMALLEST;
     	break;
     case 5:
 		textSize = TextSize.LARGEST;

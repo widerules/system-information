@@ -163,9 +163,9 @@ public class AboutBrowser extends Activity{
 		cbCss.setChecked(perferences.getBoolean("css", false));
 		
     	if (dm.density < 1) 
-    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//smaller
+    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 3))).setChecked(true);//smaller
     	else  
-    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 3))).setChecked(true);//normal
+    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
 
 		
 		((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);

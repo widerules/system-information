@@ -213,6 +213,7 @@ public class SimpleBrowser extends Activity {
 	//settings
 	boolean css;
 	boolean snapFullScreen;
+	boolean html5;
 	TextSize textSize = TextSize.SMALLER;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
@@ -341,16 +342,17 @@ class MyWebview extends WebView {
         webSettings = new wrapWebSettings(localSettings);
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
-        
-        //webSettings.setAppCacheEnabled(true);//API7
-        //webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
-        //webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
-        //webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
-        //webSettings.setDatabaseEnabled(true);//API5
-        //webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
-        //webSettings.setGeolocationEnabled(true);//API5
-        //webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 
+        if (html5) {
+            webSettings.setAppCacheEnabled(true);//API7
+            webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
+            webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
+            webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
+            webSettings.setDatabaseEnabled(true);//API5
+            webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
+            webSettings.setGeolocationEnabled(true);//API5
+            webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+        }
         
         registerForContextMenu(this);
 
@@ -970,6 +972,7 @@ public void onCreate(Bundle savedInstanceState) {
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
     css = sp.getBoolean("css", false);
+    html5 = sp.getBoolean("html5", false);
 
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -1602,6 +1605,22 @@ protected void onResume() {
     if (readTextSize(sp)) //no need to reload page if fontSize changed
     	serverWebs.get(webIndex).getSettings().setTextSize(textSize);
 
+    boolean oldHtml5 = html5;
+    html5 = sp.getBoolean("html5", false);
+	if (oldHtml5 != html5) {
+        wrapWebSettings webSettings = new wrapWebSettings(serverWebs.get(webIndex).getSettings());
+        webSettings.setAppCacheEnabled(html5);//API7
+        webSettings.setDomStorageEnabled(html5);//API7, key to enable gmail
+        webSettings.setDatabaseEnabled(html5);//API5
+        webSettings.setGeolocationEnabled(html5);//API5
+        if (html5) {
+            webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
+            webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
+            webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
+            webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+        }
+	}
+	
     /*disable setting of historyCount, encoding and search
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     int iEncoding = sp.getInt("encoding", -1);

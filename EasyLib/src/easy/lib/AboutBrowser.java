@@ -23,7 +23,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbZoomControl, cbCss;
+	CheckBox cbZoomControl, cbCss, cbHtml5;
 	RadioGroup fontSize, historyCount, encodingType, snapSize;
 	EditText searchText;
 	
@@ -115,6 +115,15 @@ public class AboutBrowser extends Activity{
     		}
     	});
     	
+    	cbHtml5 = (CheckBox) findViewById(R.id.html5);
+    	cbHtml5.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("html5", cbHtml5.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	
     	fontSize = (RadioGroup) findViewById(R.id.font_size);
     	fontSize.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -161,6 +170,7 @@ public class AboutBrowser extends Activity{
 	protected void onResume() {
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbCss.setChecked(perferences.getBoolean("css", false));
+		cbHtml5.setChecked(perferences.getBoolean("html5", false));
 		
     	if (dm.density < 1) 
     		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 3))).setChecked(true);//smaller

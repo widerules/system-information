@@ -341,14 +341,15 @@ class MyWebview extends WebView {
         webSettings = new wrapWebSettings(localSettings);
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
+        
         webSettings.setAppCacheEnabled(true);//API7
         webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
         webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
-        webSettings.setDomStorageEnabled(true);//API7, enable gmail
+        webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
         webSettings.setDatabaseEnabled(true);//API5
         webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
-        webSettings.setGeolocationEnabled(true);//API5
-        webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+        //webSettings.setGeolocationEnabled(true);//API5
+        //webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 
         
         registerForContextMenu(this);
@@ -1518,7 +1519,7 @@ private void openNewPage(String url) {
 	
 	if (url != null) {
 		if (url.equals(""))	loadPage(true);
-		if (url.endsWith(".pdf"))//open pdf by google doc
+		else if (url.endsWith(".pdf"))//open pdf by google doc
 			serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
 		else serverWebs.get(webIndex).loadUrl(URLDecoder.decode(url));
 	}

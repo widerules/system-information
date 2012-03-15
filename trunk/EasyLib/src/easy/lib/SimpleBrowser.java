@@ -342,12 +342,12 @@ class MyWebview extends WebView {
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
         
-        webSettings.setAppCacheEnabled(true);//API7
-        webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
-        webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
-        webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
-        webSettings.setDatabaseEnabled(true);//API5
-        webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
+        //webSettings.setAppCacheEnabled(true);//API7
+        //webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
+        //webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
+        //webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
+        //webSettings.setDatabaseEnabled(true);//API5
+        //webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
         //webSettings.setGeolocationEnabled(true);//API5
         //webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 
@@ -461,13 +461,13 @@ class MyWebview extends WebView {
                 webControl.setVisibility(View.INVISIBLE);
 
 				
-				WebSettings ws = view.getSettings();
+				/*WebSettings ws = view.getSettings();
 				if (ws.getCacheMode() != WebSettings.LOAD_DEFAULT) {
 					if((cm.getActiveNetworkInfo() != null) && cm.getActiveNetworkInfo().isConnected())
 						ws.setCacheMode(WebSettings.LOAD_DEFAULT);
 					else//use cache if no connection
 						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-				}
+				}*/
 				
 				String title = view.getTitle();
 				if (title == null) title = url;
@@ -1254,7 +1254,7 @@ public void onCreate(Bundle savedInstanceState) {
 				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl().equals(BLANK_PAGE))
 					loadPage(true);//goBack will show blank page at this time, so load the home page.
 				else {
-					serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+					//serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 					serverWebs.get(webIndex).goForward();
 				}
 			}
@@ -1269,7 +1269,7 @@ public void onCreate(Bundle savedInstanceState) {
 				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl().equals(BLANK_PAGE))
 					loadPage(true);//goBack will show blank page at this time, so load the home page.
 				else {
-					serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+					//serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 					serverWebs.get(webIndex).goBack(); 
 				}
 			}
@@ -1599,11 +1599,8 @@ protected void onResume() {
     css = sp.getBoolean("css", false);
 	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
     
-    if (readTextSize(sp)) {//reload page if fontSize changed
+    if (readTextSize(sp)) //no need to reload page if fontSize changed
     	serverWebs.get(webIndex).getSettings().setTextSize(textSize);
-    	if (url.equals(BLANK_PAGE)) loadPage(true);
-    	else serverWebs.get(webIndex).reload();
-    }
 
     /*disable setting of historyCount, encoding and search
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;

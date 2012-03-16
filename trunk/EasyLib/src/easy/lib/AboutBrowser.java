@@ -1,5 +1,7 @@
 package easy.lib;
 
+import java.lang.reflect.Method;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebSettings.TextSize;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -115,7 +118,17 @@ public class AboutBrowser extends Activity{
     		}
     	});
     	
+    	
     	cbHtml5 = (CheckBox) findViewById(R.id.html5);
+    	try {
+    		WebSettings.class.getMethod("setAppCacheEnabled", new Class[] {boolean.class});
+        	cbHtml5.setEnabled(true);
+    	}
+    	catch(Exception e) {
+        	cbHtml5.setEnabled(false);
+    		e.printStackTrace();
+    	}
+
     	cbHtml5.setOnClickListener(new OnClickListener() {
     		@Override
     		public void onClick(View arg0) {
@@ -123,6 +136,7 @@ public class AboutBrowser extends Activity{
         		editor.commit();
     		}
     	});
+    	
     	
     	fontSize = (RadioGroup) findViewById(R.id.font_size);
     	fontSize.setOnCheckedChangeListener(new OnCheckedChangeListener() {

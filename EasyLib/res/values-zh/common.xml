@@ -123,6 +123,6 @@
     <string name="encoding">文字编码</string>
     <string name="encoding_auto">自动</string>
     <string name="search">搜索网页</string>
-    <string name="html5">Html5, 部分网站需要，但有点慢</string>
+    <string name="html5">某些网站需要HTML5，但有点慢</string>
     
 </resources>

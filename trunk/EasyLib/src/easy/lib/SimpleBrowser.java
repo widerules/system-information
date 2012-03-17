@@ -1719,7 +1719,7 @@ void setLayout() {
 
 void loadPage(boolean notJudge) {
 	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE)))
-		serverWebs.get(webIndex).loadDataWithBaseURL("file:///android_asset/", homePage(), "text/html", "utf-8", BLANK_PAGE);
+		serverWebs.get(webIndex).loadDataWithBaseURL(BLANK_PAGE, homePage(), "text/html", "utf-8", BLANK_PAGE);
 }
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
@@ -1727,7 +1727,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<meta name=\"viewport\" content=\"width=device-width\">";
 	ret += "<html>";
 	ret += "<head>";
-	ret += "<link rel=\"shortcut icon\" href=\"favicon.ico\">";
+	ret += "<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
 	if (css) {
 		ret += "<link rel=\"stylesheet\" href=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.css\" />";

@@ -562,9 +562,7 @@ class MyWebview extends WebView {
 					intent.addCategory(Intent.CATEGORY_BROWSABLE);
 					return util.startActivity(intent, false, mContext);
 				}
-				else if(view.getHitTestResult().getType() > 0)
-			        return false;// From a user click, handle it by webview.
-			    else return startDownload(url, false);
+				else return false;
 			}
 		});
 	}

@@ -430,10 +430,12 @@ class MyWebview extends WebView {
             
             @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, android.os.Message resultMsg) {
-            	openNewPage(null);
-				((WebView.WebViewTransport) resultMsg.obj).setWebView(serverWebs.get(webIndex));
-				resultMsg.sendToTarget();
-				return true;
+            	if (openNewPage(null)) {//open new page success
+    				((WebView.WebViewTransport) resultMsg.obj).setWebView(serverWebs.get(webIndex));
+    				resultMsg.sendToTarget();
+    				return true;
+            	}
+            	else return false;
             }
 		});
         
@@ -1503,11 +1505,15 @@ private void addFavo(final String url, final String title) {
 }
 
 
-private void openNewPage(String url) {
+private boolean openNewPage(String url) {
+	boolean result = true;
+	
 	int maxPages = 6;//max count is 6 for free version.
 	if (paid) maxPages = 9;//9 for paid version.
-	if (webAdapter.getCount() == maxPages) 
+	if (webAdapter.getCount() == maxPages) { 
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
+		result = false;
+	}
 	else {
 		webAdapter.add(new MyWebview(mContext));
 		webAdapter.notifyDataSetInvalidated();
@@ -1524,6 +1530,8 @@ private void openNewPage(String url) {
 		//	serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
 		else serverWebs.get(webIndex).loadUrl(URLDecoder.decode(url));
 	}
+	
+	return result;
 }
 
 @Override

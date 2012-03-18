@@ -214,6 +214,7 @@ public class SimpleBrowser extends Activity {
 	boolean css;
 	boolean snapFullScreen;
 	boolean html5;
+	boolean blockImage;
 	TextSize textSize = TextSize.SMALLER;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
@@ -337,6 +338,7 @@ class MyWebview extends WebView {
     	localSettings.setPluginsEnabled(true);
     	//setInitialScale(1);
     	localSettings.setSupportMultipleWindows(true);
+    	localSettings.setBlockNetworkImage(blockImage);
 		
         
         webSettings = new wrapWebSettings(localSettings);
@@ -968,6 +970,7 @@ public void onCreate(Bundle savedInstanceState) {
     debug = sp.getBoolean("debug", false);
     css = sp.getBoolean("css", false);
     html5 = sp.getBoolean("html5", false);
+    blockImage = sp.getBoolean("block_image", false);
 
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -1588,8 +1591,10 @@ protected void onResume() {
 	
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);
     
+    WebSettings localSettings = serverWebs.get(webIndex).getSettings();
+    
     boolean showZoom = sp.getBoolean("show_zoom", false);
-    serverWebs.get(webIndex).getSettings().setBuiltInZoomControls(showZoom);
+    localSettings.setBuiltInZoomControls(showZoom);
     if (showZoom) {//make it work only on current page, for zoomControl is noisy in most of cases.
     	sEdit.putBoolean("show_zoom", false);
     	sEdit.commit();
@@ -1604,12 +1609,12 @@ protected void onResume() {
 	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
     
     if (readTextSize(sp)) //no need to reload page if fontSize changed
-    	serverWebs.get(webIndex).getSettings().setTextSize(textSize);
+    	localSettings.setTextSize(textSize);
 
     boolean oldHtml5 = html5;
     html5 = sp.getBoolean("html5", false);
 	if (oldHtml5 != html5) {
-        wrapWebSettings webSettings = new wrapWebSettings(serverWebs.get(webIndex).getSettings());
+        wrapWebSettings webSettings = new wrapWebSettings(localSettings);
         webSettings.setAppCacheEnabled(html5);//API7
         webSettings.setDomStorageEnabled(html5);//API7, key to enable gmail
         webSettings.setDatabaseEnabled(html5);//API5
@@ -1622,6 +1627,9 @@ protected void onResume() {
         }
 	}
 	
+    blockImage = sp.getBoolean("block_image", false);
+    localSettings.setBlockNetworkImage(blockImage);
+
     /*disable setting of historyCount, encoding and search
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     int iEncoding = sp.getInt("encoding", -1);

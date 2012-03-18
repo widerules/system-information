@@ -69,8 +69,16 @@
       
     <CheckBox android:id="@+id/homepage_css"
       	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
+      	android:layout_height="0dip"
       	android:text="@string/homepage_css"
+      	android:layout_marginLeft="15dip"
+      	android:checked="false"
+    />
+      
+    <CheckBox android:id="@+id/block_image"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/block_image"
       	android:layout_marginLeft="15dip"
       	android:checked="false"
     />

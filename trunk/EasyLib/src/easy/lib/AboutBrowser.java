@@ -26,7 +26,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbZoomControl, cbCss, cbHtml5;
+	CheckBox cbZoomControl, cbCss, cbHtml5, cbBlockImg;
 	RadioGroup fontSize, historyCount, encodingType, snapSize;
 	EditText searchText;
 	
@@ -109,6 +109,15 @@ public class AboutBrowser extends Activity{
     		}
     	});
 
+    	cbBlockImg = (CheckBox) findViewById(R.id.block_image);
+    	cbBlockImg.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("block_image", cbBlockImg.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	
     	cbCss = (CheckBox) findViewById(R.id.homepage_css);
     	cbCss.setOnClickListener(new OnClickListener() {
     		@Override
@@ -185,6 +194,7 @@ public class AboutBrowser extends Activity{
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbCss.setChecked(perferences.getBoolean("css", false));
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
+		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		
     	if (dm.density < 1) 
     		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 3))).setChecked(true);//smaller

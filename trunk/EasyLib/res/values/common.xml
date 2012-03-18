@@ -115,6 +115,7 @@
     <string name="full_screen">FullScreen</string>
     <string name="full_webpage">FullWeb</string>
     <string name="show_zoom">Zoom Control</string>
+    <string name="block_image">Block network images to reduce bandwidth</string>
     <string name="homepage_css">Cool Homepage, but a little slow</string>
     <string name="max_history">History</string>
     <string name="history_8">10</string>

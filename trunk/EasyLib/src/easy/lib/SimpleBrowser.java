@@ -378,7 +378,7 @@ class MyWebview extends WebView {
 				//contentDisposition: attachment; filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
 				//mimetype: application/octet-stream
 				//contentLength: 463624
-				startDownload(url, false);
+				startDownload(url);
 			}
         });
         
@@ -655,7 +655,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://download
-    			startDownload(url, true);
+    			startDownload(url);
     			break;
     		case 4://copy url
     			ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -711,7 +711,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     }
 }
 
-boolean startDownload(String url, boolean anyfile) {
+boolean startDownload(String url) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
 	url = url.replace("%2D", "-");
@@ -731,11 +731,6 @@ boolean startDownload(String url, boolean anyfile) {
 	String ss[] = readableUrl.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
-	if (!anyfile)
-		if (apkName.endsWith(".txt") || apkName.endsWith("html") || apkName.endsWith("htm") || 
-				apkName.endsWith(".php") || apkName.endsWith(".asp") || apkName.endsWith(".aspx") || 
-				apkName.endsWith(".jsp") || !apkName.contains("."))
-			return false;//should not download these files automatically.
 	 
 	if (downloadPath.startsWith(getFilesDir().getPath())) 
 		Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
@@ -1372,7 +1367,7 @@ protected void onDestroy() {
 BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
-		startDownload(intent.getStringExtra("url"), true);
+		startDownload(intent.getStringExtra("url"));
 	}
 };
 

@@ -112,6 +112,7 @@
     <string name="full_screen">全屏</string>
     <string name="full_webpage">全网页</string>
     <string name="show_zoom">缩放按钮</string>
+    <string name="block_image">没有图片，更省流量</string>
     <string name="homepage_css">主页特效，会稍稍有点慢</string>
     <string name="max_history">历史记录</string>
     <string name="font_size">字体大小</string>

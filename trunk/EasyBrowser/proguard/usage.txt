@@ -114,6 +114,7 @@ easy.lib.R$string:
     public static final int auto_change_wallpaper
     public static final int back
     public static final int backapp
+    public static final int block_image
     public static final int brief
     public static final int delete
     public static final int encoding
@@ -144,6 +145,7 @@ easy.lib.R$string:
     public static final int home
     public static final int homepage
     public static final int homepage_css
+    public static final int html5
     public static final int justreturn
     public static final int killapp
     public static final int latitude
@@ -177,6 +179,9 @@ easy.lib.R$string:
     public static final int select
     public static final int settings
     public static final int share_desktop
+    public static final int share_text1
+    public static final int share_text2
+    public static final int share_text3
     public static final int share_wallpaper
     public static final int show_zoom
     public static final int snap_size

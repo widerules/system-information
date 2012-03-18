@@ -1771,42 +1771,40 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
 	}
 	ret += "</ul>";
-	ret += "</div>";
+	if (css) ret += "</div>";
 	
-	if (css) {
-		ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
-		if (mBookMark.size() > 0) ret += "data-collapsed=\"false\">";
-		else ret += ">";
+	
+	if (mBookMark.size() > 0) {
+		if (css) ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\" data-collapsed=\"false\">";
+		ret += "<h5>" + getString(R.string.bookmark) + "</h5>";
+		ret += "<dl type=\"disc\">";
+		for (int i = 0; i < mBookMark.size(); i++) {
+			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
+					+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
+			imgHref += mBookMark.get(i).m_title;
+			imgHref += "</a></h5></li>";
+			ret += imgHref;
+		}
+		ret += "</dl>";
+		if (css) ret += "</div>";
 	}
-	ret += "<h5>" + getString(R.string.bookmark) + "</h5>";
-	ret += "<dl type=\"disc\">";
-	for (int i = 0; i < mBookMark.size(); i++) {
-		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
-				+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
-		imgHref += mBookMark.get(i).m_title;
-		imgHref += "</a></h5></li>";
-		ret += imgHref;
-	}
-	ret += "</dl>";
-	ret += "</div>";
 
 	
-	if (css) {
-		ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\"";
-		if (mHistory.size() > 0) ret += "data-collapsed=\"false\">";
-		else ret += ">";
+	if (mHistory.size() > 0) {
+		if (css) ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\" data-collapsed=\"false\">";
+		ret += "<h5>" + getString(R.string.history) + "</h5>";
+		ret += "<dl type=\"disc\">";
+		for (int i = 0; i < mHistory.size(); i++) {
+			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
+					+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
+			imgHref += mHistory.get(i).m_title;
+			imgHref += "</a></h5></li>";
+			ret += imgHref;
+		}
+		ret += "</dl>";
+		if (css) ret += "</div>";
 	}
-	ret += "<h5>" + getString(R.string.history) + "</h5>";
-	ret += "<dl type=\"disc\">";
-	for (int i = 0; i < mHistory.size(); i++) {
-		String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
-				+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
-		imgHref += mHistory.get(i).m_title;
-		imgHref += "</a></h5></li>";
-		ret += imgHref;
-	}
-	ret += "</dl>";
-	ret += "</div>";
+	
 	
 	ret += "</body>";
 	ret += "</html>";

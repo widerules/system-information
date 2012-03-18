@@ -454,7 +454,7 @@ class MyWebview extends WebView {
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
-				if (!paid && mAdAvailable) adview.loadAd();
+				//if (!paid && mAdAvailable) adview.loadAd();//seems too many ads here. move to loadpage()
 			}
 			 
 			@Override
@@ -1719,8 +1719,10 @@ void setLayout() {
 }
 
 void loadPage(boolean notJudge) {
-	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE)))
+	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) {
 		serverWebs.get(webIndex).loadDataWithBaseURL(BLANK_PAGE, homePage(), "text/html", "utf-8", BLANK_PAGE);
+		if (!paid && mAdAvailable) adview.loadAd();
+	}
 }
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link

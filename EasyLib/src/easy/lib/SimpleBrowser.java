@@ -1742,7 +1742,8 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
 	if (css) {
 		ret += "<link rel=\"stylesheet\" href=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.css\" />";
-	    ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js\"></script>";
+	    //ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js\"></script>";//slow?
+	    ret += "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>";
 	    ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.js\"></script>";
 		//ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/jquery.mobile-1.0.1.min.css\" />";
 	    //ret += "<script src=\"file:///android_asset/jquery-1.7.1.min.js\"></script>";
@@ -1757,7 +1758,8 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
 		ret += "<h5><li><a href=\"http://weibo.com/\">新浪微博</a></li></h5>";
-		ret += "<h5><li><a href=\"http://3g.gfan.com\">机锋市场</a></li></h5>";
+		//ret += "<h5><li><a href=\"http://3g.gfan.com\">机锋市场</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.appchina.com\">应用汇</a></li></h5>";
 		ret += "<h5><li><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></li></h5>";
 		ret += "<h5><li><a href=\"http://www.taobao.com/\">淘宝</a></li></h5>";
 		ret += "<h5><li><a href=\"http://www.baidu.com/\">百度</a></li></h5>";

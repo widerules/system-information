@@ -215,6 +215,7 @@ public class SimpleBrowser extends Activity {
 	boolean snapFullScreen;
 	boolean html5;
 	boolean blockImage;
+	boolean collapse1, collapse2, collapse3;
 	TextSize textSize = TextSize.SMALLER;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
@@ -317,6 +318,22 @@ class MyWebview extends WebView {
 	    {
 	    	pageSource = html;//to get page source, part 1
 	    }
+	    
+	    @SuppressWarnings("unused")
+	    public void saveCollapseState(int item, boolean state)
+	    {
+	    	switch(item) {
+	    	case 1:
+	    		collapse1 = state;
+	    		break;
+	    	case 2:
+	    		collapse2 = state;
+	    		break;
+	    	case 3:
+	    		collapse3 = state;
+	    		break;
+	    	}
+	    }
 	}
 
 	public MyWebview(Context context) {
@@ -358,7 +375,7 @@ class MyWebview extends WebView {
         
         registerForContextMenu(this);
 
-        addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");//to get page source, part 2
+        addJavascriptInterface(new MyJavaScriptInterface(), "JSinterface");//to get page source, part 2
         
         setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -482,7 +499,7 @@ class MyWebview extends WebView {
         			if (url.equals(BLANK_PAGE) || title.equals(getString(R.string.browser_name)) && (!debug)) 
         				pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
         			else //not work for wml. some webkit even not parse wml.
-        				loadUrl("javascript:window.HTMLOUT.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
+        				loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
         		}
 				
         		if (!url.equals(BLANK_PAGE)) {
@@ -971,6 +988,9 @@ public void onCreate(Bundle savedInstanceState) {
     css = sp.getBoolean("css", false);
     html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
+    collapse1 = sp.getBoolean("collapse1", false);
+    collapse2 = sp.getBoolean("collapse2", false);
+    collapse3 = sp.getBoolean("collapse3", false);
 
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -1700,6 +1720,13 @@ protected void onPause() {
 	if (historyChanged) writeBookmark("history", mHistory);
 	if (bookmarkChanged) writeBookmark("bookmark", mBookMark);
 
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+	Editor sEdit = sp.edit();
+	sEdit.putBoolean("collapse1", collapse1);
+	sEdit.putBoolean("collapse2", collapse2);
+	sEdit.putBoolean("collapse3", collapse3);
+	sEdit.commit();
+	
 	super.onPause();
 }
 
@@ -1756,7 +1783,9 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
     ret += "function collapse(index) {";
     ret += "title = document.getElementById(\"title\" + index).firstChild;";
     ret += "obj = document.getElementById(\"content\" + index);";
-    ret += "if (obj.style.display === \"none\") {obj.style.display = \"\"; title.nodeValue = \"-\" + title.nodeValue.substring(1);}";
+    ret += "collapsed = (obj.style.display === \"none\");";
+    ret += "window.JSinterface.saveCollapseState(index, !collapsed);";
+    ret += "if (collapsed) {obj.style.display = \"\"; title.nodeValue = \"-\" + title.nodeValue.substring(1);}";
     ret += "else {obj.style.display = \"none\"; title.nodeValue = \"+\" + title.nodeValue.substring(1);}";
     ret += "}";
     ret += "</script>";
@@ -1769,8 +1798,14 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</head>";
 	ret += "<body>";
 
-	ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >-" + getString(R.string.top) + "</h4>";
-	ret += "<ul id=\"content1\" type=\"disc\">";
+	if (collapse1) {
+		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >+" + getString(R.string.top) + "</h4>";
+		ret += "<ul id=\"content1\" type=\"disc\" style=\"display: none;\" >";
+	}
+	else {
+		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >-" + getString(R.string.top) + "</h4>";
+		ret += "<ul id=\"content1\" type=\"disc\">";
+	}
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
 		ret += "<h5><li><a href=\"http://weibo.com/\">新浪微博</a></li></h5>";
@@ -1792,8 +1827,14 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	
 	if (mBookMark.size() > 0) {
-		ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >-" + getString(R.string.bookmark) + "</h4>";
-		ret += "<dl id=\"content2\" type=\"disc\">";
+		if (collapse2) {
+			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >+" + getString(R.string.bookmark) + "</h4>";
+			ret += "<dl id=\"content2\" type=\"disc\" style=\"display: none;\" >";
+		}
+		else {
+			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >-" + getString(R.string.bookmark) + "</h4>";
+			ret += "<dl id=\"content2\" type=\"disc\">";
+		}
 		for (int i = 0; i < mBookMark.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
 					+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
@@ -1806,8 +1847,14 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 
 	
 	if (mHistory.size() > 0) {
-		ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >-" + getString(R.string.history) + "</h4>";
-		ret += "<dl id=\"content3\" type=\"disc\">";
+		if (collapse3) {
+			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >+" + getString(R.string.history) + "</h4>";
+			ret += "<dl id=\"content3\" type=\"disc\" style=\"display: none;\" >";
+		}
+		else {
+			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >-" + getString(R.string.history) + "</h4>";
+			ret += "<dl id=\"content3\" type=\"disc\">";
+		}
 		for (int i = 0; i < mHistory.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
 					+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";

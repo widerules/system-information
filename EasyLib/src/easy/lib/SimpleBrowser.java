@@ -1751,16 +1751,23 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<head>";
 	ret += "<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
+	
     ret += "<script type=\"text/javascript\">";
     ret += "function collapse(index) {";
     ret += "obj = document.getElementById(\"content\" + index);";
     ret += "if (obj.style.display === \"none\") obj.style.display = \"\";";
     ret += "else obj.style.display = \"none\"; }";
     ret += "</script>";
+    
+    ret += "<style type=\"text/css\">"; 
+    ret += "h4 {background-color:#B8BFD8; padding:0.4em;}";
+    ret += "body {margin: 0.4em 0 0 0;}";
+    ret += "</style>";
+    
 	ret += "</head>";
 	ret += "<body>";
 
-	ret += "<h5 onClick=\"collapse(1)\" >" + getString(R.string.top) + "</h5>";
+	ret += "<h4 onClick=\"collapse(1)\" >" + getString(R.string.top) + "</h4>";
 	ret += "<ul id=\"content1\" type=\"disc\">";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
@@ -1783,7 +1790,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	
 	if (mBookMark.size() > 0) {
-		ret += "<h5 onClick=\"collapse(2)\" >" + getString(R.string.bookmark) + "</h5>";
+		ret += "<h4 onClick=\"collapse(2)\" >" + getString(R.string.bookmark) + "</h4>";
 		ret += "<dl id=\"content2\" type=\"disc\">";
 		for (int i = 0; i < mBookMark.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
@@ -1797,7 +1804,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 
 	
 	if (mHistory.size() > 0) {
-		ret += "<h5 onClick=\"collapse(3)\" >" + getString(R.string.history) + "</h5>";
+		ret += "<h4 onClick=\"collapse(3)\" >" + getString(R.string.history) + "</h4>";
 		ret += "<dl id=\"content3\" type=\"disc\">";
 		for (int i = 0; i < mHistory.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 

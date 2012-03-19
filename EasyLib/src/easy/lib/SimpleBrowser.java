@@ -1285,9 +1285,9 @@ public void onCreate(Bundle savedInstanceState) {
 				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
-				if (!webAddress.getText().toString().equals(BLANK_PAGE)) { 
+				if (!paid && mAdAvailable) adview.loadAd();
+				if (!webAddress.getText().toString().equals(BLANK_PAGE))  
 					serverWebs.get(webIndex).reload();
-				}
 			}
 		}
 	});
@@ -1296,6 +1296,7 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			loadPage(true);
+			if (!paid && mAdAvailable) adview.loadAd();
 		}
 	});
 	imgNew = (ImageView) findViewById(R.id.newpage);
@@ -1739,10 +1740,8 @@ void setLayout() {
 }
 
 void loadPage(boolean notJudge) {
-	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) {
+	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) 
 		serverWebs.get(webIndex).loadDataWithBaseURL(BLANK_PAGE, homePage(), "text/html", "utf-8", BLANK_PAGE);
-		if (!paid && mAdAvailable) adview.loadAd();
-	}
 }
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
@@ -1753,13 +1752,13 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
 	if (css) {
-		ret += "<link rel=\"stylesheet\" href=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.css\" />";
+		//ret += "<link rel=\"stylesheet\" href=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.css\" />";
 	    //ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js\"></script>";//slow?
-	    ret += "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>";
-	    ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.js\"></script>";
-		//ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/jquery.mobile-1.0.1.min.css\" />";
-	    //ret += "<script src=\"file:///android_asset/jquery-1.7.1.min.js\"></script>";
-	    //ret += "<script src=\"file:///android_asset/jquery.mobile-1.0.1.min.js\"></script>";
+	    //ret += "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>";
+	    //ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.js\"></script>";
+		ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/jquery.mobile-1.0.1.css\" />";
+	    ret += "<script src=\"file:///android_asset/jquery-1.7.1.js\"></script>";
+	    ret += "<script src=\"file:///android_asset/jquery.mobile-1.0.1.js\"></script>";
 	}
 	ret += "</head>";
 	ret += "<body>";

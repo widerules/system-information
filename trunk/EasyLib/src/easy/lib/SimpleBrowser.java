@@ -1397,29 +1397,41 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 };
 
 void changePage(int position) {
-	webIndex = position;
-	while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
-	webpages.getChildAt(webIndex).requestFocus();
+	while (webpages.getDisplayedChild() != position) webpages.showNext();
+	if (webIndex != position) {
+		webIndex = position;
+		webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
+		webpages.getChildAt(webIndex).requestFocus();
+	}
 }
 
 @Override
 protected void onNewIntent(Intent intent) {//open file from sdcard
 	if (!intent.getAction().equals(Intent.ACTION_MAIN)) {
-		Uri uri = intent.getData();
+		String uri = intent.getDataString();
 		if (uri == null) return;
 		
 		boolean found = false;
+		int blankIndex = -1;
 		for (int i = 0; i < serverWebs.size(); i++) {
 			String url = serverWebs.get(i).getUrl();
-			if ((url != null) && url.equals(uri.toString())) {//?fc once?
-				changePage(i);  //show correct page
-				found = true;
-				break;
+			if (url != null) {
+				if (uri.equals(url)) {//?fc once?
+					changePage(i);  //show correct page
+					found = true;
+					break;
+				}
+				else if (BLANK_PAGE.equals(url)) blankIndex = i;
 			}
 		}
 		
-		if (!found) openNewPage(intent.getDataString());
+		if (!found) {
+			if (blankIndex < 0) openNewPage(uri);
+			else {
+				serverWebs.get(blankIndex).loadUrl(uri);
+				changePage(blankIndex);
+			}
+		}
 	}
 	
 	super.onNewIntent(intent); 

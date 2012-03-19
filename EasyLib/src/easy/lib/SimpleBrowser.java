@@ -1751,21 +1751,17 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<head>";
 	ret += "<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
-	if (css) {
-		//ret += "<link rel=\"stylesheet\" href=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.css\" />";
-	    //ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js\"></script>";//slow?
-	    //ret += "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>";
-	    //ret += "<script src=\"http://ajax.aspnetcdn.com/ajax/jquery.mobile/1.0.1/jquery.mobile-1.0.1.min.js\"></script>";
-		ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/jquery.mobile-1.0.1.css\" />";
-	    ret += "<script src=\"file:///android_asset/jquery-1.7.1.js\"></script>";
-	    ret += "<script src=\"file:///android_asset/jquery.mobile-1.0.1.js\"></script>";
-	}
+    ret += "<script type=\"text/javascript\">";
+    ret += "function collapse(index) {";
+    ret += "obj = document.getElementById(\"content\" + index);";
+    ret += "if (obj.style.display === \"none\") obj.style.display = \"\";";
+    ret += "else obj.style.display = \"none\"; }";
+    ret += "</script>";
 	ret += "</head>";
 	ret += "<body>";
 
-	if (css) ret += "<div data-role=\"collapsible\" data-collapsed=\"false\" data-theme=\"b\" data-content-theme=\"d\">";
-	ret += "<h5>" + getString(R.string.top) + "</h5>";
-	ret += "<ul type=\"disc\">";
+	ret += "<h5 onClick=\"collapse(1)\" >" + getString(R.string.top) + "</h5>";
+	ret += "<ul id=\"content1\" type=\"disc\">";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
 		ret += "<h5><li><a href=\"http://weibo.com/\">新浪微博</a></li></h5>";
@@ -1784,13 +1780,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
 	}
 	ret += "</ul>";
-	if (css) ret += "</div>";
 	
 	
 	if (mBookMark.size() > 0) {
-		if (css) ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\" data-collapsed=\"false\">";
-		ret += "<h5>" + getString(R.string.bookmark) + "</h5>";
-		ret += "<dl type=\"disc\">";
+		ret += "<h5 onClick=\"collapse(2)\" >" + getString(R.string.bookmark) + "</h5>";
+		ret += "<dl id=\"content2\" type=\"disc\">";
 		for (int i = 0; i < mBookMark.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
 					+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
@@ -1799,14 +1793,12 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			ret += imgHref;
 		}
 		ret += "</dl>";
-		if (css) ret += "</div>";
 	}
 
 	
 	if (mHistory.size() > 0) {
-		if (css) ret += "<div data-role=\"collapsible\" data-theme=\"b\" data-content-theme=\"d\" data-collapsed=\"false\">";
-		ret += "<h5>" + getString(R.string.history) + "</h5>";
-		ret += "<dl type=\"disc\">";
+		ret += "<h5 onClick=\"collapse(3)\" >" + getString(R.string.history) + "</h5>";
+		ret += "<dl id=\"content3\" type=\"disc\">";
 		for (int i = 0; i < mHistory.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
 					+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
@@ -1815,7 +1807,6 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			ret += imgHref;
 		}
 		ret += "</dl>";
-		if (css) ret += "</div>";
 	}
 	
 	

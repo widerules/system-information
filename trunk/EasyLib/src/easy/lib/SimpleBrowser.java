@@ -1754,9 +1754,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
     ret += "<script type=\"text/javascript\">";
     ret += "function collapse(index) {";
+    ret += "title = document.getElementById(\"title\" + index).firstChild;";
     ret += "obj = document.getElementById(\"content\" + index);";
-    ret += "if (obj.style.display === \"none\") obj.style.display = \"\";";
-    ret += "else obj.style.display = \"none\"; }";
+    ret += "if (obj.style.display === \"none\") {obj.style.display = \"\"; title.nodeValue = \"-\" + title.nodeValue.substring(1);}";
+    ret += "else {obj.style.display = \"none\"; title.nodeValue = \"+\" + title.nodeValue.substring(1);}";
+    ret += "}";
     ret += "</script>";
     
     ret += "<style type=\"text/css\">"; 
@@ -1767,7 +1769,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "</head>";
 	ret += "<body>";
 
-	ret += "<h4 onClick=\"collapse(1)\" >" + getString(R.string.top) + "</h4>";
+	ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >-" + getString(R.string.top) + "</h4>";
 	ret += "<ul id=\"content1\" type=\"disc\">";
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
@@ -1790,7 +1792,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	
 	if (mBookMark.size() > 0) {
-		ret += "<h4 onClick=\"collapse(2)\" >" + getString(R.string.bookmark) + "</h4>";
+		ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >-" + getString(R.string.bookmark) + "</h4>";
 		ret += "<dl id=\"content2\" type=\"disc\">";
 		for (int i = 0; i < mBookMark.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
@@ -1804,7 +1806,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 
 	
 	if (mHistory.size() > 0) {
-		ret += "<h4 onClick=\"collapse(3)\" >" + getString(R.string.history) + "</h4>";
+		ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >-" + getString(R.string.history) + "</h4>";
 		ret += "<dl id=\"content3\" type=\"disc\">";
 		for (int i = 0; i < mHistory.size(); i++) {
 			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 

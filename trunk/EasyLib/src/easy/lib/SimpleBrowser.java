@@ -1791,19 +1791,20 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
     ret += "</script>";
     
     ret += "<style type=\"text/css\">"; 
-    ret += "h4 {background-color:#B8BFD8; padding:0.4em;}";
+    ret += "h4 {background-color:#FFE4C4; padding:0.4em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8
     ret += "body {margin: 0.4em 0 0 0;}";
+    //ret += "body {background-color:#E6E6FA; margin: 0.4em 0 0 0;}";
     ret += "</style>";
     
 	ret += "</head>";
 	ret += "<body>";
 
 	if (collapse1) {
-		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >+" + getString(R.string.top) + "</h4>";
+		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >+\t" + getString(R.string.top) + "</h4>";
 		ret += "<ul id=\"content1\" type=\"disc\" style=\"display: none;\" >";
 	}
 	else {
-		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >-" + getString(R.string.top) + "</h4>";
+		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >-\t" + getString(R.string.top) + "</h4>";
 		ret += "<ul id=\"content1\" type=\"disc\">";
 	}
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
@@ -1828,11 +1829,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	if (mBookMark.size() > 0) {
 		if (collapse2) {
-			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >+" + getString(R.string.bookmark) + "</h4>";
+			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >+\t" + getString(R.string.bookmark) + "</h4>";
 			ret += "<dl id=\"content2\" type=\"disc\" style=\"display: none;\" >";
 		}
 		else {
-			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >-" + getString(R.string.bookmark) + "</h4>";
+			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >-\t" + getString(R.string.bookmark) + "</h4>";
 			ret += "<dl id=\"content2\" type=\"disc\">";
 		}
 		for (int i = 0; i < mBookMark.size(); i++) {
@@ -1848,11 +1849,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	if (mHistory.size() > 0) {
 		if (collapse3) {
-			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >+" + getString(R.string.history) + "</h4>";
+			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >+\t" + getString(R.string.history) + "</h4>";
 			ret += "<dl id=\"content3\" type=\"disc\" style=\"display: none;\" >";
 		}
 		else {
-			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >-" + getString(R.string.history) + "</h4>";
+			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >-\t" + getString(R.string.history) + "</h4>";
 			ret += "<dl id=\"content3\" type=\"disc\">";
 		}
 		for (int i = 0; i < mHistory.size(); i++) {

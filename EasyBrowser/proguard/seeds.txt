@@ -55,6 +55,7 @@ com.google.ads.util.AdUtil$a: com.google.ads.util.AdUtil$a valueOf(java.lang.Str
 com.google.ads.AdRequest$Gender: com.google.ads.AdRequest$Gender[] values()
 com.google.ads.AdRequest$Gender: com.google.ads.AdRequest$Gender valueOf(java.lang.String)
 easy.lib.SimpleBrowser$MyWebview$MyJavaScriptInterface: void processHTML(java.lang.String)
+easy.lib.SimpleBrowser$MyWebview$MyJavaScriptInterface: void saveCollapseState(int,boolean)
 easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback,java.lang.String)
 easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback)
 easy.lib.SimpleBrowser: int FILECHOOSER_RESULTCODE

@@ -1586,9 +1586,7 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	return super.onKeyDown(keyCode, event);
 }
 
-boolean readTextSize(SharedPreferences sp) {
-	TextSize oldt = textSize;
-	
+void readTextSize(SharedPreferences sp) {
     int iTextSize = sp.getInt("textsize", -1);
     if (iTextSize < 0) {
     	if (dm.density < 1) 
@@ -1613,7 +1611,6 @@ boolean readTextSize(SharedPreferences sp) {
 		textSize = TextSize.LARGEST;
     	break;
     }
-    return oldt != textSize;
 }
 
 @Override 
@@ -1641,24 +1638,21 @@ protected void onResume() {
     css = sp.getBoolean("css", false);
 	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
     
-    if (readTextSize(sp)) //no need to reload page if fontSize changed
-    	localSettings.setTextSize(textSize);
+    readTextSize(sp); //no need to reload page if fontSize changed
+    localSettings.setTextSize(textSize);
 
-    boolean oldHtml5 = html5;
     html5 = sp.getBoolean("html5", false);
-	if (oldHtml5 != html5) {
-        wrapWebSettings webSettings = new wrapWebSettings(localSettings);
-        webSettings.setAppCacheEnabled(html5);//API7
-        webSettings.setDomStorageEnabled(html5);//API7, key to enable gmail
-        webSettings.setDatabaseEnabled(html5);//API5
-        webSettings.setGeolocationEnabled(html5);//API5
-        if (html5) {
-            webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
-            webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
-            webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
-            webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
-        }
-	}
+    wrapWebSettings webSettings = new wrapWebSettings(localSettings);
+    webSettings.setAppCacheEnabled(html5);//API7
+    webSettings.setDomStorageEnabled(html5);//API7, key to enable gmail
+    webSettings.setDatabaseEnabled(html5);//API5
+    webSettings.setGeolocationEnabled(html5);//API5
+    if (html5) {
+        webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
+        webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
+        webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
+        webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+    }
 	
     blockImage = sp.getBoolean("block_image", false);
     localSettings.setBlockNetworkImage(blockImage);

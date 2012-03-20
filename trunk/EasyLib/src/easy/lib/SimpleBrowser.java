@@ -1916,7 +1916,7 @@ ArrayList<TitleUrl> readBookmark(String filename)
 		try {
 			ois.close();
 			fi.close();
-		} catch (IOException e1) {
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 	} catch (Exception e) {

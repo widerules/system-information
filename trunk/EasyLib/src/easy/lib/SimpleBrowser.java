@@ -1785,7 +1785,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
     ret += "</script>";
     
     ret += "<style type=\"text/css\">"; 
-    ret += "h4 {background-color:#FFE4C4; padding:0.4em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8
+    ret += "h4 {background-image:url(file:///android_asset/back.png); background-repeat:repeat-x; padding:0.4em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8, FFE4C4, CEDFEF, #C6DBF7
     ret += "body {margin: 0.4em 0 0 0;}";
     //ret += "body {background-color:#E6E6FA; margin: 0.4em 0 0 0;}";
     ret += "</style>";

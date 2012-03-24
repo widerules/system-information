@@ -251,10 +251,13 @@ public abstract class AlphaList<T> {
                 btnIcon.setOnTouchListener(new OnTouchListener() {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {//kill process when click
-						ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-						am.restartPackage(getPackageName(info));
-						//but we need to know when will it restart by itself?
-						textView1.setTextColor(whiteColor);//set color back after kill it.
+						String pn = getPackageName(info);
+						if (!pn.equals("simple.home.jtbuaa")) {
+							ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+							am.restartPackage(pn);
+							//but we need to know when will it restart by itself?
+							textView1.setTextColor(whiteColor);//set color back after kill it.
+						}
     					return false;
 					}
                 });

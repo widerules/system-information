@@ -1101,29 +1101,31 @@ public void onCreate(Bundle savedInstanceState) {
        	    	m_sourceDialog.show();
         		break;
         	case 1://view snap
-    			if (snapFullScreen) {
-					webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
-    				webpages.setDrawingCacheEnabled(true);
-    				bmp = webpages.getDrawingCache();
-    			}
-    			else {
-        			Picture pic = serverWebs.get(webIndex).capturePicture();
+        		try {//still got java.lang.RuntimeException: Canvas: trying to use a recycled bitmap android.graphics.Bitmap from one user. so catch it.
+        			if (snapFullScreen) {
+    					webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
+        				webpages.setDrawingCacheEnabled(true);
+        				bmp = webpages.getDrawingCache();
+        			}
+        			else {
+            			Picture pic = serverWebs.get(webIndex).capturePicture();
 
-    				bmp = Bitmap.createBitmap(
-    						pic.getWidth(), 
-    						pic.getHeight(), 
-    						Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
-    			
-        			Canvas canvas = new Canvas(bmp); 
-        	        pic.draw(canvas);
-    			}
-        		snapView.setImageBitmap(bmp);
-        		snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
-        		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
-        			snapDialog.setIcon(R.drawable.explorer);
-        		else
-        			snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
-        		snapDialog.show();
+        				bmp = Bitmap.createBitmap(
+        						pic.getWidth(), 
+        						pic.getHeight(), 
+        						Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+        			
+            			Canvas canvas = new Canvas(bmp); 
+            	        pic.draw(canvas);
+        			}
+            		snapView.setImageBitmap(bmp);
+            		snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
+            		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
+            			snapDialog.setIcon(R.drawable.explorer);
+            		else
+            			snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+            		snapDialog.show();
+        		} catch(Exception e) {e.printStackTrace();}
         		
         		break;
         	case 2://copy

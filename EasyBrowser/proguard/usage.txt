@@ -206,6 +206,8 @@ easy.lib.R$string:
     public static final int wallpaper_scene
     public static final int warning
     public static final int wlan
+easy.lib.SimpleBrowser:
+    boolean css
 easy.lib.util:
     55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2

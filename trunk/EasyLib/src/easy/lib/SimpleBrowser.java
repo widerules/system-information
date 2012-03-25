@@ -213,7 +213,7 @@ public class SimpleBrowser extends Activity {
 	//settings
 	boolean css;
 	boolean snapFullScreen;
-	boolean html5;
+	boolean html5 = true;
 	boolean blockImage;
 	boolean collapse1, collapse2, collapse3;
 	TextSize textSize = TextSize.SMALLER;
@@ -986,7 +986,7 @@ public void onCreate(Bundle savedInstanceState) {
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
     //css = sp.getBoolean("css", false);
-    html5 = sp.getBoolean("html5", false);
+    //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
@@ -1651,7 +1651,7 @@ protected void onResume() {
     readTextSize(sp); //no need to reload page if fontSize changed
     localSettings.setTextSize(textSize);
 
-    //set html5 to true as default instead of read from preference, for it seems not slow if enable it?
+    /*//set html5 to true as default instead of read from preference, for it seems not slow if enable it?
     html5 = sp.getBoolean("html5", false);
     wrapWebSettings webSettings = new wrapWebSettings(localSettings);
     webSettings.setAppCacheEnabled(html5);//API7
@@ -1663,7 +1663,7 @@ protected void onResume() {
         webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
         webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
         webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
-    }
+    }*/
 	
     blockImage = sp.getBoolean("block_image", false);
     localSettings.setBlockNetworkImage(blockImage);

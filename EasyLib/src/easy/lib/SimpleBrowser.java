@@ -985,7 +985,7 @@ public void onCreate(Bundle savedInstanceState) {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
-    css = sp.getBoolean("css", false);
+    //css = sp.getBoolean("css", false);
     html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
     collapse1 = sp.getBoolean("collapse1", false);
@@ -1643,13 +1643,15 @@ protected void onResume() {
     
 	String url = serverWebs.get(webIndex).getUrl() + "";
 
+    /* css default to true now. 
     boolean oldCss = css;
     css = sp.getBoolean("css", false);
-	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
+	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed*/		
     
     readTextSize(sp); //no need to reload page if fontSize changed
     localSettings.setTextSize(textSize);
 
+    //set html5 to true as default instead of read from preference, for it seems not slow if enable it?
     html5 = sp.getBoolean("html5", false);
     wrapWebSettings webSettings = new wrapWebSettings(localSettings);
     webSettings.setAppCacheEnabled(html5);//API7

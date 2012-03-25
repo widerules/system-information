@@ -1092,13 +1092,19 @@ public void onCreate(Bundle savedInstanceState) {
                 long arg3) {
             switch (arg2) {
         	case 0://view page source
-        		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
-        		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
-        			m_sourceDialog.setIcon(R.drawable.explorer);
-        		else
-        			m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
-       	    	m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
-       	    	m_sourceDialog.show();
+        		try {
+            		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
+            		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
+            			m_sourceDialog.setIcon(R.drawable.explorer);
+            		else
+            			m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+           	    	m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
+           	    	m_sourceDialog.show();
+        		}
+        		catch (Exception e) {
+        			e.printStackTrace();
+        			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+        		}
         		break;
         	case 1://view snap
         		try {//still got java.lang.RuntimeException: Canvas: trying to use a recycled bitmap android.graphics.Bitmap from one user. so catch it.
@@ -1125,8 +1131,10 @@ public void onCreate(Bundle savedInstanceState) {
             		else
             			snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
             		snapDialog.show();
-        		} catch(Exception e) {e.printStackTrace();}
-        		
+        		} catch(Exception e) {
+        			e.printStackTrace();
+        			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+       			}
         		break;
         	case 2://copy
         		try {

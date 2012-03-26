@@ -31,6 +31,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -992,6 +993,15 @@ public void onCreate(Bundle savedInstanceState) {
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
 
+    IntentFilter filter = new IntentFilter();
+    filter.addAction("android.intent.action.VIEW");
+    filter.addCategory("android.intent.category.DEFAULT");
+    filter.addDataScheme("http");
+    Context context = getApplicationContext();
+    ComponentName component = new ComponentName("easy.browser", "easy.lib.SimpleBrowser");
+    ComponentName[] components = new ComponentName[] {new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"),
+                                                      component};
+    getPackageManager().addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, components, component);
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1378,7 +1388,7 @@ public void onCreate(Bundle savedInstanceState) {
 	}    
 
 	//for package added
-	IntentFilter filter = new IntentFilter();
+	filter = new IntentFilter();
 	filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 	filter.addDataScheme("package");
 	registerReceiver(packageReceiver, filter);

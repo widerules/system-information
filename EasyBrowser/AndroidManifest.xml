@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
     
     <!-- not need unless open geo location in websettings. it will cause app not avaiable on market for some user
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>

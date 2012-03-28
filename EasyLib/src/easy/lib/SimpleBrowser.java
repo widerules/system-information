@@ -213,7 +213,7 @@ public class SimpleBrowser extends Activity {
 
 	//settings
 	boolean css;
-	boolean snapFullScreen;
+	boolean snapFullScreen = true;
 	boolean html5 = true;
 	boolean blockImage;
 	boolean collapse1, collapse2, collapse3;
@@ -1638,7 +1638,7 @@ protected void onResume() {
 	Editor sEdit = sp.edit();
     
 	
-    snapFullScreen = (sp.getInt("full_screen", 1) == 1);
+    //snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
     
     WebSettings localSettings = serverWebs.get(webIndex).getSettings();
     

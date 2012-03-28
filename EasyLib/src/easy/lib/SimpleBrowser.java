@@ -41,6 +41,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
@@ -51,6 +52,7 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -1249,6 +1251,7 @@ public void onCreate(Bundle savedInstanceState) {
     });
     
 	mHistory = readBookmark("history");
+	if (mHistory.isEmpty()) getHistoryList();//read history from native browser if my history is empty
 	mBookMark = readBookmark("bookmark");		
 	historyChanged = false;
 	bookmarkChanged = false;
@@ -1629,6 +1632,57 @@ void readTextSize(SharedPreferences sp) {
     case 5:
 		textSize = TextSize.LARGEST;
     	break;
+    }
+}
+
+void getHistoryList() {
+	String[] sHistoryBookmarksProjection = new String[] { 
+		Browser.BookmarkColumns._ID,
+        Browser.BookmarkColumns.TITLE,
+        Browser.BookmarkColumns.URL,
+        Browser.BookmarkColumns.VISITS,
+        Browser.BookmarkColumns.DATE,
+        Browser.BookmarkColumns.CREATED,
+        Browser.BookmarkColumns.BOOKMARK,
+        Browser.BookmarkColumns.FAVICON };
+
+    String whereClause = Browser.BookmarkColumns.VISITS + " > 0";
+    String orderClause = Browser.BookmarkColumns.DATE + " DESC";
+
+    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, whereClause, null, orderClause);
+
+    if (cursor != null) {
+        if (cursor.moveToFirst()) {
+            int columnId = cursor.getColumnIndex(Browser.BookmarkColumns._ID);
+            int columnTitle = cursor.getColumnIndex(Browser.BookmarkColumns.TITLE);
+            int columnUrl = cursor.getColumnIndex(Browser.BookmarkColumns.URL);
+            int columnBookmark = cursor.getColumnIndex(Browser.BookmarkColumns.BOOKMARK);
+
+            int count = 0;
+            while (!cursor.isAfterLast()) {
+            	String url = cursor.getString(columnUrl);
+    			String site = "";
+    			String[] tmp = url.split("/");
+    			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+    			else site = tmp[0];
+
+    			TitleUrl titleUrl = new TitleUrl(cursor.getString(columnTitle), url, site);
+        		mHistory.add(titleUrl);
+
+                    /*HistoryItem item = new HistoryItem(
+                                    cursor.getLong(columnId),
+                                    cursor.getString(columnTitle),
+                                    cursor.getString(columnUrl),
+                                    cursor.getInt(columnBookmark) >= 1 ? true : false,
+                                    null);
+
+                    result.add(item);*/
+
+                count++;
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
     }
 }
 

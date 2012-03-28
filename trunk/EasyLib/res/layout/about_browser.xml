@@ -187,7 +187,7 @@
         >
     <RadioGroup android:id="@+id/snap_size"  
     	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"  
+	    android:layout_height="0dip"  
     	android:orientation="horizontal"
     >  
     <TextView

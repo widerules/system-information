@@ -273,6 +273,8 @@ public class SimpleBrowser extends Activity {
 	AlertDialog m_sourceDialog = null;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
+	ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
+	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	boolean historyChanged, bookmarkChanged;
 	ImageView imgAddFavo, imgGo;
 	
@@ -1251,7 +1253,6 @@ public void onCreate(Bundle savedInstanceState) {
     
 	mHistory = readBookmark("history");
 	mBookMark = readBookmark("bookmark");		
-	if (mHistory.isEmpty()) getHistoryList();//read history from native browser if my history is empty
 	historyChanged = false;
 	bookmarkChanged = false;
 
@@ -1271,6 +1272,31 @@ public void onCreate(Bundle savedInstanceState) {
 			siteArray.add(site);
 			urlAdapter.add(site);
 		}
+	}
+	
+	getHistoryList();//read history from native browser
+	for (int i = 0; i < mSystemHistory.size(); i++) {
+		site = mSystemHistory.get(i).m_site;
+		if (siteArray.indexOf(site) < 0) {
+			siteArray.add(site);
+			urlAdapter.add(site);
+		}
+	}
+
+	boolean firstRun = false;
+	try {
+		FileInputStream fi = openFileInput("history");
+		try { fi.close();}
+		catch (IOException e) {}
+	} catch (FileNotFoundException e1) { firstRun = true; }
+	if (firstRun) {//copy from system bookmark if first run
+		for (int i = 0; i < mSystemHistory.size(); i++) {
+			if (i > historyCount) break;
+			mHistory.add(mSystemHistory.get(i));
+		}
+		
+		for (int i = 0; i < mSystemBookMark.size(); i++) 
+			mBookMark.add(mSystemBookMark.get(i));
 	}
 	
 	urlAdapter.sort(new stringCompatator());
@@ -1642,7 +1668,8 @@ void getHistoryList() {
         Browser.BookmarkColumns.BOOKMARK,
         Browser.BookmarkColumns.FAVICON };
 
-    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, null);
+	String orderClause = Browser.BookmarkColumns.DATE + " DESC";
+    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, orderClause);
 
     if (cursor != null) {
         if (cursor.moveToFirst()) {
@@ -1658,8 +1685,8 @@ void getHistoryList() {
     			else site = tmp[0];
 
     			TitleUrl titleUrl = new TitleUrl(cursor.getString(columnTitle), url, site);
-        		mHistory.add(titleUrl);
-        		if (cursor.getInt(columnBookmark) >= 1) mBookMark.add(titleUrl);
+        		mSystemHistory.add(titleUrl);
+        		if (cursor.getInt(columnBookmark) >= 1) mSystemBookMark.add(titleUrl);
 
                 cursor.moveToNext();
             }

@@ -1250,8 +1250,8 @@ public void onCreate(Bundle savedInstanceState) {
     });
     
 	mHistory = readBookmark("history");
-	if (mHistory.isEmpty()) getHistoryList();//read history from native browser if my history is empty
 	mBookMark = readBookmark("bookmark");		
+	if (mHistory.isEmpty()) getHistoryList();//read history from native browser if my history is empty
 	historyChanged = false;
 	bookmarkChanged = false;
 
@@ -1642,9 +1642,7 @@ void getHistoryList() {
         Browser.BookmarkColumns.BOOKMARK,
         Browser.BookmarkColumns.FAVICON };
 
-    String orderClause = Browser.BookmarkColumns.DATE + " DESC";
-
-    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, orderClause);
+    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, null);
 
     if (cursor != null) {
         if (cursor.moveToFirst()) {

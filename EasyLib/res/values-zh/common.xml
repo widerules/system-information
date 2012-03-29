@@ -7,6 +7,9 @@
     
     <string name="about_dialog_notes">如果喜欢这个应用，\n请给我打5颗星，多谢！</string>
     <string name="help_message">两次点击/滑动之内找到你的应用\n单击应用图标：结束应用\n单击应用名称：启动应用\n单击应用版本：删除应用\n长按应用名称：添加快捷方式\n长按快捷方式：删除快捷方式</string>
+    <string name="author">clickclick.home@gmail.com</string>
+    <string name="browser_author">easy.browsers@gmail.com</string>
+
     <string name="auto_change_wallpaper">晃动手机换壁纸</string>
     <string name="about_message">是一个小巧、极速，\n功能完备的浏览器。</string>
     
@@ -68,7 +71,6 @@
     <string name="top">常用</string>
     <string name="source">网页源码</string>
     <string name="not_avaiable">抱歉，在安卓2.3.3上无法查看网页源码。</string>
-    <string name="snap">网页截屏</string>
     <string name="homepage">主页</string>
     <string name="shareurl">分享网址</string>
     <string name="recommend">推荐</string>
@@ -107,7 +109,8 @@
     <string name="grid_view">图标视图</string>
     <string name="list_view">列表视图</string>
     <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
-    
+
+    <string name="snap">网页截屏</string>
     <string name="snap_size">截屏尺寸</string>
     <string name="full_screen">全屏</string>
     <string name="full_webpage">全网页</string>
@@ -115,6 +118,8 @@
     <string name="block_image">没有图片，更快更省流量</string>
     <string name="homepage_css">主页特效，会有点慢</string>
     <string name="max_history">历史记录</string>
+    <string name="history_8">10</string>
+    <string name="history_16">15</string>
     <string name="font_size">字体大小</string>
     <string name="font_smallest">最小</string>
     <string name="font_smaller">小</string>
@@ -123,6 +128,11 @@
     <string name="font_largest">最大</string>
     <string name="encoding">文字编码</string>
     <string name="encoding_auto">自动</string>
+    <string name="encoding_utf8">UTF-8</string>
+    <string name="encoding_gb2312">GB2312</string>
+    <string name="encoding_big5">BIG5</string>
+    <string name="encoding_gbk">GBK</string>
+    <string name="encoding_latin1">ISO-8859-1</string>
     <string name="search">搜索网页</string>
     <string name="html5">某些网站需要HTML5，但有点慢</string>
     

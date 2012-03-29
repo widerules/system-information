@@ -9,7 +9,7 @@
     <string name="help_message">Find you app by not more than 2 click. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
     <string name="author">clickclick.home@gmail.com</string>
     <string name="browser_author">easy.browsers@gmail.com</string>
-    
+
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     <string name="about_message">" "is a very small, fast, simple and powerful browser.</string>
     
@@ -105,7 +105,7 @@
     <string name="downloads_open">". "You can view the folder with ES File Explorer or other file manager. Click OK to download ES File Explorer.</string>
     
     <string name="sorry">" "crashed, error log is" "</string>
-    
+
     <string name="grid_view">Grid View</string>
     <string name="list_view">List View</string>
     <string name="restart">It need restart to change the view. \nRestart now?</string>

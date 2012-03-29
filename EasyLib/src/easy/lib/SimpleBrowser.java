@@ -1642,19 +1642,16 @@ void getHistoryList() {
         Browser.BookmarkColumns.BOOKMARK,
         Browser.BookmarkColumns.FAVICON };
 
-    String whereClause = Browser.BookmarkColumns.VISITS + " > 0";
     String orderClause = Browser.BookmarkColumns.DATE + " DESC";
 
-    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, whereClause, null, orderClause);
+    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, orderClause);
 
     if (cursor != null) {
         if (cursor.moveToFirst()) {
-            int columnId = cursor.getColumnIndex(Browser.BookmarkColumns._ID);
             int columnTitle = cursor.getColumnIndex(Browser.BookmarkColumns.TITLE);
             int columnUrl = cursor.getColumnIndex(Browser.BookmarkColumns.URL);
             int columnBookmark = cursor.getColumnIndex(Browser.BookmarkColumns.BOOKMARK);
 
-            int count = 0;
             while (!cursor.isAfterLast()) {
             	String url = cursor.getString(columnUrl);
     			String site = "";
@@ -1664,17 +1661,8 @@ void getHistoryList() {
 
     			TitleUrl titleUrl = new TitleUrl(cursor.getString(columnTitle), url, site);
         		mHistory.add(titleUrl);
+        		if (cursor.getInt(columnBookmark) >= 1) mBookMark.add(titleUrl);
 
-                    /*HistoryItem item = new HistoryItem(
-                                    cursor.getLong(columnId),
-                                    cursor.getString(columnTitle),
-                                    cursor.getString(columnUrl),
-                                    cursor.getInt(columnBookmark) >= 1 ? true : false,
-                                    null);
-
-                    result.add(item);*/
-
-                count++;
                 cursor.moveToNext();
             }
         }
@@ -1858,7 +1846,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
     
     ret += "<style type=\"text/css\">"; 
     ret += "h4 {background-image:url(file:///android_asset/back.png); background-repeat:repeat-x; padding:0.4em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8, FFE4C4, CEDFEF, #C6DBF7
-    ret += "body {margin: 0.4em 0 0 0;}";
+    ret += "body {margin: 0.4em 0 0 0; background-color: #F5F5F5}";
     //ret += "body {background-color:#E6E6FA; margin: 0.4em 0 0 0;}";
     ret += "</style>";
     

@@ -384,7 +384,7 @@ class MyWebview extends WebView {
 			@Override
 			public boolean onTouch(View view, MotionEvent arg1) {//just close webcontrol page if it is open.
 	        	webControl.setVisibility(View.INVISIBLE);
-	        	view.requestFocusFromTouch();
+	        	if (!view.isFocused()) view.requestFocusFromTouch();
 				return false;
 			}
         });
@@ -648,7 +648,6 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 					serverWebs.get(webIndex).clearHistory();
 				}
 				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
-				webpages.getChildAt(webIndex).requestFocus();
 			}
         });
         
@@ -1353,7 +1352,6 @@ public void onCreate(Bundle savedInstanceState) {
 			}
 			else {
 				webControl.setVisibility(View.INVISIBLE);
-				webpages.getChildAt(webIndex).requestFocus();
 			}
 		}
 	});
@@ -1444,7 +1442,6 @@ void changePage(int position) {
 	if (webIndex != position) {
 		webIndex = position;
 		webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
-		webpages.getChildAt(webIndex).requestFocus();
 	}
 }
 
@@ -1573,7 +1570,6 @@ private boolean openNewPage(String url) {
 		webIndex = webAdapter.getCount() - 1;
         webpages.addView(webAdapter.getItem(webIndex));
         while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
-		webpages.getChildAt(webIndex).requestFocus();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));
 	}
 	

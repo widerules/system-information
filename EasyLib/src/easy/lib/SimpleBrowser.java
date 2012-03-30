@@ -275,7 +275,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
-	boolean historyChanged, bookmarkChanged;
+	boolean historyChanged = false, bookmarkChanged = false;
 	ImageView imgAddFavo, imgGo;
 	
 	//ad
@@ -714,7 +714,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         
         boolean foundBookmark = false;
     	for (int i = mBookMark.size()-1; i >= 0; i--) 
-    		if (mBookMark.get(i).m_url.equals(url)) {
+    		if ((mBookMark.get(i).m_url.equals(url)) || (url.equals(mBookMark.get(i).m_url + "/"))) {
     			foundBookmark = true;
                 menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
     			break;
@@ -724,7 +724,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         
         historyIndex = -1;
     	for (int i = mHistory.size()-1; i >= 0; i--) 
-    		if (mHistory.get(i).m_url.equals(url)) {
+    		if ((mHistory.get(i).m_url.equals(url)) || (url.equals(mHistory.get(i).m_url + "/"))) {
     			historyIndex = i;
     			menu.add(0, 9, i, R.string.remove_history).setOnMenuItemClickListener(handler);
     			break;
@@ -1253,8 +1253,6 @@ public void onCreate(Bundle savedInstanceState) {
     
 	mHistory = readBookmark("history");
 	mBookMark = readBookmark("bookmark");		
-	historyChanged = false;
-	bookmarkChanged = false;
 
 	siteArray = new ArrayList<String>();
 	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
@@ -1297,6 +1295,9 @@ public void onCreate(Bundle savedInstanceState) {
 		
 		for (int i = 0; i < mSystemBookMark.size(); i++) 
 			mBookMark.add(mSystemBookMark.get(i));
+		
+		historyChanged = true;
+		bookmarkChanged = true;
 	}
 	
 	urlAdapter.sort(new stringCompatator());
@@ -1657,44 +1658,6 @@ void readTextSize(SharedPreferences sp) {
     }
 }
 
-void getHistoryList() {
-	String[] sHistoryBookmarksProjection = new String[] { 
-		Browser.BookmarkColumns._ID,
-        Browser.BookmarkColumns.TITLE,
-        Browser.BookmarkColumns.URL,
-        Browser.BookmarkColumns.VISITS,
-        Browser.BookmarkColumns.DATE,
-        Browser.BookmarkColumns.CREATED,
-        Browser.BookmarkColumns.BOOKMARK,
-        Browser.BookmarkColumns.FAVICON };
-
-	String orderClause = Browser.BookmarkColumns.DATE + " DESC";
-    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, orderClause);
-
-    if (cursor != null) {
-        if (cursor.moveToFirst()) {
-            int columnTitle = cursor.getColumnIndex(Browser.BookmarkColumns.TITLE);
-            int columnUrl = cursor.getColumnIndex(Browser.BookmarkColumns.URL);
-            int columnBookmark = cursor.getColumnIndex(Browser.BookmarkColumns.BOOKMARK);
-
-            while (!cursor.isAfterLast()) {
-            	String url = cursor.getString(columnUrl);
-    			String site = "";
-    			String[] tmp = url.split("/");
-    			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-    			else site = tmp[0];
-
-    			TitleUrl titleUrl = new TitleUrl(cursor.getString(columnTitle), url, site);
-        		mSystemHistory.add(titleUrl);
-        		if (cursor.getInt(columnBookmark) >= 1) mSystemBookMark.add(titleUrl);
-
-                cursor.moveToNext();
-            }
-        }
-        cursor.close();
-    }
-}
-
 @Override 
 protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1979,6 +1942,44 @@ void writeBookmark(String filename, ArrayList<TitleUrl> bookmark) {
 		oos.close();
 		fo.close();
 	} catch (Exception e) {}
+}
+
+void getHistoryList() {
+	String[] sHistoryBookmarksProjection = new String[] { 
+		Browser.BookmarkColumns._ID,
+        Browser.BookmarkColumns.TITLE,
+        Browser.BookmarkColumns.URL,
+        Browser.BookmarkColumns.VISITS,
+        Browser.BookmarkColumns.DATE,
+        Browser.BookmarkColumns.CREATED,
+        Browser.BookmarkColumns.BOOKMARK,
+        Browser.BookmarkColumns.FAVICON };
+
+	String orderClause = Browser.BookmarkColumns.DATE + " DESC";
+    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, orderClause);
+
+    if (cursor != null) {
+        if (cursor.moveToFirst()) {
+            int columnTitle = cursor.getColumnIndex(Browser.BookmarkColumns.TITLE);
+            int columnUrl = cursor.getColumnIndex(Browser.BookmarkColumns.URL);
+            int columnBookmark = cursor.getColumnIndex(Browser.BookmarkColumns.BOOKMARK);
+
+            while (!cursor.isAfterLast()) {
+            	String url = cursor.getString(columnUrl).trim();
+    			String site = "";
+    			String[] tmp = url.split("/");
+    			if (tmp.length > 2) site = tmp[2];//if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+    			else site = tmp[0];
+
+    			TitleUrl titleUrl = new TitleUrl(cursor.getString(columnTitle), url, site);
+        		if (cursor.getInt(columnBookmark) >= 1) mSystemBookMark.add(titleUrl);
+        		else mSystemHistory.add(titleUrl);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+    }
 }
 
 ArrayList<TitleUrl> readBookmark(String filename) 

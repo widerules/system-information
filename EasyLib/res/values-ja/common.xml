@@ -6,8 +6,6 @@
     
     <string name="about_dialog_notes">"このアプリのような場合は、\ nしばらくは私の5つ星のおかげで、投票。あなたが私をあなたの母国語、おかげで簡単にブラウザを転送する手助けをしたい場合、\ n \ nしばらくは私に連絡してください。"</string>
     <string name="help_message">"2クリック以上しないことにより、あなたのアプリを見つける。 \ nClickアプリのアイコンは、\ nClickアプリケーション名が起動し、それを停止します\ nclickアプリのバージョンはアンインストールするには、\ nlongクリックしてアプリ名：アドインをショートカット、それを削除する\ nlongクリックのショートカット。"</string>
-    <string name="author">"clickclick.home @ gmail.com"</string>
-    <string name="browser_author">"easy.browsers @ gmail.com"</string>
 
     <string name="auto_change_wallpaper">"シェイクで壁紙を変更"</string>
     <string name="about_message">"\"\"非常に小さく、高速、シンプルかつ強力なブラウザです。"</string>
@@ -117,8 +115,6 @@
     <string name="block_image">"帯域幅を減らすために画像をブロック"</string>
     <string name="homepage_css">"クールなホームページですが、少し遅い"</string>
     <string name="max_history">"履歴"</string>
-    <string name="history_8">"10"</string>
-    <string name="history_16">"15"</string>
     <string name="font_size">"フォント・サイズ"</string>
     <string name="font_smallest">"最小"</string>
     <string name="font_smaller">"小さい"</string>
@@ -127,11 +123,6 @@
     <string name="font_largest">"最大"</string>
     <string name="encoding">"エンコーディング"</string>
     <string name="encoding_auto">"自動"</string>
-    <string name="encoding_utf8">"UTF-8"</string>
-    <string name="encoding_gb2312">"GB2312"</string>
-    <string name="encoding_big5">"BIG5"</string>
-    <string name="encoding_gbk">"GBK"</string>
-    <string name="encoding_latin1">"ISO-8859-1"</string>
     <string name="search">"Webページの検索"</string>
     <string name="html5">"ゆっくりとHTML5の一部ではなく、Gmailの必要があります。カップケーキ/ドーナツでは動作しません"</string>
     

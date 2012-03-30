@@ -39,6 +39,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -979,6 +980,42 @@ private void shareUrl(String text)
     util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);	
 }
 
+void setPrefer()
+{
+    PackageManager pm = getPackageManager();
+    ComponentName component = new ComponentName(getPackageName(), SimpleBrowser.class.getName());
+    ComponentName[] components = new ComponentName[] {component};
+    IntentFilter filter = new IntentFilter();
+    Intent intent = new Intent();
+    
+    filter.addAction("android.intent.action.VIEW");
+    filter.addCategory("android.intent.category.DEFAULT");
+    filter.addCategory("android.intent.category.BROWSABLE");
+    filter.addDataScheme("http");
+    intent.setAction("android.intent.action.VIEW");
+    intent.addCategory("android.intent.category.DEFAULT");
+    intent.addCategory("android.intent.category.BROWSABLE");
+    
+    List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);//hard to get the complete set of components which can handle the intent.
+    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
+    filter.addDataScheme("https");
+    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
+    
+    filter = new IntentFilter();
+    filter.addAction("android.intent.action.WEB_SEARCH");
+    filter.addCategory("android.intent.category.DEFAULT");
+    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
+    
+    filter.addCategory("android.intent.category.BROWSABLE");
+    filter.addDataScheme("http");
+    filter.addDataScheme("https");
+    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
+    
+    filter = new IntentFilter();
+    filter.addAction("android.intent.action.SEARCH");
+    filter.addCategory("android.intent.category.DEFAULT");
+    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
+}
 
 @Override
 public void onCreate(Bundle savedInstanceState) {
@@ -995,16 +1032,6 @@ public void onCreate(Bundle savedInstanceState) {
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
-
-    IntentFilter filter = new IntentFilter();
-    filter.addAction("android.intent.action.VIEW");
-    filter.addCategory("android.intent.category.DEFAULT");
-    filter.addDataScheme("http");
-    Context context = getApplicationContext();
-    ComponentName component = new ComponentName("easy.browser", "easy.lib.SimpleBrowser");
-    ComponentName[] components = new ComponentName[] {new ComponentName("com.android.browser", "com.android.browser.BrowserActivity"),
-                                                      component};
-    getPackageManager().addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, components, component);
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1409,8 +1436,10 @@ public void onCreate(Bundle savedInstanceState) {
 		e.printStackTrace();
 	}    
 
+	//setPrefer();//can't get complete component set. can't work on 2.2 even you can get the full set. so don't set it. 
+	
 	//for package added
-	filter = new IntentFilter();
+	IntentFilter filter = new IntentFilter();
 	filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 	filter.addDataScheme("package");
 	registerReceiver(packageReceiver, filter);

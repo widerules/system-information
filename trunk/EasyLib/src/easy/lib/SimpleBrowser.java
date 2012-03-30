@@ -500,15 +500,15 @@ class MyWebview extends WebView {
 				String title = view.getTitle();
 				if (title == null) title = url;
 				
-        		if (!android.os.Build.VERSION.RELEASE.equals("2.3.3")) {//it will cause webkit crash on 2.3.3
-        			if (url.equals(BLANK_PAGE) || title.equals(getString(R.string.browser_name)) && (!debug)) 
+        		if (!"2.3.3".equals(android.os.Build.VERSION.RELEASE)) {//it will cause webkit crash on 2.3.3
+        			if (BLANK_PAGE.equals(url) || getString(R.string.browser_name).equals(title) && (!debug)) 
         				pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
         			else //not work for wml. some webkit even not parse wml.
         				loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
         		}
 				
-        		if (!url.equals(BLANK_PAGE)) {
-        			if(title.equals(getString(R.string.browser_name)))//if title and url not sync, then sync it.
+        		if (!BLANK_PAGE.equals(url)) {
+        			if(getString(R.string.browser_name).equals(title))//if title and url not sync, then sync it.
         				webAddress.setText(BLANK_PAGE);
         			else {//handle the bookmark/history after load new page
             			String site = "";
@@ -576,7 +576,7 @@ class MyWebview extends WebView {
 			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (url.equals(BLANK_PAGE)) {
+				if (BLANK_PAGE.equals(url)) {
 					if (view.getHitTestResult().getType() > 0)
 						loadPage(true);
 					else ;//should do nothing here, otherwise it will not login php site correctly
@@ -823,7 +823,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
     	try {
     		download_file = new File(downloadPath + apkName);
     		boolean found = false;
-    		if (!mimeType.equals("")) {
+    		if (!"".equals(mimeType)) {
     			intent.setAction(Intent.ACTION_VIEW);
     			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
     			List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
@@ -1321,12 +1321,9 @@ public void onCreate(Bundle savedInstanceState) {
 		public void onClick(View arg0) {
 			if (serverWebs.get(webIndex).canGoForward()) {
 				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl().equals(BLANK_PAGE))
+				if (BLANK_PAGE.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl()))
 					loadPage(true);//goBack will show blank page at this time, so load the home page.
-				else {
-					//serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-					serverWebs.get(webIndex).goForward();
-				}
+				else serverWebs.get(webIndex).goForward();
 			}
 		}
 	});
@@ -1336,12 +1333,9 @@ public void onCreate(Bundle savedInstanceState) {
 		public void onClick(View arg0) {
 			if (serverWebs.get(webIndex).canGoBack()) {
 				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-				if (wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl().equals(BLANK_PAGE))
+				if (BLANK_PAGE.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl()))
 					loadPage(true);//goBack will show blank page at this time, so load the home page.
-				else {
-					//serverWebs.get(webIndex).getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-					serverWebs.get(webIndex).goBack(); 
-				}
+				else serverWebs.get(webIndex).goBack(); 
 			}
 		}
 	});
@@ -1408,7 +1402,7 @@ public void onCreate(Bundle savedInstanceState) {
 	setLayout();
 	
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
-		if (getIntent().getAction().equals(Intent.ACTION_MAIN))	loadPage(false);
+		if (Intent.ACTION_MAIN.equals(getIntent().getAction()))	loadPage(false);
 		else serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
 	}
 	catch (Exception e) {
@@ -1447,7 +1441,7 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 	@Override
 	public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (action.equals(Intent.ACTION_PACKAGE_ADDED)) {
+        if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
             String packageName = intent.getDataString().split(":")[1];//it always in the format of package:x.y.z
         	for (int i = 0; i < downloadAppID.size(); i++) {//cancel download notification if install succeed
         		if (downloadAppID.get(i).packageName.equals(packageName))
@@ -1474,7 +1468,7 @@ void changePage(int position) {
 
 @Override
 protected void onNewIntent(Intent intent) {//open file from sdcard
-	if (!intent.getAction().equals(Intent.ACTION_MAIN)) {
+	if (!Intent.ACTION_MAIN.equals(intent.getAction())) {
 		String uri = intent.getDataString();
 		if (uri == null) return;
 		
@@ -1482,14 +1476,12 @@ protected void onNewIntent(Intent intent) {//open file from sdcard
 		int blankIndex = -1;
 		for (int i = 0; i < serverWebs.size(); i++) {
 			String url = serverWebs.get(i).getUrl();
-			if (url != null) {
-				if (uri.equals(url)) {//?fc once?
-					changePage(i);  //show correct page
-					found = true;
-					break;
-				}
-				else if (BLANK_PAGE.equals(url)) blankIndex = i;
+			if (uri.equals(url)) {
+				changePage(i);  //show correct page
+				found = true;
+				break;
 			}
+			else if (BLANK_PAGE.equals(url)) blankIndex = i;
 		}
 		
 		if (!found) {
@@ -1567,7 +1559,7 @@ private void addFavo(final String url, final String title) {
 					else site = tmp[0];
 					
 					String title = titleText.getText().toString();
-					if (title.equals("")) title += (char)0xa0;//add a blank character to occupy the space
+					if ("".equals(title)) title += (char)0xa0;//add a blank character to occupy the space
 					TitleUrl titleUrl = new TitleUrl(title, url, site);
 		    		mBookMark.add(titleUrl);
 		    		loadPage(false);
@@ -1615,7 +1607,7 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
-			else if (webAddress.getText().toString().equals(BLANK_PAGE)) {
+			else if (BLANK_PAGE.equals(webAddress.getText().toString())) {
 				//hide browser when click back key on homepage. 
 				//this is a singleTask activity, so if return super.onKeyDown(keyCode, event), app will exit.
 				//when use click browser icon again, it will call onCreate, user's page will not reopen. 
@@ -1833,7 +1825,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
     ret += "</script>";
     
     ret += "<style type=\"text/css\">"; 
-    ret += "h4 {background-image:url(file:///android_asset/back.png); background-repeat:repeat-x; padding:0.4em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8, FFE4C4, CEDFEF, #C6DBF7
+    ret += "h4 {background-image:-webkit-gradient(linear,0% 0%, 0% 100%, from(#c6dbf7), to(#94c7e7)); padding:0.4em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8, FFE4C4, CEDFEF, #C6DBF7
     ret += "body {margin: 0.4em 0 0 0; background-color: #F5F5F5}";
     //ret += "body {background-color:#E6E6FA; margin: 0.4em 0 0 0;}";
     ret += "</style>";
@@ -1850,7 +1842,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<ul id=\"content1\" type=\"disc\">";
 	}
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
-	if (locale.equals(Locale.CHINA) || locale.equals(Locale.CHINESE)) {
+	if (Locale.CHINA.equals(locale) || Locale.CHINESE.equals(locale)) {
 		ret += "<h5><li><a href=\"http://weibo.com/\">新浪微博</a></li></h5>";
 		//ret += "<h5><li><a href=\"http://3g.gfan.com\">机锋市场</a></li></h5>";
 		ret += "<h5><li><a href=\"http://www.appchina.com\">应用汇</a></li></h5>";

@@ -1,0 +1,138 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">"光のなランチャー"</string>
+    <string name="switcher_name">"光のなスイッチャー"</string>
+    <string name="browser_name">"光のなブラウザ"</string>
+    <string name="embed_browser_name">"光のなブラウザでは、組み込み"</string>
+    
+    <string name="about_dialog_notes">"このアプリのような場合は、\ nしばらくは私の5つ星のおかげで、投票。あなたが私をあなたの母国語、おかげで簡単にブラウザを転送する手助けをしたい場合、\ n \ nしばらくは私に連絡してください。"</string>
+    <string name="help_message">"2クリック以上しないことにより、あなたのアプリを見つける。 \ nClickアプリのアイコンは、\ nClickアプリケーション名が起動し、それを停止します\ nclickアプリのバージョンはアンインストールするには、\ nlongクリックしてアプリ名：アドインをショートカット、それを削除する\ nlongクリックのショートカット。"</string>
+    <string name="author">"clickclick.home @ gmail.com"</string>
+    <string name="browser_author">"easy.browsers @ gmail.com"</string>
+
+    <string name="auto_change_wallpaper">"シェイクで壁紙を変更"</string>
+    <string name="about_message">"\"\"非常に小さく、高速、シンプルかつ強力なブラウザです。"</string>
+    
+    <string name="share_wallpaper">"シェアの壁紙"</string>
+    <string name="share_desktop">"共有デスクトップ"</string>
+        
+    <string name="warning">"rootユーザーだけがシステムのアプリケーションを削除することができます。\ n \ n削除システムアプリは電話がブートできない可能性があります。\ n \ nしばらくは慎重にと思います！"</string>
+
+    <string name="menu_choose_home">"ホームを切り替える"</string>
+    <string name="select">"ホームを選択します。"</string>
+    <string name="select_file">"ファイルセレクタ"</string>
+    
+    <string name="wallpaper_scene">"Baiduの画像"</string>
+    <string name="wallpaper_beauty">"美しさ"</string>
+    
+    <string name="wallpaper">"壁紙"</string>
+    <string name="about">"About..."</string>
+    <string name="help">"HELP"</string>
+    <string name="settings">"設定"</string>
+    <string name="ok">"OK"</string>
+    <string name="cancel">"キャンセル"</string>
+    <string name="exit">"終了"</string>
+    
+    <string name="share">"共有"</string>
+    <string name="sharemode">"共有モード"</string>
+    <string name="sharetext">"シンプルで使いやすい！"</string>
+    <string name="app_share_text">"\"\"クールだ！"</string>
+    <string name="share_text1">"検査"</string>
+    <string name="share_text2">"\"電話やで\""</string>
+    <string name="share_text3">"\"\" PCによる。"</string>
+    <string name="vote">"私に投票"</string>
+    
+    <string name="favoriteapps">"ショートカットキー"</string>        
+    <string name="systemapps">"システム"</string>        
+    <string name="userapps">"ユーザー"</string>        
+    <string name="online">"オンライン"</string>
+    <string name="home">"ホーム"</string>
+    <string name="packages">"サービス プロバイダ"</string>
+    
+    <string name="addtoFavo">"ホームに追加する"</string>
+    <string name="removeFromFavo">"削除"</string>
+    <string name="addtoShort">"ショートカットに追加する"</string>
+    <string name="removeFromShort">"このショートカットを削除します。"</string>
+    <string name="appdetail">"詳細"</string>
+    <string name="killapp">"やめなさい"</string>
+    <string name="backapp">"バックアップ"</string>
+    <string name="to">"へ"</string>
+    <string name="more">"それから..."</string>
+    <string name="delete">"削除"</string>
+    <string name="hideapp">"非表示"</string>
+    <string name="hidepage">"現在のページを隠す"</string>
+    
+    <string name="back">"戻る"</string>
+    <string name="next">"次へ"</string>
+    <string name="newpage">"新しいページ(~N)"</string>
+    <string name="nomore_pages">"あまりにも多くのページがオープンしました。"</string>
+    <string name="history">"履歴"</string>
+    <string name="bookmark">"テキストマーク"</string>
+    <string name="top">"上揃え (枠の場合)"</string>
+    <string name="source">"ページのソース"</string>
+    <string name="not_avaiable">"Android2.3.3で申し訳ありませんが、ない盛"</string>
+    <string name="homepage">"ホームページ"</string>
+    <string name="shareurl">"共有URLを"</string>
+    <string name="recommend">"+---------レコメンダー"</string>
+    
+    <string name="add_bookmark">"ブックマークの追加..."</string>
+    <string name="remove_bookmark">"ブックマークから削除"</string>
+    <string name="view_bookmark">"ブックマークを見る"</string>
+    <string name="remove_history">"ヒストリーから除去"</string>
+    
+    <string name="save">"ファイルとして保存"</string>
+    <string name="open_new">"新しいページで開く"</string>
+    <string name="copy_url">"URLをコピー"</string>
+    <string name="copy">"コピー"</string>
+    <string name="copy_hint">"長いコピーしたいテキストをクリックしてみてください"</string>
+    
+    <string name="sdcard_needed">"ダウンロードしたファイルはSDカードなしで開くことができない場合があります。"</string>
+    
+    <string name="loading">"読み込み中..."</string>
+    <string name="wait">"ロード中しばらくお待ちください..."</string>
+    <string name="pause">"ポーズのダウンロード"</string>
+    <string name="justreturn">"ちょうど戻る"</string>
+    <string name="resume">"ダウンロードを再開"</string>
+    <string name="stop">"ダウンロードをキャンセルしています..."</string>
+    <string name="download_hint">"あなたは何をしたい"</string>
+    <string name="retry">"再入力"</string>
+    <string name="start_download">"ダウンロード開始"</string>
+    <string name="downloading">"ダウンロード中..."</string>
+    <string name="download_finish">"完成したダウンロードを確認する]をクリックします"</string>
+    <string name="download_fail">"ダウンロードに失敗しました、チェックするをクリックします"</string>
+    <string name="downloads">"ダウンロード"</string>
+    <string name="downloads_to">"ダウンロードしたファイル \"\""</string>
+    <string name="downloads_open">"\"\"あなたはESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダを表示することができます。 ESのファイルエクスプローラをダウンロードするには[OK]をクリックします。"</string>
+    
+    <string name="sorry">"\"クラッシュし、エラーログは\""</string>
+
+    <string name="grid_view">"グリッドビュー"</string>
+    <string name="list_view">"リストビュー"</string>
+    <string name="restart">"それは、ビューを変更するには、再起動する必要があります。 \今nRestart？"</string>
+
+    <string name="snap">"ショットをスナップ"</string>
+    <string name="snap_size">"スナップサイズ"</string>
+    <string name="full_screen">"全画面表示"</string>
+    <string name="full_webpage">"完全なWeb"</string>
+    <string name="show_zoom">"拡大コントロール"</string>
+    <string name="block_image">"帯域幅を減らすために画像をブロック"</string>
+    <string name="homepage_css">"クールなホームページですが、少し遅い"</string>
+    <string name="max_history">"履歴"</string>
+    <string name="history_8">"10"</string>
+    <string name="history_16">"15"</string>
+    <string name="font_size">"フォント・サイズ"</string>
+    <string name="font_smallest">"最小"</string>
+    <string name="font_smaller">"小さい"</string>
+    <string name="font_normal">"通常"</string>
+    <string name="font_larger">"大"</string>
+    <string name="font_largest">"最大"</string>
+    <string name="encoding">"エンコーディング"</string>
+    <string name="encoding_auto">"自動"</string>
+    <string name="encoding_utf8">"UTF-8"</string>
+    <string name="encoding_gb2312">"GB2312"</string>
+    <string name="encoding_big5">"BIG5"</string>
+    <string name="encoding_gbk">"GBK"</string>
+    <string name="encoding_latin1">"ISO-8859-1"</string>
+    <string name="search">"Webページの検索"</string>
+    <string name="html5">"ゆっくりとHTML5の一部ではなく、Gmailの必要があります。カップケーキ/ドーナツでは動作しません"</string>
+    
+</resources>

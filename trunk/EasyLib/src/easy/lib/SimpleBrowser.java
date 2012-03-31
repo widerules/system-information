@@ -1842,21 +1842,8 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">";
 	ret += "<title>" + getString(R.string.browser_name) + "</title>";
 	
-    ret += "<script type=\"text/javascript\">";
-    ret += "function collapse(index) {";
-    ret += "title = document.getElementById(\"title\" + index).firstChild;";
-    ret += "obj = document.getElementById(\"content\" + index);";
-    ret += "collapsed = (obj.style.display === \"none\");";
-    ret += "window.JSinterface.saveCollapseState(index, !collapsed);";
-    ret += "if (collapsed) {obj.style.display = \"\"; title.nodeValue = \"-\" + title.nodeValue.substring(1);}";
-    ret += "else {obj.style.display = \"none\"; title.nodeValue = \"+\" + title.nodeValue.substring(1);}";
-    ret += "}";
-    ret += "</script>";
-    
-    ret += "<style type=\"text/css\">"; 
-    ret += "h4 {background-image:-webkit-gradient(linear,0% 0%, 0% 100%, from(#dedfff), to(#ced3f7)); padding:0.3em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8, FFE4C4, CEDFEF, #C6DBF7
-    ret += "body {margin: 0.4em 0 0 0; background-color: #F7F3F7}";
-    ret += "</style>";
+	ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">";
+	ret += "<script type=\"text/javascript\" src=\"file:///android_asset/easybrowser.js\"></script>";
     
 	ret += "</head>";
 	ret += "<body>";

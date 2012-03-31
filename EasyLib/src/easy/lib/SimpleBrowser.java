@@ -1854,9 +1854,8 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
     ret += "</script>";
     
     ret += "<style type=\"text/css\">"; 
-    ret += "h4 {background-image:-webkit-gradient(linear,0% 0%, 0% 100%, from(#c6dbf7), to(#94c7e7)); padding:0.4em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8, FFE4C4, CEDFEF, #C6DBF7
-    ret += "body {margin: 0.4em 0 0 0; background-color: #F5F5F5}";
-    //ret += "body {background-color:#E6E6FA; margin: 0.4em 0 0 0;}";
+    ret += "h4 {background-image:-webkit-gradient(linear,0% 0%, 0% 100%, from(#dedfff), to(#ced3f7)); padding:0.3em;}";//87CEFA, 20B2AA, 9ACD32, B0C4DE, B8BFD8, FFE4C4, CEDFEF, #C6DBF7
+    ret += "body {margin: 0.4em 0 0 0; background-color: #F7F3F7}";
     ret += "</style>";
     
 	ret += "</head>";

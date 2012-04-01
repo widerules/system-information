@@ -578,9 +578,10 @@ class MyWebview extends WebView {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				if (BLANK_PAGE.equals(url)) {
-					if (view.getHitTestResult().getType() > 0)
-						loadPage(true);
-					else ;//should do nothing here, otherwise it will not login php site correctly
+					try {//one user report a null pointer here. just catch it.
+						if (view.getHitTestResult().getType() > 0) loadPage(true);
+						else ;//should do nothing here, otherwise it will not login php site correctly
+					} catch (Exception e) {e.printStackTrace();}
 					return true;
 				}
 				else if (!url.startsWith("http")) {

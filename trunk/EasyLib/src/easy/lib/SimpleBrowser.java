@@ -1655,12 +1655,7 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 void readTextSize(SharedPreferences sp) {
     int iTextSize = sp.getInt("textsize", -1);
-    if (iTextSize < 0) {
-    	if (dm.density < 1) 
-    		textSize = TextSize.SMALLER;
-    	else  
-    		textSize = TextSize.NORMAL;
-    }
+    if (iTextSize < 0) textSize = TextSize.NORMAL;
     else switch(iTextSize) {
     case 1:
 		textSize = TextSize.LARGER;

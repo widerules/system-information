@@ -82,6 +82,7 @@ easy.lib.R$drawable:
 easy.lib.R$id:
     public static final int adsParent
     public static final int control_buttons
+    public static final int line
     public static final int pause_download
     public static final int radio_auto
     public static final int radio_big5
@@ -208,8 +209,9 @@ easy.lib.R$string:
     public static final int wlan
 easy.lib.SimpleBrowser:
     boolean css
+    986:1019:void setPrefer()
 easy.lib.util:
     55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2
 easy.lib.wrapWebSettings:
-    133:137:synchronized void setLoadWithOverviewMode(boolean)
+    137:141:synchronized void setLoadWithOverviewMode(boolean)

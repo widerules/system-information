@@ -5,7 +5,7 @@
     <string name="browser_name">Easy Browser</string>
     <string name="embed_browser_name">Easy Browser Embedded</string>
     
-    <string name="about_dialog_notes">If you like this app, \nplease vote me 5 stars, thanks. \n\nPlease contact me if you would like to help me transfer Easy Browser to your native language, thanks.</string>
+    <string name="about_dialog_notes">If you like this app, \nplease vote me 5 stars, thanks.</string>
     <string name="help_message">Find you app by not more than 2 click. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
     <string name="author">clickclick.home@gmail.com</string>
     <string name="browser_author">easy.browsers@gmail.com</string>

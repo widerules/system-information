@@ -232,7 +232,8 @@ public class SimpleBrowser extends Activity {
 
 	//search
 	EditText etSearch;
-	int match = -1;
+	int matchCount = 0;
+	int matchIndex = 0;
 	
 	//snap dialog
 	ImageView snapView;
@@ -1065,10 +1066,10 @@ public void onCreate(Bundle savedInstanceState) {
 
 	
 	//menu icon
-    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture,	R.drawable.copy, R.drawable.search, 
+    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture, R.drawable.search, R.drawable.copy, 
     		R.drawable.downloads, R.drawable.share, R.drawable.about, R.drawable.exit };
     //menu text
-    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), getString(R.string.copy), getString(R.string.search), 
+    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), getString(R.string.search), getString(R.string.copy), 
     		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.help), getString(R.string.exit) };
     
     //create AlertDialog
@@ -1166,7 +1167,14 @@ public void onCreate(Bundle savedInstanceState) {
         			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
        			}
         		break;
-        	case 2://copy
+        	case 2://search
+        		etSearch.bringToFront();
+        		etSearch.setVisibility(View.VISIBLE);
+        		etSearch.requestFocus();
+        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        		imm.showSoftInput(etSearch, 0);
+        		break;
+        	case 3://copy
         		try {
             		if (Integer.decode(android.os.Build.VERSION.SDK) > 10) 
             			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
@@ -1183,10 +1191,6 @@ public void onCreate(Bundle savedInstanceState) {
         	    	e.printStackTrace();
         	    }
         	    break;
-        	case 3://search
-        		etSearch.bringToFront();
-        		etSearch.setVisibility(View.VISIBLE);
-        		break;
         	case 4://downloads
     			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
     			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
@@ -1230,29 +1234,36 @@ public void onCreate(Bundle savedInstanceState) {
 	etSearch.setOnKeyListener(new OnKeyListener() {
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN)
 			switch (keyCode) {
-			case KeyEvent.KEYCODE_SEARCH:
+			//case KeyEvent.KEYCODE_SEARCH:
 			case KeyEvent.KEYCODE_ENTER:
-				if (match < 1) {
-		        	match = serverWebs.get(webIndex).findAll(etSearch.getText().toString());
-		        	if (match > 0) try
-		        	{
-		        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-		        	    m.invoke(serverWebs.get(webIndex), true);
+				if (matchCount == 0) {
+		        	matchCount = serverWebs.get(webIndex).findAll(etSearch.getText().toString());
+		        	if (matchCount > 0) { 
+		        		matchIndex = matchCount;
+						while (matchIndex > 0) {
+							serverWebs.get(webIndex).findNext(false);//move to select the first match
+							matchIndex -= 1;
+						}
+		        		try
+			        	{
+			        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+			        	    m.invoke(serverWebs.get(webIndex), true);
+			        	}
+			        	catch (Throwable ignored){}
 		        	}
-		        	catch (Throwable ignored){}
 				}
-				else serverWebs.get(webIndex).findNext(true);
+				else {
+					serverWebs.get(webIndex).findNext(true);
+					matchIndex += 1;
+					if (matchIndex >= matchCount)
+						while (matchIndex > 0) {
+							serverWebs.get(webIndex).findNext(false);
+							matchIndex -= 1;
+						}
+				}
 	        	break;
-			case KeyEvent.KEYCODE_ESCAPE:
-				etSearch.setVisibility(View.INVISIBLE);
-				try
-	        	{
-	        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-	        	    m.invoke(serverWebs.get(webIndex), false);
-	        	}
-	        	catch (Throwable ignored){}
-				break;
 			}
 			return false;
 		}
@@ -1664,7 +1675,19 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
-			else if (etSearch.getVisibility() == View.VISIBLE) etSearch.setVisibility(View.INVISIBLE);
+			else if (etSearch.getVisibility() == View.VISIBLE) {
+        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        		imm.hideSoftInputFromInputMethod(etSearch.getWindowToken(), 0);
+				etSearch.setVisibility(View.INVISIBLE);
+				matchCount = 0;
+	        	matchCount = serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");//remove the match by an impossible search
+				try
+	        	{
+	        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+	        	    m.invoke(serverWebs.get(webIndex), false);
+	        	}
+	        	catch (Throwable ignored){}
+			}
 			else if (BLANK_PAGE.equals(webAddress.getText().toString())) {
 				//hide browser when click back key on homepage. 
 				//this is a singleTask activity, so if return super.onKeyDown(keyCode, event), app will exit.

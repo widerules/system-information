@@ -19,12 +19,14 @@
     
     <EditText android:id="@+id/search"
     	android:layout_width="match_parent"
-   	    android:layout_height="wrap_content"
+   	    android:layout_height="35dip"
+    	android:layout_marginTop="0dip"
    	    android:layout_marginBottom="0dip"
 	    android:singleLine="true"
-	    android:imeOptions="actionSearch"
+	    android:imeOptions="actionSearch|flagNoExtractUi"
 	    android:inputType="textUri"
 	    android:layout_alignParentBottom="true"
+		android:background="@drawable/round_corner"
 	    android:visibility="invisible"
     />
     

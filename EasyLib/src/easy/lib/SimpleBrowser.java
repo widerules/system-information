@@ -1002,43 +1002,6 @@ private void shareUrl(String text)
     util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, mContext);	
 }
 
-void setPrefer()
-{
-    PackageManager pm = getPackageManager();
-    ComponentName component = new ComponentName(getPackageName(), SimpleBrowser.class.getName());
-    ComponentName[] components = new ComponentName[] {component};
-    IntentFilter filter = new IntentFilter();
-    Intent intent = new Intent();
-    
-    filter.addAction("android.intent.action.VIEW");
-    filter.addCategory("android.intent.category.DEFAULT");
-    filter.addCategory("android.intent.category.BROWSABLE");
-    filter.addDataScheme("http");
-    intent.setAction("android.intent.action.VIEW");
-    intent.addCategory("android.intent.category.DEFAULT");
-    intent.addCategory("android.intent.category.BROWSABLE");
-    
-    List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);//hard to get the complete set of components which can handle the intent.
-    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
-    filter.addDataScheme("https");
-    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
-    
-    filter = new IntentFilter();
-    filter.addAction("android.intent.action.WEB_SEARCH");
-    filter.addCategory("android.intent.category.DEFAULT");
-    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
-    
-    filter.addCategory("android.intent.category.BROWSABLE");
-    filter.addDataScheme("http");
-    filter.addDataScheme("https");
-    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
-    
-    filter = new IntentFilter();
-    filter.addAction("android.intent.action.SEARCH");
-    filter.addCategory("android.intent.category.DEFAULT");
-    pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_SCHEME, null, component);
-}
-
 @Override
 public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -1097,11 +1060,11 @@ public void onCreate(Bundle savedInstanceState) {
 
 	
 	//menu icon
-    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture,	R.drawable.copy, 
-    		R.drawable.downloads, R.drawable.share, R.drawable.about };
+    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture,	R.drawable.copy, R.drawable.search, 
+    		R.drawable.downloads, R.drawable.share, R.drawable.about, R.drawable.exit };
     //menu text
-    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), getString(R.string.copy), 
-    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.help) };
+    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), getString(R.string.copy), getString(R.string.search), 
+    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.help), getString(R.string.exit) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);
@@ -1215,7 +1178,9 @@ public void onCreate(Bundle savedInstanceState) {
         	    	e.printStackTrace();
         	    }
         	    break;
-        	case 3://downloads
+        	case 3://search
+        		break;
+        	case 4://downloads
     			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
     			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
     			if (!util.startActivity(intent, false, mContext)) {
@@ -1237,14 +1202,17 @@ public void onCreate(Bundle savedInstanceState) {
     				downloadsDialog.show();
     			}
         		break;
-        	case 4://share url
+        	case 5://share url
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
-        	case 5://about
+        	case 6://about
     			intent = new Intent("easy.lib.about");
     			intent.setClassName(getPackageName(), "easy.lib.AboutBrowser");
     			util.startActivity(intent, false, getBaseContext());
     			break;
+        	case 7://exit
+        		moveTaskToBack(true);
+        		break;
             }
             menuDialog.dismiss();
         }

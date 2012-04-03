@@ -70,6 +70,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -228,6 +229,10 @@ public class SimpleBrowser extends Activity {
 	TextSize textSize = TextSize.SMALLER;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
+
+	//search
+	EditText etSearch;
+	int match = -1;
 	
 	//snap dialog
 	ImageView snapView;
@@ -1179,6 +1184,8 @@ public void onCreate(Bundle savedInstanceState) {
         	    }
         	    break;
         	case 3://search
+        		etSearch.bringToFront();
+        		etSearch.setVisibility(View.VISIBLE);
         		break;
         	case 4://downloads
     			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
@@ -1219,6 +1226,37 @@ public void onCreate(Bundle savedInstanceState) {
     });
     
     
+	etSearch = (EditText) findViewById(R.id.search);
+	etSearch.setOnKeyListener(new OnKeyListener() {
+		@Override
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			switch (keyCode) {
+			case KeyEvent.KEYCODE_SEARCH:
+			case KeyEvent.KEYCODE_ENTER:
+				if (match < 1) {
+		        	match = serverWebs.get(webIndex).findAll(etSearch.getText().toString());
+		        	if (match > 0) try
+		        	{
+		        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+		        	    m.invoke(serverWebs.get(webIndex), true);
+		        	}
+		        	catch (Throwable ignored){}
+				}
+				else serverWebs.get(webIndex).findNext(true);
+	        	break;
+			case KeyEvent.KEYCODE_ESCAPE:
+				etSearch.setVisibility(View.INVISIBLE);
+				try
+	        	{
+	        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+	        	    m.invoke(serverWebs.get(webIndex), false);
+	        	}
+	        	catch (Throwable ignored){}
+				break;
+			}
+			return false;
+		}
+	});
     
     loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
     
@@ -1626,6 +1664,7 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
+			else if (etSearch.getVisibility() == View.VISIBLE) etSearch.setVisibility(View.INVISIBLE);
 			else if (BLANK_PAGE.equals(webAddress.getText().toString())) {
 				//hide browser when click back key on homepage. 
 				//this is a singleTask activity, so if return super.onKeyDown(keyCode, event), app will exit.
@@ -1710,7 +1749,7 @@ protected void onResume() {
     blockImage = sp.getBoolean("block_image", false);
     localSettings.setBlockNetworkImage(blockImage);
 
-    /*disable setting of historyCount, encoding and search
+    /*disable setting of historyCount and encoding
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     int iEncoding = sp.getInt("encoding", -1);
     String encoding = "";
@@ -1742,20 +1781,6 @@ protected void onResume() {
     	}
 		
     	sEdit.putInt("encoding", 1);//set it to auto again after reload
-    	sEdit.commit();
-    }
-
-    String searchText = sp.getString("search_text", "");
-    if (!searchText.equals("")) {
-    	serverWebs.get(webIndex).findAll(searchText);
-    	try
-    	{
-    	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-    	    m.invoke(serverWebs.get(webIndex), true);
-    	}
-    	catch (Throwable ignored){}
-
-    	sEdit.putString("search_text", "");
     	sEdit.commit();
     }*/
     

@@ -28,7 +28,6 @@ public class AboutBrowser extends Activity{
 	
 	CheckBox cbZoomControl, cbCss, cbHtml5, cbBlockImg;
 	RadioGroup fontSize, historyCount, encodingType, snapSize;
-	EditText searchText;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -183,8 +182,6 @@ public class AboutBrowser extends Activity{
 			}
     	});
 
-    	searchText = (EditText) findViewById(R.id.search);
-    	
     	dm = new DisplayMetrics();
     	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	}
@@ -209,13 +206,4 @@ public class AboutBrowser extends Activity{
 		super.onResume();
 	}
 	
-	@Override
-	protected void onPause() {
-		if (!searchText.getText().toString().equals("")) {
-			editor.putString("search_text", searchText.getText().toString());
-			editor.commit();
-		}
-		
-		super.onPause();
-	}
 }

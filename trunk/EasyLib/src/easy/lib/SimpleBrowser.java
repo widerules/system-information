@@ -21,6 +21,11 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Map.Entry;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
@@ -819,8 +824,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
    		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
    		String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName)) + "";
 		
-    	FileOutputStream fos = null; //文件输出流
-    	InputStream is = null; //网络文件输入流
+    	FileOutputStream fos = null; 
+    	InputStream is = null;
     	URL url = null;
     	try {
     		download_file = new File(downloadPath + apkName);
@@ -836,9 +841,25 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
     			intent.setData(Uri.fromFile(new File(downloadPath)));
     		}
     		
-        	url = new URL(URL_str); //网络歌曲的url
-        	HttpURLConnection httpConnection = (HttpURLConnection) url.openConnection(); //打开网络连接
-        	apk_length = httpConnection.getContentLength(); //file size need to download
+        	url = new URL(URL_str);
+        	HttpURLConnection httpConnection = null;
+        	HttpClient httpClient = null;
+        	if (URL_str.contains("?")) {
+        		Log.d("================", URL_str);
+        		httpClient = new DefaultHttpClient();
+        		HttpGet request = new HttpGet(URL_str);
+        		Log.d("================", URL_str);
+        		HttpResponse response = httpClient.execute(request);
+        		Log.d("================", response.getHeaders("content-disposition").toString());
+        		is = response.getEntity().getContent();
+        		apk_length = response.getEntity().getContentLength();
+        	}
+        	else {
+            	httpConnection = (HttpURLConnection) url.openConnection(); 
+            	apk_length = httpConnection.getContentLength(); //file size need to download
+            	is = httpConnection.getInputStream();
+        	}
+        	
     		if (download_file.length() == apk_length) {//found local file with same name and length, no need to download, just send intent to view it
             	String[] tmp = apkName.split("\\.");
 				util.startActivity(intent, false, mContext);
@@ -860,7 +881,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 	        nManager.notify(NOTIFICATION_ID, notification);
 	        
         	total_read = 0; //初始化“已下载部分”的长度，此处应为0
-        	is = httpConnection.getInputStream();
 
         	byte buf[] = new byte[10240]; //download buffer. is that ok for 10240?
         	readLength = 0; //一次性下载的长度
@@ -894,7 +914,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	}
         	fos.close();
         	is.close();
-        	httpConnection.disconnect();
+        	if (httpConnection != null) httpConnection.disconnect();
+        	else httpClient.getConnectionManager().shutdown(); 
         	
         	appstate.downloadState.remove(NOTIFICATION_ID);
         	if (stopDownload) {//stop download by user. clear notification
@@ -1681,7 +1702,7 @@ protected void onResume() {
 	Editor sEdit = sp.edit();
     
 	
-    //snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
+    snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
     
     WebSettings localSettings = serverWebs.get(webIndex).getSettings();
     
@@ -1869,6 +1890,8 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		//ret += "<h5><li><a href=\"http://twitter.com/\">Twitter</a></li></h5>";
 		ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
 	}
+	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
+		ret += "<h5><li><a href=\"http://www.yahoo.co.jp//\">Yahoo!JAPAN</a></li></h5>";
 	ret += "</ul>";
 	
 	

@@ -1066,11 +1066,13 @@ public void onCreate(Bundle savedInstanceState) {
 
 	
 	//menu icon
-    int[] menu_image_array = { R.drawable.explorer, R.drawable.capture, R.drawable.search, R.drawable.copy, 
-    		R.drawable.downloads, R.drawable.share, R.drawable.about, R.drawable.exit };
+    int[] menu_image_array = { 
+    		R.drawable.copy, R.drawable.share, R.drawable.search, R.drawable.exit, 
+    		R.drawable.html_w, R.drawable.downloads, R.drawable.capture, R.drawable.about };
     //menu text
-    String[] menu_name_array = { getString(R.string.source), getString(R.string.snap), getString(R.string.search), getString(R.string.copy), 
-    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.help), getString(R.string.exit) };
+    String[] menu_name_array = { 
+    		getString(R.string.copy), getString(R.string.shareurl), getString(R.string.search), getString(R.string.exit), 
+    		getString(R.string.source), getString(R.string.downloads), getString(R.string.snap), getString(R.string.help) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);
@@ -1122,7 +1124,37 @@ public void onCreate(Bundle savedInstanceState) {
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                 long arg3) {
             switch (arg2) {
-        	case 0://view page source
+        	case 0://copy
+        		try {
+            		if (Integer.decode(android.os.Build.VERSION.SDK) > 10) 
+            			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
+        		}
+        	    catch (Exception e) {
+        	    	e.printStackTrace();
+        	    }
+        		
+        	    try {
+        	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+        	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
+        	    }
+        	    catch (Exception e) {
+        	    	e.printStackTrace();
+        	    }
+        	    break;
+        	case 1://share url
+        		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
+        		break;
+        	case 2://search
+        		etSearch.bringToFront();
+        		etSearch.setVisibility(View.VISIBLE);
+        		etSearch.requestFocus();
+        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        		imm.showSoftInput(etSearch, 0);
+        		break;
+        	case 3://exit
+        		moveTaskToBack(true);
+        		break;
+        	case 4://view page source
         		try {
             		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
             		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
@@ -1137,7 +1169,29 @@ public void onCreate(Bundle savedInstanceState) {
         			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
         		}
         		break;
-        	case 1://view snap
+        	case 5://downloads
+    			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
+    			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
+    			if (!util.startActivity(intent, false, mContext)) {
+    				if (downloadsDialog == null) 
+    					downloadsDialog = new AlertDialog.Builder(mContext).
+    						setMessage(getString(R.string.downloads_to) + downloadPath + getString(R.string.downloads_open)).
+    						setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+				    				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.estrongs.android.pop"));
+				    				util.startActivity(intent, true, getBaseContext());
+								}
+							}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							}).
+    						create();
+    				downloadsDialog.show();
+    			}
+        		break;
+        	case 6://view snap
         		try {//still got java.lang.RuntimeException: Canvas: trying to use a recycled bitmap android.graphics.Bitmap from one user. so catch it.
         			if (snapFullScreen) {
     					webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache
@@ -1167,63 +1221,11 @@ public void onCreate(Bundle savedInstanceState) {
         			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
        			}
         		break;
-        	case 2://search
-        		etSearch.bringToFront();
-        		etSearch.setVisibility(View.VISIBLE);
-        		etSearch.requestFocus();
-        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        		imm.showSoftInput(etSearch, 0);
-        		break;
-        	case 3://copy
-        		try {
-            		if (Integer.decode(android.os.Build.VERSION.SDK) > 10) 
-            			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
-        		}
-        	    catch (Exception e) {
-        	    	e.printStackTrace();
-        	    }
-        		
-        	    try {
-        	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-        	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
-        	    }
-        	    catch (Exception e) {
-        	    	e.printStackTrace();
-        	    }
-        	    break;
-        	case 4://downloads
-    			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
-    			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
-    			if (!util.startActivity(intent, false, mContext)) {
-    				if (downloadsDialog == null) 
-    					downloadsDialog = new AlertDialog.Builder(mContext).
-    						setMessage(getString(R.string.downloads_to) + downloadPath + getString(R.string.downloads_open)).
-    						setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-				    				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.estrongs.android.pop"));
-				    				util.startActivity(intent, true, getBaseContext());
-								}
-							}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-								}
-							}).
-    						create();
-    				downloadsDialog.show();
-    			}
-        		break;
-        	case 5://share url
-        		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
-        		break;
-        	case 6://about
+        	case 7://about
     			intent = new Intent("easy.lib.about");
     			intent.setClassName(getPackageName(), "easy.lib.AboutBrowser");
     			util.startActivity(intent, false, getBaseContext());
     			break;
-        	case 7://exit
-        		moveTaskToBack(true);
-        		break;
             }
             menuDialog.dismiss();
         }

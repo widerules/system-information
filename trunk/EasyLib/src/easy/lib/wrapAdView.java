@@ -26,7 +26,7 @@ public class wrapAdView {
 			mInstance = new AdView(activity, AdSize.IAB_MRECT, deviceID);
 			break;
 		}
-		adRequest = new AdRequest();
+		try {adRequest = new AdRequest(); } catch (Exception e) {}
 		//adRequest.addTestDevice("E3CE9F94F56824C07AE1C3A5B434F664");//for test
 	}
 
@@ -41,11 +41,11 @@ public class wrapAdView {
 	public static void checkAvailable() {}
 	
 	public void loadAd() {
-		mInstance.loadAd(adRequest);
+		if (mInstance != null) mInstance.loadAd(adRequest);
 	}
 	
 	void destroy() {
-		mInstance.destroy();
+		if (mInstance != null) mInstance.destroy();
 	}
 	
 	public View getInstance() {

@@ -232,8 +232,10 @@ public class SimpleBrowser extends Activity {
 
 	//search
 	EditText etSearch;
-	int matchCount = 0;
-	int matchIndex = 0;
+	TextView searchHint;
+	RelativeLayout searchBar;
+	String toSearch = "";
+	int matchCount = 0, matchIndex = 0;
 	
 	//snap dialog
 	ImageView snapView;
@@ -398,6 +400,7 @@ class MyWebview extends WebView {
 			@Override
 			public boolean onTouch(View view, MotionEvent arg1) {//just close webcontrol page if it is open.
 	        	webControl.setVisibility(View.INVISIBLE);
+	        	hideSearchBox();
 	        	if (!view.isFocused()) view.requestFocusFromTouch();
 				return false;
 			}
@@ -1145,9 +1148,10 @@ public void onCreate(Bundle savedInstanceState) {
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
         	case 6://search
-        		etSearch.bringToFront();
-        		etSearch.setVisibility(View.VISIBLE);
+        		searchBar.bringToFront();
+        		searchBar.setVisibility(View.VISIBLE);
         		etSearch.requestFocus();
+        		toSearch = "";
         		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         		imm.showSoftInput(etSearch, 0);
         		break;
@@ -1232,6 +1236,8 @@ public void onCreate(Bundle savedInstanceState) {
     });
     
     
+    searchBar = (RelativeLayout) findViewById(R.id.search_bar);
+    searchHint = (TextView) findViewById(R.id.search_hint);
 	etSearch = (EditText) findViewById(R.id.search);
 	etSearch.setOnKeyListener(new OnKeyListener() {
 		@Override
@@ -1240,23 +1246,25 @@ public void onCreate(Bundle savedInstanceState) {
 			switch (keyCode) {
 			//case KeyEvent.KEYCODE_SEARCH:
 			case KeyEvent.KEYCODE_ENTER:
-				if (matchCount == 0) {
-		        	matchCount = serverWebs.get(webIndex).findAll(etSearch.getText().toString());
-		        	if (matchCount > 0) { 
-		        		matchIndex = matchCount;
-						while (matchIndex > 0) {
-							serverWebs.get(webIndex).findNext(false);//move to select the first match
-							matchIndex -= 1;
-						}
+				if (!toSearch.equals(etSearch.getText().toString())) {
+					toSearch = etSearch.getText().toString();
+		        	matchCount = serverWebs.get(webIndex).findAll(toSearch);
+					if (matchCount > 0) {
 		        		try
 			        	{
 			        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
 			        	    m.invoke(serverWebs.get(webIndex), true);
 			        	}
 			        	catch (Throwable ignored){}
-		        	}
+		        		
+		        		matchIndex = matchCount;
+						while (matchIndex > 0) {
+							serverWebs.get(webIndex).findNext(false);//move to select the first match
+							matchIndex -= 1;
+						}
+					}
 				}
-				else {
+				else if (matchCount > 0) {
 					serverWebs.get(webIndex).findNext(true);
 					matchIndex += 1;
 					if (matchIndex >= matchCount)
@@ -1265,6 +1273,8 @@ public void onCreate(Bundle savedInstanceState) {
 							matchIndex -= 1;
 						}
 				}
+				if (matchCount > 0) searchHint.setText((matchIndex+1) + " of " + matchCount);
+				else searchHint.setText("0 of 0");
 	        	break;
 			}
 			return false;
@@ -1672,24 +1682,21 @@ private boolean openNewPage(String url) {
 	return result;
 }
 
+void hideSearchBox() {
+	InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+	imm.hideSoftInputFromInputMethod(etSearch.getWindowToken(), 0);
+	searchBar.setVisibility(View.INVISIBLE);
+	matchCount = 0;
+	serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");//remove the match by an impossible search
+	searchHint.setText("");
+}
+
 @Override
 public boolean onKeyDown(int keyCode, KeyEvent event) {
 	if (event.getRepeatCount() == 0) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {//press Back key in webview will go backword.
 			if(webControl.getVisibility() == View.VISIBLE) imgNew.performClick();//hide web control
-			else if (etSearch.getVisibility() == View.VISIBLE) {
-        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        		imm.hideSoftInputFromInputMethod(etSearch.getWindowToken(), 0);
-				etSearch.setVisibility(View.INVISIBLE);
-				matchCount = 0;
-	        	matchCount = serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");//remove the match by an impossible search
-				try
-	        	{
-	        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-	        	    m.invoke(serverWebs.get(webIndex), false);
-	        	}
-	        	catch (Throwable ignored){}
-			}
+			else if (searchBar.getVisibility() == View.VISIBLE) hideSearchBox();
 			else if (BLANK_PAGE.equals(webAddress.getText().toString())) {
 				//hide browser when click back key on homepage. 
 				//this is a singleTask activity, so if return super.onKeyDown(keyCode, event), app will exit.

@@ -21,10 +21,16 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Map.Entry;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
@@ -77,6 +83,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
@@ -854,14 +861,20 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	HttpURLConnection httpConnection = null;
         	HttpClient httpClient = null;
         	if (URL_str.contains("?")) {
-        		Log.d("================", URL_str);
         		httpClient = new DefaultHttpClient();
         		HttpGet request = new HttpGet(URL_str);
-        		Log.d("================", URL_str);
+        		String cookies = CookieManager.getInstance().getCookie(URL_str);
+                //request.addHeader("Cookie", cookies);
         		HttpResponse response = httpClient.execute(request);
-        		Log.d("================", response.getHeaders("content-disposition").toString());
         		is = response.getEntity().getContent();
         		apk_length = response.getEntity().getContentLength();
+        		Log.d("================", apk_length+"");
+        		Header[] headers = response.getAllHeaders();
+                for (int i=0; i < headers.length; i++) {
+                    Header h = headers[i];
+                    Log.i("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
+                    if ("Content-type".equals(h.getName()) && "text/html".equals(h.getValue())) ;//return "text/html";
+                }
         	}
         	else {
             	httpConnection = (HttpURLConnection) url.openConnection(); 
@@ -1865,7 +1878,7 @@ void setLayout() {
     	else
     		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
     	
-    	adContainer.addView(adview.getInstance());
+    	if (adview.getInstance() != null) adContainer.addView(adview.getInstance());
     	adview.loadAd();
     }
 }

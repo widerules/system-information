@@ -4,11 +4,11 @@
     <string name="browser_name">"ひかりのブラウザ"</string>
     <string name="embed_browser_name">"組み込み型ひかりのブラウザ"</string>
     
-    <string name="about_dialog_notes">"気に 入って頂ければ、5つ星ご投票をお願いいたします"</string>
+    <string name="about_dialog_notes">"気に 入って頂ければ、5つ星ご投票をお願いいたします。"</string>
     <string name="help_message">"2クリック以上しないことにより、あなたのアプリを見つける。 \ nClickアプリのアイコンは、\ nClickアプリケーション名が起動し、それを停止します\ nclickアプリのバージョンはアンインストールするには、\ nlongクリックしてアプリ名：アドインをショートカット、それを削除する\ nlongクリックのショートカット。"</string>
 
     <string name="auto_change_wallpaper">"シェイクで壁紙を変更でき"</string>
-    <string name="about_message">"\" \"非常に小さく、高速、シンプルかつ強力なブラウザです。ページソースをご覧いただけ、 ウェブアドレスとスナップショットを友だちとシェアできます。\n\n クリックリンクを長く押すと、ブックマークと履歴を削除できます。"</string>
+    <string name="about_message">"は非常に小さく、高速、シンプルかつ強力なブラウザです。ページソースをご覧いただけ、 ウェブアドレスとスナップショットを友だちとシェアすることができます。\n\n クリックのリンクを長く押すと、ブックマークと履歴を削除できます。"</string>
     
     <string name="share_wallpaper">"壁紙をシェア"</string>
     <string name="share_desktop">"デスクトップをシェア"</string>
@@ -98,8 +98,8 @@
     <string name="download_finish">"ダウンロードを完成しました。チェックをクリックしてください"</string>
     <string name="download_fail">"ダウンロードに失敗しました。チェックをクリックしてください"</string>
     <string name="downloads">"ダウンロード"</string>
-    <string name="downloads_to">"ファイルを \"\"へダウンロード"</string>
-    <string name="downloads_open">"\"\"ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには[OK]をクリックしてください"</string>
+    <string name="downloads_to">"ダウンロードファイルは/sdcard/simpleHome/にあります。"</string>
+    <string name="downloads_open">"ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには、[OK]をクリックしてください。"</string>
     
     <string name="sorry">"\"クラッシュしました。エラーログは\""</string>
 

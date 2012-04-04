@@ -1067,12 +1067,12 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	//menu icon
     int[] menu_image_array = { 
-    		R.drawable.html_w, R.drawable.capture, R.drawable.search, R.drawable.exit, 
-    		R.drawable.downloads, R.drawable.share, R.drawable.copy, R.drawable.about };
+    		R.drawable.html_w, R.drawable.capture, R.drawable.copy, R.drawable.exit, 
+    		R.drawable.downloads, R.drawable.share, R.drawable.search, R.drawable.about };
     //menu text
     String[] menu_name_array = { 
-    		getString(R.string.source), getString(R.string.snap), getString(R.string.search), getString(R.string.exit), 
-    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.copy), getString(R.string.help) };
+    		getString(R.string.source), getString(R.string.snap), getString(R.string.copy), getString(R.string.exit), 
+    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.search), getString(R.string.help) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);
@@ -1124,7 +1124,7 @@ public void onCreate(Bundle savedInstanceState) {
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                 long arg3) {
             switch (arg2) {
-        	case 6://copy
+        	case 2://copy
         		try {
             		if (Integer.decode(android.os.Build.VERSION.SDK) > 10) 
             			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
@@ -1144,7 +1144,7 @@ public void onCreate(Bundle savedInstanceState) {
         	case 5://share url
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
-        	case 2://search
+        	case 6://search
         		etSearch.bringToFront();
         		etSearch.setVisibility(View.VISIBLE);
         		etSearch.requestFocus();
@@ -1909,7 +1909,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
 	}
 	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
-		ret += "<h5><li><a href=\"http://www.yahoo.co.jp//\">Yahoo!JAPAN</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></li></h5>";
 	ret += "</ul>";
 	
 	

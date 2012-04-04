@@ -17,18 +17,35 @@
         android:layout_marginBottom="3dip"
     />
     
-    <EditText android:id="@+id/search"
-    	android:layout_width="match_parent"
-   	    android:layout_height="35dip"
-    	android:layout_marginTop="0dip"
-   	    android:layout_marginBottom="0dip"
-	    android:singleLine="true"
-	    android:imeOptions="actionSearch|flagNoExtractUi"
-	    android:inputType="textUri"
-	    android:layout_alignParentBottom="true"
+	<RelativeLayout android:id="@+id/search_bar"
 		android:background="@drawable/round_corner"
-	    android:visibility="invisible"
-    />
+		android:layout_alignParentBottom="true" 
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+    	android:visibility="invisible"
+		>
+
+    	<TextView android:id="@+id/search_hint"
+    		android:layout_width="100dip"
+   	    	android:layout_height="wrap_content"
+	    	android:layout_alignParentRight="true"
+	    	android:layout_centerVertical="true"
+	    	android:gravity="center"
+	    	android:textSize="16dip"
+	    	android:textColor="#000000"
+    	/>
+    	<EditText android:id="@+id/search"
+    		android:layout_width="match_parent"
+   	    	android:layout_height="wrap_content"
+   	    	android:layout_marginTop="3dip"
+	    	android:singleLine="true"
+	    	android:imeOptions="actionSearch|flagNoExtractUi"
+	    	android:inputType="textUri"
+	    	android:layout_alignParentLeft="true"
+	    	android:layout_toLeftOf="@id/search_hint"
+    	/>
+	</RelativeLayout>
     
     		<RelativeLayout android:id="@+id/webtools"
   				android:background="@drawable/round_corner"

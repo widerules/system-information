@@ -98,8 +98,8 @@
     <string name="download_finish">"ダウンロードを完成しました。チェックをクリックしてください"</string>
     <string name="download_fail">"ダウンロードに失敗しました。チェックをクリックしてください"</string>
     <string name="downloads">"ダウンロード"</string>
-    <string name="downloads_to">"ダウンロードファイルは/sdcard/simpleHome/にあります。"</string>
-    <string name="downloads_open">"ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには、[OK]をクリックしてください。"</string>
+    <string name="downloads_to">"ダウンロードファイルは"</string>
+    <string name="downloads_open">"にあります。ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには、[OK]をクリックしてください。"</string>
     
     <string name="sorry">"\"クラッシュしました。エラーログは\""</string>
 

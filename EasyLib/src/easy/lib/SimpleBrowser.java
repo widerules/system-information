@@ -1067,12 +1067,12 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	//menu icon
     int[] menu_image_array = { 
-    		R.drawable.copy, R.drawable.share, R.drawable.search, R.drawable.exit, 
-    		R.drawable.html_w, R.drawable.downloads, R.drawable.capture, R.drawable.about };
+    		R.drawable.html_w, R.drawable.capture, R.drawable.search, R.drawable.exit, 
+    		R.drawable.downloads, R.drawable.share, R.drawable.copy, R.drawable.about };
     //menu text
     String[] menu_name_array = { 
-    		getString(R.string.copy), getString(R.string.shareurl), getString(R.string.search), getString(R.string.exit), 
-    		getString(R.string.source), getString(R.string.downloads), getString(R.string.snap), getString(R.string.help) };
+    		getString(R.string.source), getString(R.string.snap), getString(R.string.search), getString(R.string.exit), 
+    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.copy), getString(R.string.help) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);
@@ -1124,7 +1124,7 @@ public void onCreate(Bundle savedInstanceState) {
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                 long arg3) {
             switch (arg2) {
-        	case 0://copy
+        	case 6://copy
         		try {
             		if (Integer.decode(android.os.Build.VERSION.SDK) > 10) 
             			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
@@ -1141,7 +1141,7 @@ public void onCreate(Bundle savedInstanceState) {
         	    	e.printStackTrace();
         	    }
         	    break;
-        	case 1://share url
+        	case 5://share url
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
         	case 2://search
@@ -1154,7 +1154,7 @@ public void onCreate(Bundle savedInstanceState) {
         	case 3://exit
         		moveTaskToBack(true);
         		break;
-        	case 4://view page source
+        	case 0://view page source
         		try {
             		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
             		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
@@ -1169,7 +1169,7 @@ public void onCreate(Bundle savedInstanceState) {
         			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
         		}
         		break;
-        	case 5://downloads
+        	case 4://downloads
     			Intent intent = new Intent("com.estrongs.action.PICK_DIRECTORY");
     			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
     			if (!util.startActivity(intent, false, mContext)) {
@@ -1191,7 +1191,7 @@ public void onCreate(Bundle savedInstanceState) {
     				downloadsDialog.show();
     			}
         		break;
-        	case 6://view snap
+        	case 1://view snap
         		try {//still got java.lang.RuntimeException: Canvas: trying to use a recycled bitmap android.graphics.Bitmap from one user. so catch it.
         			if (snapFullScreen) {
     					webpages.destroyDrawingCache();//the snap will not refresh if not destroy cache

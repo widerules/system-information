@@ -260,6 +260,15 @@
 	</RadioGroup>           
     </HorizontalScrollView>
     
+    <Button android:id="@+id/clear_cache"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:text="@string/clear_cache"
+		android:layout_margin="5dip"
+        android:background="@drawable/button_layout"
+    />
+
     </LinearLayout>
 
 </ScrollView>

@@ -125,6 +125,7 @@
     <string name="encoding">文字编码</string>
     <string name="encoding_auto">自动</string>
     <string name="search">页内查找</string>
-    <string name="html5">某些网站需要HTML5，但有点慢</string>
+    <string name="html5">某些网站需要HTML5，但有点慢</string>    
+    <string name="clear_cache">用久了会慢，清一下缓存吧</string>
     
 </resources>

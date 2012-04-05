@@ -1752,6 +1752,7 @@ void readTextSize(SharedPreferences sp) {
 
 @Override 
 protected void onResume() {
+	byWifi = false;
 	ConnectivityManager connectivityManager =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
     if(connectivityManager != null ){
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
@@ -1888,7 +1889,7 @@ void setLayout() {
     		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
     	
     	if (adview.getInstance() != null) adContainer.addView(adview.getInstance());
-    	adview.loadAd();
+    	if (byWifi) adview.loadAd();
     }
 }
 

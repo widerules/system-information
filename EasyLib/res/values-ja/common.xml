@@ -126,5 +126,6 @@
     <string name="search">"Webページで検索"</string>
     <string name="html5">"ゆっくりとHTML5の一部ではなく、Gmailの必要があります。カップケーキ/ドーナツでは動作しません"</string>
     <string name="clear_cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
+    <string name="cache_cleared">キャッシュがクリアされている</string>
     
 </resources>

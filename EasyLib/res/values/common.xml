@@ -136,5 +136,6 @@
     <string name="search">inpage search</string>
     <string name="html5">Part of HTML5, slow but a must for gmail. Not work on Cupcake/Donut</string>
     <string name="clear_cache">Clear cache if you feel slow</string>
+    <string name="cache_cleared">Cache cleared</string>
     
 </resources>

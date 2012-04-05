@@ -1,7 +1,5 @@
 package easy.lib;
 
-import java.lang.reflect.Method;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,10 +12,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.TextSize;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -79,6 +75,16 @@ public class AboutBrowser extends Activity{
 	    			intent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 					util.startActivity(intent, true, getBaseContext());
 				}
+			}
+        });
+
+        Button btnClear = (Button) findViewById(R.id.clear_cache);
+        btnClear.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+        		editor.putBoolean("clear_cache", true);
+        		editor.commit();
+        		finish();
 			}
         });
 

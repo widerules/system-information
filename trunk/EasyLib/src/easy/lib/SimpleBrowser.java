@@ -1441,7 +1441,6 @@ public void onCreate(Bundle savedInstanceState) {
 				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
-				//if (!paid && mAdAvailable) adview.loadAd();
 				if (!webAddress.getText().toString().equals(BLANK_PAGE))  
 					serverWebs.get(webIndex).reload();
 			}
@@ -1775,6 +1774,17 @@ protected void onResume() {
     	sEdit.commit();
     }
     
+    boolean clearCache = sp.getBoolean("clear_cache", false);
+    if (clearCache) {
+    	sEdit.putBoolean("clear_cache", false);
+    	sEdit.commit();
+    	mContext.deleteDatabase("webview.db");
+        mContext.deleteDatabase("webviewCache.db");
+        serverWebs.get(webIndex).clearHistory();
+        serverWebs.get(webIndex).clearFormData();
+        serverWebs.get(webIndex).clearCache(true);
+    	Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
+    }
     
     
 	String url = serverWebs.get(webIndex).getUrl() + "";
@@ -1896,7 +1906,6 @@ void setLayout() {
 void loadPage(boolean notJudge) {
 	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) 
 		serverWebs.get(webIndex).loadDataWithBaseURL(BLANK_PAGE, homePage(), "text/html", "utf-8", BLANK_PAGE);
-	//if (!paid && mAdAvailable) adview.loadAd();
 }
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link

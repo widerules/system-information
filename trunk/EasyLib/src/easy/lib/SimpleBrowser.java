@@ -59,6 +59,7 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -313,6 +314,7 @@ public class SimpleBrowser extends Activity {
 	wrapAdView adview;
 	LinearLayout adContainer;
 	DisplayMetrics dm;
+	boolean byWifi = false;
 	
 	//download related
 	String downloadPath;
@@ -500,7 +502,7 @@ class MyWebview extends WebView {
         		webAddress.setText(url);
         		imgRefresh.setImageResource(R.drawable.stop);
         		
-				//if (!paid && mAdAvailable) adview.loadAd();//seems too many ads here. move to loadpage()
+				if (!paid && mAdAvailable && byWifi) adview.loadAd();//should only do this by wifi
 			}
 			 
 			@Override
@@ -1439,7 +1441,7 @@ public void onCreate(Bundle savedInstanceState) {
 				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
-				if (!paid && mAdAvailable) adview.loadAd();
+				//if (!paid && mAdAvailable) adview.loadAd();
 				if (!webAddress.getText().toString().equals(BLANK_PAGE))  
 					serverWebs.get(webIndex).reload();
 			}
@@ -1750,6 +1752,13 @@ void readTextSize(SharedPreferences sp) {
 
 @Override 
 protected void onResume() {
+	ConnectivityManager connectivityManager =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+    if(connectivityManager != null ){
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if ((networkInfo != null) && networkInfo.isAvailable() && networkInfo.isConnected())
+        	if (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) byWifi = true;
+    }
+	
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
     
@@ -1886,7 +1895,7 @@ void setLayout() {
 void loadPage(boolean notJudge) {
 	if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null) || (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE))) 
 		serverWebs.get(webIndex).loadDataWithBaseURL(BLANK_PAGE, homePage(), "text/html", "utf-8", BLANK_PAGE);
-	if (!paid && mAdAvailable) adview.loadAd();
+	//if (!paid && mAdAvailable) adview.loadAd();
 }
 
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link

@@ -133,7 +133,7 @@
     <string name="encoding_big5">BIG5</string>
     <string name="encoding_gbk">GBK</string>
     <string name="encoding_latin1">ISO-8859-1</string>
-    <string name="search">Search in Webpage</string>
+    <string name="search">inpage search</string>
     <string name="html5">Part of HTML5, slow but a must for gmail. Not work on Cupcake/Donut</string>
     
 </resources>

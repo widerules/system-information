@@ -151,7 +151,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] {boolean.class});
     		method.invoke(mInstance, overview);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
     }    
     
 	synchronized void setAppCacheEnabled(boolean flag) {//API 7
@@ -159,7 +159,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setAppCacheEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
     }
     
 	synchronized void setAppCachePath(String databasePath) {//API 7
@@ -167,7 +167,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setAppCachePath", new Class[] {String.class});
     		method.invoke(mInstance, databasePath);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
     }
     
 	synchronized void setAppCacheMaxSize(long max) {//API 7
@@ -175,7 +175,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] {long.class});
     		method.invoke(mInstance, max);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
     }
     
 	synchronized void setDomStorageEnabled(boolean flag) {//API 7
@@ -183,7 +183,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
     }
 	
 	synchronized void setDatabaseEnabled(boolean flag) {//API 5
@@ -191,7 +191,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setDatabaseEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
     }
     
 	synchronized void setDatabasePath(String databasePath) {//API 5
@@ -199,7 +199,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setDatabasePath", new Class[] {String.class});
     		method.invoke(mInstance, databasePath);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
     }
 
 	synchronized void setGeolocationEnabled(boolean flag) {//API 5
@@ -207,7 +207,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setGeolocationEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
 	}
 	
 	synchronized void setGeolocationDatabasePath(String databasePath) {//API 5
@@ -215,7 +215,7 @@ class wrapWebSettings {
     		Method method = WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[] {String.class});
     		method.invoke(mInstance, databasePath);
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
 	}
 }
 
@@ -372,7 +372,7 @@ class MyWebview extends WebView {
     		Method method = WebView.class.getMethod("setScrollbarFadingEnabled", new Class[] {boolean.class});
     		method.invoke(this, true);//hide scroll bar when not scroll. from API5, not work on cupcake.
     	}
-    	catch(Exception e) {e.printStackTrace();}
+    	catch(Exception e) {}
 
     	WebSettings localSettings = getSettings();
     	localSettings.setJavaScriptEnabled(true);
@@ -604,7 +604,7 @@ class MyWebview extends WebView {
 					try {//one user report a null pointer here. just catch it.
 						if (view.getHitTestResult().getType() > 0) loadPage(true);
 						else ;//should do nothing here, otherwise it will not login php site correctly
-					} catch (Exception e) {e.printStackTrace();}
+					} catch (Exception e) {}
 					return true;
 				}
 				else if (!url.startsWith("http")) {
@@ -1152,17 +1152,13 @@ public void onCreate(Bundle savedInstanceState) {
             		if (Integer.decode(android.os.Build.VERSION.SDK) > 10) 
             			Toast.makeText(mContext, getString(R.string.copy_hint), Toast.LENGTH_LONG).show();
         		}
-        	    catch (Exception e) {
-        	    	e.printStackTrace();
-        	    }
+        	    catch (Exception e) {}
         		
         	    try {
         	        KeyEvent shiftPressEvent = new KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
         	        shiftPressEvent.dispatch(serverWebs.get(webIndex));
         	    }
-        	    catch (Exception e) {
-        	    	e.printStackTrace();
-        	    }
+        	    catch (Exception e) {}
         	    break;
         	case 5://share url
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
@@ -1189,7 +1185,6 @@ public void onCreate(Bundle savedInstanceState) {
            	    	m_sourceDialog.show();
         		}
         		catch (Exception e) {
-        			e.printStackTrace();
         			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
         		}
         		break;
@@ -1241,7 +1236,6 @@ public void onCreate(Bundle savedInstanceState) {
             			snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
             		snapDialog.show();
         		} catch(Exception e) {
-        			e.printStackTrace();
         			Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
        			}
         		break;
@@ -1502,9 +1496,7 @@ public void onCreate(Bundle savedInstanceState) {
 		if (Intent.ACTION_MAIN.equals(getIntent().getAction()))	loadPage(false);
 		else serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
 	}
-	catch (Exception e) {
-		e.printStackTrace();
-	}    
+	catch (Exception e) {}    
 
 	//setPrefer();//can't get complete component set. can't work on 2.2 even you can get the full set. so don't set it. 
 	
@@ -1765,9 +1757,7 @@ static int clearCacheFolder(final File dir) {
                 if (child.delete()) deletedFiles++;
             }
         }
-        catch(Exception e) {
-        	e.printStackTrace();
-        }
+        catch(Exception e) {}
     }
     return deletedFiles;
 }
@@ -2109,12 +2099,8 @@ ArrayList<TitleUrl> readBookmark(String filename)
 		try {
 			ois.close();
 			fi.close();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
+		} catch (Exception e1) {}
+	} catch (Exception e) {}
 	return bookmark;
 }
 

@@ -561,12 +561,12 @@ class MyWebview extends WebView {
     						catch (IOException e) {;}
     					} catch (FileNotFoundException e1) {
                 			try {//save the Favicon
-                				FileOutputStream fos = openFileOutput(site+".png", 0);
-                				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
-                		        fos.close();
-                			} catch (Exception e) {
-                				e.printStackTrace();
-                			} 
+                				if (view.getFavicon() != null) {
+                    				FileOutputStream fos = openFileOutput(site+".png", 0);
+                    				view.getFavicon().compress(Bitmap.CompressFormat.PNG, 90, fos); 
+                    		        fos.close();
+                				}
+                			} catch (Exception e) {} 
     					}
                 		
             			TitleUrl titleUrl = new TitleUrl(title, url, site);
@@ -846,8 +846,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	url = new URL(URL_str);
         	HttpURLConnection httpConnection = null;
         	HttpClient httpClient = null;
-        	if (URL_str.contains("?")) {
-        		Log.d("=============", URL_str);
+    		Log.d("=============", URL_str);
+        	if (URL_str.contains("?")) {//need httpget
         		httpClient = new DefaultHttpClient();
         		HttpGet request = new HttpGet(URL_str);
         		String cookies = CookieManager.getInstance().getCookie(URL_str);

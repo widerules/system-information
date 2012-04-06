@@ -839,15 +839,40 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 		contentIntent = PendingIntent.getActivity(mContext, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);//request_code will help to diff different thread
         notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
         
-   		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-   		String mimeType = mimeTypeMap.getMimeTypeFromExtension(mimeTypeMap.getFileExtensionFromUrl(apkName)) + "";
-		
     	FileOutputStream fos = null; 
     	InputStream is = null;
     	URL url = null;
     	try {
+        	url = new URL(URL_str);
+        	HttpURLConnection httpConnection = null;
+        	HttpClient httpClient = null;
+        	if (URL_str.contains("?")) {
+        		httpClient = new DefaultHttpClient();
+        		HttpGet request = new HttpGet(URL_str);
+        		String cookies = CookieManager.getInstance().getCookie(URL_str);
+                request.addHeader("Cookie", cookies);
+        		HttpResponse response = httpClient.execute(request);
+        		is = response.getEntity().getContent();
+        		apk_length = response.getEntity().getContentLength();
+        		Header[] headers = response.getAllHeaders();
+                for (int i=0; i < headers.length; i++) {
+                    Header h = headers[i];
+                    Log.i("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
+                    if ("Content-Disposition".equals(h.getName()) && h.getValue().contains("attachment;filename=")) {
+                    	apkName = h.getValue().split("=")[1];
+                    }
+                }
+        	}
+        	else {
+            	httpConnection = (HttpURLConnection) url.openConnection(); 
+            	apk_length = httpConnection.getContentLength(); //file size need to download
+            	is = httpConnection.getInputStream();
+        	}
+        	
     		download_file = new File(downloadPath + apkName);
     		boolean found = false;
+       		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+       		String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(apkName)) + "";    		
     		if (!"".equals(mimeType)) {
     			intent.setAction(Intent.ACTION_VIEW);
     			intent.setDataAndType(Uri.fromFile(download_file), mimeType);
@@ -859,31 +884,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
     			intent.setData(Uri.fromFile(new File(downloadPath)));
     		}
     		
-        	url = new URL(URL_str);
-        	HttpURLConnection httpConnection = null;
-        	HttpClient httpClient = null;
-        	if (URL_str.contains("?")) {
-        		httpClient = new DefaultHttpClient();
-        		HttpGet request = new HttpGet(URL_str);
-        		String cookies = CookieManager.getInstance().getCookie(URL_str);
-                //request.addHeader("Cookie", cookies);
-        		HttpResponse response = httpClient.execute(request);
-        		is = response.getEntity().getContent();
-        		apk_length = response.getEntity().getContentLength();
-        		Log.d("================", apk_length+"");
-        		Header[] headers = response.getAllHeaders();
-                for (int i=0; i < headers.length; i++) {
-                    Header h = headers[i];
-                    Log.i("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
-                    if ("Content-type".equals(h.getName()) && "text/html".equals(h.getValue())) ;//return "text/html";
-                }
-        	}
-        	else {
-            	httpConnection = (HttpURLConnection) url.openConnection(); 
-            	apk_length = httpConnection.getContentLength(); //file size need to download
-            	is = httpConnection.getInputStream();
-        	}
-        	
     		if (download_file.length() == apk_length) {//found local file with same name and length, no need to download, just send intent to view it
             	String[] tmp = apkName.split("\\.");
 				util.startActivity(intent, false, mContext);

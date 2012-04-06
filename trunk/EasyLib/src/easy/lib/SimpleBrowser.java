@@ -847,10 +847,12 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	HttpURLConnection httpConnection = null;
         	HttpClient httpClient = null;
         	if (URL_str.contains("?")) {
+        		Log.d("=============", URL_str);
         		httpClient = new DefaultHttpClient();
         		HttpGet request = new HttpGet(URL_str);
         		String cookies = CookieManager.getInstance().getCookie(URL_str);
                 request.addHeader("Cookie", cookies);
+        		Log.d("=============", cookies);
         		HttpResponse response = httpClient.execute(request);
         		is = response.getEntity().getContent();
         		apk_length = response.getEntity().getContentLength();
@@ -858,8 +860,11 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
                 for (int i=0; i < headers.length; i++) {
                     Header h = headers[i];
                     Log.i("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
-                    if ("Content-Disposition".equals(h.getName()) && h.getValue().contains("attachment;filename=")) {
-                    	apkName = h.getValue().split("=")[1];
+                    if ("Content-Disposition".equals(h.getName()) && h.getValue().contains("filename=")) {
+                    	apkName = h.getValue().split("filename=")[1].trim();
+                    	if (apkName.startsWith("\"")) apkName = apkName.substring(1);
+                    	if (apkName.endsWith("\"")) apkName = apkName.substring(0, apkName.length()-1);
+                        notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
                     }
                 }
         	}

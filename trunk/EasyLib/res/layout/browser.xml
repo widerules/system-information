@@ -102,12 +102,12 @@
 		<View android:id="@+id/line1"
 			android:layout_above="@id/webtools"
  			android:layout_width="match_parent"
- 			android:layout_height="1dip"
+ 			android:layout_height="1px"
  			android:background="#fff5f5f5"/>
 		<View android:id="@+id/line2"
 			android:layout_above="@id/line1"
  			android:layout_width="match_parent"
- 			android:layout_height="1dip"
+ 			android:layout_height="1px"
  			android:background="#ffc5c5c5"/>
 						
   		<RelativeLayout android:id="@+id/webcontrol"

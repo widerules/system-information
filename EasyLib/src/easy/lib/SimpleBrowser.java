@@ -1749,6 +1749,24 @@ void readTextSize(SharedPreferences sp) {
     }
 }
 
+static int clearCacheFolder(final File dir) {
+    int deletedFiles = 0;
+    if (dir!= null && dir.isDirectory()) {
+        try {
+            for (File child:dir.listFiles()) {
+                //first delete subdirectories recursively
+                if (child.isDirectory()) deletedFiles += clearCacheFolder(child);
+                //then delete the files and subdirectories in this dir
+                if (child.delete()) deletedFiles++;
+            }
+        }
+        catch(Exception e) {
+        	e.printStackTrace();
+        }
+    }
+    return deletedFiles;
+}
+
 @Override 
 protected void onResume() {
 	byWifi = false;
@@ -1783,6 +1801,7 @@ protected void onResume() {
         serverWebs.get(webIndex).clearHistory();
         serverWebs.get(webIndex).clearFormData();
         serverWebs.get(webIndex).clearCache(true);
+        clearCacheFolder(getDir("databases", MODE_PRIVATE));
     	Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
     }
     

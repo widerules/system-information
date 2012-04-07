@@ -21,12 +21,13 @@
         android:normalScreens="true"
         android:largeScreens="true"
         android:xlargeScreens="true"
+        android:resizeable="true"
         />
     
     <application
     	android:debuggable="false"
         android:icon="@drawable/explorer"
-    	android:name="easy.lib.MyApp" 
+    	android:name="easy.lib.MyApp"
         android:label="@string/browser_name" >
         
         <activity android:name="easy.lib.SimpleBrowser"

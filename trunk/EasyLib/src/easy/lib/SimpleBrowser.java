@@ -409,7 +409,7 @@ class MyWebview extends WebView {
 			@Override
 			public boolean onTouch(View view, MotionEvent arg1) {//just close webcontrol page if it is open.
 	        	webControl.setVisibility(View.INVISIBLE);
-	        	hideSearchBox();
+	        	//if (searchBar.getVisibility() == View.VISIBLE) hideSearchBox();
 	        	if (!view.isFocused()) view.requestFocusFromTouch();
 				return false;
 			}
@@ -846,22 +846,22 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	url = new URL(URL_str);
         	HttpURLConnection httpConnection = null;
         	HttpClient httpClient = null;
-    		Log.d("=============", URL_str);
+    		//Log.d("=============", URL_str);
     		String contentDisposition = params[2];
         	if (URL_str.contains("?") || !"".equals(contentDisposition)) {//need httpget
         		httpClient = new DefaultHttpClient();
         		HttpGet request = new HttpGet(URL_str);
         		String cookies = CookieManager.getInstance().getCookie(URL_str);
                 request.addHeader("Cookie", cookies);
-        		Log.d("=============", cookies);
+        		//Log.d("=============", cookies);
         		HttpResponse response = httpClient.execute(request);
         		is = response.getEntity().getContent();
         		apk_length = response.getEntity().getContentLength();
-        		Log.d("=============", apk_length+"");
+        		//Log.d("=============", apk_length+"");
         		Header[] headers = response.getAllHeaders();
                 for (int i=0; i < headers.length; i++) {
                     Header h = headers[i];
-                    Log.d("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
+                    //Log.d("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
                     if ("Content-Disposition".equals(h.getName()) && h.getValue().toLowerCase().contains("filename")) {
                     	String value = URLDecoder.decode(h.getValue());
                     	apkName = value.split("=")[1].trim();
@@ -1173,7 +1173,7 @@ public void onCreate(Bundle savedInstanceState) {
         		etSearch.requestFocus();
         		toSearch = "";
         		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        		imm.showSoftInput(etSearch, 0);
+        		imm.toggleSoftInput(0, 0);
         		break;
         	case 3://exit
         		moveTaskToBack(true);
@@ -1698,8 +1698,8 @@ private boolean openNewPage(String url) {
 }
 
 void hideSearchBox() {
-	InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-	imm.hideSoftInputFromInputMethod(etSearch.getWindowToken(), 0);
+	//InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+	//imm.toggleSoftInput(0, 0);
 	searchBar.setVisibility(View.INVISIBLE);
 	matchCount = 0;
 	serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");//remove the match by an impossible search

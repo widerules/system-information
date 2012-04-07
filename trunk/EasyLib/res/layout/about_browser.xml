@@ -3,7 +3,7 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   android:fadeScrollbars="true"
-  android:background="#F0f7f3f7"
+  android:background="#FFf7f3f7"
   >
   
     <LinearLayout

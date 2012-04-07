@@ -769,12 +769,11 @@ boolean startDownload(String url, String contentDisposition) {
 	url = url.replace("%2E", ".");
 	url = url.replace("%2F", "/");
 	url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
-	String readableUrl = URLDecoder.decode(url);
+	if (url.endsWith("/")) return false; //such as http://m.cnbeta.com/, http://www.google.com.hk/
 	
+	String readableUrl = URLDecoder.decode(url);
 	posQ = readableUrl.indexOf("?");
 	if (posQ > 0) readableUrl = readableUrl.substring(0, posQ);//cut off post paras if any.
-
-	if (url.endsWith("/")) return false; //such as http://m.cnbeta.com/, http://www.google.com.hk/ 
 	
 	String ss[] = readableUrl.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name

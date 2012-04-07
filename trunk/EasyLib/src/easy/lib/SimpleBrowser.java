@@ -856,6 +856,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         		HttpResponse response = httpClient.execute(request);
         		is = response.getEntity().getContent();
         		apk_length = response.getEntity().getContentLength();
+        		Log.d("=============", apk_length+"");
         		Header[] headers = response.getAllHeaders();
                 for (int i=0; i < headers.length; i++) {
                     Header h = headers[i];
@@ -966,10 +967,10 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 					intentAddPic.putExtra("picFile", apkName);
 	                sendBroadcast(intentAddPic);//add to picture list and enable change background by shake
 				}
-				else if (mimeType.startsWith("application")) {
+				else if (mimeType.startsWith("application")) try {
 					PackageInfo pi = getPackageManager().getPackageArchiveInfo(downloadPath + apkName, 0);
         			downloadAppID.add(new packageIDpair(pi.packageName, NOTIFICATION_ID, download_file));
-				}
+				} catch (Exception e) {}
 
 				util.startActivity(intent, false, mContext);//call system package manager to install app. it will not return result code, so not use startActivityForResult();
         	}
@@ -1791,7 +1792,7 @@ protected void onResume() {
     if (clearCache) {
     	sEdit.putBoolean("clear_cache", false);
     	sEdit.commit();
-    	mContext.deleteDatabase("webview.db");
+    	//mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
         serverWebs.get(webIndex).clearHistory();
         serverWebs.get(webIndex).clearFormData();

@@ -861,8 +861,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         		Header[] headers = response.getAllHeaders();
                 for (int i=0; i < headers.length; i++) {
                     Header h = headers[i];
-                    Log.i("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
-                    if ("Content-Disposition".equals(h.getName()) && h.getName().toLowerCase().contains("filename")) {
+                    Log.d("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
+                    if ("Content-Disposition".equals(h.getName()) && h.getValue().toLowerCase().contains("filename")) {
                     	String value = URLDecoder.decode(h.getValue());
                     	apkName = value.split("=")[1].trim();
                     	if (apkName.startsWith("\"")) apkName = apkName.substring(1);

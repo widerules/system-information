@@ -696,14 +696,18 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
 public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 	super.onCreateContextMenu(menu, v, menuInfo);
 
-    HitTestResult result = ((WebView)v).getHitTestResult();
+    final HitTestResult result = ((WebView)v).getHitTestResult();
     final String url = result.getExtra();
 
     MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://download
-    			startDownload(url, "");
+    			String ext = "";
+    			if (result.getType()== HitTestResult.IMAGE_TYPE 
+    					|| result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
+    				ext = ".jpg";
+    			startDownload(url, ext);
     			break;
     		case 4://copy url
     			ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -730,7 +734,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         }
     };
 
-    //set the header title to the image url
+    //set the title to the url
     menu.setHeaderTitle(result.getExtra());
     if (url != null) {
         menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
@@ -778,6 +782,10 @@ boolean startDownload(String url, String contentDisposition) {
 	String ss[] = readableUrl.split("/");
 	String apkName = ss[ss.length-1].toLowerCase() ; //get download file name
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
+	if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {//image from shuimu do not have ext. so we add it manually
+		apkName += ".jpg";
+		contentDisposition = "";
+	}
 	 
 	if (downloadPath.startsWith(getFilesDir().getPath())) 
 		Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();

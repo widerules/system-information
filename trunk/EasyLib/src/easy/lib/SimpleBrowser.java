@@ -1260,10 +1260,11 @@ public void onCreate(Bundle savedInstanceState) {
 	etSearch.setOnKeyListener(new OnKeyListener() {
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
-			if (event.getAction() == KeyEvent.ACTION_DOWN)
+			if (event.getAction() == KeyEvent.ACTION_UP)
 			switch (keyCode) {
-			//case KeyEvent.KEYCODE_SEARCH:
+			case KeyEvent.KEYCODE_SEARCH:
 			case KeyEvent.KEYCODE_ENTER:
+			case KeyEvent.KEYCODE_DPAD_CENTER:
 				if (!toSearch.equals(etSearch.getText().toString())) {
 					toSearch = etSearch.getText().toString();
 		        	matchCount = serverWebs.get(webIndex).findAll(toSearch);

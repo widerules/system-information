@@ -419,14 +419,14 @@ class MyWebview extends WebView {
 			@Override
 			public void onDownloadStart(String url, String ua, String contentDisposition,
 					String mimetype, long contentLength) {
-				//still need guess, not sure to download. 
-				//for example, I don't know how to handle this http://yunfile.com/file/murongmr/5a0574ad/
+				//need to know it is httpget, post or direct connect. 
+				//for example, I don't know how to handle this http://yunfile.com/file/murongmr/5a0574ad/. firefox think it is post.
 				//url: http://dl33.yunfile.com/file/downfile/murongmr/876b15e4/c7c3002a
 				//ua: Mozilla/5.0 (Linux; U; Android 2.3.3; en-us; sdk Build/GRI34) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1
 				//contentDisposition: attachment; filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
 				//mimetype: application/octet-stream
 				//contentLength: 463624
-				startDownload(url);
+				startDownload(url, contentDisposition);
 			}
         });
         
@@ -703,7 +703,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://download
-    			startDownload(url);
+    			startDownload(url, "");
     			break;
     		case 4://copy url
     			ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -759,7 +759,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
     }
 }
 
-boolean startDownload(String url) {
+boolean startDownload(String url, String contentDisposition) {
 	int posQ = url.indexOf("src=");
 	if (posQ > 0) url = url.substring(posQ+4);//get src part
 	url = url.replace("%2D", "-");
@@ -799,7 +799,7 @@ boolean startDownload(String url) {
 	DownloadTask dltask = new DownloadTask();
 	dltask.NOTIFICATION_ID = id;
 	appstate.downloadState.put(id, dltask);
-	dltask.execute(url, apkName);
+	dltask.execute(url, apkName, contentDisposition);
 	return true;
 }
 
@@ -847,7 +847,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	HttpURLConnection httpConnection = null;
         	HttpClient httpClient = null;
     		Log.d("=============", URL_str);
-        	if (URL_str.contains("?")) {//need httpget
+    		String contentDisposition = params[2];
+        	if (URL_str.contains("?") || !"".equals(contentDisposition)) {//need httpget
         		httpClient = new DefaultHttpClient();
         		HttpGet request = new HttpGet(URL_str);
         		String cookies = CookieManager.getInstance().getCookie(URL_str);
@@ -861,10 +862,12 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
                 for (int i=0; i < headers.length; i++) {
                     Header h = headers[i];
                     Log.i("===========", "Header names: "+h.getName() + "  Value: "+h.getValue());
-                    if ("Content-Disposition".equals(h.getName()) && h.getValue().contains("filename=")) {
-                    	apkName = h.getValue().split("filename=")[1].trim();
+                    if ("Content-Disposition".equals(h.getName()) && h.getName().toLowerCase().contains("filename")) {
+                    	String value = URLDecoder.decode(h.getValue());
+                    	apkName = value.split("=")[1].trim();
                     	if (apkName.startsWith("\"")) apkName = apkName.substring(1);
                     	if (apkName.endsWith("\"")) apkName = apkName.substring(0, apkName.length()-1);
+                    	if (apkName.contains("'")) apkName = apkName.split("'")[apkName.split("'").length-1];//utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar
                         notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
                     }
                 }
@@ -1524,7 +1527,7 @@ protected void onDestroy() {
 BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
-		startDownload(intent.getStringExtra("url"));
+		startDownload(intent.getStringExtra("url"), "");
 	}
 };
 
@@ -1795,7 +1798,7 @@ protected void onResume() {
     	//mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
         serverWebs.get(webIndex).clearHistory();
-        serverWebs.get(webIndex).clearFormData();
+        //serverWebs.get(webIndex).clearFormData();
         serverWebs.get(webIndex).clearCache(true);
         clearCacheFolder(getDir("databases", MODE_PRIVATE));
     	Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();

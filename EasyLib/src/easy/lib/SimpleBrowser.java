@@ -1106,7 +1106,7 @@ public void onCreate(Bundle savedInstanceState) {
     //menu text
     String[] menu_name_array = { 
     		getString(R.string.source), getString(R.string.snap), getString(R.string.copy), getString(R.string.exit), 
-    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.search), getString(R.string.help) };
+    		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.search), getString(R.string.settings) };
     
     //create AlertDialog
 	menuView = View.inflate(this, R.layout.grid_menu, null);

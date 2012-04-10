@@ -128,4 +128,7 @@
     <string name="clear_cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
     <string name="cache_cleared">キャッシュがクリアされている</string>
     
+    <string name="url_can_longclick">\t(あなたは長い間、すべてのURLをクリックする)</string>
+    <string name="pic_can_longclick">\t(あなたは長い間写真をクリックする)</string>
+    <string name="text_can_longclick">\t(あなたも長く、時にはテキストをクリックする)</string>
 </resources>

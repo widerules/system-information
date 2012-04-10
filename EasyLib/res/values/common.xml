@@ -139,7 +139,7 @@
     <string name="cache_cleared">Cache cleared</string>
     
     <string name="url_can_longclick">\t(you can long click on all url)</string>
-    <string name="pic_can_longclick">\t(you can long click on pic)</string>
+    <string name="pic_can_longclick">\t(you can long click on image)</string>
     <string name="text_can_longclick">\t(you can even long click on text sometimes)</string>
     
 </resources>

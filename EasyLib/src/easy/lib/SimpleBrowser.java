@@ -225,6 +225,7 @@ public class SimpleBrowser extends Activity {
 	boolean paid, debug;
 	final String BLANK_PAGE = "about:blank";
 	boolean firstRun = false;
+	int countDown = 3;
 
 	ListView webList;
 	Context mContext;
@@ -1990,7 +1991,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<body>";
 
 	String tmp = getString(R.string.top);
-	if (firstRun) tmp += getString(R.string.url_can_longclick);
+	if (firstRun && (countDown > 0)) tmp += getString(R.string.url_can_longclick) + "\t" + countDown;
 	if (collapse1) {
 		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >+\t" + tmp + "</h4>";
 		ret += "<ul id=\"content1\" type=\"disc\" style=\"display: none;\" >";
@@ -2023,7 +2024,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	if (mBookMark.size() > 0) {
 		tmp = getString(R.string.bookmark);
-		if (firstRun) tmp += getString(R.string.pic_can_longclick);
+		if (firstRun && (countDown > 0)) tmp += getString(R.string.pic_can_longclick) + "\t" + countDown;
 		if (collapse2) {
 			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >+\t" + tmp + "</h4>";
 			ret += "<dl id=\"content2\" type=\"disc\" style=\"display: none;\" >";
@@ -2045,7 +2046,10 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	if (mHistory.size() > 0) {
 		tmp = getString(R.string.history);
-		if (firstRun) tmp += getString(R.string.text_can_longclick);
+		if (firstRun && (countDown > 0)) {
+			tmp += getString(R.string.text_can_longclick) + "\t" + countDown;
+			countDown -= 1;
+		}
 		if (collapse3) {
 			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >+\t" + tmp + "</h4>";
 			ret += "<dl id=\"content3\" type=\"disc\" style=\"display: none;\" >";

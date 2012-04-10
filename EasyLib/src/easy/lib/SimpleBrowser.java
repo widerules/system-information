@@ -242,6 +242,7 @@ public class SimpleBrowser extends Activity {
 	EditText etSearch;
 	TextView searchHint;
 	RelativeLayout searchBar;
+	ImageView imgSearchNext, imgSearchPrev, imgSearchClose;
 	String toSearch = "";
 	int matchCount = 0, matchIndex = 0;
 	
@@ -1175,6 +1176,7 @@ public void onCreate(Bundle savedInstanceState) {
         		shareUrl(serverWebs.get(webIndex).getTitle() + " " + serverWebs.get(webIndex).getUrl());
         		break;
         	case 6://search
+        		//serverWebs.get(webIndex).showFindDialog("e", false);
         		searchBar.bringToFront();
         		searchBar.setVisibility(View.VISIBLE);
         		etSearch.requestFocus();
@@ -1261,6 +1263,54 @@ public void onCreate(Bundle savedInstanceState) {
     });
     
     
+    imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
+    imgSearchPrev.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			if (!toSearch.equals(etSearch.getText().toString())) findMatchCount();
+			else if (matchCount > 0) {
+				serverWebs.get(webIndex).findNext(false);
+				matchIndex -= 1;
+				if (matchIndex < 0) {
+					while (matchIndex < matchCount-1) {
+						serverWebs.get(webIndex).findNext(true);
+						matchIndex += 1;
+					}
+				}
+			}
+			
+			if (matchCount > 0) searchHint.setText((matchIndex+1) + " of " + matchCount);
+			else searchHint.setText("0 of 0");
+		}
+    });
+    imgSearchNext = (ImageView) findViewById(R.id.search_next);
+    imgSearchNext.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			if (!toSearch.equals(etSearch.getText().toString())) findMatchCount();
+			else if (matchCount > 0) {
+				serverWebs.get(webIndex).findNext(true);
+				matchIndex += 1;
+				if (matchIndex >= matchCount)
+					while (matchIndex > 0) {
+						serverWebs.get(webIndex).findNext(false);
+						matchIndex -= 1;
+					}
+			}
+			
+			if (matchCount > 0) searchHint.setText((matchIndex+1) + " of " + matchCount);
+			else searchHint.setText("0 of 0");
+		}
+    });
+    
+    imgSearchClose = (ImageView) findViewById(R.id.close_search);
+    imgSearchClose.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			hideSearchBox();
+		}
+    });
+    
     searchBar = (RelativeLayout) findViewById(R.id.search_bar);
     searchHint = (TextView) findViewById(R.id.search_hint);
 	etSearch = (EditText) findViewById(R.id.search);
@@ -1272,35 +1322,7 @@ public void onCreate(Bundle savedInstanceState) {
 			case KeyEvent.KEYCODE_SEARCH:
 			case KeyEvent.KEYCODE_ENTER:
 			case KeyEvent.KEYCODE_DPAD_CENTER:
-				if (!toSearch.equals(etSearch.getText().toString())) {
-					toSearch = etSearch.getText().toString();
-		        	matchCount = serverWebs.get(webIndex).findAll(toSearch);
-					if (matchCount > 0) {
-		        		try
-			        	{
-			        	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-			        	    m.invoke(serverWebs.get(webIndex), true);
-			        	}
-			        	catch (Throwable ignored){}
-		        		
-		        		matchIndex = matchCount;
-						while (matchIndex > 0) {
-							serverWebs.get(webIndex).findNext(false);//move to select the first match
-							matchIndex -= 1;
-						}
-					}
-				}
-				else if (matchCount > 0) {
-					serverWebs.get(webIndex).findNext(true);
-					matchIndex += 1;
-					if (matchIndex >= matchCount)
-						while (matchIndex > 0) {
-							serverWebs.get(webIndex).findNext(false);
-							matchIndex -= 1;
-						}
-				}
-				if (matchCount > 0) searchHint.setText((matchIndex+1) + " of " + matchCount);
-				else searchHint.setText("0 of 0");
+				imgSearchNext.performClick();
 	        	break;
 			}
 			return false;
@@ -1712,6 +1734,25 @@ void hideSearchBox() {
 	matchCount = 0;
 	serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");//remove the match by an impossible search
 	searchHint.setText("");
+}
+
+void findMatchCount() {
+	toSearch = etSearch.getText().toString();
+	matchCount = serverWebs.get(webIndex).findAll(toSearch);
+	if (matchCount > 0) {
+		try
+    	{
+    	    Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+    	    m.invoke(serverWebs.get(webIndex), true);
+    	}
+    	catch (Throwable ignored){}
+		
+		matchIndex = matchCount;
+		while (matchIndex > 0) {
+			serverWebs.get(webIndex).findNext(false);//move to select the first match
+			matchIndex -= 1;
+		}
+	}
 }
 
 @Override

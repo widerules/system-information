@@ -878,6 +878,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
                     	if (apkName.startsWith("\"")) apkName = apkName.substring(1);
                     	if (apkName.endsWith("\"")) apkName = apkName.substring(0, apkName.length()-1);
                     	if (apkName.contains("'")) apkName = apkName.split("'")[apkName.split("'").length-1];//utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar
+                    	if (apkName.contains("?")) apkName = apkName.replace("?", "1");//???????.doc
                         notification.setLatestEventInfo(mContext, apkName, getString(R.string.downloading), contentIntent);
                     }
                 }

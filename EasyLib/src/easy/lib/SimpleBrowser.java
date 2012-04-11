@@ -64,6 +64,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
@@ -103,6 +105,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -315,9 +318,10 @@ public class SimpleBrowser extends Activity {
 	       }
 	   }
 	wrapAdView adview;
-	LinearLayout adContainer;
+	FrameLayout adContainer;
 	DisplayMetrics dm;
 	boolean byWifi = false;
+    AppHandler mAppHandler = new AppHandler();
 	
 	//download related
 	String downloadPath;
@@ -1525,7 +1529,7 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	downloadPath = util.preparePath(mContext);
 
-	adContainer = (LinearLayout) findViewById(R.id.adContainer);
+	adContainer = (FrameLayout) findViewById(R.id.adContainer);
 	setLayout();
 	
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
@@ -1953,22 +1957,33 @@ void setLayout() {
     else lp.width = width/2 + 20;
     
     if (!paid && mAdAvailable) {
-    	if (adContainer.getChildCount() > 0) {
-    		adContainer.removeViewAt(0);
+    	if ((adview != null) && (adview.getInstance() != null)) {
+    		adContainer.removeViewAt(1);
     		adview.destroy();
     	}
     	
     	float width_density = width / dm.density;
     	//if (width_density < 320) ;//do nothing for it is too narrow. but it will cause force close if not create adview.
     	if (width_density < 468)
-    		adview = new wrapAdView(this, 0, "a14f3f6bc126143");//AdSize.BANNER require 320*50
+    		adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);//AdSize.BANNER require 320*50
 		else if (width_density < 728) 
-    		adview = new wrapAdView(this, 1, "a14f3f6bc126143");//AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1. return width = request width * density.
+    		adview = new wrapAdView(this, 1, "a14f3f6bc126143", mAppHandler);//AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1. return width = request width * density.
     	else
-    		adview = new wrapAdView(this, 2, "a14f3f6bc126143");//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
+    		adview = new wrapAdView(this, 2, "a14f3f6bc126143", mAppHandler);//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
     	
     	if (adview.getInstance() != null) adContainer.addView(adview.getInstance());
-    	if (byWifi) adview.loadAd();
+    	//if (byWifi) 
+    		adview.loadAd();
+    }
+}
+
+class AppHandler extends Handler {
+
+    public void handleMessage(Message msg) {
+    	LayoutParams lp = adContainer.getLayoutParams();
+    	lp.height = 0;
+    	adContainer.invalidate();
+    	if (msg.what > 0) adview.loadAd();//it will dismiss the banner for no enough space for new ad.
     }
 }
 

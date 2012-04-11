@@ -52,7 +52,7 @@ public class downloadControl extends Activity{
 
         boolean paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
         if (!paid && mAdAvailable) {
-    		adview = new wrapAdView(this, 3, "a14f3f6bc126143");
+    		adview = new wrapAdView(this, 3, "a14f3f6bc126143", null);
     		adContainer = (LinearLayout) findViewById(R.id.adContainer);
     		adContainer.addView(adview.getInstance());
     		adview.loadAd();

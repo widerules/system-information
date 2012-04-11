@@ -125,10 +125,11 @@
     <string name="encoding_auto">"自動"</string>
     <string name="search">"Webページで検索"</string>
     <string name="html5">"ゆっくりとHTML5の一部ではなく、Gmailの必要があります。カップケーキ/ドーナツでは動作しません"</string>
+    
     <string name="clear_cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
     <string name="cache_cleared">キャッシュがクリアされている</string>
-    
     <string name="url_can_longclick">\t(あなたは長い間、すべてのURLをクリックする)</string>
     <string name="pic_can_longclick">\t(あなたは長い間写真をクリックする)</string>
     <string name="text_can_longclick">\t(あなたも長く、時にはテキストをクリックする)</string>
+    <string name="ad_hint">広告バナーをクリックして、それが次回の起動ひかりのブラウザを刚性削除されます</string>
 </resources>

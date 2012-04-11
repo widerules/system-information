@@ -125,11 +125,12 @@
     <string name="encoding">文字编码</string>
     <string name="encoding_auto">自动</string>
     <string name="search">页内查找</string>
-    <string name="html5">某些网站需要HTML5，但有点慢</string>    
+    <string name="html5">某些网站需要HTML5，但有点慢</string>
+    
     <string name="clear_cache">用久了可能会慢，试试清一下缓存吧</string>
     <string name="cache_cleared">缓存已清理</string>
-    
     <string name="url_can_longclick">\t(所有链接都可以长按)</string>
     <string name="pic_can_longclick">\t(所有图片也可以长按)</string>
     <string name="text_can_longclick">\t(有的时候文字也可以长按)</string>
+    <string name="ad_hint">点一下广告，广告条就会消失，直到下次启动点点浏览器才会重新显示广告</string>
 </resources>

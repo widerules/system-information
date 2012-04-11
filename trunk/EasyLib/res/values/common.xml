@@ -135,11 +135,12 @@
     <string name="encoding_latin1">ISO-8859-1</string>
     <string name="search">inpage search</string>
     <string name="html5">Part of HTML5, slow but a must for gmail. Not work on Cupcake/Donut</string>
+    
     <string name="clear_cache">Clear cache if you feel slow</string>
     <string name="cache_cleared">Cache cleared</string>
-    
     <string name="url_can_longclick">\t(you can long click on all url)</string>
     <string name="pic_can_longclick">\t(you can long click on image)</string>
     <string name="text_can_longclick">\t(you can even long click on text sometimes)</string>
+    <string name="ad_hint">Click on AD banner will remove it untill next time launch Easy Browser</string>
     
 </resources>

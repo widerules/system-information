@@ -9,13 +9,20 @@
     android:focusableInTouchMode="true"
     >
     
-    <LinearLayout android:id="@+id/adContainer"
+    <FrameLayout android:id="@+id/adContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="3dip"
-    />
+        android:orientation="vertical"
+        android:layout_marginBottom="3dip">
+        
+    	<TextView android:id="@+id/ad_hint"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="@string/ad_hint"
+    	    />
+    </FrameLayout>
     
 	<RelativeLayout android:id="@+id/search_bar"
 		android:background="@drawable/round_corner"

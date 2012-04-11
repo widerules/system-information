@@ -156,7 +156,7 @@
 				android:textColor="#FF96c732"
 				android:textStyle="bold"
 				android:layout_width="fill_parent"
-				android:layout_height="45dip"/>
+				android:layout_height="40dip"/>
 				
 			<ListView android:id="@+id/weblist"
 			    android:background="@drawable/border"

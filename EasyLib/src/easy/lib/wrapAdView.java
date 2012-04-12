@@ -22,7 +22,12 @@ public class wrapAdView {
 	
 	class Listener implements AdListener {
 		@Override
-		public void onDismissScreen(Ad arg0) {
+		public void onDismissScreen(Ad arg0) {//Called when an ad is clicked and about to return to the application.
+	    	if (mHandler != null) {
+	    		Message leave = mHandler.obtainMessage();
+	    		leave.what = 1;
+	    		mHandler.sendMessage(leave);
+	    	}
 		}
 
 		@Override
@@ -36,15 +41,10 @@ public class wrapAdView {
 
 		@Override
 		public void onLeaveApplication(Ad arg0) {
-	    	if (mHandler != null) {
-	    		Message leave = mHandler.obtainMessage();
-	    		leave.what = 1;
-	    		mHandler.sendMessage(leave);
-	    	}
 		}
 
 		@Override
-		public void onPresentScreen(Ad arg0) {
+		public void onPresentScreen(Ad arg0) {//Called when an Activity is created in front of the app
 		}
 
 		@Override

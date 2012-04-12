@@ -2080,10 +2080,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	if (mHistory.size() > 0) {
 		tmp = getString(R.string.history);
-		if (countDown > 0) {
-			tmp += getString(R.string.text_can_longclick) + "\t" + countDown;
-			countDown -= 1;
-		}
+		if (countDown > 0) tmp += getString(R.string.text_can_longclick) + "\t" + countDown;
 		if (collapse3) {
 			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >+\t" + tmp + "</h4>";
 			ret += "<dl id=\"content3\" type=\"disc\" style=\"display: none;\" >";
@@ -2101,6 +2098,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		}
 		ret += "</dl>";
 	}
+	if (countDown > 0) countDown -= 1;
 	
 	
 	ret += "</body>";

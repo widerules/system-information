@@ -318,9 +318,10 @@ public class SimpleBrowser extends Activity {
 	       }
 	   }
 	wrapAdView adview;
+	DisplayMetrics dm;
 	FrameLayout adContainer;
 	TextView adHint;
-	DisplayMetrics dm;
+	boolean canHideHint = false;
 	boolean byWifi = false;
     AppHandler mAppHandler = new AppHandler();
 	
@@ -1434,7 +1435,7 @@ public void onCreate(Bundle savedInstanceState) {
 		
 		countDown = 3;
 	}
-	else countDown = 1;
+	else countDown = 2;
 	
 	urlAdapter.sort(new stringCompatator());
 	webAddress.setAdapter(urlAdapter);
@@ -1538,9 +1539,11 @@ public void onCreate(Bundle savedInstanceState) {
 	adHint.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			LayoutParams lp = adContainer.getLayoutParams();
-			lp.height = 0;
-			adContainer.requestLayout();
+			if (canHideHint) {
+				LayoutParams lp = adContainer.getLayoutParams();
+				lp.height = 0;
+				adContainer.requestLayout();
+			}
 		}
 	});
 	setLayout();
@@ -1993,9 +1996,12 @@ void setLayout() {
 class AppHandler extends Handler {
 
     public void handleMessage(Message msg) {
-    	LayoutParams lp = adContainer.getLayoutParams();
-    	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
-    	adContainer.requestLayout();
+    	if (msg.what > 0) {
+        	LayoutParams lp = adContainer.getLayoutParams();
+        	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
+        	adContainer.requestLayout();
+    	}
+    	else canHideHint = true;
     }
 }
 

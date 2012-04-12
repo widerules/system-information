@@ -1540,7 +1540,7 @@ public void onCreate(Bundle savedInstanceState) {
 		public void onClick(View v) {
 			LayoutParams lp = adContainer.getLayoutParams();
 			lp.height = 0;
-			adContainer.invalidate();
+			adContainer.requestLayout();
 		}
 	});
 	setLayout();
@@ -1995,7 +1995,7 @@ class AppHandler extends Handler {
     public void handleMessage(Message msg) {
     	LayoutParams lp = adContainer.getLayoutParams();
     	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
-    	adview.loadAd();
+    	adContainer.requestLayout();
     }
 }
 

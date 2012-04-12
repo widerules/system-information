@@ -1435,7 +1435,7 @@ public void onCreate(Bundle savedInstanceState) {
 		
 		countDown = 3;
 	}
-	else countDown = 2;
+	else countDown = 1;
 	
 	urlAdapter.sort(new stringCompatator());
 	webAddress.setAdapter(urlAdapter);

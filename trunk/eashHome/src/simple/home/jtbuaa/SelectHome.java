@@ -150,7 +150,7 @@ public class SelectHome extends Activity{
     	
         boolean paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
         if (!paid && mAdAvailable) {
-    		adview = new wrapAdView(this, 3, "a14e79197567476");
+    		adview = new wrapAdView(this, 3, "a14e79197567476", null);
     		adContainer = (LinearLayout) findViewById(R.id.adContainer);
     		adContainer.addView(adview.getInstance());
     		adview.loadAd();

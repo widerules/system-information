@@ -69,7 +69,7 @@
     <string name="history">History</string>
     <string name="bookmark">Bookmark</string>
     <string name="top">Top</string>
-    <string name="source">Page Source</string>
+    <string name="source">Source</string>
     <string name="not_avaiable">Sorry, not avaiable on Android2.3.3</string>
     <string name="homepage">Home Page</string>
     <string name="shareurl">Share Url</string>
@@ -133,7 +133,7 @@
     <string name="encoding_big5">BIG5</string>
     <string name="encoding_gbk">GBK</string>
     <string name="encoding_latin1">ISO-8859-1</string>
-    <string name="search">inpage search</string>
+    <string name="search">Search</string>
     <string name="html5">Part of HTML5, slow but a must for gmail. Not work on Cupcake/Donut</string>
     
     <string name="clear_cache">Clear cache if you feel slow</string>

@@ -319,6 +319,7 @@ public class SimpleBrowser extends Activity {
 	   }
 	wrapAdView adview;
 	FrameLayout adContainer;
+	TextView adHint;
 	DisplayMetrics dm;
 	boolean byWifi = false;
     AppHandler mAppHandler = new AppHandler();
@@ -1533,6 +1534,15 @@ public void onCreate(Bundle savedInstanceState) {
 	downloadPath = util.preparePath(mContext);
 
 	adContainer = (FrameLayout) findViewById(R.id.adContainer);
+	adHint = (TextView) findViewById(R.id.ad_hint);
+	adHint.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			LayoutParams lp = adContainer.getLayoutParams();
+			lp.height = 0;
+			adContainer.invalidate();
+		}
+	});
 	setLayout();
 	
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
@@ -1975,7 +1985,8 @@ void setLayout() {
     		adview = new wrapAdView(this, 2, "a14f3f6bc126143", mAppHandler);//AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
     	
     	if (adview.getInstance() != null) adContainer.addView(adview.getInstance());
-    		adview.loadAd();
+    	
+    	adview.loadAd();
     }
 }
 
@@ -1983,9 +1994,8 @@ class AppHandler extends Handler {
 
     public void handleMessage(Message msg) {
     	LayoutParams lp = adContainer.getLayoutParams();
-    	lp.height = 0;
-    	adContainer.invalidate();
-    	if (msg.what > 0) adview.loadAd();//it will dismiss the banner for no enough space for new ad.
+    	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
+    	adview.loadAd();
     }
 }
 

@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:foregroundGravity="center"
         android:orientation="vertical">
         
     	<TextView android:id="@+id/ad_hint"

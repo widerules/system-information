@@ -55,24 +55,26 @@ public class wrapAdView {
 	public wrapAdView(Activity activity, int size, String deviceID, Handler handler) {
 		mHandler = handler;
 		
-		switch(size) {
-		case 0:
-			mInstance = new AdView(activity, AdSize.BANNER, deviceID);
-			break;
-		case 1:
-			mInstance = new AdView(activity, AdSize.IAB_BANNER, deviceID);
-			break;
-		case 2:
-			mInstance = new AdView(activity, AdSize.IAB_LEADERBOARD, deviceID);
-			break;
-		case 3:
-			mInstance = new AdView(activity, AdSize.IAB_MRECT, deviceID);
-			break;
-		}
-		try {adRequest = new AdRequest(); } catch (Exception e) {}
-		//adRequest.addTestDevice("E3CE9F94F56824C07AE1C3A5B434F664");//for test
-		
-		mInstance.setAdListener(new Listener());
+		try {
+			switch(size) {
+			case 0:
+				mInstance = new AdView(activity, AdSize.BANNER, deviceID);
+				break;
+			case 1:
+				mInstance = new AdView(activity, AdSize.IAB_BANNER, deviceID);
+				break;
+			case 2:
+				mInstance = new AdView(activity, AdSize.IAB_LEADERBOARD, deviceID);
+				break;
+			case 3:
+				mInstance = new AdView(activity, AdSize.IAB_MRECT, deviceID);
+				break;
+			}
+			mInstance.setAdListener(new Listener());
+			
+			adRequest = new AdRequest(); 
+			//adRequest.addTestDevice("E3CE9F94F56824C07AE1C3A5B434F664");//for test
+		} catch (Exception e) {}
 	}
 
 	static {
@@ -86,7 +88,7 @@ public class wrapAdView {
 	public static void checkAvailable() {}
 	
 	public void loadAd() {
-		if (mInstance != null) mInstance.loadAd(adRequest);
+		if ((mInstance != null) && (adRequest != null)) mInstance.loadAd(adRequest);
 	}
 	
 	void destroy() {

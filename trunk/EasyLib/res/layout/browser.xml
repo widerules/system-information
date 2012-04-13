@@ -172,7 +172,7 @@
 				android:layout_above="@id/opennewpage"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-				android:divider="#5e6377"
+				android:divider="#1e2337"
 				android:dividerHeight="2dip"
 				/>
 				

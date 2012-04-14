@@ -2138,7 +2138,10 @@ void getHistoryList() {
         Browser.BookmarkColumns.FAVICON };
 
 	String orderClause = Browser.BookmarkColumns.DATE + " DESC";
-    Cursor cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, orderClause);
+    Cursor cursor = null;
+    try {
+    	cursor = getContentResolver().query(Browser.BOOKMARKS_URI, sHistoryBookmarksProjection, null, null, orderClause);
+    } catch (Exception e) {}
 
     if (cursor != null) {
         if (cursor.moveToFirst()) {

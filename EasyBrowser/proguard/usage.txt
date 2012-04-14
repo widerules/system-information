@@ -25,7 +25,6 @@ com.google.ads.AdSize:
     38:39:public AdSize(int,int)
 com.google.ads.AdView:
     478:482:public boolean isReady()
-    523:524:public void setAdListener(com.google.ads.AdListener)
     535:536:public void stopLoading()
 com.google.ads.InterstitialAd:
     private com.google.ads.d a
@@ -82,7 +81,8 @@ easy.lib.R$drawable:
 easy.lib.R$id:
     public static final int adsParent
     public static final int control_buttons
-    public static final int line
+    public static final int line1
+    public static final int line2
     public static final int pause_download
     public static final int radio_auto
     public static final int radio_big5
@@ -104,19 +104,17 @@ easy.lib.R$id:
     public static final int webtools
 easy.lib.R$string:
     public static final int about
-    public static final int about_dialog
-    public static final int about_dialog_text2
+    public static final int ad_hint
     public static final int addtoFavo
     public static final int addtoShort
     public static final int app_name
     public static final int app_share_text
     public static final int appdetail
-    public static final int apps
     public static final int auto_change_wallpaper
     public static final int back
     public static final int backapp
     public static final int block_image
-    public static final int brief
+    public static final int clear_cache
     public static final int delete
     public static final int encoding
     public static final int encoding_auto
@@ -125,7 +123,6 @@ easy.lib.R$string:
     public static final int encoding_gbk
     public static final int encoding_latin1
     public static final int encoding_utf8
-    public static final int exit
     public static final int favoriteapps
     public static final int font_larger
     public static final int font_largest
@@ -136,8 +133,7 @@ easy.lib.R$string:
     public static final int full_screen
     public static final int full_webpage
     public static final int grid_view
-    public static final int hardware
-    public static final int health
+    public static final int help
     public static final int help_message
     public static final int hideapp
     public static final int hidepage
@@ -149,36 +145,20 @@ easy.lib.R$string:
     public static final int html5
     public static final int justreturn
     public static final int killapp
-    public static final int latitude
-    public static final int level
     public static final int list_view
     public static final int loading
-    public static final int locationHint
-    public static final int longitude
     public static final int max_history
-    public static final int memerr
-    public static final int memtotal
     public static final int menu_choose_home
     public static final int more
-    public static final int nApk
-    public static final int nProcess
     public static final int newpage
     public static final int next
     public static final int online
     public static final int packages
-    public static final int pixels
-    public static final int plugged
     public static final int recommend
-    public static final int refresh
     public static final int removeFromFavo
     public static final int removeFromShort
-    public static final int resolution
     public static final int restart
-    public static final int scale
-    public static final int sdk
-    public static final int search
     public static final int select
-    public static final int settings
     public static final int share_desktop
     public static final int share_text1
     public static final int share_text2
@@ -186,32 +166,22 @@ easy.lib.R$string:
     public static final int share_wallpaper
     public static final int show_zoom
     public static final int snap_size
-    public static final int status
     public static final int stop
     public static final int switcher_name
     public static final int systemapps
-    public static final int technology
-    public static final int temperature
     public static final int to
-    public static final int ulfail
-    public static final int ulsuccess
-    public static final int upload
     public static final int userapps
-    public static final int vendor
     public static final int view_bookmark
-    public static final int voltage
     public static final int vote
     public static final int wait
     public static final int wallpaper
     public static final int wallpaper_beauty
     public static final int wallpaper_scene
     public static final int warning
-    public static final int wlan
 easy.lib.SimpleBrowser:
     boolean css
-    986:1019:void setPrefer()
 easy.lib.util:
     55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2
 easy.lib.wrapWebSettings:
-    137:141:synchronized void setLoadWithOverviewMode(boolean)
+    141:145:synchronized void setLoadWithOverviewMode(boolean)

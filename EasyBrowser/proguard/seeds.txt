@@ -40,6 +40,7 @@ com.google.ads.AdSize
 com.google.ads.R$id
 com.google.ads.AdRequest$Gender
 easy.lib.wrapAdView
+easy.lib.wrapAdView$Listener
 com.google.ads.AdView
 com.google.ads.AdView: AdView(android.content.Context,android.util.AttributeSet)
 com.google.ads.AdView

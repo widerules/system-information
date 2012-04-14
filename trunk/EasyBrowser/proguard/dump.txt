@@ -43922,7 +43922,7 @@ Methods (count = 33):
     Access flags: 0x2
       = private void d()
     Class member attributes (count = 1):
-    + Code attribute instructions (code length = 233, locals = 7, stack = 6):
+    + Code attribute instructions (code length = 239, locals = 7, stack = 6):
       [0] bipush 8
       [2] anewarray #237
         - Class [java/lang/String]
@@ -43970,121 +43970,127 @@ Methods (count = 33):
       [48] ldc #84
         - String [date DESC]
       [50] astore_2 v2
-      [51] aload_0 v0
-      [52] invokevirtual #534
+      [51] aconst_null
+      [52] astore_3 v3
+      [53] aload_0 v0
+      [54] invokevirtual #534
         - Methodref [easy/lib/SimpleBrowser.getContentResolver ()Landroid/content/ContentResolver;]
-      [55] getstatic #253
+      [57] getstatic #253
         - Fieldref [android/provider/Browser.BOOKMARKS_URI Landroid/net/Uri;]
-      [58] aload_1 v1
-      [59] aconst_null
-      [60] aconst_null
-      [61] aload_2 v2
-      [62] invokevirtual #445
+      [60] aload_1 v1
+      [61] aconst_null
+      [62] aconst_null
+      [63] aload_2 v2
+      [64] invokevirtual #445
         - Methodref [android/content/ContentResolver.query (Landroid/net/Uri;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)Landroid/database/Cursor;]
-      [65] dup
-      [66] astore_1 v1
-      [67] ifnull +165 (target=232)
-      [70] aload_1 v1
-      [71] invokeinterface #667
+      [67] astore_3 v3
+      [68] goto +4 (target=72)
+      [71] pop
+      [72] aload_3 v3
+      [73] ifnull +165 (target=238)
+      [76] aload_3 v3
+      [77] invokeinterface #667
         - InterfaceMethodref [android/database/Cursor.moveToFirst ()Z]
-      [76] ifeq +150 (target=226)
-      [79] aload_1 v1
-      [80] ldc #105
+      [82] ifeq +150 (target=232)
+      [85] aload_3 v3
+      [86] ldc #105
         - String [title]
-      [82] invokeinterface #663
+      [88] invokeinterface #663
         - InterfaceMethodref [android/database/Cursor.getColumnIndex (Ljava/lang/String;)I]
-      [87] istore_2 v2
-      [88] aload_1 v1
-      [89] ldc #106
+      [93] istore_1 v1
+      [94] aload_3 v3
+      [95] ldc #106
         - String [url]
-      [91] invokeinterface #663
+      [97] invokeinterface #663
         - InterfaceMethodref [android/database/Cursor.getColumnIndex (Ljava/lang/String;)I]
-      [96] istore_3 v3
-      [97] aload_1 v1
-      [98] ldc #74
+      [102] istore_2 v2
+      [103] aload_3 v3
+      [104] ldc #74
         - String [bookmark]
-      [100] invokeinterface #663
+      [106] invokeinterface #663
         - InterfaceMethodref [android/database/Cursor.getColumnIndex (Ljava/lang/String;)I]
-      [105] istore v4
-      [107] goto +110 (target=217)
-      [110] aload_1 v1
-      [111] iload_3 v3
-      [112] invokeinterface #665
+      [111] istore v4
+      [113] goto +110 (target=223)
+      [116] aload_3 v3
+      [117] iload_2 v2
+      [118] invokeinterface #665
         - InterfaceMethodref [android/database/Cursor.getString (I)Ljava/lang/String;]
-      [117] invokevirtual #637
+      [123] invokevirtual #637
         - Methodref [java/lang/String.trim ()Ljava/lang/String;]
-      [120] dup
-      [121] astore v5
-      [123] ldc #19
+      [126] dup
+      [127] astore v5
+      [129] ldc #19
         - String [/]
-      [125] invokevirtual #632
+      [131] invokevirtual #632
         - Methodref [java/lang/String.split (Ljava/lang/String;)[Ljava/lang/String;]
-      [128] dup
-      [129] astore v6
-      [131] arraylength
-      [132] iconst_2
-      [133] ificmple +12 (target=145)
-      [136] aload v6
+      [134] dup
+      [135] astore v6
+      [137] arraylength
       [138] iconst_2
-      [139] aaload
-      [140] astore v6
-      [142] goto +9 (target=151)
-      [145] aload v6
-      [147] iconst_0
-      [148] aaload
-      [149] astore v6
-      [151] new #215
+      [139] ificmple +12 (target=151)
+      [142] aload v6
+      [144] iconst_2
+      [145] aaload
+      [146] astore v6
+      [148] goto +9 (target=157)
+      [151] aload v6
+      [153] iconst_0
+      [154] aaload
+      [155] astore v6
+      [157] new #215
         - Class [easy/lib/m]
-      [154] dup
-      [155] aload_0 v0
-      [156] aload_1 v1
-      [157] iload_2 v2
-      [158] invokeinterface #665
+      [160] dup
+      [161] aload_0 v0
+      [162] aload_3 v3
+      [163] iload_1 v1
+      [164] invokeinterface #665
         - InterfaceMethodref [android/database/Cursor.getString (I)Ljava/lang/String;]
-      [163] aload v5
-      [165] aload v6
-      [167] invokespecial #592
+      [169] aload v5
+      [171] aload v6
+      [173] invokespecial #592
         - Methodref [easy/lib/m.<init> (Leasy/lib/SimpleBrowser;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V]
-      [170] astore v5
-      [172] aload_1 v1
-      [173] iload v4
-      [175] invokeinterface #664
+      [176] astore v5
+      [178] aload_3 v3
+      [179] iload v4
+      [181] invokeinterface #664
         - InterfaceMethodref [android/database/Cursor.getInt (I)I]
-      [180] ifle +16 (target=196)
-      [183] aload_0 v0
-      [184] getfield #310
+      [186] ifle +16 (target=202)
+      [189] aload_0 v0
+      [190] getfield #310
         - Fieldref [easy/lib/SimpleBrowser.as Ljava/util/ArrayList;]
-      [187] aload v5
-      [189] invokevirtual #647
+      [193] aload v5
+      [195] invokevirtual #647
         - Methodref [java/util/ArrayList.add (Ljava/lang/Object;)Z]
-      [192] pop
-      [193] goto +17 (target=210)
-      [196] aload_0 v0
-      [197] getfield #309
+      [198] pop
+      [199] goto +17 (target=216)
+      [202] aload_0 v0
+      [203] getfield #309
         - Fieldref [easy/lib/SimpleBrowser.ar Ljava/util/ArrayList;]
-      [200] aload v5
-      [202] invokevirtual #647
+      [206] aload v5
+      [208] invokevirtual #647
         - Methodref [java/util/ArrayList.add (Ljava/lang/Object;)Z]
-      [205] pop
-      [206] goto +4 (target=210)
-      [209] pop
-      [210] aload_1 v1
-      [211] invokeinterface #668
+      [211] pop
+      [212] goto +4 (target=216)
+      [215] pop
+      [216] aload_3 v3
+      [217] invokeinterface #668
         - InterfaceMethodref [android/database/Cursor.moveToNext ()Z]
-      [216] pop
-      [217] aload_1 v1
-      [218] invokeinterface #666
+      [222] pop
+      [223] aload_3 v3
+      [224] invokeinterface #666
         - InterfaceMethodref [android/database/Cursor.isAfterLast ()Z]
-      [223] ifeq -113 (target=110)
-      [226] aload_1 v1
-      [227] invokeinterface #662
+      [229] ifeq -113 (target=116)
+      [232] aload_3 v3
+      [233] invokeinterface #662
         - InterfaceMethodref [android/database/Cursor.close ()V]
-      [232] return
-      Code attribute exceptions (count = 1):
-      - ExceptionInfo (110 -> 206: 209):
+      [238] return
+      Code attribute exceptions (count = 2):
+      - ExceptionInfo (53 -> 68: 71):
+      - Class [java/lang/Exception]
+      - ExceptionInfo (116 -> 212: 215):
       - Class [java/lang/Exception]
       Code attribute attributes (attribute count = 2):
-      + Line number table attribute (count = 30)
+      + Line number table attribute (count = 32)
         [0] -> line 2130
         [7] -> line 2131
         [12] -> line 2132
@@ -44097,35 +44103,39 @@ Methods (count = 33):
         [47] -> line 2130
         [48] -> line 2140
         [51] -> line 2141
-        [66] -> line 2143
-        [70] -> line 2144
-        [79] -> line 2145
-        [88] -> line 2146
-        [97] -> line 2147
-        [107] -> line 2149
-        [110] -> line 2151
-        [121] -> line 2152
-        [129] -> line 2154
-        [145] -> line 2155
-        [151] -> line 2157
-        [172] -> line 2158
-        [196] -> line 2159
-        [209] -> line 2161
-        [210] -> line 2163
-        [217] -> line 2149
-        [226] -> line 2166
-        [232] -> line 2168
-      + Stack map table attribute (count = 10):
-        - [110] Var: [a:easy/lib/SimpleBrowser][a:[Ljava/lang/String;][a:java/lang/String][a:android/database/Cursor][i][i][i], Stack: 
-        - [145] Var: ...[a:java/lang/String][a:java/lang/String][a:[Ljava/lang/String;], Stack: (empty)
-        - [151] Var: ..., Stack: (empty)
-        - [196] Var: ...[a:easy/lib/m], Stack: (empty)
-        - [206] Var: ..., Stack: (empty)
-        - [209] Var: [a:easy/lib/SimpleBrowser][a:[Ljava/lang/String;][a:java/lang/String][a:android/database/Cursor][i][i][i], Stack: [a:java/lang/Exception]
-        - [210] Var: ..., Stack: (empty)
-        - [217] Var: ..., Stack: (empty)
-        - [226] Var: -3, Stack: (empty)
-        - [232] Var: ..., Stack: (empty)
+        [53] -> line 2143
+        [71] -> line 2144
+        [72] -> line 2146
+        [76] -> line 2147
+        [85] -> line 2148
+        [94] -> line 2149
+        [103] -> line 2150
+        [113] -> line 2152
+        [116] -> line 2154
+        [127] -> line 2155
+        [135] -> line 2157
+        [151] -> line 2158
+        [157] -> line 2160
+        [178] -> line 2161
+        [202] -> line 2162
+        [215] -> line 2164
+        [216] -> line 2166
+        [223] -> line 2152
+        [232] -> line 2169
+        [238] -> line 2171
+      + Stack map table attribute (count = 12):
+        - [71] Var: [a:easy/lib/SimpleBrowser][a:[Ljava/lang/String;][a:java/lang/String][a:android/database/Cursor], Stack: [a:java/lang/Exception]
+        - [72] Var: ..., Stack: (empty)
+        - [116] Var: ...[i][i][i], Stack: (empty)
+        - [151] Var: ...[a:java/lang/String][a:java/lang/String][a:[Ljava/lang/String;], Stack: (empty)
+        - [157] Var: ..., Stack: (empty)
+        - [202] Var: ...[a:easy/lib/m], Stack: (empty)
+        - [212] Var: ..., Stack: (empty)
+        - [215] Var: [a:easy/lib/SimpleBrowser][a:[Ljava/lang/String;][a:java/lang/String][a:android/database/Cursor][i][i][i], Stack: [a:java/lang/Exception]
+        - [216] Var: ..., Stack: (empty)
+        - [223] Var: ..., Stack: (empty)
+        - [232] Var: -3, Stack: (empty)
+        - [238] Var: ..., Stack: (empty)
   + Method:       b(Ljava/lang/String;)Ljava/util/ArrayList;
     Access flags: 0x2
       = private java.util.ArrayList b(java.lang.String)
@@ -44212,23 +44222,23 @@ Methods (count = 33):
       - Class [java/lang/Exception]
       Code attribute attributes (attribute count = 2):
       + Line number table attribute (count = 17)
-        [0] -> line 2172
-        [8] -> line 2173
-        [10] -> line 2174
-        [13] -> line 2176
-        [20] -> line 2177
-        [30] -> line 2180
-        [33] -> line 2181
-        [42] -> line 2182
-        [51] -> line 2183
-        [65] -> line 2184
-        [71] -> line 2180
-        [86] -> line 2186
-        [87] -> line 2188
-        [91] -> line 2189
-        [99] -> line 2190
-        [103] -> line 2191
-        [104] -> line 2192
+        [0] -> line 2175
+        [8] -> line 2176
+        [10] -> line 2177
+        [13] -> line 2179
+        [20] -> line 2180
+        [30] -> line 2183
+        [33] -> line 2184
+        [42] -> line 2185
+        [51] -> line 2186
+        [65] -> line 2187
+        [71] -> line 2183
+        [86] -> line 2189
+        [87] -> line 2191
+        [91] -> line 2192
+        [99] -> line 2193
+        [103] -> line 2194
+        [104] -> line 2195
       + Stack map table attribute (count = 7):
         - [33] Var: [a:easy/lib/SimpleBrowser][a:java/lang/String][a:java/util/ArrayList][a:java/io/ObjectInputStream][a:java/io/FileInputStream][T][a:java/lang/String], Stack: 
         - [71] Var: [a:easy/lib/SimpleBrowser][a:java/lang/String][a:java/util/ArrayList][a:java/io/ObjectInputStream][a:java/io/FileInputStream], Stack: 

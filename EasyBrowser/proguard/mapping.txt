@@ -773,8 +773,8 @@ easy.lib.SimpleBrowser -> easy.lib.SimpleBrowser:
     1953:1981:void setLayout() -> c
     1996:1998:void loadPage(boolean) -> a
     2114:2127:void writeBookmark(java.lang.String,java.util.ArrayList) -> a
-    2130:2165:void getHistoryList() -> d
-    2169:2189:java.util.ArrayList readBookmark(java.lang.String) -> b
+    2130:2168:void getHistoryList() -> d
+    2172:2192:java.util.ArrayList readBookmark(java.lang.String) -> b
     284:284:easy.lib.wrapValueCallback access$0(easy.lib.SimpleBrowser) -> a
     284:284:void access$1(easy.lib.SimpleBrowser,easy.lib.wrapValueCallback) -> a
     1711:1711:boolean access$2(easy.lib.SimpleBrowser,java.lang.String) -> a

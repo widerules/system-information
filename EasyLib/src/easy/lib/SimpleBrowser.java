@@ -244,9 +244,7 @@ public class SimpleBrowser extends Activity {
 	AlertDialog snapDialog = null;
 
 	//favo dialog
-	//LinearLayout favoView;
 	EditText titleText;
-	//AlertDialog favoDialog = null;
 	
 	//menu dialog
 	AlertDialog menuDialog;// menu菜单Dialog
@@ -1840,17 +1838,34 @@ protected void onResume() {
     if (clearCache) {
     	sEdit.putBoolean("clear_cache", false);
     	sEdit.commit();
-    	//mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
         serverWebs.get(webIndex).clearHistory();
-        //serverWebs.get(webIndex).clearFormData();
         serverWebs.get(webIndex).clearCache(true);
         clearCacheFolder(getDir("databases", MODE_PRIVATE));
     	Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
     }
     
-    
 	String url = serverWebs.get(webIndex).getUrl() + "";
+	
+    boolean clearAll = sp.getBoolean("clear_all", false);
+    if (clearAll) {
+    	sEdit.putBoolean("clear_all", false);
+    	sEdit.commit();
+    	mContext.deleteDatabase("webview.db");
+        serverWebs.get(webIndex).clearFormData();
+        mHistory.clear();
+        historyChanged = true;
+        mBookMark.clear();
+        bookmarkChanged = true;
+        if (BLANK_PAGE.equals(url)) loadPage(true);
+    	
+        mContext.deleteDatabase("webviewCache.db");
+        serverWebs.get(webIndex).clearHistory();
+        serverWebs.get(webIndex).clearCache(true);
+        clearCacheFolder(getDir("databases", MODE_PRIVATE));
+    	Toast.makeText(mContext, R.string.all_cleared, Toast.LENGTH_LONG).show();
+    }
+    
 
     /* css default to true now. 
     boolean oldCss = css;

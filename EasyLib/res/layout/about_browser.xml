@@ -113,12 +113,10 @@
       	android:textColor="#FFFFFFFF"
         />
     <RadioButton  
-        android:id="@+id/radio_history_8"
         android:text="@string/history_8"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:id="@+id/radio_history_16"
         android:text="@string/history_16"
 		android:layout_marginLeft="5dip"
         />  
@@ -146,32 +144,26 @@
       	android:textColor="#FFFFFFFF"
         />
     <RadioButton  
-        android:id="@+id/radio_auto"
         android:text="@string/encoding_auto"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:id="@+id/radio_utf8"
         android:text="@string/encoding_utf8"
 		android:layout_marginLeft="5dip"
         />
     <RadioButton  
-        android:id="@+id/radio_gbk"
         android:text="@string/encoding_gbk"
 		android:layout_marginLeft="5dip"
         />
     <RadioButton  
-        android:id="@+id/radio_gb2312"
         android:text="@string/encoding_gb2312"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:id="@+id/radio_big5"
         android:text="@string/encoding_big5"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:id="@+id/radio_latin1"
         android:text="@string/encoding_latin1"
 		android:layout_marginLeft="5dip"
         />  
@@ -199,13 +191,11 @@
       	android:textSize="16dip"
         />
     <RadioButton  
-        android:id="@+id/radio_fullscreen"
         android:text="@string/full_screen"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:id="@+id/radio_fullwebpage"
         android:text="@string/full_webpage"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
@@ -234,31 +224,26 @@
       	android:textSize="16dip"
         />
     <RadioButton  
-        android:id="@+id/radio_larger"
         android:text="@string/font_larger"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />
     <RadioButton  
-        android:id="@+id/radio_normal"
         android:text="@string/font_normal"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />
     <RadioButton  
-        android:id="@+id/radio_smaller"
         android:text="@string/font_smaller"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />
     <RadioButton  
-        android:id="@+id/radio_smallest"
         android:text="@string/font_smallest"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:id="@+id/radio_largest"
         android:text="@string/font_largest"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
@@ -271,6 +256,89 @@
       	android:layout_height="wrap_content"
       	android:textSize="16dip"
       	android:text="@string/clear_cache"
+		android:layout_margin="1dip"
+        android:background="@drawable/button_layout"
+    />
+
+    <TextView
+    	android:layout_width="wrap_content"  
+	    android:layout_height="wrap_content"
+	    android:text="@string/change_ua"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="15dip"
+		android:layout_marginTop="10dip"
+      	android:textSize="16dip"
+        />
+    <HorizontalScrollView
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:fadeScrollbars="true"
+		android:layout_margin="5dip"
+        >
+    <RadioGroup android:id="@+id/ua_group"  
+    	android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+    	android:orientation="horizontal"
+    >  
+    <RadioButton  
+        android:text="@string/android"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/pc"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />
+    <RadioButton  
+        android:text="@string/iphone"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/ipad"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/ie"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/ff"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/safari"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/wp"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/nokia"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/bb"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    
+	</RadioGroup>           
+    </HorizontalScrollView>
+    
+    <Button android:id="@+id/clear_all"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:text="@string/clear_all"
 		android:layout_margin="1dip"
         android:background="@drawable/button_layout"
     />

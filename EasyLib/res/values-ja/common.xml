@@ -133,5 +133,9 @@
     <string name="text_can_longclick">\t(あなたも長く、時にはテキストをクリックする)</string>
     <string name="ad_hint">広告バナーをクリックして、それが次回の起動ひかりのブラウザを刚性削除されます</string>
     <string name="ad_can_remove">\t(それを削除するには、広告をクリックし)</string>
+    <string name="change_ua">いくつかのウェブサイトにアクセスするためにUAを変更する必要があり</string>
+    <string name="clear_all">インターネットの痕跡を消去する</string>
+    <string name="clear_hint">すべてのデータがクリアされ、パスワード、履歴、ブックマーク、クッキー、キャッシュを含む</string>
+    <string name="all_cleared">すべてのデータがクリアされ</string>
     
 </resources>

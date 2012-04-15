@@ -143,5 +143,20 @@
     <string name="text_can_longclick">\t(you may even long click text)</string>
     <string name="ad_hint">Click on AD banner will remove it untill next time you launch Easy Browser.</string>
     <string name="ad_can_remove">\t(click ad to remove it)</string>
+    <string name="change_ua">Need change UA to access some website</string>
+    <string name="clear_all">Clear all data</string>
+    <string name="clear_hint">All your data will be cleared, include password, history, bookmark, cookie and cache.</string>
+    <string name="all_cleared">All data cleared.</string>
+    
+    <string name="android">Android</string>
+    <string name="pc">PC</string>
+    <string name="iphone">iPhone</string>
+    <string name="ipad">iPad</string>
+    <string name="ie">IE</string>
+    <string name="ff">Firefox</string>
+    <string name="safari">Safari</string>
+    <string name="wp">WP</string>
+    <string name="nokia">Nokia</string>
+    <string name="bb">BlackBerry</string>
     
 </resources>

@@ -265,7 +265,7 @@
 	    android:layout_height="wrap_content"
 	    android:text="@string/change_ua"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="15dip"
+		android:layout_marginLeft="10dip"
 		android:layout_marginTop="10dip"
       	android:textSize="16dip"
         />

@@ -1846,26 +1846,26 @@ protected void onResume() {
     case 3://ipad
     	localSettings.setUserAgentString("Mozilla/5.0 (iPad; U; CPU  OS 4_1 like Mac OS X; en-us)AppleWebKit/532.9(KHTML, like Gecko) Version/4.0.5 Mobile/8B117 Safari/6531.22.7");
     	break;
-    case 4://chrome
+    case 4://black berry
+    	localSettings.setUserAgentString("Mozilla/5.0 (BlackBerry; U; BlackBerry 9800; en-US) AppleWebKit/534.1+ (KHTML, like Gecko)");
+    	break;
+    case 5://chrome
     	localSettings.setUserAgentString("Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.151 Safari/535.19");
     	break;
-    case 5://firefox
+    case 6://firefox
     	localSettings.setUserAgentString("Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20120403211507 Firefox/12.0");
-    	break;
-    case 6://safari
-    	localSettings.setUserAgentString("Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en-us) AppleWebKit/48 (like Gecko) Safari/48");
     	break;
     case 7://ie
     	localSettings.setUserAgentString("Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Trident/4.0)");
     	break;
-    case 8://wp
-    	localSettings.setUserAgentString("Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0");
-    	break;
-    case 9://nokia
+    case 8://nokia
     	localSettings.setUserAgentString("User-Agent: Mozilla/5.0 (SymbianOS/9.1; U; [en]; Series60/3.0 NokiaE60/4.06.0) AppleWebKit/413 (KHTML, like Gecko) Safari/413");
     	break;
-    case 10://black berry
-    	localSettings.setUserAgentString("Mozilla/5.0 (BlackBerry; U; BlackBerry 9800; en-US) AppleWebKit/534.1+ (KHTML, like Gecko)");
+    case 9://safari
+    	localSettings.setUserAgentString("Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en-us) AppleWebKit/48 (like Gecko) Safari/48");
+    	break;
+    case 10://wp
+    	localSettings.setUserAgentString("Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0");
     	break;
     }
     localSettings.setBuiltInZoomControls(showZoom);

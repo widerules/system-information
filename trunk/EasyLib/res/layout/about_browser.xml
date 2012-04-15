@@ -301,6 +301,11 @@
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
+        android:text="@string/bb"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
         android:text="@string/chrome"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
@@ -311,17 +316,7 @@
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:text="@string/safari"
-      	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
-        />  
-    <RadioButton  
         android:text="@string/ie"
-      	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
-        />  
-    <RadioButton  
-        android:text="@string/wp"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
@@ -331,7 +326,12 @@
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:text="@string/bb"
+        android:text="@string/safari"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/wp"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  

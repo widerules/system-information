@@ -1,6 +1,9 @@
 package easy.lib;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -23,7 +26,7 @@ import easy.lib.util;
 public class AboutBrowser extends Activity{
 	
 	CheckBox cbZoomControl, cbCss, cbHtml5, cbBlockImg;
-	RadioGroup fontSize, historyCount, encodingType, snapSize;
+	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -78,13 +81,38 @@ public class AboutBrowser extends Activity{
 			}
         });
 
-        Button btnClear = (Button) findViewById(R.id.clear_cache);
-        btnClear.setOnClickListener(new OnClickListener() {
+        Button btnClearCache = (Button) findViewById(R.id.clear_cache);
+        btnClearCache.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
         		editor.putBoolean("clear_cache", true);
         		editor.commit();
         		finish();
+			}
+        });
+
+        final Context context = this;
+        Button btnClearAll = (Button) findViewById(R.id.clear_all);
+        btnClearAll.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new AlertDialog.Builder(context).
+	    		setTitle(R.string.browser_name).
+	    		setIcon(R.drawable.stop).
+	    		setMessage(R.string.clear_hint).
+	    		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {//share
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+		        		editor.putBoolean("clear_all", true);
+		        		editor.commit();
+		        		finish();
+					}
+				}).
+	    		setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				}).show();
 			}
         });
 
@@ -188,6 +216,15 @@ public class AboutBrowser extends Activity{
 			}
     	});
 
+    	changeUA = (RadioGroup) findViewById(R.id.ua_group);
+    	changeUA.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup arg0, int arg1) {
+        		editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA.getCheckedRadioButtonId())));
+        		editor.commit();
+			}
+    	});
+    	
     	dm = new DisplayMetrics();
     	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	}
@@ -208,6 +245,7 @@ public class AboutBrowser extends Activity{
 		((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
 		((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 1))).setChecked(true);
 		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
+		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0))).setChecked(true);
         
 		super.onResume();
 	}

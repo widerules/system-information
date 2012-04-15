@@ -307,8 +307,6 @@ public class SimpleBrowser extends Activity {
 	wrapAdView adview;
 	DisplayMetrics dm;
 	FrameLayout adContainer;
-	TextView adHint;
-	boolean canHideHint = false;
 	boolean byWifi = false;
     AppHandler mAppHandler = new AppHandler();
 	
@@ -1522,17 +1520,6 @@ public void onCreate(Bundle savedInstanceState) {
 	downloadPath = util.preparePath(mContext);
 
 	adContainer = (FrameLayout) findViewById(R.id.adContainer);
-	adHint = (TextView) findViewById(R.id.ad_hint);
-	adHint.setOnClickListener(new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (canHideHint) {
-				LayoutParams lp = adContainer.getLayoutParams();
-				lp.height = 0;
-				adContainer.requestLayout();
-			}
-		}
-	});
 	setLayout();
 	
 	try {//there are a null pointer error reported for the if line below, hard to reproduce, maybe someone use instrument tool to test it. so just catch it.
@@ -1988,7 +1975,6 @@ class AppHandler extends Handler {
         	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
         	adContainer.requestLayout();
     	}
-    	else canHideHint = true;
     }
 }
 
@@ -2012,7 +1998,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	ret += "<body>";
 
 	String tmp = getString(R.string.top);
-	if (countDown > 0) tmp += getString(R.string.url_can_longclick);
+	if (countDown > 0) tmp += getString(R.string.ad_can_remove);
 	if (countDown > 1) tmp += "\t" + countDown;
 	if (collapse1) {
 		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >+\t" + tmp + "</h4>";
@@ -2046,7 +2032,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	if (mBookMark.size() > 0) {
 		tmp = getString(R.string.bookmark);
-		if (countDown > 0) tmp += getString(R.string.pic_can_longclick);
+		if (countDown > 0) tmp += getString(R.string.url_can_longclick);
 		if (countDown > 1) tmp += "\t" + countDown;
 		if (collapse2) {
 			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >+\t" + tmp + "</h4>";
@@ -2069,7 +2055,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	
 	if (mHistory.size() > 0) {
 		tmp = getString(R.string.history);
-		if (countDown > 0) tmp += getString(R.string.text_can_longclick);
+		if (countDown > 0) tmp += getString(R.string.pic_can_longclick);
 		if (countDown > 1) tmp += "\t" + countDown;
 		if (collapse3) {
 			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >+\t" + tmp + "</h4>";

@@ -142,5 +142,6 @@
     <string name="pic_can_longclick">\t(you can long click on pic)</string>
     <string name="text_can_longclick">\t(you may even long click text)</string>
     <string name="ad_hint">Click on AD banner will remove it untill next time you launch Easy Browser.</string>
+    <string name="ad_can_remove">\t(click ad to remove it)</string>
     
 </resources>

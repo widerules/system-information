@@ -133,4 +133,6 @@
     <string name="pic_can_longclick">\t(所有图片也可以长按)</string>
     <string name="text_can_longclick">\t(有的时候文字也可以长按)</string>
     <string name="ad_hint">点一下广告，广告条就会消失，直到下次启动点点浏览器才会重新显示广告</string>
+    <string name="ad_can_remove">\t(点击广告可以去掉广告条)</string>
+    
 </resources>

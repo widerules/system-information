@@ -301,7 +301,7 @@
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
-        android:text="@string/ie"
+        android:text="@string/chrome"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
@@ -312,6 +312,11 @@
         />  
     <RadioButton  
         android:text="@string/safari"
+      	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/ie"
       	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  

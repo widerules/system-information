@@ -152,6 +152,7 @@
     <string name="pc">PC</string>
     <string name="iphone">iPhone</string>
     <string name="ipad">iPad</string>
+    <string name="chrome">Chrome</string>
     <string name="ie">IE</string>
     <string name="ff">Firefox</string>
     <string name="safari">Safari</string>

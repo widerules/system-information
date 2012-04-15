@@ -2003,7 +2003,7 @@ void setLayout() {
     
     if (!paid && mAdAvailable) {
     	if (adview != null) {
-    		adContainer.removeViewAt(1);
+    		adContainer.removeViewAt(0);
     		adview.destroy();
     	}
     	

@@ -651,7 +651,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         btnStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				closePage(position);
+				closePage(position, false);
 			}
         });
         
@@ -659,8 +659,13 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
     }
 }
 
-void closePage(int position) {
+void closePage(int position, boolean clearData) {
 	serverWebs.get(webIndex).stopLoading();//remove current page, so stop loading at first
+	if (clearData) {
+        serverWebs.get(webIndex).clearCache(true);
+        serverWebs.get(webIndex).clearSslPreferences();
+        serverWebs.get(webIndex).clearFormData();
+	}
 	if (webAdapter.getCount() > 1) {
 		MyWebview tmp = (MyWebview) webpages.getChildAt(position);
 		webAdapter.remove(tmp);
@@ -1883,48 +1888,47 @@ protected void onResume() {
     	sEdit.commit();
     	
     	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
-        mContext.deleteDatabase("webviewCache.db");
-        serverWebs.get(webIndex).clearHistory();
         serverWebs.get(webIndex).clearCache(true);
-        clearCacheFolder(getDir("databases", MODE_PRIVATE));
     	Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
+        mContext.deleteDatabase("webviewCache.db");
+        clearCacheFolder(getDir("databases", MODE_PRIVATE));
     }
     
-	String url = serverWebs.get(webIndex).getUrl() + "";
 	
     boolean clearAll = sp.getBoolean("clear_all", false);
     if (clearAll) {
     	sEdit.putBoolean("clear_all", false);
     	sEdit.commit();
     	
-    	while (webAdapter.getCount() > 1) closePage(0);//close all pages
-    	serverWebs.get(0).stopLoading();
+    	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
+    	closePage(0, true);
     	
-    	mContext.deleteDatabase("webview.db");
-        serverWebs.get(webIndex).clearFormData();
         mHistory.clear();
         historyChanged = true;
         mBookMark.clear();
         bookmarkChanged = true;
     	
+    	mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
-        serverWebs.get(webIndex).clearHistory();
-        serverWebs.get(webIndex).clearCache(true);
         clearCacheFolder(getDir("databases", MODE_PRIVATE));
-    	closePage(0);
-    	Toast.makeText(mContext, R.string.all_cleared, Toast.LENGTH_LONG).show();
+        
+        finish();
     }
     
 
-    /* css default to true now. 
-    boolean oldCss = css;
-    css = sp.getBoolean("css", false);
-	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed*/		
-    
     readTextSize(sp); //no need to reload page if fontSize changed
     localSettings.setTextSize(textSize);
 
-    /*//set html5 to true as default instead of read from preference, for it seems not slow if enable it?
+    blockImage = sp.getBoolean("block_image", false);
+    localSettings.setBlockNetworkImage(blockImage);
+
+    /* css default to true now. 
+	String url = serverWebs.get(webIndex).getUrl() + "";
+    boolean oldCss = css;
+    css = sp.getBoolean("css", false);
+	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
+    
+    //set html5 to true as default instead of read from preference, for it seems not slow if enable it?
     html5 = sp.getBoolean("html5", false);
     wrapWebSettings webSettings = new wrapWebSettings(localSettings);
     webSettings.setAppCacheEnabled(html5);//API7
@@ -1936,12 +1940,9 @@ protected void onResume() {
         webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
         webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
         webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
-    }*/
+    }
 	
-    blockImage = sp.getBoolean("block_image", false);
-    localSettings.setBlockNetworkImage(blockImage);
-
-    /*disable setting of historyCount and encoding
+    disable setting of historyCount and encoding
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     int iEncoding = sp.getInt("encoding", -1);
     String encoding = "";

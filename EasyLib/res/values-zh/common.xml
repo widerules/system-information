@@ -135,8 +135,8 @@
     <string name="ad_hint">点一下广告，广告条就会消失，直到下次启动点点浏览器才会重新显示广告</string>
     <string name="ad_can_remove">\t(点击广告可以去掉广告条)</string>
     <string name="change_ua">有些网站需要改变UA才可以访问</string>
-    <string name="clear_all">清除上网痕迹</string>
-    <string name="clear_hint">密码、书签、历史、缓存，所有痕迹都会被清除，你真的确定吗？</string>
+    <string name="clear_all">清除上网痕迹并退出</string>
+    <string name="clear_hint">密码、书签、历史、缓存，所有痕迹都会被清除且不可恢复，你真的确定吗？</string>
     <string name="all_cleared">痕迹清理完毕</string>
     
 </resources>

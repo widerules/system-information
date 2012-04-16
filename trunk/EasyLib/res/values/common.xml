@@ -144,7 +144,7 @@
     <string name="ad_hint">Click on AD banner will remove it untill next time you launch Easy Browser.</string>
     <string name="ad_can_remove">\t(click ad to remove it)</string>
     <string name="change_ua">Need change UA to access some website</string>
-    <string name="clear_all">Clear all data</string>
+    <string name="clear_all">Clear all data and exit</string>
     <string name="clear_hint">All your data will be cleared, include password, history, bookmark, cookie and cache.</string>
     <string name="all_cleared">All data cleared.</string>
     

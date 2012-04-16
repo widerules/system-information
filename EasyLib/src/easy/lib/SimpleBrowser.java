@@ -215,7 +215,7 @@ public class SimpleBrowser extends Activity {
 	boolean paid, debug;
 	final String BLANK_PAGE = "about:blank";
 	boolean firstRun = false;
-	int countDown = 3;
+	int countDown = 0;
 
 	ListView webList;
 	Context mContext;
@@ -1418,7 +1418,6 @@ public void onCreate(Bundle savedInstanceState) {
 		
 		countDown = 3;
 	}
-	else countDown = 1;
 	
 	urlAdapter.sort(new stringCompatator());
 	webAddress.setAdapter(urlAdapter);

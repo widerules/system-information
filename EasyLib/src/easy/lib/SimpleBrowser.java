@@ -651,27 +651,31 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         btnStop.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				serverWebs.get(webIndex).stopLoading();//remove current page, so stop loading at first
-				if (webAdapter.getCount() > 1) {
-					MyWebview tmp = (MyWebview) webpages.getChildAt(position);
-					webAdapter.remove(tmp);
-					webAdapter.notifyDataSetInvalidated();
-					webpages.removeViewAt(position);
-					tmp.destroy();
-					imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
-					if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
-				}
-				else {//return to home page if only one page when click close button
-					webControl.setVisibility(View.INVISIBLE);
-					loadPage(true);
-					serverWebs.get(webIndex).clearHistory();
-				}
-				webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
+				closePage(position);
 			}
         });
         
         return convertView;
     }
+}
+
+void closePage(int position) {
+	serverWebs.get(webIndex).stopLoading();//remove current page, so stop loading at first
+	if (webAdapter.getCount() > 1) {
+		MyWebview tmp = (MyWebview) webpages.getChildAt(position);
+		webAdapter.remove(tmp);
+		webAdapter.notifyDataSetInvalidated();
+		webpages.removeViewAt(position);
+		tmp.destroy();
+		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
+		if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
+	}
+	else {//return to home page if only one page when click close button
+		webControl.setVisibility(View.INVISIBLE);
+		loadPage(true);
+		serverWebs.get(webIndex).clearHistory();
+	}
+	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
 }
 
 @Override
@@ -1877,6 +1881,8 @@ protected void onResume() {
     if (clearCache) {
     	sEdit.putBoolean("clear_cache", false);
     	sEdit.commit();
+    	
+    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
         mContext.deleteDatabase("webviewCache.db");
         serverWebs.get(webIndex).clearHistory();
         serverWebs.get(webIndex).clearCache(true);
@@ -1890,18 +1896,22 @@ protected void onResume() {
     if (clearAll) {
     	sEdit.putBoolean("clear_all", false);
     	sEdit.commit();
+    	
+    	while (webAdapter.getCount() > 1) closePage(0);//close all pages
+    	serverWebs.get(0).stopLoading();
+    	
     	mContext.deleteDatabase("webview.db");
         serverWebs.get(webIndex).clearFormData();
         mHistory.clear();
         historyChanged = true;
         mBookMark.clear();
         bookmarkChanged = true;
-        if (BLANK_PAGE.equals(url)) loadPage(true);
     	
         mContext.deleteDatabase("webviewCache.db");
         serverWebs.get(webIndex).clearHistory();
         serverWebs.get(webIndex).clearCache(true);
         clearCacheFolder(getDir("databases", MODE_PRIVATE));
+    	closePage(0);
     	Toast.makeText(mContext, R.string.all_cleared, Toast.LENGTH_LONG).show();
     }
     

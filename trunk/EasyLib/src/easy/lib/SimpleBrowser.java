@@ -1904,15 +1904,16 @@ protected void onResume() {
     	closePage(0, true);
     	
         mHistory.clear();
-        historyChanged = true;
+    	writeBookmark("history", mHistory);
         mBookMark.clear();
-        bookmarkChanged = true;
+    	writeBookmark("bookmark", mBookMark);
     	
     	mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
         clearCacheFolder(getDir("databases", MODE_PRIVATE));
         
         finish();
+        System.exit(0);
     }
     
 

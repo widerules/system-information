@@ -226,6 +226,7 @@ public class SimpleBrowser extends Activity {
 	boolean html5 = true;
 	boolean blockImage;
 	boolean collapse1, collapse2, collapse3;
+	boolean clearAll = false;
 	TextSize textSize = TextSize.SMALLER;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
@@ -1554,6 +1555,8 @@ protected void onDestroy() {
 	if (!paid && mAdAvailable) adview.destroy();
 	
 	super.onDestroy();
+	
+    if (clearAll) System.exit(0);
 }
 
 BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
@@ -1819,6 +1822,35 @@ static int clearCacheFolder(final File dir) {
 
 @Override 
 protected void onResume() {
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+	Editor sEdit = sp.edit();
+    
+    clearAll = sp.getBoolean("clear_all", false);
+    if (clearAll) {
+    	sEdit.putBoolean("clear_all", false);
+    	sEdit.commit();
+    	
+    	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
+    	closePage(0, true);
+    	
+        mHistory.clear();
+    	writeBookmark("history", mHistory);
+    	historyChanged = false;
+    	
+        mBookMark.clear();
+    	writeBookmark("bookmark", mBookMark);
+    	bookmarkChanged = false;
+    	
+    	mContext.deleteDatabase("webview.db");
+        mContext.deleteDatabase("webviewCache.db");
+        clearCacheFolder(getDir("databases", MODE_PRIVATE));
+        
+        super.onResume();
+        
+        finish();
+        return;
+    }
+    
 	byWifi = false;
 	ConnectivityManager connectivityManager =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
     if(connectivityManager != null ){
@@ -1827,9 +1859,6 @@ protected void onResume() {
         	if (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) byWifi = true;
     }
 	
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-	Editor sEdit = sp.edit();
-    
 	
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
     
@@ -1895,28 +1924,6 @@ protected void onResume() {
     }
     
 	
-    boolean clearAll = sp.getBoolean("clear_all", false);
-    if (clearAll) {
-    	sEdit.putBoolean("clear_all", false);
-    	sEdit.commit();
-    	
-    	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
-    	closePage(0, true);
-    	
-        mHistory.clear();
-    	writeBookmark("history", mHistory);
-        mBookMark.clear();
-    	writeBookmark("bookmark", mBookMark);
-    	
-    	mContext.deleteDatabase("webview.db");
-        mContext.deleteDatabase("webviewCache.db");
-        clearCacheFolder(getDir("databases", MODE_PRIVATE));
-        
-        finish();
-        System.exit(0);
-    }
-    
-
     readTextSize(sp); //no need to reload page if fontSize changed
     localSettings.setTextSize(textSize);
 
@@ -1993,7 +2000,7 @@ protected void onPause() {
 	sEdit.putBoolean("collapse3", collapse3);
 	sEdit.commit();
 	
-	super.onPause();
+	super.onPause();	
 }
 
 @Override

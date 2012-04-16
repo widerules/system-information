@@ -1828,11 +1828,12 @@ protected void onResume() {
     clearAll = sp.getBoolean("clear_all", false);
     if (clearAll) {
     	sEdit.putBoolean("clear_all", false);
-    	sEdit.commit();
     	
+    	//close web pages
     	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
     	closePage(0, true);
     	
+    	//clear bookmark and history
         mHistory.clear();
     	writeBookmark("history", mHistory);
     	historyChanged = false;
@@ -1841,11 +1842,20 @@ protected void onResume() {
     	writeBookmark("bookmark", mBookMark);
     	bookmarkChanged = false;
     	
+    	//clear files
     	mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
         clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
         clearFolder(getFilesDir());//clear the files folder except history and bookmark file
         
+        //reset default settings
+    	sEdit.putBoolean("show_zoom", false);
+    	sEdit.putInt("ua", 0);
+        sEdit.putBoolean("block_image", false);
+        sEdit.putInt("textsize", 2);
+        sEdit.putInt("full_screen", 1);
+        sEdit.commit();
+    	
         super.onResume();
         
         finish();

@@ -1804,15 +1804,15 @@ void readTextSize(SharedPreferences sp) {
     }
 }
 
-static int clearCacheFolder(final File dir) {
+static int clearFolder(final File dir) {
     int deletedFiles = 0;
     if (dir!= null && dir.isDirectory()) {
         try {
             for (File child:dir.listFiles()) {
                 //first delete subdirectories recursively
-                if (child.isDirectory()) deletedFiles += clearCacheFolder(child);
+                if (child.isDirectory()) deletedFiles += clearFolder(child);
                 //then delete the files and subdirectories in this dir
-                if (child.delete()) deletedFiles++;
+                if (!"bookmark".equals(child.getName()) && !"history".equals(child.getName()) && child.delete()) deletedFiles++;
             }
         }
         catch(Exception e) {}
@@ -1843,7 +1843,8 @@ protected void onResume() {
     	
     	mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
-        clearCacheFolder(getDir("databases", MODE_PRIVATE));
+        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
+        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
         
         super.onResume();
         
@@ -1920,7 +1921,7 @@ protected void onResume() {
         serverWebs.get(webIndex).clearCache(true);
     	Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
         mContext.deleteDatabase("webviewCache.db");
-        clearCacheFolder(getDir("databases", MODE_PRIVATE));
+        clearFolder(getDir("databases", MODE_PRIVATE));
     }
     
 	

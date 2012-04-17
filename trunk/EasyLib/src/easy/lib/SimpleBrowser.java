@@ -1917,7 +1917,6 @@ protected void onResume() {
     	localSettings.setUserAgentString("Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0");
     	break;
     }
-    localSettings.setBuiltInZoomControls(showZoom);
     if (ua > 0) {//make it work only on current page, for not need change UA everytime.
     	sEdit.putInt("ua", 0);
     	sEdit.commit();
@@ -2102,12 +2101,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	}
 	else {
 		ret += "<h5><li><a href=\"http://www.amazon.com/\">Amazon</a></li></h5>";
-		ret += "<h5><li><a href=\"http://www.apple.com/\">Apple</a></li></h5>";
-		//ret += "<h5><li><a href=\"http://www.facebook.com/\">Facebook</a></li></h5>";//need try with proxy at first
 		ret += "<h5><li><a href=\"http://www.bing.com/\">Bing</a></li></h5>";
+		ret += "<h5><li><a href=\"http://www.facebook.com/\">Facebook</a></li></h5>";//tested by Aresh.
 		ret += "<h5><li><a href=\"http://www.google.com/\">Google</a></li></h5>";
-		//ret += "<h5><li><a href=\"http://twitter.com/\">Twitter</a></li></h5>";
-		ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
+		ret += "<h5><li><a href=\"http://twitter.com/\">Twitter</a></li></h5>";
+		//ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
 	}
 	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
 		ret += "<h5><li><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></li></h5>";

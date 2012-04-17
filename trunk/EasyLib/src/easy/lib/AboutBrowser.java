@@ -158,7 +158,7 @@ public class AboutBrowser extends Activity{
         		editor.putBoolean("css", cbCss.isChecked());
         		editor.commit();
     		}
-    	});
+    	});*/
     	
     	
     	cbHtml5 = (CheckBox) findViewById(R.id.html5);
@@ -176,7 +176,7 @@ public class AboutBrowser extends Activity{
         		editor.putBoolean("html5", cbHtml5.isChecked());
         		editor.commit();
     		}
-    	});*/
+    	});
     	
     	
     	fontSize = (RadioGroup) findViewById(R.id.font_size);
@@ -232,7 +232,7 @@ public class AboutBrowser extends Activity{
 	protected void onResume() {
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		//cbCss.setChecked(perferences.getBoolean("css", false));
-		//cbHtml5.setChecked(perferences.getBoolean("html5", false));
+		cbHtml5.setChecked(perferences.getBoolean("html5", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		
     	if (dm.density < 1) 

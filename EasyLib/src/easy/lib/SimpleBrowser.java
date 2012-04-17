@@ -383,11 +383,12 @@ class MyWebview extends WebView {
         //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
+        webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
+        
         if (html5) {
             webSettings.setAppCacheEnabled(true);//API7
             webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
             webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
-            webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
             webSettings.setDatabaseEnabled(true);//API5
             webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
             webSettings.setGeolocationEnabled(true);//API5
@@ -1055,7 +1056,7 @@ public void onCreate(Bundle savedInstanceState) {
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
     //css = sp.getBoolean("css", false);
-    //html5 = sp.getBoolean("html5", false);
+    html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
@@ -1941,17 +1942,9 @@ protected void onResume() {
     blockImage = sp.getBoolean("block_image", false);
     localSettings.setBlockNetworkImage(blockImage);
 
-    /* css default to true now. 
-	String url = serverWebs.get(webIndex).getUrl() + "";
-    boolean oldCss = css;
-    css = sp.getBoolean("css", false);
-	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
-    
-    //set html5 to true as default instead of read from preference, for it seems not slow if enable it?
     html5 = sp.getBoolean("html5", false);
     wrapWebSettings webSettings = new wrapWebSettings(localSettings);
     webSettings.setAppCacheEnabled(html5);//API7
-    webSettings.setDomStorageEnabled(html5);//API7, key to enable gmail
     webSettings.setDatabaseEnabled(html5);//API5
     webSettings.setGeolocationEnabled(html5);//API5
     if (html5) {
@@ -1961,6 +1954,12 @@ protected void onResume() {
         webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
     }
 	
+    /* css default to true now. 
+	String url = serverWebs.get(webIndex).getUrl() + "";
+    boolean oldCss = css;
+    css = sp.getBoolean("css", false);
+	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
+    
     disable setting of historyCount and encoding
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     int iEncoding = sp.getInt("encoding", -1);

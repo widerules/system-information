@@ -86,8 +86,9 @@
       
     <CheckBox android:id="@+id/html5"
       	android:layout_width="wrap_content"
-      	android:layout_height="0dip"
+      	android:layout_height="wrap_content"
       	android:text="@string/html5"
+      	android:textColor="#f0030f03"
       	android:layout_marginLeft="15dip"
       	android:checked="false"
     />

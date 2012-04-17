@@ -1,3 +1,5 @@
+android.annotation.SuppressLint
+android.annotation.TargetApi
 com.google.ads.Ad:
     public abstract boolean isReady()
     public abstract void loadAd(com.google.ads.AdRequest)
@@ -58,12 +60,23 @@ com.google.ads.searchads.SearchAdRequest:
     184:185:public void setBorderColor(int)
     192:193:public void setBorderType(com.google.ads.searchads.SearchAdRequest$BorderType)
     202:203:public void setBorderThickness(int)
+com.google.ads.util.AdUtil:
+    152:154:private AdUtil()
+com.google.ads.util.a:
+    19:21:private a()
+com.google.ads.util.c:
+    26:28:private c()
+easy.browser.BuildConfig
 easy.browser.R
 easy.browser.R$attr
 easy.browser.R$drawable
 easy.browser.R$id
 easy.browser.R$layout
 easy.browser.R$string
+easy.lib.AboutBrowser:
+    android.widget.CheckBox cbCss
+easy.lib.R:
+    10:10:public R()
 easy.lib.R$attr
 easy.lib.R$drawable:
     public static final int border
@@ -78,42 +91,38 @@ easy.lib.R$drawable:
     public static final int round_corner
     public static final int round_corner_light
     public static final int round_corner_white
+    13:13:public R$drawable()
 easy.lib.R$id:
     public static final int adsParent
     public static final int control_buttons
+    public static final int homepage_css
     public static final int line1
     public static final int line2
     public static final int pause_download
-    public static final int radio_auto
-    public static final int radio_big5
-    public static final int radio_fullscreen
-    public static final int radio_fullwebpage
-    public static final int radio_gb2312
-    public static final int radio_gbk
-    public static final int radio_history_16
-    public static final int radio_history_8
-    public static final int radio_larger
-    public static final int radio_largest
-    public static final int radio_latin1
-    public static final int radio_normal
-    public static final int radio_smaller
-    public static final int radio_smallest
-    public static final int radio_utf8
     public static final int urlline
     public static final int web_list
     public static final int webtools
+    39:39:public R$id()
+easy.lib.R$layout:
+    98:98:public R$layout()
 easy.lib.R$string:
     public static final int about
     public static final int ad_hint
     public static final int addtoFavo
     public static final int addtoShort
+    public static final int all_cleared
+    public static final int android
     public static final int app_name
     public static final int app_share_text
     public static final int appdetail
     public static final int auto_change_wallpaper
     public static final int back
     public static final int backapp
+    public static final int bb
     public static final int block_image
+    public static final int change_ua
+    public static final int chrome
+    public static final int clear_all
     public static final int clear_cache
     public static final int delete
     public static final int encoding
@@ -124,6 +133,7 @@ easy.lib.R$string:
     public static final int encoding_latin1
     public static final int encoding_utf8
     public static final int favoriteapps
+    public static final int ff
     public static final int font_larger
     public static final int font_largest
     public static final int font_normal
@@ -143,6 +153,9 @@ easy.lib.R$string:
     public static final int homepage
     public static final int homepage_css
     public static final int html5
+    public static final int ie
+    public static final int ipad
+    public static final int iphone
     public static final int justreturn
     public static final int killapp
     public static final int list_view
@@ -152,12 +165,15 @@ easy.lib.R$string:
     public static final int more
     public static final int newpage
     public static final int next
+    public static final int nokia
     public static final int online
     public static final int packages
+    public static final int pc
     public static final int recommend
     public static final int removeFromFavo
     public static final int removeFromShort
     public static final int restart
+    public static final int safari
     public static final int select
     public static final int share_desktop
     public static final int share_text1
@@ -169,6 +185,7 @@ easy.lib.R$string:
     public static final int stop
     public static final int switcher_name
     public static final int systemapps
+    public static final int text_can_longclick
     public static final int to
     public static final int userapps
     public static final int view_bookmark
@@ -178,9 +195,12 @@ easy.lib.R$string:
     public static final int wallpaper_beauty
     public static final int wallpaper_scene
     public static final int warning
+    public static final int wp
+    109:109:public R$string()
 easy.lib.SimpleBrowser:
     boolean css
 easy.lib.util:
+    25:25:public util()
     55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2
 easy.lib.wrapWebSettings:

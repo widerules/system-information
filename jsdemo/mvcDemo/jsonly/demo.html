@@ -1,0 +1,38 @@
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta name="viewport" content="width=device-width">
+
+<html>
+
+<head>
+	<title>My Page</title>
+	<link rel="stylesheet" href="test.css">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+	<script type="text/javascript" src="model.js"></script>
+	<script type="text/javascript" src="view.js"></script>
+	<script type="text/javascript" src="controller.js"></script>
+	<script type="text/javascript" src="event.js"></script>
+
+	<script type="text/javascript">
+		$(function () {
+			var model = new ListModel(['PHP', 'JavaScript']);
+			var view = new ListView(model, new ListController(model),{
+				'list' : $('#list'), 
+				'addButton' : $('#plusBtn'), 
+				'delButton' : $('#minusBtn')
+			});
+			view.show();
+		});
+	</script>
+
+</head>
+
+<body>
+
+<select id="list" size="10" style="width: 15em"></select><br/>
+<button id="plusBtn">  +  </button>
+<button id="minusBtn">  -  </button>
+
+</body>
+
+</html>

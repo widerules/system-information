@@ -688,14 +688,15 @@ void closePage(int position, boolean clearData) {
 		webpages.removeViewAt(position);
 		tmp.destroy();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
-		if (webIndex == webAdapter.getCount()) changePage(webAdapter.getCount()-1);
+		if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
 	}
 	else {//return to home page if only one page when click close button
 		webControl.setVisibility(View.INVISIBLE);
 		loadPage(true);
-		serverWebs.get(0).clearHistory();
-		changePage(0);
+		webIndex = 0;
+		serverWebs.get(webIndex).clearHistory();
 	}
+	changePage(webIndex);
 }
 
 @Override
@@ -1604,12 +1605,10 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 
 void changePage(int position) {
 	while (webpages.getDisplayedChild() != position) webpages.showNext();
-	if (webIndex != position) {
-		if (webIndex < serverWebs.size()) serverWebs.get(webIndex).isForeground = false;
-		serverWebs.get(position).isForeground = true;
-		webIndex = position;
-		webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
-	}
+	for (int i = 0; i < serverWebs.size(); i++) serverWebs.get(i).isForeground = false;
+	serverWebs.get(position).isForeground = true;
+	webIndex = position;
+	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
 	
 	if (serverWebs.get(position).mProgress > 0) {
 		imgRefresh.setImageResource(R.drawable.stop);

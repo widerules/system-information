@@ -332,6 +332,9 @@ class MyWebview extends WebView {
 
 	wrapWebSettings webSettings;
 	
+	int mProgress = 0;
+	boolean isForeground = true;
+	
 	class MyJavaScriptInterface
 	{
 	    @SuppressWarnings("unused")
@@ -427,8 +430,13 @@ class MyWebview extends WebView {
         setWebChromeClient(new WebChromeClient() {
         	@Override
         	public void onProgressChanged(WebView view, int progress) {
-        		loadProgress.setProgress(progress);
-        		if (progress == 100) loadProgress.setVisibility(View.INVISIBLE);
+        		if (progress == 100) mProgress = 0;
+        		else mProgress = progress;
+        		
+        		if (isForeground) {
+            		loadProgress.setProgress(progress);
+            		if (progress == 100) loadProgress.setVisibility(View.INVISIBLE);
+        		}
         	}
 
         	// For Android 3.0+
@@ -491,21 +499,25 @@ class MyWebview extends WebView {
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 
-				imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
-        		loadProgress.setVisibility(View.VISIBLE);
-        		webAddress.setText(url);
-        		imgRefresh.setImageResource(R.drawable.stop);
-        		
+				if (isForeground) {
+					imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
+	        		loadProgress.setVisibility(View.VISIBLE);
+	        		webAddress.setText(url);
+	        		imgRefresh.setImageResource(R.drawable.stop);
+				}
+				
 				if (!paid && mAdAvailable && byWifi) adview.loadAd();//should only do this by wifi
 			}
 			 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-        		loadProgress.setVisibility(View.INVISIBLE);//hide progressbar anyway
-        		imgRefresh.setImageResource(R.drawable.refresh);
+				if (isForeground) {
+	        		loadProgress.setVisibility(View.INVISIBLE);//hide progressbar anyway
+	        		imgRefresh.setImageResource(R.drawable.refresh);
+	                webControl.setVisibility(View.INVISIBLE);
+				}
+				mProgress = 0;
 				webAdapter.notifyDataSetChanged();//update the page title in webList
-                webControl.setVisibility(View.INVISIBLE);
-
 				
 				/*WebSettings ws = view.getSettings();
 				if (ws.getCacheMode() != WebSettings.LOAD_DEFAULT) {
@@ -668,6 +680,7 @@ void closePage(int position, boolean clearData) {
         serverWebs.get(webIndex).clearSslPreferences();
         serverWebs.get(webIndex).clearFormData();
 	}
+	
 	if (webAdapter.getCount() > 1) {
 		MyWebview tmp = (MyWebview) webpages.getChildAt(position);
 		webAdapter.remove(tmp);
@@ -675,14 +688,14 @@ void closePage(int position, boolean clearData) {
 		webpages.removeViewAt(position);
 		tmp.destroy();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
-		if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
+		if (webIndex == webAdapter.getCount()) changePage(webAdapter.getCount()-1);
 	}
 	else {//return to home page if only one page when click close button
 		webControl.setVisibility(View.INVISIBLE);
 		loadPage(true);
-		serverWebs.get(webIndex).clearHistory();
+		serverWebs.get(0).clearHistory();
+		changePage(0);
 	}
-	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
 }
 
 @Override
@@ -1592,8 +1605,20 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
 void changePage(int position) {
 	while (webpages.getDisplayedChild() != position) webpages.showNext();
 	if (webIndex != position) {
+		if (webIndex < serverWebs.size()) serverWebs.get(webIndex).isForeground = false;
+		serverWebs.get(position).isForeground = true;
 		webIndex = position;
 		webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
+	}
+	
+	if (serverWebs.get(position).mProgress > 0) {
+		imgRefresh.setImageResource(R.drawable.stop);
+		loadProgress.setVisibility(View.VISIBLE);
+		loadProgress.setProgress(serverWebs.get(position).mProgress);
+	}
+	else {
+		imgRefresh.setImageResource(R.drawable.refresh);
+		loadProgress.setVisibility(View.INVISIBLE);
 	}
 }
 
@@ -1717,10 +1742,9 @@ private boolean openNewPage(String url) {
 	else {
 		webAdapter.add(new MyWebview(mContext));
 		webAdapter.notifyDataSetInvalidated();
-		webIndex = webAdapter.getCount() - 1;
-        webpages.addView(webAdapter.getItem(webIndex));
-        while (webpages.getDisplayedChild() != webIndex) webpages.showNext();
+        webpages.addView(webAdapter.getItem(webAdapter.getCount() - 1));
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));
+		changePage(webAdapter.getCount() - 1);
 	}
 	
 	if (url != null) {

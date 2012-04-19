@@ -124,7 +124,7 @@
     <string name="encoding">"エンコーディング"</string>
     <string name="encoding_auto">"自動"</string>
     <string name="search">"Webページで検索"</string>
-    <string name="html5">"ゆっくりとHTML5の一部ではなく、Gmailの必要があります。カップケーキ/ドーナツでは動作しません"</string>
+    <string name="html5">"いくつかのウェブサイトはHTML5を必要としています。カップケーキ/ドーナツに少しゆっくりとしない仕事"</string>
     
     <string name="clear_cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
     <string name="cache_cleared">キャッシュがクリアされている</string>

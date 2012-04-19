@@ -223,7 +223,7 @@
 			    <ProgressBar android:id="@+id/loadprogress"
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
-			        android:layout_marginRight="5dip"
+			        android:layout_marginRight="2dip"
 			        style="?android:attr/progressBarStyleHorizontal"
 			        android:max="100"
 			        android:progress="0"

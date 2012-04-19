@@ -1916,11 +1916,14 @@ protected void onResume() {
         clearFolder(getFilesDir());//clear the files folder except history and bookmark file
         
         //reset default settings
-    	sEdit.putBoolean("show_zoom", false);
     	sEdit.putInt("ua", 0);
         sEdit.putBoolean("block_image", false);
         sEdit.putInt("textsize", 2);
         sEdit.putInt("full_screen", 1);
+        sEdit.putInt("ua", 0);
+    	sEdit.putBoolean("show_zoom", false);
+        sEdit.putBoolean("html5", false);
+        sEdit.putInt("encoding", 1);
         sEdit.commit();
     	
         super.onResume();
@@ -1944,6 +1947,10 @@ protected void onResume() {
     
     boolean showZoom = sp.getBoolean("show_zoom", false);
     localSettings.setBuiltInZoomControls(showZoom);
+    if (showZoom) {
+    	sEdit.putBoolean("show_zoom", false);
+    	sEdit.commit();
+    }
     
     ua = sp.getInt("ua", 0);
     if (ua <= 1) localSettings.setUserAgent(ua);
@@ -1979,14 +1986,20 @@ protected void onResume() {
         webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
         webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
         webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+        
+        sEdit.putBoolean("html5", false);//close html5 by default
+        sEdit.commit();
     }
 	
-    int iEncoding = sp.getInt("encoding", -1);
+    int iEncoding = sp.getInt("encoding", 1);
     String tmpEncoding = getEncoding(iEncoding);
     if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
         localSettings.setDefaultTextEncodingName(tmpEncoding);
         if (BLANK_PAGE.equals(webAddress.getText().toString())) loadPage(true);
         else serverWebs.get(webIndex).reload();
+        
+        sEdit.putInt("encoding", 1);//set default encoding to autoselect
+        sEdit.commit();
     }
     
     /* css default to true now. 

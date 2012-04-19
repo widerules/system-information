@@ -121,7 +121,7 @@
     <string name="font_normal">"通常"</string>
     <string name="font_larger">"大"</string>
     <string name="font_largest">"最大"</string>
-    <string name="encoding">"エンコーディング(現在ページ)"</string>
+    <string name="encoding">"エンコーディング\n(現在ページ)"</string>
     <string name="encoding_auto">"自動"</string>
     <string name="search">"Webページで検索"</string>
     <string name="html5">"(現在ページ)部分的にいくつかのサイトのためにHTML5をサポートしています。カップケーキ/ドーナツに少しゆっくりとしない仕事"</string>

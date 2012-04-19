@@ -388,7 +388,7 @@ class MyWebview extends WebView {
 
         webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
         
-        if (html5) {
+        /*if (html5) {
             webSettings.setAppCacheEnabled(true);//API7
             webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
             webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
@@ -396,7 +396,7 @@ class MyWebview extends WebView {
             webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
             webSettings.setGeolocationEnabled(true);//API5
             webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
-        }
+        }*/
         
         registerForContextMenu(this);
 
@@ -1970,6 +1970,8 @@ protected void onResume() {
     webSettings.setDatabaseEnabled(html5);//API5
     webSettings.setGeolocationEnabled(html5);//API5
     if (html5) {
+    	sEdit.putBoolean("html5", false);
+    	sEdit.commit();
         webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
         webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
         webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
@@ -2068,7 +2070,7 @@ void setLayout() {
     	
     	if (adview.getInstance() != null) adContainer.addView(adview.getInstance());
     	
-    	adview.loadAd();
+    	if (byWifi) adview.loadAd();
     }
 }
 

@@ -122,7 +122,7 @@
     <string name="font_normal">中</string>
     <string name="font_larger">大</string>
     <string name="font_largest">最大</string>
-    <string name="encoding">文字编码(当前页)</string>
+    <string name="encoding">文字编码\n(当前页)</string>
     <string name="encoding_auto">自动</string>
     <string name="search">页内查找</string>
     <string name="html5">(当前页)某些网站需要HTML5，但有点慢</string>

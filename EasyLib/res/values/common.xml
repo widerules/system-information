@@ -11,7 +11,7 @@
     <string name="browser_author">easy.browsers@gmail.com</string>
 
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
-    <string name="about_message">" "is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot of the page to your friends.\n\nLong click on history/bookmark to delete it.</string>
+    <string name="about_message">" "is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot of the page to your friends.\n\nLong click history/bookmark to delete it.</string>
     
     <string name="share_wallpaper">Share Wallpaper</string>
     <string name="share_desktop">Share Desktop</string>

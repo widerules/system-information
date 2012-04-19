@@ -230,6 +230,7 @@ public class SimpleBrowser extends Activity {
 	TextSize textSize = TextSize.SMALLER;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
+	int ua;
 
 	//search
 	EditText etSearch;
@@ -380,6 +381,9 @@ class MyWebview extends WebView {
     	//setInitialScale(1);
     	localSettings.setSupportMultipleWindows(true);
     	localSettings.setBlockNetworkImage(blockImage);
+    	
+        if (ua <= 1) localSettings.setUserAgent(ua);
+        else localSettings.setUserAgentString(selectUA(ua));
 		
         
         webSettings = new wrapWebSettings(localSettings);
@@ -388,15 +392,6 @@ class MyWebview extends WebView {
 
         webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
         
-        /*if (html5) {
-            webSettings.setAppCacheEnabled(true);//API7
-            webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
-            webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
-            webSettings.setDatabaseEnabled(true);//API5
-            webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
-            webSettings.setGeolocationEnabled(true);//API5
-            webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
-        }*/
         
         registerForContextMenu(this);
 
@@ -1075,6 +1070,7 @@ public void onCreate(Bundle savedInstanceState) {
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
+    ua = sp.getInt("ua", 0);
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1844,6 +1840,30 @@ static int clearFolder(final File dir) {
     return deletedFiles;
 }
 
+String selectUA(int ua) {
+    switch (ua) {
+    case 2://iphone
+    	return "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
+    case 3://ipad
+    	return "Mozilla/5.0 (iPad; U; CPU  OS 4_1 like Mac OS X; en-us)AppleWebKit/532.9(KHTML, like Gecko) Version/4.0.5 Mobile/8B117 Safari/6531.22.7";
+    case 4://black berry
+    	return "Mozilla/5.0 (BlackBerry; U; BlackBerry 9800; en-US) AppleWebKit/534.1+ (KHTML, like Gecko)";
+    case 5://chrome
+    	return "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.151 Safari/535.19";
+    case 6://firefox
+    	return "Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20120403211507 Firefox/12.0";
+    case 7://ie
+    	return "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Trident/4.0)";
+    case 8://nokia
+    	return "User-Agent: Mozilla/5.0 (SymbianOS/9.1; U; [en]; Series60/3.0 NokiaE60/4.06.0) AppleWebKit/413 (KHTML, like Gecko) Safari/413";
+    case 9://safari
+    	return "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en-us) AppleWebKit/48 (like Gecko) Safari/48";
+    case 10://wp
+    	return "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0";
+    }
+    return "";
+}
+
 @Override 
 protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1901,49 +1921,11 @@ protected void onResume() {
     
     boolean showZoom = sp.getBoolean("show_zoom", false);
     localSettings.setBuiltInZoomControls(showZoom);
-    if (showZoom) {//make it work only on current page, for zoomControl is noisy in most of cases.
-    	sEdit.putBoolean("show_zoom", false);
-    	sEdit.commit();
-    }
     
-    int ua = sp.getInt("ua", 0);
-    switch (ua) {
-    case 0:
-    case 1:
-    	localSettings.setUserAgent(ua);
-    	break;
-    case 2://iphone
-    	localSettings.setUserAgentString("Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3");
-    	break;
-    case 3://ipad
-    	localSettings.setUserAgentString("Mozilla/5.0 (iPad; U; CPU  OS 4_1 like Mac OS X; en-us)AppleWebKit/532.9(KHTML, like Gecko) Version/4.0.5 Mobile/8B117 Safari/6531.22.7");
-    	break;
-    case 4://black berry
-    	localSettings.setUserAgentString("Mozilla/5.0 (BlackBerry; U; BlackBerry 9800; en-US) AppleWebKit/534.1+ (KHTML, like Gecko)");
-    	break;
-    case 5://chrome
-    	localSettings.setUserAgentString("Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.151 Safari/535.19");
-    	break;
-    case 6://firefox
-    	localSettings.setUserAgentString("Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20120403211507 Firefox/12.0");
-    	break;
-    case 7://ie
-    	localSettings.setUserAgentString("Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Trident/4.0)");
-    	break;
-    case 8://nokia
-    	localSettings.setUserAgentString("User-Agent: Mozilla/5.0 (SymbianOS/9.1; U; [en]; Series60/3.0 NokiaE60/4.06.0) AppleWebKit/413 (KHTML, like Gecko) Safari/413");
-    	break;
-    case 9://safari
-    	localSettings.setUserAgentString("Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en-us) AppleWebKit/48 (like Gecko) Safari/48");
-    	break;
-    case 10://wp
-    	localSettings.setUserAgentString("Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0");
-    	break;
-    }
-    if (ua > 0) {//make it work only on current page, for not need change UA everytime.
-    	sEdit.putInt("ua", 0);
-    	sEdit.commit();
-    }
+    ua = sp.getInt("ua", 0);
+    if (ua <= 1) localSettings.setUserAgent(ua);
+    else localSettings.setUserAgentString(selectUA(ua));
+
     
     boolean clearCache = sp.getBoolean("clear_cache", false);
     if (clearCache) {
@@ -1970,8 +1952,6 @@ protected void onResume() {
     webSettings.setDatabaseEnabled(html5);//API5
     webSettings.setGeolocationEnabled(html5);//API5
     if (html5) {
-    	sEdit.putBoolean("html5", false);
-    	sEdit.commit();
         webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
         webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
         webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
@@ -2014,9 +1994,6 @@ protected void onResume() {
     		}
     		serverWebs.get(webIndex).loadDataWithBaseURL(url, null, null, encoding, base);
     	}
-		
-    	sEdit.putInt("encoding", 1);//set it to auto again after reload
-    	sEdit.commit();
     }*/
     
     super.onResume();

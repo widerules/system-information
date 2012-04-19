@@ -114,7 +114,7 @@
     <string name="snap_size">SnapSize</string>
     <string name="full_screen">FullScreen</string>
     <string name="full_webpage">FullWeb</string>
-    <string name="show_zoom">Zoom Control</string>
+    <string name="show_zoom">Zoom Control in current page</string>
     <string name="block_image">Block images to reduce bandwidth</string>
     <string name="homepage_css">Cool Homepage, but a little slow</string>
     <string name="max_history">History</string>
@@ -134,7 +134,7 @@
     <string name="encoding_gbk">GBK</string>
     <string name="encoding_latin1">ISO-8859-1</string>
     <string name="search">Search</string>
-    <string name="html5">Some website need HTML5. A little slow and not work on Cupcake/Donut</string>
+    <string name="html5">Partially support HTML5 in current page for some website needed. A little slow and not work on Cupcake/Donut</string>
     
     <string name="clear_cache">Clear cache if you feel slow</string>
     <string name="cache_cleared">Cache cleared</string>

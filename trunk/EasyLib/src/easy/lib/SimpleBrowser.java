@@ -1817,19 +1817,19 @@ void readTextSize(SharedPreferences sp) {
     int iTextSize = sp.getInt("textsize", -1);
     if (iTextSize < 0) textSize = TextSize.NORMAL;
     else switch(iTextSize) {
-    case 1:
+    case 0:
 		textSize = TextSize.LARGER;
     	break;
-    case 2:
+    case 1:
 		textSize = TextSize.NORMAL;
     	break;
-    case 3:
+    case 2:
 		textSize = TextSize.SMALLER;
     	break;
-    case 4:
+    case 3:
     	textSize = TextSize.SMALLEST;
     	break;
-    case 5:
+    case 4:
 		textSize = TextSize.LARGEST;
     	break;
     }
@@ -1878,31 +1878,31 @@ String selectUA(int ua) {
 String getEncoding(int iEncoding) {
     String tmpEncoding = "AUTOSELECT";
     switch (iEncoding) {
-    case 2:
+    case 1:
     	tmpEncoding = "utf-8";
     	break;
-    case 3:
+    case 2:
     	tmpEncoding = "gbk";
     	break;
-    case 4:
+    case 3:
     	tmpEncoding = "gb2312";
     	break;
-    case 5:
+    case 4:
     	tmpEncoding = "big5";
     	break;
-    case 6:
+    case 5:
     	tmpEncoding = "iso-8859-1";
     	break;
-    case 7:
+    case 6:
     	tmpEncoding = "ISO-2022-JP";
     	break;
-    case 8:
+    case 7:
     	tmpEncoding = "SHIFT_JIS";
     	break;
-    case 9:
+    case 8:
     	tmpEncoding = "EUC-JP";
     	break;
-    case 10:
+    case 9:
     	tmpEncoding = "EUC-KR";
     	break;
     }
@@ -1940,12 +1940,11 @@ protected void onResume() {
         //reset default settings
     	sEdit.putInt("ua", 0);
         sEdit.putBoolean("block_image", false);
-        sEdit.putInt("textsize", 2);
+        sEdit.putInt("textsize", 1);
         sEdit.putInt("full_screen", 1);
-        sEdit.putInt("ua", 0);
     	sEdit.putBoolean("show_zoom", false);
         sEdit.putBoolean("html5", false);
-        sEdit.putInt("encoding", 1);
+        sEdit.putInt("encoding", 0);
         sEdit.commit();
     	
         super.onResume();
@@ -2013,14 +2012,14 @@ protected void onResume() {
         sEdit.commit();
     }
 	
-    int iEncoding = sp.getInt("encoding", 1);
+    int iEncoding = sp.getInt("encoding", 0);
     String tmpEncoding = getEncoding(iEncoding);
     if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
         localSettings.setDefaultTextEncodingName(tmpEncoding);
         if (BLANK_PAGE.equals(webAddress.getText().toString())) loadPage(true);
         else serverWebs.get(webIndex).reload();
         
-        sEdit.putInt("encoding", 1);//set default encoding to autoselect
+        sEdit.putInt("encoding", 0);//set default encoding to autoselect
         sEdit.commit();
     }
     
@@ -2030,18 +2029,9 @@ protected void onResume() {
     css = sp.getBoolean("css", false);
 	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
     
-    disable setting of historyCount and encoding
+    disable setting of historyCount
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
-    if (iEncoding > 1) {//reload page if encoding changed. but make it work only once on current page, if not homepage.
-    	if (!url.equals(BLANK_PAGE)) {
-        	String base = null;
-    		if (serverWebs.get(webIndex).canGoBack()) {
-    			WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-    			base = wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl();
-    		}
-    		serverWebs.get(webIndex).loadDataWithBaseURL(url, null, null, encoding, base);
-    	}
-    }*/
+    */
     
     super.onResume();
 }

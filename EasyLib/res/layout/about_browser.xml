@@ -126,10 +126,10 @@
     
     <HorizontalScrollView
     	android:layout_width="match_parent"
-	    android:layout_height="0dip"
+	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_margin="0dip"
-		android:background="@drawable/round_corner_light"
+		android:layout_marginLeft="5dip"
+		android:layout_marginTop="5dip"
         >
     <RadioGroup android:id="@+id/encoding"  
     	android:layout_width="wrap_content"
@@ -142,30 +142,36 @@
 	    android:text="@string/encoding"
 		android:layout_marginLeft="5dip"
       	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
+      	android:textColor="#f0030f03"
         />
     <RadioButton  
         android:text="@string/encoding_auto"
+      	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/encoding_utf8"
+      	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/encoding_gbk"
+      	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/encoding_gb2312"
+      	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/encoding_big5"
+      	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/encoding_latin1"
+      	android:textColor="#f0030f03"
 		android:layout_marginLeft="5dip"
         />  
     
@@ -176,7 +182,7 @@
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_margin="5dip"
+		android:layout_marginLeft="5dip"
         >
     <RadioGroup android:id="@+id/snap_size"  
     	android:layout_width="wrap_content"
@@ -208,7 +214,8 @@
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_margin="5dip"
+		android:layout_marginLeft="5dip"
+		android:layout_marginBottom="5dip"
         >
     
     <RadioGroup android:id="@+id/font_size"  

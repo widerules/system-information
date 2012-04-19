@@ -58,6 +58,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -231,6 +232,7 @@ public class SimpleBrowser extends Activity {
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
 	int ua;
+	String encoding;
 
 	//search
 	EditText etSearch;
@@ -381,6 +383,8 @@ class MyWebview extends WebView {
     	//setInitialScale(1);
     	localSettings.setSupportMultipleWindows(true);
     	localSettings.setBlockNetworkImage(blockImage);
+    	
+    	localSettings.setDefaultTextEncodingName(encoding);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
         else localSettings.setUserAgentString(selectUA(ua));
@@ -1071,6 +1075,7 @@ public void onCreate(Bundle savedInstanceState) {
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
+    encoding = getEncoding(sp.getInt("encoding", -1));
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1366,7 +1371,7 @@ public void onCreate(Bundle savedInstanceState) {
 		@Override
 		public void onClick(View arg0) {
 			String url = webAddress.getText().toString();
-			if (!url.equals(BLANK_PAGE)) {
+			if (!BLANK_PAGE.equals(url)) {
 				if (!url.contains("://")) url = "http://" + url;
 				serverWebs.get(webIndex).loadUrl(url);
 			}
@@ -1488,7 +1493,7 @@ public void onCreate(Bundle savedInstanceState) {
 				loadProgress.setVisibility(View.INVISIBLE);
 			}
 			else {//reload the webpage
-				if (!webAddress.getText().toString().equals(BLANK_PAGE))  
+				if (!BLANK_PAGE.equals(webAddress.getText().toString()))  
 					serverWebs.get(webIndex).reload();
 			}
 		}
@@ -1864,6 +1869,28 @@ String selectUA(int ua) {
     return "";
 }
 
+String getEncoding(int iEncoding) {
+    String tmpEncoding = "AUTOSELECT";
+    switch (iEncoding) {
+    case 2:
+    	tmpEncoding = "utf-8";
+    	break;
+    case 3:
+    	tmpEncoding = "gbk";
+    	break;
+    case 4:
+    	tmpEncoding = "gb2312";
+    	break;
+    case 5:
+    	tmpEncoding = "big5";
+    	break;
+    case 6:
+    	tmpEncoding = "iso-8859-1";
+    	break;
+    }
+    return tmpEncoding;
+}
+
 @Override 
 protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1958,6 +1985,15 @@ protected void onResume() {
         webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
     }
 	
+    int iEncoding = sp.getInt("encoding", -1);
+    String tmpEncoding = getEncoding(iEncoding);
+    if (!encoding.equals(tmpEncoding)) {
+    	encoding = tmpEncoding;
+        localSettings.setDefaultTextEncodingName(encoding);
+        if (BLANK_PAGE.equals(webAddress.getText().toString())) loadPage(true);
+        else serverWebs.get(webIndex).reload();
+    }
+    
     /* css default to true now. 
 	String url = serverWebs.get(webIndex).getUrl() + "";
     boolean oldCss = css;
@@ -1966,25 +2002,6 @@ protected void onResume() {
     
     disable setting of historyCount and encoding
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
-    int iEncoding = sp.getInt("encoding", -1);
-    String encoding = "";
-    switch (iEncoding) {
-    case 2:
-    	encoding = "utf-8";
-    	break;
-    case 3:
-    	encoding = "gbk";
-    	break;
-    case 4:
-    	encoding = "gb2312";
-    	break;
-    case 5:
-    	encoding = "big5";
-    	break;
-    case 6:
-    	encoding = "iso-8859-1";
-    	break;
-    }
     if (iEncoding > 1) {//reload page if encoding changed. but make it work only once on current page, if not homepage.
     	if (!url.equals(BLANK_PAGE)) {
         	String base = null;

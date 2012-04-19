@@ -126,7 +126,7 @@
     <string name="font_normal">normal</string>
     <string name="font_larger">large</string>
     <string name="font_largest">largest</string>
-    <string name="encoding">Encoding\n(current page)</string>
+    <string name="encoding">Encoding in current page</string>
     <string name="encoding_auto">Auto</string>
     <string name="encoding_utf8">UTF-8</string>
     <string name="encoding_gb2312">GB2312</string>
@@ -140,17 +140,20 @@
     <string name="search">Search</string>
     <string name="html5">(current page)Partially support HTML5 for some site. A little slow and not work on Cupcake/Donut</string>
     
-    <string name="clear_cache">Clear cache if you feel slow</string>
+    <string name="cache">Clear cache if you feel slow</string>
     <string name="cache_cleared">Cache cleared</string>
+    <string name="cookie">Cookie</string>
+    <string name="formdata">Form Data</string>
+    <string name="password">Password</string>
+    <string name="clear_all">Clear below data selected</string>
+    <string name="clear_hint">All your data will be cleared, include password, history, bookmark, cookie and cache.</string>
+    <string name="all_cleared">All data cleared.</string>
     <string name="url_can_longclick">\t(url can be long click)</string>
     <string name="pic_can_longclick">\t(image can be long click)</string>
     <string name="text_can_longclick">\t(you may even long click text)</string>
     <string name="ad_hint">Click on AD banner will remove it untill next time you launch Easy Browser.</string>
     <string name="ad_can_remove">\t(click ad to remove it)</string>
     <string name="change_ua">Need change UA to access some website</string>
-    <string name="clear_all">Clear all data and exit</string>
-    <string name="clear_hint">All your data will be cleared, include password, history, bookmark, cookie and cache.</string>
-    <string name="all_cleared">All data cleared.</string>
     
     <string name="android">Android</string>
     <string name="pc">PC</string>

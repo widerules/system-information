@@ -121,21 +121,23 @@
     <string name="font_normal">"通常"</string>
     <string name="font_larger">"大"</string>
     <string name="font_largest">"最大"</string>
-    <string name="encoding">"エンコーディング\n(現在ページ)"</string>
+    <string name="encoding">"現在のページのエンコーディング"</string>
     <string name="encoding_auto">"自動"</string>
     <string name="search">"Webページで検索"</string>
     <string name="html5">"(現在ページ)部分的にいくつかのサイトのためにHTML5をサポートしています。カップケーキ/ドーナツに少しゆっくりとしない仕事"</string>
     
-    <string name="clear_cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
+    <string name="cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
     <string name="cache_cleared">キャッシュがクリアされている</string>
+    <string name="formdata">フォームデータ</string>
+    <string name="password">パスワード</string>
+    <string name="clear_all">データが選択の下にクリア</string>
+    <string name="clear_hint">すべてのデータがクリアされ、パスワード、履歴、ブックマーク、クッキー、キャッシュを含む</string>
+    <string name="all_cleared">すべてのデータがクリアされ</string>
     <string name="url_can_longclick">\t(あなたは長い間、すべてのURLをクリックする)</string>
     <string name="pic_can_longclick">\t(あなたは長い間写真をクリックする)</string>
     <string name="text_can_longclick">\t(あなたも長く、時にはテキストをクリックする)</string>
     <string name="ad_hint">広告バナーをクリックして、それが次回の起動ひかりのブラウザを刚性削除されます</string>
     <string name="ad_can_remove">\t(それを削除するには、広告をクリックし)</string>
     <string name="change_ua">いくつかのウェブサイトにアクセスするためにUAを変更する必要があり</string>
-    <string name="clear_all">すべてのデータを消去して終了</string>
-    <string name="clear_hint">すべてのデータがクリアされ、パスワード、履歴、ブックマーク、クッキー、キャッシュを含む</string>
-    <string name="all_cleared">すべてのデータがクリアされ</string>
     
 </resources>

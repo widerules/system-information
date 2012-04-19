@@ -87,6 +87,7 @@ import android.webkit.WebSettings.TextSize;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
+import android.webkit.WebViewDatabase;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -1914,7 +1915,61 @@ protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
     
-    clearAll = sp.getBoolean("clear_all", false);
+    boolean clearCache = sp.getBoolean("clear_cache", false);
+    if (clearCache) {
+    	sEdit.putBoolean("clear_cache", false);
+    	
+    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
+        serverWebs.get(webIndex).clearCache(true);
+    	//Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
+        //mContext.deleteDatabase("webviewCache.db");
+        //clearFolder(getDir("databases", MODE_PRIVATE));
+    }
+    
+    boolean clearHistory = sp.getBoolean("clear_history", false);
+    if (clearHistory) {
+    	sEdit.putBoolean("clear_history", false);
+    	
+        mHistory.clear();
+    	writeBookmark("history", mHistory);
+    	historyChanged = false;
+    }
+    
+    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
+    if (clearBookmark) {
+    	sEdit.putBoolean("clear_bookmark", false);
+    	
+        mBookMark.clear();
+    	writeBookmark("bookmark", mBookMark);
+    	bookmarkChanged = false;
+    }
+    
+    boolean clearCookie = sp.getBoolean("clear_cookie", false);
+    if (clearCookie) {
+    	sEdit.putBoolean("clear_cookie", false);
+    	CookieManager.getInstance().removeAllCookie();
+    }
+    
+    boolean clearFormdata = sp.getBoolean("clear_formdata", false);
+    if (clearFormdata) {
+    	sEdit.putBoolean("clear_formdata", false);
+    	WebViewDatabase.getInstance(mContext).clearFormData();
+    }
+
+    boolean clearPassword = sp.getBoolean("clear_password", false);
+    if (clearPassword) {
+    	sEdit.putBoolean("clear_password", false);
+    	WebViewDatabase.getInstance(mContext).clearHttpAuthUsernamePassword();
+    	WebViewDatabase.getInstance(mContext).clearUsernamePassword();
+    }
+    
+    if (clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
+    	mContext.deleteDatabase("webview.db");
+        mContext.deleteDatabase("webviewCache.db");
+        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
+        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
+    }
+    /*clearAll = sp.getBoolean("clear_all", false);
     if (clearAll) {
     	sEdit.putBoolean("clear_all", false);
     	
@@ -1922,21 +1977,6 @@ protected void onResume() {
     	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
     	closePage(0, true);
     	
-    	//clear bookmark and history
-        mHistory.clear();
-    	writeBookmark("history", mHistory);
-    	historyChanged = false;
-    	
-        mBookMark.clear();
-    	writeBookmark("bookmark", mBookMark);
-    	bookmarkChanged = false;
-    	
-    	//clear files
-    	mContext.deleteDatabase("webview.db");
-        mContext.deleteDatabase("webviewCache.db");
-        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
-        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
-        
         //reset default settings
     	sEdit.putInt("ua", 0);
         sEdit.putBoolean("block_image", false);
@@ -1951,7 +1991,7 @@ protected void onResume() {
         
         finish();
         return;
-    }
+    }*/
     
 	byWifi = false;
 	ConnectivityManager connectivityManager =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1968,27 +2008,12 @@ protected void onResume() {
     
     boolean showZoom = sp.getBoolean("show_zoom", false);
     localSettings.setBuiltInZoomControls(showZoom);
-    if (showZoom) {
-    	sEdit.putBoolean("show_zoom", false);
-    	sEdit.commit();
-    }
+    if (showZoom) sEdit.putBoolean("show_zoom", false);
     
     ua = sp.getInt("ua", 0);
     if (ua <= 1) localSettings.setUserAgent(ua);
     else localSettings.setUserAgentString(selectUA(ua));
 
-    
-    boolean clearCache = sp.getBoolean("clear_cache", false);
-    if (clearCache) {
-    	sEdit.putBoolean("clear_cache", false);
-    	sEdit.commit();
-    	
-    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
-        serverWebs.get(webIndex).clearCache(true);
-    	Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
-        mContext.deleteDatabase("webviewCache.db");
-        clearFolder(getDir("databases", MODE_PRIVATE));
-    }
     
 	
     readTextSize(sp); //no need to reload page if fontSize changed
@@ -2009,7 +2034,6 @@ protected void onResume() {
         webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
         
         sEdit.putBoolean("html5", false);//close html5 by default
-        sEdit.commit();
     }
 	
     int iEncoding = sp.getInt("encoding", 0);
@@ -2020,7 +2044,6 @@ protected void onResume() {
         else serverWebs.get(webIndex).reload();
         
         sEdit.putInt("encoding", 0);//set default encoding to autoselect
-        sEdit.commit();
     }
     
     /* css default to true now. 
@@ -2032,6 +2055,7 @@ protected void onResume() {
     disable setting of historyCount
     historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
     */
+	sEdit.commit();
     
     super.onResume();
 }

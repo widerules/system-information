@@ -351,6 +351,15 @@
         android:background="@drawable/button_layout"
     />
     
+    <CheckBox android:id="@+id/clear_cache"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:layout_gravity="center"
+      	android:text="@string/cache"
+      	android:textColor="#f0030f03"
+      	android:checked="false"
+		android:layout_marginLeft="3dip"
+    />
     <HorizontalScrollView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
@@ -400,15 +409,6 @@
     />
     </LinearLayout>
     </HorizontalScrollView>
-    <CheckBox android:id="@+id/clear_cache"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:layout_gravity="center"
-      	android:text="@string/cache"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-		android:layout_marginLeft="3dip"
-    />
     
     </LinearLayout>
 

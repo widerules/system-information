@@ -26,6 +26,7 @@ public class AboutBrowser extends Activity{
 	
 	CheckBox cbZoomControl, cbCss, cbHtml5, cbBlockImg;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA;
+	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -75,16 +76,6 @@ public class AboutBrowser extends Activity{
 	    			intent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 					util.startActivity(intent, true, getBaseContext());
 				}
-			}
-        });
-
-        Button btnClearCache = (Button) findViewById(R.id.clear_cache);
-        btnClearCache.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-        		editor.putBoolean("clear_cache", true);
-        		editor.commit();
-        		finish();
 			}
         });
 
@@ -185,14 +176,14 @@ public class AboutBrowser extends Activity{
 			}
     	});
     	
-    	historyCount = (RadioGroup) findViewById(R.id.max_history);
+    	/*historyCount = (RadioGroup) findViewById(R.id.max_history);
     	historyCount.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
         		editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
         		editor.commit();
 			}
-    	});
+    	});*/
     	
     	encodingType = (RadioGroup) findViewById(R.id.encoding);
     	encodingType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -220,6 +211,55 @@ public class AboutBrowser extends Activity{
         		editor.commit();
 			}
     	});
+    	
+    	clrHistory = (CheckBox) findViewById(R.id.clear_history);
+    	clrHistory.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("clear_history", clrHistory.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	clrBookmark = (CheckBox) findViewById(R.id.clear_bookmark);
+    	clrBookmark.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("clear_bookmark", clrBookmark.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	clrCookie = (CheckBox) findViewById(R.id.clear_cookie);
+    	clrCookie.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("clear_cookie", clrCookie.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	clrFormdata = (CheckBox) findViewById(R.id.clear_formdata);
+    	clrFormdata.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("clear_formdata", clrFormdata.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	clrPassword = (CheckBox) findViewById(R.id.clear_password);
+    	clrPassword.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("clear_password", clrPassword.isChecked());
+        		editor.commit();
+    		}
+    	});
+    	clrCache = (CheckBox) findViewById(R.id.clear_cache);
+    	clrCache.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("clear_cache", clrCache.isChecked());
+        		editor.commit();
+    		}
+    	});
 	}
 	
 	@Override
@@ -235,6 +275,12 @@ public class AboutBrowser extends Activity{
 		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0))).setChecked(true);
         
+		clrHistory.setChecked(perferences.getBoolean("clear_history", false));
+		clrBookmark.setChecked(perferences.getBoolean("clear_bookmark", false));
+		clrCookie.setChecked(perferences.getBoolean("clear_cookie", false));
+		clrFormdata.setChecked(perferences.getBoolean("clear_formdata", false));
+		clrPassword.setChecked(perferences.getBoolean("clear_password", false));
+		clrCache.setChecked(perferences.getBoolean("clear_cache", false));
 		super.onResume();
 	}
 	

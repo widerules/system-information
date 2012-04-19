@@ -134,7 +134,7 @@
     <string name="encoding_gbk">GBK</string>
     <string name="encoding_latin1">ISO-8859-1</string>
     <string name="search">Search</string>
-    <string name="html5">Part of HTML5, slow but a must for some website. Not work on Cupcake/Donut</string>
+    <string name="html5">Some website need HTML5. A little slow and not work on Cupcake/Donut</string>
     
     <string name="clear_cache">Clear cache if you feel slow</string>
     <string name="cache_cleared">Cache cleared</string>

@@ -112,7 +112,7 @@
     <string name="snap_size">截屏尺寸</string>
     <string name="full_screen">全屏</string>
     <string name="full_webpage">全网页</string>
-    <string name="show_zoom">缩放按钮</string>
+    <string name="show_zoom">(当前页)缩放按钮</string>
     <string name="block_image">没有图片，更快更省流量</string>
     <string name="homepage_css">主页特效，会有点慢</string>
     <string name="max_history">历史记录</string>
@@ -125,7 +125,7 @@
     <string name="encoding">文字编码</string>
     <string name="encoding_auto">自动</string>
     <string name="search">页内查找</string>
-    <string name="html5">某些网站需要HTML5，但有点慢</string>
+    <string name="html5">(当前页)某些网站需要HTML5，但有点慢</string>
     
     <string name="clear_cache">用久了可能会慢，试试清一下缓存吧</string>
     <string name="cache_cleared">缓存已清理</string>

@@ -130,6 +130,7 @@
 	    android:fadeScrollbars="true"
 		android:layout_marginTop="5dip"
 		android:layout_marginLeft="5dip"
+		android:layout_marginRight="5dip"
         >
     <RadioGroup android:id="@+id/snap_size"  
     	android:layout_width="wrap_content"
@@ -147,12 +148,10 @@
     <RadioButton  
         android:text="@string/full_screen"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/full_webpage"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
 	</RadioGroup>           
     </HorizontalScrollView>
@@ -162,6 +161,7 @@
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
 		android:layout_marginLeft="5dip"
+		android:layout_marginRight="5dip"
         >
     
     <RadioGroup android:id="@+id/font_size"  
@@ -180,27 +180,22 @@
     <RadioButton  
         android:text="@string/font_larger"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/font_normal"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/font_smaller"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/font_smallest"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/font_largest"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
 	</RadioGroup>           
     </HorizontalScrollView>
@@ -211,6 +206,7 @@
 	    android:fadeScrollbars="true"
 		android:layout_marginBottom="5dip"
 		android:layout_marginLeft="5dip"
+		android:layout_marginRight="5dip"
         >
     <RadioGroup android:id="@+id/encoding"  
     	android:layout_width="wrap_content"
@@ -229,32 +225,42 @@
     <RadioButton  
         android:text="@string/encoding_auto"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/encoding_utf8"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/encoding_gbk"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/encoding_gb2312"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/encoding_big5"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/encoding_latin1"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
+        />  
+    <RadioButton  
+        android:text="@string/encoding_jp"
+      	android:textColor="#f0030f03"
+        />  
+    <RadioButton  
+        android:text="@string/encoding_jis"
+      	android:textColor="#f0030f03"
+        />  
+    <RadioButton  
+        android:text="@string/encoding_euc_jp"
+      	android:textColor="#f0030f03"
+        />  
+    <RadioButton  
+        android:text="@string/encoding_euc_kr"
+      	android:textColor="#f0030f03"
         />  
     
 	</RadioGroup>           
@@ -292,57 +298,46 @@
     <RadioButton  
         android:text="@string/android"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/pc"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />
     <RadioButton  
         android:text="@string/iphone"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/ipad"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/bb"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/chrome"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/ff"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/ie"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/nokia"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/safari"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     <RadioButton  
         android:text="@string/wp"
       	android:textColor="#f0030f03"
-		android:layout_marginLeft="5dip"
         />  
     
 	</RadioGroup>           

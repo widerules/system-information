@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -30,8 +29,6 @@ public class AboutBrowser extends Activity{
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
-	
-	DisplayMetrics dm;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -223,9 +220,6 @@ public class AboutBrowser extends Activity{
         		editor.commit();
 			}
     	});
-    	
-    	dm = new DisplayMetrics();
-    	getWindowManager().getDefaultDisplay().getMetrics(dm);
 	}
 	
 	@Override
@@ -235,13 +229,8 @@ public class AboutBrowser extends Activity{
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		
-    	if (dm.density < 1) 
-    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 3))).setChecked(true);//smaller
-    	else  
-    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
-
-		
-		((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
+   		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
+		//((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
 		((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 1))).setChecked(true);
 		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0))).setChecked(true);

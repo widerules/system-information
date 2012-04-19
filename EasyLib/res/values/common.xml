@@ -132,7 +132,11 @@
     <string name="encoding_gb2312">GB2312</string>
     <string name="encoding_big5">BIG5</string>
     <string name="encoding_gbk">GBK</string>
-    <string name="encoding_latin1">ISO-8859-1</string>
+    <string name="encoding_latin1">Latin-1</string>
+    <string name="encoding_jp">ISO-2022-JP</string>
+    <string name="encoding_jis">SHIFT_JIS</string>
+    <string name="encoding_euc_jp">EUC-JP</string>
+    <string name="encoding_euc_kr">EUC-KR</string>
     <string name="search">Search</string>
     <string name="html5">(current page)Partially support HTML5 for some site. A little slow and not work on Cupcake/Donut</string>
     

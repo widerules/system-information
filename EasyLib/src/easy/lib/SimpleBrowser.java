@@ -1566,6 +1566,16 @@ protected void onDestroy() {
 	
 	if (!paid && mAdAvailable) adview.destroy();
 	
+	if (historyChanged) writeBookmark("history", mHistory);
+	if (bookmarkChanged) writeBookmark("bookmark", mBookMark);
+
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+	Editor sEdit = sp.edit();
+	sEdit.putBoolean("collapse1", collapse1);
+	sEdit.putBoolean("collapse2", collapse2);
+	sEdit.putBoolean("collapse3", collapse3);
+	sEdit.commit();
+	
 	super.onDestroy();
 	
     if (clearAll) System.exit(0);
@@ -1883,6 +1893,18 @@ String getEncoding(int iEncoding) {
     case 6:
     	tmpEncoding = "iso-8859-1";
     	break;
+    case 7:
+    	tmpEncoding = "ISO-2022-JP";
+    	break;
+    case 8:
+    	tmpEncoding = "SHIFT_JIS";
+    	break;
+    case 9:
+    	tmpEncoding = "EUC-JP";
+    	break;
+    case 10:
+    	tmpEncoding = "EUC-KR";
+    	break;
     }
     return tmpEncoding;
 }
@@ -2022,21 +2044,6 @@ protected void onResume() {
     }*/
     
     super.onResume();
-}
-
-@Override
-protected void onPause() {
-	if (historyChanged) writeBookmark("history", mHistory);
-	if (bookmarkChanged) writeBookmark("bookmark", mBookMark);
-
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-	Editor sEdit = sp.edit();
-	sEdit.putBoolean("collapse1", collapse1);
-	sEdit.putBoolean("collapse2", collapse2);
-	sEdit.putBoolean("collapse3", collapse3);
-	sEdit.commit();
-	
-	super.onPause();	
 }
 
 @Override

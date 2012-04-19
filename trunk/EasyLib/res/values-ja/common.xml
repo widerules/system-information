@@ -111,7 +111,7 @@
     <string name="snap_size">"スナップサイズ"</string>
     <string name="full_screen">"全画面スクリーン"</string>
     <string name="full_webpage">"全画面ウエブ"</string>
-    <string name="show_zoom">"ズームコントロール"</string>
+    <string name="show_zoom">"(現在ページ)ズームコントロール"</string>
     <string name="block_image">"画像をブロック"</string>
     <string name="homepage_css">"クールなホームページですが、少し遅い"</string>
     <string name="max_history">"履歴"</string>
@@ -121,10 +121,10 @@
     <string name="font_normal">"通常"</string>
     <string name="font_larger">"大"</string>
     <string name="font_largest">"最大"</string>
-    <string name="encoding">"エンコーディング"</string>
+    <string name="encoding">"エンコーディング(現在ページ)"</string>
     <string name="encoding_auto">"自動"</string>
     <string name="search">"Webページで検索"</string>
-    <string name="html5">"部分的に必要ないくつかのウェブサイトの現在のページでHTML5をサポートしています。カップケーキ/ドーナツに少しゆっくりとしない仕事"</string>
+    <string name="html5">"(現在ページ)部分的にいくつかのサイトのためにHTML5をサポートしています。カップケーキ/ドーナツに少しゆっくりとしない仕事"</string>
     
     <string name="clear_cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
     <string name="cache_cleared">キャッシュがクリアされている</string>

@@ -232,7 +232,6 @@ public class SimpleBrowser extends Activity {
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
 	int ua;
-	String encoding;
 
 	//search
 	EditText etSearch;
@@ -383,8 +382,6 @@ class MyWebview extends WebView {
     	//setInitialScale(1);
     	localSettings.setSupportMultipleWindows(true);
     	localSettings.setBlockNetworkImage(blockImage);
-    	
-    	localSettings.setDefaultTextEncodingName(encoding);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
         else localSettings.setUserAgentString(selectUA(ua));
@@ -1075,7 +1072,6 @@ public void onCreate(Bundle savedInstanceState) {
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
-    encoding = getEncoding(sp.getInt("encoding", -1));
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1987,9 +1983,8 @@ protected void onResume() {
 	
     int iEncoding = sp.getInt("encoding", -1);
     String tmpEncoding = getEncoding(iEncoding);
-    if (!encoding.equals(tmpEncoding)) {
-    	encoding = tmpEncoding;
-        localSettings.setDefaultTextEncodingName(encoding);
+    if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
+        localSettings.setDefaultTextEncodingName(tmpEncoding);
         if (BLANK_PAGE.equals(webAddress.getText().toString())) loadPage(true);
         else serverWebs.get(webIndex).reload();
     }

@@ -646,7 +646,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
         btnIcon.setImageBitmap(wv.getFavicon());
         
         TextView webname = (TextView) convertView.findViewById(R.id.webname);
-        if ((wv.getTitle() != null) && (!wv.getTitle().equals("")))
+        if ((wv.getTitle() != null) && (!"".equals(wv.getTitle())))
         	webname.setText(wv.getTitle());
         else webname.setText(wv.getUrl());
         

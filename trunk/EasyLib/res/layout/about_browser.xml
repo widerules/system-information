@@ -58,7 +58,16 @@
     />
 
     	
-  	<CheckBox android:id="@+id/show_zoom"
+  	<CheckBox android:id="@+id/cache_tosd"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/cache_tosd"
+      	android:textColor="#f0030f03"
+      	android:layout_marginLeft="15dip"
+      	android:checked="false"
+    />
+      
+    	<CheckBox android:id="@+id/show_zoom"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/show_zoom"
@@ -213,9 +222,9 @@
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginBottom="5dip"
-		android:layout_marginLeft="5dip"
+		android:layout_marginLeft="20dip"
 		android:layout_marginRight="10dip"
+		android:layout_marginBottom="10dip"
         >
     <RadioGroup android:id="@+id/encoding"  
     	android:layout_width="wrap_content"
@@ -281,9 +290,9 @@
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="5dip"
+		android:layout_marginLeft="20dip"
 		android:layout_marginRight="10dip"
-		android:layout_marginBottom="5dip"
+		android:layout_marginBottom="10dip"
         >
     <RadioGroup android:id="@+id/ua_group"  
     	android:layout_width="wrap_content"
@@ -350,17 +359,17 @@
     <CheckBox android:id="@+id/clear_cache"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
-      	android:layout_gravity="center"
       	android:text="@string/cache"
       	android:textColor="#f0030f03"
       	android:checked="false"
-		android:layout_marginLeft="3dip"
+		android:layout_marginLeft="20dip"
+		android:layout_marginRight="10dip"
     />
     <HorizontalScrollView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="5dip"
+		android:layout_marginLeft="20dip"
 		android:layout_marginRight="10dip"
         >
     <LinearLayout

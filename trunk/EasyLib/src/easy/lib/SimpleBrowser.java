@@ -228,7 +228,6 @@ public class SimpleBrowser extends Activity {
 	boolean html5 = true;
 	boolean blockImage;
 	boolean collapse1, collapse2, collapse3;
-	boolean clearAll = false;
 	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
@@ -1576,7 +1575,7 @@ protected void onDestroy() {
 	
 	super.onDestroy();
 	
-    if (clearAll) System.exit(0);
+    //if (clearAll) System.exit(0);
 }
 
 BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
@@ -2056,6 +2055,12 @@ protected void onResume() {
 	sEdit.commit();
     
     super.onResume();
+}
+
+@Override
+public File getCacheDir()
+{
+    return getApplicationContext().getCacheDir();// NOTE: this method is used in Android 2.1
 }
 
 @Override

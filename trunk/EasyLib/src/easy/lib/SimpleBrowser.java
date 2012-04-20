@@ -75,6 +75,7 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.DownloadListener;
 import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
@@ -1920,6 +1921,8 @@ protected void onResume() {
 
     boolean clearData = sp.getBoolean("clear_data", false);
 	if (clearData) {
+    	sEdit.putBoolean("clear_all", false);
+    	
 	    boolean clearCache = sp.getBoolean("clear_cache", false);
 	    if (clearCache) {
 	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
@@ -1944,6 +1947,7 @@ protected void onResume() {
 	    
 	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
 	    if (clearCookie) {
+	    	CookieSyncManager.createInstance(this);
 	    	CookieManager.getInstance().removeAllCookie();
 	    }
 	    
@@ -1964,11 +1968,22 @@ protected void onResume() {
 	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
 	        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
 	    }
-		Toast.makeText(mContext, R.string.data_cleared, Toast.LENGTH_LONG).show();
+	    
+		String message = "";
+		if (clearCache) message += "Cache, ";
+		if (clearHistory) message += getString(R.string.history) + ", ";
+		if (clearBookmark) message += getString(R.string.bookmark) + ", ";
+		if (clearCookie) message += "Cookie, ";
+		if (clearFormdata) message += getString(R.string.formdata) + ", ";
+		if (clearPassword) message += getString(R.string.password) + ", ";
+		message = message.trim();
+		if (!"".equals(message)) { 
+			if (message.endsWith(",")) message = message.substring(0, message.length()-1);
+			Toast.makeText(mContext, message + " " + getString(R.string.data_cleared), Toast.LENGTH_LONG).show();
+		}
 	}
     /*clearAll = sp.getBoolean("clear_all", false);
     if (clearAll) {
-    	sEdit.putBoolean("clear_all", false);
     	
     	//close web pages
     	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages

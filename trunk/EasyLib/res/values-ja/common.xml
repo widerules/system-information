@@ -131,7 +131,7 @@
     <string name="password">パスワード</string>
     <string name="clear_all">データが選択の下にクリア</string>
     <string name="clear_hint">クリアされます。</string>
-    <string name="data_cleared">データはクリアされ</string>
+    <string name="data_cleared">クリアされている</string>
     <string name="url_can_longclick">\t(あなたは長い間、すべてのURLをクリックする)</string>
     <string name="pic_can_longclick">\t(あなたは長い間写真をクリックする)</string>
     <string name="text_can_longclick">\t(あなたも長く、時にはテキストをクリックする)</string>

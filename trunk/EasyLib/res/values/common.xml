@@ -146,7 +146,7 @@
     <string name="password">Password</string>
     <string name="clear_all">Clear below data selected</string>
     <string name="clear_hint">will be cleared</string>
-    <string name="data_cleared">Data cleared.</string>
+    <string name="data_cleared">cleared.</string>
     <string name="url_can_longclick">\t(url can be long click)</string>
     <string name="pic_can_longclick">\t(image can be long click)</string>
     <string name="text_can_longclick">\t(you may even long click text)</string>

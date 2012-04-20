@@ -132,7 +132,7 @@
     <string name="password">密码</string>
     <string name="clear_all">清除选中的数据</string>
     <string name="clear_hint">将要被清除</string>
-    <string name="data_cleared">数据清理完毕</string>
+    <string name="data_cleared">清理完毕</string>
     <string name="url_can_longclick">\t(所有链接都可以长按)</string>
     <string name="pic_can_longclick">\t(所有图片也可以长按)</string>
     <string name="text_can_longclick">\t(有的时候文字也可以长按)</string>

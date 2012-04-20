@@ -102,7 +102,7 @@ public class AboutBrowser extends Activity{
 	    		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {//share
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-		        		editor.putBoolean("clear", true);
+		        		editor.putBoolean("clear_data", true);
 		        		editor.commit();
 		        		finish();
 					}

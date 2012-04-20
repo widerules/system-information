@@ -1840,7 +1840,7 @@ static int clearFolder(final File dir) {
                 //first delete subdirectories recursively
                 if (child.isDirectory()) deletedFiles += clearFolder(child);
                 //then delete the files and subdirectories in this dir
-                if (!"bookmark".equals(child.getName()) && !"history".equals(child.getName()) && child.delete()) deletedFiles++;
+                if (child.delete()) deletedFiles++;
             }
         }
         catch(Exception e) {}
@@ -1908,8 +1908,14 @@ String getEncoding(int iEncoding) {
 
 @Override
 protected void onPause() {
-	if (historyChanged) writeBookmark("history", mHistory);
-	if (bookmarkChanged) writeBookmark("bookmark", mBookMark);
+	if (historyChanged) {
+		writeBookmark("history", mHistory);
+		historyChanged = false;
+	}
+	if (bookmarkChanged) {
+		writeBookmark("bookmark", mBookMark);
+		bookmarkChanged = false;
+	}
 	
 	super.onPause();
 }
@@ -1930,25 +1936,8 @@ protected void onResume() {
 	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
 	        serverWebs.get(webIndex).clearCache(true);
 	        mContext.deleteDatabase("webviewCache.db");
-	        Log.d("===============", downloadPath);
-	        clearFolder(new File(downloadPath + "/cache/"));//clear cache on sdcard
+	        clearFolder(new File(downloadPath + "cache/"));//clear cache on sdcard
 	        clearFolder(new File("/data/data/" + mContext.getPackageName() + "/cache/"));//clear cache in /data/data/package.name/cache/
-	    }
-	    
-	    boolean clearHistory = sp.getBoolean("clear_history", false);
-	    if (clearHistory) {
-	        mHistory.clear();
-	    	writeBookmark("history", mHistory);
-	    	historyChanged = false;
-	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
-	    }
-	    
-	    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
-	    if (clearBookmark) {
-	        mBookMark.clear();
-	    	writeBookmark("bookmark", mBookMark);
-	    	bookmarkChanged = false;
-	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
 	    }
 	    
 	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
@@ -1968,10 +1957,27 @@ protected void onResume() {
 	    	WebViewDatabase.getInstance(mContext).clearUsernamePassword();
 	    }
 	    
-	    if (clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
+	    boolean clearHistory = sp.getBoolean("clear_history", false);
+	    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
+	    
+	    if (clearHistory && clearBookmark && clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
 	    	mContext.deleteDatabase("webview.db");
 	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
 	        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
+	    }
+	    
+	    if (clearHistory) {
+	        mHistory.clear();
+    		writeBookmark("history", mHistory);
+	    	historyChanged = false;
+	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
+	    }
+	    
+	    if (clearBookmark) {
+	        mBookMark.clear();
+    		writeBookmark("bookmark", mBookMark);
+	    	bookmarkChanged = false;
+	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
 	    }
 	    
 		String message = "";

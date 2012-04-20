@@ -229,7 +229,7 @@ public class SimpleBrowser extends Activity {
 	boolean blockImage;
 	boolean collapse1, collapse2, collapse3;
 	boolean clearAll = false;
-	TextSize textSize = TextSize.SMALLER;
+	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
 	int ua;
@@ -1812,22 +1812,21 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 }
 
 void readTextSize(SharedPreferences sp) {
-    int iTextSize = sp.getInt("textsize", -1);
-    if (iTextSize < 0) textSize = TextSize.NORMAL;
-    else switch(iTextSize) {
-    case 0:
+    int iTextSize = sp.getInt("textsize", 2);
+    switch(iTextSize) {
+    case 1:
 		textSize = TextSize.LARGER;
     	break;
-    case 1:
+    case 2:
 		textSize = TextSize.NORMAL;
     	break;
-    case 2:
+    case 3:
 		textSize = TextSize.SMALLER;
     	break;
-    case 3:
+    case 4:
     	textSize = TextSize.SMALLEST;
     	break;
-    case 4:
+    case 5:
 		textSize = TextSize.LARGEST;
     	break;
     }
@@ -1979,7 +1978,7 @@ protected void onResume() {
         //reset default settings
     	sEdit.putInt("ua", 0);
         sEdit.putBoolean("block_image", false);
-        sEdit.putInt("textsize", 1);
+        sEdit.putInt("textsize", 2);
         sEdit.putInt("full_screen", 1);
     	sEdit.putBoolean("show_zoom", false);
         sEdit.putBoolean("html5", false);

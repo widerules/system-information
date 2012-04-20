@@ -280,7 +280,7 @@ public class AboutBrowser extends Activity{
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		
-   		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 1))).setChecked(true);//normal
+   		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
 		//((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
 		((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 0))).setChecked(true);
 		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);

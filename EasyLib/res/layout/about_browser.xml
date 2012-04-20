@@ -128,8 +128,8 @@
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="25dip"
-		android:layout_marginRight="5dip"
+		android:layout_marginLeft="20dip"
+		android:layout_marginRight="10dip"
         >
     <RadioGroup android:id="@+id/snap_size"  
     	android:layout_width="wrap_content"
@@ -154,23 +154,12 @@
 	</RadioGroup>           
     </HorizontalScrollView>
     
-    <TextView
-    	android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-	    android:gravity="center"
-		android:layout_marginLeft="1dip"
-		android:layout_marginRight="1dip"
-	    android:text="@string/font_size"
-	    android:textColor="#ff000000"
-      	android:textSize="16dip"
-      	android:background="#f0c3d47c"
-        />
     <HorizontalScrollView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip"
+		android:layout_marginLeft="20dip"
+		android:layout_marginRight="10dip"
 		android:layout_marginBottom="10dip"
         >
     
@@ -179,6 +168,13 @@
 	    android:layout_height="wrap_content"  
     	android:orientation="horizontal"
     >  
+    <TextView
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+	    android:text="@string/font_size"
+      	android:textColor="#f0030f03"
+      	android:textSize="16dip"
+        />
     <RadioButton  
         android:text="@string/font_larger"
       	android:textColor="#f0030f03"
@@ -286,8 +282,8 @@
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
 		android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip"
-		android:layout_marginBottom="10dip"
+		android:layout_marginRight="10dip"
+		android:layout_marginBottom="5dip"
         >
     <RadioGroup android:id="@+id/ua_group"  
     	android:layout_width="wrap_content"
@@ -365,7 +361,7 @@
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
 		android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip"
+		android:layout_marginRight="10dip"
         >
     <LinearLayout
 		android:orientation="horizontal"

@@ -134,7 +134,6 @@ public class util {
 		    else apkPath.mkdir();//create folder
 		}
 		catch(Exception e) {
-			e.printStackTrace();
 			downloadPath = defaultPath + "/";
 		}
     	

@@ -1919,16 +1919,20 @@ protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
 
+	boolean shouldReload = false;
+	
     boolean clearData = sp.getBoolean("clear_data", false);
 	if (clearData) {
-    	sEdit.putBoolean("clear_all", false);
+    	sEdit.putBoolean("clear_data", false);
     	
 	    boolean clearCache = sp.getBoolean("clear_cache", false);
 	    if (clearCache) {
 	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
 	        serverWebs.get(webIndex).clearCache(true);
-	        //mContext.deleteDatabase("webviewCache.db");
-	        //clearFolder(getDir("databases", MODE_PRIVATE));
+	        mContext.deleteDatabase("webviewCache.db");
+	        Log.d("===============", downloadPath);
+	        clearFolder(new File(downloadPath + "/cache/"));//clear cache on sdcard
+	        clearFolder(new File("/data/data/" + mContext.getPackageName() + "/cache/"));//clear cache in /data/data/package.name/cache/
 	    }
 	    
 	    boolean clearHistory = sp.getBoolean("clear_history", false);
@@ -1936,6 +1940,7 @@ protected void onResume() {
 	        mHistory.clear();
 	    	writeBookmark("history", mHistory);
 	    	historyChanged = false;
+	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
 	    }
 	    
 	    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
@@ -1943,6 +1948,7 @@ protected void onResume() {
 	        mBookMark.clear();
 	    	writeBookmark("bookmark", mBookMark);
 	    	bookmarkChanged = false;
+	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
 	    }
 	    
 	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
@@ -1964,7 +1970,6 @@ protected void onResume() {
 	    
 	    if (clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
 	    	mContext.deleteDatabase("webview.db");
-	        mContext.deleteDatabase("webviewCache.db");
 	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
 	        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
 	    }
@@ -2052,12 +2057,14 @@ protected void onResume() {
     String tmpEncoding = getEncoding(iEncoding);
     if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
         localSettings.setDefaultTextEncodingName(tmpEncoding);
+        sEdit.putInt("encoding", 0);//set default encoding to autoselect
+        shouldReload = true;
+    }
+
+    if (shouldReload) {
         if (BLANK_PAGE.equals(webAddress.getText().toString())) loadPage(true);
         else serverWebs.get(webIndex).reload();
-        
-        sEdit.putInt("encoding", 0);//set default encoding to autoselect
     }
-    
     /* css default to true now. 
 	String url = serverWebs.get(webIndex).getUrl() + "";
     boolean oldCss = css;

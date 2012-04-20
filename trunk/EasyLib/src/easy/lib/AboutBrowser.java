@@ -80,18 +80,29 @@ public class AboutBrowser extends Activity{
         });
 
         final Context context = this;
-        Button btnClearAll = (Button) findViewById(R.id.clear_all);
-        btnClearAll.setOnClickListener(new OnClickListener() {
+        Button btnClear = (Button) findViewById(R.id.clear);
+        btnClear.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				String message = "";
+				if (clrCache.isChecked()) message += "Cache, ";
+				if (clrHistory.isChecked()) message += getString(R.string.history) + ", ";
+				if (clrBookmark.isChecked()) message += getString(R.string.bookmark) + ", ";
+				if (clrCookie.isChecked()) message += "Cookie, ";
+				if (clrFormdata.isChecked()) message += getString(R.string.formdata) + ", ";
+				if (clrPassword.isChecked()) message += getString(R.string.password) + ", ";
+				message = message.trim();
+				if ("".equals(message)) return;//return if no data selected.
+				if (message.endsWith(",")) message = message.substring(0, message.length()-1);
+				
 				new AlertDialog.Builder(context).
 	    		setTitle(R.string.browser_name).
 	    		setIcon(R.drawable.stop).
-	    		setMessage(R.string.clear_hint).
+	    		setMessage(message + " " + getString(R.string.clear_hint)).
 	    		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {//share
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-		        		editor.putBoolean("clear_all", true);
+		        		editor.putBoolean("clear", true);
 		        		editor.commit();
 		        		finish();
 					}

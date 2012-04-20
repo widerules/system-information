@@ -128,12 +128,11 @@
     <string name="html5">(当前页)某些网站需要HTML5，但有点慢</string>
     
     <string name="cache">用久了可能会慢，试试清一下缓存吧</string>
-    <string name="cache_cleared">缓存已清理</string>
     <string name="formdata">表单内容</string>
     <string name="password">密码</string>
-    <string name="clear_all">清除以下选中的数据</string>
+    <string name="clear_all">将要被清除</string>
     <string name="clear_hint">密码、书签、历史、缓存，所有痕迹都会被清除且不可恢复，你真的确定吗？</string>
-    <string name="all_cleared">痕迹清理完毕</string>
+    <string name="data_cleared">数据清理完毕</string>
     <string name="url_can_longclick">\t(所有链接都可以长按)</string>
     <string name="pic_can_longclick">\t(所有图片也可以长按)</string>
     <string name="text_can_longclick">\t(有的时候文字也可以长按)</string>

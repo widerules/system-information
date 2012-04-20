@@ -1567,9 +1567,6 @@ protected void onDestroy() {
 	
 	if (!paid && mAdAvailable) adview.destroy();
 	
-	if (historyChanged) writeBookmark("history", mHistory);
-	if (bookmarkChanged) writeBookmark("bookmark", mBookMark);
-
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
 	sEdit.putBoolean("collapse1", collapse1);
@@ -1910,65 +1907,67 @@ String getEncoding(int iEncoding) {
     return tmpEncoding;
 }
 
+@Override
+protected void onPause() {
+	if (historyChanged) writeBookmark("history", mHistory);
+	if (bookmarkChanged) writeBookmark("bookmark", mBookMark);
+	
+	super.onPause();
+}
+
 @Override 
 protected void onResume() {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
-    
-    boolean clearCache = sp.getBoolean("clear_cache", false);
-    if (clearCache) {
-    	sEdit.putBoolean("clear_cache", false);
-    	
-    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
-        serverWebs.get(webIndex).clearCache(true);
-    	//Toast.makeText(mContext, R.string.cache_cleared, Toast.LENGTH_LONG).show();
-        //mContext.deleteDatabase("webviewCache.db");
-        //clearFolder(getDir("databases", MODE_PRIVATE));
-    }
-    
-    boolean clearHistory = sp.getBoolean("clear_history", false);
-    if (clearHistory) {
-    	sEdit.putBoolean("clear_history", false);
-    	
-        mHistory.clear();
-    	writeBookmark("history", mHistory);
-    	historyChanged = false;
-    }
-    
-    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
-    if (clearBookmark) {
-    	sEdit.putBoolean("clear_bookmark", false);
-    	
-        mBookMark.clear();
-    	writeBookmark("bookmark", mBookMark);
-    	bookmarkChanged = false;
-    }
-    
-    boolean clearCookie = sp.getBoolean("clear_cookie", false);
-    if (clearCookie) {
-    	sEdit.putBoolean("clear_cookie", false);
-    	CookieManager.getInstance().removeAllCookie();
-    }
-    
-    boolean clearFormdata = sp.getBoolean("clear_formdata", false);
-    if (clearFormdata) {
-    	sEdit.putBoolean("clear_formdata", false);
-    	WebViewDatabase.getInstance(mContext).clearFormData();
-    }
 
-    boolean clearPassword = sp.getBoolean("clear_password", false);
-    if (clearPassword) {
-    	sEdit.putBoolean("clear_password", false);
-    	WebViewDatabase.getInstance(mContext).clearHttpAuthUsernamePassword();
-    	WebViewDatabase.getInstance(mContext).clearUsernamePassword();
-    }
-    
-    if (clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
-    	mContext.deleteDatabase("webview.db");
-        mContext.deleteDatabase("webviewCache.db");
-        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
-        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
-    }
+    boolean clearData = sp.getBoolean("clear_data", false);
+	if (clearData) {
+	    boolean clearCache = sp.getBoolean("clear_cache", false);
+	    if (clearCache) {
+	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
+	        serverWebs.get(webIndex).clearCache(true);
+	        //mContext.deleteDatabase("webviewCache.db");
+	        //clearFolder(getDir("databases", MODE_PRIVATE));
+	    }
+	    
+	    boolean clearHistory = sp.getBoolean("clear_history", false);
+	    if (clearHistory) {
+	        mHistory.clear();
+	    	writeBookmark("history", mHistory);
+	    	historyChanged = false;
+	    }
+	    
+	    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
+	    if (clearBookmark) {
+	        mBookMark.clear();
+	    	writeBookmark("bookmark", mBookMark);
+	    	bookmarkChanged = false;
+	    }
+	    
+	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
+	    if (clearCookie) {
+	    	CookieManager.getInstance().removeAllCookie();
+	    }
+	    
+	    boolean clearFormdata = sp.getBoolean("clear_formdata", false);
+	    if (clearFormdata) {
+	    	WebViewDatabase.getInstance(mContext).clearFormData();
+	    }
+
+	    boolean clearPassword = sp.getBoolean("clear_password", false);
+	    if (clearPassword) {
+	    	WebViewDatabase.getInstance(mContext).clearHttpAuthUsernamePassword();
+	    	WebViewDatabase.getInstance(mContext).clearUsernamePassword();
+	    }
+	    
+	    if (clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
+	    	mContext.deleteDatabase("webview.db");
+	        mContext.deleteDatabase("webviewCache.db");
+	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
+	        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
+	    }
+		Toast.makeText(mContext, R.string.data_cleared, Toast.LENGTH_LONG).show();
+	}
     /*clearAll = sp.getBoolean("clear_all", false);
     if (clearAll) {
     	sEdit.putBoolean("clear_all", false);

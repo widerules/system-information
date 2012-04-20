@@ -1849,10 +1849,10 @@ static int clearFolder(final File dir) {
 
 String selectUA(int ua) {
     switch (ua) {
-    case 2://iphone
-    	return "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
-    case 3://ipad
+    case 2://ipad
     	return "Mozilla/5.0 (iPad; U; CPU  OS 4_1 like Mac OS X; en-us)AppleWebKit/532.9(KHTML, like Gecko) Version/4.0.5 Mobile/8B117 Safari/6531.22.7";
+    case 3://iPhone
+    	return "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3";
     case 4://black berry
     	return "Mozilla/5.0 (BlackBerry; U; BlackBerry 9800; en-US) AppleWebKit/534.1+ (KHTML, like Gecko)";
     case 5://chrome
@@ -1875,16 +1875,16 @@ String getEncoding(int iEncoding) {
     String tmpEncoding = "AUTOSELECT";
     switch (iEncoding) {
     case 1:
-    	tmpEncoding = "utf-8";
+    	tmpEncoding = "gbk";
     	break;
     case 2:
-    	tmpEncoding = "gbk";
+    	tmpEncoding = "big5";
     	break;
     case 3:
     	tmpEncoding = "gb2312";
     	break;
     case 4:
-    	tmpEncoding = "big5";
+    	tmpEncoding = "utf-8";
     	break;
     case 5:
     	tmpEncoding = "iso-8859-1";

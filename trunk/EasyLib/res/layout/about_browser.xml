@@ -140,37 +140,6 @@
 		android:layout_marginLeft="20dip"
 		android:layout_marginRight="10dip"
         >
-    <RadioGroup android:id="@+id/snap_size"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-    	android:orientation="horizontal"
-    >  
-    <TextView
-    	android:layout_width="wrap_content"  
-	    android:layout_height="wrap_content"
-	    android:text="@string/snap_size"
-      	android:textColor="#f0030f03"
-      	android:textSize="16dip"
-        />
-    <RadioButton  
-        android:text="@string/full_screen"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/full_webpage"
-      	android:textColor="#f0030f03"
-        />  
-	</RadioGroup>           
-    </HorizontalScrollView>
-    
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
-		android:layout_marginRight="10dip"
-		android:layout_marginBottom="10dip"
-        >
     
     <RadioGroup android:id="@+id/font_size"  
     	android:layout_width="wrap_content"
@@ -207,10 +176,42 @@
 	</RadioGroup>           
     </HorizontalScrollView>
     
+    <HorizontalScrollView
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:fadeScrollbars="true"
+		android:layout_marginLeft="20dip"
+		android:layout_marginRight="10dip"
+        >
+    <RadioGroup android:id="@+id/snap_size"  
+    	android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+    	android:orientation="horizontal"
+    >  
+    <TextView
+    	android:layout_width="wrap_content"  
+	    android:layout_height="wrap_content"
+	    android:text="@string/snap_size"
+      	android:textColor="#f0030f03"
+      	android:textSize="16dip"
+        />
+    <RadioButton  
+        android:text="@string/full_screen"
+      	android:textColor="#f0030f03"
+        />  
+    <RadioButton  
+        android:text="@string/full_webpage"
+      	android:textColor="#f0030f03"
+        />  
+	</RadioGroup>           
+    </HorizontalScrollView>
+    
     <TextView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:gravity="center"
+		android:paddingTop="5dip"
+		android:paddingBottom="5dip"
 		android:layout_marginLeft="1dip"
 		android:layout_marginRight="1dip"
 	    android:text="@string/encoding"
@@ -222,9 +223,8 @@
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
+		android:layout_marginLeft="15dip"
 		android:layout_marginRight="10dip"
-		android:layout_marginBottom="10dip"
         >
     <RadioGroup android:id="@+id/encoding"  
     	android:layout_width="wrap_content"
@@ -236,21 +236,21 @@
       	android:textColor="#f0030f03"
         />  
     <RadioButton  
-        android:text="@string/encoding_utf8"
-      	android:textColor="#f0030f03"
-        />
-    <RadioButton  
         android:text="@string/encoding_gbk"
       	android:textColor="#f0030f03"
         />
+    <RadioButton  
+        android:text="@string/encoding_big5"
+      	android:textColor="#f0030f03"
+        />  
     <RadioButton  
         android:text="@string/encoding_gb2312"
       	android:textColor="#f0030f03"
         />  
     <RadioButton  
-        android:text="@string/encoding_big5"
+        android:text="@string/encoding_utf8"
       	android:textColor="#f0030f03"
-        />  
+        />
     <RadioButton  
         android:text="@string/encoding_latin1"
       	android:textColor="#f0030f03"
@@ -279,6 +279,8 @@
     	android:layout_width="match_parent"
     	android:layout_height="wrap_content"
 		android:gravity="center"
+		android:paddingTop="5dip"
+		android:paddingBottom="5dip"
 		android:layout_marginLeft="1dip"
 		android:layout_marginRight="1dip"
 	    android:text="@string/change_ua"
@@ -290,9 +292,8 @@
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
+		android:layout_marginLeft="15dip"
 		android:layout_marginRight="10dip"
-		android:layout_marginBottom="10dip"
         >
     <RadioGroup android:id="@+id/ua_group"  
     	android:layout_width="wrap_content"
@@ -308,11 +309,11 @@
       	android:textColor="#f0030f03"
         />
     <RadioButton  
-        android:text="@string/iphone"
+        android:text="@string/ipad"
       	android:textColor="#f0030f03"
         />  
     <RadioButton  
-        android:text="@string/ipad"
+        android:text="@string/iphone"
       	android:textColor="#f0030f03"
         />  
     <RadioButton  
@@ -362,14 +363,14 @@
       	android:text="@string/cache"
       	android:textColor="#f0030f03"
       	android:checked="false"
-		android:layout_marginLeft="20dip"
+		android:layout_marginLeft="15dip"
 		android:layout_marginRight="10dip"
     />
     <HorizontalScrollView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
+		android:layout_marginLeft="15dip"
 		android:layout_marginRight="10dip"
         >
     <LinearLayout

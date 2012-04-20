@@ -125,9 +125,9 @@
     <string name="encoding">当前页文字编码</string>
     <string name="encoding_auto">自动</string>
     <string name="search">页内查找</string>
-    <string name="html5">(当前页)某些网站需要HTML5，但有点慢</string>
+    <string name="html5">(当前页)某些网站需要HTML5</string>
     
-    <string name="cache">用久了可能会慢，试试清一下缓存吧</string>
+    <string name="cache">用久了可能会慢，试试清除缓存吧</string>
     <string name="formdata">表单内容</string>
     <string name="password">密码</string>
     <string name="clear_all">清除选中的数据</string>
@@ -140,5 +140,8 @@
     <string name="ad_can_remove">\t(点击广告可以去掉广告条)</string>
     <string name="change_ua">有些网站需要改变UA才可以访问</string>
     <string name="cache_tosd">缓存到SD卡</string>
+    
+    <string name="android">安卓</string>
+    <string name="pc">电脑</string>
     
 </resources>

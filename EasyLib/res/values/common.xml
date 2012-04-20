@@ -153,6 +153,7 @@
     <string name="ad_hint">Click on AD banner will remove it untill next time you launch Easy Browser.</string>
     <string name="ad_can_remove">\t(click ad to remove it)</string>
     <string name="change_ua">Need change UA to access some website</string>
+    <string name="cache_tosd">Cache to SD card</string>
     
     <string name="android">Android</string>
     <string name="pc">PC</string>

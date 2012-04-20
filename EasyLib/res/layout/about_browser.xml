@@ -342,7 +342,7 @@
 	</RadioGroup>           
     </HorizontalScrollView>
     
-    <Button android:id="@+id/clear_all"
+    <Button android:id="@+id/clear"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
       	android:textSize="16dip"

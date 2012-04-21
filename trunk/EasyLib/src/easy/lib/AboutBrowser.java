@@ -30,6 +30,7 @@ public class AboutBrowser extends Activity{
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
+	Button btnAdvance;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -210,7 +211,7 @@ public class AboutBrowser extends Activity{
     	
     	advanceSettings = (LinearLayout) findViewById(R.id.advance_settings);
     	basicSettings = (LinearLayout) findViewById(R.id.basic_settings);
-        Button btnAdvance = (Button) findViewById(R.id.advance_button);
+        btnAdvance = (Button) findViewById(R.id.advance_button);
         btnAdvance.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -221,12 +222,14 @@ public class AboutBrowser extends Activity{
 			                LayoutParams.WRAP_CONTENT));
 					basicSettings.setLayoutParams(new LayoutParams(
 							LayoutParams.MATCH_PARENT, 0));
+					btnAdvance.setText(getString(R.string.basic_button));
 				}
 				else {
 					lp.height = 0;
 					basicSettings.setLayoutParams(new LayoutParams(
 							LayoutParams.MATCH_PARENT,
 			                LayoutParams.WRAP_CONTENT));
+					btnAdvance.setText(getString(R.string.advance_button));
 				}
 				advanceSettings.requestLayout();
 				basicSettings.requestLayout();

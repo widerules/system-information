@@ -38,6 +38,12 @@
       	android:layout_gravity="center_horizontal"
     />
 
+    <LinearLayout android:id="@+id/basic_settings"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:orientation="vertical"
+        >
+    	
     <TextView android:id="@+id/help"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
@@ -58,21 +64,6 @@
     />
 
     
-    <LinearLayout android:id="@+id/basic_settings"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:orientation="vertical"
-        >
-    	
-    	<CheckBox android:id="@+id/cache_tosd"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/cache_tosd"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    />
-      
     	<CheckBox android:id="@+id/show_zoom"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
@@ -94,15 +85,6 @@
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/block_image"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    />
-      
-    <CheckBox android:id="@+id/html5"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/html5"
       	android:textColor="#f0030f03"
       	android:layout_marginLeft="15dip"
       	android:checked="false"
@@ -135,6 +117,36 @@
     <RadioButton  
         android:text="@string/history_16"
 		android:layout_marginLeft="5dip"
+        />  
+	</RadioGroup>           
+    </HorizontalScrollView>
+    
+    	<HorizontalScrollView
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:fadeScrollbars="true"
+		android:layout_marginLeft="20dip"
+		android:layout_marginRight="10dip"
+        >
+    <RadioGroup android:id="@+id/snap_size"  
+    	android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+    	android:orientation="horizontal"
+    >  
+    <TextView
+    	android:layout_width="wrap_content"  
+	    android:layout_height="wrap_content"
+	    android:text="@string/snap_size"
+      	android:textColor="#f0030f03"
+      	android:textSize="16dip"
+        />
+    <RadioButton  
+        android:text="@string/full_screen"
+      	android:textColor="#f0030f03"
+        />  
+    <RadioButton  
+        android:text="@string/full_webpage"
+      	android:textColor="#f0030f03"
         />  
 	</RadioGroup>           
     </HorizontalScrollView>
@@ -198,36 +210,24 @@
       	android:orientation="vertical"
         >
         
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
-		android:layout_marginRight="10dip"
-        >
-    <RadioGroup android:id="@+id/snap_size"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-    	android:orientation="horizontal"
-    >  
-    <TextView
-    	android:layout_width="wrap_content"  
-	    android:layout_height="wrap_content"
-	    android:text="@string/snap_size"
+    	<CheckBox android:id="@+id/cache_tosd"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/cache_tosd"
       	android:textColor="#f0030f03"
-      	android:textSize="16dip"
+      	android:layout_marginLeft="15dip"
+      	android:checked="false"
         />
-    <RadioButton  
-        android:text="@string/full_screen"
+      
+        <CheckBox android:id="@+id/html5"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/html5"
       	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/full_webpage"
-      	android:textColor="#f0030f03"
-        />  
-	</RadioGroup>           
-    </HorizontalScrollView>
-    
+      	android:layout_marginLeft="15dip"
+      	android:checked="false"
+        />
+      
     <TextView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"

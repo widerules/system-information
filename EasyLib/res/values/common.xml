@@ -155,6 +155,7 @@
     <string name="change_ua">Need change UA to access some website</string>
     <string name="cache_tosd">Cache to SD card</string>
     <string name="advance_button">Advance Settings</string>
+    <string name="basic_button">Basic Settings</string>
     
     <string name="android">Phone</string>
     <string name="pc">PC</string>

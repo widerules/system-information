@@ -16,6 +16,8 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -27,6 +29,7 @@ public class AboutBrowser extends Activity{
 	CheckBox cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
+	LinearLayout advanceSettings, basicSettings;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -205,6 +208,31 @@ public class AboutBrowser extends Activity{
 			}
     	});*/
     	
+    	advanceSettings = (LinearLayout) findViewById(R.id.advance_settings);
+    	basicSettings = (LinearLayout) findViewById(R.id.basic_settings);
+        Button btnAdvance = (Button) findViewById(R.id.advance_button);
+        btnAdvance.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				LayoutParams lp = (LayoutParams) advanceSettings.getLayoutParams();
+				if (lp.height == 0) {
+					advanceSettings.setLayoutParams(new LayoutParams(
+							LayoutParams.MATCH_PARENT,
+			                LayoutParams.WRAP_CONTENT));
+					basicSettings.setLayoutParams(new LayoutParams(
+							LayoutParams.MATCH_PARENT, 0));
+				}
+				else {
+					lp.height = 0;
+					basicSettings.setLayoutParams(new LayoutParams(
+							LayoutParams.MATCH_PARENT,
+			                LayoutParams.WRAP_CONTENT));
+				}
+				advanceSettings.requestLayout();
+				basicSettings.requestLayout();
+			}
+        });
+
     	encodingType = (RadioGroup) findViewById(R.id.encoding);
     	encodingType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override

@@ -154,6 +154,7 @@
     <string name="ad_can_remove">\t(click ad to remove it)</string>
     <string name="change_ua">Need change UA to access some website</string>
     <string name="cache_tosd">Cache to SD card</string>
+    <string name="advance_button">Advance Settings</string>
     
     <string name="android">Phone</string>
     <string name="pc">PC</string>

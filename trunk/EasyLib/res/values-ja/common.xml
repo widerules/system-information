@@ -139,5 +139,6 @@
     <string name="ad_can_remove">\t(それを削除するには、広告をクリックし)</string>
     <string name="change_ua">いくつかのウェブサイトにアクセスするためにUAを変更する必要があり</string>
     <string name="cache_tosd">SDカードへのキャッシュ</string>
+    <string name="advance_button">詳細設定</string>
     
 </resources>

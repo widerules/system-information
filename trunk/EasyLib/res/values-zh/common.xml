@@ -140,6 +140,7 @@
     <string name="ad_can_remove">\t(点击广告可以去掉广告条)</string>
     <string name="change_ua">有些网站需要改变UA才可以访问</string>
     <string name="cache_tosd">缓存到SD卡</string>
+    <string name="advance_button">高级设置</string>
     
     <string name="android">安卓</string>
     <string name="pc">电脑</string>

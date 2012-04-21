@@ -239,7 +239,7 @@
 	    android:text="@string/encoding"
 	    android:textColor="#ff000000"
       	android:textSize="16dip"
-      	android:background="#f0c3d47c"
+      	android:background="#e0e0e0"
         />
     <HorizontalScrollView
     	android:layout_width="match_parent"
@@ -308,7 +308,7 @@
 	    android:text="@string/change_ua"
 	    android:textColor="#ff000000"
       	android:textSize="16dip"
-      	android:background="#f0c3d47c"
+      	android:background="#e0e0e0"
         />
     <HorizontalScrollView
     	android:layout_width="match_parent"

@@ -421,17 +421,17 @@
       	android:textColor="#f0030f03"
       	android:checked="false"
     />
-    <CheckBox android:id="@+id/clear_formdata"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/formdata"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-    />
     <CheckBox android:id="@+id/clear_password"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/password"
+      	android:textColor="#f0030f03"
+      	android:checked="false"
+    />
+    <CheckBox android:id="@+id/clear_formdata"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/formdata"
       	android:textColor="#f0030f03"
       	android:checked="false"
     />

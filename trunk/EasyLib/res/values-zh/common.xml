@@ -128,7 +128,7 @@
     <string name="html5">(当前页)某些网站需要HTML5</string>
     
     <string name="cache">用久了可能会慢，试试清除缓存吧</string>
-    <string name="formdata">表单内容</string>
+    <string name="formdata">表单</string>
     <string name="password">密码</string>
     <string name="clear_all">清除选中的数据</string>
     <string name="clear_hint">将要被清除</string>

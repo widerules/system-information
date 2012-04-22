@@ -75,6 +75,7 @@ easy.browser.R$layout
 easy.browser.R$string
 easy.lib.AboutBrowser:
     android.widget.CheckBox cbCss
+    android.widget.RadioGroup historyCount
 easy.lib.R:
     10:10:public R()
 easy.lib.R$attr
@@ -98,19 +99,19 @@ easy.lib.R$id:
     public static final int homepage_css
     public static final int line1
     public static final int line2
+    public static final int max_history
     public static final int pause_download
     public static final int urlline
     public static final int web_list
     public static final int webtools
     39:39:public R$id()
 easy.lib.R$layout:
-    98:98:public R$layout()
+    107:107:public R$layout()
 easy.lib.R$string:
     public static final int about
     public static final int ad_hint
     public static final int addtoFavo
     public static final int addtoShort
-    public static final int all_cleared
     public static final int android
     public static final int app_name
     public static final int app_share_text
@@ -120,16 +121,22 @@ easy.lib.R$string:
     public static final int backapp
     public static final int bb
     public static final int block_image
+    public static final int cache
+    public static final int cache_tosd
     public static final int change_ua
     public static final int chrome
     public static final int clear_all
-    public static final int clear_cache
+    public static final int cookie
     public static final int delete
     public static final int encoding
     public static final int encoding_auto
     public static final int encoding_big5
+    public static final int encoding_euc_jp
+    public static final int encoding_euc_kr
     public static final int encoding_gb2312
     public static final int encoding_gbk
+    public static final int encoding_jis
+    public static final int encoding_jp
     public static final int encoding_latin1
     public static final int encoding_utf8
     public static final int favoriteapps
@@ -196,7 +203,7 @@ easy.lib.R$string:
     public static final int wallpaper_scene
     public static final int warning
     public static final int wp
-    109:109:public R$string()
+    118:118:public R$string()
 easy.lib.SimpleBrowser:
     boolean css
 easy.lib.util:
@@ -204,4 +211,4 @@ easy.lib.util:
     55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2
 easy.lib.wrapWebSettings:
-    141:145:synchronized void setLoadWithOverviewMode(boolean)
+    144:148:synchronized void setLoadWithOverviewMode(boolean)

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     
     <!-- not need unless open geo location in websettings. it will cause app not avaiable on market for some user
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>

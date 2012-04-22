@@ -226,13 +226,14 @@ public class SimpleBrowser extends Activity {
 	//settings
 	boolean css;
 	boolean snapFullScreen = true;
-	boolean html5 = true;
+	boolean html5 = false;
 	boolean blockImage;
 	boolean collapse1, collapse2, collapse3;
 	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
 	int ua;
+	boolean showZoom = false;
 
 	//search
 	EditText etSearch;
@@ -378,6 +379,7 @@ class MyWebview extends WebView {
     	localSettings.setSaveFormData(true);
     	localSettings.setTextSize(textSize);
     	localSettings.setSupportZoom(true);
+        //localSettings.setBuiltInZoomControls(showZoom);
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
     	//setInitialScale(1);
@@ -1067,12 +1069,13 @@ public void onCreate(Bundle savedInstanceState) {
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
     //css = sp.getBoolean("css", false);
-    html5 = sp.getBoolean("html5", false);
+    //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
+    //showZoom = sp.getBoolean("show_zoom", false);
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1614,7 +1617,15 @@ void changePage(int position) {
 	serverWebs.get(position).isForeground = true;
 	webIndex = position;
 	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
-	
+
+	//global settings
+    WebSettings localSettings = serverWebs.get(webIndex).getSettings();
+    //localSettings.setBuiltInZoomControls(showZoom);
+    if (ua <= 1) localSettings.setUserAgent(ua);
+    else localSettings.setUserAgentString(selectUA(ua));
+    localSettings.setTextSize(textSize);
+    localSettings.setBlockNetworkImage(blockImage);
+
 	if (serverWebs.get(position).mProgress > 0) {
 		imgRefresh.setImageResource(R.drawable.stop);
 		loadProgress.setVisibility(View.VISIBLE);
@@ -1737,7 +1748,7 @@ private void addFavo(final String url, final String title) {
 private boolean openNewPage(String url) {
 	boolean result = true;
 	
-	int maxPages = 6;//max count is 6 for free version.
+	int maxPages = 9;//max count is 6 for free version.
 	if (paid) maxPages = 9;//9 for paid version.
 	if (webAdapter.getCount() == maxPages) { 
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
@@ -2029,7 +2040,7 @@ protected void onResume() {
     
     WebSettings localSettings = serverWebs.get(webIndex).getSettings();
     
-    boolean showZoom = sp.getBoolean("show_zoom", false);
+    showZoom = sp.getBoolean("show_zoom", false);
     localSettings.setBuiltInZoomControls(showZoom);
     if (showZoom) sEdit.putBoolean("show_zoom", false);
     

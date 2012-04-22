@@ -1,15 +1,11 @@
 package easy.lib;
 
-import com.google.ads.AdRequest;
-import com.google.ads.AdView;
-
 import easy.lib.SimpleBrowser.DownloadTask;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;

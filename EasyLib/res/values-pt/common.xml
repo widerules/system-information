@@ -1,0 +1,148 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">"Lançador fácil"</string>
+    <string name="switcher_name">"Switcher Fácil"</string>
+    <string name="browser_name">"Navegador Fácil"</string>
+    <string name="embed_browser_name">"Navegador fácil incorporado"</string>
+    
+    <string name="about_dialog_notes">"Por favor vote em fáceis navegador 5 estrelas se você amá-lo, obrigado."</string>
+    <string name="help_message">"Encontre seu app por não mais de 2 clique. \nClique app ícone para pará-lo, \ nClique nome app para lançar, \nClique versão aplicativo para desinstalar, \nlong clique em nome do aplicativo: atalho add, \atalho clique nlong para removê-lo."</string>
+    <string name="author">"clickclick.home@gmail.com"</string>
+    <string name="browser_author">"easy.browsers@gmail.com"</string>
+
+    <string name="auto_change_wallpaper">"mudar papel de parede pela trepidação"</string>
+    <string name="about_message">"\" \"É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nhistória clique nLong / favorito para o apagar."</string>
+    
+    <string name="share_wallpaper">"Wallpaper Compartilhar"</string>
+    <string name="share_desktop">"Compartilhar desktop"</string>
+        
+    <string name="warning">"Somente o usuário root pode excluir aplicativo do sistema. \n\nExcluir sistema aplicativo pode causar telefone não pode arrancar. \n\nPor favor, pense com cuidado!"</string>
+
+    <string name="menu_choose_home">"Mudar Início"</string>
+    <string name="select">"Selecione Home"</string>
+    <string name="select_file">"Seletor de arquivos"</string>
+    
+    <string name="wallpaper_scene">"Baidu Pic"</string>
+    <string name="wallpaper_beauty">"Belezas"</string>
+    
+    <string name="wallpaper">"Papel de parede"</string>
+    <string name="about">"Sobre ..."</string>
+    <string name="help">"Útil"</string>
+    <string name="settings">"Configurações"</string>
+    <string name="ok">"OK"</string>
+    <string name="cancel">"Cancelar"</string>
+    <string name="exit">"Sair"</string>
+    
+    <string name="share">"Compartilhar"</string>
+    <string name="sharemode">"Modo Compartilhar"</string>
+    <string name="sharetext">"simples e fácil de usar!"</string>
+    <string name="app_share_text">"\" \"É legal!"</string>
+    <string name="share_text1">" selecionados. "</string>
+    <string name="share_text2">" \"Por telefone ou\" "</string>
+    <string name="share_text3">"\" \"Pelo pc."</string>
+    <string name="vote">"Votar para Navegador Fácil"</string>
+    
+    <string name="favoriteapps">"Atalho"</string>        
+    <string name="systemapps">"Sistêmica"</string>        
+    <string name="userapps">"msilva"</string>        
+    <string name="online">"Online"</string>
+    <string name="home">"Lares"</string>
+    <string name="packages">"Provedores de Serviço"</string>
+    
+    <string name="addtoFavo">"Adicionar ao lar"</string>
+    <string name="removeFromFavo">"Excluir"</string>
+    <string name="addtoShort">"Adicionar ao atalho"</string>
+    <string name="removeFromShort">"Excluir este atalho"</string>
+    <string name="appdetail">"Detalhe"</string>
+    <string name="killapp">"Para com isso"</string>
+    <string name="backapp">"Backup"</string>
+    <string name="to">"para"</string>
+    <string name="more">"Leia mais ..."</string>
+    <string name="delete">"Excluir"</string>
+    <string name="hideapp">"Ocultar"</string>
+    <string name="hidepage">"Ocultar página atual"</string>
+    
+    <string name="back">"De volta"</string>
+    <string name="next">"next"</string>
+    <string name="newpage">"Novas propriedades"</string>
+    <string name="nomore_pages">"muitas páginas aberta."</string>
+    <string name="history">"Histórico"</string>
+    <string name="bookmark">"Favorito"</string>
+    <string name="top">"Início"</string>
+    <string name="source">"Fonte"</string>
+    <string name="not_avaiable">"Desculpe, não disponíveis em Android2.3.3"</string>
+    <string name="homepage">"Página Inicial"</string>
+    <string name="shareurl">"Url Compartilhar"</string>
+    <string name="recommend">"Recomendar"</string>
+    
+    <string name="add_bookmark">"Adicionar aos Marcadores..."</string>
+    <string name="remove_bookmark">"Retire do Bookmark"</string>
+    <string name="view_bookmark">"Ver Favoritos"</string>
+    <string name="remove_history">"Remover da História"</string>
+    
+    <string name="save">"Salvar como arquivo"</string>
+    <string name="open_new">"Abrir em nova página"</string>
+    <string name="copy_url">"Url cópia"</string>
+    <string name="copy">"Copiar"</string>
+    <string name="copy_hint">"Tente longo clicar sobre o texto que deseja copiar"</string>
+    
+    <string name="sdcard_needed">"Arquivo baixado não pode ser aberto sem SDcard."</string>
+    
+    <string name="loading">"Carregando..."</string>
+    <string name="wait">"Por favor, aguarde enquanto carregamos ..."</string>
+    <string name="pause">"Download Pause"</string>
+    <string name="justreturn">"Basta voltar"</string>
+    <string name="resume">"Continuar download"</string>
+    <string name="stop">"Cancelar o download"</string>
+    <string name="download_hint">"O que você quer para"</string>
+    <string name="retry">"Reiniciar"</string>
+    <string name="start_download">"Iniciar download"</string>
+    <string name="downloading">"Recebendo"</string>
+    <string name="download_finish">"baixar acabado, clique para verificar"</string>
+    <string name="download_fail">"Falha no download, clique para verificar"</string>
+    <string name="downloads_to">"Arquivos baixados para \"\""</string>
+    <string name="downloads_open">"\". \"Você pode ver a pasta com arquivos ES Explorer ou outro gerenciador de arquivos. Clique em OK para baixar ES File Explorer."</string>
+    
+    <string name="sorry">" \"Caiu, log de erro é\" "</string>
+
+    <string name="grid_view">"Grid View"</string>
+    <string name="list_view">"Ver Lista"</string>
+    <string name="restart">"É necessário reiniciar para mudar a vista. \nReiniciar agora?"</string>
+
+    <string name="snap">"Instantâneo"</string>
+    <string name="snap_size">"SnapSize"</string>
+    <string name="full_screen">"Tela cheia"</string>
+    <string name="full_webpage">"FullWeb"</string>
+    <string name="show_zoom">"(Página atual) Controle de Zoom"</string>
+    <string name="block_image">"Bloquear imagens para reduzir a largura de banda"</string>
+    <string name="homepage_css">"Homepage fresco, mas um pouco lento"</string>
+    <string name="max_history">"Histórico"</string>
+    <string name="history_8">"10"</string>
+    <string name="history_16">"15"</string>
+    <string name="font_size">"Tamanho da fonte"</string>
+    <string name="font_smallest">"Menor"</string>
+    <string name="font_smaller">"Pequeno"</string>
+    <string name="font_normal">"normal"</string>
+    <string name="font_larger">"Grande"</string>
+    <string name="font_largest">"Maior"</string>
+    <string name="encoding">"Codificação na página atual"</string>
+    <string name="search">"Pesquisar"</string>
+    <string name="html5">"(Página atual) Parcialmente apoiar HTML5 para algum site. Um pouco de trabalho lento e não em Cupcake / Donut"</string>
+    
+    <string name="cache">"Limpar cache se você se sentir lento"</string>
+    <string name="cookie">"cookie"</string>
+    <string name="formdata">"Dados de formulário"</string>
+    <string name="password">"Senha"</string>
+    <string name="clear_all">"Limpar dados abaixo selecionados"</string>
+    <string name="clear_hint">"será limpo"</string>
+    <string name="data_cleared">"apuradas."</string>
+    <string name="url_can_longclick">"\t(URL pode ser clique de comprimento)"</string>
+    <string name="pic_can_longclick">"\t(imagem pode ser clique longa)"</string>
+    <string name="text_can_longclick">"\t(você pode mesmo tempo clique no texto)"</string>
+    <string name="ad_hint">"Clique no banner irá removê-lo untill próxima vez que você iniciar o navegador Fácil."</string>
+    <string name="ad_can_remove">"\t(clique anúncio para removê-lo)"</string>
+    <string name="change_ua">"Precisa mudar UA para acessar algum site"</string>
+    <string name="cache_tosd">"Cache para cartão SD"</string>
+    <string name="advance_button">"Configurações Avançadas"</string>
+    <string name="basic_button">"Definições Básicas"</string>
+    
+</resources>

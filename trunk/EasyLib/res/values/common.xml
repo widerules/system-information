@@ -5,7 +5,7 @@
     <string name="browser_name">Easy Browser</string>
     <string name="embed_browser_name">Easy Browser Embedded</string>
     
-    <string name="about_dialog_notes">If you like this app, \nplease vote me 5 stars, thanks.</string>
+    <string name="about_dialog_notes">Please vote for Easy Browser 5 stars if you love it, thanks.</string>
     <string name="help_message">Find you app by not more than 2 click. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
     <string name="author">clickclick.home@gmail.com</string>
     <string name="browser_author">easy.browsers@gmail.com</string>
@@ -40,7 +40,7 @@
     <string name="share_text1">" "Check" "</string>
     <string name="share_text2">" "by phone or" "</string>
     <string name="share_text3">" "by pc.</string>
-    <string name="vote">Vote me</string>
+    <string name="vote">Vote for Easy Browser</string>
     
     <string name="favoriteapps">Shortcut</string>        
     <string name="systemapps">System</string>        
@@ -154,7 +154,7 @@
     <string name="ad_can_remove">\t(click ad to remove it)</string>
     <string name="change_ua">Need change UA to access some website</string>
     <string name="cache_tosd">Cache to SD card</string>
-    <string name="advance_button">Advance Settings</string>
+    <string name="advance_button">Advanced Settings</string>
     <string name="basic_button">Basic Settings</string>
     
     <string name="android">Phone</string>

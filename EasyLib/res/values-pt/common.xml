@@ -133,8 +133,6 @@
     <string name="url_can_longclick">\t(URL pode ser clique de comprimento)</string>
     <string name="pic_can_longclick">\t(imagem pode ser clique longa)</string>
     <string name="text_can_longclick">\t(você pode mesmo tempo clique no texto)</string>
-    <string name="ad_hint">Clique no banner irá removê-lo untill próxima vez que você iniciar o navegador Fácil.</string>
-    <string name="ad_can_remove">\t(clique anúncio para removê-lo)</string>
     <string name="change_ua">Precisa mudar UA para acessar algum site</string>
     <string name="cache_tosd">Cache para cartão SD</string>
     <string name="advance_button">Configurações Avançadas</string>

@@ -73,7 +73,7 @@ public class wrapAdView {
 			mInstance.setAdListener(new Listener());
 			
 			adRequest = new AdRequest(); 
-			//adRequest.addTestDevice("E3CE9F94F56824C07AE1C3A5B434F664");//for test
+			//adRequest.addTestDevice("DE5E4254FDBA0EF08F78AE96AB067716");//for test
 		} catch (Exception e) {}
 	}
 

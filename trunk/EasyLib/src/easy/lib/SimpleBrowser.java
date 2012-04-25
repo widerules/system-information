@@ -108,7 +108,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-
+import android.webkit.GeolocationPermissions;
 
 //for get webpage source on cupcake
 class wrapValueCallback {
@@ -234,6 +234,7 @@ public class SimpleBrowser extends Activity {
 	long html5cacheMaxSize = 1024*1024*8;
 	int ua;
 	boolean showZoom = false;
+	int searchEngine = 2;
 
 	//search
 	EditText etSearch;
@@ -458,7 +459,7 @@ class MyWebview extends WebView {
 	        /*@Override
 	        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 	            callback.invoke(origin, true, false);
-	        }//I don't know how to reflect a Interface, so it will carsh on cupcake*/
+	        }//I don't know how to reflect a Interface, so it will crash on cupcake*/
             
             
             /*@Override
@@ -1076,6 +1077,7 @@ public void onCreate(Bundle savedInstanceState) {
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
     //showZoom = sp.getBoolean("show_zoom", false);
+    searchEngine = sp.getInt("search_engine", 2);
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1370,11 +1372,7 @@ public void onCreate(Bundle savedInstanceState) {
     imgGo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-			String url = webAddress.getText().toString();
-			if (!BLANK_PAGE.equals(url)) {
-				if (!url.contains("://")) url = "http://" + url;
-				serverWebs.get(webIndex).loadUrl(url);
-			}
+			gotoUrl(webAddress.getText().toString());
 		}
     });
     
@@ -1383,7 +1381,7 @@ public void onCreate(Bundle savedInstanceState) {
     webAddress.setOnItemClickListener(new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			serverWebs.get(webIndex).loadUrl("http://" + urlAdapter.getItem(position));
+			gotoUrl(urlAdapter.getItem(position));
 		}
     	
     });
@@ -1610,6 +1608,27 @@ BroadcastReceiver packageReceiver = new BroadcastReceiver() {
         }
 	}
 };
+
+void gotoUrl(String url) {
+	if (!BLANK_PAGE.equals(url)) {
+		if (!url.contains(".")) {
+			switch (searchEngine) {
+			case 0://bing
+				url = "http://www.bing.com/search?q=" + url;
+				break;
+			case 1://baidu
+				url = "http://www.baidu.com/s?wd=" + url;
+				break;
+			case 2://google
+			default:
+				url = "http://www.google.com/search?q=" + url;
+				break;
+			}
+		}
+		else if (!url.contains("://")) url = "http://" + url;
+		serverWebs.get(webIndex).loadUrl(url);
+	}
+}
 
 void changePage(int position) {
 	while (webpages.getDisplayedChild() != position) webpages.showNext();
@@ -2037,6 +2056,8 @@ protected void onResume() {
 	
 	
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
+    
+    searchEngine = sp.getInt("search_engine", 2);
     
     WebSettings localSettings = serverWebs.get(webIndex).getSettings();
     

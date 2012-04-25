@@ -144,4 +144,9 @@
     <string name="android">安卓</string>
     <string name="pc">电脑</string>
     
+    <string name="search_engine">默认搜索引擎</string>
+    <string name="google">谷歌</string>
+    <string name="bing">必应</string>
+    <string name="baidu">百度</string>
+        
 </resources>

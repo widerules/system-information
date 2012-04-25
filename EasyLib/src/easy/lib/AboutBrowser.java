@@ -27,7 +27,7 @@ import easy.lib.util;
 public class AboutBrowser extends Activity{
 	
 	CheckBox cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg;
-	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA;
+	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
 	Button btnAdvance;
@@ -263,6 +263,15 @@ public class AboutBrowser extends Activity{
 			}
     	});
     	
+    	searchEngine = (RadioGroup) findViewById(R.id.search_engine);
+    	searchEngine.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup arg0, int arg1) {
+        		editor.putInt("search_engine", searchEngine.indexOfChild(findViewById(searchEngine.getCheckedRadioButtonId())));
+        		editor.commit();
+			}
+    	});
+    	
     	clrHistory = (CheckBox) findViewById(R.id.clear_history);
     	clrHistory.setOnClickListener(new OnClickListener() {
     		@Override
@@ -326,6 +335,7 @@ public class AboutBrowser extends Activity{
 		((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 0))).setChecked(true);
 		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0))).setChecked(true);
+		((RadioButton) searchEngine.getChildAt(perferences.getInt("search_engine", 2))).setChecked(true);
         
 		clrHistory.setChecked(perferences.getBoolean("clear_history", false));
 		clrBookmark.setChecked(perferences.getBoolean("clear_bookmark", false));

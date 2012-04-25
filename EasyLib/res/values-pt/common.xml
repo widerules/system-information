@@ -138,4 +138,6 @@
     <string name="advance_button">Configurações Avançadas</string>
     <string name="basic_button">Definições Básicas</string>
     
+    <string name="search_engine">mecanismo de busca padrão</string>
+    
 </resources>

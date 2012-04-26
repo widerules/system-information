@@ -1493,6 +1493,7 @@ public void onCreate(Bundle savedInstanceState) {
 			else {//reload the webpage
 				if (!BLANK_PAGE.equals(webAddress.getText().toString()))  
 					serverWebs.get(webIndex).reload();
+				else loadPage(true);
 			}
 		}
 	});

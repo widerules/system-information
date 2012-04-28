@@ -28,7 +28,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg;
+	CheckBox cbBlockPopup, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
@@ -150,6 +150,15 @@ public class AboutBrowser extends Activity{
 				util.startActivity(intent, true, getBaseContext());
 			}
 		});
+
+    	cbBlockPopup = (CheckBox) findViewById(R.id.block_popup);
+    	cbBlockPopup.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("block_popup", cbBlockPopup.isChecked());
+        		editor.commit();
+    		}
+    	});
 
     	cbCacheToSD = (CheckBox) findViewById(R.id.cache_tosd);
     	cbCacheToSD.setOnClickListener(new OnClickListener() {
@@ -339,6 +348,7 @@ public class AboutBrowser extends Activity{
 	
 	@Override
 	protected void onResume() {
+		cbBlockPopup.setChecked(perferences.getBoolean("block_popup", false));
 		cbCacheToSD.setChecked(perferences.getBoolean("cache_tosd", false));
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		//cbCss.setChecked(perferences.getBoolean("css", false));

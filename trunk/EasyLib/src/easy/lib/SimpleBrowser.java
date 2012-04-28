@@ -224,10 +224,10 @@ public class SimpleBrowser extends Activity {
 	Context mContext;
 
 	//settings
-	boolean css;
 	boolean snapFullScreen = true;
 	boolean html5 = false;
 	boolean blockImage;
+	boolean blockPopup;
 	boolean collapse1, collapse2, collapse3;
 	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
@@ -384,7 +384,8 @@ class MyWebview extends WebView {
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
     	//setInitialScale(1);
-    	localSettings.setSupportMultipleWindows(true);
+        localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
+        localSettings.setSupportMultipleWindows(!blockPopup);
     	localSettings.setBlockNetworkImage(blockImage);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
@@ -1072,6 +1073,7 @@ public void onCreate(Bundle savedInstanceState) {
     //css = sp.getBoolean("css", false);
     //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
+    blockPopup = sp.getBoolean("block_popup", false);
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
@@ -1645,6 +1647,8 @@ void changePage(int position) {
     else localSettings.setUserAgentString(selectUA(ua));
     localSettings.setTextSize(textSize);
     localSettings.setBlockNetworkImage(blockImage);
+    localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
+    localSettings.setSupportMultipleWindows(!blockPopup);
 
 	if (serverWebs.get(position).mProgress > 0) {
 		imgRefresh.setImageResource(R.drawable.stop);
@@ -2078,6 +2082,10 @@ protected void onResume() {
     blockImage = sp.getBoolean("block_image", false);
     localSettings.setBlockNetworkImage(blockImage);
 
+    blockPopup = sp.getBoolean("block_popup", false);
+    localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
+    localSettings.setSupportMultipleWindows(!blockPopup);
+    
     html5 = sp.getBoolean("html5", false);
     wrapWebSettings webSettings = new wrapWebSettings(localSettings);
     webSettings.setAppCacheEnabled(html5);//API7

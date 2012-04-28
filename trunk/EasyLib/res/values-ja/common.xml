@@ -112,8 +112,11 @@
     <string name="homepage_css">クールなホームページですが、少し遅い</string>
     <string name="max_history">履歴</string>
     <string name="font_size">フォント・サイズ</string>
+    <string name="font_smallest">最低</string>
     <string name="font_smaller">小さい</string>
     <string name="font_normal">通常</string>
+    <string name="font_larger">大</string>
+    <string name="font_largest">最大</string>
     <string name="encoding">現在のページのエンコーディング</string>
     <string name="encoding_auto">自動</string>
     <string name="search">Webページで検索</string>
@@ -135,4 +138,5 @@
     
     <string name="search_engine">デフォルトの検索エンジン</string>
     
+    <string name="block_popup">ポップアップをブロックする</string>
 </resources>

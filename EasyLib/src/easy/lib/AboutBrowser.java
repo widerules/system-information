@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -35,6 +37,19 @@ public class AboutBrowser extends Activity{
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
 	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			LayoutParams lp = (LayoutParams) advanceSettings.getLayoutParams();
+			if (lp.height < 0) {//<0 means wrap content or match parent.
+				btnAdvance.performClick();//hide the advanced settings if it is shown
+				return true;
+			}
+		}
+		
+		return super.onKeyDown(keyCode, event);
+	}
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

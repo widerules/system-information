@@ -138,5 +138,6 @@
     
     <string name="search_engine">デフォルトの検索エンジン</string>
     
-    <string name="block_popup">ポップアップをブロックする</string>
+    <string name="block_popup">ポップアップウィンドウをブロックする</string>
+    <string name="block_js">ブロックのJavaScript</string>
 </resources>

@@ -141,4 +141,5 @@
     <string name="search_engine">mecanismo de busca padrão</string>
     
     <string name="block_popup">bloquear pop-up</string>
+    <string name="block_js">bloco de JavaScript</string>
 </resources>

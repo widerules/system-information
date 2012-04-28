@@ -150,4 +150,5 @@
     <string name="baidu">百度</string>
         
     <string name="block_popup">禁止弹窗</string>
+    <string name="block_js">禁止JavaScript</string>
 </resources>

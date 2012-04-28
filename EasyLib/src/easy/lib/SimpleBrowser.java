@@ -226,13 +226,14 @@ public class SimpleBrowser extends Activity {
 	//settings
 	boolean snapFullScreen = true;
 	boolean html5 = false;
-	boolean blockImage;
-	boolean blockPopup;
-	boolean collapse1, collapse2, collapse3;
+	boolean blockImage = false;
+	boolean blockPopup = false;
+	boolean blockJs = false;
+	boolean collapse1 = false, collapse2 = false, collapse3 = false;
 	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
 	long html5cacheMaxSize = 1024*1024*8;
-	int ua;
+	int ua = 0;
 	boolean showZoom = false;
 	int searchEngine = 2;
 
@@ -384,9 +385,10 @@ class MyWebview extends WebView {
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
     	//setInitialScale(1);
+        localSettings.setSupportMultipleWindows(true);
         localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
-        localSettings.setSupportMultipleWindows(!blockPopup);
     	localSettings.setBlockNetworkImage(blockImage);
+    	localSettings.setJavaScriptEnabled(!blockJs);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
         else localSettings.setUserAgentString(selectUA(ua));
@@ -1070,7 +1072,7 @@ public void onCreate(Bundle savedInstanceState) {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
-    //css = sp.getBoolean("css", false);
+    /*//css = sp.getBoolean("css", false);
     //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
     blockPopup = sp.getBoolean("block_popup", false);
@@ -1079,7 +1081,7 @@ public void onCreate(Bundle savedInstanceState) {
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
     //showZoom = sp.getBoolean("show_zoom", false);
-    searchEngine = sp.getInt("search_engine", 2);
+    searchEngine = sp.getInt("search_engine", 2);//no need to read here if read in resume*/
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1648,7 +1650,8 @@ void changePage(int position) {
     localSettings.setTextSize(textSize);
     localSettings.setBlockNetworkImage(blockImage);
     localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
-    localSettings.setSupportMultipleWindows(!blockPopup);
+    //localSettings.setSupportMultipleWindows(true);
+	localSettings.setJavaScriptEnabled(!blockJs);
 
 	if (serverWebs.get(position).mProgress > 0) {
 		imgRefresh.setImageResource(R.drawable.stop);
@@ -2084,8 +2087,11 @@ protected void onResume() {
 
     blockPopup = sp.getBoolean("block_popup", false);
     localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
-    localSettings.setSupportMultipleWindows(!blockPopup);
+    //localSettings.setSupportMultipleWindows(!blockPopup);
     
+    blockJs = sp.getBoolean("block_js", false);
+	localSettings.setJavaScriptEnabled(!blockJs);
+
     html5 = sp.getBoolean("html5", false);
     wrapWebSettings webSettings = new wrapWebSettings(localSettings);
     webSettings.setAppCacheEnabled(html5);//API7

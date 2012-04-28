@@ -193,7 +193,6 @@
         />  
 	</RadioGroup>           
     </HorizontalScrollView>
-    </LinearLayout>
     
     <TextView
     	android:layout_width="match_parent"
@@ -234,7 +233,8 @@
         />  
     </RadioGroup>           
     </HorizontalScrollView>
-        
+    </LinearLayout>
+    
     <Button android:id="@+id/advance_button"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"

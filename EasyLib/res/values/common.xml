@@ -172,4 +172,5 @@
     <string name="bing">Bing</string>
     <string name="baidu">Baidu</string>
     
+    <string name="block_popup">Block pop-up</string>
 </resources>

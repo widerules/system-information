@@ -259,7 +259,16 @@
       	android:checked="false"
         />
       
-        <CheckBox android:id="@+id/cache_tosd"
+    	<CheckBox android:id="@+id/block_js"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/block_js"
+      	android:textColor="#f0030f03"
+      	android:layout_marginLeft="15dip"
+      	android:checked="false"
+        />
+      
+    	<CheckBox android:id="@+id/cache_tosd"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/cache_tosd"

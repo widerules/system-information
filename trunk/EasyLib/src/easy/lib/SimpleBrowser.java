@@ -2106,8 +2106,7 @@ protected void onResume() {
         sEdit.putBoolean("html5", false);//close html5 by default
     }
 	
-    int iEncoding = sp.getInt("encoding", 0);
-    String tmpEncoding = getEncoding(iEncoding);
+    String tmpEncoding = getEncoding(sp.getInt("encoding", 0));
     if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
         localSettings.setDefaultTextEncodingName(tmpEncoding);
         sEdit.putInt("encoding", 0);//set default encoding to autoselect

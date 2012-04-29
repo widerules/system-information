@@ -255,7 +255,7 @@ public class AboutBrowser extends Activity{
 			                LayoutParams.WRAP_CONTENT));
 					basicSettings.setLayoutParams(new LayoutParams(
 							LayoutParams.MATCH_PARENT, 0));
-					btnAdvance.setText(getString(R.string.basic_button));
+					btnAdvance.setText(getString(R.string.exit) + " " + getString(R.string.advance_button));
 				}
 				else {
 					lp.height = 0;

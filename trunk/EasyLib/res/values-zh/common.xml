@@ -150,4 +150,6 @@
         
     <string name="block_popup">禁止弹窗</string>
     <string name="block_js">禁止JS</string>
+    
+    <string name="reset">恢复默认设置</string>
 </resources>

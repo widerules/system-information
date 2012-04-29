@@ -783,29 +783,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     			Toast.makeText(mContext, message + " " + getString(R.string.data_cleared), Toast.LENGTH_LONG).show();
     		}
     	}
-        /*clearAll = sp.getBoolean("clear_all", false);
-        if (clearAll) {
-        	
-        	//close web pages
-        	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
-        	closePage(0, true);
-        	
-            //reset default settings
-        	sEdit.putInt("ua", 0);
-            sEdit.putBoolean("block_image", false);
-            sEdit.putInt("textsize", 2);
-            sEdit.putInt("full_screen", 1);
-        	sEdit.putBoolean("show_zoom", false);
-            sEdit.putBoolean("html5", false);
-            sEdit.putInt("encoding", 0);
-            sEdit.commit();
-        	
-            super.onResume();
-            
-            finish();
-            return;
-        }*/
-        
     	
         snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
         

@@ -491,7 +491,16 @@
     </LinearLayout>
     </HorizontalScrollView>
     
-    </LinearLayout>
+    <Button android:id="@+id/reset"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:text="@string/reset"
+		android:layout_margin="1dip"
+        android:background="@drawable/button_layout"
+    />
+    
+    </LinearLayout><!-- advanced settings -->
     
     </LinearLayout>
 

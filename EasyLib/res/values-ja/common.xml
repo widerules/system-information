@@ -139,4 +139,6 @@
     
     <string name="block_popup">ポップアップウィンドウをブロックする</string>
     <string name="block_js">ブロックのJavaScript</string>
+    
+    <string name="reset">デフォルトにリセット</string>
 </resources>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,7 +33,7 @@ public class AboutBrowser extends Activity{
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
-	Button btnAdvance;
+	Button btnAdvance, btnReset;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -122,7 +123,7 @@ public class AboutBrowser extends Activity{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 		        		editor.putBoolean("clear_data", true);
-		        		editor.commit();
+		        		//editor.commit();
 		        		finish();
 					}
 				}).
@@ -156,7 +157,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("block_js", cbBlockJs.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
 
@@ -165,7 +166,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("block_popup", cbBlockPopup.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
 
@@ -174,7 +175,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
 
@@ -183,7 +184,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("show_zoom", cbZoomControl.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
 
@@ -192,7 +193,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("block_image", cbBlockImg.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
     	
@@ -201,7 +202,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("css", cbCss.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});*/
     	
@@ -219,7 +220,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("html5", cbHtml5.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
     	
@@ -229,7 +230,7 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
         		editor.putInt("textsize", fontSize.indexOfChild(findViewById(fontSize.getCheckedRadioButtonId())));
-        		editor.commit();
+        		//editor.commit();
 			}
     	});
     	
@@ -238,7 +239,7 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
         		editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
-        		editor.commit();
+        		//editor.commit();
 			}
     	});*/
     	
@@ -274,7 +275,7 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
         		editor.putInt("encoding", encodingType.indexOfChild(findViewById(encodingType.getCheckedRadioButtonId())));
-        		editor.commit();
+        		//editor.commit();
 			}
     	});
     	
@@ -283,7 +284,7 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
         		editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));
-        		editor.commit();
+        		//editor.commit();
 			}
     	});
 
@@ -292,7 +293,7 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
         		editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA.getCheckedRadioButtonId())));
-        		editor.commit();
+        		//editor.commit();
 			}
     	});
     	
@@ -301,7 +302,7 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
         		editor.putInt("search_engine", searchEngine.indexOfChild(findViewById(searchEngine.getCheckedRadioButtonId())));
-        		editor.commit();
+        		//editor.commit();
 			}
     	});
     	
@@ -310,7 +311,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("clear_history", clrHistory.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
     	clrBookmark = (CheckBox) findViewById(R.id.clear_bookmark);
@@ -318,7 +319,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("clear_bookmark", clrBookmark.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
     	clrCookie = (CheckBox) findViewById(R.id.clear_cookie);
@@ -326,7 +327,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("clear_cookie", clrCookie.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
     	clrFormdata = (CheckBox) findViewById(R.id.clear_formdata);
@@ -334,7 +335,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("clear_formdata", clrFormdata.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
     	clrPassword = (CheckBox) findViewById(R.id.clear_password);
@@ -342,7 +343,7 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("clear_password", clrPassword.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
     	clrCache = (CheckBox) findViewById(R.id.clear_cache);
@@ -350,9 +351,38 @@ public class AboutBrowser extends Activity{
     		@Override
     		public void onClick(View arg0) {
         		editor.putBoolean("clear_cache", clrCache.isChecked());
-        		editor.commit();
+        		//editor.commit();
     		}
     	});
+    	
+        btnReset = (Button) findViewById(R.id.reset);
+        btnReset.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+	            //reset default settings
+	        	editor.putInt("ua", 0);
+	        	editor.putInt("textsize", 2);
+	        	editor.putInt("full_screen", 1);
+	        	editor.putInt("encoding", 0);
+	        	editor.putInt("search_engine", 3);
+	        	
+	        	editor.putBoolean("block_image", false);
+	        	editor.putBoolean("block_popup", false);
+	        	editor.putBoolean("block_js", false);
+	        	editor.putBoolean("cache_tosd", false);
+	        	editor.putBoolean("show_zoom", false);
+	        	editor.putBoolean("html5", false);
+	        	
+	        	editor.putBoolean("clear_history", false);
+	        	editor.putBoolean("clear_bookmark", false);
+	        	editor.putBoolean("clear_cookie", false);
+	        	editor.putBoolean("clear_formdata", false);
+	        	editor.putBoolean("clear_password", false);
+	        	editor.putBoolean("clear_cache", false);
+	        	
+	            finish();
+			}
+        });
 	}
 	
 	@Override
@@ -381,4 +411,9 @@ public class AboutBrowser extends Activity{
 		super.onResume();
 	}
 	
+	@Override
+	protected void onPause() {
+	    editor.commit();
+		super.onPause();
+	}
 }

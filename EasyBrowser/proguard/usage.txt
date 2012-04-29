@@ -1,3 +1,5 @@
+a:
+    private a()
 android.annotation.SuppressLint
 android.annotation.TargetApi
 com.google.ads.Ad:
@@ -15,57 +17,38 @@ com.google.ads.AdActivity:
 com.google.ads.AdRequest:
     public static final java.lang.String VERSION
     public static final java.lang.String LOGTAG
-    173:174:public void setGender(com.google.ads.AdRequest$Gender)
-    184:185:public void setBirthday(java.lang.String)
-    196:197:public void setPlusOneOptOut(boolean)
-    208:209:public void setKeywords(java.util.Set)
-    238:239:public void setExtras(java.util.Map)
-    267:268:public void setLocation(android.location.Location)
-    281:282:public void setTesting(boolean)
-    385:386:public void setTestDevices(java.util.Set)
+    public void setGender(com.google.ads.AdRequest$Gender)
+    public void setBirthday(java.lang.String)
+    public void setKeywords(java.util.Set)
+    public void setExtras(java.util.Map)
+    public void addExtra(java.lang.String,java.lang.Object)
+    public void setLocation(android.location.Location)
+    public void setTesting(boolean)
+    public void addTestDevice(java.lang.String)
+    public void setTestDevices(java.util.Set)
 com.google.ads.AdSize:
-    38:39:public AdSize(int,int)
+    public AdSize(int,int)
 com.google.ads.AdView:
-    478:482:public boolean isReady()
-    535:536:public void stopLoading()
+    public boolean isReady()
+    public void stopLoading()
 com.google.ads.InterstitialAd:
-    private com.google.ads.d a
-    73:74:public InterstitialAd(android.app.Activity,java.lang.String)
-    88:91:public InterstitialAd(android.app.Activity,java.lang.String,boolean)
-    100:100:public boolean isReady()
-    112:113:public void loadAd(com.google.ads.AdRequest)
-    122:135:public void show()
-    146:147:public void setAdListener(com.google.ads.AdListener)
-    156:157:public void stopLoading()
-com.google.ads.R$id:
-    public static final int admob_adView_320_50_test_1
-    public static final int admob_adView_320_50_test_2
-    public static final int admob_adView_320_50_test_3
-    public static final int admob_adView_320_50_test_4
-    public static final int admob_layout_320_50_test
-com.google.ads.R$layout:
-    public static final int admob_320_50_test
-com.google.ads.d:
-    464:464:public final synchronized boolean o()
-    777:778:public final synchronized void y()
-com.google.ads.searchads.SearchAdRequest:
-    88:89:public void setQuery(java.lang.String)
-    98:104:public void setBackgroundColor(int)
-    116:122:public void setBackgroundGradient(int,int)
-    132:133:public void setHeaderTextColor(int)
-    143:144:public void setDescriptionTextColor(int)
-    154:155:public void setAnchorTextColor(int)
-    163:164:public void setFontFace(java.lang.String)
-    173:174:public void setHeaderTextSize(int)
-    184:185:public void setBorderColor(int)
-    192:193:public void setBorderType(com.google.ads.searchads.SearchAdRequest$BorderType)
-    202:203:public void setBorderThickness(int)
+    private d a
+    public InterstitialAd(android.app.Activity,java.lang.String)
+    public InterstitialAd(android.app.Activity,java.lang.String,boolean)
+    public boolean isReady()
+    public void loadAd(com.google.ads.AdRequest)
+    public void show()
+    public void setAdListener(com.google.ads.AdListener)
+    public void stopLoading()
 com.google.ads.util.AdUtil:
-    152:154:private AdUtil()
+    private AdUtil()
 com.google.ads.util.a:
-    19:21:private a()
+    private a()
 com.google.ads.util.c:
-    26:28:private c()
+    private c()
+d:
+    public final synchronized boolean o()
+    public final synchronized void y()
 easy.browser.BuildConfig
 easy.browser.R
 easy.browser.R$attr
@@ -80,132 +63,13 @@ easy.lib.R:
     10:10:public R()
 easy.lib.R$attr
 easy.lib.R$drawable:
-    public static final int border
-    public static final int button_layout
-    public static final int button_layout_unselected
-    public static final int circle_transparent
-    public static final int favorites_add
-    public static final int go
-    public static final int home
-    public static final int next
-    public static final int prev
-    public static final int round_corner
-    public static final int round_corner_light
-    public static final int round_corner_white
     13:13:public R$drawable()
 easy.lib.R$id:
-    public static final int adsParent
-    public static final int control_buttons
-    public static final int homepage_css
-    public static final int line1
-    public static final int line2
-    public static final int max_history
-    public static final int pause_download
-    public static final int urlline
-    public static final int web_list
-    public static final int webtools
     39:39:public R$id()
 easy.lib.R$layout:
-    107:107:public R$layout()
+    111:111:public R$layout()
 easy.lib.R$string:
-    public static final int about
-    public static final int ad_hint
-    public static final int addtoFavo
-    public static final int addtoShort
-    public static final int android
-    public static final int app_name
-    public static final int app_share_text
-    public static final int appdetail
-    public static final int auto_change_wallpaper
-    public static final int back
-    public static final int backapp
-    public static final int bb
-    public static final int block_image
-    public static final int cache
-    public static final int cache_tosd
-    public static final int change_ua
-    public static final int chrome
-    public static final int clear_all
-    public static final int cookie
-    public static final int delete
-    public static final int encoding
-    public static final int encoding_auto
-    public static final int encoding_big5
-    public static final int encoding_euc_jp
-    public static final int encoding_euc_kr
-    public static final int encoding_gb2312
-    public static final int encoding_gbk
-    public static final int encoding_jis
-    public static final int encoding_jp
-    public static final int encoding_latin1
-    public static final int encoding_utf8
-    public static final int favoriteapps
-    public static final int ff
-    public static final int font_larger
-    public static final int font_largest
-    public static final int font_normal
-    public static final int font_size
-    public static final int font_smaller
-    public static final int font_smallest
-    public static final int full_screen
-    public static final int full_webpage
-    public static final int grid_view
-    public static final int help
-    public static final int help_message
-    public static final int hideapp
-    public static final int hidepage
-    public static final int history_16
-    public static final int history_8
-    public static final int home
-    public static final int homepage
-    public static final int homepage_css
-    public static final int html5
-    public static final int ie
-    public static final int ipad
-    public static final int iphone
-    public static final int justreturn
-    public static final int killapp
-    public static final int list_view
-    public static final int loading
-    public static final int max_history
-    public static final int menu_choose_home
-    public static final int more
-    public static final int newpage
-    public static final int next
-    public static final int nokia
-    public static final int online
-    public static final int packages
-    public static final int pc
-    public static final int recommend
-    public static final int removeFromFavo
-    public static final int removeFromShort
-    public static final int restart
-    public static final int safari
-    public static final int select
-    public static final int share_desktop
-    public static final int share_text1
-    public static final int share_text2
-    public static final int share_text3
-    public static final int share_wallpaper
-    public static final int show_zoom
-    public static final int snap_size
-    public static final int stop
-    public static final int switcher_name
-    public static final int systemapps
-    public static final int text_can_longclick
-    public static final int to
-    public static final int userapps
-    public static final int view_bookmark
-    public static final int vote
-    public static final int wait
-    public static final int wallpaper
-    public static final int wallpaper_beauty
-    public static final int wallpaper_scene
-    public static final int warning
-    public static final int wp
-    118:118:public R$string()
-easy.lib.SimpleBrowser:
-    boolean css
+    122:122:public R$string()
 easy.lib.util:
     25:25:public util()
     55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)

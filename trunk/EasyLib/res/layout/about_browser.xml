@@ -121,7 +121,7 @@
 	</RadioGroup>           
     </HorizontalScrollView>
     
-    	<HorizontalScrollView
+    <HorizontalScrollView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
@@ -194,24 +194,11 @@
 	</RadioGroup>           
     </HorizontalScrollView>
     
-    <TextView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="center"
-		android:paddingTop="5dip"
-		android:paddingBottom="5dip"
-		android:layout_marginLeft="1dip"
-		android:layout_marginRight="1dip"
-	    android:text="@string/search_engine"
-	    android:textColor="#ff000000"
-      	android:textSize="16dip"
-      	android:background="#e0e0e0"
-        />
     <HorizontalScrollView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:fadeScrollbars="true"
-		android:layout_marginLeft="15dip"
+		android:layout_marginLeft="20dip"
 		android:layout_marginRight="10dip"
         >
     <RadioGroup android:id="@+id/search_engine"  
@@ -219,6 +206,13 @@
 	    android:layout_height="wrap_content"  
     	android:orientation="horizontal"
     >
+    <TextView
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+	    android:text="@string/search_engine"
+      	android:textColor="#f0030f03"
+      	android:textSize="16dip"
+        />
     <RadioButton  
         android:text="@string/bing"
       	android:textColor="#f0030f03"
@@ -233,6 +227,7 @@
         />  
     </RadioGroup>           
     </HorizontalScrollView>
+    
     </LinearLayout>
     
     <Button android:id="@+id/advance_button"

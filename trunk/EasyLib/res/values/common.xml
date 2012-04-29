@@ -166,7 +166,7 @@
     <string name="nokia">Nokia</string>
     <string name="bb">BlackBerry</string>
     
-    <string name="search_engine">Default Search Engine</string>
+    <string name="search_engine">SearchNg</string>
     <string name="google">Google</string>
     <string name="bing">Bing</string>
     <string name="baidu">Baidu</string>

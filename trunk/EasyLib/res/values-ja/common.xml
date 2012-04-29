@@ -135,7 +135,7 @@
     <string name="cache_tosd">SDカードへのキャッシュ</string>
     <string name="advance_button">詳細設定</string>
     
-    <string name="search_engine">デフォルトの検索エンジン</string>
+    <string name="search_engine">検索エンジン</string>
     
     <string name="block_popup">ポップアップウィンドウをブロックする</string>
     <string name="block_js">ブロックのJavaScript</string>

@@ -382,7 +382,7 @@ class MyWebview extends WebView {
     	localSettings.setSaveFormData(true);
     	localSettings.setTextSize(textSize);
     	localSettings.setSupportZoom(true);
-        //localSettings.setBuiltInZoomControls(showZoom);
+        localSettings.setBuiltInZoomControls(showZoom);
     	localSettings.setUseWideViewPort(true);//otherwise can't scroll horizontal in some webpage, such as qiupu.
     	localSettings.setPluginsEnabled(true);
     	//setInitialScale(1);
@@ -815,7 +815,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         
         showZoom = sp.getBoolean("show_zoom", false);
         localSettings.setBuiltInZoomControls(showZoom);
-        if (showZoom) sEdit.putBoolean("show_zoom", false);
         
         ua = sp.getInt("ua", 0);
         if (ua <= 1) localSettings.setUserAgent(ua);
@@ -1244,7 +1243,7 @@ public void onCreate(Bundle savedInstanceState) {
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
-    //showZoom = sp.getBoolean("show_zoom", false);
+    showZoom = sp.getBoolean("show_zoom", false);
     searchEngine = sp.getInt("search_engine", 2);//no need to read here if read in resume
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
     readTextSize(sp);//init the text size
@@ -1818,7 +1817,7 @@ void changePage(int position) {
     localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     //localSettings.setSupportMultipleWindows(true);
 	localSettings.setJavaScriptEnabled(!blockJs);
-
+	
 	if (serverWebs.get(position).mProgress > 0) {
 		imgRefresh.setImageResource(R.drawable.stop);
 		loadProgress.setVisibility(View.VISIBLE);
@@ -2121,6 +2120,12 @@ protected void onPause() {
 		bookmarkChanged = false;
 	}
 	
+    
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+	Editor sEdit = sp.edit();
+    sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
+    sEdit.commit();
+
 	super.onPause();
 }
 

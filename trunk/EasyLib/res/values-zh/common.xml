@@ -125,7 +125,7 @@
     <string name="encoding">当前页文字编码</string>
     <string name="encoding_auto">自动</string>
     <string name="search">页内查找</string>
-    <string name="html5">(当前页)某些网站需要HTML5</string>
+    <string name="html5">(当前页)部分支持HTML5</string>
     
     <string name="cache">用久了可能会慢，试试清除缓存吧</string>
     <string name="formdata">表单</string>
@@ -149,5 +149,5 @@
     <string name="baidu">百度</string>
         
     <string name="block_popup">禁止弹窗</string>
-    <string name="block_js">禁止JavaScript</string>
+    <string name="block_js">禁止JS</string>
 </resources>

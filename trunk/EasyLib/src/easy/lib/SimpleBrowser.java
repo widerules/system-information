@@ -236,6 +236,7 @@ public class SimpleBrowser extends Activity {
 	int ua = 0;
 	boolean showZoom = false;
 	int searchEngine = 2;
+	private int SETTING_RESULTCODE = 1002;
 
 	//search
 	EditText etSearch;
@@ -287,7 +288,7 @@ public class SimpleBrowser extends Activity {
 	       }
 	   }
 	private wrapValueCallback mUploadMessage;
-	private final static int FILECHOOSER_RESULTCODE = 1001;
+	private int FILECHOOSER_RESULTCODE = 1001;
 
 	//bookmark and history
 	AlertDialog m_sourceDialog = null;
@@ -710,6 +711,167 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         if (mValueCallbackAvailable) mUploadMessage.onReceiveValue(result);
         mUploadMessage.mInstance = null;
     }
+    else if (requestCode == SETTING_RESULTCODE) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+    	Editor sEdit = sp.edit();
+
+    	boolean shouldReload = false;
+    	
+        boolean clearData = sp.getBoolean("clear_data", false);
+    	if (clearData) {
+        	sEdit.putBoolean("clear_data", false);
+        	
+    	    boolean clearCache = sp.getBoolean("clear_cache", false);
+    	    if (clearCache) {
+    	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
+    	        serverWebs.get(webIndex).clearCache(true);
+    	        mContext.deleteDatabase("webviewCache.db");
+    	        clearFolder(new File(downloadPath + "cache/"));//clear cache on sdcard
+    	        clearFolder(new File("/data/data/" + mContext.getPackageName() + "/cache/"));//clear cache in /data/data/package.name/cache/
+    	    }
+    	    
+    	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
+    	    if (clearCookie) {
+    	    	CookieSyncManager.createInstance(this);
+    	    	CookieManager.getInstance().removeAllCookie();
+    	    }
+    	    
+    	    boolean clearFormdata = sp.getBoolean("clear_formdata", false);
+    	    if (clearFormdata) {
+    	    	WebViewDatabase.getInstance(mContext).clearFormData();
+    	    }
+
+    	    boolean clearPassword = sp.getBoolean("clear_password", false);
+    	    if (clearPassword) {
+    	    	WebViewDatabase.getInstance(mContext).clearHttpAuthUsernamePassword();
+    	    	WebViewDatabase.getInstance(mContext).clearUsernamePassword();
+    	    }
+    	    
+    	    boolean clearHistory = sp.getBoolean("clear_history", false);
+    	    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
+    	    
+    	    if (clearHistory && clearBookmark && clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
+    	    	mContext.deleteDatabase("webview.db");
+    	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
+    	        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
+    	    }
+    	    
+    	    if (clearHistory) {
+    	        mHistory.clear();
+        		writeBookmark("history", mHistory);
+    	    	historyChanged = false;
+    	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
+    	    }
+    	    
+    	    if (clearBookmark) {
+    	        mBookMark.clear();
+        		writeBookmark("bookmark", mBookMark);
+    	    	bookmarkChanged = false;
+    	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
+    	    }
+    	    
+    		String message = "";
+    		if (clearCache) message += "Cache, ";
+    		if (clearHistory) message += getString(R.string.history) + ", ";
+    		if (clearBookmark) message += getString(R.string.bookmark) + ", ";
+    		if (clearCookie) message += "Cookie, ";
+    		if (clearFormdata) message += getString(R.string.formdata) + ", ";
+    		if (clearPassword) message += getString(R.string.password) + ", ";
+    		message = message.trim();
+    		if (!"".equals(message)) { 
+    			if (message.endsWith(",")) message = message.substring(0, message.length()-1);
+    			Toast.makeText(mContext, message + " " + getString(R.string.data_cleared), Toast.LENGTH_LONG).show();
+    		}
+    	}
+        /*clearAll = sp.getBoolean("clear_all", false);
+        if (clearAll) {
+        	
+        	//close web pages
+        	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
+        	closePage(0, true);
+        	
+            //reset default settings
+        	sEdit.putInt("ua", 0);
+            sEdit.putBoolean("block_image", false);
+            sEdit.putInt("textsize", 2);
+            sEdit.putInt("full_screen", 1);
+        	sEdit.putBoolean("show_zoom", false);
+            sEdit.putBoolean("html5", false);
+            sEdit.putInt("encoding", 0);
+            sEdit.commit();
+        	
+            super.onResume();
+            
+            finish();
+            return;
+        }*/
+        
+    	
+        snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
+        
+        searchEngine = sp.getInt("search_engine", 2);
+        
+        WebSettings localSettings = serverWebs.get(webIndex).getSettings();
+        
+        showZoom = sp.getBoolean("show_zoom", false);
+        localSettings.setBuiltInZoomControls(showZoom);
+        if (showZoom) sEdit.putBoolean("show_zoom", false);
+        
+        ua = sp.getInt("ua", 0);
+        if (ua <= 1) localSettings.setUserAgent(ua);
+        else localSettings.setUserAgentString(selectUA(ua));
+
+        
+    	
+        readTextSize(sp); //no need to reload page if fontSize changed
+        localSettings.setTextSize(textSize);
+
+        blockImage = sp.getBoolean("block_image", false);
+        localSettings.setBlockNetworkImage(blockImage);
+
+        blockPopup = sp.getBoolean("block_popup", false);
+        localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
+        //localSettings.setSupportMultipleWindows(!blockPopup);
+        
+        blockJs = sp.getBoolean("block_js", false);
+    	localSettings.setJavaScriptEnabled(!blockJs);
+
+        html5 = sp.getBoolean("html5", false);
+        wrapWebSettings webSettings = new wrapWebSettings(localSettings);
+        webSettings.setAppCacheEnabled(html5);//API7
+        webSettings.setDatabaseEnabled(html5);//API5
+        webSettings.setGeolocationEnabled(html5);//API5
+        if (html5) {
+            webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
+            webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
+            webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
+            webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+            
+            sEdit.putBoolean("html5", false);//close html5 by default
+        }
+    	
+        String tmpEncoding = getEncoding(sp.getInt("encoding", 0));
+        if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
+            localSettings.setDefaultTextEncodingName(tmpEncoding);
+            sEdit.putInt("encoding", 0);//set default encoding to autoselect
+            shouldReload = true;
+        }
+
+        if (shouldReload) {
+            if (BLANK_PAGE.equals(webAddress.getText().toString())) loadPage(true);
+            else serverWebs.get(webIndex).reload();
+        }
+        /* css default to true now. 
+    	String url = serverWebs.get(webIndex).getUrl() + "";
+        boolean oldCss = css;
+        css = sp.getBoolean("css", false);
+    	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
+        
+        disable setting of historyCount
+        historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
+        */
+    	sEdit.commit();
+    }
 }
 
 @Override
@@ -1069,19 +1231,24 @@ public void onCreate(Bundle savedInstanceState) {
     
     mContext = this;
     
+    //init settings
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
-    /*//css = sp.getBoolean("css", false);
+    //css = sp.getBoolean("css", false);
     //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
     blockPopup = sp.getBoolean("block_popup", false);
+    blockJs = sp.getBoolean("block_js", false);
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
     //showZoom = sp.getBoolean("show_zoom", false);
-    searchEngine = sp.getInt("search_engine", 2);//no need to read here if read in resume*/
+    searchEngine = sp.getInt("search_engine", 2);//no need to read here if read in resume
+    snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
+    readTextSize(sp);//init the text size
+    
 
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
@@ -1279,7 +1446,7 @@ public void onCreate(Bundle savedInstanceState) {
         	case 7://about
     			intent = new Intent("easy.lib.about");
     			intent.setClassName(getPackageName(), "easy.lib.AboutBrowser");
-    			util.startActivity(intent, false, getBaseContext());
+                startActivityForResult(intent, SETTING_RESULTCODE );
     			break;
             }
             menuDialog.dismiss();
@@ -1452,7 +1619,6 @@ public void onCreate(Bundle savedInstanceState) {
 
 
 	cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-    readTextSize(sp);//init the text size
 	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;
     serverWebs.add(new MyWebview(this));
@@ -1960,100 +2126,6 @@ protected void onPause() {
 
 @Override 
 protected void onResume() {
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-	Editor sEdit = sp.edit();
-
-	boolean shouldReload = false;
-	
-    boolean clearData = sp.getBoolean("clear_data", false);
-	if (clearData) {
-    	sEdit.putBoolean("clear_data", false);
-    	
-	    boolean clearCache = sp.getBoolean("clear_cache", false);
-	    if (clearCache) {
-	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
-	        serverWebs.get(webIndex).clearCache(true);
-	        mContext.deleteDatabase("webviewCache.db");
-	        clearFolder(new File(downloadPath + "cache/"));//clear cache on sdcard
-	        clearFolder(new File("/data/data/" + mContext.getPackageName() + "/cache/"));//clear cache in /data/data/package.name/cache/
-	    }
-	    
-	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
-	    if (clearCookie) {
-	    	CookieSyncManager.createInstance(this);
-	    	CookieManager.getInstance().removeAllCookie();
-	    }
-	    
-	    boolean clearFormdata = sp.getBoolean("clear_formdata", false);
-	    if (clearFormdata) {
-	    	WebViewDatabase.getInstance(mContext).clearFormData();
-	    }
-
-	    boolean clearPassword = sp.getBoolean("clear_password", false);
-	    if (clearPassword) {
-	    	WebViewDatabase.getInstance(mContext).clearHttpAuthUsernamePassword();
-	    	WebViewDatabase.getInstance(mContext).clearUsernamePassword();
-	    }
-	    
-	    boolean clearHistory = sp.getBoolean("clear_history", false);
-	    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
-	    
-	    if (clearHistory && clearBookmark && clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
-	    	mContext.deleteDatabase("webview.db");
-	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
-	        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
-	    }
-	    
-	    if (clearHistory) {
-	        mHistory.clear();
-    		writeBookmark("history", mHistory);
-	    	historyChanged = false;
-	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
-	    }
-	    
-	    if (clearBookmark) {
-	        mBookMark.clear();
-    		writeBookmark("bookmark", mBookMark);
-	    	bookmarkChanged = false;
-	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
-	    }
-	    
-		String message = "";
-		if (clearCache) message += "Cache, ";
-		if (clearHistory) message += getString(R.string.history) + ", ";
-		if (clearBookmark) message += getString(R.string.bookmark) + ", ";
-		if (clearCookie) message += "Cookie, ";
-		if (clearFormdata) message += getString(R.string.formdata) + ", ";
-		if (clearPassword) message += getString(R.string.password) + ", ";
-		message = message.trim();
-		if (!"".equals(message)) { 
-			if (message.endsWith(",")) message = message.substring(0, message.length()-1);
-			Toast.makeText(mContext, message + " " + getString(R.string.data_cleared), Toast.LENGTH_LONG).show();
-		}
-	}
-    /*clearAll = sp.getBoolean("clear_all", false);
-    if (clearAll) {
-    	
-    	//close web pages
-    	while (webAdapter.getCount() > 1) closePage(0, true);//close all pages
-    	closePage(0, true);
-    	
-        //reset default settings
-    	sEdit.putInt("ua", 0);
-        sEdit.putBoolean("block_image", false);
-        sEdit.putInt("textsize", 2);
-        sEdit.putInt("full_screen", 1);
-    	sEdit.putBoolean("show_zoom", false);
-        sEdit.putBoolean("html5", false);
-        sEdit.putInt("encoding", 0);
-        sEdit.commit();
-    	
-        super.onResume();
-        
-        finish();
-        return;
-    }*/
-    
 	byWifi = false;
 	ConnectivityManager connectivityManager =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
     if(connectivityManager != null ){
@@ -2061,72 +2133,6 @@ protected void onResume() {
         if ((networkInfo != null) && networkInfo.isAvailable() && networkInfo.isConnected())
         	if (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) byWifi = true;
     }
-	
-	
-    snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
-    
-    searchEngine = sp.getInt("search_engine", 2);
-    
-    WebSettings localSettings = serverWebs.get(webIndex).getSettings();
-    
-    showZoom = sp.getBoolean("show_zoom", false);
-    localSettings.setBuiltInZoomControls(showZoom);
-    if (showZoom) sEdit.putBoolean("show_zoom", false);
-    
-    ua = sp.getInt("ua", 0);
-    if (ua <= 1) localSettings.setUserAgent(ua);
-    else localSettings.setUserAgentString(selectUA(ua));
-
-    
-	
-    readTextSize(sp); //no need to reload page if fontSize changed
-    localSettings.setTextSize(textSize);
-
-    blockImage = sp.getBoolean("block_image", false);
-    localSettings.setBlockNetworkImage(blockImage);
-
-    blockPopup = sp.getBoolean("block_popup", false);
-    localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
-    //localSettings.setSupportMultipleWindows(!blockPopup);
-    
-    blockJs = sp.getBoolean("block_js", false);
-	localSettings.setJavaScriptEnabled(!blockJs);
-
-    html5 = sp.getBoolean("html5", false);
-    wrapWebSettings webSettings = new wrapWebSettings(localSettings);
-    webSettings.setAppCacheEnabled(html5);//API7
-    webSettings.setDatabaseEnabled(html5);//API5
-    webSettings.setGeolocationEnabled(html5);//API5
-    if (html5) {
-        webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
-        webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
-        webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
-        webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
-        
-        sEdit.putBoolean("html5", false);//close html5 by default
-    }
-	
-    String tmpEncoding = getEncoding(sp.getInt("encoding", 0));
-    if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
-        localSettings.setDefaultTextEncodingName(tmpEncoding);
-        sEdit.putInt("encoding", 0);//set default encoding to autoselect
-        shouldReload = true;
-    }
-
-    if (shouldReload) {
-        if (BLANK_PAGE.equals(webAddress.getText().toString())) loadPage(true);
-        else serverWebs.get(webIndex).reload();
-    }
-    /* css default to true now. 
-	String url = serverWebs.get(webIndex).getUrl() + "";
-    boolean oldCss = css;
-    css = sp.getBoolean("css", false);
-	if ((oldCss != css) && url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css effect changed		
-    
-    disable setting of historyCount
-    historyCount = sp.getInt("history_count", 1) == 1 ? 10 : 15;
-    */
-	sEdit.commit();
     
     super.onResume();
 }

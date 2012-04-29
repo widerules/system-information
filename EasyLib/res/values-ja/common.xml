@@ -120,7 +120,7 @@
     <string name="encoding">現在のページのエンコーディング</string>
     <string name="encoding_auto">自動</string>
     <string name="search">Webページで検索</string>
-    <string name="html5">(現在ページ)部分的にいくつかのサイトのためにHTML5をサポートしています。カップケーキ/ドーナツに少しゆっくりとしない仕事</string>
+    <string name="html5">(現在ページ)部分的にHTML5をサポート</string>
     
     <string name="cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
     <string name="formdata">フォームデータ</string>

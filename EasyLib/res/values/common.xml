@@ -138,7 +138,7 @@
     <string name="encoding_euc_jp">EUC-JP</string>
     <string name="encoding_euc_kr">EUC-KR</string>
     <string name="search">Search</string>
-    <string name="html5">(current page)Partially support HTML5 for some site. A little slow and not work on Cupcake/Donut</string>
+    <string name="html5">(current page)Partially support HTML5</string>
     
     <string name="cache">Clear cache if you feel slow</string>
     <string name="cookie">Cookie</string>

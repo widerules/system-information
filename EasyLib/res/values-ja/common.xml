@@ -134,7 +134,6 @@
     <string name="change_ua">いくつかのウェブサイトにアクセスするためにUAを変更する必要があり</string>
     <string name="cache_tosd">SDカードへのキャッシュ</string>
     <string name="advance_button">詳細設定</string>
-    <string name="basic_button">基本設定</string>
     
     <string name="search_engine">デフォルトの検索エンジン</string>
     

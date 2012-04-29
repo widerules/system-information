@@ -137,7 +137,7 @@
     <string name="cache_tosd">Cache para cartão SD</string>
     <string name="advance_button">Configurações Avançadas</string>
     
-    <string name="search_engine">mecanismo de busca padrão</string>
+    <string name="search_engine">motor de busca</string>
     
     <string name="block_popup">bloquear pop-up</string>
     <string name="block_js">bloco de JavaScript</string>

@@ -370,7 +370,7 @@ public class AboutBrowser extends Activity{
 		((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 0))).setChecked(true);
 		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0))).setChecked(true);
-		((RadioButton) searchEngine.getChildAt(perferences.getInt("search_engine", 2))).setChecked(true);
+		((RadioButton) searchEngine.getChildAt(perferences.getInt("search_engine", 3))).setChecked(true);
         
 		clrHistory.setChecked(perferences.getBoolean("clear_history", false));
 		clrBookmark.setChecked(perferences.getBoolean("clear_bookmark", false));

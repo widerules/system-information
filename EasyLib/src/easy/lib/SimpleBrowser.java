@@ -235,7 +235,7 @@ public class SimpleBrowser extends Activity {
 	long html5cacheMaxSize = 1024*1024*8;
 	int ua = 0;
 	boolean showZoom = false;
-	int searchEngine = 2;
+	int searchEngine = 3;
 	private int SETTING_RESULTCODE = 1002;
 
 	//search
@@ -809,7 +809,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	
         snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
         
-        searchEngine = sp.getInt("search_engine", 2);
+        searchEngine = sp.getInt("search_engine", 3);
         
         WebSettings localSettings = serverWebs.get(webIndex).getSettings();
         
@@ -1244,7 +1244,7 @@ public void onCreate(Bundle savedInstanceState) {
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
     showZoom = sp.getBoolean("show_zoom", false);
-    searchEngine = sp.getInt("search_engine", 2);//no need to read here if read in resume
+    searchEngine = sp.getInt("search_engine", 3);
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
     readTextSize(sp);//init the text size
     
@@ -1783,13 +1783,13 @@ void gotoUrl(String url) {
 	if (!BLANK_PAGE.equals(url)) {
 		if (!url.contains(".")) {
 			switch (searchEngine) {
-			case 0://bing
+			case 1://bing
 				url = "http://www.bing.com/search?q=" + url;
 				break;
-			case 1://baidu
+			case 2://baidu
 				url = "http://www.baidu.com/s?wd=" + url;
 				break;
-			case 2://google
+			case 3://google
 			default:
 				url = "http://www.google.com/search?q=" + url;
 				break;
@@ -2181,7 +2181,7 @@ void setLayout() {
     	
     	if (adview.getInstance() != null) adContainer.addView(adview.getInstance());
     	
-    	if (byWifi) adview.loadAd();
+    	if (byWifi)	adview.loadAd();
     }
 }
 

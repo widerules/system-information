@@ -313,7 +313,6 @@ public class SimpleBrowser extends Activity {
 	wrapAdView adview;
 	DisplayMetrics dm;
 	FrameLayout adContainer;
-	boolean byWifi = false;
     AppHandler mAppHandler = new AppHandler();
 	
 	//download related
@@ -510,7 +509,7 @@ class MyWebview extends WebView {
 	        		imgRefresh.setImageResource(R.drawable.stop);
 				}
 				
-				if (!paid && mAdAvailable && byWifi) adview.loadAd();//should only do this by wifi
+				if (!paid && mAdAvailable) adview.loadAd();//should only do this by wifi
 			}
 			 
 			@Override
@@ -2106,19 +2105,6 @@ protected void onPause() {
 	super.onPause();
 }
 
-@Override 
-protected void onResume() {
-	byWifi = false;
-	ConnectivityManager connectivityManager =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-    if(connectivityManager != null ){
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if ((networkInfo != null) && networkInfo.isAvailable() && networkInfo.isConnected())
-        	if (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) byWifi = true;
-    }
-    
-    super.onResume();
-}
-
 @Override
 public File getCacheDir()
 {
@@ -2158,7 +2144,7 @@ void setLayout() {
     	
     	if (adview.getInstance() != null) adContainer.addView(adview.getInstance());
     	
-    	if (byWifi)	adview.loadAd();
+    	adview.loadAd();
     }
 }
 

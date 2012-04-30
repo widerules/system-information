@@ -8,18 +8,28 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.WallpaperManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -30,13 +40,19 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import easy.lib.R;
 import easy.lib.util;
 
 public class About extends Activity{
 	
 	CheckBox cbShake;
 	SharedPreferences perferences;
-	
+
+	String mPackageName;
+	PackageManager mPM;
+	private List<ResolveInfo> mHomeList;
+	private int currentHomeIndex = 0;
+
     String ip() {
         //network
     	StringBuffer sb = new StringBuffer("");
@@ -120,6 +136,9 @@ public class About extends Activity{
         
         setContentView(R.layout.about);
 
+        mPackageName = this.getPackageName();
+        mPM = getPackageManager();
+        
         TextView tvTitle = (TextView) findViewById(R.id.title);
         tvTitle.setText(getString(R.string.app_name) + " " + getIntent().getStringExtra("version"));
         
@@ -207,14 +226,13 @@ public class About extends Activity{
 			}
         });
         
-        final String myPackageName = getApplication().getPackageName();
         TextView tvDownload1 = (TextView) findViewById(R.id.download_wallpaper1);
         tvDownload1.setText(Html.fromHtml("<u>" + getString(R.string.wallpaper_scene) + "</u>"));
         tvDownload1.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/img?tn=bdidxiphone&ssid=0&from=844b&bd_page_type=1&uid=wiaui_1326248214_3176&pu=sz%401320_480&itj=41"));
-				intent.setClassName(myPackageName, "easy.lib.SimpleBrowser");
+				intent.setClassName(mPackageName, "easy.lib.SimpleBrowser");
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});
@@ -224,7 +242,7 @@ public class About extends Activity{
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/img?tn=bdLISTIphone&word=%E9%BB%91%E4%B8%9D&st=103110&prest=11105i&pn=0&rn=10&vit=aladdin&from=844b&ssid=0&bd_page_type=1&ref=www_iphone&uid=wiaui_1325637338_1514"));
-				intent.setClassName(myPackageName, "easy.lib.SimpleBrowser");
+				intent.setClassName(mPackageName, "easy.lib.SimpleBrowser");
 				util.startActivity(intent, false, getBaseContext());
 			}
 		});
@@ -255,10 +273,12 @@ public class About extends Activity{
         btnSwitchHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-		    	Intent intent = new Intent(Intent.ACTION_MAIN, null);
-		    	intent.addCategory(Intent.CATEGORY_LAUNCHER);
-		    	intent.setClassName(myPackageName, myPackageName+".SelectHome");
-		    	util.startActivity(intent, false, getBaseContext());
+				try {
+					Class.forName("oms.content.Action");//ophone
+			        selectOphoneHome();
+				} catch (ClassNotFoundException e) {//android phone
+		        	removeDefaultHome();
+				}
 			}
         });
 	}
@@ -270,4 +290,99 @@ public class About extends Activity{
         
 		super.onResume();
 	}
+	
+	private void removeDefaultHome() {//refer to http://www.dotblogs.com.tw/neil/archive/2011/08/12/33058.aspx
+        String activityName = FakeHome.class.getName();
+        ComponentName fakeHome = new ComponentName(mPackageName, activityName);
+        
+        mPM.setComponentEnabledSetting(fakeHome, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 1);
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(homeIntent);
+        mPM.setComponentEnabledSetting(fakeHome, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 1);
+        
+        Settings.System.putString(getContentResolver(), "configured_home", "");
+
+        //we don't start myself again for we use system chooser to select home, and won't go back to myself
+        //Intent intent = new Intent();
+        //intent.setClassName(getApplicationContext(), SelectHome.class.getName());
+        //startActivity(intent);
+	}
+
+	private void selectOphoneHome() {
+    	Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+    	mainIntent.addCategory(Intent.CATEGORY_HOME);
+    	mHomeList = mPM.queryIntentActivities(mainIntent, 0);
+    	Collections.sort(mHomeList, new ResolveInfo.DisplayNameComparator(mPM));//sort by name
+
+    	String myName = "";
+    	String configuredHome = Settings.System.getString(getContentResolver(), "configured_home");
+        if (configuredHome == null) {//first run after install
+			ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            for (int i = 0; i < mHomeList.size(); i++) {
+            	String oldName = mHomeList.get(i).activityInfo.packageName;
+            	if (!oldName.equals(mPackageName))
+        			am.restartPackage(oldName);//kill all old home
+            	else myName = mHomeList.get(i).activityInfo.name;
+            }
+            
+            //start myself
+            Intent intent =  new Intent(Intent.ACTION_MAIN, null);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setClassName(mPackageName, mPackageName+".simpleHome");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            startActivity(intent);
+            
+            Settings.System.putString(getContentResolver(), "configured_home", myName); 
+
+            finish();
+        }
+        else {
+            int N = mHomeList.size();
+            CharSequence[] mValue = new CharSequence[N];
+            CharSequence[] mTitle = new CharSequence[N];
+            for (int i = 0; i < N; i++) {
+                ResolveInfo ri = mHomeList.get(i);
+                mValue[i] = Integer.toString(i);
+                mTitle[i] = ri.activityInfo.loadLabel(mPM);
+                if (configuredHome != null && configuredHome.equals(ri.activityInfo.name)) currentHomeIndex = i;
+            }
+            new AlertDialog.Builder(this).setTitle(R.string.menu_choose_home).setSingleChoiceItems(mTitle, currentHomeIndex,new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Settings.System.putString(getContentResolver(), "configured_home",
+                            mHomeList.get(which).activityInfo.name);
+
+                    String oldName = mHomeList.get(currentHomeIndex).activityInfo.packageName;
+                    if (!mPackageName.equals(oldName)) {//try to close the old home
+    					ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    					am.restartPackage(oldName);
+                    }
+                    else {//if I'm the old home, not stop me immediately, otherwise the new home may not launch 
+    					Intent intentNewhome = new Intent("simpleHome.action.HOME_CHANGED");
+    					intentNewhome.putExtra("old_home", oldName);
+    	                sendBroadcast(intentNewhome);
+                    }
+                    
+                    //launch the new home
+                    Intent intent =  new Intent(Intent.ACTION_MAIN, null);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    intent.setClassName(mHomeList.get(which).activityInfo.packageName, 
+                    		mHomeList.get(which).activityInfo.name);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    startActivity(intent);
+                    
+                    dialog.cancel();
+                	finish();
+                }
+            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+    			@Override
+    			public void onClick(DialogInterface dialog, int arg1) {
+                    dialog.cancel();
+    			}
+            }).show();
+    	}
+	}
+
 }

@@ -1,8 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">ひかりのランチャー</string>
-    <string name="switcher_name">ひかりのスイッチャー</string>
     <string name="browser_name">ひかりのブラウザ</string>
-    <string name="embed_browser_name">組み込み型ひかりのブラウザ</string>
     
     <string name="about_dialog_notes">気に 入って頂ければ、5つ星ご投票をお願いいたします。</string>
     <string name="help_message">2クリック以上しないことにより、あなたのアプリを見つける。 \nClickアプリのアイコンは、\nClickアプリケーション名が起動し、それを停止します\nclickアプリのバージョンはアンインストールするには、\nlongクリックしてアプリ名：アドインをショートカット、それを削除する\nlongクリックのショートカット。</string>

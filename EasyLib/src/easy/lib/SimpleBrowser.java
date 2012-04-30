@@ -860,7 +860,7 @@ public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuIn
         public boolean onMenuItemClick(MenuItem item) {// do the menu action
     		switch (item.getItemId()) {
     		case 0://download
-    			String ext = "";
+    			String ext = null;
     			if (result.getType()== HitTestResult.IMAGE_TYPE 
     					|| result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
     				ext = ".jpg";
@@ -941,7 +941,7 @@ boolean startDownload(String url, String contentDisposition) {
 	if (apkName.contains("=")) apkName = apkName.split("=")[apkName.split("=").length-1];
 	if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {//image from shuimu do not have ext. so we add it manually
 		apkName += ".jpg";
-		contentDisposition = "";
+		contentDisposition = null;
 	}
 	 
 	if (downloadPath.startsWith(getFilesDir().getPath())) 
@@ -1012,7 +1012,7 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	HttpClient httpClient = null;
     		//Log.d("=============", URL_str);
     		String contentDisposition = params[2];
-        	if (URL_str.contains("?") || !"".equals(contentDisposition)) {//need httpget
+        	if (URL_str.contains("?") || contentDisposition != null) {//need httpget
         		httpClient = new DefaultHttpClient();
         		HttpGet request = new HttpGet(URL_str);
         		String cookies = CookieManager.getInstance().getCookie(URL_str);
@@ -1112,14 +1112,14 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	}
         	fos.close();
         	is.close();
+        	
+        	if (stopDownload) nManager.cancel(NOTIFICATION_ID);//stop download by user. clear notification here for shutdown() will be very slow
+        	
         	if (httpConnection != null) httpConnection.disconnect();
         	else httpClient.getConnectionManager().shutdown(); 
         	
         	appstate.downloadState.remove(NOTIFICATION_ID);
-        	if (stopDownload) {//stop download by user. clear notification
-        		nManager.cancel(NOTIFICATION_ID);
-        	}
-        	else {//download success. change notification, start package manager to install package
+        	if (!stopDownload) {//download success. change notification, start package manager to install package
             	notification.icon = android.R.drawable.stat_sys_download_done;
 
     	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
@@ -1729,7 +1729,7 @@ protected void onDestroy() {
 BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	@Override
 	public void onReceive(Context arg0, Intent intent) {
-		startDownload(intent.getStringExtra("url"), "");
+		startDownload(intent.getStringExtra("url"), null);
 	}
 };
 

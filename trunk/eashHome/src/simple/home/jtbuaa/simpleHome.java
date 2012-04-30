@@ -130,7 +130,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	PackageManager pm;
 	favoAppAdapter favoAdapter;
 	shortAppAdapter shortAdapter;
-	ResolveInfo ri_phone, ri_sms, ri_contact, ri_browser = null;
+	ResolveInfo ri_phone, ri_sms, ri_contact;
 	CallObserver callObserver;
 	SmsChangeObserver smsObserver;
 	ImageView shortcut_phone, shortcut_sms, shortcut_contact;
@@ -627,11 +627,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		favoAdapter = new favoAppAdapter(getBaseContext(), mFavoApps);
 		favoAppList.setAdapter(favoAdapter);
 		
-		Intent intent = new Intent(); 
-		intent.setPackage("easy.browser");
-		List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
-		if ((list != null) && !list.isEmpty()) ri_browser = list.get(0);//find easy browser 
-		
         base = (sizedRelativeLayout) home.findViewById(R.id.base); 
         base.setResizeListener(this);
         shortcutBar_center = (RelativeLayout) home.findViewById(R.id.shortcut_bar_center);
@@ -639,14 +634,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         homeBar.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (ri_browser != null) {//call easy browser if found, otherwise call embedded one.
-					if (!util.startApp(ri_browser, getBaseContext())) ri_browser = null;
-				}
-				else {
-					Intent intent = new Intent(Intent.ACTION_MAIN);
-					intent.setClassName(myPackageName, "easy.lib.SimpleBrowser");
-					util.startActivity(intent, true, getBaseContext());
-				}
+				//?
 			}
         });
         

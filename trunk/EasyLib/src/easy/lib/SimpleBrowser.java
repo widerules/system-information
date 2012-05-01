@@ -810,8 +810,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         
         blockJs = sp.getBoolean("block_js", false);
     	localSettings.setJavaScriptEnabled(!blockJs);
+    	
 
-        html5 = sp.getBoolean("html5", false);
+    	html5 = sp.getBoolean("html5", false);
         wrapWebSettings webSettings = new wrapWebSettings(localSettings);
         webSettings.setAppCacheEnabled(html5);//API7
         webSettings.setDatabaseEnabled(html5);//API5
@@ -1118,7 +1119,6 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	if (httpConnection != null) httpConnection.disconnect();
         	else httpClient.getConnectionManager().shutdown(); 
         	
-        	appstate.downloadState.remove(NOTIFICATION_ID);
         	if (!stopDownload) {//download success. change notification, start package manager to install package
             	notification.icon = android.R.drawable.stat_sys_download_done;
 
@@ -1156,6 +1156,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
 	        //if (download_file.length() == 0) download_file.delete();//delete empty file
     	}
 
+    	appstate.downloadState.remove(NOTIFICATION_ID);//remove download id whether download success nor fail, otherwise can't download again on fail 
+    	
     	return null;
 	}
 
@@ -1599,6 +1601,47 @@ public void onCreate(Bundle savedInstanceState) {
     serverWebs.add(new MyWebview(this));
     webpages = (ViewFlipper) findViewById(R.id.webpages);
     webpages.addView(serverWebs.get(webIndex));
+    
+    /*try {//so many error report on 2.3.6 related to clearcache
+    	Log.d("================", "try clear the cache");
+    	serverWebs.get(webIndex).clearCache(true);
+        mContext.deleteDatabase("webviewCache.db");
+    }
+    catch (Exception e) {
+    	e.printStackTrace();
+        new AlertDialog.Builder(this).
+		setTitle(R.string.browser_name).
+		setMessage("It seems the database of webview is corrupted.").
+		setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {//share
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+	        	Intent intent = new Intent(Intent.ACTION_VIEW, null);
+		    	intent.addCategory(Intent.CATEGORY_DEFAULT);
+		    	List<ResolveInfo> viewApps = getPackageManager().queryIntentActivities(intent, 0);
+		    	ResolveInfo appDetail = null;
+		    	for (int i = 0; i < viewApps.size(); i++) {
+		    		if (viewApps.get(i).activityInfo.name.contains("InstalledAppDetails")) {
+		    			appDetail = viewApps.get(i);//get the activity for app detail setting
+		    			break;
+		    		}
+		    	}
+				if (appDetail != null) {
+					intent = new Intent(Intent.ACTION_VIEW);
+					intent.setClassName(appDetail.activityInfo.packageName, appDetail.activityInfo.name);
+					intent.putExtra("pkg", mContext.getPackageName());
+					intent.putExtra("com.android.settings.ApplicationPkgName", mContext.getPackageName());
+				}
+				else {//2.6 tahiti change the action.
+					intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS", Uri.fromParts("package", mContext.getPackageName(), null));
+				}
+				util.startActivity(intent, true, getBaseContext());
+			}
+		}).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		}).show();
+    }*/
     
     
 	webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);

@@ -1010,8 +1010,8 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	url = new URL(URL_str);
         	HttpURLConnection httpConnection = null;
         	HttpClient httpClient = null;
-    		//Log.d("=============", URL_str);
     		String contentDisposition = params[2];
+    		//Log.d("=============", URL_str + contentDisposition);
         	if (URL_str.contains("?") || contentDisposition != null) {//need httpget
         		httpClient = new DefaultHttpClient();
         		HttpGet request = new HttpGet(URL_str);
@@ -1110,10 +1110,10 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
             		nManager.notify(NOTIFICATION_ID, notification);
             	}
         	}
+        	if (stopDownload) nManager.cancel(NOTIFICATION_ID);//stop download by user. clear notification here for the close() and shutdown() may be very slow
+        	
         	fos.close();
         	is.close();
-        	
-        	if (stopDownload) nManager.cancel(NOTIFICATION_ID);//stop download by user. clear notification here for shutdown() will be very slow
         	
         	if (httpConnection != null) httpConnection.disconnect();
         	else httpClient.getConnectionManager().shutdown(); 

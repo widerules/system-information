@@ -1226,7 +1226,8 @@ public void onCreate(Bundle savedInstanceState) {
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
     readTextSize(sp);//init the text size
     
-
+    //ProxySettings.setSystemProxy(mContext);
+    
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
 	appstate = ((MyApp) getApplicationContext());

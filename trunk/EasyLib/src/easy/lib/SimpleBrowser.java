@@ -1868,7 +1868,7 @@ protected void onNewIntent(Intent intent) {//open file from sdcard
 		int blankIndex = -1;
 		for (int i = 0; i < serverWebs.size(); i++) {
 			String url = serverWebs.get(i).getUrl();
-			if (uri.equals(url)) {
+			if ((uri+"/").equals(url) || uri.equals(url)) {
 				changePage(i);  //show correct page
 				found = true;
 				break;

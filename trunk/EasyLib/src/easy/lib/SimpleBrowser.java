@@ -237,6 +237,7 @@ public class SimpleBrowser extends Activity {
 	boolean showZoom = false;
 	int searchEngine = 3;
 	private int SETTING_RESULTCODE = 1002;
+	boolean enableProxy = false;
 
 	//search
 	EditText etSearch;
@@ -787,6 +788,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         
         searchEngine = sp.getInt("search_engine", 3);
         
+        boolean tmpEnableProxy = sp.getBoolean("enable_proxy", false);
+        if (enableProxy != tmpEnableProxy) {
+        	enableProxy = tmpEnableProxy;
+        	if (enableProxy) ProxySettings.setSystemProxy(mContext);
+        	else ProxySettings.resetSystemProxy(mContext);
+        }
+        
         WebSettings localSettings = serverWebs.get(webIndex).getSettings();
         
         showZoom = sp.getBoolean("show_zoom", false);
@@ -1225,8 +1233,9 @@ public void onCreate(Bundle savedInstanceState) {
     searchEngine = sp.getInt("search_engine", 3);
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
     readTextSize(sp);//init the text size
+    enableProxy = sp.getBoolean("enable_proxy", false);
     
-    //ProxySettings.setSystemProxy(mContext);
+    if (enableProxy) ProxySettings.setSystemProxy(mContext);
     
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();

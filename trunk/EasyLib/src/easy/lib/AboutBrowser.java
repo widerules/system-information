@@ -29,7 +29,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg;
+	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
@@ -148,6 +148,14 @@ public class AboutBrowser extends Activity{
 				util.startActivity(intent, true, getBaseContext());
 			}
 		});
+
+    	cbEnableProxy = (CheckBox) findViewById(R.id.enable_proxy);
+    	cbEnableProxy.setOnClickListener(new OnClickListener() {
+    		@Override
+    		public void onClick(View arg0) {
+        		editor.putBoolean("enable_proxy", cbEnableProxy.isChecked());
+    		}
+    	});
 
     	cbBlockJs = (CheckBox) findViewById(R.id.block_js);
     	cbBlockJs.setOnClickListener(new OnClickListener() {
@@ -391,6 +399,7 @@ public class AboutBrowser extends Activity{
 		//cbCss.setChecked(perferences.getBoolean("css", false));
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
+		cbEnableProxy.setChecked(perferences.getBoolean("enable_proxy", false));
 		
    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
 		//((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);

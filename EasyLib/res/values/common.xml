@@ -173,4 +173,6 @@
     <string name="block_js">Block JavaScript</string>
     
     <string name="reset">Reset default options</string>
+    
+    <string name="enable_proxy">Enable proxy</string>
 </resources>

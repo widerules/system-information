@@ -139,4 +139,7 @@
     <string name="block_js">ブロックのJavaScript</string>
     
     <string name="reset">デフォルトにリセット</string>
+    
+    <string name="enable_proxy">プロキシを有効にする</string>
+    
 </resources>

@@ -141,4 +141,7 @@
     <string name="block_js">bloco de JavaScript</string>
     
     <string name="reset">reset para padrão</string>
+    
+    <string name="enable_proxy">Enable proxy</string>
+    
 </resources>

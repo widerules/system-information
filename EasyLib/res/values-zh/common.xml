@@ -151,6 +151,6 @@
     
     <string name="reset">恢复默认设置</string>
     
-    <string name="enable_proxy">使用代理</string>
+    <string name="enable_proxy">使用代理，本地端口：</string>
     
 </resources>

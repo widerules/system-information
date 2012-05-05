@@ -142,6 +142,6 @@
     
     <string name="reset">reset para padrão</string>
     
-    <string name="enable_proxy">Enable proxy</string>
+    <string name="enable_proxy">Enable proxy, porta local:</string>
     
 </resources>

@@ -19,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioButton;
@@ -34,6 +35,7 @@ public class AboutBrowser extends Activity{
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
 	Button btnAdvance, btnReset;
+	EditText etPort;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -149,104 +151,14 @@ public class AboutBrowser extends Activity{
 			}
 		});
 
-    	cbEnableProxy = (CheckBox) findViewById(R.id.enable_proxy);
-    	cbEnableProxy.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("enable_proxy", cbEnableProxy.isChecked());
-    		}
-    	});
-
-    	cbBlockJs = (CheckBox) findViewById(R.id.block_js);
-    	cbBlockJs.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("block_js", cbBlockJs.isChecked());
-        		//editor.commit();
-    		}
-    	});
-
-    	cbBlockPopup = (CheckBox) findViewById(R.id.block_popup);
-    	cbBlockPopup.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("block_popup", cbBlockPopup.isChecked());
-        		//editor.commit();
-    		}
-    	});
-
-    	cbCacheToSD = (CheckBox) findViewById(R.id.cache_tosd);
-    	cbCacheToSD.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
-        		//editor.commit();
-    		}
-    	});
 
     	cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
-    	cbZoomControl.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("show_zoom", cbZoomControl.isChecked());
-        		//editor.commit();
-    		}
-    	});
-
     	cbBlockImg = (CheckBox) findViewById(R.id.block_image);
-    	cbBlockImg.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("block_image", cbBlockImg.isChecked());
-        		//editor.commit();
-    		}
-    	});
-    	
-    	/*cbCss = (CheckBox) findViewById(R.id.homepage_css);
-    	cbCss.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("css", cbCss.isChecked());
-        		//editor.commit();
-    		}
-    	});*/
-    	
-    	
-    	cbHtml5 = (CheckBox) findViewById(R.id.html5);
-    	try {
-    		WebSettings.class.getMethod("setAppCacheEnabled", new Class[] {boolean.class});
-        	cbHtml5.setEnabled(true);
-    	}
-    	catch(Exception e) {
-        	cbHtml5.setEnabled(false);
-    	}
-
-    	cbHtml5.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("html5", cbHtml5.isChecked());
-        		//editor.commit();
-    		}
-    	});
-    	
-    	
+    	//cbCss = (CheckBox) findViewById(R.id.homepage_css);
+    	//historyCount = (RadioGroup) findViewById(R.id.max_history);
+    	snapSize = (RadioGroup) findViewById(R.id.snap_size);
     	fontSize = (RadioGroup) findViewById(R.id.font_size);
-    	fontSize.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup arg0, int arg1) {
-        		editor.putInt("textsize", fontSize.indexOfChild(findViewById(fontSize.getCheckedRadioButtonId())));
-        		//editor.commit();
-			}
-    	});
-    	
-    	/*historyCount = (RadioGroup) findViewById(R.id.max_history);
-    	historyCount.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup arg0, int arg1) {
-        		editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
-        		//editor.commit();
-			}
-    	});*/
+    	searchEngine = (RadioGroup) findViewById(R.id.search_engine);
     	
     	advanceSettings = (LinearLayout) findViewById(R.id.advance_settings);
     	basicSettings = (LinearLayout) findViewById(R.id.basic_settings);
@@ -275,90 +187,36 @@ public class AboutBrowser extends Activity{
 			}
         });
 
+    	
+    	cbBlockPopup = (CheckBox) findViewById(R.id.block_popup);
+    	cbBlockJs = (CheckBox) findViewById(R.id.block_js);
+    	cbCacheToSD = (CheckBox) findViewById(R.id.cache_tosd);
+    	cbHtml5 = (CheckBox) findViewById(R.id.html5);
+    	try {
+    		WebSettings.class.getMethod("setAppCacheEnabled", new Class[] {boolean.class});
+        	cbHtml5.setEnabled(true);
+    	}
+    	catch(Exception e) {
+        	cbHtml5.setEnabled(false);
+    	}
+    	cbEnableProxy = (CheckBox) findViewById(R.id.enable_proxy);
+    	etPort = (EditText) findViewById(R.id.local_port);
+    	cbEnableProxy.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				etPort.setEnabled(cbEnableProxy.isChecked());
+			}
+    	});
+    	
     	encodingType = (RadioGroup) findViewById(R.id.encoding);
-    	encodingType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup arg0, int arg1) {
-        		editor.putInt("encoding", encodingType.indexOfChild(findViewById(encodingType.getCheckedRadioButtonId())));
-        		//editor.commit();
-			}
-    	});
-    	
-    	snapSize = (RadioGroup) findViewById(R.id.snap_size);
-    	snapSize.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup arg0, int arg1) {
-        		editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));
-        		//editor.commit();
-			}
-    	});
-
     	changeUA = (RadioGroup) findViewById(R.id.ua_group);
-    	changeUA.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup arg0, int arg1) {
-        		editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA.getCheckedRadioButtonId())));
-        		//editor.commit();
-			}
-    	});
-    	
-    	searchEngine = (RadioGroup) findViewById(R.id.search_engine);
-    	searchEngine.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(RadioGroup arg0, int arg1) {
-        		editor.putInt("search_engine", searchEngine.indexOfChild(findViewById(searchEngine.getCheckedRadioButtonId())));
-        		//editor.commit();
-			}
-    	});
     	
     	clrHistory = (CheckBox) findViewById(R.id.clear_history);
-    	clrHistory.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("clear_history", clrHistory.isChecked());
-        		//editor.commit();
-    		}
-    	});
     	clrBookmark = (CheckBox) findViewById(R.id.clear_bookmark);
-    	clrBookmark.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("clear_bookmark", clrBookmark.isChecked());
-        		//editor.commit();
-    		}
-    	});
     	clrCookie = (CheckBox) findViewById(R.id.clear_cookie);
-    	clrCookie.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("clear_cookie", clrCookie.isChecked());
-        		//editor.commit();
-    		}
-    	});
     	clrFormdata = (CheckBox) findViewById(R.id.clear_formdata);
-    	clrFormdata.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("clear_formdata", clrFormdata.isChecked());
-        		//editor.commit();
-    		}
-    	});
     	clrPassword = (CheckBox) findViewById(R.id.clear_password);
-    	clrPassword.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("clear_password", clrPassword.isChecked());
-        		//editor.commit();
-    		}
-    	});
     	clrCache = (CheckBox) findViewById(R.id.clear_cache);
-    	clrCache.setOnClickListener(new OnClickListener() {
-    		@Override
-    		public void onClick(View arg0) {
-        		editor.putBoolean("clear_cache", clrCache.isChecked());
-        		//editor.commit();
-    		}
-    	});
     	
         btnReset = (Button) findViewById(R.id.reset);
         btnReset.setOnClickListener(new OnClickListener() {
@@ -400,6 +258,8 @@ public class AboutBrowser extends Activity{
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		cbEnableProxy.setChecked(perferences.getBoolean("enable_proxy", false));
+		etPort.setText(perferences.getInt("local_port", 1984)+"");
+		etPort.setEnabled(cbEnableProxy.isChecked());
 		
    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
 		//((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
@@ -419,6 +279,29 @@ public class AboutBrowser extends Activity{
 	
 	@Override
 	protected void onPause() {
+		editor.putBoolean("show_zoom", cbZoomControl.isChecked());
+		editor.putBoolean("block_image", cbBlockImg.isChecked());
+		//editor.putBoolean("css", cbCss.isChecked());
+		//editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
+		editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));
+		editor.putInt("textsize", fontSize.indexOfChild(findViewById(fontSize.getCheckedRadioButtonId())));
+		editor.putInt("search_engine", searchEngine.indexOfChild(findViewById(searchEngine.getCheckedRadioButtonId())));
+		
+		editor.putBoolean("block_popup", cbBlockPopup.isChecked());
+		editor.putBoolean("block_js", cbBlockJs.isChecked());
+		editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
+		editor.putBoolean("html5", cbHtml5.isChecked());
+		editor.putBoolean("enable_proxy", cbEnableProxy.isChecked());
+		editor.putInt("local_port", Integer.parseInt(etPort.getText().toString()));
+		editor.putInt("encoding", encodingType.indexOfChild(findViewById(encodingType.getCheckedRadioButtonId())));
+		editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA.getCheckedRadioButtonId())));
+		
+		editor.putBoolean("clear_history", clrHistory.isChecked());
+		editor.putBoolean("clear_bookmark", clrBookmark.isChecked());
+		editor.putBoolean("clear_cookie", clrCookie.isChecked());
+		editor.putBoolean("clear_formdata", clrFormdata.isChecked());
+		editor.putBoolean("clear_password", clrPassword.isChecked());
+		editor.putBoolean("clear_cache", clrCache.isChecked());
 	    editor.commit();
 		super.onPause();
 	}

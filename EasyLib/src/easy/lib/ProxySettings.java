@@ -89,7 +89,7 @@ public class ProxySettings
 		setSystemProperties(host, port);
 
 		try {
-			if (Build.VERSION.SDK_INT < 14) {
+			if (Integer.parseInt(Build.VERSION.SDK) < 14) {
 				Object requestQueueObject = getRequestQueue(ctx);
 				if (requestQueueObject != null) {
 					// Create Proxy config object and set it into request Q

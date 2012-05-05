@@ -795,11 +795,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         	enableProxy = tmpEnableProxy;
         	localPort = tmpLocalPort;
         	if (enableProxy) ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
-			else try {
-				ProxySettings.resetProxy(mContext);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			else try {ProxySettings.resetProxy(mContext);} 
+        	catch (Exception e) {e.printStackTrace();}
         }
         
         WebSettings localSettings = serverWebs.get(webIndex).getSettings();

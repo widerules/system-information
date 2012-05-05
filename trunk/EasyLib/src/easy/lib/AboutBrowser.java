@@ -37,6 +37,8 @@ public class AboutBrowser extends Activity{
 	Button btnAdvance, btnReset;
 	EditText etPort;
 	
+	boolean resetDefault = false;
+	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
 	
@@ -205,6 +207,8 @@ public class AboutBrowser extends Activity{
 			@Override
 			public void onClick(View v) {
 				etPort.setEnabled(cbEnableProxy.isChecked());
+				etPort.setFocusable(cbEnableProxy.isChecked());
+				etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 			}
     	});
     	
@@ -222,28 +226,22 @@ public class AboutBrowser extends Activity{
         btnReset.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-	            //reset default settings
-	        	editor.putInt("ua", 0);
-	        	editor.putInt("textsize", 2);
-	        	editor.putInt("full_screen", 1);
-	        	editor.putInt("encoding", 0);
-	        	editor.putInt("search_engine", 3);
-	        	
-	        	editor.putBoolean("block_image", false);
-	        	editor.putBoolean("block_popup", false);
-	        	editor.putBoolean("block_js", false);
-	        	editor.putBoolean("cache_tosd", false);
-	        	editor.putBoolean("show_zoom", false);
-	        	editor.putBoolean("html5", false);
-	        	
-	        	editor.putBoolean("clear_history", false);
-	        	editor.putBoolean("clear_bookmark", false);
-	        	editor.putBoolean("clear_cookie", false);
-	        	editor.putBoolean("clear_formdata", false);
-	        	editor.putBoolean("clear_password", false);
-	        	editor.putBoolean("clear_cache", false);
-	        	
-	            finish();
+				new AlertDialog.Builder(context).
+	    		setTitle(R.string.browser_name).
+	    		setIcon(R.drawable.stop).
+	    		setMessage(getString(R.string.reset) + "?").
+	    		setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {//share
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						resetDefault = true;
+		        		finish();
+					}
+				}).
+	    		setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {//cancel
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				}).show();
 			}
         });
 	}
@@ -260,6 +258,8 @@ public class AboutBrowser extends Activity{
 		cbEnableProxy.setChecked(perferences.getBoolean("enable_proxy", false));
 		etPort.setText(perferences.getInt("local_port", 1984)+"");
 		etPort.setEnabled(cbEnableProxy.isChecked());
+		etPort.setFocusable(cbEnableProxy.isChecked());
+		etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 		
    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
 		//((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
@@ -279,31 +279,57 @@ public class AboutBrowser extends Activity{
 	
 	@Override
 	protected void onPause() {
-		editor.putBoolean("show_zoom", cbZoomControl.isChecked());
-		editor.putBoolean("block_image", cbBlockImg.isChecked());
-		//editor.putBoolean("css", cbCss.isChecked());
-		//editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
-		editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));
-		editor.putInt("textsize", fontSize.indexOfChild(findViewById(fontSize.getCheckedRadioButtonId())));
-		editor.putInt("search_engine", searchEngine.indexOfChild(findViewById(searchEngine.getCheckedRadioButtonId())));
-		
-		editor.putBoolean("block_popup", cbBlockPopup.isChecked());
-		editor.putBoolean("block_js", cbBlockJs.isChecked());
-		editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
-		editor.putBoolean("html5", cbHtml5.isChecked());
-		editor.putBoolean("enable_proxy", cbEnableProxy.isChecked());
-		try { editor.putInt("local_port", Integer.parseInt(etPort.getText().toString()));
-		} catch(Exception e) {//incase error in parse int}
-		editor.putInt("encoding", encodingType.indexOfChild(findViewById(encodingType.getCheckedRadioButtonId())));
-		editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA.getCheckedRadioButtonId())));
-		
-		editor.putBoolean("clear_history", clrHistory.isChecked());
-		editor.putBoolean("clear_bookmark", clrBookmark.isChecked());
-		editor.putBoolean("clear_cookie", clrCookie.isChecked());
-		editor.putBoolean("clear_formdata", clrFormdata.isChecked());
-		editor.putBoolean("clear_password", clrPassword.isChecked());
-		editor.putBoolean("clear_cache", clrCache.isChecked());
+		if (resetDefault) {
+	    	editor.putBoolean("show_zoom", false);
+	    	editor.putBoolean("block_image", false);
+	    	editor.putInt("full_screen", 1);
+	    	editor.putInt("textsize", 2);
+	    	editor.putInt("search_engine", 3);
+	    	
+	    	editor.putBoolean("block_popup", false);
+	    	editor.putBoolean("block_js", false);
+	    	editor.putBoolean("cache_tosd", false);
+	    	editor.putBoolean("html5", false);
+	    	editor.putBoolean("enable_proxy", false);
+	    	editor.putInt("local_port", 1984);
+	    	editor.putInt("encoding", 0);
+	    	editor.putInt("ua", 0);
+	    	
+	    	editor.putBoolean("clear_history", false);
+	    	editor.putBoolean("clear_bookmark", false);
+	    	editor.putBoolean("clear_cookie", false);
+	    	editor.putBoolean("clear_formdata", false);
+	    	editor.putBoolean("clear_password", false);
+	    	editor.putBoolean("clear_cache", false);
+		}
+		else {
+			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
+			editor.putBoolean("block_image", cbBlockImg.isChecked());
+			//editor.putBoolean("css", cbCss.isChecked());
+			//editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
+			editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));
+			editor.putInt("textsize", fontSize.indexOfChild(findViewById(fontSize.getCheckedRadioButtonId())));
+			editor.putInt("search_engine", searchEngine.indexOfChild(findViewById(searchEngine.getCheckedRadioButtonId())));
+			
+			editor.putBoolean("block_popup", cbBlockPopup.isChecked());
+			editor.putBoolean("block_js", cbBlockJs.isChecked());
+			editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
+			editor.putBoolean("html5", cbHtml5.isChecked());
+			editor.putBoolean("enable_proxy", cbEnableProxy.isChecked());
+			try { editor.putInt("local_port", Integer.parseInt(etPort.getText().toString()));
+			} catch(Exception e) {}//incase error in parse int
+			editor.putInt("encoding", encodingType.indexOfChild(findViewById(encodingType.getCheckedRadioButtonId())));
+			editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA.getCheckedRadioButtonId())));
+			
+			editor.putBoolean("clear_history", clrHistory.isChecked());
+			editor.putBoolean("clear_bookmark", clrBookmark.isChecked());
+			editor.putBoolean("clear_cookie", clrCookie.isChecked());
+			editor.putBoolean("clear_formdata", clrFormdata.isChecked());
+			editor.putBoolean("clear_password", clrPassword.isChecked());
+			editor.putBoolean("clear_cache", clrCache.isChecked());
+		}
 	    editor.commit();
+	    
 		super.onPause();
 	}
 }

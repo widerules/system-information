@@ -292,7 +292,8 @@ public class AboutBrowser extends Activity{
 		editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
 		editor.putBoolean("html5", cbHtml5.isChecked());
 		editor.putBoolean("enable_proxy", cbEnableProxy.isChecked());
-		editor.putInt("local_port", Integer.parseInt(etPort.getText().toString()));
+		try { editor.putInt("local_port", Integer.parseInt(etPort.getText().toString()));
+		} catch(Exception e) {//incase error in parse int}
 		editor.putInt("encoding", encodingType.indexOfChild(findViewById(encodingType.getCheckedRadioButtonId())));
 		editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA.getCheckedRadioButtonId())));
 		

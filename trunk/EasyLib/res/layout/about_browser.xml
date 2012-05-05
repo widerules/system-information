@@ -245,15 +245,6 @@
       	android:orientation="vertical"
         >
         
-    	<CheckBox android:id="@+id/enable_proxy"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/enable_proxy"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-        />
-      
     	<CheckBox android:id="@+id/block_popup"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
@@ -290,6 +281,36 @@
       	android:checked="false"
         />
       
+	    <HorizontalScrollView
+    	android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:fadeScrollbars="true"
+		android:layout_marginLeft="15dip"
+		android:layout_marginRight="10dip"
+        >
+        <LinearLayout
+      		android:layout_width="fill_parent"
+      		android:layout_height="wrap_content"
+      		android:orientation="horizontal"
+        	>
+	        <CheckBox android:id="@+id/enable_proxy"
+    	  	android:layout_width="wrap_content"
+      		android:layout_height="wrap_content"
+      		android:text="@string/enable_proxy"
+      		android:textColor="#f0030f03"
+      		android:checked="false"
+        	/>
+        	<EditText android:id="@+id/local_port"
+	      	android:layout_width="80dip"
+    	  	android:layout_height="wrap_content"
+	      	android:layout_marginLeft="5dip"
+	      	android:singleLine="true"
+	      	android:inputType="phone"
+	      	android:digits="1234567890"
+            />
+        </LinearLayout>
+	    </HorizontalScrollView>
+        
     <TextView
     	android:layout_width="match_parent"
 	    android:layout_height="wrap_content"

@@ -174,5 +174,5 @@
     
     <string name="reset">Reset default options</string>
     
-    <string name="enable_proxy">Enable proxy</string>
+    <string name="enable_proxy">Enable proxy, local port:</string>
 </resources>

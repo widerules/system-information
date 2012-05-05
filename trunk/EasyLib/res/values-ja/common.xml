@@ -140,6 +140,6 @@
     
     <string name="reset">デフォルトにリセット</string>
     
-    <string name="enable_proxy">プロキシを有効にする</string>
+    <string name="enable_proxy">プロキシを有効にする, ローカルポート:</string>
     
 </resources>

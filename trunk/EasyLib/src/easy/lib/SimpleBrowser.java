@@ -791,8 +791,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         boolean tmpEnableProxy = sp.getBoolean("enable_proxy", false);
         if (enableProxy != tmpEnableProxy) {
         	enableProxy = tmpEnableProxy;
-        	if (enableProxy) ProxySettings.setSystemProxy(mContext);
-        	else ProxySettings.resetSystemProxy(mContext);
+        	if (enableProxy) ProxySettings.setProxy(mContext, "127.0.0.1", 1984);
+			else
+				try {
+					ProxySettings.resetProxy(mContext);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
         }
         
         WebSettings localSettings = serverWebs.get(webIndex).getSettings();
@@ -1235,7 +1240,7 @@ public void onCreate(Bundle savedInstanceState) {
     readTextSize(sp);//init the text size
     enableProxy = sp.getBoolean("enable_proxy", false);
     
-    if (enableProxy) ProxySettings.setSystemProxy(mContext);
+	if (enableProxy) ProxySettings.setProxy(mContext, "127.0.0.1", 1984);
     
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();

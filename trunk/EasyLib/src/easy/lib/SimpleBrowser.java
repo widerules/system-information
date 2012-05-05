@@ -790,18 +790,16 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         searchEngine = sp.getInt("search_engine", 3);
         
         boolean tmpEnableProxy = sp.getBoolean("enable_proxy", false);
-        if (enableProxy != tmpEnableProxy) {
+        int tmpLocalPort = sp.getInt("local_port", 1984);
+        if ((enableProxy != tmpEnableProxy) || (localPort != tmpLocalPort)) {
         	enableProxy = tmpEnableProxy;
-        	if (enableProxy) {
-                localPort = sp.getInt("local_port", 1984);
-        		ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
-        	}
-			else
-				try {
-					ProxySettings.resetProxy(mContext);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+        	localPort = tmpLocalPort;
+        	if (enableProxy) ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
+			else try {
+				ProxySettings.resetProxy(mContext);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         }
         
         WebSettings localSettings = serverWebs.get(webIndex).getSettings();

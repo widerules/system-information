@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,6 +39,8 @@ public class AboutBrowser extends Activity{
 	EditText etPort;
 	
 	boolean resetDefault = false;
+	
+	InputMethodManager imm;
 	
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
@@ -201,14 +204,18 @@ public class AboutBrowser extends Activity{
     	catch(Exception e) {
         	cbHtml5.setEnabled(false);
     	}
+    	
+		imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
     	cbEnableProxy = (CheckBox) findViewById(R.id.enable_proxy);
     	etPort = (EditText) findViewById(R.id.local_port);
     	cbEnableProxy.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				etPort.setEnabled(cbEnableProxy.isChecked());
-				etPort.setFocusable(cbEnableProxy.isChecked());
-				etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
+				boolean proxyEnabled = cbEnableProxy.isChecked();
+				etPort.setEnabled(proxyEnabled);
+				etPort.setFocusable(proxyEnabled);
+				etPort.setFocusableInTouchMode(proxyEnabled);
+				if (!proxyEnabled) imm.hideSoftInputFromWindow(etPort.getWindowToken(), 0);//close soft keyboard
 			}
     	});
     	

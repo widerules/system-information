@@ -1365,7 +1365,6 @@ public void onCreate(Bundle savedInstanceState) {
         		searchBar.setVisibility(View.VISIBLE);
         		etSearch.requestFocus();
         		toSearch = "";
-        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         		imm.toggleSoftInput(0, 0);
         		break;
         	case 3://exit
@@ -2000,7 +1999,6 @@ private boolean openNewPage(String url) {
 }
 
 void hideSearchBox() {
-	//InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 	//imm.toggleSoftInput(0, 0);
 	searchBar.setVisibility(View.INVISIBLE);
 	matchCount = 0;

@@ -1370,7 +1370,8 @@ public void onCreate(Bundle savedInstanceState) {
         		imm.toggleSoftInput(0, 0);
         		break;
         	case 3://exit
-        		moveTaskToBack(true);
+        		//moveTaskToBack(true);
+        		finish();
         		break;
         	case 0://view page source
         		try {

@@ -679,11 +679,13 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
 }
 
 void closePage(int position, boolean clearData) {
-	serverWebs.get(webIndex).stopLoading();//remove current page, so stop loading at first
-	if (clearData) {
-        serverWebs.get(webIndex).clearCache(true);
-        serverWebs.get(webIndex).clearSslPreferences();
-        serverWebs.get(webIndex).clearFormData();
+	if (position == webIndex) {
+		serverWebs.get(webIndex).stopLoading();//remove current page, so stop loading at first
+		if (clearData) {
+	        serverWebs.get(webIndex).clearCache(true);
+	        serverWebs.get(webIndex).clearSslPreferences();
+	        serverWebs.get(webIndex).clearFormData();
+		}
 	}
 	
 	if (webAdapter.getCount() > 1) {
@@ -693,7 +695,7 @@ void closePage(int position, boolean clearData) {
 		webpages.removeViewAt(position);
 		tmp.destroy();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
-		if (webIndex == webAdapter.getCount()) webIndex = webAdapter.getCount()-1;
+		if ((webIndex > position) || (webIndex == webAdapter.getCount())) webIndex -= 1;
 	}
 	else {//return to home page if only one page when click close button
 		webControl.setVisibility(View.INVISIBLE);

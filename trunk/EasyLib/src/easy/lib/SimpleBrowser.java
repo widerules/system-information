@@ -1127,8 +1127,11 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	}
         	if (stopDownload) nManager.cancel(NOTIFICATION_ID);//stop download by user. clear notification here for the close() and shutdown() may be very slow
         	
-        	fos.close();
-        	is.close();
+        	try {fos.close();} 
+        	catch (IOException e1) {}
+        	
+        	try {is.close();}
+			catch (IOException e1) {}
         	
         	if (httpConnection != null) httpConnection.disconnect();
         	else httpClient.getConnectionManager().shutdown(); 

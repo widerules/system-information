@@ -175,4 +175,7 @@
     <string name="reset">Reset default options</string>
     
     <string name="enable_proxy">Enable proxy, local port:</string>
+    
+    <string name="hide_exit">Hide instead of exit</string>
+    
 </resources>

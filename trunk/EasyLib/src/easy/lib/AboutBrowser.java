@@ -31,7 +31,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg;
+	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbHideExit;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
@@ -195,6 +195,7 @@ public class AboutBrowser extends Activity{
     	
     	cbBlockPopup = (CheckBox) findViewById(R.id.block_popup);
     	cbBlockJs = (CheckBox) findViewById(R.id.block_js);
+    	cbHideExit = (CheckBox) findViewById(R.id.hide_exit);
     	cbCacheToSD = (CheckBox) findViewById(R.id.cache_tosd);
     	cbHtml5 = (CheckBox) findViewById(R.id.html5);
     	try {
@@ -257,6 +258,7 @@ public class AboutBrowser extends Activity{
 	protected void onResume() {
 		cbBlockPopup.setChecked(perferences.getBoolean("block_popup", false));
 		cbBlockJs.setChecked(perferences.getBoolean("block_js", false));
+		cbHideExit.setChecked(perferences.getBoolean("hide_exit", true));
 		cbCacheToSD.setChecked(perferences.getBoolean("cache_tosd", false));
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		//cbCss.setChecked(perferences.getBoolean("css", false));
@@ -295,6 +297,7 @@ public class AboutBrowser extends Activity{
 	    	
 	    	editor.putBoolean("block_popup", false);
 	    	editor.putBoolean("block_js", false);
+	    	editor.putBoolean("hide_exit", true);
 	    	editor.putBoolean("cache_tosd", false);
 	    	editor.putBoolean("html5", false);
 	    	editor.putBoolean("enable_proxy", false);
@@ -320,6 +323,7 @@ public class AboutBrowser extends Activity{
 			
 			editor.putBoolean("block_popup", cbBlockPopup.isChecked());
 			editor.putBoolean("block_js", cbBlockJs.isChecked());
+			editor.putBoolean("hide_exit", cbHideExit.isChecked());
 			editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
 			editor.putBoolean("html5", cbHtml5.isChecked());
 			editor.putBoolean("enable_proxy", cbEnableProxy.isChecked());

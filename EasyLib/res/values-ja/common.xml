@@ -142,4 +142,6 @@
     
     <string name="enable_proxy">プロキシを有効にする, ローカルポート:</string>
     
+    <string name="hide_exit">代わりに出口の非表示</string>
+    
 </resources>

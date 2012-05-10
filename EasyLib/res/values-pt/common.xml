@@ -144,4 +144,6 @@
     
     <string name="enable_proxy">Enable proxy, porta local:</string>
     
+    <string name="hide_exit">esconder, em vez de saída</string>
+    
 </resources>

@@ -110,10 +110,12 @@
       	android:textSize="16dip"
       	android:textColor="#FFFFFFFF"
         />
-    <RadioButton  
-        android:text="@string/history_8"
-		android:layout_marginLeft="5dip"
-        />  
+
+    <RadioButton
+        android:text="@string/history_8" 
+        android:layout_marginLeft="5dip"
+        />
+  
     <RadioButton  
         android:text="@string/history_16"
 		android:layout_marginLeft="5dip"
@@ -272,7 +274,16 @@
       	android:checked="false"
         />
       
-        <CheckBox android:id="@+id/html5"
+    	<CheckBox android:id="@+id/hide_exit"
+      	android:layout_width="wrap_content"
+      	android:layout_height="wrap_content"
+      	android:text="@string/hide_exit"
+      	android:textColor="#f0030f03"
+      	android:layout_marginLeft="15dip"
+      	android:checked="false"
+        />
+      
+    	<CheckBox android:id="@+id/html5"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/html5"

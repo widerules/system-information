@@ -2004,7 +2004,7 @@ private boolean openNewPage(String url) {
 }
 
 void hideSearchBox() {
-	//imm.toggleSoftInput(0, 0);
+	imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 	searchBar.setVisibility(View.INVISIBLE);
 	matchCount = 0;
 	serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");//remove the match by an impossible search

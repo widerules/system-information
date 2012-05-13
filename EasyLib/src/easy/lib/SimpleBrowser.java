@@ -612,12 +612,8 @@ class MyWebview extends WebView {
 			
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (BLANK_PAGE.equals(url)) {
-					try {//one user report a null pointer here. just catch it.
-						if (view.getHitTestResult().getType() > 0) loadPage(true);
-						else ;//should do nothing here, otherwise it will not login php site correctly
-					} catch (Exception e) {}
-					return true;
+				if (BLANK_PAGE.equals(url)) {//some site such as weibo and mysilkbaby will send BLANK_PAGE when login. 
+					return true;//we should do nothing but return true, otherwise may not login.
 				}
 				else if (!url.startsWith("http")) {
 					Uri uri = Uri.parse(url);

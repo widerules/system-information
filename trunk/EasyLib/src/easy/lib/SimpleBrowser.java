@@ -298,6 +298,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	boolean historyChanged = false, bookmarkChanged = false;
 	ImageView imgAddFavo, imgGo;
+	boolean noHistoryOnSdcard = true;
 	
 	//ad
 	static boolean mAdAvailable;
@@ -1594,16 +1595,14 @@ public void onCreate(Bundle savedInstanceState) {
 		try {//try to open history on sdcard at first
 			File file = new File(downloadPath + "bookmark/history");
 			fi = new FileInputStream(file);
+			noHistoryOnSdcard = false;
 		}
 		catch (FileNotFoundException e) {//read from /data/data if fail
-			Log.d("===============", downloadPath + "bookmark/history");
 			fi = openFileInput("history");
 		}
 		try { fi.close();}
 		catch (Exception e) {}
-	} catch (FileNotFoundException e1) { firstRun = true; 
-	Log.d("===============", "not found history in /data");
-	}
+	} catch (FileNotFoundException e1) { firstRun = true; }
 	if (firstRun) {//copy from system bookmark if first run
 		for (int i = 0; i < mSystemHistory.size(); i++) {
 			if (i > historyCount) break;
@@ -2155,11 +2154,11 @@ String getEncoding(int iEncoding) {
 
 @Override
 protected void onPause() {
-	if (historyChanged) {
+	if (historyChanged || noHistoryOnSdcard) {
 		writeBookmark("history", mHistory);
 		historyChanged = false;
 	}
-	if (bookmarkChanged) {
+	if (bookmarkChanged || noHistoryOnSdcard) {
 		writeBookmark("bookmark", mBookMark);
 		bookmarkChanged = false;
 	}
@@ -2374,7 +2373,7 @@ void writeBookmark(String filename, ArrayList<TitleUrl> bookmark) {
 		oos.flush();
 		oos.close();
 		fo.close();
-	} catch (Exception e) {}
+	} catch (Exception e) {e.printStackTrace();}
 }
 
 void getHistoryList() {

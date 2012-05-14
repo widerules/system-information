@@ -1,5 +1,7 @@
 package easy.lib;
 
+import java.io.File;
+
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -125,13 +127,21 @@ public class util {
 		    if(myFilePath.isDirectory()) ;//folder exist
 		    else myFilePath.mkdir();//create folder
 		    
-			java.io.File snapPath = new java.io.File(downloadPath + "snap/");
-		    if(snapPath.isDirectory()) ;//folder exist
-		    else snapPath.mkdir();//create folder
+			File path = new File(downloadPath + "snap/");
+		    if(path.isDirectory()) ;//folder exist
+		    else path.mkdir();//create folder
 		    
-			java.io.File apkPath = new java.io.File(downloadPath + "apk/");
-		    if(apkPath.isDirectory()) ;//folder exist
-		    else apkPath.mkdir();//create folder
+			path = new File(downloadPath + "apk/");
+		    if(path.isDirectory()) ;//folder exist
+		    else path.mkdir();//create folder
+		    
+			path = new File(downloadPath + "cache/");
+		    if(path.isDirectory()) ;//folder exist
+		    else path.mkdir();//create folder
+		    
+			path = new File(downloadPath + "bookmark/");
+		    if(path.isDirectory()) ;//folder exist
+		    else path.mkdir();//create folder
 		}
 		catch(Exception e) {
 			downloadPath = defaultPath + "/";

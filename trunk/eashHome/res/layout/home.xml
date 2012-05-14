@@ -15,7 +15,6 @@
 			android:layout_height="54dip" 
 			android:layout_width="54dip"
 			android:layout_alignParentLeft="true"
-			android:src="@drawable/contacts"
 			android:scaleType="fitCenter"
 			android:paddingLeft="5dip"
   		/>

@@ -120,7 +120,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	private List<View> mListViews;
 	GridView favoAppList;
 	ListView sysAppList, userAppList, shortAppList;
-	ImageView shortBar;
+	ImageView homeBar, shortBar;
 	String version, myPackageName;
 	ViewPager mainlayout;
 	MyPagerAdapter myPagerAdapter;
@@ -630,6 +630,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         base = (sizedRelativeLayout) home.findViewById(R.id.base); 
         base.setResizeListener(this);
         shortcutBar_center = (RelativeLayout) home.findViewById(R.id.shortcut_bar_center);
+        homeBar = (ImageView) home.findViewById(R.id.home_bar);
+        homeBar.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				//?
+			}
+        });
         
         shortBar = (ImageView) home.findViewById(R.id.business_bar);
         shortBar.setOnClickListener(new OnClickListener() {//by click this bar to show/hide mainlayout
@@ -644,7 +651,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         
 		shortcut_phone = (ImageView) home.findViewById(R.id.shortcut_phone);
 		shortcut_sms = (ImageView) home.findViewById(R.id.shortcut_sms);
-		shortcut_contact = (ImageView) home.findViewById(R.id.home_bar);
+		//shortcut_contact = (ImageView) findViewById(R.id.shortcut_contact);
 		
 		//for package add/remove
 		IntentFilter filter = new IntentFilter();
@@ -1138,13 +1145,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		    		        	match += 1;
 		    				}
 		    			}
-		    			else if (label_contact.contains(name)) {//only add contact to shortcut if shortcut is empty.
+		    			else if ((shortEmpty) && label_contact.contains(name)) {//only add contact to shortcut if shortcut is empty.
 		    				if (ri_contact == null) {
-		    					//mShortApps.add(ri);
-		    					ri_contact = ri;
+		    					mShortApps.add(ri);
+		    					/*ri_contact = ri;
 		    		        	Message msgcontact = mAppHandler.obtainMessage();
 		    		        	msgcontact.what = UPDATE_RI_CONTACT;
-		    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.
+		    		        	mAppHandler.sendMessage(msgcontact);//inform UI thread to update UI.*/
 		    		        	match += 1;
 			    			}
 		    			}
@@ -1305,6 +1312,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			});
         		break;
         	case UPDATE_RI_CONTACT:
+    			shortcut_contact.setImageDrawable(ri_contact.loadIcon(pm));
     			shortcut_contact.setOnClickListener(new OnClickListener() {//start app
     				@Override
     				public void onClick(View arg0) {

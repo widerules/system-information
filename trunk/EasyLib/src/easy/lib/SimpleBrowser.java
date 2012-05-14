@@ -1588,9 +1588,16 @@ public void onCreate(Bundle savedInstanceState) {
 	}
 
 	try {
-		FileInputStream fi = openFileInput("history");
+		FileInputStream fi = null;
+		try {//try to open history on sdcard at first
+			File file = new File(downloadPath + "bookmark/history");
+			fi = new FileInputStream(file);
+		}
+		catch (FileNotFoundException e) {//read from /data/data if fail
+			fi = openFileInput("history");
+		}
 		try { fi.close();}
-		catch (IOException e) {}
+		catch (Exception e) {}
 	} catch (FileNotFoundException e1) { firstRun = true; }
 	if (firstRun) {//copy from system bookmark if first run
 		for (int i = 0; i < mSystemHistory.size(); i++) {
@@ -2335,8 +2342,24 @@ class TitleUrl {
 }
 
 void writeBookmark(String filename, ArrayList<TitleUrl> bookmark) {
-	try {
+	try {//write to /data/data/easy.browser/files/
 		FileOutputStream fo = openFileOutput(filename, 0);
+		ObjectOutputStream oos = new ObjectOutputStream(fo);
+		TitleUrl tu;
+			for (int i = 0; i < bookmark.size(); i++) {
+				tu = bookmark.get(i);
+				oos.writeObject(tu.m_title);
+				oos.writeObject(tu.m_url);
+				oos.writeObject(tu.m_site);
+			}
+		oos.flush();
+		oos.close();
+		fo.close();
+	} catch (Exception e) {}
+	
+	try {//write to /sdcard/simpleHome/bookmark/
+		File file = new File(downloadPath + "bookmark/" + filename);
+		FileOutputStream fo = new FileOutputStream(file, false);
 		ObjectOutputStream oos = new ObjectOutputStream(fo);
 		TitleUrl tu;
 			for (int i = 0; i < bookmark.size(); i++) {
@@ -2400,8 +2423,14 @@ ArrayList<TitleUrl> readBookmark(String filename)
 	ArrayList<TitleUrl> bookmark = new ArrayList<TitleUrl>();
 	ObjectInputStream ois = null;
 	FileInputStream fi = null;
-	try {//read favorite or shortcut data
-		fi = openFileInput(filename);
+	try {//read favorite or shortcut data from sdcard at first. if fail then read from /data/data
+		try {
+			File file = new File(downloadPath + "bookmark/" + filename);
+			fi = new FileInputStream(file);
+		}
+		catch (FileNotFoundException e) {
+			fi = openFileInput(filename);
+		}
 		ois = new ObjectInputStream(fi);
 		TitleUrl tu;
 		String title, url, site;
@@ -2417,6 +2446,7 @@ ArrayList<TitleUrl> readBookmark(String filename)
 			fi.close();
 		} catch (Exception e1) {}
 	} catch (Exception e) {}
+	
 	return bookmark;
 }
 

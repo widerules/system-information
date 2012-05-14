@@ -57,6 +57,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1557,6 +1558,7 @@ public void onCreate(Bundle savedInstanceState) {
 		}
     });
     
+	downloadPath = util.preparePath(mContext);
 	mHistory = readBookmark("history");
 	mBookMark = readBookmark("bookmark");		
 
@@ -1594,11 +1596,14 @@ public void onCreate(Bundle savedInstanceState) {
 			fi = new FileInputStream(file);
 		}
 		catch (FileNotFoundException e) {//read from /data/data if fail
+			Log.d("===============", downloadPath + "bookmark/history");
 			fi = openFileInput("history");
 		}
 		try { fi.close();}
 		catch (Exception e) {}
-	} catch (FileNotFoundException e1) { firstRun = true; }
+	} catch (FileNotFoundException e1) { firstRun = true; 
+	Log.d("===============", "not found history in /data");
+	}
 	if (firstRun) {//copy from system bookmark if first run
 		for (int i = 0; i < mSystemHistory.size(); i++) {
 			if (i > historyCount) break;
@@ -1750,8 +1755,6 @@ public void onCreate(Bundle savedInstanceState) {
 	webList.setAdapter(webAdapter);
 	
 	
-	downloadPath = util.preparePath(mContext);
-
 	adContainer = (FrameLayout) findViewById(R.id.adContainer);
 	setLayout();
 	

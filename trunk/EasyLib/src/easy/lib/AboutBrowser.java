@@ -69,7 +69,9 @@ public class AboutBrowser extends Activity{
 		editor = perferences.edit();
 
         Button btnShare = (Button) findViewById(R.id.title);
-		btnShare.setText(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext()));
+        if (getPackageName().equals("easy.browser"))
+        	btnShare.setText(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext()));
+        else btnShare.setText(getString(R.string.browser_name));//not show version if embedded
         btnShare.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

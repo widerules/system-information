@@ -47,7 +47,6 @@ import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
@@ -58,7 +57,6 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -107,8 +105,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
-import android.webkit.GeolocationPermissions;
 
 //for get webpage source on cupcake
 class wrapValueCallback {
@@ -271,7 +267,7 @@ public class SimpleBrowser extends Activity {
 	
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
-	ViewFlipper webpages;
+	MyViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	RelativeLayout webControl, webtools_center;
@@ -1619,7 +1615,7 @@ public void onCreate(Bundle savedInstanceState) {
 	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;
     serverWebs.add(new MyWebview(this));
-    webpages = (ViewFlipper) findViewById(R.id.webpages);
+    webpages = (MyViewFlipper) findViewById(R.id.webpages);
     webpages.addView(serverWebs.get(webIndex));
     
     /*try {//so many error report on 2.3.6 related to clearcache

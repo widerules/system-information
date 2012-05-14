@@ -40,7 +40,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import easy.lib.R;
 import easy.lib.util;
 
 public class About extends Activity{

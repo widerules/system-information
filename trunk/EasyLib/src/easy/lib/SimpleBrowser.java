@@ -941,9 +941,10 @@ boolean startDownload(String url, String contentDisposition) {
 	url = url.replace("%2E", ".");
 	url = url.replace("%2F", "/");
 	url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
-	if (url.endsWith("/")) return false; //such as http://m.cnbeta.com/, http://www.google.com.hk/
+	if (url.endsWith("/")) url = url.substring(0, url.length()-1); //such as http://m.cnbeta.com/, http://www.google.com.hk/
 	
-	String readableUrl = URLDecoder.decode(url);
+	String readableUrl = url;
+	try {readableUrl = URLDecoder.decode(url);}	catch(Exception e) {}//report crash by Elad, so catch it.
 	posQ = readableUrl.indexOf("?");
 	if (posQ > 0) readableUrl = readableUrl.substring(0, posQ);//cut off post paras if any.
 	

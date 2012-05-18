@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1970,6 +1971,7 @@ private void addFavo(final String url, final String title) {
 					if ("".equals(title)) title += (char)0xa0;//add a blank character to occupy the space
 					TitleUrl titleUrl = new TitleUrl(title, url, site);
 		    		mBookMark.add(titleUrl);
+		    		Collections.sort(mBookMark, new myComparator());//sort by name
 		    		loadPage(false);
 		    		
 		    		bookmarkChanged = true;

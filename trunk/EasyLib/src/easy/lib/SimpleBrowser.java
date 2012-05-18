@@ -2292,7 +2292,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			ret += "<dl id=\"content2\" type=\"disc\">";
 		}
 		for (int i = 0; i < mBookMark.size(); i++) {
-			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)\">" 
+			String imgHref = "<li style='padding-left:25px; margin-left:15px; list-style:none; background-repeat:no-repeat; background-size:1em; background-repeat=no-repeat; background-image:url(file://" + getFilesDir() + "/" + mBookMark.get(i).m_site + ".png)'>" 
 					+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
 			imgHref += mBookMark.get(i).m_title;
 			imgHref += "</a></h5></li>";
@@ -2315,7 +2315,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			ret += "<dl id=\"content3\" type=\"disc\">";
 		}
 		for (int i = 0; i < mHistory.size(); i++) {
-			String imgHref = "<li style=\"padding-left:25px; list-style-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)\">" 
+			String imgHref = "<li style='padding-left:25px; margin-left:15px; list-style:none; background-repeat:no-repeat; background-size:1em; background-repeat=no-repeat; background-image:url(file://" + getFilesDir() + "/" + mHistory.get(i).m_site + ".png)'>" 
 					+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
 			imgHref += mHistory.get(i).m_title;
 			imgHref += "</a></h5></li>";

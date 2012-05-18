@@ -1564,7 +1564,7 @@ public void onCreate(Bundle savedInstanceState) {
 	downloadPath = util.preparePath(mContext);
 	mHistory = readBookmark("history");
 	mBookMark = readBookmark("bookmark");	
-	Collections.sort(mBookMark, new myComparator());
+	Collections.sort(mBookMark, new myComparator());//sort the bookmark
 
 	siteArray = new ArrayList<String>();
 	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());

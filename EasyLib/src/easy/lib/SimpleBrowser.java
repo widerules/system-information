@@ -1563,7 +1563,8 @@ public void onCreate(Bundle savedInstanceState) {
     
 	downloadPath = util.preparePath(mContext);
 	mHistory = readBookmark("history");
-	mBookMark = readBookmark("bookmark");		
+	mBookMark = readBookmark("bookmark");	
+	Collections.sort(mBookMark, new myComparator());
 
 	siteArray = new ArrayList<String>();
 	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
@@ -1613,6 +1614,7 @@ public void onCreate(Bundle savedInstanceState) {
 		
 		for (int i = 0; i < mSystemBookMark.size(); i++) 
 			mBookMark.add(mSystemBookMark.get(i));
+		Collections.sort(mBookMark, new myComparator());
 		
 		historyChanged = true;
 		bookmarkChanged = true;

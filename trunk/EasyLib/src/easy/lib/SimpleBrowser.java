@@ -2259,23 +2259,23 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	}
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (Locale.CHINA.equals(locale) || Locale.CHINESE.equals(locale)) {
-		ret += "<h5><li><a href=\"http://weibo.com/\">新浪微博</a></li></h5>";
-		//ret += "<h5><li><a href=\"http://3g.gfan.com\">机锋市场</a></li></h5>";
-		ret += "<h5><li><a href=\"http://www.appchina.com\">应用汇</a></li></h5>";
-		ret += "<h5><li><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></li></h5>";
-		ret += "<h5><li><a href=\"http://www.taobao.com/\">淘宝</a></li></h5>";
-		ret += "<h5><li><a href=\"http://www.baidu.com/\">百度</a></li></h5>";
+		ret += "<li><h5><a href=\"http://weibo.com/\">新浪微博</a></h5></li>";
+		//ret += "<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>";
+		ret += "<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>";
+		ret += "<li><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></li>";
+		ret += "<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>";
+		ret += "<li><h5><a href=\"http://www.baidu.com/\">百度</a></h5></li>";
 	}
 	else {
-		ret += "<h5><li><a href=\"http://www.amazon.com/\">Amazon</a></li></h5>";
-		ret += "<h5><li><a href=\"http://www.bing.com/\">Bing</a></li></h5>";
-		ret += "<h5><li><a href=\"http://www.facebook.com/\">Facebook</a></li></h5>";//tested by Aresh.
-		ret += "<h5><li><a href=\"http://www.google.com/\">Google</a></li></h5>";
-		ret += "<h5><li><a href=\"http://twitter.com/\">Twitter</a></li></h5>";
-		//ret += "<h5><li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li></h5>";
+		ret += "<li><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></li>";
+		ret += "<li><h5><a href=\"http://www.bing.com/\">Bing</a></h5></li>";
+		ret += "<li><h5><a href=\"http://www.facebook.com/\">Facebook</a></h5></li>";//tested by Aresh.
+		ret += "<li><h5><a href=\"http://www.google.com/\">Google</a></h5></li>";
+		ret += "<li><h5><a href=\"http://twitter.com/\">Twitter</a></h5></li>";
+		//ret += "<li><h5><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></h5></li>";
 	}
 	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
-		ret += "<h5><li><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></li></h5>";
+		ret += "<li><h5><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></h5></li>";
 	ret += "</ul>";
 	
 	

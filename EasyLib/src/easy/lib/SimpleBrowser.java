@@ -588,7 +588,8 @@ class MyWebview extends WebView {
                 			site = mHistory.get(0).m_site;
                 			mHistory.remove(0);//delete the first history if list larger than historyCount;
                 			
-                			boolean found = false;
+                			/*//not delete icon here. it can be clear when clear all
+					boolean found = false;
                 			for (int i = mHistory.size()-1; i >= 0; i--) {
                 				if (mHistory.get(i).m_site.equals(site)) {
                 					found = true;
@@ -596,14 +597,14 @@ class MyWebview extends WebView {
                 				}
                 			}
                 			if (!found) {
-                    			for (int i = mBookMark.size()-1; i >= 0; i--) {
-                    				if (mBookMark.get(i).m_site.equals(site)) {
-                    					found = true;
-                    					break;
+                    				for (int i = mBookMark.size()-1; i >= 0; i--) {
+                    					if (mBookMark.get(i).m_site.equals(site)) {
+                    						found = true;
+                    						break;
+                    					}
                     				}
-                    			}
                 				if (!found) deleteFile(mHistory.get(0).m_site + ".png");//delete the Favicon if not any reference 
-                			}
+                			}*/
                 		}
             		}
         		}
@@ -752,19 +753,19 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	    if (clearHistory && clearBookmark && clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
     	    	mContext.deleteDatabase("webview.db");
     	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
-    	        clearFolder(getFilesDir());//clear the files folder except history and bookmark file
+    	        clearFolder(getFilesDir());//clear the files folder
     	    }
     	    
     	    if (clearHistory) {
     	        mHistory.clear();
-        		writeBookmark("history", mHistory);
+        	writeBookmark("history", mHistory);
     	    	historyChanged = false;
     	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
     	    }
     	    
     	    if (clearBookmark) {
     	        mBookMark.clear();
-        		writeBookmark("bookmark", mBookMark);
+        	writeBookmark("bookmark", mBookMark);
     	    	bookmarkChanged = false;
     	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
     	    }
@@ -1564,7 +1565,7 @@ public void onCreate(Bundle savedInstanceState) {
 	downloadPath = util.preparePath(mContext);
 	mHistory = readBookmark("history");
 	mBookMark = readBookmark("bookmark");	
-	Collections.sort(mBookMark, new myComparator());//sort the bookmark
+	//Collections.sort(mBookMark, new myComparator());//sort the bookmark
 
 	siteArray = new ArrayList<String>();
 	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());

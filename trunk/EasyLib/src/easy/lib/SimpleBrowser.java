@@ -2270,6 +2270,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<li><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></li>";
 		ret += "<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>";
 		ret += "<li><h5><a href=\"http://www.baidu.com/\">百度</a></h5></li>";
+		ret += "<li><h5><a href=\"http://bpc.borqs.com/\">梧桐</a></h5></li>";
 	}
 	else {
 		ret += "<li><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></li>";
@@ -2278,6 +2279,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		ret += "<li><h5><a href=\"http://www.google.com/\">Google</a></h5></li>";
 		ret += "<li><h5><a href=\"http://twitter.com/\">Twitter</a></h5></li>";
 		//ret += "<li><h5><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></h5></li>";
+		ret += "<li><h5><a href=\"http://bpc.borqs.com/\">BPC</a></h5></li>";
 	}
 	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
 		ret += "<li><h5><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></h5></li>";

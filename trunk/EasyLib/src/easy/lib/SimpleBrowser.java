@@ -1780,12 +1780,16 @@ public void onCreate(Bundle savedInstanceState) {
 	
 	filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
     registerReceiver(downloadReceiver, filter);
+    
+	filter = new IntentFilter("android.intent.action.SCREEN_OFF");
+    registerReceiver(screenLockReceiver, filter);
 }
 
 @Override 
 protected void onDestroy() {
-	unregisterReceiver(packageReceiver);
+	unregisterReceiver(screenLockReceiver);
 	unregisterReceiver(downloadReceiver);
+	unregisterReceiver(packageReceiver);
 	
 	if (!paid && mAdAvailable) adview.destroy();
 	
@@ -1800,6 +1804,13 @@ protected void onDestroy() {
 	
     //if (clearAll) System.exit(0);
 }
+
+BroadcastReceiver screenLockReceiver = new BroadcastReceiver() {
+	@Override
+	public void onReceive(Context arg0, Intent intent) {
+		clickCount += 1;
+	}
+};
 
 BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 	@Override
@@ -2183,10 +2194,12 @@ protected void onPause() {
     sEdit.commit();
     
 
-    if (clickCount > 0) clickCount -= 1;
-    if (clickCount == 0) {//restore container height to show ad if onpause too many times. black screen will also onpause
-    	LayoutParams lp = adContainer.getLayoutParams();
-    	if (lp.height == 0) lp.height = LayoutParams.WRAP_CONTENT; 
+    if (clickCount > 0) {
+    	clickCount -= 1;
+        if (clickCount == 0) {//restore container height to show ad if onpause too many times. black screen will also onpause
+        	LayoutParams lp = adContainer.getLayoutParams();
+        	if (lp.height == 0) lp.height = LayoutParams.WRAP_CONTENT; 
+        }
     }
     
 
@@ -2240,7 +2253,7 @@ class AppHandler extends Handler {
 
     public void handleMessage(Message msg) {
     	if (msg.what > 0) {
-    		clickCount += 3;//hide ad for three times
+    		clickCount += 1;//hide ad for three times
         	LayoutParams lp = adContainer.getLayoutParams();
         	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
         	adContainer.requestLayout();
@@ -2282,14 +2295,14 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	if (Locale.CHINA.equals(locale) || Locale.CHINESE.equals(locale)) {
 		ret += "<li><h5><a href=\"http://weibo.com/\">新浪微博</a></h5></li>";
 		//ret += "<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>";
-		ret += "<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>";
+		//ret += "<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>";
 		ret += "<li><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></li>";
 		ret += "<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>";
 		ret += "<li><h5><a href=\"http://www.baidu.com/\">百度</a></h5></li>";
 		ret += "<li><h5><a href=\"http://bpc.borqs.com/\">梧桐</a></h5></li>";
 	}
 	else {
-		ret += "<li><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></li>";
+		//ret += "<li><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></li>";
 		ret += "<li><h5><a href=\"http://www.bing.com/\">Bing</a></h5></li>";
 		ret += "<li><h5><a href=\"http://www.facebook.com/\">Facebook</a></h5></li>";//tested by Aresh.
 		ret += "<li><h5><a href=\"http://www.google.com/\">Google</a></h5></li>";

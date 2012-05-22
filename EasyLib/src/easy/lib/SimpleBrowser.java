@@ -2281,51 +2281,58 @@ void loadPage(boolean notJudge) {
 String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scaled image, 3 is history displayed by link
 	String fileDir = getFilesDir().getAbsolutePath();
 	String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
-	ret += "<meta name=\"viewport\" content=\"width=device-width\">";
-	ret += "<html>";
-	ret += "<head>";
-	ret += "<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">";
-	ret += "<title>" + getString(R.string.browser_name) + "</title>";
+	StringBuilder sb = new StringBuilder(ret);
+	sb.append("<meta name=\"viewport\" content=\"width=device-width\">");
+	sb.append("<html>");
+	sb.append("<head>");
+	sb.append("<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">");
+	sb.append("<title>");
+	sb.append(getString(R.string.browser_name));
+	sb.append("</title>");
 	
-	ret += "<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">";
-	ret += "<script type=\"text/javascript\" src=\"file:///android_asset/easybrowser.js\"></script>";
+	sb.append("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">");
+	sb.append("<script type=\"text/javascript\" src=\"file:///android_asset/easybrowser.js\"></script>");
     
-	ret += "</head>";
-	ret += "<body>";
+	sb.append("</head>");
+	sb.append("<body>");
 
 	String tmp = getString(R.string.top);
 	if (countDown > 0) tmp += getString(R.string.url_can_longclick);
 	if (countDown > 1) tmp += "\t" + countDown;
 	if (collapse1) {
-		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >+\t" + tmp + "</h4>";
-		ret += "<ul id=\"content1\" type=\"disc\" style=\"display: none;\" >";
+		sb.append("<h4 id=\"title1\" onClick=\"collapse(1)\" >+\t");
+		sb.append(tmp);
+		sb.append("</h4>");
+		sb.append("<ul id=\"content1\" type=\"disc\" style=\"display: none;\" >");
 	}
 	else {
-		ret += "<h4 id=\"title1\" onClick=\"collapse(1)\" >-\t" + tmp + "</h4>";
-		ret += "<ul id=\"content1\" type=\"disc\">";
+		sb.append("<h4 id=\"title1\" onClick=\"collapse(1)\" >-\t");
+		sb.append(tmp);
+		sb.append("</h4>");
+		sb.append("<ul id=\"content1\" type=\"disc\">");
 	}
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (Locale.CHINA.equals(locale) || Locale.CHINESE.equals(locale)) {
-		ret += "<li><h5><a href=\"http://weibo.com/\">新浪微博</a></h5></li>";
-		//ret += "<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>";
-		//ret += "<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>";
-		ret += "<li><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></li>";
-		ret += "<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>";
-		ret += "<li><h5><a href=\"http://www.baidu.com/\">百度</a></h5></li>";
-		ret += "<li><h5><a href=\"http://bpc.borqs.com/\">梧桐</a></h5></li>";
+		sb.append("<li><h5><a href=\"http://weibo.com/\">新浪微博</a></h5></li>");
+		//sb.append("<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>");
+		//sb.append("<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.baidu.com/\">百度</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://bpc.borqs.com/\">梧桐</a></h5></li>");
 	}
 	else {
-		//ret += "<li><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></li>";
-		ret += "<li><h5><a href=\"http://www.bing.com/\">Bing</a></h5></li>";
-		ret += "<li><h5><a href=\"http://www.facebook.com/\">Facebook</a></h5></li>";//tested by Aresh.
-		ret += "<li><h5><a href=\"http://www.google.com/\">Google</a></h5></li>";
-		ret += "<li><h5><a href=\"http://twitter.com/\">Twitter</a></h5></li>";
-		//ret += "<li><h5><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></h5></li>";
-		ret += "<li><h5><a href=\"http://bpc.borqs.com/\">BPC</a></h5></li>";
+		//sb.append("<li><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.bing.com/\">Bing</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.facebook.com/\">Facebook</a></h5></li>");//tested by Aresh.
+		sb.append("<li><h5><a href=\"http://www.google.com/\">Google</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://twitter.com/\">Twitter</a></h5></li>");
+		//sb.append("<li><h5><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://bpc.borqs.com/\">BPC</a></h5></li>");
 	}
 	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
-		ret += "<li><h5><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></h5></li>";
-	ret += "</ul>";
+		sb.append("<li><h5><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></h5></li>");
+	sb.append("</ul>");
 	
 	
 	if (mBookMark.size() > 0) {
@@ -2333,21 +2340,30 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		if (countDown > 0) tmp += getString(R.string.pic_can_longclick);
 		if (countDown > 1) tmp += "\t" + countDown;
 		if (collapse2) {
-			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >+\t" + tmp + "</h4>";
-			ret += "<dl id=\"content2\" type=\"disc\" style=\"display: none;\" >";
+			sb.append("<h4 id=\"title2\" onClick=\"collapse(2)\" >+\t");
+			sb.append(tmp);
+			sb.append("</h4>");
+			sb.append("<dl id=\"content2\" type=\"disc\" style=\"display: none;\" >");
 		}
 		else {
-			ret += "<h4 id=\"title2\" onClick=\"collapse(2)\" >-\t" + tmp + "</h4>";
-			ret += "<dl id=\"content2\" type=\"disc\">";
+			sb.append("<h4 id=\"title2\" onClick=\"collapse(2)\" >-\t");
+			sb.append(tmp);
+			sb.append("</h4>");
+			sb.append("<dl id=\"content2\" type=\"disc\">");
 		}
 		for (int i = 0; i < mBookMark.size(); i++) {
-			String imgHref = "<li style='padding-left:25px; margin-left:15px; list-style:none; background-repeat:no-repeat; background-size:1em; background-repeat=no-repeat; background-image:url(file://" + fileDir + "/" + mBookMark.get(i).m_site + ".png)'>" 
-					+ "<h5><a href=\"" + mBookMark.get(i).m_url + "\">";
-			imgHref += mBookMark.get(i).m_title;
-			imgHref += "</a></h5></li>";
-			ret += imgHref;
+			sb.append("<li style='padding-left:25px; margin-left:15px; list-style:none; background-repeat:no-repeat; background-size:1em; background-repeat=no-repeat; background-image:url(file://");
+			sb.append(fileDir);
+			sb.append("/");
+			sb.append(mBookMark.get(i).m_site);
+			sb.append(".png)'>"); 
+			sb.append("<h5><a href=\"");
+			sb.append(mBookMark.get(i).m_url);
+			sb.append("\">");
+			sb.append(mBookMark.get(i).m_title);
+			sb.append("</a></h5></li>");
 		}
-		ret += "</dl>";
+		sb.append("</dl>");
 	}
 
 	
@@ -2356,28 +2372,37 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		if (countDown > 0) tmp += getString(R.string.text_can_longclick);
 		if (countDown > 1) tmp += "\t" + countDown;
 		if (collapse3) {
-			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >+\t" + tmp + "</h4>";
-			ret += "<dl id=\"content3\" type=\"disc\" style=\"display: none;\" >";
+			sb.append("<h4 id=\"title3\" onClick=\"collapse(3)\" >+\t");
+			sb.append(tmp);
+			sb.append("</h4>");
+			sb.append("<dl id=\"content3\" type=\"disc\" style=\"display: none;\" >");
 		}
 		else {
-			ret += "<h4 id=\"title3\" onClick=\"collapse(3)\" >-\t" + tmp + "</h4>";
-			ret += "<dl id=\"content3\" type=\"disc\">";
+			sb.append("<h4 id=\"title3\" onClick=\"collapse(3)\" >-\t");
+			sb.append(tmp);
+			sb.append("</h4>");
+			sb.append("<dl id=\"content3\" type=\"disc\">");
 		}
 		for (int i = 0; i < mHistory.size(); i++) {
-			String imgHref = "<li style='padding-left:25px; margin-left:15px; list-style:none; background-repeat:no-repeat; background-size:1em; background-repeat=no-repeat; background-image:url(file://" + fileDir + "/" + mHistory.get(i).m_site + ".png)'>" 
-					+ "<h5><a href=\"" + mHistory.get(i).m_url + "\">";
-			imgHref += mHistory.get(i).m_title;
-			imgHref += "</a></h5></li>";
-			ret += imgHref;
+			sb.append("<li style='padding-left:25px; margin-left:15px; list-style:none; background-repeat:no-repeat; background-size:1em; background-repeat=no-repeat; background-image:url(file://");
+			sb.append(fileDir);
+			sb.append("/");
+			sb.append(mHistory.get(i).m_site);
+			sb.append(".png)'>"); 
+			sb.append("<h5><a href=\"");
+			sb.append(mHistory.get(i).m_url);
+			sb.append("\">");
+			sb.append(mHistory.get(i).m_title);
+			sb.append("</a></h5></li>");
 		}
-		ret += "</dl>";
+		sb.append("</dl>");
 	}
 	if (countDown > 0) countDown -= 1;
 	
 	
-	ret += "</body>";
-	ret += "</html>";
-	return ret;
+	sb.append("</body>");
+	sb.append("</html>");
+	return sb.toString();
 }
 
 class TitleUrl {

@@ -58,6 +58,18 @@ public class AboutBrowser extends Activity{
 		return super.onKeyDown(keyCode, event);
 	}
 
+	void share() {
+        String text = getString(R.string.browser_name) + ", "
+        		+ getString(R.string.sharetext)
+	        		+ " https://play.google.com/store/apps/details?id=easy.browser";
+	        
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");  
+        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
+	}
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,27 +80,29 @@ public class AboutBrowser extends Activity{
 		perferences = PreferenceManager.getDefaultSharedPreferences(this);
 		editor = perferences.edit();
 
-        Button btnShare = (Button) findViewById(R.id.title);
+        Button btnTitle = (Button) findViewById(R.id.title);
         if (getPackageName().equals("easy.browser"))
-        	btnShare.setText(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext()));
-        else btnShare.setText(getString(R.string.browser_name));//not show version if embedded
-        btnShare.setOnClickListener(new OnClickListener() {
+        	btnTitle.setText(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext()));
+        else btnTitle.setText(getString(R.string.browser_name));//not show version if embedded
+        btnTitle.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-    	        String text = getString(R.string.browser_name) + ", "
-    	        		+ getString(R.string.sharetext)
-       	        		+ " https://play.google.com/store/apps/details?id=easy.browser";
-        	        
-    	        Intent intent = new Intent(Intent.ACTION_SEND);
-    	        intent.setType("text/plain");  
-    	        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-        		intent.putExtra(Intent.EXTRA_TEXT, text);
-       			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
+				share();
 			}
         });
 
-        TextView tvHelp = (TextView) findViewById(R.id.help);
-        tvHelp.setText(getString(R.string.browser_name) + getString(R.string.about_message) + "\n\n" + getString(R.string.about_dialog_notes));
+        Button btnShare = (Button) findViewById(R.id.share);
+        btnShare.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				share();
+			}
+        });
+        
+        TextView tvHelp = (TextView) findViewById(R.id.help1);
+        tvHelp.setText(getString(R.string.browser_name) + getString(R.string.about_message));
+        TextView tvHelp2 = (TextView) findViewById(R.id.help2);
+        tvHelp2.setText(getString(R.string.about_message2) + "\n\n" + getString(R.string.about_dialog_notes));
         
         Button btnVote = (Button) findViewById(R.id.vote);
         btnVote.setOnClickListener(new OnClickListener() {

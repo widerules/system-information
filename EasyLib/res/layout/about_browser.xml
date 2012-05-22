@@ -44,11 +44,32 @@
       	android:layout_gravity="center_horizontal"
     />
 
-    <TextView android:id="@+id/help"
+    <TextView android:id="@+id/help1"
       	android:layout_width="fill_parent"
       	android:layout_height="wrap_content"
       	android:textSize="16dip"
       	android:textColor="#f0030f03"
+		android:layout_marginLeft="5dip"
+		android:layout_marginRight="5dip"
+		android:padding="5dip"
+    />
+
+    <Button android:id="@+id/share"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:gravity="center_horizontal"
+      	android:textSize="16dip"
+      	android:text="@string/share_to_friends"
+		android:layout_margin="1dip"
+        android:background="@drawable/button_layout"
+    />
+
+    <TextView android:id="@+id/help2"
+      	android:layout_width="fill_parent"
+      	android:layout_height="wrap_content"
+      	android:textSize="16dip"
+      	android:textColor="#f0030f03"
+      	android:text="@string/about_message2"
 		android:layout_marginLeft="5dip"
 		android:layout_marginRight="5dip"
 		android:padding="5dip"

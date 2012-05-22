@@ -1443,7 +1443,7 @@ public void onCreate(Bundle savedInstanceState) {
        			}
         		break;
         	case 7://about
-        		clickCount += 1;
+        		clickCount += 1;//show about activity will hide browser activity, and should not affect showing ad state
     			intent = new Intent("easy.lib.about");
     			intent.setClassName(getPackageName(), "easy.lib.AboutBrowser");
                 startActivityForResult(intent, SETTING_RESULTCODE );
@@ -2161,6 +2161,11 @@ String getEncoding(int iEncoding) {
 }
 
 @Override
+protected void onSaveInstanceState(Bundle outState) {
+    //No call for super(). Bug on API Level > 11. refer to http://stackoverflow.com/questions/7469082
+}
+
+@Override
 protected void onPause() {
 	if (historyChanged || noHistoryOnSdcard) {
 		writeBookmark("history", mHistory);
@@ -2235,7 +2240,7 @@ class AppHandler extends Handler {
 
     public void handleMessage(Message msg) {
     	if (msg.what > 0) {
-    		clickCount += 2;
+    		clickCount += 3;//hide ad for three times
         	LayoutParams lp = adContainer.getLayoutParams();
         	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
         	adContainer.requestLayout();

@@ -316,6 +316,7 @@ public class SimpleBrowser extends Activity {
 	DisplayMetrics dm;
 	FrameLayout adContainer;
     AppHandler mAppHandler = new AppHandler();
+    int clickCount = 0;
 	
 	//download related
 	String downloadPath;
@@ -1442,6 +1443,7 @@ public void onCreate(Bundle savedInstanceState) {
        			}
         		break;
         	case 7://about
+        		clickCount += 1;
     			intent = new Intent("easy.lib.about");
     			intent.setClassName(getPackageName(), "easy.lib.AboutBrowser");
                 startActivityForResult(intent, SETTING_RESULTCODE );
@@ -2174,6 +2176,14 @@ protected void onPause() {
 	Editor sEdit = sp.edit();
     sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
     sEdit.commit();
+    
+
+    if (clickCount > 0) clickCount -= 1;
+    if (clickCount == 0) {//restore container height to show ad if onpause too many times. black screen will also onpause
+    	LayoutParams lp = adContainer.getLayoutParams();
+    	if (lp.height == 0) lp.height = LayoutParams.WRAP_CONTENT; 
+    }
+    
 
 	super.onPause();
 }
@@ -2225,6 +2235,7 @@ class AppHandler extends Handler {
 
     public void handleMessage(Message msg) {
     	if (msg.what > 0) {
+    		clickCount += 2;
         	LayoutParams lp = adContainer.getLayoutParams();
         	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
         	adContainer.requestLayout();

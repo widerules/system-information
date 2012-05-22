@@ -727,8 +727,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
     	        serverWebs.get(webIndex).clearCache(true);
     	        mContext.deleteDatabase("webviewCache.db");
-    	        clearFolder(new File(downloadPath + "cache/"));//clear cache on sdcard
-    	        clearFolder(new File("/data/data/" + mContext.getPackageName() + "/cache/"));//clear cache in /data/data/package.name/cache/
+    	        ClearFolderTask cltask = new ClearFolderTask();
+    	        cltask.execute(downloadPath + "cache/", "/data/data/" + mContext.getPackageName() + "/cache/");//clear cache on sdcard and in data folder
     	    }
     	    
     	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
@@ -753,8 +753,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	    
     	    if (clearHistory && clearBookmark && clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
     	    	mContext.deleteDatabase("webview.db");
-    	        clearFolder(getDir("databases", MODE_PRIVATE));//clear the app_databases folder
-    	        clearFolder(getFilesDir());//clear the files folder
+    	        ClearFolderTask cltask = new ClearFolderTask();
+    	        cltask.execute(getFilesDir().getAbsolutePath(), getDir("databases", MODE_PRIVATE).getAbsolutePath());//clear files folder and app_databases folder
     	    }
     	    
     	    if (clearHistory) {
@@ -2095,6 +2095,18 @@ void readTextSize(SharedPreferences sp) {
 		textSize = TextSize.LARGEST;
     	break;
     }
+}
+
+class ClearFolderTask extends AsyncTask<String, Integer, String> {
+
+	@Override
+	protected String doInBackground(String... params) {
+		clearFolder(new File(params[0]));
+		if (!params[0].equals(params[1]))
+			clearFolder(new File(params[1]));
+		
+		return null;
+	}
 }
 
 static int clearFolder(final File dir) {

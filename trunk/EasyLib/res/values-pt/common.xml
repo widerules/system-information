@@ -6,7 +6,8 @@
     <string name="help_message">Encontre seu app por não mais de 2 clique. \nClique app ícone para pará-lo, \nClique nome app para lançar, \nClique versão aplicativo para desinstalar, \nlong clique em nome do aplicativo: atalho add, \atalho clique nlong para removê-lo.</string>
 
     <string name="auto_change_wallpaper">mudar papel de parede pela trepidação</string>
-    <string name="about_message">" "É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nLongo clique história/favorito para o apagar.</string>
+    <string name="about_message">" "É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos.</string>
+    <string name="about_message2">Longo clique história/favorito para o apagar.</string>
     
     <string name="share_wallpaper">Wallpaper Compartilhar</string>
     <string name="share_desktop">Compartilhar desktop</string>
@@ -145,5 +146,7 @@
     <string name="enable_proxy">Enable proxy, porta local:</string>
     
     <string name="hide_exit">esconder, em vez de saída</string>
+    
+    <string name="share_to_friends">compartilhar com os amigos</string>
     
 </resources>

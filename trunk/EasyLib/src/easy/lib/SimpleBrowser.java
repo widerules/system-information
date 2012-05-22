@@ -2191,12 +2191,12 @@ protected void onSaveInstanceState(Bundle outState) {
 @Override
 protected void onPause() {
 	if (historyChanged || noHistoryOnSdcard) {
-		writeBookmark("history", mHistory);
-		historyChanged = false;
+        WriteTask wtask = new WriteTask();
+        wtask.execute("history");
 	}
 	if (bookmarkChanged || noHistoryOnSdcard) {
-		writeBookmark("bookmark", mBookMark);
-		bookmarkChanged = false;
+        WriteTask wtask = new WriteTask();
+        wtask.execute("bookmark");
 	}
 	
     
@@ -2265,7 +2265,7 @@ class AppHandler extends Handler {
 
     public void handleMessage(Message msg) {
     	if (msg.what > 0) {
-    		clickCount += 1;//hide ad for three times
+    		clickCount += 2;//hide ad for three times
         	LayoutParams lp = adContainer.getLayoutParams();
         	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
         	adContainer.requestLayout();
@@ -2389,6 +2389,23 @@ class TitleUrl {
 		else m_title = url;
 		m_url = url;
 		m_site = site;
+	}
+}
+
+class WriteTask extends AsyncTask<String, Integer, String> {
+
+	@Override
+	protected String doInBackground(String... params) {
+		if ("history".equals(params[0])) {
+			writeBookmark("history", mHistory);
+			historyChanged = false;
+		}
+		else {
+			writeBookmark("bookmark", mBookMark);
+			bookmarkChanged = false;
+		}
+		
+		return null;
 	}
 }
 

@@ -238,10 +238,10 @@ public abstract class AlphaList<T> {
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
             
-           	if ((getLabel(info) == textView1.getText()) && (DuringSelection))//don't update the view here 
+           	if (getLabel(info).equals(textView1.getText()) && (DuringSelection))//don't update the view here 
            		return convertView;//seldom come here
            	
-           	if (getLabel(info) != textView1.getText()) {//only reset the appname, version, icon when needed
+           	if (!getLabel(info).equals(textView1.getText())) {//only reset the appname, version, icon when needed
                	textView1.setText(getLabel(info));
                	
                	final boolean isUser = (getFlag(info) & ApplicationInfo.FLAG_SYSTEM) == 0;
@@ -349,10 +349,10 @@ public abstract class AlphaList<T> {
             
             final TextView textView1 = (TextView) convertView.findViewById(R.id.appname);
             
-           	if ((getLabel(info) == textView1.getText()) && (DuringSelection))//don't update the view here 
+           	if (getLabel(info).equals(textView1.getText()) && (DuringSelection))//don't update the view here 
            		return convertView;//seldom come here
            	
-           	if (getLabel(info) != textView1.getText()) {//only reset the appname, icon when needed
+           	if (!getLabel(info).equals(textView1.getText())) {//only reset the appname, icon when needed
                	textView1.setText(getLabel(info));
                	
                 final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.appicon);

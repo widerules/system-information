@@ -14,6 +14,7 @@ com.google.ads.AdView
 com.google.ads.AdView: AdView(android.content.Context,android.util.AttributeSet)
 com.google.ads.AdView: AdView(android.content.Context,android.util.AttributeSet,int)
 com.google.ads.AdView: void setAdListener(com.google.ads.AdListener)
+com.google.ads.InstallReceiver
 com.google.ads.InterstitialAd
 com.google.ads.R
 com.google.ads.R$attr
@@ -25,41 +26,9 @@ com.google.ads.R$id: int admob_adView_320_50_test_4
 com.google.ads.R$id: int admob_layout_320_50_test
 com.google.ads.R$layout
 com.google.ads.R$layout: int admob_320_50_test
-com.google.ads.a
-com.google.ads.aa
-com.google.ads.ab
-com.google.ads.ab$b
-com.google.ads.ab$b: com.google.ads.ab$b[] values()
-com.google.ads.ab$b: com.google.ads.ab$b valueOf(java.lang.String)
-com.google.ads.b
-com.google.ads.c
-com.google.ads.d
-com.google.ads.e
-com.google.ads.f
-com.google.ads.g
-com.google.ads.h
-com.google.ads.i
-com.google.ads.j
-com.google.ads.k
-com.google.ads.l
-com.google.ads.m
-com.google.ads.n
-com.google.ads.o
-com.google.ads.p
-com.google.ads.q
-com.google.ads.s
-com.google.ads.searchads.SearchAdRequest$BorderType: com.google.ads.searchads.SearchAdRequest$BorderType[] values()
-com.google.ads.searchads.SearchAdRequest$BorderType: com.google.ads.searchads.SearchAdRequest$BorderType valueOf(java.lang.String)
-com.google.ads.t
-com.google.ads.u
 com.google.ads.util.AdUtil$UserActivityReceiver
 com.google.ads.util.AdUtil$a: com.google.ads.util.AdUtil$a[] values()
 com.google.ads.util.AdUtil$a: com.google.ads.util.AdUtil$a valueOf(java.lang.String)
-com.google.ads.v
-com.google.ads.w
-com.google.ads.x
-com.google.ads.y
-com.google.ads.z
 easy.browser.R$drawable: int about
 easy.browser.R$drawable: int border
 easy.browser.R$drawable: int button_layout
@@ -110,9 +79,12 @@ easy.browser.R$id: int edit_favo
 easy.browser.R$id: int enable_proxy
 easy.browser.R$id: int encoding
 easy.browser.R$id: int font_size
+easy.browser.R$id: int full_screen
 easy.browser.R$id: int go
 easy.browser.R$id: int gridview
-easy.browser.R$id: int help
+easy.browser.R$id: int help1
+easy.browser.R$id: int help2
+easy.browser.R$id: int hide_exit
 easy.browser.R$id: int home
 easy.browser.R$id: int homepage_css
 easy.browser.R$id: int html5
@@ -139,6 +111,7 @@ easy.browser.R$id: int search_engine
 easy.browser.R$id: int search_hint
 easy.browser.R$id: int search_next
 easy.browser.R$id: int search_prev
+easy.browser.R$id: int share
 easy.browser.R$id: int show_zoom
 easy.browser.R$id: int snap_size
 easy.browser.R$id: int stop
@@ -168,6 +141,7 @@ easy.browser.R$layout: int web_list
 easy.browser.R$string: int about
 easy.browser.R$string: int about_dialog_notes
 easy.browser.R$string: int about_message
+easy.browser.R$string: int about_message2
 easy.browser.R$string: int add_bookmark
 easy.browser.R$string: int addtoFavo
 easy.browser.R$string: int addtoShort
@@ -237,6 +211,7 @@ easy.browser.R$string: int google
 easy.browser.R$string: int grid_view
 easy.browser.R$string: int help
 easy.browser.R$string: int help_message
+easy.browser.R$string: int hide_exit
 easy.browser.R$string: int hideapp
 easy.browser.R$string: int hidepage
 easy.browser.R$string: int history
@@ -291,6 +266,7 @@ easy.browser.R$string: int share_desktop
 easy.browser.R$string: int share_text1
 easy.browser.R$string: int share_text2
 easy.browser.R$string: int share_text3
+easy.browser.R$string: int share_to_friends
 easy.browser.R$string: int share_wallpaper
 easy.browser.R$string: int sharemode
 easy.browser.R$string: int sharetext
@@ -318,6 +294,9 @@ easy.browser.R$string: int warning
 easy.browser.R$string: int wp
 easy.lib.AboutBrowser
 easy.lib.MyApp
+easy.lib.MyViewFlipper
+easy.lib.MyViewFlipper: MyViewFlipper(android.content.Context)
+easy.lib.MyViewFlipper: MyViewFlipper(android.content.Context,android.util.AttributeSet)
 easy.lib.R$drawable: int about
 easy.lib.R$drawable: int border
 easy.lib.R$drawable: int button_layout
@@ -368,9 +347,12 @@ easy.lib.R$id: int edit_favo
 easy.lib.R$id: int enable_proxy
 easy.lib.R$id: int encoding
 easy.lib.R$id: int font_size
+easy.lib.R$id: int full_screen
 easy.lib.R$id: int go
 easy.lib.R$id: int gridview
-easy.lib.R$id: int help
+easy.lib.R$id: int help1
+easy.lib.R$id: int help2
+easy.lib.R$id: int hide_exit
 easy.lib.R$id: int home
 easy.lib.R$id: int homepage_css
 easy.lib.R$id: int html5
@@ -397,6 +379,7 @@ easy.lib.R$id: int search_engine
 easy.lib.R$id: int search_hint
 easy.lib.R$id: int search_next
 easy.lib.R$id: int search_prev
+easy.lib.R$id: int share
 easy.lib.R$id: int show_zoom
 easy.lib.R$id: int snap_size
 easy.lib.R$id: int stop
@@ -426,6 +409,7 @@ easy.lib.R$layout: int web_list
 easy.lib.R$string: int about
 easy.lib.R$string: int about_dialog_notes
 easy.lib.R$string: int about_message
+easy.lib.R$string: int about_message2
 easy.lib.R$string: int add_bookmark
 easy.lib.R$string: int addtoFavo
 easy.lib.R$string: int addtoShort
@@ -495,6 +479,7 @@ easy.lib.R$string: int google
 easy.lib.R$string: int grid_view
 easy.lib.R$string: int help
 easy.lib.R$string: int help_message
+easy.lib.R$string: int hide_exit
 easy.lib.R$string: int hideapp
 easy.lib.R$string: int hidepage
 easy.lib.R$string: int history
@@ -549,6 +534,7 @@ easy.lib.R$string: int share_desktop
 easy.lib.R$string: int share_text1
 easy.lib.R$string: int share_text2
 easy.lib.R$string: int share_text3
+easy.lib.R$string: int share_to_friends
 easy.lib.R$string: int share_wallpaper
 easy.lib.R$string: int sharemode
 easy.lib.R$string: int sharetext
@@ -582,3 +568,4 @@ easy.lib.SimpleBrowser$MyWebview$MyJavaScriptInterface: void saveCollapseState(i
 easy.lib.downloadControl
 easy.lib.wrapAdView
 easy.lib.wrapAdView$Listener
+g

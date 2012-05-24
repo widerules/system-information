@@ -1,3 +1,5 @@
+a:
+    private a()
 android.annotation.SuppressLint
 android.annotation.TargetApi
 com.google.ads.Ad:
@@ -15,49 +17,38 @@ com.google.ads.AdActivity:
 com.google.ads.AdRequest:
     public static final java.lang.String VERSION
     public static final java.lang.String LOGTAG
-    173:174:public void setGender(com.google.ads.AdRequest$Gender)
-    184:185:public void setBirthday(java.lang.String)
-    196:197:public void setPlusOneOptOut(boolean)
-    208:209:public void setKeywords(java.util.Set)
-    238:239:public void setExtras(java.util.Map)
-    267:268:public void setLocation(android.location.Location)
-    281:282:public void setTesting(boolean)
-    385:386:public void setTestDevices(java.util.Set)
+    public void setGender(com.google.ads.AdRequest$Gender)
+    public void setBirthday(java.lang.String)
+    public void setKeywords(java.util.Set)
+    public void setExtras(java.util.Map)
+    public void addExtra(java.lang.String,java.lang.Object)
+    public void setLocation(android.location.Location)
+    public void setTesting(boolean)
+    public void addTestDevice(java.lang.String)
+    public void setTestDevices(java.util.Set)
 com.google.ads.AdSize:
-    38:39:public AdSize(int,int)
+    public AdSize(int,int)
 com.google.ads.AdView:
-    478:482:public boolean isReady()
-    535:536:public void stopLoading()
+    public boolean isReady()
+    public void stopLoading()
 com.google.ads.InterstitialAd:
-    private com.google.ads.d a
-    73:74:public InterstitialAd(android.app.Activity,java.lang.String)
-    88:91:public InterstitialAd(android.app.Activity,java.lang.String,boolean)
-    100:100:public boolean isReady()
-    112:113:public void loadAd(com.google.ads.AdRequest)
-    122:135:public void show()
-    146:147:public void setAdListener(com.google.ads.AdListener)
-    156:157:public void stopLoading()
-com.google.ads.d:
-    464:464:public final synchronized boolean o()
-    777:778:public final synchronized void y()
-com.google.ads.searchads.SearchAdRequest:
-    88:89:public void setQuery(java.lang.String)
-    98:104:public void setBackgroundColor(int)
-    116:122:public void setBackgroundGradient(int,int)
-    132:133:public void setHeaderTextColor(int)
-    143:144:public void setDescriptionTextColor(int)
-    154:155:public void setAnchorTextColor(int)
-    163:164:public void setFontFace(java.lang.String)
-    173:174:public void setHeaderTextSize(int)
-    184:185:public void setBorderColor(int)
-    192:193:public void setBorderType(com.google.ads.searchads.SearchAdRequest$BorderType)
-    202:203:public void setBorderThickness(int)
+    private d a
+    public InterstitialAd(android.app.Activity,java.lang.String)
+    public InterstitialAd(android.app.Activity,java.lang.String,boolean)
+    public boolean isReady()
+    public void loadAd(com.google.ads.AdRequest)
+    public void show()
+    public void setAdListener(com.google.ads.AdListener)
+    public void stopLoading()
 com.google.ads.util.AdUtil:
-    152:154:private AdUtil()
+    private AdUtil()
 com.google.ads.util.a:
-    19:21:private a()
+    private a()
 com.google.ads.util.c:
-    26:28:private c()
+    private c()
+d:
+    public final synchronized boolean o()
+    public final synchronized void y()
 easy.browser.BuildConfig
 easy.browser.R
 easy.browser.R$attr
@@ -79,12 +70,12 @@ easy.lib.R$drawable:
 easy.lib.R$id:
     39:39:public R$id()
 easy.lib.R$layout:
-    113:113:public R$layout()
+    117:117:public R$layout()
 easy.lib.R$string:
-    124:124:public R$string()
+    128:128:public R$string()
 easy.lib.util:
-    25:25:public util()
-    55:78:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
+    27:27:public util()
+    57:80:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2
 easy.lib.wrapWebSettings:
-    144:148:synchronized void setLoadWithOverviewMode(boolean)
+    142:146:synchronized void setLoadWithOverviewMode(boolean)

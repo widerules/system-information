@@ -649,7 +649,7 @@ private class WebAdapter extends ArrayAdapter<MyWebview> {
     		convertView.setBackgroundColor(0xDD111111);
 
         final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
-        btnIcon.setImageBitmap(wv.getFavicon());
+        try {btnIcon.setImageBitmap(wv.getFavicon());} catch(Exception e) {}//catch an null pointer exception on 1.6}
         
         TextView webname = (TextView) convertView.findViewById(R.id.webname);
         if ((wv.getTitle() != null) && (!"".equals(wv.getTitle())))
@@ -2317,8 +2317,9 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		//sb.append("<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>");
 		sb.append("<li><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>");
+		//sb.append("<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>");
 		sb.append("<li><h5><a href=\"http://www.baidu.com/\">百度</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></h5></li>");
 		sb.append("<li><h5><a href=\"http://bpc.borqs.com/\">梧桐</a></h5></li>");
 	}
 	else {

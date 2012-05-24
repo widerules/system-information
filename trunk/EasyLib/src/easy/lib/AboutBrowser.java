@@ -31,7 +31,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbHideExit;
+	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbHideExit, cbFullscreen;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
@@ -173,6 +173,7 @@ public class AboutBrowser extends Activity{
 		});
 
 
+    	cbFullscreen = (CheckBox) findViewById(R.id.full_screen);
     	cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
     	cbBlockImg = (CheckBox) findViewById(R.id.block_image);
     	//cbCss = (CheckBox) findViewById(R.id.homepage_css);
@@ -272,26 +273,28 @@ public class AboutBrowser extends Activity{
 	
 	@Override
 	protected void onResume() {
+		cbFullscreen.setChecked(perferences.getBoolean("full_screen_display", false));
+		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
+		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
+		
 		cbBlockPopup.setChecked(perferences.getBoolean("block_popup", false));
 		cbBlockJs.setChecked(perferences.getBoolean("block_js", false));
-		cbHideExit.setChecked(perferences.getBoolean("hide_exit", true));
 		cbCacheToSD.setChecked(perferences.getBoolean("cache_tosd", false));
-		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
+		cbHideExit.setChecked(perferences.getBoolean("hide_exit", true));
 		//cbCss.setChecked(perferences.getBoolean("css", false));
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
-		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		cbEnableProxy.setChecked(perferences.getBoolean("enable_proxy", false));
 		etPort.setText(perferences.getInt("local_port", 1984)+"");
 		etPort.setEnabled(cbEnableProxy.isChecked());
 		etPort.setFocusable(cbEnableProxy.isChecked());
 		etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 		
+		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
    		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2))).setChecked(true);//normal
+		((RadioButton) searchEngine.getChildAt(perferences.getInt("search_engine", 3))).setChecked(true);
 		//((RadioButton) historyCount.getChildAt(perferences.getInt("history_count", 1))).setChecked(true);
 		((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 0))).setChecked(true);
-		((RadioButton) snapSize.getChildAt(perferences.getInt("full_screen", 1))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0))).setChecked(true);
-		((RadioButton) searchEngine.getChildAt(perferences.getInt("search_engine", 3))).setChecked(true);
         
 		clrHistory.setChecked(perferences.getBoolean("clear_history", false));
 		clrBookmark.setChecked(perferences.getBoolean("clear_bookmark", false));
@@ -305,6 +308,7 @@ public class AboutBrowser extends Activity{
 	@Override
 	protected void onPause() {
 		if (resetDefault) {
+	    	editor.putBoolean("full_screen_display", false);
 	    	editor.putBoolean("show_zoom", false);
 	    	editor.putBoolean("block_image", false);
 	    	editor.putInt("full_screen", 1);
@@ -329,6 +333,7 @@ public class AboutBrowser extends Activity{
 	    	editor.putBoolean("clear_cache", false);
 		}
 		else {
+	    	editor.putBoolean("full_screen_display", cbFullscreen.isChecked());
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
 			//editor.putBoolean("css", cbCss.isChecked());

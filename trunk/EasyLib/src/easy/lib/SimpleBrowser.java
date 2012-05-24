@@ -222,6 +222,7 @@ public class SimpleBrowser extends Activity {
 	Context mContext;
 
 	//settings
+	boolean fullScreen = false;
 	boolean snapFullScreen = true;
 	boolean html5 = false;
 	boolean blockImage = false;
@@ -272,10 +273,11 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	RelativeLayout webControl, webtools_center;
+	RelativeLayout webControl, webtools_center, webTools, urlLine;
 	Button btnNewpage;
 	InputMethodManager imm;
 	ProgressBar loadProgress;
+	
 	ConnectivityManager cm;
 	
 	//upload related
@@ -785,6 +787,29 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     		}
     	}
     	
+    	boolean tmpFullScreen = sp.getBoolean("full_screen_display", false);//hide url editor and tool buttons
+    	if (tmpFullScreen != fullScreen) {
+    		fullScreen = tmpFullScreen;
+        	if (fullScreen) {
+            	LayoutParams lp = webTools.getLayoutParams();
+            	lp.height = 0;
+            	webTools.requestLayout();
+
+            	lp = urlLine.getLayoutParams();
+            	lp.height = 0;
+            	urlLine.requestLayout();
+        	}
+        	else {
+            	LayoutParams lp = webTools.getLayoutParams();
+            	lp.height = LayoutParams.WRAP_CONTENT; 
+            	webTools.requestLayout();
+
+            	lp = urlLine.getLayoutParams();
+            	lp.height = LayoutParams.WRAP_CONTENT;
+            	urlLine.requestLayout();
+        	}
+    	}
+    	
         snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
         
         searchEngine = sp.getInt("search_engine", 3);
@@ -1241,6 +1266,7 @@ public void onCreate(Bundle savedInstanceState) {
     ua = sp.getInt("ua", 0);
     showZoom = sp.getBoolean("show_zoom", false);
     searchEngine = sp.getInt("search_engine", 3);
+    fullScreen = sp.getBoolean("full_screen_display", false);
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
     readTextSize(sp);//init the text size
     enableProxy = sp.getBoolean("enable_proxy", false);
@@ -1526,8 +1552,10 @@ public void onCreate(Bundle savedInstanceState) {
     imgAddFavo.setOnClickListener(new OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
-	        boolean foundBookmark = false;
 	        String url = serverWebs.get(webIndex).getUrl();
+			if (BLANK_PAGE.equals(url)) return;//not add blank page
+			
+	        boolean foundBookmark = false;
 	    	for (int i = mBookMark.size()-1; i >= 0; i--) 
 	    		if (mBookMark.get(i).m_url.equals(url)) {
 	    			foundBookmark = true;
@@ -1678,6 +1706,16 @@ public void onCreate(Bundle savedInstanceState) {
     }*/
     
     
+	webTools = (RelativeLayout) findViewById(R.id.webtools);
+	urlLine = (RelativeLayout) findViewById(R.id.urlline);
+	if (fullScreen) {//hide url bar and tools bar
+    	LayoutParams lp = webTools.getLayoutParams();
+    	lp.height = 0; 
+
+    	lp = urlLine.getLayoutParams();
+    	lp.height = 0;
+	}
+	
 	webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 	
 	imgNext = (ImageView) findViewById(R.id.next);

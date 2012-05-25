@@ -239,6 +239,7 @@ public class SimpleBrowser extends Activity {
 	boolean enableProxy = false;
 	int localPort;
 	boolean hideExit = true;
+	boolean overviewPage = false;
 
 	//search
 	EditText etSearch;
@@ -382,7 +383,6 @@ class MyWebview extends WebView {
     	catch(Exception e) {}
 
     	WebSettings localSettings = getSettings();
-    	localSettings.setJavaScriptEnabled(true);
     	localSettings.setSaveFormData(true);
     	localSettings.setTextSize(textSize);
     	localSettings.setSupportZoom(true);
@@ -394,6 +394,7 @@ class MyWebview extends WebView {
         localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     	localSettings.setBlockNetworkImage(blockImage);
     	localSettings.setJavaScriptEnabled(!blockJs);
+    	localSettings.setLoadWithOverviewMode(overviewPage);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
         else localSettings.setUserAgentString(selectUA(ua));
@@ -835,6 +836,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
 
         hideExit = sp.getBoolean("hide_exit", true);
         
+        overviewPage = sp.getBoolean("overview_page", false);
+    	localSettings.setLoadWithOverviewMode(overviewPage);
     	
         readTextSize(sp); //no need to reload page if fontSize changed
         localSettings.setTextSize(textSize);
@@ -1260,6 +1263,7 @@ public void onCreate(Bundle savedInstanceState) {
     blockPopup = sp.getBoolean("block_popup", false);
     blockJs = sp.getBoolean("block_js", false);
     hideExit = sp.getBoolean("hide_exit", true);
+    overviewPage = sp.getBoolean("overview_page", false);
     collapse1 = sp.getBoolean("collapse1", false);
     collapse2 = sp.getBoolean("collapse2", false);
     collapse3 = sp.getBoolean("collapse3", false);
@@ -1917,7 +1921,8 @@ void changePage(int position) {
     localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     //localSettings.setSupportMultipleWindows(true);
 	localSettings.setJavaScriptEnabled(!blockJs);
-	
+	localSettings.setLoadWithOverviewMode(overviewPage);
+
 	if (serverWebs.get(position).mProgress > 0) {
 		imgRefresh.setImageResource(R.drawable.stop);
 		loadProgress.setVisibility(View.VISIBLE);

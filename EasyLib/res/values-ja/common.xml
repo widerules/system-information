@@ -144,6 +144,7 @@
     <string name="enable_proxy">プロキシを有効にする, ローカルポート:</string>
     
     <string name="hide_exit">代わりに出口の非表示</string>
+    <string name="overview_page">概要でモードページを開く</string>
     
     <string name="share_to_friends">友人に共有</string>
     

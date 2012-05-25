@@ -154,7 +154,8 @@
     
     <string name="enable_proxy">使用代理，本地端口：</string>
     
-    <string name="hide_exit">退出菜单只隐藏不退出</string>
+    <string name="hide_exit">退出时只隐藏</string>
+    <string name="overview_page">以概览模式打开网页</string>
     
     <string name="share_to_friends">分享给朋友</string>
     

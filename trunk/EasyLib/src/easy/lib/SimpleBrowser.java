@@ -2351,26 +2351,27 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	}
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
 	if (Locale.CHINA.equals(locale) || Locale.CHINESE.equals(locale)) {
-		sb.append("<li><h5><a href=\"http://weibo.com/\">新浪微博</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://weibo.com\">新浪微博</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://m.hao123.com/?z=2&type=android&tn=diandianhome\">好123</a></h5></li>");
-		//sb.append("<li><h5><a href=\"http://www.taobao.com/\">淘宝</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.baidu.com/\">百度</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://m.hao123.com/?type=android&tn=easy.browser\">好123</a></h5></li>");
+		//sb.append("<li><h5><a href=\"http://www.taobao.com\">淘宝</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.baidu.com\">百度</a></h5></li>");
 		sb.append("<li><h5><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://bpc.borqs.com/\">梧桐</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://bpc.borqs.com\">梧桐</a></h5></li>");
 	}
 	else {
-		//sb.append("<li><h5><a href=\"http://www.amazon.com/\">Amazon</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.bing.com/\">Bing</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.facebook.com/\">Facebook</a></h5></li>");//tested by Aresh.
-		sb.append("<li><h5><a href=\"http://www.google.com/\">Google</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://twitter.com/\">Twitter</a></h5></li>");
+		//sb.append("<li><h5><a href=\"http://www.amazon.com\">Amazon</a></h5></li>");
+		//sb.append("<li><h5><a href=\"http://www.bing.com\">Bing</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.1mobile.com\">1mobile</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.facebook.com\">Facebook</a></h5></li>");//tested by Aresh.
+		sb.append("<li><h5><a href=\"http://www.google.com\">Google</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://twitter.com\">Twitter</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://bpc.borqs.com/\">BPC</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://bpc.borqs.com\">BPC</a></h5></li>");
 	}
 	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
-		sb.append("<li><h5><a href=\"http://www.yahoo.co.jp/\">Yahoo!JAPAN</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></h5></li>");
 	sb.append("</ul>");
 	
 	

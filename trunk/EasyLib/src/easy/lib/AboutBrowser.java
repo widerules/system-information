@@ -82,7 +82,7 @@ public class AboutBrowser extends Activity{
 
         Button btnTitle = (Button) findViewById(R.id.title);
         if (getPackageName().equals("easy.browser"))
-        	btnTitle.setText(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext()));
+        	btnTitle.setText(getString(R.string.browser_name) + " " + util.getVersion(getBaseContext()) + " (" + util.getVersionCode(getBaseContext()) + ")");
         else btnTitle.setText(getString(R.string.browser_name));//not show version if embedded
         btnTitle.setOnClickListener(new OnClickListener() {
 			@Override

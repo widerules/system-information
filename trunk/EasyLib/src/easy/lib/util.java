@@ -88,7 +88,6 @@ public class util {
 			if (pi != null) 
 				version = pi.versionName == null ? String.valueOf(pi.versionCode) : pi.versionName;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	return version;
@@ -102,7 +101,6 @@ public class util {
 			if (pi != null) 
 				version = String.valueOf(pi.versionCode);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	return version;

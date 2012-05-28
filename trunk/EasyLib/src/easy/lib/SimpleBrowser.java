@@ -275,7 +275,7 @@ public class SimpleBrowser extends Activity {
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	RelativeLayout webControl, webtools_center, webTools, urlLine, margin1dip;
-	int dips = 1;
+	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
 	ProgressBar loadProgress;
@@ -2380,7 +2380,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 	else {
 		//sb.append("<li><h5><a href=\"http://www.amazon.com\">Amazon</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://www.bing.com\">Bing</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.1mobile.com\">1mobile</a></h5></li>");
+		sb.append("<li><h5><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></h5></li>");
 		sb.append("<li><h5><a href=\"http://www.facebook.com\">Facebook</a></h5></li>");//tested by Aresh.
 		sb.append("<li><h5><a href=\"http://www.google.com\">Google</a></h5></li>");
 		sb.append("<li><h5><a href=\"http://twitter.com\">Twitter</a></h5></li>");

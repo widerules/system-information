@@ -238,19 +238,13 @@
 	    	</FrameLayout>
 			
 		</RelativeLayout>
-  		<RelativeLayout android:id="@+id/margin1dip2"
-			android:layout_width="fill_parent"
-			android:layout_height="2dip"
-			android:orientation="horizontal"
-  		    android:layout_below="@id/urlline"/>
-  		
     			    	    	    
 		<easy.lib.MyViewFlipper
 			android:id="@+id/webpages"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"
 			android:layout_above="@id/line2"
-			android:layout_below="@id/margin1dip2"
+			android:layout_below="@id/urlline"
 			/>
     									
 </RelativeLayout>

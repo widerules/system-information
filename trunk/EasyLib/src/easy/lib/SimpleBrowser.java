@@ -274,7 +274,8 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	RelativeLayout webControl, webtools_center, webTools, urlLine;
+	RelativeLayout webControl, webtools_center, webTools, urlLine, margin1dip, margin1dip2;
+	int dips = 2;
 	Button btnNewpage;
 	InputMethodManager imm;
 	ProgressBar loadProgress;
@@ -799,6 +800,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
             	lp = urlLine.getLayoutParams();
             	lp.height = 0;
             	urlLine.requestLayout();
+            	
+            	lp = margin1dip.getLayoutParams();
+            	lp.height = 0;
+            	margin1dip.requestLayout();
+            	lp = margin1dip2.getLayoutParams();
+            	lp.height = 0;
+            	margin1dip2.requestLayout();
         	}
         	else {
             	LayoutParams lp = webTools.getLayoutParams();
@@ -808,6 +816,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
             	lp = urlLine.getLayoutParams();
             	lp.height = LayoutParams.WRAP_CONTENT;
             	urlLine.requestLayout();
+            	
+            	lp = margin1dip.getLayoutParams();
+            	lp.height = dips;
+            	margin1dip.requestLayout();
+            	lp = margin1dip2.getLayoutParams();
+            	lp.height = dips;
+            	margin1dip2.requestLayout();
         	}
     	}
     	
@@ -1712,11 +1727,17 @@ public void onCreate(Bundle savedInstanceState) {
     
 	webTools = (RelativeLayout) findViewById(R.id.webtools);
 	urlLine = (RelativeLayout) findViewById(R.id.urlline);
+	margin1dip = (RelativeLayout) findViewById(R.id.margin1dip);	
+	margin1dip2 = (RelativeLayout) findViewById(R.id.margin1dip2);	
 	if (fullScreen) {//hide url bar and tools bar
     	LayoutParams lp = webTools.getLayoutParams();
     	lp.height = 0; 
 
     	lp = urlLine.getLayoutParams();
+    	lp.height = 0;
+    	lp = margin1dip.getLayoutParams();
+    	lp.height = 0;
+    	lp = margin1dip2.getLayoutParams();
     	lp.height = 0;
 	}
 	

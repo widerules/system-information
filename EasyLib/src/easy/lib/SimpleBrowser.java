@@ -395,17 +395,16 @@ class MyWebview extends WebView {
         localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     	localSettings.setBlockNetworkImage(blockImage);
     	localSettings.setJavaScriptEnabled(!blockJs);
-    	localSettings.setLoadWithOverviewMode(overviewPage);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
         else localSettings.setUserAgentString(selectUA(ua));
 		
         
         webSettings = new wrapWebSettings(localSettings);
-        //webSettings.setLoadWithOverviewMode(true);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         //webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
         webSettings.setDomStorageEnabled(true);//API7, key to enable gmail
+        webSettings.setLoadWithOverviewMode(overviewPage);//loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
         
         
         registerForContextMenu(this);
@@ -845,9 +844,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
 
         hideExit = sp.getBoolean("hide_exit", true);
         
-        overviewPage = sp.getBoolean("overview_page", false);
-    	localSettings.setLoadWithOverviewMode(overviewPage);
-    	
         readTextSize(sp); //no need to reload page if fontSize changed
         localSettings.setTextSize(textSize);
 
@@ -862,8 +858,11 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	localSettings.setJavaScriptEnabled(!blockJs);
     	
 
-    	html5 = sp.getBoolean("html5", false);
         wrapWebSettings webSettings = new wrapWebSettings(localSettings);
+        overviewPage = sp.getBoolean("overview_page", false);
+        webSettings.setLoadWithOverviewMode(overviewPage);
+    	
+    	html5 = sp.getBoolean("html5", false);
         webSettings.setAppCacheEnabled(html5);//API7
         webSettings.setDatabaseEnabled(html5);//API5
         webSettings.setGeolocationEnabled(html5);//API5
@@ -1933,7 +1932,7 @@ void changePage(int position) {
     localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     //localSettings.setSupportMultipleWindows(true);
 	localSettings.setJavaScriptEnabled(!blockJs);
-	localSettings.setLoadWithOverviewMode(overviewPage);
+    new wrapWebSettings(localSettings).setLoadWithOverviewMode(overviewPage);
 
 	if (serverWebs.get(position).mProgress > 0) {
 		imgRefresh.setImageResource(R.drawable.stop);

@@ -61,7 +61,7 @@ public class AboutBrowser extends Activity{
 	void share() {
         String text = getString(R.string.browser_name) + ", "
         		+ getString(R.string.sharetext)
-	        		+ " https://play.google.com/store/apps/details?id=easy.browser";
+	        		+ " https://play.google.com/store/apps/details?id=easy.browser, market://details?id=easy.browser";
 	        
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");  

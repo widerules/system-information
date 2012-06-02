@@ -693,7 +693,7 @@ void closePage(int position, boolean clearData) {
 		MyWebview tmp = (MyWebview) webpages.getChildAt(position);
 		webAdapter.remove(tmp);
 		webAdapter.notifyDataSetInvalidated();
-		webpages.removeViewAt(position);
+		try {webpages.removeViewAt(position);} catch(Exception e){}//null pointer reported by 3 user. really strange.
 		tmp.destroy();
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));//show the changed page number
 		if ((webIndex > position) || (webIndex == webAdapter.getCount())) webIndex -= 1;

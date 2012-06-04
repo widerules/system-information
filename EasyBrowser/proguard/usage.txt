@@ -77,5 +77,3 @@ easy.lib.util:
     27:27:public util()
     57:80:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2
-easy.lib.wrapWebSettings:
-    142:146:synchronized void setLoadWithOverviewMode(boolean)

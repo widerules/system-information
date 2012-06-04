@@ -2366,7 +2366,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		sb.append("<ul id=\"content1\" type=\"disc\">");
 	}
 	Locale locale = getBaseContext().getResources().getConfiguration().locale;
-	if (Locale.CHINA.equals(locale) || Locale.CHINESE.equals(locale)) {
+	if (Locale.CHINA.equals(locale) || Locale.TAIWAN.equals(locale)) {
 		sb.append("<li><h5><a href=\"http://weibo.com\">新浪微博</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>");
@@ -2386,8 +2386,11 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		//sb.append("<li><h5><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></h5></li>");
 		sb.append("<li><h5><a href=\"http://bpc.borqs.com\">BPC</a></h5></li>");
 	}
+	//additional top list for some locale
 	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
 		sb.append("<li><h5><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></h5></li>");
+	else if ("ru_RU".equals(locale) || "ru".equals(locale)) 
+		sb.append("<li><h5><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></h5></li>");
 	sb.append("</ul>");
 	
 	

@@ -728,7 +728,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	    boolean clearCache = sp.getBoolean("clear_cache", false);
     	    if (clearCache) {
     	    	for (int i = 0; i < webAdapter.getCount(); i++) serverWebs.get(i).stopLoading();//stop loading while clear cache
-    	        serverWebs.get(webIndex).clearCache(true);
+    	        //serverWebs.get(webIndex).clearCache(true);
     	        mContext.deleteDatabase("webviewCache.db");
     	        ClearFolderTask cltask = new ClearFolderTask();
     	        cltask.execute(downloadPath + "cache/", "/data/data/" + mContext.getPackageName() + "/cache/");//clear cache on sdcard and in data folder
@@ -762,14 +762,14 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	    
     	    if (clearHistory) {
     	        mHistory.clear();
-        	writeBookmark("history", mHistory);
+    	        writeBookmark("history", mHistory);
     	    	historyChanged = false;
     	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
     	    }
     	    
     	    if (clearBookmark) {
     	        mBookMark.clear();
-        	writeBookmark("bookmark", mBookMark);
+    	        writeBookmark("bookmark", mBookMark);
     	    	bookmarkChanged = false;
     	    	if (BLANK_PAGE.equals(webAddress.getText().toString())) shouldReload = true;
     	    }

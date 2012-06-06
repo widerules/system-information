@@ -729,10 +729,10 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
 	    	
     	    boolean clearCache = sp.getBoolean("clear_cache", false);
     	    if (clearCache) {
-    	        //serverWebs.get(webIndex).clearCache(true);//this may get disk IO crash
-    	        mContext.deleteDatabase("webviewCache.db");
+    	        serverWebs.get(webIndex).clearCache(true);
+    	        //mContext.deleteDatabase("webviewCache.db");//this may get disk IO crash
     	        ClearFolderTask cltask = new ClearFolderTask();
-    	        cltask.execute(downloadPath + "cache/", "/data/data/" + mContext.getPackageName() + "/cache/");//clear cache on sdcard and in data folder
+    	        cltask.execute(downloadPath + "cache/webviewCache/", "/data/data/" + mContext.getPackageName() + "/cache/webviewCache/");//clear cache on sdcard and in data folder
     	    }
     	    
     	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
@@ -756,7 +756,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	    boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
     	    
     	    if (clearHistory && clearBookmark && clearCache && clearCookie && clearFormdata && clearPassword) {//clear all
-    	    	mContext.deleteDatabase("webview.db");
+    	    	//mContext.deleteDatabase("webview.db");//this may get disk IO crash
     	        ClearFolderTask cltask = new ClearFolderTask();
     	        cltask.execute(getFilesDir().getAbsolutePath(), getDir("databases", MODE_PRIVATE).getAbsolutePath());//clear files folder and app_databases folder
     	    }

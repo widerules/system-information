@@ -1,0 +1,36 @@
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<meta name="viewport" content="width=device-width">
+<html>
+
+<head>
+	<title>My Page</title>
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"></script>
+	<!--script type="text/javascript" src="js/json2.js"></script-->
+	<script type="text/javascript">
+		function click1() {
+			$('#title1').hide();
+			$('#title2').show();
+			history.pushState({state: 'title2'}, '', '#show2');
+		}
+
+		window.onpopstate = function(event) {
+			if (event.state === {state: 'title2'}) {
+				$('#title1').hide();
+				$('#title2').show();
+			}
+			else {
+				$('#title2').hide();
+				$('#title1').show();
+			}
+			//console.log(JSON.stringify(event.state));
+		}
+
+	</script>
+</head>
+
+<body>
+	<h4 id='title1' onClick='click1()'>click me</h4>
+	<h4 id='title2' style='display:none'>show me</h4>
+</body>
+
+</html>

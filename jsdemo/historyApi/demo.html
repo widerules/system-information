@@ -10,7 +10,7 @@
 		function click1() {
 			$('#title1').hide();
 			$('#title2').show();
-			history.pushState({state: 'title2'}, '', '#show2');
+			history.pushState({state: 'title2'}, '', '');
 		}
 
 		window.onpopstate = function(event) {
@@ -19,10 +19,10 @@
 				$('#title2').show();
 			}
 			else {
-				$('#title2').hide();
 				$('#title1').show();
+				$('#title2').hide();
+				//console.log(JSON.stringify(event.state));
 			}
-			//console.log(JSON.stringify(event.state));
 		}
 
 	</script>

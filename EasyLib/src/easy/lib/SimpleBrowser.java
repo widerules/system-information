@@ -240,6 +240,7 @@ public class SimpleBrowser extends Activity {
 	int localPort;
 	boolean hideExit = true;
 	boolean overviewPage = false;
+	Locale mLocale;
 
 	//search
 	EditText etSearch;
@@ -1278,7 +1279,10 @@ public void onCreate(Bundle savedInstanceState) {
     collapse3 = sp.getBoolean("collapse3", false);
     ua = sp.getInt("ua", 0);
     showZoom = sp.getBoolean("show_zoom", false);
-    searchEngine = sp.getInt("search_engine", 3);
+	mLocale = getBaseContext().getResources().getConfiguration().locale;
+	if ("ru_RU".equals(mLocale) || "ru".equals(mLocale))
+		searchEngine = sp.getInt("search_engine", 3);
+	else searchEngine = sp.getInt("search_engine", 4);
     fullScreen = sp.getBoolean("full_screen_display", false);
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
     readTextSize(sp);//init the text size
@@ -1905,6 +1909,9 @@ void gotoUrl(String url) {
 			case 2://baidu
 				url = "http://www.baidu.com/s?wd=" + url;
 				break;
+			case 4://yandex
+				url = "http://yandex.ru/yandsearch?clid=1911433&text=" + url;
+				break;
 			case 3://google
 			default:
 				url = "http://www.google.com/search?q=" + url;
@@ -2366,8 +2373,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		sb.append("</h4>");
 		sb.append("<ul id=\"content1\" type=\"disc\">");
 	}
-	Locale locale = getBaseContext().getResources().getConfiguration().locale;
-	if (Locale.CHINA.equals(locale) || Locale.TAIWAN.equals(locale)) {
+	if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
 		sb.append("<li><h5><a href=\"http://weibo.com\">新浪微博</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>");
 		//sb.append("<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>");
@@ -2388,9 +2394,9 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		sb.append("<li><h5><a href=\"http://bpc.borqs.com\">BPC</a></h5></li>");
 	}
 	//additional top list for some locale
-	if (Locale.JAPAN.equals(locale) || Locale.JAPANESE.equals(locale)) 
+	if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) 
 		sb.append("<li><h5><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></h5></li>");
-	else if ("ru_RU".equals(locale) || "ru".equals(locale)) 
+	else if ("ru_RU".equals(mLocale) || "ru".equals(mLocale)) 
 		sb.append("<li><h5><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></h5></li>");
 	sb.append("</ul>");
 	

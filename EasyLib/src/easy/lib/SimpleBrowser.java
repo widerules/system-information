@@ -2418,7 +2418,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			sb.append("<dl id=\"content2\" type=\"disc\">");
 		}
 		for (int i = 0; i < mBookMark.size(); i++) {
-			sb.append("<li style='padding-left:25px; padding-bottom:1px; margin-left:15px; margin-bottom:25px; list-style:none; background-repeat:no-repeat; background-size:1em; background-image:url(file://");
+			sb.append("<li style='padding-left:25px; margin-left:15px; margin-bottom:25px; list-style:none; background-repeat:no-repeat; background-size:1em; background-image:url(file://");
 			sb.append(fileDir);
 			sb.append("/");
 			sb.append(mBookMark.get(i).m_site);
@@ -2450,7 +2450,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			sb.append("<dl id=\"content3\" type=\"disc\">");
 		}
 		for (int i = 0; i < mHistory.size(); i++) {
-			sb.append("<li style='padding-left:25px; padding-bottom:1px; margin-left:15px; margin-bottom:25px; list-style:none; background-repeat:no-repeat; background-size:1em; background-image:url(file://");
+			sb.append("<li style='padding-left:25px; margin-left:15px; margin-bottom:25px; list-style:none; background-repeat:no-repeat; background-size:1em; background-image:url(file://");
 			sb.append(fileDir);
 			sb.append("/");
 			sb.append(mHistory.get(i).m_site);

@@ -166,9 +166,10 @@
     <string name="bb">BlackBerry</string>
     
     <string name="search_engine">SearchNg</string>
-    <string name="google">Google</string>
+    <string name="baidu">百度</string>
     <string name="bing">Bing</string>
-    <string name="baidu">Baidu</string>
+    <string name="google">Google</string>
+    <string name="yandex">Яндекс</string>
     
     <string name="block_popup">Block pop-up</string>
     <string name="block_js">Block JavaScript</string>

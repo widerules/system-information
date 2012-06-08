@@ -2365,40 +2365,40 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		sb.append("<h4 id=\"title1\" onClick=\"collapse(1)\" >+\t");
 		sb.append(tmp);
 		sb.append("</h4>");
-		sb.append("<ul id=\"content1\" type=\"disc\" style=\"display: none;\" >");
+		sb.append("<dl id=\"content1\" type=\"disc\" style=\"display: none;\" >");
 	}
 	else {
 		sb.append("<h4 id=\"title1\" onClick=\"collapse(1)\" >-\t");
 		sb.append(tmp);
 		sb.append("</h4>");
-		sb.append("<ul id=\"content1\" type=\"disc\">");
+		sb.append("<dl id=\"content1\" type=\"disc\">");
 	}
 	if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
-		sb.append("<li><h5><a href=\"http://weibo.com\">新浪微博</a></h5></li>");
-		//sb.append("<li><h5><a href=\"http://3g.gfan.com\">机锋市场</a></h5></li>");
-		//sb.append("<li><h5><a href=\"http://www.appchina.com\">应用汇</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://m.hao123.com/?type=android&tn=easy.browser\">好123</a></h5></li>");
-		//sb.append("<li><h5><a href=\"http://www.taobao.com\">淘宝</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.baidu.com\">百度</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://bpc.borqs.com\">梧桐</a></h5></li>");
+		sb.append("<li><a href=\"http://weibo.com\">新浪微博</a></li>");
+		//sb.append("<li><a href=\"http://3g.gfan.com\">机锋市场</a></li>");
+		//sb.append("<li><a href=\"http://www.appchina.com\">应用汇</a></li>");
+		sb.append("<li><a href=\"http://m.hao123.com/?type=android&tn=easy.browser\">好123</a></li>");
+		//sb.append("<li><a href=\"http://www.taobao.com\">淘宝</a></li>");
+		sb.append("<li><a href=\"http://www.baidu.com\">百度</a></li>");
+		sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></li>");
+		sb.append("<li><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
 	}
 	else {
-		//sb.append("<li><h5><a href=\"http://www.amazon.com\">Amazon</a></h5></li>");
-		//sb.append("<li><h5><a href=\"http://www.bing.com\">Bing</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://www.facebook.com\">Facebook</a></h5></li>");//tested by Aresh.
-		sb.append("<li><h5><a href=\"http://www.google.com\">Google</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://twitter.com\">Twitter</a></h5></li>");
-		//sb.append("<li><h5><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></h5></li>");
-		sb.append("<li><h5><a href=\"http://bpc.borqs.com\">BPC</a></h5></li>");
+		//sb.append("<li><a href=\"http://www.amazon.com\">Amazon</a></li>");
+		//sb.append("<li><a href=\"http://www.bing.com\">Bing</a></li>");
+		sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");
+		sb.append("<li><a href=\"http://www.facebook.com\">Facebook</a></li>");//tested by Aresh.
+		sb.append("<li><a href=\"http://www.google.com\">Google</a></li>");
+		sb.append("<li><a href=\"http://twitter.com\">Twitter</a></li>");
+		//sb.append("<li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
+		sb.append("<li><a href=\"http://bpc.borqs.com\">BPC</a></li>");
 	}
 	//additional top list for some locale
 	if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) 
-		sb.append("<li><h5><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></h5></li>");
+		sb.append("<li><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></li>");
 	else if ("ru_RU".equals(mLocale) || "ru".equals(mLocale)) 
-		sb.append("<li><h5><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></h5></li>");
-	sb.append("</ul>");
+		sb.append("<li><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></li>");
+	sb.append("</dl>");
 	
 	
 	if (mBookMark.size() > 0) {
@@ -2418,7 +2418,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			sb.append("<dl id=\"content2\" type=\"disc\">");
 		}
 		for (int i = 0; i < mBookMark.size(); i++) {
-			sb.append("<li style='padding-left:25px; margin-left:15px; margin-bottom:25px; list-style:none; background-repeat:no-repeat; background-size:1em; background-image:url(file://");
+			sb.append("<li style='background-image:url(file://");
 			sb.append(fileDir);
 			sb.append("/");
 			sb.append(mBookMark.get(i).m_site);
@@ -2450,7 +2450,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 			sb.append("<dl id=\"content3\" type=\"disc\">");
 		}
 		for (int i = 0; i < mHistory.size(); i++) {
-			sb.append("<li style='padding-left:25px; margin-left:15px; margin-bottom:25px; list-style:none; background-repeat:no-repeat; background-size:1em; background-image:url(file://");
+			sb.append("<li style='background-image:url(file://");
 			sb.append(fileDir);
 			sb.append("/");
 			sb.append(mHistory.get(i).m_site);

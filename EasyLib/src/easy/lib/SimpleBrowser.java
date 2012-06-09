@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -231,7 +233,8 @@ public class SimpleBrowser extends Activity {
 	boolean collapse1 = false, collapse2 = false, collapse3 = false;
 	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
-	long html5cacheMaxSize = 1024*1024*8;
+	long sizeM = 1024*1024;
+	long html5cacheMaxSize = sizeM*8;
 	int ua = 0;
 	boolean showZoom = false;
 	int searchEngine = 3;
@@ -1177,9 +1180,15 @@ class DownloadTask extends AsyncTask<String, Integer, String> {
         	if (!stopDownload) {//download success. change notification, start package manager to install package
             	notification.icon = android.R.drawable.stat_sys_download_done;
 
+                DecimalFormat df=(DecimalFormat)NumberFormat.getInstance();
+                df.setMaximumFractionDigits(2);
+            	String ssize = total_read + "B "; 
+            	if (total_read > sizeM)     ssize = df.format(total_read * 1.0 / sizeM) + "M ";
+                else if (total_read > 1024) ssize = df.format(total_read * 1.0 / 1024) + "K ";
+            	
     	        contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);  
     	        notification.contentView.setOnClickPendingIntent(R.id.notification_dialog, contentIntent);
-    	        notification.setLatestEventInfo(mContext, apkName, getString(R.string.download_finish), contentIntent);//click listener for download progress bar
+    	        notification.setLatestEventInfo(mContext, apkName, ssize + getString(R.string.download_finish), contentIntent);//click listener for download progress bar
     	        nManager.notify(NOTIFICATION_ID, notification);
     	        
     			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());//change file property, for on some device the property is wrong

@@ -2387,9 +2387,9 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		//sb.append("<li style='background-image:url(file://" + fileDir + "/www.amazon.com.png)'><a href=\"http://www.amazon.com\">Amazon</a></li>");
 		//sb.append("<li style='background-image:url(file://" + fileDir + "/www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
 		sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");//no favicon
-		sb.append("<li style='background-image:url(file://" + fileDir + "/www.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");//tested by Aresh.
+		sb.append("<li style='background-image:url(file://" + fileDir + "/m.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");//tested by Aresh.
 		sb.append("<li style='background-image:url(file://" + fileDir + "/www.google.com.png)'><a href=\"http://www.google.com\">Google</a></li>");
-		sb.append("<li style='background-image:url(file://" + fileDir + "/twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/mobile.twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
 		//sb.append("<li style='background-image:url(file://" + fileDir + "/en.wikipedia.org.png)'><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
 		sb.append("<li style='background-image:url(file://" + fileDir + "/bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">BPC</a></li>");
 	}

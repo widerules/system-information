@@ -2374,30 +2374,30 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		sb.append("<dl id=\"content1\" type=\"disc\">");
 	}
 	if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
-		sb.append("<li><a href=\"http://weibo.com\">新浪微博</a></li>");
-		//sb.append("<li><a href=\"http://3g.gfan.com\">机锋市场</a></li>");
-		//sb.append("<li><a href=\"http://www.appchina.com\">应用汇</a></li>");
-		sb.append("<li><a href=\"http://m.hao123.com/?type=android&tn=easy.browser\">好123</a></li>");
-		//sb.append("<li><a href=\"http://www.taobao.com\">淘宝</a></li>");
-		sb.append("<li><a href=\"http://www.baidu.com\">百度</a></li>");
-		sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></li>");
-		sb.append("<li><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/weibo.com.png)'><a href=\"http://weibo.com\">新浪微博</a></li>");
+		//sb.append("<li style='background-image:url(file://" + fileDir + "/3g.gfan.com.png)'><a href=\"http://3g.gfan.com\">机锋市场</a></li>");
+		//sb.append("<li style='background-image:url(file://" + fileDir + "/www.appchina.com.png)'><a href=\"http://www.appchina.com\">应用汇</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/m.hao123.com.png)'><a href=\"http://m.hao123.com/?type=android&tn=easy.browser\">好123</a></li>");
+		//sb.append("<li style='background-image:url(file://" + fileDir + "/www.taobao.com.png)'><a href=\"http://www.taobao.com\">淘宝</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
+		sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></li>");//no favicon
+		sb.append("<li style='background-image:url(file://" + fileDir + "/bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
 	}
 	else {
-		//sb.append("<li><a href=\"http://www.amazon.com\">Amazon</a></li>");
-		//sb.append("<li><a href=\"http://www.bing.com\">Bing</a></li>");
-		sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");
-		sb.append("<li><a href=\"http://www.facebook.com\">Facebook</a></li>");//tested by Aresh.
-		sb.append("<li><a href=\"http://www.google.com\">Google</a></li>");
-		sb.append("<li><a href=\"http://twitter.com\">Twitter</a></li>");
-		//sb.append("<li><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
-		sb.append("<li><a href=\"http://bpc.borqs.com\">BPC</a></li>");
+		//sb.append("<li style='background-image:url(file://" + fileDir + "/www.amazon.com.png)'><a href=\"http://www.amazon.com\">Amazon</a></li>");
+		//sb.append("<li style='background-image:url(file://" + fileDir + "/www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
+		sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");//no favicon
+		sb.append("<li style='background-image:url(file://" + fileDir + "/www.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");//tested by Aresh.
+		sb.append("<li style='background-image:url(file://" + fileDir + "/www.google.com.png)'><a href=\"http://www.google.com\">Google</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
+		//sb.append("<li style='background-image:url(file://" + fileDir + "/en.wikipedia.org.png)'><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">BPC</a></li>");
 	}
 	//additional top list for some locale
 	if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) 
-		sb.append("<li><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/m.yahoo.co.jp.png)'><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></li>");
 	else if ("ru_RU".equals(mLocale) || "ru".equals(mLocale)) 
-		sb.append("<li><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/www.yandex.ru.png)'><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></li>");
 	sb.append("</dl>");
 	
 	

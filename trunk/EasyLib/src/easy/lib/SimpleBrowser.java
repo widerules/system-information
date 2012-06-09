@@ -1679,7 +1679,7 @@ public void onCreate(Bundle savedInstanceState) {
 		countDown = 3;
 	}
 	
-	urlAdapter.sort(new stringCompatator());
+	urlAdapter.sort(new stringComparator());
 	webAddress.setAdapter(urlAdapter);
 
 

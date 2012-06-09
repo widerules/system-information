@@ -13,7 +13,13 @@ public class myComparator implements Comparator<TitleUrl> {
 
 	@Override
 	public final int compare(TitleUrl a, TitleUrl b) {
-	    return sCollator.compare(a.m_title, b.m_title);
+		String titleA = a.m_title;
+		try {titleA = HanziToPinyin.getInstance().getToken(titleA.charAt(0)).target;} catch(Exception e) {}
+		
+		String titleB = b.m_title;
+		try {titleB = HanziToPinyin.getInstance().getToken(titleB.charAt(0)).target;} catch(Exception e) {}
+		
+	    return sCollator.compare(titleA, titleB);
 	}
 
 	private final Collator sCollator = Collator.getInstance();

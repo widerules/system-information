@@ -1,10 +1,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="browser_name">Navegador Fácil</string>
     
-    <string name="about_dialog_notes">Por favor vote para mí 5 estrellas si te gusta, gracias.</string>
-
-    <string name="about_message">" "Es una muy pequeña, un navegador rápido, simple y poderoso. Usted puede ver la fuente de la página, dirección web y la cuota de tiro rápido a tus amigos.</string>
-    <string name="about_message2">Long, haga clic en la historia/marcador para eliminarlo.</string>
+    <string name="about_message">Navegador Fácil Es una muy pequeña, un navegador rápido, simple y poderoso. Usted puede ver la fuente de la página, dirección web y la cuota de tiro rápido a tus amigos. \n\nLong, haga clic en la historia/marcador para eliminarlo. \n\nPor favor vote para mí 5 estrellas si te gusta, gracias!</string>
     
     <string name="select_file">Archivo Selector</string>
     
@@ -22,7 +19,7 @@
     <string name="share_text1">" "verificar" "</string>
     <string name="share_text2">" "Por teléfono o" "</string>
     <string name="share_text3">" "Por la PC.</string>
-    <string name="vote">Voten por mí!</string>
+    <string name="vote">Voten por mí</string>
     
     <string name="online">En línea</string>
     <string name="home">Casa</string>

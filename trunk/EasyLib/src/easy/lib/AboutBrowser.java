@@ -31,7 +31,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbHideExit, cbFullscreen, cbOverview;
+	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbCacheOnly, cbHideExit, cbFullscreen, cbOverview;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
@@ -176,6 +176,7 @@ public class AboutBrowser extends Activity{
     	cbFullscreen = (CheckBox) findViewById(R.id.full_screen);
     	cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
     	cbBlockImg = (CheckBox) findViewById(R.id.block_image);
+    	cbCacheOnly = (CheckBox) findViewById(R.id.cache_only);
     	//cbCss = (CheckBox) findViewById(R.id.homepage_css);
     	//historyCount = (RadioGroup) findViewById(R.id.max_history);
     	snapSize = (RadioGroup) findViewById(R.id.snap_size);
@@ -277,6 +278,7 @@ public class AboutBrowser extends Activity{
 		cbFullscreen.setChecked(perferences.getBoolean("full_screen_display", false));
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
+		cbCacheOnly.setChecked(perferences.getBoolean("cache_only", false));
 		
 		cbBlockPopup.setChecked(perferences.getBoolean("block_popup", false));
 		cbBlockJs.setChecked(perferences.getBoolean("block_js", false));
@@ -313,6 +315,7 @@ public class AboutBrowser extends Activity{
 	    	editor.putBoolean("full_screen_display", false);
 	    	editor.putBoolean("show_zoom", false);
 	    	editor.putBoolean("block_image", false);
+	    	editor.putBoolean("cache_only", false);
 	    	editor.putInt("full_screen", 1);
 	    	editor.putInt("textsize", 2);
 	    	editor.putInt("search_engine", 3);
@@ -339,6 +342,7 @@ public class AboutBrowser extends Activity{
 	    	editor.putBoolean("full_screen_display", cbFullscreen.isChecked());
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
+			editor.putBoolean("cache_only", cbCacheOnly.isChecked());
 			//editor.putBoolean("css", cbCss.isChecked());
 			//editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
 			editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));

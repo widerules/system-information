@@ -228,6 +228,7 @@ public class SimpleBrowser extends Activity {
 	boolean snapFullScreen = true;
 	boolean html5 = false;
 	boolean blockImage = false;
+	boolean cacheOnly = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
 	boolean collapse1 = false, collapse2 = false, collapse3 = false;
@@ -398,6 +399,7 @@ class MyWebview extends WebView {
         localSettings.setSupportMultipleWindows(true);
         localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     	localSettings.setBlockNetworkImage(blockImage);
+    	if (cacheOnly) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
     	localSettings.setJavaScriptEnabled(!blockJs);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
@@ -854,6 +856,12 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
 
         blockImage = sp.getBoolean("block_image", false);
         localSettings.setBlockNetworkImage(blockImage);
+        
+        boolean tmpCacheOnly = sp.getBoolean("cache_only", false);
+        if (tmpCacheOnly != cacheOnly) {
+        	if (cacheOnly) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+        	else localSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        }
 
         blockPopup = sp.getBoolean("block_popup", false);
         localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
@@ -1279,6 +1287,7 @@ public void onCreate(Bundle savedInstanceState) {
     //css = sp.getBoolean("css", false);
     //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
+    cacheOnly = sp.getBoolean("cache_only", false);
     blockPopup = sp.getBoolean("block_popup", false);
     blockJs = sp.getBoolean("block_js", false);
     hideExit = sp.getBoolean("hide_exit", true);
@@ -1946,6 +1955,8 @@ void changePage(int position) {
     else localSettings.setUserAgentString(selectUA(ua));
     localSettings.setTextSize(textSize);
     localSettings.setBlockNetworkImage(blockImage);
+	if (cacheOnly) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+	else localSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
     localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     //localSettings.setSupportMultipleWindows(true);
 	localSettings.setJavaScriptEnabled(!blockJs);

@@ -195,7 +195,7 @@ class wrapWebSettings {
     	catch(Exception e) {}
     }
 
-	synchronized void setGeolocationEnabled(boolean flag) {//API 5
+	/*synchronized void setGeolocationEnabled(boolean flag) {//API 5
     	try {
     		Method method = WebSettings.class.getMethod("setGeolocationEnabled", new Class[] {boolean.class});
     		method.invoke(mInstance, flag);
@@ -209,7 +209,7 @@ class wrapWebSettings {
     		method.invoke(mInstance, databasePath);
     	}
     	catch(Exception e) {}
-	}
+	}*/
 }
 
 
@@ -870,12 +870,12 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	html5 = sp.getBoolean("html5", false);
         webSettings.setAppCacheEnabled(html5);//API7
         webSettings.setDatabaseEnabled(html5);//API5
-        webSettings.setGeolocationEnabled(html5);//API5
+        //webSettings.setGeolocationEnabled(html5);//API5
         if (html5) {
             webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());//API7
             webSettings.setAppCacheMaxSize(html5cacheMaxSize);//it will cause crash on OPhone if not set the max size
             webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. how slow will it be if set path to sdcard?
-            webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
+            //webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
             
             sEdit.putBoolean("html5", false);//close html5 by default
         }
@@ -2074,9 +2074,7 @@ private void addFavo(final String url, final String title) {
 private boolean openNewPage(String url) {
 	boolean result = true;
 	
-	int maxPages = 9;//max count is 6 for free version.
-	if (paid) maxPages = 9;//9 for paid version.
-	if (webAdapter.getCount() == maxPages) { 
+	if (webAdapter.getCount() == 9) {//max pages is 9 
 		Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 		result = false;
 	}

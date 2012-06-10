@@ -333,7 +333,7 @@ public class HanziToPinyin {
         return true;
     }
 
-    Token getToken(char character) {
+    public Token getToken(char character) {
         Token token = new Token();
         final String letter = Character.toString(character);
         token.source = letter;

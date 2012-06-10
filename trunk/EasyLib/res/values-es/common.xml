@@ -1,0 +1,137 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="browser_name">Navegador Fácil</string>
+    
+    <string name="about_dialog_notes">Por favor vote para mí 5 estrellas si te gusta, gracias.</string>
+
+    <string name="about_message">" "Es una muy pequeña, un navegador rápido, simple y poderoso. Usted puede ver la fuente de la página, dirección web y la cuota de tiro rápido a tus amigos.</string>
+    <string name="about_message2">Long, haga clic en la historia/marcador para eliminarlo.</string>
+    
+    <string name="select_file">Archivo Selector</string>
+    
+    <string name="about">Acerca de...</string>
+    <string name="help">Ayuda</string>
+    <string name="settings">Configuración</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Anular</string>
+    <string name="exit">Salir</string>
+    
+    <string name="share">valores.</string>
+    <string name="sharemode">Compartir el modo de</string>
+    <string name="sharetext">simple y fácil de usar!</string>
+    <string name="app_share_text">" "Es genial!</string>
+    <string name="share_text1">" "verificar" "</string>
+    <string name="share_text2">" "Por teléfono o" "</string>
+    <string name="share_text3">" "Por la PC.</string>
+    <string name="vote">Voten por mí!</string>
+    
+    <string name="online">En línea</string>
+    <string name="home">Casa</string>
+    <string name="packages">Servicios provistos</string>
+    
+    <string name="addtoFavo">Añadir a su casa</string>
+    <string name="removeFromFavo">Eliminar</string>
+    <string name="addtoShort">Añadir el atajo</string>
+    <string name="removeFromShort">Eliminar este acceso directo</string>
+    <string name="appdetail">Detalle...</string>
+    <string name="killapp">Basta ya</string>
+    <string name="backapp">Hacer la copia</string>
+    <string name="to">a</string>
+    <string name="more">Más información...</string>
+    <string name="delete">Eliminar</string>
+    <string name="hideapp">Ocultar</string>
+    <string name="hidepage">Ocultar la página actual</string>
+    
+    <string name="back">espalda</string>
+    <string name="next">Próximo</string>
+    <string name="newpage">Nueva página</string>
+    <string name="nomore_pages">demasiadas páginas abiertas.</string>
+    <string name="history">historia</string>
+    <string name="bookmark">Marcador</string>
+    <string name="top">Superior</string>
+    <string name="source">Fuente</string>
+    <string name="not_avaiable">Lo sentimos, no disponibles en las Android2.3.3</string>
+    <string name="homepage">Inicio</string>
+    <string name="shareurl">Compartir Url</string>
+    <string name="recommend">EDAD RECOMENDADA</string>
+    
+    <string name="add_bookmark">Añadir a marcadores</string>
+    <string name="remove_bookmark">Eliminar de favoritos</string>
+    <string name="view_bookmark">Ver Agregar a favoritos</string>
+    <string name="remove_history">Eliminar de la Historia</string>
+    
+    <string name="save">Guardar como archivo</string>
+    <string name="open_new">Abrir en una nueva página</string>
+    <string name="copy_url">Url Copiar</string>
+    <string name="copy">COPIA</string>
+    <string name="copy_hint">Intente hacer clic en largo en el texto que desea copiar</string>
+    
+    <string name="sdcard_needed">El archivo descargado no se puede abrir sin tarjeta SD.</string>
+    
+    <string name="loading">Cargando...</string>
+    <string name="wait">Por favor, espere mientras se cargan ...</string>
+    <string name="pause">Pausa descarga</string>
+    <string name="justreturn">Acabo de volver</string>
+    <string name="resume">Continuar con la descarga</string>
+    <string name="stop">Cancelar descarga</string>
+    <string name="download_hint">¿qué es lo que desea para</string>
+    <string name="retry">Reintentar</string>
+    <string name="start_download">comenzar la descarga</string>
+    <string name="downloading">descargando</string>
+    <string name="download_finish">descarga termine, haga clic para ver</string>
+    <string name="download_fail">Error en la descarga, haga clic para ver</string>
+    <string name="downloads">Descargas</string>
+    <string name="downloads_to">Los archivos descargados a" "</string>
+    <string name="downloads_open">". "Se puede ver la carpeta con el archivo ES Explorer o otro administrador de archivos. Haga clic en Aceptar para descargar el Explorador de archivos ES.</string>
+    
+    <string name="sorry">" "Se estrelló, registro de errores es" "</string>
+
+    <string name="grid_view">Cuadricula</string>
+    <string name="list_view">Ver la lista de</string>
+    <string name="restart">Es necesario reiniciar para cambiar la vista. \n¿Reiniciar ahora?</string>
+
+    <string name="snap">Snap Shot</string>
+    <string name="snap_size">SnapSize</string>
+    <string name="full_screen">Pantalla completa</string>
+    <string name="full_webpage">FullWeb</string>
+    <string name="show_zoom">(Página actual) de control de zoom</string>
+    <string name="block_image">Bloquear imágenes para reducir el ancho de banda</string>
+    <string name="homepage_css">Página de inicio frío, pero un poco lento</string>
+    <string name="max_history">historia</string>
+    <string name="font_size">Tamaño de letra</string>
+    <string name="font_smallest">más pequeño</string>
+    <string name="font_smaller">pequeño</string>
+    <string name="font_normal">NORMAL</string>
+    <string name="font_larger">grande</string>
+    <string name="font_largest">más grande</string>
+    <string name="encoding">Codificación de la página actual</string>
+    <string name="search">Búsquedas</string>
+    <string name="html5">(Página actual) apoyan parcialmente HTML5</string>
+    
+    <string name="cache">Borrar la caché si se siente lento</string>
+    <string name="formdata">Datos de Formulario</string>
+    <string name="password">Contraseña</string>
+    <string name="clear_all">Limpiar debajo de los datos seleccionados</string>
+    <string name="clear_hint">se borrará</string>
+    <string name="data_cleared">aclaró.</string>
+    <string name="url_can_longclick">\t(URL puede ser pulsación larga)</string>
+    <string name="pic_can_longclick">"\t(haga clic en la imagen puede ser largo)</string>
+    <string name="text_can_longclick">"\t(puede que incluso mucho tiempo, haga clic en el texto)</string>
+    <string name="change_ua">¿Necesitas cambiar el acceso universal a acceder a un sitio web</string>
+    <string name="cache_tosd">Caché a la tarjeta SD</string>
+    <string name="advance_button">Configuración avanzada</string>
+    
+    <string name="search_engine">"motor de búsqueda"</string>
+    
+    <string name="block_popup">Bloquea pop-up</string>
+    <string name="block_js">Bloquear JavaScript</string>
+    
+    <string name="reset">Restablecer las opciones por defecto</string>
+    
+    <string name="enable_proxy">Habilitar el puerto del servidor proxy, local:</string>
+    
+    <string name="hide_exit">Ocultar lugar de salida</string>
+    <string name="overview_page">Abrir páginas en general</string>
+    
+    <string name="share_to_friends">Compartir con los amigos</string>
+    
+</resources>

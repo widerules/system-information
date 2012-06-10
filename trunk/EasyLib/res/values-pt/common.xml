@@ -2,12 +2,10 @@
     <string name="app_name">Lançador fácil</string>
     <string name="browser_name">Navegador Fácil</string>
     
-    <string name="about_dialog_notes">Por favor vote-me 5 estrelas, se você amá-lo e compartilhá-lo aos seus amigos. graças.</string>
     <string name="help_message">Encontre seu app por não mais de 2 clique. \nClique app ícone para pará-lo, \nClique nome app para lançar, \nClique versão aplicativo para desinstalar, \nlong clique em nome do aplicativo: atalho add, \atalho clique nlong para removê-lo.</string>
 
     <string name="auto_change_wallpaper">mudar papel de parede pela trepidação</string>
-    <string name="about_message">" "É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos.</string>
-    <string name="about_message2">Longo clique história/favorito para o apagar.</string>
+    <string name="about_message">Navegador Fácil É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nLongo clique história/favorito para o apagar. \n\nPor favor vote-me 5 estrelas, se você amá-lo e compartilhá-lo aos seus amigos. graças!</string>
     
     <string name="share_wallpaper">Wallpaper Compartilhar</string>
     <string name="share_desktop">Compartilhar desktop</string>

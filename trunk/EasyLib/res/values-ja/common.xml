@@ -2,12 +2,10 @@
     <string name="app_name">ひかりのランチャー</string>
     <string name="browser_name">ひかりのブラウザ</string>
     
-    <string name="about_dialog_notes">気に 入って頂ければ、5つ星ご投票をお願いいたします。</string>
     <string name="help_message">2クリック以上しないことにより、あなたのアプリを見つける。 \nClickアプリのアイコンは、\nClickアプリケーション名が起動し、それを停止します\nclickアプリのバージョンはアンインストールするには、\nlongクリックしてアプリ名：アドインをショートカット、それを削除する\nlongクリックのショートカット。</string>
 
     <string name="auto_change_wallpaper">シェイクで壁紙を変更でき</string>
-    <string name="about_message">は非常に小さく、高速、シンプルかつ強力なブラウザです。ページソースをご覧いただけ、 ウェブアドレスとスナップショットを友だちとシェアすることができます。</string>
-    <string name="about_message2">クリックのリンクを長く押すと、ブックマークと履歴を削除できます。</string>
+    <string name="about_message">ひかりのブラウザは非常に小さく、高速、シンプルかつ強力なブラウザです。ページソースをご覧いただけ、 ウェブアドレスとスナップショットを友だちとシェアすることができます。 \n\nクリックのリンクを長く押すと、ブックマークと履歴を削除できます。 \n\n気に 入って頂ければ、5つ星ご投票をお願いいたします。</string>
     
     <string name="share_wallpaper">壁紙をシェア</string>
     <string name="share_desktop">デスクトップをシェア</string>

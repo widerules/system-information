@@ -99,11 +99,6 @@ public class AboutBrowser extends Activity{
 			}
         });
         
-        TextView tvHelp = (TextView) findViewById(R.id.help1);
-        tvHelp.setText(getString(R.string.browser_name) + getString(R.string.about_message));
-        TextView tvHelp2 = (TextView) findViewById(R.id.help2);
-        tvHelp2.setText(getString(R.string.about_message2) + "\n\n" + getString(R.string.about_dialog_notes));
-        
         Button btnVote = (Button) findViewById(R.id.vote);
         btnVote.setOnClickListener(new OnClickListener() {
 			@Override

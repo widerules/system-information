@@ -148,4 +148,6 @@
     
     <string name="share_to_friends">友人に共有</string>
     
+    <string name="cache_only">キャッシュモードでは、帯域幅がない！</string>
+    
 </resources>

@@ -134,4 +134,6 @@
     
     <string name="share_to_friends">Compartir con los amigos</string>
     
+    <string name="cache_only">el modo de caché, no hay ancho de banda!</string>
+    
 </resources>

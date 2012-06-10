@@ -2089,10 +2089,13 @@ private boolean openNewPage(String url) {
 	}
 	
 	if (url != null) {
-		if (url.equals(""))	loadPage(true);
+		if ("".equals(url))	loadPage(true);
 		//else if (url.endsWith(".pdf"))//can't open local pdf by google doc
 		//	serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url=" + url);
-		else serverWebs.get(webIndex).loadUrl(URLDecoder.decode(url));
+		else {
+			try {url = URLDecoder.decode(url);} catch(Exception e) {}
+			serverWebs.get(webIndex).loadUrl(url);
+		}
 	}
 	
 	return result;

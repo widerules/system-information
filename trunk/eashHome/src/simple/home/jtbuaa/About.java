@@ -142,8 +142,7 @@ public class About extends Activity{
         tvTitle.setText(getString(R.string.app_name) + " " + getIntent().getStringExtra("version"));
         
         TextView tvHelp = (TextView) findViewById(R.id.help);
-        tvHelp.setText(getString(R.string.help_message)
-        		+ "\n\n" + getString(R.string.about_dialog_notes));
+        tvHelp.setText(getString(R.string.help_message));
         
         Button btnVote = (Button) findViewById(R.id.vote);
         btnVote.setOnClickListener(new OnClickListener() {

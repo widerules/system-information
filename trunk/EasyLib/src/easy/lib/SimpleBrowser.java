@@ -345,7 +345,16 @@ public class SimpleBrowser extends Activity {
 			downloadedfile = file;
 		}
 	}
+
 	
+	public void freeMemory(MyWebview webview) {//API 7
+    	try {
+    		Method method = WebView.class.getMethod("freeMemory");
+    		method.invoke(webview);
+    	}
+    	catch(Exception e) {e.printStackTrace();}
+    }   
+
 class MyWebview extends WebView {
 	public String pageSource = getString(R.string.not_avaiable);
 
@@ -1945,7 +1954,10 @@ void gotoUrl(String url) {
 
 void changePage(int position) {
 	while (webpages.getDisplayedChild() != position) webpages.showNext();
-	for (int i = 0; i < serverWebs.size(); i++) serverWebs.get(i).isForeground = false;
+	for (int i = 0; i < serverWebs.size(); i++) {
+		serverWebs.get(i).isForeground = false;
+		freeMemory(serverWebs.get(i));
+	}
 	serverWebs.get(position).isForeground = true;
 	webIndex = position;
 	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url

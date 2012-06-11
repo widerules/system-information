@@ -522,7 +522,7 @@ class MyWebview extends WebView {
 	        		imgRefresh.setImageResource(R.drawable.stop);
 				}
 				
-				if (!paid && mAdAvailable) adview.loadAd();//should only do this by wifi
+				if (!paid && mAdAvailable && !cacheOnly) adview.loadAd();//should only do this by wifi
 			}
 			 
 			@Override
@@ -860,6 +860,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         
         boolean tmpCacheOnly = sp.getBoolean("cache_only", false);
         if (tmpCacheOnly != cacheOnly) {
+        	cacheOnly = tmpCacheOnly;
         	if (cacheOnly) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
         	else localSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         }
@@ -1868,7 +1869,7 @@ protected void onDestroy() {
 	unregisterReceiver(downloadReceiver);
 	unregisterReceiver(packageReceiver);
 	
-	if (!paid && mAdAvailable) adview.destroy();
+	if (adview != null) adview.destroy();
 	
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 	Editor sEdit = sp.edit();
@@ -2419,7 +2420,7 @@ String homePage() {//three part, 1 is recommend, 2 is bookmark displayed by scal
 		sb.append("<li style='background-image:url(file://" + fileDir + "/www.google.com.png)'><a href=\"http://www.google.com\">Google</a></li>");
 		sb.append("<li style='background-image:url(file://" + fileDir + "/mobile.twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
 		//sb.append("<li style='background-image:url(file://" + fileDir + "/en.wikipedia.org.png)'><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
-		sb.append("<li style='background-image:url(file://" + fileDir + "/bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">BPC</a></li>");
+		sb.append("<li style='background-image:url(file://" + fileDir + "/bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">Phoenix3</a></li>");
 	}
 	//additional top list for some locale
 	if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) 

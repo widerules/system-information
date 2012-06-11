@@ -156,6 +156,6 @@
     
     <string name="share_to_friends">分享给朋友</string>
     
-    <string name="cache_only">离线模式，没有流量</string>
+    <string name="cache_only">离线阅读，只看缓存，没有流量</string>
     
 </resources>

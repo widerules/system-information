@@ -1495,10 +1495,8 @@ public void onCreate(Bundle savedInstanceState) {
         			else {
             			Picture pic = serverWebs.get(webIndex).capturePicture();
 
-        				bmp = Bitmap.createBitmap(
-        						pic.getWidth(), 
-        						pic.getHeight(), 
-        						Bitmap.Config.ARGB_8888);//the size of the web page may be very large. 
+        				//bmp = Bitmap.createScaledBitmap(???, pic.getWidth(), pic.getHeight(), false);//check here http://stackoverflow.com/questions/477572
+        				bmp = Bitmap.createBitmap(pic.getWidth(), pic.getHeight(), Bitmap.Config.ARGB_4444);//the size of the web page may be very large. 
         			
             			Canvas canvas = new Canvas(bmp); 
             	        pic.draw(canvas);

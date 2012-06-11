@@ -522,7 +522,7 @@ class MyWebview extends WebView {
 	        		imgRefresh.setImageResource(R.drawable.stop);
 				}
 				
-				if (!paid && mAdAvailable && !cacheOnly) adview.loadAd();//should only do this by wifi
+				if (adview != null) adview.loadAd();//should only do this by wifi
 			}
 			 
 			@Override

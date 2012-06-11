@@ -326,7 +326,8 @@ public class SimpleBrowser extends Activity {
 	FrameLayout adContainer;
     AppHandler mAppHandler = new AppHandler();
     int clickCount = 0;
-	
+    float width_density;
+    
 	//download related
 	String downloadPath;
 	NotificationManager nManager;
@@ -2292,12 +2293,12 @@ protected void onPause() {
     if (clickCount > 0) {
     	clickCount -= 1;
         if (clickCount == 0) {//restore container height to show ad if onpause too many times. black screen will also onpause
-        	LayoutParams lp = adContainer.getLayoutParams();
-        	if (lp.height == 0) lp.height = LayoutParams.WRAP_CONTENT; 
+        	createAd();
+        	//LayoutParams lp = adContainer.getLayoutParams();
+        	//if (lp.height == 0) lp.height = LayoutParams.WRAP_CONTENT; 
         }
     }
     
-
 	super.onPause();
 }
 
@@ -2323,13 +2324,18 @@ void setLayout() {
     	lp.width = width/2 + 30;
     else lp.width = width/2 + 20;
     
-    if (!paid && mAdAvailable) {
+	width_density = width / dm.density;
+	
+	createAd();
+}
+
+void createAd() {
+    if (!paid && mAdAvailable && !cacheOnly) {
     	if (adview != null) {
     		adContainer.removeViewAt(0);
     		adview.destroy();
     	}
     	
-    	float width_density = width / dm.density;
     	//if (width_density < 320) ;//do nothing for it is too narrow. but it will cause force close if not create adview.
     	if (width_density < 468)
     		adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);//AdSize.BANNER require 320*50
@@ -2349,9 +2355,10 @@ class AppHandler extends Handler {
     public void handleMessage(Message msg) {
     	if (msg.what > 0) {
     		clickCount += 2;//hide ad for three times
-        	LayoutParams lp = adContainer.getLayoutParams();
-        	lp.height = 0;//it will dismiss the banner for no enough space for new ad.
-        	adContainer.requestLayout();
+    		if (adview != null) {
+        		adContainer.removeViewAt(0);
+    			adview.destroy();//not show ad after click ad
+    		}
     	}
     }
 }

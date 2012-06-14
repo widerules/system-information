@@ -228,7 +228,7 @@ public class SimpleBrowser extends Activity {
 	boolean snapFullScreen = true;
 	boolean html5 = false;
 	boolean blockImage = false;
-	boolean cacheOnly = false;
+	boolean cachePrefer = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
 	boolean collapse1 = false, collapse2 = false, collapse3 = false;
@@ -409,7 +409,7 @@ class MyWebview extends WebView {
         localSettings.setSupportMultipleWindows(true);
         localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     	localSettings.setBlockNetworkImage(blockImage);
-    	if (cacheOnly) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+    	if (cachePrefer) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
     	localSettings.setJavaScriptEnabled(!blockJs);
     	
         if (ua <= 1) localSettings.setUserAgent(ua);
@@ -543,14 +543,6 @@ class MyWebview extends WebView {
 				}
 				mProgress = 0;
 				webAdapter.notifyDataSetChanged();//update the page title in webList
-				
-				/*WebSettings ws = view.getSettings();
-				if (ws.getCacheMode() != WebSettings.LOAD_DEFAULT) {
-					if((cm.getActiveNetworkInfo() != null) && cm.getActiveNetworkInfo().isConnected())
-						ws.setCacheMode(WebSettings.LOAD_DEFAULT);
-					else//use cache if no connection
-						ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-				}*/
 				
 				String title = view.getTitle();
 				if (title == null) title = url;
@@ -867,10 +859,10 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         blockImage = sp.getBoolean("block_image", false);
         localSettings.setBlockNetworkImage(blockImage);
         
-        boolean tmpCacheOnly = sp.getBoolean("cache_only", false);
-        if (tmpCacheOnly != cacheOnly) {
-        	cacheOnly = tmpCacheOnly;
-        	if (cacheOnly) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+        boolean tmpCachePrefer = sp.getBoolean("cache_prefer", false);
+        if (tmpCachePrefer != cachePrefer) {
+        	cachePrefer = tmpCachePrefer;
+        	if (cachePrefer) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         	else localSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         }
 
@@ -1298,7 +1290,7 @@ public void onCreate(Bundle savedInstanceState) {
     //css = sp.getBoolean("css", false);
     //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
-    cacheOnly = sp.getBoolean("cache_only", false);
+    cachePrefer = sp.getBoolean("cache_prefer", false);
     blockPopup = sp.getBoolean("block_popup", false);
     blockJs = sp.getBoolean("block_js", false);
     hideExit = sp.getBoolean("hide_exit", true);
@@ -1967,7 +1959,7 @@ void changePage(int position) {
     else localSettings.setUserAgentString(selectUA(ua));
     localSettings.setTextSize(textSize);
     localSettings.setBlockNetworkImage(blockImage);
-	if (cacheOnly) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+	if (cachePrefer) localSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 	else localSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
     localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
     //localSettings.setSupportMultipleWindows(true);

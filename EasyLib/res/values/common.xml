@@ -181,6 +181,6 @@
     
     <string name="share_to_friends">Share to friends</string>
     
-    <string name="cache_only">Cache only, no bandwidth at all!</string>
+    <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
     
 </resources>

@@ -337,7 +337,7 @@ public class AboutBrowser extends Activity{
 	    	editor.putBoolean("full_screen_display", cbFullscreen.isChecked());
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
-			editor.putBoolean("cache_only", cbCachePrefer.isChecked());
+			editor.putBoolean("cache_prefer", cbCachePrefer.isChecked());
 			//editor.putBoolean("css", cbCss.isChecked());
 			//editor.putInt("history_count", historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
 			editor.putInt("full_screen", snapSize.indexOfChild(findViewById(snapSize.getCheckedRadioButtonId())));

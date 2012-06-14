@@ -8,11 +8,10 @@
     <string name="about">Acerca de...</string>
     <string name="help">Ayuda</string>
     <string name="settings">Configuración</string>
-    <string name="ok">OK</string>
     <string name="cancel">Anular</string>
     <string name="exit">Salir</string>
     
-    <string name="share">valores.</string>
+    <string name="share">valores</string>
     <string name="sharemode">Compartir el modo de</string>
     <string name="sharetext">simple y fácil de usar!</string>
     <string name="app_share_text">" "Es genial!</string>
@@ -86,10 +85,10 @@
     <string name="list_view">Ver la lista de</string>
     <string name="restart">Es necesario reiniciar para cambiar la vista. \n¿Reiniciar ahora?</string>
 
-    <string name="snap">Snap Shot</string>
-    <string name="snap_size">SnapSize</string>
+    <string name="snap">instantánea</string>
+    <string name="snap_size">ajustar el tamaño de</string>
     <string name="full_screen">Pantalla completa</string>
-    <string name="full_webpage">FullWeb</string>
+    <string name="full_webpage">página llena</string>
     <string name="show_zoom">(Página actual) de control de zoom</string>
     <string name="block_image">Bloquear imágenes para reducir el ancho de banda</string>
     <string name="homepage_css">Página de inicio frío, pero un poco lento</string>
@@ -97,7 +96,6 @@
     <string name="font_size">Tamaño de letra</string>
     <string name="font_smallest">más pequeño</string>
     <string name="font_smaller">pequeño</string>
-    <string name="font_normal">NORMAL</string>
     <string name="font_larger">grande</string>
     <string name="font_largest">más grande</string>
     <string name="encoding">Codificación de la página actual</string>
@@ -131,6 +129,6 @@
     
     <string name="share_to_friends">Compartir con los amigos</string>
     
-    <string name="cache_only">el modo de caché, no hay ancho de banda!</string>
+    <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
     
 </resources>

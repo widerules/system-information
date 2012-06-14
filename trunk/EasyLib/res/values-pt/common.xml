@@ -16,14 +16,12 @@
     <string name="select">Selecione Home</string>
     <string name="select_file">Seletor de arquivos</string>
     
-    <string name="wallpaper_scene">Baidu Pic</string>
     <string name="wallpaper_beauty">Belezas</string>
     
     <string name="wallpaper">Papel de parede</string>
     <string name="about">Sobre ...</string>
     <string name="help">Útil</string>
     <string name="settings">fixação</string>
-    <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
     <string name="exit">Sair</string>
     
@@ -39,7 +37,6 @@
     <string name="favoriteapps">Atalho</string>        
     <string name="systemapps">Sistêmica</string>        
     <string name="userapps">msilva</string>        
-    <string name="online">Online</string>
     <string name="home">Lares</string>
     <string name="packages">Provedores de Serviço</string>
     
@@ -49,7 +46,6 @@
     <string name="removeFromShort">Excluir este atalho</string>
     <string name="appdetail">Detalhe</string>
     <string name="killapp">Para com isso</string>
-    <string name="backapp">Backup</string>
     <string name="to">para</string>
     <string name="more">Leia mais...</string>
     <string name="delete">Excluir</string>
@@ -57,7 +53,6 @@
     <string name="hidepage">Ocultar página atual</string>
     
     <string name="back">De volta</string>
-    <string name="next">next</string>
     <string name="newpage">Novas propriedades</string>
     <string name="nomore_pages">muitas páginas aberta.</string>
     <string name="history">Histórico</string>
@@ -84,7 +79,6 @@
     
     <string name="loading">Carregando...</string>
     <string name="wait">Por favor, aguarde enquanto carregamos...</string>
-    <string name="pause">Download Pause</string>
     <string name="justreturn">Basta voltar</string>
     <string name="resume">Continuar download</string>
     <string name="stop">Cancelar o download</string>
@@ -103,10 +97,10 @@
     <string name="list_view">Ver Lista</string>
     <string name="restart">É necessário reiniciar para mudar a vista. \nReiniciar agora?</string>
 
-    <string name="snap">imagem</string>
-    <string name="snap_size">SnapSize</string>
+    <string name="snap">instantâneo</string>
+    <string name="snap_size">tirar tamanho</string>
     <string name="full_screen">Tela cheia</string>
-    <string name="full_webpage">FullWeb</string>
+    <string name="full_webpage">página completa</string>
     <string name="show_zoom">(Página atual) Controle de Zoom</string>
     <string name="block_image">Bloquear imagens para reduzir a largura de banda</string>
     <string name="homepage_css">Homepage fresco, mas um pouco lento</string>
@@ -121,7 +115,6 @@
     <string name="html5">(Página atual)Parcialmente apoiar HTML5</string>
     
     <string name="cache">Limpar cache se você se sentir lento</string>
-    <string name="cookie">cookie</string>
     <string name="formdata">Dados de formulário</string>
     <string name="password">Senha</string>
     <string name="clear_all">Limpar dados abaixo selecionados</string>
@@ -148,6 +141,6 @@
     
     <string name="share_to_friends">compartilhar com os amigos</string>
     
-    <string name="cache_only">el modo de caché, no hay ancho de banda!</string>
+    <string name="cache_prefer">preferem cache para reduzir a largura de banda</string>
     
 </resources>

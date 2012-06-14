@@ -2304,9 +2304,9 @@ protected void onPause() {
     if (clickCount > 0) {
     	clickCount -= 1;
         if (clickCount == 0) {//restore container height to show ad if onpause too many times. black screen will also onpause
-        	createAd();
-        	//LayoutParams lp = adContainer.getLayoutParams();
-        	//if (lp.height == 0) lp.height = LayoutParams.WRAP_CONTENT; 
+        	//createAd();
+        	LayoutParams lp = adContainer.getLayoutParams();
+        	if (lp.height == 0) lp.height = LayoutParams.WRAP_CONTENT; 
         }
     }
     
@@ -2341,7 +2341,7 @@ void setLayout() {
 }
 
 void createAd() {
-    if (!paid && mAdAvailable && !cacheOnly) {
+    if (!paid && mAdAvailable) {
     	if (adview != null) {
     		adContainer.removeViewAt(0);
     		adview.destroy();
@@ -2366,10 +2366,13 @@ class AppHandler extends Handler {
     public void handleMessage(Message msg) {
     	if (msg.what > 0) {
     		clickCount += 2;//hide ad for three times
-    		if (adview != null) {
-        		adContainer.removeViewAt(0);
-    			adview.destroy();//not show ad after click ad
-    		}
+    		//if (adview != null) {
+        		//adContainer.removeViewAt(0);
+    			//adview.destroy();//not show ad after click ad
+    		//}
+    		LayoutParams lp = adContainer.getLayoutParams();
+    		lp.height = 0;//it will dismiss the banner for no enough space for new ad.
+    		adContainer.requestLayout();
     	}
     }
 }

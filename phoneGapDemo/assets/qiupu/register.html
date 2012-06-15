@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+	<meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no">  	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+	<title>Register to Phoenix3</title>
+	<link rel="stylesheet" href="style/bootstrap.css">
+	<link rel="stylesheet" href="style/bootstrap-responsive.css">
+	<link rel="stylesheet" href="style/qiupu-responsive.css">
+	<link rel="stylesheet" href="style/jquery-ui-1.8.16.custom.css">
+	<!--[if lte IE 8]>
+		<link href="style/IE.css" rel="stylesheet" type="text/css" />
+	<![endif]--> 
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="js/json2.js"></script>
+	<script type="text/javascript" src="js/qiupu.js"></script>
+	<script type="text/javascript" src="js/qiupu.register.js"></script>
+	<style type="text/css">
+		#btnGetveriCode {
+			position: relative;
+		    top: -4px;     
+		   	
+		  }
+	</style>
+	<script type="text/javascript">  
+		var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+		document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9aacf3c05656367a5c404f7ac61671ee' type='text/javascript'%3E%3C/script%3E"));//for baidu statistic
+
+/////////////////////////////////////////////////////////////Google Analytics/////////////////////////////////////////////////////////////
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-32237702-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+/////////////////////////////////////////////////////////////Google Analytics/////////////////////////////////////////////////////////////
+
+		var locale = $.cookie('locale');
+		if (locale === null) locale = 1;//default is chinese
+		$(document).ready(function(){			
+			ResRegLocaleString(locale);//set locale with cookie/default value
+			$('input.inputText').bind("blur",function(event){
+				if($(this).val()){
+					$(this).next().text("").hide();
+					$(this).css({"background":"#fff"},{"border":"1px solid #ccc"});
+				}
+			});			
+			if (locale != 1)//非中文环境
+			{
+				showEmail();
+				$('#tabphone').hide();
+			}
+			else{
+				if (ForDiscuz == false)
+					showEmail();	
+				else
+				{
+					showPhone();	
+					$('#tabemail').hide();
+				}
+			}	
+		});
+
+		function showEmail(){
+			document.getElementById("phone").value = "";
+			$('#tabemail').addClass('active');
+			$('#tabphone').removeClass();
+			
+			
+			$('#phone').next().text("").show();
+			$('#phone').css({"background":"#FFFFFF"});
+			
+			$('#code').next().text("").show();
+			$('#code').css({"background":"#FFFFFF"});
+			
+			$('#devName').next().text("").show();
+			$('#devName').css({"background":"#FFFFFF"});
+			
+
+			$("#btnGetveriCode").hide();
+			$("#laphone").hide();
+			$("#lacode").hide();
+			$("#code").hide();
+			$("#btnSubmitCode").hide();
+			$("#inputphone").hide();
+
+			$("#laemail").show();					
+			$("#regbyemail").show();
+		}	
+
+		function showPhone(){
+			document.getElementById("phone").value = "";
+			$('#tabphone').addClass('active');
+			$('#tabemail').removeClass();
+			
+			$('#phone').next().text("").show();
+			$('#phone').css({"background":"#FFFFFF"});
+			
+			$('#code').next().text("").show();
+			$('#code').css({"background":"#FFFFFF"});
+			
+			$('#devName').next().text("").show();
+			$('#devName').css({"background":"#FFFFFF"});
+			
+			
+
+			$("#laemail").hide();
+			$("#regbyemail").hide();
+
+			$("#btnGetveriCode").show();
+			$("#laphone").show();
+			$("#lacode").show();
+			$("#code").show();
+			$("#btnSubmitCode").show();
+		}
+	</script>
+</head>
+	
+	
+<body>
+    <!-- HEADER START -->
+    <div class='navbar navbar-fixed-top hideOnPhone' >
+            <div class='navbar-inner'>
+                    <div class="container-fluid" >
+                            <a class="brand" href="#">Phoenix3</a>
+                    </div>
+            </div>
+    </div>
+    <!-- HEADER END -->
+
+	<!-- content -->
+	<div class="container row" style='margin:auto'>
+		<div method="GET" id="register" class='spanpost span5' style='margin:auto; float:none'>
+			<ul class="nav nav-pills" style='background:none;' id="tabs">
+				<li id="tabemail">
+					<a id="lareemail" href="javascript:showEmail();"></a>
+				</li>
+				<li id="tabphone">
+					<a id="larephone" href="javascript:showPhone();"></a>
+				</li>											
+			</ul>
+			
+			<label id="laemail" ></label>	
+			<label id="laphone"></label>				
+			<input id="phone" name="username"  class="inputText" type="text" value=""/><span></span>
+			<input id="btnGetveriCode" name="btnGetveriCode" type="button" class="btn btn-primary btn-middle" onclick="javascript:getCode()">				
+			<label id="lapwd" for="password"></label>
+			<input id="password" name="password" class="inputText" value="" type="password"><span></span>
+			<p id="note" class="hint"><small></small></p>
+
+			<label id="ladev" for="producer"></label>
+			<input type="text" name="devName" id="devName" class="inputText" value=""/><span></span>
+
+			<label id="lasex" for="producer"></label>
+			<select id="gender" name="sex" class="inputText">
+				<option value="m"></option>
+				<option value="f"></option>
+				<option value="u"></option>
+			</select>
+
+			<label id="lacode" for="code"></label>
+			<input id="code" name="code"  class="inputText" type="text"><span></span>
+			<br>
+			<input id="btnSubmitCode" type="button" class="btn btn-primary btn-middle" onclick="submitCode()" >
+			<input id="regbyemail" type="button" class="btn btn-primary btn-middle" onclick="regbyemail()" >	
+			
+		</div>
+	</div>
+ </body> 
+</html>

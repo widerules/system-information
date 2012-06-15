@@ -215,7 +215,7 @@ class wrapWebSettings {
 
 public class SimpleBrowser extends Activity {
 
-	boolean paid, debug;
+	boolean paid;
 	final String BLANK_PAGE = "about:blank";
 	boolean firstRun = false;
 	int countDown = 0;
@@ -225,6 +225,7 @@ public class SimpleBrowser extends Activity {
 
 	//settings
 	boolean fullScreen = false;
+	boolean getPageSource = false;
 	boolean snapFullScreen = true;
 	boolean html5 = false;
 	boolean blockImage = false;
@@ -359,7 +360,7 @@ public class SimpleBrowser extends Activity {
     }   
 
 class MyWebview extends WebView {
-	public String pageSource = getString(R.string.not_avaiable);
+	public String pageSource;
 
 	wrapWebSettings webSettings;
 	
@@ -550,12 +551,15 @@ class MyWebview extends WebView {
 				String title = view.getTitle();
 				if (title == null) title = url;
 				
-        		if (!"2.3.3".equals(android.os.Build.VERSION.RELEASE)) {//it will cause webkit crash on 2.3.3
-        			if (BLANK_PAGE.equals(url) || getString(R.string.browser_name).equals(title) && (!debug)) 
-        				pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
-        			else //not work for wml. some webkit even not parse wml.
-        				loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
-        		}
+				if (getPageSource) {
+	        		if ("2.3.3".equals(android.os.Build.VERSION.RELEASE)) //it will cause webkit crash on 2.3.3
+	        			pageSource = getString(R.string.not_avaiable);
+	        		else if (BLANK_PAGE.equals(url) || getString(R.string.browser_name).equals(title)) 
+	        			pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
+	        		else //not work for wml. some webkit even not parse wml.
+	        			loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
+				}
+				else pageSource = getString(R.string.ask_pagesource);
 				
         		if (!BLANK_PAGE.equals(url)) {
         			if(getString(R.string.browser_name).equals(title))//if title and url not sync, then sync it.
@@ -831,6 +835,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
         
         searchEngine = sp.getInt("search_engine", 3);
+        
+        getPageSource = sp.getBoolean("page_source", false);
         
         boolean tmpEnableProxy = sp.getBoolean("enable_proxy", false);
         int tmpLocalPort = sp.getInt("local_port", 1984);
@@ -1288,7 +1294,7 @@ public void onCreate(Bundle savedInstanceState) {
 	sEdit = sp.edit();
 
     paid = sp.getBoolean("paid", false);
-    debug = sp.getBoolean("debug", false);
+    //debug = sp.getBoolean("debug", false);
     //css = sp.getBoolean("css", false);
     //html5 = sp.getBoolean("html5", false);
     blockImage = sp.getBoolean("block_image", false);
@@ -1308,6 +1314,7 @@ public void onCreate(Bundle savedInstanceState) {
 	else searchEngine = sp.getInt("search_engine", 4);
     fullScreen = sp.getBoolean("full_screen_display", false);
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
+    getPageSource = sp.getBoolean("page_source", false);
     readTextSize(sp);//init the text size
     enableProxy = sp.getBoolean("enable_proxy", false);
 	if (enableProxy) {

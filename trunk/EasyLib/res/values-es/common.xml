@@ -131,4 +131,6 @@
     
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
     
+    <string name="enable_pagesource">ver la fuente de la página</string>
+    <string name="ask_pagesource">Por favor, abrir el código de la vista de página en la configuración y volver a cargar la página</string>
 </resources>

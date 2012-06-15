@@ -143,4 +143,6 @@
     
     <string name="cache_prefer">preferem cache para reduzir a largura de banda</string>
     
+    <string name="enable_pagesource">ver código fonte da página</string>
+    <string name="ask_pagesource">Por favor, abra fonte de página de exibição em Configurações e recarregue a página</string>
 </resources>

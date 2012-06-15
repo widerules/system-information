@@ -148,4 +148,6 @@
     
     <string name="cache_prefer">キャッシュは、帯域幅を削減するために好ん</string>
     
+    <string name="enable_pagesource">ページのソースを表示</string>
+    <string name="ask_pagesource">設定で表示ページのソースを開き、ページをリロードしてください</string>
 </resources>

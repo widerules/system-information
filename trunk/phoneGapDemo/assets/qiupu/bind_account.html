@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+	<meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no">  	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+	<title>关联播思通行证</title>
+	<link rel="stylesheet" href="style/bootstrap.css">
+	<link rel="stylesheet" href="style/bootstrap-responsive.css">
+	<link rel="stylesheet" href="style/qiupu-responsive.css">
+	<!--[if lte IE 8]>
+		<link href="style/IE.css" rel="stylesheet" type="text/css" />
+	<![endif]--> 
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="js/json2.js"></script>
+	<script type="text/javascript" src="js/qiupu.js"></script>
+	<script type="text/javascript" src="js/qiupu.register.js"></script>	
+	
+	<style type="text/css">
+		#btnGetveriCode {
+			position: relative;
+		    top: -4px;     
+		   	
+		  }
+	</style>
+	<script type="text/javascript">   
+		var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+		document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9aacf3c05656367a5c404f7ac61671ee' type='text/javascript'%3E%3C/script%3E"));//for baidu statistic
+
+/////////////////////////////////////////////////////////////Google Analytics/////////////////////////////////////////////////////////////
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-32237702-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+/////////////////////////////////////////////////////////////Google Analytics/////////////////////////////////////////////////////////////
+
+	    //bind mode
+	    var wid='';
+	    
+	    // sina / qq /gg
+	    if((($.cookie('sina_uid') == null) || ($.cookie('sina_uid') == ''))
+	      && (($.cookie('qq_uid') == null) || ($.cookie('qq_uid') == ''))
+	      && (($.cookie('gg_uid') == null) || ($.cookie('gg_uid') == ''))
+	     )  
+	       window.location = "login.html";
+		
+		$(document).ready(function(){
+			$('input.inputText').bind("blur",function(event){
+				if($(this).val()){
+					$(this).next().text("").hide();
+					$(this).css({"background":"#fff"},{"border":"1px solid #ccc"});
+				}
+			});
+			
+			//login with sina weibo account
+			if($.cookie('sina_uid') !== null && $.cookie('sina_uid') !== '') {		
+				wid = 'sina';		
+                $('#wtype').html('sina账户登录成功!');                                                     											
+		    }
+
+			//login with sina qq account
+		    if($.cookie('qq_uid') !== null && $.cookie('qq_uid') !== '') {	
+				wid = 'qq';		    				
+                $('#wtype').html('QQzone账户登录成功!');                                                        											
+		    }
+		    
+			//login with sina qq account
+		    if($.cookie('gg_uid') !== null && $.cookie('gg_uid') !== '') {	
+				wid = 'gg';		    				
+                $('#wtype').html('Google账户登录成功!');                                                        											
+		    }		    								
+		});
+		
+		function render(ret) {					
+		    $.cookie('user_id', ret["user_id"],{ expires: 7 });
+			$.cookie('ticket', ret["ticket"],{ expires: 7 });
+			$.cookie('display_name', ret["display_name"],{ expires: 7 });
+			$.cookie('login_name', ret["login_name"],{ expires: 7 });
+			window.location = "home.html";
+		}		
+		
+		function bindaccount() {			
+		    var md5password = hex_md5($('#password').val());
+			invokeApi("account/login", 
+			          {"login_name": $('#uid').val(), "password": md5password}, 
+			          function call(ret){	
+			          		if (ret["error_msg"] != undefined ) {
+			          			 $('#password').css({"background":"#FFAFAF"},{"border":"1px solid #ccc"});
+                                 $('#password').next().text("帐号或密码错误，请重试").show();
+			          		} else {			          						                             
+			                    $.cookie('bind_'+wid+'_info', 
+			                             ret["user_id"] + ':' + md5password + '->' + $.cookie(wid+'_uid'),
+			                             {expires:999});			                    
+			                    render(ret);			          			
+			          		}
+
+			         });
+		}
+		
+	</script>
+</head>
+	
+	
+<body>
+    <!-- HEADER START -->
+    <div class='navbar navbar-fixed-top hideOnPhone' >
+        <div class='container-fluid navbar-inner'>
+             <a class="brand" href="#">Phoenix3</a>
+             <ul class="nav pull-right;" id="wb_connect_btn" style="display: none;"> 
+             </ul>	          
+        </div>
+    </div>
+    <!-- HEADER END -->
+
+	<!-- content -->
+	<div class="container row" style='margin:auto'>
+		<div class="span5 spanpost" style='margin:auto; float:none'>
+			<h4>亲!<span id='wtype'></span>与BPC帐号关联后可以体验服务!</h4>
+			<br>
+			<label for="producer">手机号、邮箱或BorqsID</label>
+			<input type="text" name="devName" id="uid" class="inputText" value=""/><span></span>
+			
+            <label for="password">密码</label>
+            <input id="password" name="password" class="inputText" value="" type="password"><span></span>
+            <p class="hint"><small>为了确保您的账户安全，请增强密码强度并妥善保管。长度不应小于6位。</small></p>
+									
+            <br>
+            <input id="btnSubmitCode" type="button" class="btn btn-primary btn-middle" onclick="bindaccount()" value="立即关联">
+        </div>
+		
+		
+	</div>
+
+ </body>
+		   
+</html>

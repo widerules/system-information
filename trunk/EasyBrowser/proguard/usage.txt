@@ -59,6 +59,21 @@ easy.browser.R$string
 easy.lib.AboutBrowser:
     android.widget.CheckBox cbCss
     android.widget.RadioGroup historyCount
+easy.lib.HanziToPinyin:
+    private static final java.lang.String TAG
+    private static final boolean DEBUG
+    private static final java.lang.String FIRST_PINYIN_UNIHAN
+    private static final java.lang.String LAST_PINYIN_UNIHAN
+    private static final char FIRST_UNIHAN
+    318:333:private static boolean doSelfValidation()
+    408:458:public java.util.ArrayList get(java.lang.String)
+    463:466:private void addToken(java.lang.StringBuilder,java.util.ArrayList,int)
+easy.lib.HanziToPinyin$Token:
+    public static final java.lang.String SEPARATOR
+    public static final int LATIN
+    public static final int PINYIN
+    public static final int UNKNOWN
+    264:268:public HanziToPinyin$Token(int,java.lang.String,java.lang.String)
 easy.lib.ProxySettings:
     static final int PROXY_CHANGED
     27:27:public ProxySettings()

@@ -64,6 +64,7 @@ easy.browser.R$id: int basic_settings
 easy.browser.R$id: int block_image
 easy.browser.R$id: int block_js
 easy.browser.R$id: int block_popup
+easy.browser.R$id: int cache_prefer
 easy.browser.R$id: int cache_tosd
 easy.browser.R$id: int clear
 easy.browser.R$id: int clear_bookmark
@@ -83,7 +84,6 @@ easy.browser.R$id: int full_screen
 easy.browser.R$id: int go
 easy.browser.R$id: int gridview
 easy.browser.R$id: int help1
-easy.browser.R$id: int help2
 easy.browser.R$id: int hide_exit
 easy.browser.R$id: int home
 easy.browser.R$id: int html5
@@ -139,9 +139,7 @@ easy.browser.R$layout: int pause
 easy.browser.R$layout: int snap_browser
 easy.browser.R$layout: int web_list
 easy.browser.R$string: int about
-easy.browser.R$string: int about_dialog_notes
 easy.browser.R$string: int about_message
-easy.browser.R$string: int about_message2
 easy.browser.R$string: int add_bookmark
 easy.browser.R$string: int addtoFavo
 easy.browser.R$string: int addtoShort
@@ -164,6 +162,7 @@ easy.browser.R$string: int bookmark
 easy.browser.R$string: int browser_author
 easy.browser.R$string: int browser_name
 easy.browser.R$string: int cache
+easy.browser.R$string: int cache_prefer
 easy.browser.R$string: int cache_tosd
 easy.browser.R$string: int cancel
 easy.browser.R$string: int change_ua
@@ -293,6 +292,7 @@ easy.browser.R$string: int wallpaper_beauty
 easy.browser.R$string: int wallpaper_scene
 easy.browser.R$string: int warning
 easy.browser.R$string: int wp
+easy.browser.R$string: int yandex
 easy.lib.AboutBrowser
 easy.lib.MyApp
 easy.lib.MyViewFlipper
@@ -333,6 +333,7 @@ easy.lib.R$id: int basic_settings
 easy.lib.R$id: int block_image
 easy.lib.R$id: int block_js
 easy.lib.R$id: int block_popup
+easy.lib.R$id: int cache_prefer
 easy.lib.R$id: int cache_tosd
 easy.lib.R$id: int clear
 easy.lib.R$id: int clear_bookmark
@@ -352,7 +353,6 @@ easy.lib.R$id: int full_screen
 easy.lib.R$id: int go
 easy.lib.R$id: int gridview
 easy.lib.R$id: int help1
-easy.lib.R$id: int help2
 easy.lib.R$id: int hide_exit
 easy.lib.R$id: int home
 easy.lib.R$id: int html5
@@ -408,9 +408,7 @@ easy.lib.R$layout: int pause
 easy.lib.R$layout: int snap_browser
 easy.lib.R$layout: int web_list
 easy.lib.R$string: int about
-easy.lib.R$string: int about_dialog_notes
 easy.lib.R$string: int about_message
-easy.lib.R$string: int about_message2
 easy.lib.R$string: int add_bookmark
 easy.lib.R$string: int addtoFavo
 easy.lib.R$string: int addtoShort
@@ -433,6 +431,7 @@ easy.lib.R$string: int bookmark
 easy.lib.R$string: int browser_author
 easy.lib.R$string: int browser_name
 easy.lib.R$string: int cache
+easy.lib.R$string: int cache_prefer
 easy.lib.R$string: int cache_tosd
 easy.lib.R$string: int cancel
 easy.lib.R$string: int change_ua
@@ -562,6 +561,7 @@ easy.lib.R$string: int wallpaper_beauty
 easy.lib.R$string: int wallpaper_scene
 easy.lib.R$string: int warning
 easy.lib.R$string: int wp
+easy.lib.R$string: int yandex
 easy.lib.SimpleBrowser
 easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback,java.lang.String)
 easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback)

@@ -245,7 +245,10 @@ public class SimpleBrowser extends Activity {
 	boolean hideExit = true;
 	boolean overviewPage = false;
 	Locale mLocale;
-
+	
+	SharedPreferences sp;
+	Editor sEdit;
+	
 	//search
 	EditText etSearch;
 	TextView searchHint;
@@ -724,9 +727,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         mUploadMessage.mInstance = null;
     }
     else if (requestCode == SETTING_RESULTCODE) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-    	Editor sEdit = sp.edit();
-
     	boolean shouldReload = false;
     	
         boolean clearData = sp.getBoolean("clear_data", false);
@@ -745,7 +745,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	    
     	    boolean clearCookie = sp.getBoolean("clear_cookie", false);
     	    if (clearCookie) {
-    	    	CookieSyncManager.createInstance(this);
+    	    	CookieSyncManager.createInstance(mContext);
     	    	CookieManager.getInstance().removeAllCookie();
     	    }
     	    
@@ -1284,7 +1284,9 @@ public void onCreate(Bundle savedInstanceState) {
     mContext = getApplicationContext();
     
     //init settings
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+    sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+	sEdit = sp.edit();
+
     paid = sp.getBoolean("paid", false);
     debug = sp.getBoolean("debug", false);
     //css = sp.getBoolean("css", false);
@@ -1364,7 +1366,7 @@ public void onCreate(Bundle savedInstanceState) {
     		getString(R.string.downloads), getString(R.string.shareurl), getString(R.string.search), getString(R.string.settings) };
     
     //create AlertDialog
-	menuView = View.inflate(this, R.layout.grid_menu, null);
+	menuView = View.inflate(mContext, R.layout.grid_menu, null);
     menuDialog = new AlertDialog.Builder(this).create();
     menuDialog.setView(menuView);
     WindowManager.LayoutParams params = menuDialog.getWindow().getAttributes();
@@ -1407,6 +1409,7 @@ public void onCreate(Bundle savedInstanceState) {
 			}).
     		create();
 
+	final Context localContext = this;
     menuGrid = (GridView) menuView.findViewById(R.id.gridview);
     menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
     menuGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -1460,7 +1463,7 @@ public void onCreate(Bundle savedInstanceState) {
     			intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
     			if (!util.startActivity(intent, false, mContext)) {
     				if (downloadsDialog == null) 
-    					downloadsDialog = new AlertDialog.Builder(mContext).
+    					downloadsDialog = new AlertDialog.Builder(localContext).
     						setMessage(getString(R.string.downloads_to) + downloadPath + getString(R.string.downloads_open)).
     						setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 								@Override
@@ -1634,7 +1637,7 @@ public void onCreate(Bundle savedInstanceState) {
 	//Collections.sort(mBookMark, new myComparator());//sort the bookmark
 
 	siteArray = new ArrayList<String>();
-	urlAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+	urlAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
 	String site;
 	for (int i = 0; i < mHistory.size(); i++) {
 		site = mHistory.get(i).m_site;
@@ -1830,9 +1833,9 @@ public void onCreate(Bundle savedInstanceState) {
 		}
 	});
 	//web list
-	webAdapter = new WebAdapter(this, serverWebs);
+	webAdapter = new WebAdapter(mContext, serverWebs);
 	webList = (ListView) findViewById(R.id.weblist);
-	webList.inflate(this, R.layout.web_list, null);
+	webList.inflate(mContext, R.layout.web_list, null);
 	webList.setFadingEdgeLength(0);//no shadow when scroll
 	webList.setScrollingCacheEnabled(false);
 	webList.setAdapter(webAdapter);
@@ -1870,8 +1873,6 @@ protected void onDestroy() {
 	
 	if (adview != null) adview.destroy();
 	
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-	Editor sEdit = sp.edit();
 	sEdit.putBoolean("collapse1", collapse1);
 	sEdit.putBoolean("collapse2", collapse2);
 	sEdit.putBoolean("collapse3", collapse3);
@@ -2008,7 +2009,7 @@ protected void onNewIntent(Intent intent) {//open file from sdcard
 }
 
 void removeFavo(final int order) {
-	new AlertDialog.Builder(mContext).
+	new AlertDialog.Builder(this).
 	setTitle(R.string.remove_bookmark).
 	setMessage(mBookMark.get(order).m_title).
 	setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -2027,7 +2028,7 @@ void removeFavo(final int order) {
 }
 
 void removeHistory(final int order) {
-	new AlertDialog.Builder(mContext).
+	new AlertDialog.Builder(this).
 	setTitle(R.string.remove_history).
 	setMessage(mHistory.get(order).m_title).
 	setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -2057,7 +2058,7 @@ private void addFavo(final String url, final String title) {
 	titleText.setSelection(titleText.getText().length());
 			
 	//need user's confirm to add to bookmark
-	new AlertDialog.Builder(mContext).
+	new AlertDialog.Builder(this).
 			setView(favoView).
 			setMessage(url).
 			setTitle(R.string.add_bookmark).
@@ -2287,8 +2288,6 @@ protected void onPause() {
 	}
 	
     
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-	Editor sEdit = sp.edit();
     sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
     sEdit.commit();
     

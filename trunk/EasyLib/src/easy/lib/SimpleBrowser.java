@@ -1281,7 +1281,7 @@ private void shareUrl(String text)
 public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
-    mContext = this;
+    mContext = getApplicationContext();
     
     //init settings
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1315,7 +1315,7 @@ public void onCreate(Bundle savedInstanceState) {
     
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
-	appstate = ((MyApp) getApplicationContext());
+	appstate = ((MyApp) mContext);
 	
 	imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -1696,7 +1696,7 @@ public void onCreate(Bundle savedInstanceState) {
 	cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
 	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;
-    serverWebs.add(new MyWebview(getApplicationContext()));
+    serverWebs.add(new MyWebview(mContext));
     webpages = (MyViewFlipper) findViewById(R.id.webpages);
     webpages.addView(serverWebs.get(webIndex));
     
@@ -2094,7 +2094,7 @@ private boolean openNewPage(String url) {
 		result = false;
 	}
 	else {
-		webAdapter.add(new MyWebview(getApplicationContext()));
+		webAdapter.add(new MyWebview(mContext));
 		webAdapter.notifyDataSetInvalidated();
         webpages.addView(webAdapter.getItem(webAdapter.getCount() - 1));
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));
@@ -2308,7 +2308,7 @@ protected void onPause() {
 @Override
 public File getCacheDir()
 {
-    return getApplicationContext().getCacheDir();// NOTE: this method is used in Android 2.1
+    return mContext.getCacheDir();// NOTE: this method is used in Android 2.1
 }
 
 @Override

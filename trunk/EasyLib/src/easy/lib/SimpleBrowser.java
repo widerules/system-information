@@ -1696,7 +1696,7 @@ public void onCreate(Bundle savedInstanceState) {
 	cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
 	WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
     webIndex = 0;
-    serverWebs.add(new MyWebview(this));
+    serverWebs.add(new MyWebview(getApplicationContext()));
     webpages = (MyViewFlipper) findViewById(R.id.webpages);
     webpages.addView(serverWebs.get(webIndex));
     
@@ -2094,7 +2094,7 @@ private boolean openNewPage(String url) {
 		result = false;
 	}
 	else {
-		webAdapter.add(new MyWebview(mContext));
+		webAdapter.add(new MyWebview(getApplicationContext()));
 		webAdapter.notifyDataSetInvalidated();
         webpages.addView(webAdapter.getItem(webAdapter.getCount() - 1));
 		imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), webAdapter.getCount(), 2, mContext));

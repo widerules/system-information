@@ -31,7 +31,7 @@ import easy.lib.util;
 
 public class AboutBrowser extends Activity{
 	
-	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbCachePrefer, cbHideExit, cbFullscreen, cbOverview, cbPageSource;
+	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD, cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbCachePrefer, cbHideExit, cbFullscreen, cbOverview;//, cbPageSource;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA, searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword, clrCache;
 	LinearLayout advanceSettings, basicSettings;
@@ -169,7 +169,7 @@ public class AboutBrowser extends Activity{
 
 
     	cbFullscreen = (CheckBox) findViewById(R.id.full_screen);
-    	cbPageSource = (CheckBox) findViewById(R.id.enable_pagesource);
+    	//cbPageSource = (CheckBox) findViewById(R.id.enable_pagesource);
     	cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
     	cbBlockImg = (CheckBox) findViewById(R.id.block_image);
     	cbCachePrefer = (CheckBox) findViewById(R.id.cache_prefer);
@@ -272,7 +272,7 @@ public class AboutBrowser extends Activity{
 	@Override
 	protected void onResume() {
 		cbFullscreen.setChecked(perferences.getBoolean("full_screen_display", false));
-		cbPageSource.setChecked(perferences.getBoolean("page_source", false));
+		//cbPageSource.setChecked(perferences.getBoolean("page_source", false));
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		cbCachePrefer.setChecked(perferences.getBoolean("cache_prefer", false));
@@ -310,7 +310,7 @@ public class AboutBrowser extends Activity{
 	protected void onPause() {
 		if (resetDefault) {
 	    	editor.putBoolean("full_screen_display", false);
-	    	editor.putBoolean("page_source", false);
+	    	//editor.putBoolean("page_source", false);
 	    	editor.putBoolean("show_zoom", false);
 	    	editor.putBoolean("block_image", false);
 	    	editor.putBoolean("cache_prefer", false);
@@ -338,7 +338,7 @@ public class AboutBrowser extends Activity{
 		}
 		else {
 	    	editor.putBoolean("full_screen_display", cbFullscreen.isChecked());
-	    	editor.putBoolean("page_source", cbPageSource.isChecked());
+	    	//editor.putBoolean("page_source", cbPageSource.isChecked());
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
 			editor.putBoolean("cache_prefer", cbCachePrefer.isChecked());

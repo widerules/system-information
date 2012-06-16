@@ -91,6 +91,10 @@ public class wrapAdView {
 		if ((mInstance != null) && (adRequest != null)) mInstance.loadAd(adRequest);
 	}
 	
+	public void stopLoading() {
+		if (mInstance != null) mInstance.stopLoading();
+	}
+	
 	void destroy() {
 		if (mInstance != null) mInstance.destroy();
 	}

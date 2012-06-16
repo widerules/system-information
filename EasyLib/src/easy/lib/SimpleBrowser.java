@@ -215,7 +215,6 @@ class wrapWebSettings {
 
 public class SimpleBrowser extends Activity {
 
-	boolean paid;
 	final String BLANK_PAGE = "about:blank";
 	boolean firstRun = false;
 	int countDown = 0;
@@ -1293,7 +1292,7 @@ public void onCreate(Bundle savedInstanceState) {
     sp = PreferenceManager.getDefaultSharedPreferences(mContext);
 	sEdit = sp.edit();
 
-    paid = sp.getBoolean("paid", false);
+    //paid = sp.getBoolean("paid", false);
     //debug = sp.getBoolean("debug", false);
     //css = sp.getBoolean("css", false);
     //html5 = sp.getBoolean("html5", false);
@@ -2339,7 +2338,7 @@ void setLayout() {
 }
 
 void createAd() {
-    if (!paid && mAdAvailable) {
+    if (mAdAvailable) {
     	if (adview != null) {
     		adContainer.removeViewAt(0);
     		adview.destroy();

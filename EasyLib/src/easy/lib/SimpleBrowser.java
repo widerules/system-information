@@ -1883,14 +1883,7 @@ protected void onDestroy() {
 	
 	if (adview != null) adview.destroy();
 	
-	sEdit.putBoolean("collapse1", collapse1);
-	sEdit.putBoolean("collapse2", collapse2);
-	sEdit.putBoolean("collapse3", collapse3);
-	sEdit.commit();
-	
 	super.onDestroy();
-	
-    //if (clearAll) System.exit(0);
 }
 
 BroadcastReceiver screenLockReceiver = new BroadcastReceiver() {
@@ -2297,7 +2290,11 @@ protected void onPause() {
         wtask.execute("bookmark");
 	}
 	
-    
+	if (adview != null) adview.stopLoading();
+	
+	sEdit.putBoolean("collapse1", collapse1);
+	sEdit.putBoolean("collapse2", collapse2);
+	sEdit.putBoolean("collapse3", collapse3);
     sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).getSettings().getBuiltInZoomControls());
     sEdit.commit();
     

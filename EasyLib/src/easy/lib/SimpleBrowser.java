@@ -1451,7 +1451,10 @@ public void onCreate(Bundle savedInstanceState) {
         		break;
         	case 0://view page source
         		try {
-					if ("".equals(serverWebs.get(webIndex).pageSource)) serverWebs.get(webIndex).getPageSource();
+					if ("".equals(serverWebs.get(webIndex).pageSource)) {
+						serverWebs.get(webIndex).pageSource = "Loading. please try again later.";
+						serverWebs.get(webIndex).getPageSource();
+					}
 					
             		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
             		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))

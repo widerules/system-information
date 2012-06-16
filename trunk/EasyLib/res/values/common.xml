@@ -183,6 +183,6 @@
     
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
 
-    <string name="enable_pagesource">View page source</string>
-    <string name="ask_pagesource">Please open view page source in Settings and reload the page</string>
+    <!-- string name="enable_pagesource">View page source</string>
+    <string name="ask_pagesource">Please open view page source in Settings and reload the page</string-->
 </resources>

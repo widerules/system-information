@@ -158,7 +158,7 @@
     
     <string name="cache_prefer">缓存优先，节省流量</string>
     
-    <string name="enable_pagesource">查看网页源码</string>
-    <string name="ask_pagesource">请先到设置里打开查看网页源码，再刷新一下网页。</string>
+    <!-- string name="enable_pagesource">查看网页源码</string>
+    <string name="ask_pagesource">请先到设置里打开查看网页源码，再刷新一下网页。</string-->
     
 </resources>

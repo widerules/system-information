@@ -65,14 +65,14 @@
     />
 
     
-    <CheckBox android:id="@+id/enable_pagesource"
+    <!-- CheckBox android:id="@+id/enable_pagesource"
       	android:layout_width="wrap_content"
       	android:layout_height="wrap_content"
       	android:text="@string/enable_pagesource"
       	android:textColor="#f0030f03"
       	android:layout_marginLeft="15dip"
       	android:checked="false"
-    />
+    /-->
     
     <CheckBox android:id="@+id/show_zoom"
       	android:layout_width="wrap_content"

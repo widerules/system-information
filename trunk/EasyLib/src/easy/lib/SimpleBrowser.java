@@ -359,13 +359,20 @@ public class SimpleBrowser extends Activity {
     }   
 
 class MyWebview extends WebView {
-	public String pageSource = getString(R.string.not_avaiable);
+	public String pageSource = "";
 
 	wrapWebSettings webSettings;
 	
 	int mProgress = 0;
 	boolean isForeground = true;
-	
+
+	public void getPageSource() {
+		if ("2.3.3".equals(android.os.Build.VERSION.RELEASE)) //it will cause webkit crash on 2.3.3
+			pageSource = getString(R.string.not_avaiable);
+		else //not work for wml. some webkit even not parse wml.
+			loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
+	}
+
 	class MyJavaScriptInterface
 	{
 	    @SuppressWarnings("unused")
@@ -529,6 +536,8 @@ class MyWebview extends WebView {
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 
+				pageSource = "";
+				
 				if (isForeground) {
 					imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
 	        		loadProgress.setVisibility(View.VISIBLE);
@@ -551,12 +560,6 @@ class MyWebview extends WebView {
 				
 				String title = view.getTitle();
 				if (title == null) title = url;
-				
-				//if (getPageSource) {
-	        		if (!"2.3.3".equals(android.os.Build.VERSION.RELEASE)) //it will cause webkit crash on 2.3.3
-	        			//not work for wml. some webkit even not parse wml.
-	        			loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
-				//}	else pageSource = getString(R.string.ask_pagesource);
 				
         		if (!BLANK_PAGE.equals(url)) {
         			if(getString(R.string.browser_name).equals(title))//if title and url not sync, then sync it.
@@ -832,8 +835,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
         snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen now
         
         searchEngine = sp.getInt("search_engine", 3);
-        
-        //getPageSource = sp.getBoolean("page_source", false);
         
         boolean tmpEnableProxy = sp.getBoolean("enable_proxy", false);
         int tmpLocalPort = sp.getInt("local_port", 1984);
@@ -1311,7 +1312,6 @@ public void onCreate(Bundle savedInstanceState) {
 	else searchEngine = sp.getInt("search_engine", 4);
     fullScreen = sp.getBoolean("full_screen_display", false);
     snapFullScreen = (sp.getInt("full_screen", 1) == 1);//default to full screen
-    //getPageSource = sp.getBoolean("page_source", false);
     readTextSize(sp);//init the text size
     enableProxy = sp.getBoolean("enable_proxy", false);
 	if (enableProxy) {
@@ -1450,6 +1450,8 @@ public void onCreate(Bundle savedInstanceState) {
         		break;
         	case 0://view page source
         		try {
+					if ("".equals(serverWebs.get(webIndex).pageSource)) serverWebs.get(webIndex).getPageSource();
+					
             		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
             		if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl()))
             			m_sourceDialog.setIcon(R.drawable.explorer);

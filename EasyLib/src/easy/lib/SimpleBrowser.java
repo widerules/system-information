@@ -359,7 +359,7 @@ public class SimpleBrowser extends Activity {
     }   
 
 class MyWebview extends WebView {
-	public String pageSource = "";
+	public String pageSource = "", mUrl = "";
 
 	wrapWebSettings webSettings;
 	
@@ -537,6 +537,7 @@ class MyWebview extends WebView {
 				super.onPageStarted(view, url, favicon);
 
 				pageSource = "";
+				mUrl = url;
 				
 				if (isForeground) {
 					imm.hideSoftInputFromWindow(getWindowToken(), 0);//close soft keyboard
@@ -1957,7 +1958,7 @@ void changePage(int position) {
 	}
 	serverWebs.get(position).isForeground = true;
 	webIndex = position;
-	webAddress.setText(serverWebs.get(webIndex).getUrl());//refresh the display url
+	webAddress.setText(serverWebs.get(webIndex).mUrl);//refresh the display url
 
 	//global settings
     WebSettings localSettings = serverWebs.get(webIndex).getSettings();

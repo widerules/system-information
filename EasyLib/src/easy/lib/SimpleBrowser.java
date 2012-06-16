@@ -359,7 +359,7 @@ public class SimpleBrowser extends Activity {
     }   
 
 class MyWebview extends WebView {
-	public String pageSource;
+	public String pageSource = getString(R.string.not_avaiable);
 
 	wrapWebSettings webSettings;
 	
@@ -372,6 +372,8 @@ class MyWebview extends WebView {
 	    public void processHTML(String html)
 	    {
 	    	pageSource = html;//to get page source, part 1
+			if (pageSource.contains("<title>Easy Browser</title><link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
+    			pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";//don't show source of home
 	    }
 	    
 	    @SuppressWarnings("unused")
@@ -551,11 +553,8 @@ class MyWebview extends WebView {
 				if (title == null) title = url;
 				
 				//if (getPageSource) {
-	        		if ("2.3.3".equals(android.os.Build.VERSION.RELEASE)) //it will cause webkit crash on 2.3.3
-	        			pageSource = getString(R.string.not_avaiable);
-	        		else if (BLANK_PAGE.equals(url) || getString(R.string.browser_name).equals(title)) 
-	        			pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
-	        		else //not work for wml. some webkit even not parse wml.
+	        		if (!"2.3.3".equals(android.os.Build.VERSION.RELEASE)) //it will cause webkit crash on 2.3.3
+	        			//not work for wml. some webkit even not parse wml.
 	        			loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");//to get page source, part 3
 				//}	else pageSource = getString(R.string.ask_pagesource);
 				

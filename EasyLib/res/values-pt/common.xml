@@ -1,30 +1,23 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">Lançador fácil</string>
     <string name="browser_name">Navegador Fácil</string>
-    
     <string name="help_message">Encontre seu app por não mais de 2 clique. \nClique app ícone para pará-lo, \nClique nome app para lançar, \nClique versão aplicativo para desinstalar, \nlong clique em nome do aplicativo: atalho add, \atalho clique nlong para removê-lo.</string>
-
     <string name="auto_change_wallpaper">mudar papel de parede pela trepidação</string>
     <string name="about_message">Navegador Fácil É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nLongo clique história/favorito para o apagar. \n\nPor favor vote-me 5 estrelas, se você amá-lo e compartilhá-lo aos seus amigos. graças!</string>
-    
     <string name="share_wallpaper">Wallpaper Compartilhar</string>
     <string name="share_desktop">Compartilhar desktop</string>
-        
     <string name="warning">Somente o usuário root pode excluir aplicativo do sistema. \n\nExcluir sistema aplicativo pode causar telefone não pode arrancar. \n\nPor favor, pense com cuidado!</string>
-
     <string name="menu_choose_home">Mudar Início</string>
     <string name="select">Selecione Home</string>
     <string name="select_file">Seletor de arquivos</string>
-    
     <string name="wallpaper_beauty">Belezas</string>
-    
     <string name="wallpaper">Papel de parede</string>
     <string name="about">Sobre ...</string>
     <string name="help">Útil</string>
     <string name="settings">fixação</string>
     <string name="cancel">Cancelar</string>
     <string name="exit">Sair</string>
-    
     <string name="share">Compartilhar</string>
     <string name="sharemode">Modo Compartilhar</string>
     <string name="sharetext">simples e fácil de usar!</string>
@@ -33,13 +26,11 @@
     <string name="share_text2">" "Por telefone ou" "</string>
     <string name="share_text3">" "Pelo pc.</string>
     <string name="vote">vote em mim</string>
-    
-    <string name="favoriteapps">Atalho</string>        
-    <string name="systemapps">Sistêmica</string>        
-    <string name="userapps">msilva</string>        
+    <string name="favoriteapps">Atalho</string>
+    <string name="systemapps">Sistêmica</string>
+    <string name="userapps">msilva</string>
     <string name="home">Lares</string>
     <string name="packages">Provedores de Serviço</string>
-    
     <string name="addtoFavo">Adicionar ao lar</string>
     <string name="removeFromFavo">Excluir</string>
     <string name="addtoShort">Adicionar ao atalho</string>
@@ -51,7 +42,6 @@
     <string name="delete">Excluir</string>
     <string name="hideapp">Ocultar</string>
     <string name="hidepage">Ocultar página atual</string>
-    
     <string name="back">De volta</string>
     <string name="newpage">Novas propriedades</string>
     <string name="nomore_pages">muitas páginas aberta.</string>
@@ -63,20 +53,16 @@
     <string name="homepage">Página Inicial</string>
     <string name="shareurl">Url Compartilhar</string>
     <string name="recommend">Recomendar</string>
-    
     <string name="add_bookmark">Adicionar aos Marcadores...</string>
     <string name="remove_bookmark">Retire do Bookmark</string>
     <string name="view_bookmark">Ver Favoritos</string>
     <string name="remove_history">Remover da História</string>
-    
     <string name="save">Salvar como arquivo</string>
     <string name="open_new">Abrir em nova página</string>
     <string name="copy_url">Url cópia</string>
     <string name="copy">Copiar</string>
     <string name="copy_hint">Tente longo clicar sobre o texto que deseja copiar</string>
-    
     <string name="sdcard_needed">Arquivo baixado não pode ser aberto sem SDcard.</string>
-    
     <string name="loading">Carregando...</string>
     <string name="wait">Por favor, aguarde enquanto carregamos...</string>
     <string name="justreturn">Basta voltar</string>
@@ -90,13 +76,10 @@
     <string name="download_fail">Falha no download, clique para verificar</string>
     <string name="downloads_to">Arquivos baixados para" "</string>
     <string name="downloads_open">". "Você pode ver a pasta com arquivos ES Explorer ou outro gerenciador de arquivos. Clique em OK para baixar ES File Explorer.</string>
-    
     <string name="sorry">" "Caiu, log de erro é" "</string>
-
     <string name="grid_view">Grid View</string>
     <string name="list_view">Ver Lista</string>
     <string name="restart">É necessário reiniciar para mudar a vista. \nReiniciar agora?</string>
-
     <string name="snap">instantâneo</string>
     <string name="snap_size">tirar tamanho</string>
     <string name="full_screen">Tela cheia</string>
@@ -113,7 +96,6 @@
     <string name="encoding">Codificação na página atual</string>
     <string name="search">Pesquisar</string>
     <string name="html5">(Página atual)Parcialmente apoiar HTML5</string>
-    
     <string name="cache">Limpar cache se você se sentir lento</string>
     <string name="formdata">Dados de formulário</string>
     <string name="password">Senha</string>
@@ -126,23 +108,14 @@
     <string name="change_ua">Precisa mudar UA para acessar algum site</string>
     <string name="cache_tosd">Cache para cartão SD</string>
     <string name="advance_button">Configurações Avançadas</string>
-    
     <string name="search_engine">motor de busca</string>
-    
     <string name="block_popup">bloquear pop-up</string>
     <string name="block_js">bloco de JavaScript</string>
-    
     <string name="reset">reset para padrão</string>
-    
     <string name="enable_proxy">Enable proxy, porta local:</string>
-    
     <string name="hide_exit">esconder, em vez de saída</string>
     <string name="overview_page">abrir a página de visão geral do modo de</string>
-    
     <string name="share_to_friends">compartilhar com os amigos</string>
-    
     <string name="cache_prefer">preferem cache para reduzir a largura de banda</string>
-    
-    <!-- string name="enable_pagesource">ver código fonte da página</string>
-    <string name="ask_pagesource">Por favor, abra fonte de página de exibição em Configurações e recarregue a página</string-->
+
 </resources>

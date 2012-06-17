@@ -10,7 +10,7 @@ public class stringComparator implements Comparator<String> {
 	}
 
 	public final int compare(String a, String b) {
-	    return sCollator.compare(a, b);
+		return sCollator.compare(a, b);
 	}
 
 	private final Collator sCollator = Collator.getInstance();

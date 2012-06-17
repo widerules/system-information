@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">点点桌面</string>
     <string name="browser_name">点点浏览器</string>
-    
     <string name="help_message">两次点击/滑动之内找到你的应用\n单击应用图标：结束应用\n单击应用名称：启动应用\n单击应用版本：删除应用\n长按应用名称：添加快捷方式\n长按快捷方式：删除快捷方式</string>
-
     <string name="auto_change_wallpaper">晃动手机换壁纸</string>
     <string name="about_message">点点浏览器是一个小巧、方便，功能完备的浏览器，不但速度飞快，还可以查看网页源码，分享网址和截图给好友。\n\n如需删除书签/历史请长按该链接。\n\n如果喜欢这个应用，请给我打5颗星！</string>
-    
     <string name="share_wallpaper">分享壁纸</string>
     <string name="share_desktop">分享桌面</string>
-        
     <string name="warning">只有root才能删除系统应用。\n删除系统应用后可能不能开机。\n请三思！</string>
-
     <string name="menu_choose_home">切换主屏</string>
     <string name="select">选择主屏</string>
     <string name="select_file">选择文件</string>
-    
     <string name="wallpaper_scene">百度图片</string>
     <string name="wallpaper_beauty">美女壁纸</string>
-    
     <string name="wallpaper">壁纸</string>
     <string name="about">关于...</string>
     <string name="help">帮助</string>
@@ -27,7 +21,6 @@
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     <string name="exit">退出</string>
-    
     <string name="share">分享</string>
     <string name="sharemode">分享方式</string>
     <string name="sharetext">很小很强大，很快很方便！</string>
@@ -36,14 +29,12 @@
     <string name="share_text2">. 电脑查看请点</string>
     <string name="share_text3">""</string>
     <string name="vote">投我一票</string>
-    
-    <string name="favoriteapps">快捷方式</string>        
-    <string name="systemapps">系统应用</string>        
-    <string name="userapps">个人应用</string>        
+    <string name="favoriteapps">快捷方式</string>
+    <string name="systemapps">系统应用</string>
+    <string name="userapps">个人应用</string>
     <string name="online">上网</string>
     <string name="home">首屏</string>
     <string name="packages">其它</string>
-    
     <string name="addtoFavo">添加到首屏</string>
     <string name="removeFromFavo">从首屏删除</string>
     <string name="addtoShort">添加到快捷方式</string>
@@ -56,7 +47,6 @@
     <string name="delete">删除</string>
     <string name="hideapp">隐藏</string>
     <string name="hidepage">隐藏当前页</string>
-    
     <string name="back">前一页</string>
     <string name="next">下一页</string>
     <string name="newpage">新建窗口</string>
@@ -69,20 +59,16 @@
     <string name="homepage">主页</string>
     <string name="shareurl">分享网址</string>
     <string name="recommend">推荐</string>
-    
     <string name="add_bookmark">添加书签</string>
     <string name="remove_bookmark">删除书签</string>
     <string name="view_bookmark">查看书签</string>
     <string name="remove_history">删除历史</string>
-    
     <string name="save">存为文件</string>
     <string name="open_new">在新窗口中打开</string>
     <string name="copy_url">复制链接</string>
     <string name="copy">复制</string>
     <string name="copy_hint">试试在要复制的文字上长按</string>
-    
     <string name="sdcard_needed">没有SD卡，下载的文件可能打不开。</string>
-    
     <string name="loading">正在读取...</string>
     <string name="wait">网页加载中，请稍候...</string>
     <string name="pause">暂停下载</string>
@@ -98,13 +84,10 @@
     <string name="downloads">已下载</string>
     <string name="downloads_to">下载的文件位于</string>
     <string name="downloads_open">。您可以使用ES文件浏览器或其他文件管理器查看该目录。点确定下载ES文件管理器。</string>
-    
     <string name="sorry">出现异常退出，出错日志为</string>
-
     <string name="grid_view">图标视图</string>
     <string name="list_view">列表视图</string>
     <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
-
     <string name="snap">网页截屏</string>
     <string name="snap_size">截屏尺寸</string>
     <string name="full_screen">全屏</string>
@@ -123,7 +106,6 @@
     <string name="encoding_auto">自动</string>
     <string name="search">页内查找</string>
     <string name="html5">(当前页)部分支持HTML5</string>
-    
     <string name="cache">用久了可能会慢，试试清除缓存吧</string>
     <string name="formdata">表单</string>
     <string name="password">密码</string>
@@ -136,29 +118,18 @@
     <string name="change_ua">有些网站需要改变UA才可以访问</string>
     <string name="cache_tosd">缓存到SD卡</string>
     <string name="advance_button">高级设置</string>
-    
     <string name="android">安卓</string>
     <string name="pc">电脑</string>
-    
     <string name="search_engine">搜索引擎</string>
     <string name="google">谷歌</string>
     <string name="bing">必应</string>
-        
     <string name="block_popup">禁止弹窗</string>
     <string name="block_js">禁止JS</string>
-    
     <string name="reset">恢复默认设置</string>
-    
     <string name="enable_proxy">使用代理，本地端口：</string>
-    
     <string name="hide_exit">退出时只隐藏</string>
     <string name="overview_page">以概览模式打开网页</string>
-    
     <string name="share_to_friends">分享给朋友</string>
-    
     <string name="cache_prefer">缓存优先，节省流量</string>
-    
-    <!-- string name="enable_pagesource">查看网页源码</string>
-    <string name="ask_pagesource">请先到设置里打开查看网页源码，再刷新一下网页。</string-->
-    
+
 </resources>

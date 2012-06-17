@@ -22,15 +22,15 @@ import android.widget.Toast;
 
 /**
  * Utility class for setting WebKit proxy used by Android WebView
- *
+ * 
  */
-public class ProxySettings 
-{
+public class ProxySettings {
 	static final int PROXY_CHANGED = 193;
 
-	private static Object getDeclaredField(Object obj, String name) throws SecurityException,
-		NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		
+	private static Object getDeclaredField(Object obj, String name)
+			throws SecurityException, NoSuchFieldException,
+			IllegalArgumentException, IllegalAccessException {
+
 		Field f = obj.getClass().getDeclaredField(name);
 		f.setAccessible(true);
 		Object out = f.get(obj);
@@ -41,14 +41,16 @@ public class ProxySettings
 		Object ret = null;
 		Class networkClass = Class.forName("android.webkit.Network");
 		if (networkClass != null) {
-			Object networkObj = invokeMethod(networkClass, "getInstance", new Object[] { ctx },	Context.class);
-			if (networkObj != null) ret = getDeclaredField(networkObj, "mRequestQueue");
+			Object networkObj = invokeMethod(networkClass, "getInstance",
+					new Object[] { ctx }, Context.class);
+			if (networkObj != null)
+				ret = getDeclaredField(networkObj, "mRequestQueue");
 		}
 		return ret;
 	}
 
-	private static Object invokeMethod(Object object, String methodName, Object[] params,
-	Class... types) throws Exception {
+	private static Object invokeMethod(Object object, String methodName,
+			Object[] params, Class... types) throws Exception {
 		Object out = null;
 		Class c = object instanceof Class ? (Class) object : object.getClass();
 		if (types != null) {
@@ -63,27 +65,28 @@ public class ProxySettings
 
 	public static void resetProxy(Context ctx) throws Exception {
 		Object requestQueueObject = getRequestQueue(ctx);
-		if (requestQueueObject != null) setDeclaredField(requestQueueObject, "mProxyHost", null);
+		if (requestQueueObject != null)
+			setDeclaredField(requestQueueObject, "mProxyHost", null);
 	}
 
 	private static void setDeclaredField(Object obj, String name, Object value)
-	throws SecurityException, NoSuchFieldException, IllegalArgumentException,
-	IllegalAccessException {
+			throws SecurityException, NoSuchFieldException,
+			IllegalArgumentException, IllegalAccessException {
 		Field f = obj.getClass().getDeclaredField(name);
 		f.setAccessible(true);
 		f.set(obj, value);
 	}
 
 	/**
-	* Override WebKit Proxy settings
-	*
-	* @param ctx
-	* Android ApplicationContext
-	* @param host
-	* local host
-	* @param port
-	* @return true if Proxy was successfully set
-	*/
+	 * Override WebKit Proxy settings
+	 * 
+	 * @param ctx
+	 *            Android ApplicationContext
+	 * @param host
+	 *            local host
+	 * @param port
+	 * @return true if Proxy was successfully set
+	 */
 	public static boolean setProxy(Context ctx, String host, int port) {
 		boolean ret = false;
 		setSystemProperties(host, port);
@@ -98,29 +101,34 @@ public class ProxySettings
 					setDeclaredField(requestQueueObject, "mProxyHost", httpHost);
 					ret = true;
 				}
-			} else ret = setICSProxy(host, port);
+			} else
+				ret = setICSProxy(host, port);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return ret;
 	}
 
-	private static boolean setICSProxy(String host, int port) throws ClassNotFoundException,
-	NoSuchMethodException, IllegalArgumentException, InstantiationException,
-	IllegalAccessException, InvocationTargetException {
+	private static boolean setICSProxy(String host, int port)
+			throws ClassNotFoundException, NoSuchMethodException,
+			IllegalArgumentException, InstantiationException,
+			IllegalAccessException, InvocationTargetException {
 		Class webViewCoreClass = Class.forName("android.webkit.WebViewCore");
-		Class proxyPropertiesClass = Class.forName("android.net.ProxyProperties");
+		Class proxyPropertiesClass = Class
+				.forName("android.net.ProxyProperties");
 		if (webViewCoreClass != null && proxyPropertiesClass != null) {
-			Method m = webViewCoreClass.getDeclaredMethod("sendStaticMessage", Integer.TYPE, Object.class);
-			Constructor c = proxyPropertiesClass.getConstructor(String.class, Integer.TYPE,	String.class);
+			Method m = webViewCoreClass.getDeclaredMethod("sendStaticMessage",
+					Integer.TYPE, Object.class);
+			Constructor c = proxyPropertiesClass.getConstructor(String.class,
+					Integer.TYPE, String.class);
 			m.setAccessible(true);
 			c.setAccessible(true);
 			Object properties = c.newInstance(host, port, null);
 			m.invoke(null, PROXY_CHANGED, properties);
 			return true;
 		}
-		
+
 		return false;
 	}
 

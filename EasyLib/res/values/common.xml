@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">Easy Launcher</string>
     <string name="browser_name">Easy Browser</string>
-    
     <string name="help_message">Find you app by not more than 2 click. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
     <string name="author">clickclick.home@gmail.com</string>
     <string name="browser_author">easy.browsers@gmail.com</string>
-
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     <string name="about_message">Easy Browser is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it. \n\nPlease vote me for 5 stars if you love it.</string>
-    
     <string name="share_wallpaper">Share Wallpaper</string>
     <string name="share_desktop">Share Desktop</string>
-        
     <string name="warning">Only root user can delete system app.\n\nDelete system app may cause phone can not boot.\n\nPlease think carefully！</string>
-
     <string name="menu_choose_home">Switch Home</string>
     <string name="select">Select Home</string>
     <string name="select_file">File Chooser</string>
-    
     <string name="wallpaper_scene">Baidu Pic</string>
     <string name="wallpaper_beauty">Beauties</string>
-    
     <string name="wallpaper">Wallpaper</string>
     <string name="about">About...</string>
     <string name="help">Help</string>
@@ -29,7 +23,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="exit">Exit</string>
-    
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
     <string name="sharetext">simple and easy to use!</string>
@@ -38,14 +31,12 @@
     <string name="share_text2">" "by phone or" "</string>
     <string name="share_text3">" "by pc.</string>
     <string name="vote">Vote for me</string>
-    
-    <string name="favoriteapps">Shortcut</string>        
-    <string name="systemapps">System</string>        
-    <string name="userapps">User</string>        
+    <string name="favoriteapps">Shortcut</string>
+    <string name="systemapps">System</string>
+    <string name="userapps">User</string>
     <string name="online">Online</string>
     <string name="home">Home</string>
     <string name="packages">Services/Providers</string>
-    
     <string name="addtoFavo">Add to home</string>
     <string name="removeFromFavo">Delete</string>
     <string name="addtoShort">Add to shortcut</string>
@@ -58,7 +49,6 @@
     <string name="delete">Delete</string>
     <string name="hideapp">Hide</string>
     <string name="hidepage">Hide current page</string>
-    
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="newpage">New Page</string>
@@ -71,20 +61,16 @@
     <string name="homepage">Home Page</string>
     <string name="shareurl">Share Url</string>
     <string name="recommend">Recommend</string>
-    
     <string name="add_bookmark">Add to Bookmark</string>
     <string name="remove_bookmark">Remove from Bookmark</string>
     <string name="view_bookmark">View Bookmark</string>
     <string name="remove_history">Remove from History</string>
-    
     <string name="save">Save as file</string>
     <string name="open_new">Open in new page</string>
     <string name="copy_url">Copy Url</string>
     <string name="copy">Copy</string>
     <string name="copy_hint">Try to long click on the text you want to copy</string>
-    
     <string name="sdcard_needed">Downloaded file may not be opened without SDcard.</string>
-    
     <string name="loading">Loading...</string>
     <string name="wait">Please wait while loading...</string>
     <string name="pause">Pause download</string>
@@ -100,13 +86,10 @@
     <string name="downloads">Downloads</string>
     <string name="downloads_to">Files downloaded to" "</string>
     <string name="downloads_open">". "You can view the folder with ES File Explorer or other file manager. Click OK to download ES File Explorer.</string>
-    
     <string name="sorry">" "crashed, error log is" "</string>
-
     <string name="grid_view">Grid View</string>
     <string name="list_view">List View</string>
     <string name="restart">It need restart to change the view. \nRestart now?</string>
-
     <string name="snap">Snap Shot</string>
     <string name="snap_size">SnapSize</string>
     <string name="full_screen">FullScreen</string>
@@ -136,7 +119,6 @@
     <string name="encoding_euc_kr">EUC-KR</string>
     <string name="search">Search</string>
     <string name="html5">(current page)Partially support HTML5</string>
-    
     <string name="cache">Clear cache if you feel slow</string>
     <string name="cookie">Cookie</string>
     <string name="formdata">Form Data</string>
@@ -150,7 +132,6 @@
     <string name="change_ua">Need change UA to access some website</string>
     <string name="cache_tosd">Cache to SD card</string>
     <string name="advance_button">Advanced Settings</string>
-    
     <string name="android">Phone</string>
     <string name="pc">PC</string>
     <string name="iphone">iPhone</string>
@@ -162,27 +143,18 @@
     <string name="wp">WP</string>
     <string name="nokia">Nokia</string>
     <string name="bb">BlackBerry</string>
-    
     <string name="search_engine">SearchNg</string>
     <string name="baidu">百度</string>
     <string name="bing">Bing</string>
     <string name="google">Google</string>
     <string name="yandex">Яндекс</string>
-    
     <string name="block_popup">Block pop-up</string>
     <string name="block_js">Block JavaScript</string>
-    
     <string name="reset">Reset default options</string>
-    
     <string name="enable_proxy">Enable proxy, local port:</string>
-    
     <string name="hide_exit">Hide instead of exit</string>
     <string name="overview_page">Open Pages in Overview</string>
-    
     <string name="share_to_friends">Share to friends</string>
-    
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
 
-    <!-- string name="enable_pagesource">View page source</string>
-    <string name="ask_pagesource">Please open view page source in Settings and reload the page</string-->
 </resources>

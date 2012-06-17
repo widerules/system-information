@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/pause_download"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
-  
-    
-	<TextView android:id="@+id/download_name"
-        android:layout_alignParentTop="true"
-    	android:layout_centerHorizontal="true"
-    	android:textSize="18dip"
-	   	android:layout_margin="10dip"
-	   	android:gravity="center"
-        android:layout_height="wrap_content" 
-        android:layout_width="wrap_content"
-        android:text="@string/download_hint"/>
-        
-	<LinearLayout android:id="@+id/control_buttons"
-  		android:orientation="horizontal"
-  		android:layout_below="@id/download_name"
-   		android:gravity="center" 
-  		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content">
-  
-    	<Button android:id="@+id/pause"
-        	android:text="@string/pause"
-	        android:background="@drawable/button_layout"
-	        android:layout_marginRight="5dip"
-	  		android:paddingLeft="20dip"
-	  		android:paddingRight="20dip"
-        	android:layout_height="wrap_content" 
-        	android:layout_width="wrap_content"
-        />
-      	<Button android:id="@+id/stop"
-        	android:text="@string/stop"
-	        android:background="@drawable/button_layout"
-	        android:layout_marginLeft="5dip"
-	  		android:paddingLeft="20dip"
-	  		android:paddingRight="20dip"
-        	android:layout_height="wrap_content" 
-        	android:layout_width="wrap_content"
-        />
-	</LinearLayout>
-	
-    <LinearLayout android:id="@+id/adContainer"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pause_download"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/download_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dip"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-  		android:layout_below="@id/control_buttons"
-        />
-    
+        android:layout_margin="10dip"
+        android:gravity="center"
+        android:text="@string/download_hint"
+        android:textSize="18dip" />
+
+    <LinearLayout
+        android:id="@+id/control_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/download_name"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dip"
+            android:background="@drawable/button_layout"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip"
+            android:text="@string/pause" />
+
+        <Button
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:background="@drawable/button_layout"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip"
+            android:text="@string/stop" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/adContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/control_buttons"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dip" />
+
 </RelativeLayout>

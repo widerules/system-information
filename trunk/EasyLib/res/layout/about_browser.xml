@@ -1,600 +1,546 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:fadeScrollbars="true"
-  android:background="#FFf7f3f7"
-  >
-  
-    <LinearLayout
-		android:orientation="vertical"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-        >
-        
-    <LinearLayout android:id="@+id/basic_settings"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:orientation="vertical"
-        >
-    	
-    <Button android:id="@+id/title"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:gravity="center_horizontal"
-      	android:textSize="16dip"
-		android:layout_margin="1dip"
-        android:background="@drawable/button_layout"
-    />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFf7f3f7"
+    android:fadeScrollbars="true" >
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/explorer"
-        android:layout_gravity="center_horizontal"
-        />
-    
-    <TextView android:id="@+id/mailto"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/author"
-      	android:textSize="16dip"
-      	android:textColor="#F08080F0"
-      	android:layout_marginBottom="10dip"
-      	android:layout_gravity="center_horizontal"
-    />
+        android:orientation="vertical" >
 
-    <TextView android:id="@+id/help1"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:textColor="#f0030f03"
-      	android:text="@string/about_message"
-		android:layout_marginLeft="5dip"
-		android:layout_marginRight="5dip"
-		android:padding="5dip"
-    />
-
-    <Button android:id="@+id/vote"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:text="@string/vote"
-		android:layout_margin="1dip"
-        android:background="@drawable/button_layout"
-    />
-
-    
-    <!-- CheckBox android:id="@+id/enable_pagesource"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/enable_pagesource"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    /-->
-    
-    <CheckBox android:id="@+id/show_zoom"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/show_zoom"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    />
-      
-    <CheckBox android:id="@+id/block_image"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/block_image"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    />
-
-    <Button android:id="@+id/share"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:gravity="center_horizontal"
-      	android:textSize="16dip"
-      	android:text="@string/share_to_friends"
-		android:layout_margin="1dip"
-        android:background="@drawable/button_layout"
-    />
-
-    <!--CheckBox android:id="@+id/homepage_css"
-      	android:layout_width="wrap_content"
-      	android:layout_height="0dip"
-      	android:text="@string/homepage_css"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    />
-      
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="0dip"
-	    android:fadeScrollbars="true"
-		android:layout_margin="0dip"
-		android:background="@drawable/round_corner_light"
-        >
-    <RadioGroup android:id="@+id/max_history"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"  
-    	android:orientation="horizontal"
-    >  
-    <TextView
-    	android:layout_width="wrap_content"  
-	    android:layout_height="wrap_content"
-	    android:text="@string/max_history"
-		android:layout_marginLeft="5dip"
-      	android:textSize="16dip"
-      	android:textColor="#FFFFFFFF"
-        />
-
-    <RadioButton
-        android:text="@string/history_8" 
-        android:layout_marginLeft="5dip"
-        />
-  
-    <RadioButton  
-        android:text="@string/history_16"
-		android:layout_marginLeft="5dip"
-        />  
-	</RadioGroup>           
-    </HorizontalScrollView-->
-    
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
-		android:layout_marginRight="10dip"
-        >
-    <RadioGroup android:id="@+id/snap_size"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-    	android:orientation="horizontal"
-    >  
-    <TextView
-    	android:layout_width="wrap_content"  
-	    android:layout_height="wrap_content"
-	    android:text="@string/snap_size"
-      	android:textColor="#f0030f03"
-      	android:textSize="16dip"
-        />
-    <RadioButton  
-        android:text="@string/full_screen"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/full_webpage"
-      	android:textColor="#f0030f03"
-        />  
-	</RadioGroup>           
-    </HorizontalScrollView>
-    
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
-		android:layout_marginRight="10dip"
-        >
-    
-    <RadioGroup android:id="@+id/font_size"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"  
-    	android:orientation="horizontal"
-    >  
-    <TextView
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-	    android:text="@string/font_size"
-      	android:textColor="#f0030f03"
-      	android:textSize="16dip"
-        />
-    <RadioButton  
-        android:text="@string/font_larger"
-      	android:textColor="#f0030f03"
-        />
-    <RadioButton  
-        android:text="@string/font_normal"
-      	android:textColor="#f0030f03"
-        />
-    <RadioButton  
-        android:text="@string/font_smaller"
-      	android:textColor="#f0030f03"
-        />
-    <RadioButton  
-        android:text="@string/font_smallest"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/font_largest"
-      	android:textColor="#f0030f03"
-        />  
-	</RadioGroup>           
-    </HorizontalScrollView>
-    
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="20dip"
-		android:layout_marginRight="10dip"
-        >
-    <RadioGroup android:id="@+id/search_engine"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"  
-    	android:orientation="horizontal"
-    >
-    <TextView
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-	    android:text="@string/search_engine"
-      	android:textColor="#f0030f03"
-      	android:textSize="16dip"
-        />
-    <RadioButton  
-        android:text="@string/bing"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/baidu"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/google"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/yandex"
-      	android:textColor="#f0030f03"
-        />  
-    </RadioGroup>           
-    </HorizontalScrollView>
-    
-    </LinearLayout>
-    
-    <Button android:id="@+id/advance_button"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:text="@string/advance_button"
-		android:layout_margin="1dip"
-        android:background="@drawable/button_layout"
-    />
-
-    <LinearLayout android:id="@+id/advance_settings"
-      	android:layout_width="fill_parent"
-      	android:layout_height="0dip"
-      	android:orientation="vertical"
-        >
-        
-	    <CheckBox android:id="@+id/full_screen"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/full_screen"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    	/>
-      
-        <CheckBox android:id="@+id/block_popup"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/block_popup"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-        />
-      
-    	<CheckBox android:id="@+id/block_js"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/block_js"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-        />
-      
-    	<CheckBox android:id="@+id/cache_tosd"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/cache_tosd"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-        />
-      
-    	<CheckBox android:id="@+id/hide_exit"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/hide_exit"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-        />
-      
-    	<CheckBox android:id="@+id/overview_page"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/overview_page"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-        />
-      
-    	<CheckBox android:id="@+id/cache_prefer"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/cache_prefer"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-    	/>
-    
-    	<CheckBox android:id="@+id/html5"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/html5"
-      	android:textColor="#f0030f03"
-      	android:layout_marginLeft="15dip"
-      	android:checked="false"
-        />
-      
-	    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="15dip"
-		android:layout_marginRight="10dip"
-        >
         <LinearLayout
-      		android:layout_width="fill_parent"
-      		android:layout_height="wrap_content"
-      		android:orientation="horizontal"
-        	>
-	        <CheckBox android:id="@+id/enable_proxy"
-    	  	android:layout_width="wrap_content"
-      		android:layout_height="wrap_content"
-      		android:text="@string/enable_proxy"
-      		android:textColor="#f0030f03"
-      		android:checked="false"
-        	/>
-        	<EditText android:id="@+id/local_port"
-	      	android:layout_width="80dip"
-    	  	android:layout_height="wrap_content"
-	      	android:layout_marginLeft="5dip"
-	      	android:singleLine="true"
-	      	android:inputType="phone"
-	      	android:digits="1234567890"
-            />
+            android:id="@+id/basic_settings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dip"
+                android:background="@drawable/button_layout"
+                android:gravity="center_horizontal"
+                android:textSize="16dip" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/explorer" />
+
+            <TextView
+                android:id="@+id/mailto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dip"
+                android:text="@string/author"
+                android:textColor="#F08080F0"
+                android:textSize="16dip" />
+
+            <TextView
+                android:id="@+id/help1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:padding="5dip"
+                android:text="@string/about_message"
+                android:textColor="#f0030f03"
+                android:textSize="16dip" />
+
+            <Button
+                android:id="@+id/vote"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dip"
+                android:background="@drawable/button_layout"
+                android:text="@string/vote"
+                android:textSize="16dip" />
+
+            <CheckBox
+                android:id="@+id/show_zoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/show_zoom"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/block_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/block_image"
+                android:textColor="#f0030f03" />
+
+            <Button
+                android:id="@+id/share"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dip"
+                android:background="@drawable/button_layout"
+                android:gravity="center_horizontal"
+                android:text="@string/share_to_friends"
+                android:textSize="16dip" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <RadioGroup
+                    android:id="@+id/snap_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/snap_size"
+                        android:textColor="#f0030f03"
+                        android:textSize="16dip" />
+
+                    <RadioButton
+                        android:text="@string/full_screen"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/full_webpage"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <RadioGroup
+                    android:id="@+id/font_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/font_size"
+                        android:textColor="#f0030f03"
+                        android:textSize="16dip" />
+
+                    <RadioButton
+                        android:text="@string/font_larger"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_normal"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_smaller"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_smallest"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_largest"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <RadioGroup
+                    android:id="@+id/search_engine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/search_engine"
+                        android:textColor="#f0030f03"
+                        android:textSize="16dip" />
+
+                    <RadioButton
+                        android:text="@string/bing"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/baidu"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/google"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/yandex"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
         </LinearLayout>
-	    </HorizontalScrollView>
-        
-    <TextView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="center"
-		android:paddingTop="5dip"
-		android:paddingBottom="5dip"
-		android:layout_marginLeft="1dip"
-		android:layout_marginRight="1dip"
-	    android:text="@string/encoding"
-	    android:textColor="#ff000000"
-      	android:textSize="16dip"
-      	android:background="#e0e0e0"
-        />
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="15dip"
-		android:layout_marginRight="10dip"
-        >
-    <RadioGroup android:id="@+id/encoding"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"  
-    	android:orientation="horizontal"
-    >  
-    <RadioButton  
-        android:text="@string/encoding_auto"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/encoding_gbk"
-      	android:textColor="#f0030f03"
-        />
-    <RadioButton  
-        android:text="@string/encoding_big5"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/encoding_gb2312"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/encoding_utf8"
-      	android:textColor="#f0030f03"
-        />
-    <RadioButton  
-        android:text="@string/encoding_latin1"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/encoding_jp"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/encoding_jis"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/encoding_euc_jp"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/encoding_euc_kr"
-      	android:textColor="#f0030f03"
-        />  
-    
-	</RadioGroup>           
-    </HorizontalScrollView>
-    
-    <TextView
-    	android:layout_width="match_parent"
-    	android:layout_height="wrap_content"
-		android:gravity="center"
-		android:paddingTop="5dip"
-		android:paddingBottom="5dip"
-		android:layout_marginLeft="1dip"
-		android:layout_marginRight="1dip"
-	    android:text="@string/change_ua"
-	    android:textColor="#ff000000"
-      	android:textSize="16dip"
-      	android:background="#e0e0e0"
-        />
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="15dip"
-		android:layout_marginRight="10dip"
-        >
-    <RadioGroup android:id="@+id/ua_group"  
-    	android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-    	android:orientation="horizontal"
-    >  
-    <RadioButton  
-        android:text="@string/android"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/pc"
-      	android:textColor="#f0030f03"
-        />
-    <RadioButton  
-        android:text="@string/ipad"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/iphone"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/bb"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/chrome"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/ff"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/ie"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/nokia"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/safari"
-      	android:textColor="#f0030f03"
-        />  
-    <RadioButton  
-        android:text="@string/wp"
-      	android:textColor="#f0030f03"
-        />  
-    
-	</RadioGroup>           
-    </HorizontalScrollView>
-    
-    <Button android:id="@+id/clear"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:text="@string/clear_all"
-		android:layout_margin="1dip"
-        android:background="@drawable/button_layout"
-    />
-    
-    <CheckBox android:id="@+id/clear_cache"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/cache"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-		android:layout_marginLeft="15dip"
-		android:layout_marginRight="10dip"
-    />
-    <HorizontalScrollView
-    	android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:fadeScrollbars="true"
-		android:layout_marginLeft="15dip"
-		android:layout_marginRight="10dip"
-        >
-    <LinearLayout
-		android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-        >
-    <CheckBox android:id="@+id/clear_history"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/history"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-    />
-    <CheckBox android:id="@+id/clear_bookmark"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/bookmark"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-    />
-    <CheckBox android:id="@+id/clear_cookie"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/cookie"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-    />
-    <CheckBox android:id="@+id/clear_password"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/password"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-    />
-    <CheckBox android:id="@+id/clear_formdata"
-      	android:layout_width="wrap_content"
-      	android:layout_height="wrap_content"
-      	android:text="@string/formdata"
-      	android:textColor="#f0030f03"
-      	android:checked="false"
-    />
-    </LinearLayout>
-    </HorizontalScrollView>
-    
-    <Button android:id="@+id/reset"
-      	android:layout_width="fill_parent"
-      	android:layout_height="wrap_content"
-      	android:textSize="16dip"
-      	android:text="@string/reset"
-		android:layout_margin="1dip"
-        android:background="@drawable/button_layout"
-    />
-    
-    </LinearLayout><!-- advanced settings -->
-    
+
+        <Button
+            android:id="@+id/advance_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dip"
+            android:background="@drawable/button_layout"
+            android:text="@string/advance_button"
+            android:textSize="16dip" />
+
+        <LinearLayout
+            android:id="@+id/advance_settings"
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:orientation="vertical" >
+
+            <CheckBox
+                android:id="@+id/full_screen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/full_screen"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/block_popup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/block_popup"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/block_js"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/block_js"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/cache_tosd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/cache_tosd"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/hide_exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/hide_exit"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/overview_page"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/overview_page"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/cache_prefer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/cache_prefer"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/html5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/html5"
+                android:textColor="#f0030f03" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <CheckBox
+                        android:id="@+id/enable_proxy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/enable_proxy"
+                        android:textColor="#f0030f03" />
+
+                    <EditText
+                        android:id="@+id/local_port"
+                        android:layout_width="80dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dip"
+                        android:digits="1234567890"
+                        android:inputType="phone"
+                        android:singleLine="true" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dip"
+                android:layout_marginRight="1dip"
+                android:background="#e0e0e0"
+                android:gravity="center"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/encoding"
+                android:textColor="#ff000000"
+                android:textSize="16dip" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <RadioGroup
+                    android:id="@+id/encoding"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:text="@string/encoding_auto"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_gbk"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_big5"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_gb2312"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_utf8"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_latin1"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_jp"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_jis"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_euc_jp"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/encoding_euc_kr"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="1dip"
+                android:layout_marginRight="1dip"
+                android:background="#e0e0e0"
+                android:gravity="center"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/change_ua"
+                android:textColor="#ff000000"
+                android:textSize="16dip" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <RadioGroup
+                    android:id="@+id/ua_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:text="@string/android"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/pc"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/ipad"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/iphone"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/bb"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/chrome"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/ff"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/ie"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/nokia"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/safari"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/wp"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/clear"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dip"
+                android:background="@drawable/button_layout"
+                android:text="@string/clear_all"
+                android:textSize="16dip" />
+
+            <CheckBox
+                android:id="@+id/clear_cache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="10dip"
+                android:checked="false"
+                android:text="@string/cache"
+                android:textColor="#f0030f03" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <CheckBox
+                        android:id="@+id/clear_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/history"
+                        android:textColor="#f0030f03" />
+
+                    <CheckBox
+                        android:id="@+id/clear_bookmark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/bookmark"
+                        android:textColor="#f0030f03" />
+
+                    <CheckBox
+                        android:id="@+id/clear_cookie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/cookie"
+                        android:textColor="#f0030f03" />
+
+                    <CheckBox
+                        android:id="@+id/clear_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/password"
+                        android:textColor="#f0030f03" />
+
+                    <CheckBox
+                        android:id="@+id/clear_formdata"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/formdata"
+                        android:textColor="#f0030f03" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <Button
+                android:id="@+id/reset"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dip"
+                android:background="@drawable/button_layout"
+                android:text="@string/reset"
+                android:textSize="16dip" />
+        </LinearLayout> <!-- advanced settings -->
+
     </LinearLayout>
 
 </ScrollView>
-

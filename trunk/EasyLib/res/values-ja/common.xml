@@ -1,28 +1,21 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">ひかりのランチャー</string>
     <string name="browser_name">ひかりのブラウザ</string>
-    
     <string name="help_message">2クリック以上しないことにより、あなたのアプリを見つける。 \nClickアプリのアイコンは、\nClickアプリケーション名が起動し、それを停止します\nclickアプリのバージョンはアンインストールするには、\nlongクリックしてアプリ名：アドインをショートカット、それを削除する\nlongクリックのショートカット。</string>
-
     <string name="auto_change_wallpaper">シェイクで壁紙を変更でき</string>
     <string name="about_message">ひかりのブラウザは非常に小さく、高速、シンプルかつ強力なブラウザです。ページソースをご覧いただけ、 ウェブアドレスとスナップショットを友だちとシェアすることができます。 \n\nクリックのリンクを長く押すと、ブックマークと履歴を削除できます。 \n\n気に 入って頂ければ、5つ星ご投票をお願いいたします。</string>
-    
     <string name="share_wallpaper">壁紙をシェア</string>
     <string name="share_desktop">デスクトップをシェア</string>
-        
     <string name="warning">rootユーザーだけがシステムのアプリケーションを削除することができます。\n\n削除システムアプリは電話がブートできない可能性があります。\n\nしばらくは慎重にと思います！</string>
-
     <string name="menu_choose_home">ホームを切り替え</string>
     <string name="select">ホームを選択</string>
     <string name="select_file">ファイルをセレクタ</string>
-    
     <string name="wallpaper_scene">Baiduの画像</string>
     <string name="wallpaper_beauty">美しさ</string>
-    
     <string name="settings">設定</string>
     <string name="cancel">キャンセル</string>
     <string name="exit">終了</string>
-    
     <string name="share">シェア</string>
     <string name="sharemode">シェアモード</string>
     <string name="sharetext">シンプルで使いやすい</string>
@@ -31,14 +24,12 @@
     <string name="share_text2">" "電話を通じて" "</string>
     <string name="share_text3">" "あるいはPCを通じて</string>
     <string name="vote">私にご投票をお願いいたします</string>
-    
-    <string name="favoriteapps">ショートカットキー</string>        
-    <string name="systemapps">システム</string>        
-    <string name="userapps">ユーザー</string>        
+    <string name="favoriteapps">ショートカットキー</string>
+    <string name="systemapps">システム</string>
+    <string name="userapps">ユーザー</string>
     <string name="online">オンライン</string>
     <string name="home">ホーム</string>
     <string name="packages">サービスあるいはプロバイダ</string>
-    
     <string name="addtoFavo">ホームに追加する</string>
     <string name="removeFromFavo">削除</string>
     <string name="addtoShort">ショートカットに追加</string>
@@ -51,7 +42,6 @@
     <string name="delete">削除</string>
     <string name="hideapp">隠す</string>
     <string name="hidepage">現在のページを隠す</string>
-    
     <string name="back">戻る</string>
     <string name="next">次へ</string>
     <string name="newpage">新しいページ</string>
@@ -64,20 +54,16 @@
     <string name="homepage">ホームページ</string>
     <string name="shareurl">URLを共有</string>
     <string name="recommend">おすすめ</string>
-    
     <string name="add_bookmark">ブックマークに追加</string>
     <string name="remove_bookmark">ブックマークから削除</string>
     <string name="view_bookmark">ブックマークを見る</string>
     <string name="remove_history">履歴から削除</string>
-    
     <string name="save">ファイルとして保存</string>
     <string name="open_new">新しいページで開く</string>
     <string name="copy_url">URLをコピー</string>
     <string name="copy">コピー</string>
     <string name="copy_hint">コピーしたがるテキストを長く押すしてください</string>
-    
     <string name="sdcard_needed">SDカードなしでダウンロードしたファイルは開くことができない場合があります</string>
-    
     <string name="loading">読み込み中...</string>
     <string name="wait">ロード中しばらくお待ちください...</string>
     <string name="pause">ポーズのダウンロード</string>
@@ -93,13 +79,10 @@
     <string name="downloads_to">ダウンロードファイルは</string>
     <string name="downloads_open">にあります。ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには、[OK]をクリックしてください。</string>
     <string name="download_hint">ダウンロード</string>
-    
     <string name="sorry">" "クラッシュしました。エラーログは" "</string>
-
     <string name="grid_view">グリッドビュー</string>
     <string name="list_view">リストビュー</string>
     <string name="restart">ビューを変更するには、再起動する必要があります。 \n今すぐ再起動しますか？</string>
-
     <string name="snap">スナップショット</string>
     <string name="snap_size">スナップサイズ</string>
     <string name="full_screen">全画面スクリーン</string>
@@ -118,7 +101,6 @@
     <string name="encoding_auto">自動</string>
     <string name="search">Webページで検索</string>
     <string name="html5">(現在ページ)部分的にHTML5をサポート</string>
-    
     <string name="cache">あなたが遅いと感じた場合はキャッシュをクリアする</string>
     <string name="formdata">フォームデータ</string>
     <string name="password">パスワード</string>
@@ -131,23 +113,14 @@
     <string name="change_ua">いくつかのウェブサイトにアクセスするためにUAを変更する必要があり</string>
     <string name="cache_tosd">SDカードへのキャッシュ</string>
     <string name="advance_button">詳細設定</string>
-    
     <string name="search_engine">検索エンジン</string>
-    
     <string name="block_popup">ポップアップウィンドウをブロックする</string>
     <string name="block_js">ブロックのJavaScript</string>
-    
     <string name="reset">デフォルトにリセット</string>
-    
     <string name="enable_proxy">プロキシを有効にする, ローカルポート:</string>
-    
     <string name="hide_exit">代わりに出口の非表示</string>
     <string name="overview_page">概要でモードページを開く</string>
-    
     <string name="share_to_friends">友人に共有</string>
-    
     <string name="cache_prefer">キャッシュは、帯域幅を削減するために好ん</string>
-    
-    <!-- string name="enable_pagesource">ページのソースを表示</string>
-    <string name="ask_pagesource">設定で表示ページのソースを開き、ページをリロードしてください</string-->
+
 </resources>

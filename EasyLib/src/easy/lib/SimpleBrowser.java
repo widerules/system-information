@@ -1290,7 +1290,8 @@ private void shareUrl(String text)
 public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     
-    mContext = getApplicationContext();
+    //mContext = getApplicationContext();
+    mContext = this;
     
     //init settings
     sp = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -1326,7 +1327,7 @@ public void onCreate(Bundle savedInstanceState) {
     
 	nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 	downloadAppID = new ArrayList();
-	appstate = ((MyApp) mContext);
+	appstate = ((MyApp) getApplicationContext());
 	
 	imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 	getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -2320,7 +2321,7 @@ protected void onPause() {
 @Override
 public File getCacheDir()
 {
-    return mContext.getCacheDir();// NOTE: this method is used in Android 2.1
+    return getApplicationContext().getCacheDir();// NOTE: this method is used in Android 2.1
 }
 
 @Override

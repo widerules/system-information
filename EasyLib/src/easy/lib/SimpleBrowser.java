@@ -806,6 +806,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
     	if (tmpFullScreen != fullScreen) {
     		fullScreen = tmpFullScreen;
         	if (fullScreen) {
+        		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        		
             	LayoutParams lp = webTools.getLayoutParams();
             	lp.height = 0;
             	webTools.requestLayout();
@@ -819,6 +821,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent intent) 
             	margin1dip.requestLayout();
         	}
         	else {
+        		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        		
             	LayoutParams lp = webTools.getLayoutParams();
             	lp.height = LayoutParams.WRAP_CONTENT; 
             	webTools.requestLayout();
@@ -1759,6 +1763,8 @@ public void onCreate(Bundle savedInstanceState) {
 	urlLine = (RelativeLayout) findViewById(R.id.urlline);
 	margin1dip = (RelativeLayout) findViewById(R.id.margin1dip);	
 	if (fullScreen) {//hide url bar and tools bar
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
     	LayoutParams lp = webTools.getLayoutParams();
     	lp.height = 0; 
 

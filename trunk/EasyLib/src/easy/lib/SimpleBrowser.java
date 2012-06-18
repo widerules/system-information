@@ -70,6 +70,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -488,8 +489,12 @@ public class SimpleBrowser extends Activity {
 					webControl.setVisibility(View.INVISIBLE);
 					// if (searchBar.getVisibility() == View.VISIBLE)
 					// hideSearchBox();
-					if (!view.isFocused())
+					if (!view.isFocused()) {
 						view.requestFocusFromTouch();
+						view.setFocusable(true);
+						webAddress.setFocusableInTouchMode(false);
+						webAddress.clearFocus();
+					}
 					return false;
 				}
 			});
@@ -1627,7 +1632,7 @@ public class SimpleBrowser extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// mContext = getApplicationContext();
+		// mContext = getApplicationContext();//this will cause force close when select locale in google translate
 		mContext = this;
 
 		// init settings
@@ -2074,6 +2079,14 @@ public class SimpleBrowser extends Activity {
 			public boolean onEditorAction(TextView view, int actionId,
 					KeyEvent event) {
 				imgGo.performClick();
+				return false;
+			}
+		});
+		webAddress.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				view.setFocusableInTouchMode(true);
+				serverWebs.get(webIndex).setFocusable(false);
 				return false;
 			}
 		});

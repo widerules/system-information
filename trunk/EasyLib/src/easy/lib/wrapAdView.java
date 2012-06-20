@@ -105,8 +105,10 @@ public class wrapAdView {
 	}
 
 	void destroy() {
-		if (mInstance != null)
+		if (mInstance != null) {
+			mInstance.stopLoading();
 			mInstance.destroy();
+		}
 	}
 
 	public View getInstance() {

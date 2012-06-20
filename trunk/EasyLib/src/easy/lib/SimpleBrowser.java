@@ -376,7 +376,7 @@ public class SimpleBrowser extends Activity {
 				// it will cause webkit crash on 2.3.3
 				pageSource = getString(R.string.not_avaiable);
 			else	// not work for wml. some webkit even not parse wml.
-				loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
+				loadUrl("javascript:window.JSinterface.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
 		}
 
 		class MyJavaScriptInterface {

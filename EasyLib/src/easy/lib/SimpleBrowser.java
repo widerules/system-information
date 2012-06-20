@@ -371,21 +371,12 @@ public class SimpleBrowser extends Activity {
 		int mProgress = 0;
 		boolean isForeground = true;
 
-		public void getPageSource() {
-			if ("2.3.3".equals(android.os.Build.VERSION.RELEASE)) // it will
-																	// cause
-																	// webkit
-																	// crash on
-																	// 2.3.3
+		public void getPageSource() {// to get page source, part 3
+			if ("2.3.3".equals(android.os.Build.VERSION.RELEASE)) 
+				// it will cause webkit crash on 2.3.3
 				pageSource = getString(R.string.not_avaiable);
-			else
-				// not work for wml. some webkit even not parse wml.
-				loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");// to
-																																				// get
-																																				// page
-																																				// source,
-																																				// part
-																																				// 3
+			else	// not work for wml. some webkit even not parse wml.
+				loadUrl("javascript:window.JSinterface.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
 		}
 
 		class MyJavaScriptInterface {
@@ -394,11 +385,8 @@ public class SimpleBrowser extends Activity {
 				pageSource = html;// to get page source, part 1
 				if (pageSource
 						.contains("<title>Easy Browser</title><link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
-					pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";// don't
-																									// show
-																									// source
-																									// of
-																									// home
+					// don't show source of home
+					pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
 			}
 
 			@SuppressWarnings("unused")
@@ -420,15 +408,14 @@ public class SimpleBrowser extends Activity {
 		public MyWebview(Context context) {
 			super(context);
 
-			setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);// no white blank
-																// on the right
-																// of webview
+			setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+			// no white blank on the right of webview
 			try {
 				Method method = WebView.class.getMethod(
 						"setScrollbarFadingEnabled",
 						new Class[] { boolean.class });
-				method.invoke(this, true);// hide scroll bar when not scroll.
-											// from API5, not work on cupcake.
+				// hide scroll bar when not scroll. from API5, not work on cupcake.
+				method.invoke(this, true);
 			} catch (Exception e) {
 			}
 
@@ -437,9 +424,10 @@ public class SimpleBrowser extends Activity {
 			localSettings.setTextSize(textSize);
 			localSettings.setSupportZoom(true);
 			localSettings.setBuiltInZoomControls(showZoom);
-			localSettings.setUseWideViewPort(true);// otherwise can't scroll
-													// horizontal in some
-													// webpage, such as qiupu.
+
+			// otherwise can't scroll horizontal in some webpage, such as qiupu.
+			localSettings.setUseWideViewPort(true);
+
 			localSettings.setPluginsEnabled(true);
 			// setInitialScale(1);
 			localSettings.setSupportMultipleWindows(true);
@@ -458,34 +446,19 @@ public class SimpleBrowser extends Activity {
 			// webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
 			webSettings.setDomStorageEnabled(true);// API7, key to enable gmail
-			webSettings.setLoadWithOverviewMode(overviewPage);// loads the
-																// WebView
-																// completely
-																// zoomed out.
-																// fit for
-																// hao123, but
-																// not fit for
-																// homepage.
-																// from API7
+
+			// loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
+			webSettings.setLoadWithOverviewMode(overviewPage);
 
 			registerForContextMenu(this);
 
-			addJavascriptInterface(new MyJavaScriptInterface(), "JSinterface");// to
-																				// get
-																				// page
-																				// source,
-																				// part
-																				// 2
+			// to get page source, part 2
+			addJavascriptInterface(new MyJavaScriptInterface(), "JSinterface");
 
 			setOnTouchListener(new OnTouchListener() {
 				@Override
-				public boolean onTouch(View view, MotionEvent arg1) {// just
-																		// close
-																		// webcontrol
-																		// page
-																		// if it
-																		// is
-																		// open.
+				public boolean onTouch(View view, MotionEvent arg1) {
+					// close webcontrol page if it is open.
 					webControl.setVisibility(View.INVISIBLE);
 					// if (searchBar.getVisibility() == View.VISIBLE)
 					// hideSearchBox();
@@ -593,8 +566,8 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public void onReceivedSslError(WebView view,
 						SslErrorHandler handler, SslError error) {
-					handler.proceed();// accept ssl certification when never
-										// needed.
+					// accept ssl certification whenever needed.
+					handler.proceed();
 				}
 
 				@Override
@@ -606,9 +579,8 @@ public class SimpleBrowser extends Activity {
 					mUrl = url;
 
 					if (isForeground) {
-						imm.hideSoftInputFromWindow(getWindowToken(), 0);// close
-																			// soft
-																			// keyboard
+						// close soft keyboard
+						imm.hideSoftInputFromWindow(getWindowToken(), 0);
 						loadProgress.setVisibility(View.VISIBLE);
 						webAddress.setText(url);
 						imgRefresh.setImageResource(R.drawable.stop);
@@ -621,65 +593,54 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public void onPageFinished(WebView view, String url) {
 					if (isForeground) {
-						loadProgress.setVisibility(View.INVISIBLE);// hide
-																	// progressbar
-																	// anyway
+						// hide progressbar anyway
+						loadProgress.setVisibility(View.INVISIBLE);
 						imgRefresh.setImageResource(R.drawable.refresh);
 						webControl.setVisibility(View.INVISIBLE);
 					}
 					mProgress = 0;
-					webAdapter.notifyDataSetChanged();// update the page title
-														// in webList
+					// update the page title in webList
+					webAdapter.notifyDataSetChanged();
 
 					String title = view.getTitle();
-					if (title == null)
-						title = url;
+					if (title == null) title = url;
 
 					if (!BLANK_PAGE.equals(url)) {
-						if (getString(R.string.browser_name).equals(title))// if
-																			// title
-																			// and
-																			// url
-																			// not
-																			// sync,
-																			// then
-																			// sync
-																			// it.
+						if (getString(R.string.browser_name).equals(title))
+							// if title and url not sync, then sync it
 							webAddress.setText(BLANK_PAGE);
 						else {// handle the bookmark/history after load new page
 							String site = "";
 							String[] tmp = url.split("/");
-							if (tmp.length > 2)
-								site = tmp[2];// if url is http://m.baidu.com,
-												// then url.split("/")[2] is
-												// m.baidu.com
-							else
-								site = tmp[0];
+							if (tmp.length > 2) site = tmp[2];
+							// if url is http://m.baidu.com,
+							// then url.split("/")[2] is m.baidu.com
+							else site = tmp[0];
 							for (int i = mHistory.size() - 1; i >= 0; i--) {
 								if (mHistory.get(i).m_url.equals(url)) {
 									mHistory.get(i).m_title = title;
 									return;// record one url only once in the
-											// history list.
+										// history list.
 								} else if (mHistory.get(i).m_site.equals(site)) {
 									mHistory.remove(i);// only keep the latest
-														// history of the same
-														// site.
+												// history of the same
+												// site.
 									break;
 								}
 							}
 
 							if (siteArray.indexOf(site) < 0) {
 								urlAdapter.add(site);// update the auto-complete
-														// edittext without
-														// duplicate
+											// edittext without
+											// duplicate
 								siteArray.add(site);// the adapter will always
-													// return 0 when get count
-													// or search, so we use an
-													// array to store the site.
+											// return 0 when get count
+											// or search, so we use an
+											// array to store the site.
 							}
 
 							try {// try to open the png, if can't open, then
-									// need save
+								// need save
 								FileInputStream fis = openFileInput(site
 										+ ".png");
 								try {
@@ -705,13 +666,12 @@ public class SimpleBrowser extends Activity {
 							mHistory.add(titleUrl);
 							historyChanged = true;
 
-							while (mHistory.size() > historyCount) {// remove
-																	// oldest
-																	// history
+							while (mHistory.size() > historyCount) {
+								// remove oldest history
 								site = mHistory.get(0).m_site;
 								mHistory.remove(0);// delete the first history
-													// if list larger than
-													// historyCount;
+											// if list larger than
+											// historyCount;
 
 								/*
 								 * //not delete icon here. it can be clear when
@@ -734,8 +694,8 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public boolean shouldOverrideUrlLoading(WebView view, String url) {
 					if (BLANK_PAGE.equals(url)) {// some site such as weibo and
-													// mysilkbaby will send
-													// BLANK_PAGE when login.
+									// mysilkbaby will send
+									// BLANK_PAGE when login.
 						return true;// we should do nothing but return true,
 									// otherwise may not login.
 					} else if (!url.startsWith("http")) {
@@ -810,8 +770,8 @@ public class SimpleBrowser extends Activity {
 
 	void closePage(int position, boolean clearData) {
 		if (position == webIndex) {
-			serverWebs.get(webIndex).stopLoading();// remove current page, so
-													// stop loading at first
+			// remove current page, so stop loading at first
+			serverWebs.get(webIndex).stopLoading();
 			if (clearData) {
 				serverWebs.get(webIndex).clearCache(true);
 				serverWebs.get(webIndex).clearSslPreferences();
@@ -831,7 +791,7 @@ public class SimpleBrowser extends Activity {
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
 					webAdapter.getCount(), 2, mContext));// show the changed
-															// page number
+										// page number
 			if ((webIndex > position) || (webIndex == webAdapter.getCount()))
 				webIndex -= 1;
 		} else {// return to home page if only one page when click close button
@@ -870,11 +830,10 @@ public class SimpleBrowser extends Activity {
 					// mContext.deleteDatabase("webviewCache.db");//this may get
 					// disk IO crash
 					ClearFolderTask cltask = new ClearFolderTask();
+					// clear cache on sdcard and in data folder
 					cltask.execute(downloadPath + "cache/webviewCache/",
 							"/data/data/" + mContext.getPackageName()
-									+ "/cache/webviewCache/");// clear cache on
-																// sdcard and in
-																// data folder
+									+ "/cache/webviewCache/");
 				}
 
 				boolean clearCookie = sp.getBoolean("clear_cookie", false);
@@ -904,13 +863,9 @@ public class SimpleBrowser extends Activity {
 					// mContext.deleteDatabase("webview.db");//this may get disk
 					// IO crash
 					ClearFolderTask cltask = new ClearFolderTask();
+					// clear files folder and app_databases folder
 					cltask.execute(getFilesDir().getAbsolutePath(),
-							getDir("databases", MODE_PRIVATE).getAbsolutePath());// clear
-																					// files
-																					// folder
-																					// and
-																					// app_databases
-																					// folder
+							getDir("databases", MODE_PRIVATE).getAbsolutePath());
 				}
 
 				if (clearHistory) {
@@ -952,12 +907,8 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 
-			boolean tmpFullScreen = sp.getBoolean("full_screen_display", false);// hide
-																				// url
-																				// editor
-																				// and
-																				// tool
-																				// buttons
+			boolean tmpFullScreen = sp.getBoolean("full_screen_display", false);
+			// hide url editor and tool buttons
 			if (tmpFullScreen != fullScreen) {
 				fullScreen = tmpFullScreen;
 				if (fullScreen) {
@@ -994,9 +945,8 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 
-			snapFullScreen = (sp.getInt("full_screen", 1) == 1);// default to
-																// full screen
-																// now
+			// default to full screen now
+			snapFullScreen = (sp.getInt("full_screen", 1) == 1);
 
 			searchEngine = sp.getInt("search_engine", 3);
 
@@ -1062,16 +1012,11 @@ public class SimpleBrowser extends Activity {
 			if (html5) {
 				webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE)
 						.getPath());// API7
-				webSettings.setAppCacheMaxSize(html5cacheMaxSize);// it will
-																	// cause
-																	// crash on
-																	// OPhone if
-																	// not set
-																	// the max
-																	// size
+				// it will cause crash on OPhone if not set the max size
+				webSettings.setAppCacheMaxSize(html5cacheMaxSize);
 				webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
 						.getPath());// API5. how slow will it be if set path to
-									// sdcard?
+								// sdcard?
 				// webSettings.setGeolocationDatabasePath(getDir("databases",
 				// MODE_PRIVATE).getPath());//API5
 
@@ -1081,8 +1026,8 @@ public class SimpleBrowser extends Activity {
 			String tmpEncoding = getEncoding(sp.getInt("encoding", 0));
 			if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
 				localSettings.setDefaultTextEncodingName(tmpEncoding);
-				sEdit.putInt("encoding", 0);// set default encoding to
-											// autoselect
+				// set default encoding to autoselect
+				sEdit.putInt("encoding", 0);
 				shouldReload = true;
 			}
 
@@ -1202,8 +1147,8 @@ public class SimpleBrowser extends Activity {
 		url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
 		if (url.endsWith("/"))
 			url = url.substring(0, url.length() - 1); // such as
-														// http://m.cnbeta.com/,
-														// http://www.google.com.hk/
+									// http://m.cnbeta.com/,
+									// http://www.google.com.hk/
 
 		String readableUrl = url;
 		try {
@@ -1213,25 +1158,15 @@ public class SimpleBrowser extends Activity {
 		posQ = readableUrl.indexOf("?");
 		if (posQ > 0)
 			readableUrl = readableUrl.substring(0, posQ);// cut off post paras
-															// if any.
+									// if any.
 
 		String ss[] = readableUrl.split("/");
 		String apkName = ss[ss.length - 1].toLowerCase(); // get download file
-															// name
+									// name
 		if (apkName.contains("="))
 			apkName = apkName.split("=")[apkName.split("=").length - 1];
-		if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {// image
-																			// from
-																			// shuimu
-																			// do
-																			// not
-																			// have
-																			// ext.
-																			// so
-																			// we
-																			// add
-																			// it
-																			// manually
+		// image from shuimu do not have ext. so we add it manually
+		if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {
 			apkName += ".jpg";
 			contentDisposition = null;
 		}
@@ -1248,7 +1183,7 @@ public class SimpleBrowser extends Activity {
 				if (val.pauseDownload)
 					val.pauseDownload = false;// resume download if it paused
 				return true;// the file is downloading, not start a new download
-							// task.
+						// task.
 			}
 		}
 
@@ -1269,8 +1204,8 @@ public class SimpleBrowser extends Activity {
 		private int readLength = 0; // 一次性下载的长度(以字节为单位)
 		private long apk_length = 0; // 音乐文件的长度(以字节为单位)
 		private long skip_length = 0;// if found local file not download
-										// finished last time, need continue to
-										// download
+						// finished last time, need continue to
+						// download
 		String apkName = ""; // 下载的文件名
 		int NOTIFICATION_ID;
 		private Notification notification;
@@ -1286,14 +1221,8 @@ public class SimpleBrowser extends Activity {
 				return URL_str;// not download local file
 			apkName = params[1]; // get download file name
 			if (apkName.contains("%"))
-				apkName = apkName.split("%")[apkName.split("%").length - 1];// for
-																			// some
-																			// filename
-																			// contain
-																			// %
-																			// will
-																			// cause
-																			// error
+				// for some filename contain % will cause error
+				apkName = apkName.split("%")[apkName.split("%").length - 1];
 
 			notification = new Notification(
 					android.R.drawable.stat_sys_download,
@@ -1307,22 +1236,14 @@ public class SimpleBrowser extends Activity {
 					getString(R.string.start_download), contentIntent);
 			nManager.notify(NOTIFICATION_ID, notification);
 
-			intent.setAction(getPackageName() + ".downloadControl");// this
-																	// intent is
-																	// to
-																	// pause/stop
-																	// download
+			// this intent is to pause/stop download
+			intent.setAction(getPackageName() + ".downloadControl");
 			intent.putExtra("id", NOTIFICATION_ID);
 			intent.putExtra("name", apkName);
 			intent.putExtra("url", URL_str);
+			// request_code will help to diff different thread
 			contentIntent = PendingIntent.getActivity(mContext,
-					NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);// request_code
-																				// will
-																				// help
-																				// to
-																				// diff
-																				// different
-																				// thread
+					NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 			notification.setLatestEventInfo(mContext, apkName,
 					getString(R.string.downloading), contentIntent);
 
@@ -1335,8 +1256,8 @@ public class SimpleBrowser extends Activity {
 				HttpClient httpClient = null;
 				String contentDisposition = params[2];
 				// Log.d("=============", URL_str + contentDisposition);
-				if (URL_str.contains("?") || contentDisposition != null) {// need
-																			// httpget
+				if (URL_str.contains("?") || contentDisposition != null) {
+					// need httpget
 					httpClient = new DefaultHttpClient();
 					HttpGet request = new HttpGet(URL_str);
 					String cookies = CookieManager.getInstance().getCookie(
@@ -1374,8 +1295,8 @@ public class SimpleBrowser extends Activity {
 				} else {
 					httpConnection = (HttpURLConnection) url.openConnection();
 					apk_length = httpConnection.getContentLength(); // file size
-																	// need to
-																	// download
+											// need to
+											// download
 					is = httpConnection.getInputStream();
 				}
 
@@ -1399,25 +1320,17 @@ public class SimpleBrowser extends Activity {
 					intent.setData(Uri.fromFile(new File(downloadPath)));
 				}
 
-				if (download_file.length() == apk_length) {// found local file
-															// with same name
-															// and length, no
-															// need to download,
-															// just send intent
-															// to view it
+				if (download_file.length() == apk_length) {
+					// found local file with same name and length,
+					// no need to download, just send intent to view it
 					String[] tmp = apkName.split("\\.");
 					util.startActivity(intent, false, mContext);
 					appstate.downloadState.remove(NOTIFICATION_ID);
 					nManager.cancel(NOTIFICATION_ID);
 					return downloadPath + apkName;
-				} else if (download_file.length() < apk_length) {// local file
-																	// size <
-																	// need to
-																	// download,
-																	// need
-																	// continue
-																	// to
-																	// download
+				} else if (download_file.length() < apk_length) {
+					// local file size < need to download,
+					// need continue to download
 					fos = new FileOutputStream(download_file, true);
 					skip_length = download_file.length();
 				} else
@@ -1435,7 +1348,7 @@ public class SimpleBrowser extends Activity {
 				total_read = 0; // 初始化“已下载部分”的长度，此处应为0
 
 				byte buf[] = new byte[10240]; // download buffer. is that ok for
-												// 10240?
+								// 10240?
 				readLength = 0; // 一次性下载的长度
 
 				oldProgress = 0;
@@ -1454,31 +1367,28 @@ public class SimpleBrowser extends Activity {
 							skip_length = 0;
 						} else
 							skip_length -= readLength;// just read and skip, not
-														// write if need skip
+											// write if need skip
 
 						total_read += readLength; // increase the download size
 					}
 
 					int progress = (int) ((total_read + 0.0) / apk_length * 100);
 					if (oldProgress != progress) {// the device will get no
-													// response if update too
-													// often
+									// response if update too
+									// often
 						oldProgress = progress;
 						notification.contentView.setProgressBar(
 								R.id.progress_bar, 100, progress, false);// update
-																			// download
-																			// progress
+													// download
+													// progress
 						notification.contentView.setTextViewText(R.id.progress,
 								progress + "%");
 						nManager.notify(NOTIFICATION_ID, notification);
 					}
 				}
+				// stop download by user. clear notification here for the close() and shutdown() may be very slow
 				if (stopDownload)
-					nManager.cancel(NOTIFICATION_ID);// stop download by user.
-														// clear notification
-														// here for the close()
-														// and shutdown() may be
-														// very slow
+					nManager.cancel(NOTIFICATION_ID);
 
 				try {
 					fos.close();
@@ -1518,25 +1428,17 @@ public class SimpleBrowser extends Activity {
 											// progress bar
 					nManager.notify(NOTIFICATION_ID, notification);
 
+					// change file property, for on some device the property is wrong
 					Process p = Runtime.getRuntime().exec(
-							"chmod 644 " + download_file.getPath());// change
-																	// file
-																	// property,
-																	// for on
-																	// some
-																	// device
-																	// the
-																	// property
-																	// is wrong
+							"chmod 644 " + download_file.getPath());
 					p.waitFor();
 
 					if (mimeType.startsWith("image")) {
 						Intent intentAddPic = new Intent(
 								"simpleHome.action.PIC_ADDED");
 						intentAddPic.putExtra("picFile", apkName);
-						sendBroadcast(intentAddPic);// add to picture list and
-													// enable change background
-													// by shake
+						// add to picture list and enable change background by shake
+						sendBroadcast(intentAddPic);
 					} else if (mimeType.startsWith("application"))
 						try {
 							PackageInfo pi = getPackageManager()
@@ -1547,15 +1449,10 @@ public class SimpleBrowser extends Activity {
 						} catch (Exception e) {
 						}
 
-					util.startActivity(intent, false, mContext);// call system
-																// package
-																// manager to
-																// install app.
-																// it will not
-																// return result
-																// code, so not
-																// use
-																// startActivityForResult();
+					// call system package manager to install app.
+					// it will not return result code,
+					// so not use startActivityForResult();
+					util.startActivity(intent, false, mContext);
 				}
 
 			} catch (Exception e) {
@@ -1563,11 +1460,10 @@ public class SimpleBrowser extends Activity {
 				downloadFailed = true;
 				notification.icon = android.R.drawable.stat_notify_error;
 				intent.putExtra("errorMsg", e.toString());
+				// request_code will help to diff different thread
 				contentIntent = PendingIntent.getActivity(mContext,
 						NOTIFICATION_ID, intent,
-						PendingIntent.FLAG_UPDATE_CURRENT);// request_code will
-															// help to diff
-															// different thread
+						PendingIntent.FLAG_UPDATE_CURRENT);
 				notification.setLatestEventInfo(mContext, apkName,
 						getString(R.string.download_fail), contentIntent);
 				nManager.notify(NOTIFICATION_ID, notification);
@@ -1578,12 +1474,8 @@ public class SimpleBrowser extends Activity {
 				// download_file.delete();//delete empty file
 			}
 
-			appstate.downloadState.remove(NOTIFICATION_ID);// remove download id
-															// whether download
-															// success nor fail,
-															// otherwise can't
-															// download again on
-															// fail
+			// remove download id whether download success nor fail, otherwise can't download again on fail
+			appstate.downloadState.remove(NOTIFICATION_ID);
 
 			return null;
 		}
@@ -1660,8 +1552,8 @@ public class SimpleBrowser extends Activity {
 		else
 			searchEngine = sp.getInt("search_engine", 4);
 		fullScreen = sp.getBoolean("full_screen_display", false);
-		snapFullScreen = (sp.getInt("full_screen", 1) == 1);// default to full
-															// screen
+		// default to full screen
+		snapFullScreen = (sp.getInt("full_screen", 1) == 1);
 		readTextSize(sp);// init the text size
 		enableProxy = sp.getBoolean("enable_proxy", false);
 		if (enableProxy) {
@@ -1677,10 +1569,8 @@ public class SimpleBrowser extends Activity {
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE); // hide titlebar of
-														// application, must be
-														// before setting the
-														// layout
+		// hide titlebar of application, must be before setting the layout
+		requestWindowFeature(Window.FEATURE_NO_TITLE); 
 		setContentView(R.layout.browser);
 
 		snapView = (ImageView) getLayoutInflater().inflate(
@@ -1843,7 +1733,7 @@ public class SimpleBrowser extends Activity {
 				case 0:// view page source
 					try {
 						if ("".equals(serverWebs.get(webIndex).pageSource)) {
-							serverWebs.get(webIndex).pageSource = "Loading. please try again later.";
+							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
 							serverWebs.get(webIndex).getPageSource();
 						}
 
@@ -1906,9 +1796,8 @@ public class SimpleBrowser extends Activity {
 							// to use a recycled bitmap android.graphics.Bitmap
 							// from one user. so catch it.
 						if (snapFullScreen) {
-							webpages.destroyDrawingCache();// the snap will not
-															// refresh if not
-															// destroy cache
+							// the snap will not refresh if not destroy cache
+							webpages.destroyDrawingCache();
 							webpages.setDrawingCacheEnabled(true);
 							bmp = webpages.getDrawingCache();
 						} else {
@@ -1919,16 +1808,8 @@ public class SimpleBrowser extends Activity {
 							// pic.getWidth(), pic.getHeight(), false);//check
 							// here http://stackoverflow.com/questions/477572
 							bmp = Bitmap.createBitmap(pic.getWidth(),
-									pic.getHeight(), Bitmap.Config.ARGB_4444);// the
-																				// size
-																				// of
-																				// the
-																				// web
-																				// page
-																				// may
-																				// be
-																				// very
-																				// large.
+									pic.getHeight(), Bitmap.Config.ARGB_4444);
+							// the size of the web page may be very large.
 
 							Canvas canvas = new Canvas(bmp);
 							pic.draw(canvas);
@@ -1950,8 +1831,8 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 7:// about
 					clickCount += 1;// show about activity will hide browser
-									// activity, and should not affect showing
-									// ad state
+							// activity, and should not affect showing
+							// ad state
 					intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(),
 							"easy.lib.AboutBrowser");
@@ -2259,10 +2140,8 @@ public class SimpleBrowser extends Activity {
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (loadProgress.getVisibility() == View.VISIBLE) {// webpage is
-																	// loading
-																	// then stop
-																	// it
+				if (loadProgress.getVisibility() == View.VISIBLE) {
+					// webpage is loading then stop it
 					serverWebs.get(webIndex).stopLoading();
 					loadProgress.setVisibility(View.INVISIBLE);
 				} else {// reload the webpage
@@ -2376,51 +2255,15 @@ public class SimpleBrowser extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-				String packageName = intent.getDataString().split(":")[1];// it
-																			// always
-																			// in
-																			// the
-																			// format
-																			// of
-																			// package:x.y.z
-				for (int i = 0; i < downloadAppID.size(); i++) {// cancel
-																// download
-																// notification
-																// if install
-																// succeed
-					if (downloadAppID.get(i).packageName.equals(packageName)) { // only
-																				// remove
-																				// the
-																				// notification
-																				// internal
-																				// id,
-																				// not
-																				// delete
-																				// file.
-																				// otherwise
-																				// when
-																				// user
-																				// click
-																				// the
-																				// ad
-																				// again,
-																				// it
-																				// will
-																				// download
-																				// again.
-																				// traffic
-																				// is
-																				// important
-																				// than
-																				// storage.
-																				// user
-																				// can
-																				// download
-																				// it
-																				// manually
-																				// when
-																				// click
-																				// downloads
+				// it always in the format of package:x.y.z
+				String packageName = intent.getDataString().split(":")[1];
+				for (int i = 0; i < downloadAppID.size(); i++) {
+					// cancel download notification if install succeed
+					if (downloadAppID.get(i).packageName.equals(packageName)) { 
+						// only remove the notification internal id, not delete file.
+						// otherwise when user click the ad again, it will download again.
+						// traffic is important than storage.
+						// user can download it manually when click downloads
 						nManager.cancel(downloadAppID.get(i).notificationID);
 						downloadAppID.remove(i);
 						break;
@@ -2605,23 +2448,22 @@ public class SimpleBrowser extends Activity {
 								String[] tmp = url.split("/");
 								if (tmp.length >= 2)
 									site = tmp[2];// if url is
-													// http://m.baidu.com, then
-													// url.split("/")[2] is
-													// m.baidu.com
+											// http://m.baidu.com, then
+											// url.split("/")[2] is
+											// m.baidu.com
 								else
 									site = tmp[0];
 
 								String title = titleText.getText().toString();
 								if ("".equals(title))
 									title += (char) 0xa0;// add a blank
-															// character to
-															// occupy the space
+												// character to
+												// occupy the space
 								TitleUrl titleUrl = new TitleUrl(title, url,
 										site);
 								mBookMark.add(titleUrl);
-								Collections.sort(mBookMark, new myComparator());// sort
-																				// by
-																				// name
+								// sort by name
+								Collections.sort(mBookMark, new myComparator());
 								loadPage(false);
 
 								bookmarkChanged = true;
@@ -2676,13 +2518,8 @@ public class SimpleBrowser extends Activity {
 		imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 		searchBar.setVisibility(View.INVISIBLE);
 		matchCount = 0;
-		serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");// remove
-																			// the
-																			// match
-																			// by
-																			// an
-																			// impossible
-																			// search
+		// remove the match by an impossible search
+		serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");
 		searchHint.setText("");
 	}
 
@@ -2698,8 +2535,8 @@ public class SimpleBrowser extends Activity {
 
 			matchIndex = matchCount;
 			while (matchIndex > 0) {
-				serverWebs.get(webIndex).findNext(false);// move to select the
-															// first match
+				serverWebs.get(webIndex).findNext(false);
+				// move to select the first match
 				matchIndex -= 1;
 			}
 		}
@@ -2708,8 +2545,8 @@ public class SimpleBrowser extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
-			if (keyCode == KeyEvent.KEYCODE_BACK) {// press Back key in webview
-													// will go backword.
+			if (keyCode == KeyEvent.KEYCODE_BACK) {
+				// press Back key in webview will go backword.
 				if (webControl.getVisibility() == View.VISIBLE)
 					imgNew.performClick();// hide web control
 				else if (searchBar.getVisibility() == View.VISIBLE)
@@ -2873,8 +2710,8 @@ public class SimpleBrowser extends Activity {
 		if (clickCount > 0) {
 			clickCount -= 1;
 			if (clickCount == 0) {// restore container height to show ad if
-									// onpause too many times. black screen will
-									// also onpause
+						// onpause too many times. black screen will
+						// also onpause
 				// createAd();
 				LayoutParams lp = adContainer.getLayoutParams();
 				if (lp.height == 0)
@@ -2887,15 +2724,15 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public File getCacheDir() {
-		return getApplicationContext().getCacheDir();// NOTE: this method is
-														// used in Android 2.1
+		// NOTE: this method is used in Android 2.1
+		return getApplicationContext().getCacheDir();
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig); // not restart activity each
-													// time screen orientation
-													// changes
+							// time screen orientation
+							// changes
 		setLayout();
 	}
 
@@ -2922,43 +2759,21 @@ public class SimpleBrowser extends Activity {
 				adview.destroy();
 			}
 
-			// if (width_density < 320) ;//do nothing for it is too narrow. but
-			// it will cause force close if not create adview.
-			if (width_density < 468)
-				adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);// AdSize.BANNER
-																					// require
-																					// 320*50
+			if (width_density < 320) ;//do nothing for it is too narrow. 
+			// but it will cause force close if not create adview?
+			if (width_density < 468)// AdSize.BANNER require 320*50
+				adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);
 			else if (width_density < 728)
-				adview = new wrapAdView(this, 1, "a14f3f6bc126143", mAppHandler);// AdSize.IAB_BANNER
-																					// require
-																					// 468*60
-																					// but
-																					// return
-																					// 702*90
-																					// on
-																					// BKB(1024*600)
-																					// and
-																					// S1.
-																					// return
-																					// width
-																					// =
-																					// request
-																					// width
-																					// *
-																					// density.
-			else
-				adview = new wrapAdView(this, 2, "a14f3f6bc126143", mAppHandler);// AdSize.IAB_LEADERBOARD
-																					// require
-																					// 728*90,
-																					// return
-																					// 1092*135
-																					// on
-																					// BKB
+				adview = new wrapAdView(this, 1, "a14f3f6bc126143", mAppHandler);
+				// AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1.
+				// return width = request width * density.
+			else	// AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
+				adview = new wrapAdView(this, 2, "a14f3f6bc126143", mAppHandler);
 
-			if (adview.getInstance() != null)
+			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());
-
-			adview.loadAd();
+				adview.loadAd();
+			}
 		}
 	}
 

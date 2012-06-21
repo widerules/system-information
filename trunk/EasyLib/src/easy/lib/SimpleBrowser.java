@@ -592,6 +592,8 @@ public class SimpleBrowser extends Activity {
 
 				@Override
 				public void onPageFinished(WebView view, String url) {
+					pageSource = "";//prevent get incomplete page source during page loading
+					
 					if (isForeground) {
 						// hide progressbar anyway
 						loadProgress.setVisibility(View.INVISIBLE);

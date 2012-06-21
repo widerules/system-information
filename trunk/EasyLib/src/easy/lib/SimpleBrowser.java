@@ -2823,8 +2823,7 @@ public class SimpleBrowser extends Activity {
 		String tmp = getString(R.string.top);
 		if (countDown > 0)
 			tmp += getString(R.string.url_can_longclick);
-		if (countDown > 1)
-			tmp += "\t" + countDown;
+		//if (countDown > 1) tmp += "\t" + countDown;
 		if (collapse1) {
 			sb.append("<h4 id=\"title1\" onClick=\"collapse(1)\" >+\t");
 			sb.append(tmp);
@@ -2896,8 +2895,7 @@ public class SimpleBrowser extends Activity {
 			tmp = getString(R.string.bookmark);
 			if (countDown > 0)
 				tmp += getString(R.string.pic_can_longclick);
-			if (countDown > 1)
-				tmp += "\t" + countDown;
+			//if (countDown > 1) tmp += "\t" + countDown;
 			if (collapse2) {
 				sb.append("<h4 id=\"title2\" onClick=\"collapse(2)\" >+\t");
 				sb.append(tmp);
@@ -2928,8 +2926,7 @@ public class SimpleBrowser extends Activity {
 			tmp = getString(R.string.history);
 			if (countDown > 0)
 				tmp += getString(R.string.text_can_longclick);
-			if (countDown > 1)
-				tmp += "\t" + countDown;
+			//if (countDown > 1) tmp += "\t" + countDown;
 			if (collapse3) {
 				sb.append("<h4 id=\"title3\" onClick=\"collapse(3)\" >+\t");
 				sb.append(tmp);

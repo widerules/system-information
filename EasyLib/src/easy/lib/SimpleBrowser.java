@@ -2036,7 +2036,7 @@ public class SimpleBrowser extends Activity {
 			historyChanged = true;
 			bookmarkChanged = true;
 
-			countDown = 3;
+			countDown = 1;
 		}
 
 		urlAdapter.sort(new stringComparator());

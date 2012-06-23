@@ -337,7 +337,7 @@ public class SimpleBrowser extends Activity {
 	float width_density;
 
 	// download related
-	String downloadPath;
+	String downloadPath = "";
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
@@ -1975,6 +1975,7 @@ public class SimpleBrowser extends Activity {
 		});
 
 		downloadPath = util.preparePath(mContext);
+		if (downloadPath == null) downloadPath = "/data/data/" + getPackageName() + "/";//fix null pointer close for 4 users
 		mHistory = readBookmark("history");
 		mBookMark = readBookmark("bookmark");
 		// Collections.sort(mBookMark, new myComparator());//sort the bookmark

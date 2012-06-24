@@ -1467,7 +1467,7 @@ public class SimpleBrowser extends Activity {
 						NOTIFICATION_ID, intent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
 				notification.setLatestEventInfo(mContext, apkName,
-						getString(R.string.download_fail), contentIntent);
+						e.toString(), contentIntent);
 				nManager.notify(NOTIFICATION_ID, notification);
 
 				// below line will cause error simetime, reported by emilio. so

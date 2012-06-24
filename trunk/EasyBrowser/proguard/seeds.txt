@@ -84,7 +84,6 @@ easy.browser.R$id: int full_screen
 easy.browser.R$id: int go
 easy.browser.R$id: int gridview
 easy.browser.R$id: int help1
-easy.browser.R$id: int hide_exit
 easy.browser.R$id: int home
 easy.browser.R$id: int html5
 easy.browser.R$id: int line1
@@ -175,7 +174,6 @@ easy.browser.R$string: int copy_hint
 easy.browser.R$string: int copy_url
 easy.browser.R$string: int data_cleared
 easy.browser.R$string: int delete
-easy.browser.R$string: int download_fail
 easy.browser.R$string: int download_finish
 easy.browser.R$string: int download_hint
 easy.browser.R$string: int downloading
@@ -210,7 +208,6 @@ easy.browser.R$string: int google
 easy.browser.R$string: int grid_view
 easy.browser.R$string: int help
 easy.browser.R$string: int help_message
-easy.browser.R$string: int hide_exit
 easy.browser.R$string: int hideapp
 easy.browser.R$string: int hidepage
 easy.browser.R$string: int history
@@ -353,7 +350,6 @@ easy.lib.R$id: int full_screen
 easy.lib.R$id: int go
 easy.lib.R$id: int gridview
 easy.lib.R$id: int help1
-easy.lib.R$id: int hide_exit
 easy.lib.R$id: int home
 easy.lib.R$id: int html5
 easy.lib.R$id: int line1
@@ -444,7 +440,6 @@ easy.lib.R$string: int copy_hint
 easy.lib.R$string: int copy_url
 easy.lib.R$string: int data_cleared
 easy.lib.R$string: int delete
-easy.lib.R$string: int download_fail
 easy.lib.R$string: int download_finish
 easy.lib.R$string: int download_hint
 easy.lib.R$string: int downloading
@@ -479,7 +474,6 @@ easy.lib.R$string: int google
 easy.lib.R$string: int grid_view
 easy.lib.R$string: int help
 easy.lib.R$string: int help_message
-easy.lib.R$string: int hide_exit
 easy.lib.R$string: int hideapp
 easy.lib.R$string: int hidepage
 easy.lib.R$string: int history

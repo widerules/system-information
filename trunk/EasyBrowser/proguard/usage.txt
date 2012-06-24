@@ -30,7 +30,6 @@ com.google.ads.AdSize:
     public AdSize(int,int)
 com.google.ads.AdView:
     public boolean isReady()
-    public void stopLoading()
 com.google.ads.InterstitialAd:
     private d a
     public InterstitialAd(android.app.Activity,java.lang.String)
@@ -65,15 +64,15 @@ easy.lib.HanziToPinyin:
     private static final java.lang.String FIRST_PINYIN_UNIHAN
     private static final java.lang.String LAST_PINYIN_UNIHAN
     private static final char FIRST_UNIHAN
-    318:333:private static boolean doSelfValidation()
-    408:458:public java.util.ArrayList get(java.lang.String)
-    463:466:private void addToken(java.lang.StringBuilder,java.util.ArrayList,int)
+    408:425:private static boolean doSelfValidation()
+    502:552:public java.util.ArrayList get(java.lang.String)
+    557:560:private void addToken(java.lang.StringBuilder,java.util.ArrayList,int)
 easy.lib.HanziToPinyin$Token:
     public static final java.lang.String SEPARATOR
     public static final int LATIN
     public static final int PINYIN
     public static final int UNKNOWN
-    264:268:public HanziToPinyin$Token(int,java.lang.String,java.lang.String)
+    352:356:public HanziToPinyin$Token(int,java.lang.String,java.lang.String)
 easy.lib.ProxySettings:
     static final int PROXY_CHANGED
     27:27:public ProxySettings()
@@ -85,10 +84,10 @@ easy.lib.R$drawable:
 easy.lib.R$id:
     39:39:public R$id()
 easy.lib.R$layout:
-    117:117:public R$layout()
+    116:116:public R$layout()
 easy.lib.R$string:
-    128:128:public R$string()
+    127:127:public R$string()
 easy.lib.util:
-    27:27:public util()
-    57:80:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
+    26:26:public util()
+    59:83:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)
 easy.lib.util$2

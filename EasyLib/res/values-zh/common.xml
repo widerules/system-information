@@ -54,7 +54,7 @@
     <string name="history">历史</string>
     <string name="bookmark">书签</string>
     <string name="top">常用</string>
-    <string name="source">网页源码</string>
+    <string name="source">源码</string>
     <string name="not_avaiable">抱歉，在安卓2.3.3上无法查看网页源码。</string>
     <string name="homepage">主页</string>
     <string name="shareurl">分享网址</string>
@@ -88,7 +88,7 @@
     <string name="grid_view">图标视图</string>
     <string name="list_view">列表视图</string>
     <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
-    <string name="snap">网页截屏</string>
+    <string name="snap">截屏</string>
     <string name="snap_size">截屏尺寸</string>
     <string name="full_screen">全屏</string>
     <string name="full_webpage">全网页</string>
@@ -104,7 +104,7 @@
     <string name="font_largest">最大</string>
     <string name="encoding">当前页文字编码</string>
     <string name="encoding_auto">自动</string>
-    <string name="search">页内查找</string>
+    <string name="search">搜索页面</string>
     <string name="html5">(当前页)部分支持HTML5</string>
     <string name="cache">用久了可能会慢，试试清除缓存吧</string>
     <string name="formdata">表单</string>

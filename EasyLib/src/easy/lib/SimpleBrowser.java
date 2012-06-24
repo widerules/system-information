@@ -382,11 +382,11 @@ public class SimpleBrowser extends Activity {
 		class MyJavaScriptInterface {
 			@SuppressWarnings("unused")
 			public void processHTML(String html) {
-				pageSource = html;// to get page source, part 1
-				if (pageSource
-						.contains("<title>Easy Browser</title><link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
+				if (html
+						.contains("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
 					// don't show source of home
 					pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
+				else pageSource = html;// to get page source, part 1
 			}
 
 			@SuppressWarnings("unused")

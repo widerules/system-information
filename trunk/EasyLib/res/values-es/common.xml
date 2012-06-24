@@ -105,7 +105,7 @@
     <string name="block_js">Bloquear JavaScript</string>
     <string name="reset">Restablecer las opciones por defecto</string>
     <string name="enable_proxy">Habilitar el puerto del servidor proxy, local:</string>
-    <string name="hide_exit">Ocultar lugar de salida</string>
+    <!--string name="hide_exit">Ocultar lugar de salida</string-->
     <string name="overview_page">Abrir páginas en general</string>
     <string name="share_to_friends">Compartir con los amigos</string>
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>

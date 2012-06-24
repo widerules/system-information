@@ -33,7 +33,7 @@ public class AboutBrowser extends Activity {
 
 	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD,
 			cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbCachePrefer,
-			cbHideExit, cbFullscreen, cbOverview;// , cbPageSource;
+			cbFullscreen, cbOverview;// , cbPageSource;
 	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA,
 			searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
@@ -244,7 +244,7 @@ public class AboutBrowser extends Activity {
 
 		cbBlockPopup = (CheckBox) findViewById(R.id.block_popup);
 		cbBlockJs = (CheckBox) findViewById(R.id.block_js);
-		cbHideExit = (CheckBox) findViewById(R.id.hide_exit);
+		//cbHideExit = (CheckBox) findViewById(R.id.hide_exit);
 		cbOverview = (CheckBox) findViewById(R.id.overview_page);
 		cbCacheToSD = (CheckBox) findViewById(R.id.cache_tosd);
 		cbHtml5 = (CheckBox) findViewById(R.id.html5);
@@ -324,7 +324,7 @@ public class AboutBrowser extends Activity {
 		cbBlockPopup.setChecked(perferences.getBoolean("block_popup", false));
 		cbBlockJs.setChecked(perferences.getBoolean("block_js", false));
 		cbCacheToSD.setChecked(perferences.getBoolean("cache_tosd", false));
-		cbHideExit.setChecked(perferences.getBoolean("hide_exit", true));
+		//cbHideExit.setChecked(perferences.getBoolean("hide_exit", true));
 		cbOverview.setChecked(perferences.getBoolean("overview_page", false));
 		// cbCss.setChecked(perferences.getBoolean("css", false));
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
@@ -372,7 +372,7 @@ public class AboutBrowser extends Activity {
 
 			editor.putBoolean("block_popup", false);
 			editor.putBoolean("block_js", false);
-			editor.putBoolean("hide_exit", true);
+			//editor.putBoolean("hide_exit", true);
 			editor.putBoolean("overview_page", false);
 			editor.putBoolean("cache_tosd", false);
 			editor.putBoolean("html5", false);
@@ -408,7 +408,7 @@ public class AboutBrowser extends Activity {
 
 			editor.putBoolean("block_popup", cbBlockPopup.isChecked());
 			editor.putBoolean("block_js", cbBlockJs.isChecked());
-			editor.putBoolean("hide_exit", cbHideExit.isChecked());
+			//editor.putBoolean("hide_exit", cbHideExit.isChecked());
 			editor.putBoolean("overview_page", cbOverview.isChecked());
 			editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
 			editor.putBoolean("html5", cbHtml5.isChecked());

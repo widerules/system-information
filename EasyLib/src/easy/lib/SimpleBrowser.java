@@ -2806,7 +2806,7 @@ public class SimpleBrowser extends Activity {
 
 	String homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
 						// scaled image, 3 is history displayed by link
-		String fileDir = getFilesDir().getAbsolutePath();
+		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		String ret = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
 		StringBuilder sb = new StringBuilder(ret);
 		sb.append("<meta name=\"viewport\" content=\"width=device-width\">");
@@ -2839,59 +2839,48 @@ public class SimpleBrowser extends Activity {
 			sb.append("<dl id=\"content1\" type=\"disc\">");
 		}
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/weibo.com.png)'><a href=\"http://weibo.com\">新浪微博</a></li>");
-			// sb.append("<li style='background-image:url(file://" + fileDir +
-			// "/3g.gfan.com.png)'><a href=\"http://3g.gfan.com\">机锋市场</a></li>");
-			// sb.append("<li style='background-image:url(file://" + fileDir +
-			// "/www.appchina.com.png)'><a href=\"http://www.appchina.com\">应用汇</a></li>");
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/m.hao123.com.png)'><a href=\"http://m.hao123.com/?type=android&tn=easy.browser\">好123</a></li>");
-			// sb.append("<li style='background-image:url(file://" + fileDir +
-			// "/www.taobao.com.png)'><a href=\"http://www.taobao.com\">淘宝</a></li>");
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
-			sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></li>");// no
-																						// favicon
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
+			sb.append(fileDir);
+			sb.append("weibo.com.png)'><a href=\"http://weibo.com\">新浪微博</a></li>");
+			// sb.append(fileDir);
+			// sb.append("3g.gfan.com.png)'><a href=\"http://3g.gfan.com\">机锋市场</a></li>");
+			// sb.append(fileDir);
+			// sb.append("www.appchina.com.png)'><a href=\"http://www.appchina.com\">应用汇</a></li>");
+			sb.append(fileDir);
+			sb.append("m.hao123.com.png)'><a href=\"http://m.hao123.com/?type=android&tn=easy.browser\">好123</a></li>");
+			// sb.append(fileDir);
+			// sb.append("www.taobao.com.png)'><a href=\"http://www.taobao.com\">淘宝</a></li>");
+			sb.append(fileDir);
+			sb.append("www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
+			sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></li>");// no favicon
+			sb.append(fileDir);
+			sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
 		} else {
-			// sb.append("<li style='background-image:url(file://" + fileDir +
-			// "/www.amazon.com.png)'><a href=\"http://www.amazon.com\">Amazon</a></li>");
-			// sb.append("<li style='background-image:url(file://" + fileDir +
-			// "/www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
+			// sb.append(fileDir);
+			// sb.append("www.amazon.com.png)'><a href=\"http://www.amazon.com\">Amazon</a></li>");
+			// sb.append(fileDir);
+			// sb.append("www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
 			sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");// no
 																									// favicon
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/m.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");// tested
-																										// by
-																										// Aresh.
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/www.google.com.png)'><a href=\"http://www.google.com\">Google</a></li>");
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/mobile.twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
-			// sb.append("<li style='background-image:url(file://" + fileDir +
-			// "/en.wikipedia.org.png)'><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">Phoenix3</a></li>");
+			sb.append(fileDir);
+			sb.append("m.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");
+			sb.append(fileDir);
+			sb.append("www.google.com.png)'><a href=\"http://www.google.com\">Google</a></li>");
+			sb.append(fileDir);
+			sb.append("mobile.twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
+			// sb.append(fileDir);
+			// sb.append("en.wikipedia.org.png)'><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
+			sb.append(fileDir);
+			sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">Phoenix3</a></li>");
 		}
 		// additional top list for some locale
-		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale))
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/m.yahoo.co.jp.png)'><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></li>");
-		else if ("ru_RU".equals(mLocale.toString()))
-			sb.append("<li style='background-image:url(file://"
-					+ fileDir
-					+ "/www.yandex.ru.png)'><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></li>");
+		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {
+			sb.append(fileDir);
+			sb.append("m.yahoo.co.jp.png)'><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></li>");
+		}
+		else if ("ru_RU".equals(mLocale.toString())) {
+			sb.append(fileDir);
+			sb.append("www.yandex.ru.png)'><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></li>");
+		}
 		sb.append("</dl>");
 
 		if (mBookMark.size() > 0) {
@@ -2911,12 +2900,9 @@ public class SimpleBrowser extends Activity {
 				sb.append("<dl id=\"content2\" type=\"disc\">");
 			}
 			for (int i = 0; i < mBookMark.size(); i++) {
-				sb.append("<li style='background-image:url(file://");
 				sb.append(fileDir);
-				sb.append("/");
 				sb.append(mBookMark.get(i).m_site);
-				sb.append(".png)'>");
-				sb.append("<a href=\"");
+				sb.append(".png)'><a href=\"");
 				sb.append(mBookMark.get(i).m_url);
 				sb.append("\">");
 				sb.append(mBookMark.get(i).m_title);
@@ -2942,12 +2928,9 @@ public class SimpleBrowser extends Activity {
 				sb.append("<dl id=\"content3\" type=\"disc\">");
 			}
 			for (int i = 0; i < mHistory.size(); i++) {
-				sb.append("<li style='background-image:url(file://");
 				sb.append(fileDir);
-				sb.append("/");
 				sb.append(mHistory.get(i).m_site);
-				sb.append(".png)'>");
-				sb.append("<a href=\"");
+				sb.append(".png)'><a href=\"");
 				sb.append(mHistory.get(i).m_url);
 				sb.append("\">");
 				sb.append(mHistory.get(i).m_title);

@@ -127,7 +127,7 @@
     <string name="block_js">禁止JS</string>
     <string name="reset">恢复默认设置</string>
     <string name="enable_proxy">使用代理，本地端口：</string>
-    <string name="hide_exit">退出时只隐藏</string>
+    <!--string name="hide_exit">退出时只隐藏</string-->
     <string name="overview_page">以概览模式打开网页</string>
     <string name="share_to_friends">分享给朋友</string>
     <string name="cache_prefer">缓存优先，节省流量</string>

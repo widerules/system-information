@@ -247,7 +247,7 @@ public class SimpleBrowser extends Activity {
 	private int SETTING_RESULTCODE = 1002;
 	boolean enableProxy = false;
 	int localPort;
-	boolean hideExit = true;
+	//boolean hideExit = true;
 	boolean overviewPage = false;
 	Locale mLocale;
 
@@ -978,7 +978,7 @@ public class SimpleBrowser extends Activity {
 			else
 				localSettings.setUserAgentString(selectUA(ua));
 
-			hideExit = sp.getBoolean("hide_exit", true);
+			//hideExit = sp.getBoolean("hide_exit", true);
 
 			readTextSize(sp); // no need to reload page if fontSize changed
 			localSettings.setTextSize(textSize);
@@ -1541,7 +1541,7 @@ public class SimpleBrowser extends Activity {
 		cachePrefer = sp.getBoolean("cache_prefer", false);
 		blockPopup = sp.getBoolean("block_popup", false);
 		blockJs = sp.getBoolean("block_js", false);
-		hideExit = sp.getBoolean("hide_exit", true);
+		//hideExit = sp.getBoolean("hide_exit", true);
 		overviewPage = sp.getBoolean("overview_page", false);
 		collapse1 = sp.getBoolean("collapse1", false);
 		collapse2 = sp.getBoolean("collapse2", false);
@@ -1727,9 +1727,9 @@ public class SimpleBrowser extends Activity {
 					imm.toggleSoftInput(0, 0);
 					break;
 				case 3:// exit
-					if (hideExit)
-						moveTaskToBack(true);
-					else
+					//if (hideExit)
+						//moveTaskToBack(true);
+					//else
 						finish();
 					break;
 				case 0:// view page source

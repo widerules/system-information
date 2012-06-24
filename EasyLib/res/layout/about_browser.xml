@@ -251,14 +251,14 @@
                 android:text="@string/cache_tosd"
                 android:textColor="#f0030f03" />
 
-            <CheckBox
+            <!-- CheckBox
                 android:id="@+id/hide_exit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dip"
                 android:checked="false"
                 android:text="@string/hide_exit"
-                android:textColor="#f0030f03" />
+                android:textColor="#f0030f03" /-->
 
             <CheckBox
                 android:id="@+id/overview_page"

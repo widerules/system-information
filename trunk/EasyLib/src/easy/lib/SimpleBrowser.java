@@ -2888,7 +2888,7 @@ public class SimpleBrowser extends Activity {
 			sb.append("<li style='background-image:url(file://"
 					+ fileDir
 					+ "/m.yahoo.co.jp.png)'><a href=\"http://www.yahoo.co.jp\">Yahoo!JAPAN</a></li>");
-		else if ("ru_RU".equals(mLocale) || "ru".equals(mLocale))
+		else if ("ru_RU".equals(mLocale.toString()))
 			sb.append("<li style='background-image:url(file://"
 					+ fileDir
 					+ "/www.yandex.ru.png)'><a href=\"http://www.yandex.ru/?clid=1911433\">Яндекс</a></li>");

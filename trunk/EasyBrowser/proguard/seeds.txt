@@ -1,3 +1,6 @@
+com.baidu.mobstat.SendStrategyEnum: com.baidu.mobstat.SendStrategyEnum[] values()
+com.baidu.mobstat.SendStrategyEnum: com.baidu.mobstat.SendStrategyEnum valueOf(java.lang.String)
+com.baidu.mobstat.StatActivity
 com.google.ads.Ad
 com.google.ads.AdActivity
 com.google.ads.AdActivity: void onClick(android.view.View)

@@ -30,8 +30,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.tapit.adview.AdView;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -589,8 +587,7 @@ public class SimpleBrowser extends Activity {
 						imgRefresh.setImageResource(R.drawable.stop);
 					}
 
-					if (adview != null)
-						adview.loadAd();// should only do this by wifi
+					//if (adview != null)	adview.loadAd();// should only do this by wifi
 				}
 
 				@Override
@@ -2759,11 +2756,11 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void createAd() {
-		AdView adView = new AdView(this, "6148");
-		adView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
-		adContainer.addView(adView);
+		//AdView adView = new AdView(this, "6148");
+		//adView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
+		//adContainer.addView(adView);
 
-		/*if (mAdAvailable) {
+		if (mAdAvailable) {
 			if (adview != null) {
 				adContainer.removeViewAt(0);
 				adview.destroy();
@@ -2784,7 +2781,7 @@ public class SimpleBrowser extends Activity {
 				adContainer.addView(adview.getInstance());
 				adview.loadAd();
 			}
-		}*/
+		}
 	}
 
 	class AppHandler extends Handler {

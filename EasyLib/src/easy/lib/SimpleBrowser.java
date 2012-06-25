@@ -29,6 +29,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import com.baidu.mobstat.StatService;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -2690,6 +2693,16 @@ public class SimpleBrowser extends Activity {
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+
+		/**
+		 * 此处调用基本统计代码
+		 */
+		StatService.onResume(this);
+	}
+
+	@Override
 	protected void onPause() {
 		if (historyChanged || noHistoryOnSdcard) {
 			WriteTask wtask = new WriteTask();
@@ -2723,6 +2736,8 @@ public class SimpleBrowser extends Activity {
 		}
 
 		super.onPause();
+		
+		StatService.onPause(this);
 	}
 
 	@Override
@@ -2756,6 +2771,10 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void createAd() {
+		//AdView adView = new AdView(this, "6148");
+		//adView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
+		//adContainer.addView(adView);
+
 		if (mAdAvailable) {
 			if (adview != null) {
 				adContainer.removeViewAt(0);

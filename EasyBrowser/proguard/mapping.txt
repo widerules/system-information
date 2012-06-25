@@ -69,6 +69,225 @@ c$e -> i:
     int d -> d
     c a -> a
     void run() -> run
+com.baidu.mobstat.SendStrategyEnum -> com.baidu.mobstat.a:
+    com.baidu.mobstat.SendStrategyEnum APP_START -> a
+    com.baidu.mobstat.SendStrategyEnum ONCE_A_DAY -> b
+    com.baidu.mobstat.SendStrategyEnum SET_TIME_INTERVAL -> c
+    com.baidu.mobstat.SendStrategyEnum[] a -> d
+    com.baidu.mobstat.SendStrategyEnum[] values() -> values
+    com.baidu.mobstat.SendStrategyEnum valueOf(java.lang.String) -> valueOf
+com.baidu.mobstat.StatActivity -> com.baidu.mobstat.StatActivity:
+    void onResume() -> onResume
+    void onPause() -> onPause
+com.baidu.mobstat.StatService -> com.baidu.mobstat.b:
+    boolean a -> a
+    boolean a(java.lang.Class,java.lang.String) -> a
+    void onResume(android.content.Context) -> a
+    void onPause(android.content.Context) -> b
+    boolean a(android.content.Context,java.lang.String) -> a
+com.baidu.mobstat.a -> com.baidu.mobstat.c:
+    java.lang.String a -> a
+    java.lang.String b -> b
+    java.lang.String c -> c
+    java.lang.String d -> d
+    int e -> e
+    java.lang.String f -> f
+    java.lang.String g -> g
+    int h -> h
+    int i -> i
+    java.lang.String j -> j
+    java.lang.String k -> k
+    java.lang.String l -> l
+    java.lang.String m -> m
+    java.lang.String n -> n
+    java.lang.String o -> o
+    java.lang.String p -> p
+    org.json.JSONObject q -> q
+    org.json.JSONArray r -> r
+    org.json.JSONArray s -> s
+    org.json.JSONArray t -> t
+    org.json.JSONArray u -> u
+    boolean v -> v
+    com.baidu.mobstat.a w -> w
+    com.baidu.mobstat.a a() -> a
+    void a(org.json.JSONObject) -> a
+    void a(java.lang.String) -> a
+    void b(org.json.JSONObject) -> b
+    void c(org.json.JSONObject) -> c
+    void a(long,java.lang.String) -> a
+    void a(android.content.Context) -> a
+    void b() -> b
+    void b(android.content.Context) -> b
+    void a(boolean) -> a
+    boolean d() -> d
+    void c(android.content.Context) -> c
+    void d(android.content.Context) -> d
+    void a(android.content.Context,boolean) -> a
+    boolean c() -> c
+    java.lang.String a(java.lang.String,android.content.Context) -> a
+com.baidu.mobstat.a.a -> com.baidu.mobstat.a.a:
+    java.net.Proxy a -> a
+    java.net.Proxy b -> b
+    java.lang.String a(boolean,android.content.Context,java.lang.String) -> a
+    void a(boolean,android.content.Context,java.lang.String,java.lang.String,boolean) -> a
+    void a(android.content.Context,java.lang.String,java.lang.String,boolean) -> a
+    java.lang.String a(android.content.Context,java.lang.String) -> a
+    byte[] b(android.content.Context,java.lang.String) -> b
+    boolean c(android.content.Context,java.lang.String) -> c
+    boolean a(java.lang.String) -> a
+    void a(java.lang.String,java.lang.String,boolean) -> a
+    java.lang.String b(java.lang.String) -> b
+    java.net.HttpURLConnection a(android.content.Context,java.lang.String,int,int) -> a
+    void d(android.content.Context,java.lang.String) -> d
+    boolean e(android.content.Context,java.lang.String) -> e
+    void c(java.lang.String) -> c
+com.baidu.mobstat.a.b -> com.baidu.mobstat.a.b:
+    java.text.SimpleDateFormat a -> a
+    void a() -> a
+    void b(java.lang.String,java.lang.String) -> b
+    void a(java.lang.String,java.lang.String,java.lang.Throwable) -> a
+    boolean a(java.lang.String,int) -> a
+    boolean a(int) -> a
+    int a(java.lang.String,java.lang.String) -> a
+    java.lang.String c(java.lang.Object[]) -> c
+    int a(java.lang.String) -> a
+    int a(java.lang.Object[]) -> a
+    int a(java.lang.String,java.lang.Throwable) -> a
+    int a(java.lang.Throwable) -> a
+    int b(java.lang.Object[]) -> b
+    int b(java.lang.String) -> b
+    int b(java.lang.String,java.lang.Throwable) -> b
+com.baidu.mobstat.d -> com.baidu.mobstat.d:
+    android.content.Context a -> a
+    boolean b -> b
+    com.baidu.mobstat.d c -> c
+    com.baidu.mobstat.d a() -> a
+    boolean c() -> c
+    void d() -> d
+    void a(android.content.Context) -> a
+    void b(android.content.Context) -> b
+    boolean e() -> e
+    void f() -> f
+    void b() -> b
+    long a(java.lang.String) -> a
+    java.lang.String b(java.lang.String) -> b
+    long g() -> g
+    void a(long) -> a
+com.baidu.mobstat.e -> com.baidu.mobstat.e:
+    com.baidu.mobstat.e a -> a
+    android.content.Context b -> b
+    boolean c -> c
+    boolean d -> d
+    com.baidu.mobstat.e a() -> a
+    void a(android.content.Context) -> a
+    boolean b() -> b
+    void d() -> d
+    void e() -> e
+    boolean c() -> c
+    void run() -> run
+com.baidu.mobstat.f -> com.baidu.mobstat.f:
+    android.os.HandlerThread a -> a
+    boolean b -> b
+    com.baidu.mobstat.SendStrategyEnum c -> c
+    int d -> d
+    java.util.Timer e -> e
+    boolean f -> f
+    android.os.Handler g -> g
+    com.baidu.mobstat.f h -> h
+    android.content.SharedPreferences a(android.content.Context) -> a
+    com.baidu.mobstat.f a() -> a
+    void b(android.content.Context) -> b
+    void c(android.content.Context) -> c
+    void d(android.content.Context) -> d
+    void e(android.content.Context) -> e
+    boolean a(com.baidu.mobstat.f,boolean) -> a
+    boolean a(com.baidu.mobstat.f) -> a
+    java.util.Timer b(com.baidu.mobstat.f) -> b
+    java.util.Timer a(com.baidu.mobstat.f,java.util.Timer) -> a
+    com.baidu.mobstat.SendStrategyEnum a(com.baidu.mobstat.f,com.baidu.mobstat.SendStrategyEnum) -> a
+    int a(com.baidu.mobstat.f,int) -> a
+    boolean b(com.baidu.mobstat.f,boolean) -> b
+    com.baidu.mobstat.SendStrategyEnum c(com.baidu.mobstat.f) -> c
+    boolean d(com.baidu.mobstat.f) -> d
+com.baidu.mobstat.g -> com.baidu.mobstat.g:
+    android.content.Context a -> a
+    com.baidu.mobstat.f b -> b
+    void run() -> run
+com.baidu.mobstat.h -> com.baidu.mobstat.h:
+    android.content.Context a -> a
+    com.baidu.mobstat.f b -> b
+    void run() -> run
+com.baidu.mobstat.i -> com.baidu.mobstat.i:
+    long b -> b
+    long c -> c
+    int d -> d
+    java.util.List a -> a
+    void a(java.lang.String,long) -> a
+    void a(long) -> a
+    long a() -> a
+    void b(long) -> b
+    void b() -> b
+    org.json.JSONObject c() -> c
+    boolean d() -> d
+    void a(int) -> a
+    int e() -> e
+com.baidu.mobstat.j -> com.baidu.mobstat.j:
+    java.lang.String b -> b
+    long c -> c
+    com.baidu.mobstat.i a -> a
+    java.lang.String a() -> a
+    long b() -> b
+com.baidu.mobstat.k -> com.baidu.mobstat.k:
+    android.os.HandlerThread a -> a
+    android.os.Handler b -> b
+    long c -> c
+    long d -> d
+    java.lang.ref.WeakReference e -> e
+    com.baidu.mobstat.i f -> f
+    com.baidu.mobstat.k g -> g
+    boolean h -> h
+    boolean i -> i
+    com.baidu.mobstat.k a() -> a
+    boolean d() -> d
+    void a(boolean) -> a
+    void a(android.content.Context,long) -> a
+    void b(android.content.Context,long) -> b
+    void c(android.content.Context,long) -> c
+    void a(android.content.Context) -> a
+    void b() -> b
+    long c() -> c
+    com.baidu.mobstat.i a(com.baidu.mobstat.k) -> a
+    void a(com.baidu.mobstat.k,android.content.Context) -> a
+    void a(com.baidu.mobstat.k,android.content.Context,long) -> a
+com.baidu.mobstat.l -> com.baidu.mobstat.l:
+    com.baidu.mobstat.k a -> a
+    void run() -> run
+com.baidu.mobstat.m -> com.baidu.mobstat.m:
+    long b -> b
+    java.lang.ref.WeakReference c -> c
+    long d -> d
+    java.lang.ref.WeakReference e -> e
+    com.baidu.mobstat.k a -> a
+    void run() -> run
+com.baidu.mobstat.n -> com.baidu.mobstat.n:
+    long b -> b
+    long c -> c
+    java.lang.ref.WeakReference d -> d
+    com.baidu.mobstat.k a -> a
+    void run() -> run
+com.baidu.mobstat.o -> com.baidu.mobstat.o:
+    java.lang.String a(android.content.Context,java.lang.String) -> a
+    int a(android.content.Context) -> a
+    int b(android.content.Context) -> b
+    int c(android.content.Context) -> c
+    java.lang.String d(android.content.Context) -> d
+    java.lang.String a(android.content.Context,java.lang.String,java.lang.String,int,int) -> a
+    java.lang.String e(android.content.Context) -> e
+    java.lang.String f(android.content.Context) -> f
+    java.lang.String g(android.content.Context) -> g
+    java.lang.String h(android.content.Context) -> h
+    java.lang.String i(android.content.Context) -> i
+    android.util.DisplayMetrics j(android.content.Context) -> j
 com.google.ads.Ad -> com.google.ads.Ad:
 com.google.ads.AdActivity -> com.google.ads.AdActivity:
     java.lang.Object a -> a
@@ -796,161 +1015,162 @@ easy.lib.SimpleBrowser -> easy.lib.SimpleBrowser:
     android.content.BroadcastReceiver screenLockReceiver -> aM
     android.content.BroadcastReceiver downloadReceiver -> aN
     android.content.BroadcastReceiver packageReceiver -> aO
-    359:364:void freeMemory(easy.lib.SimpleBrowser$MyWebview) -> a
-    774:806:void closePage(int,boolean) -> a
-    811:1054:void onActivityResult(int,int,android.content.Intent) -> onActivityResult
-    1059:1137:void onCreateContextMenu(android.view.ContextMenu,android.view.View,android.view.ContextMenu$ContextMenuInfo) -> onCreateContextMenu
-    1140:1199:boolean startDownload(java.lang.String,java.lang.String) -> a
-    1489:1491:boolean onMenuOpened(int,android.view.Menu) -> onMenuOpened
-    1496:1497:boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
-    1502:1512:android.widget.SimpleAdapter getMenuAdapter(java.lang.String[],int[]) -> a
-    1516:1523:void shareUrl(java.lang.String) -> c
-    1527:2227:void onCreate(android.os.Bundle) -> onCreate
-    2231:2239:void onDestroy() -> onDestroy
-    2281:2303:void gotoUrl(java.lang.String) -> a
-    2306:2344:void changePage(int) -> a
-    2348:2376:void onNewIntent(android.content.Intent) -> onNewIntent
-    2379:2401:void removeFavo(int) -> b
-    2404:2426:void removeHistory(int) -> c
-    2429:2482:void addFavo(java.lang.String,java.lang.String) -> b
-    2485:2517:boolean openNewPage(java.lang.String) -> d
-    2521:2527:void hideSearchBox() -> a
-    2530:2546:void findMatchCount() -> b
-    2550:2574:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
-    2578:2596:void readTextSize(android.content.SharedPreferences) -> a
-    2611:2625:int clearFolder(java.io.File) -> a
-    2629:2649:java.lang.String selectUA(int) -> d
-    2653:2683:java.lang.String getEncoding(int) -> e
-    2690:2690:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
-    2694:2726:void onPause() -> onPause
-    2731:2731:java.io.File getCacheDir() -> getCacheDir
-    2736:2740:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
-    2743:2756:void setLayout() -> c
-    2759:2781:void createAd() -> d
-    2801:2805:void loadPage(boolean) -> a
-    2809:2946:java.lang.String homePage() -> e
-    2982:3014:void writeBookmark(java.lang.String,java.util.ArrayList) -> a
-    3017:3066:void getHistoryList() -> f
-    3069:3098:java.util.ArrayList readBookmark(java.lang.String) -> b
-    308:308:easy.lib.wrapValueCallback access$0(easy.lib.SimpleBrowser) -> a
-    308:308:void access$1(easy.lib.SimpleBrowser,easy.lib.wrapValueCallback) -> a
-    309:309:int access$2(easy.lib.SimpleBrowser) -> b
-    2484:2484:boolean access$3(easy.lib.SimpleBrowser,java.lang.String) -> a
-    1515:1515:void access$4(easy.lib.SimpleBrowser,java.lang.String) -> b
-    2428:2428:void access$5(easy.lib.SimpleBrowser,java.lang.String,java.lang.String) -> a
-    247:247:int access$6(easy.lib.SimpleBrowser) -> c
+    362:367:void freeMemory(easy.lib.SimpleBrowser$MyWebview) -> a
+    777:809:void closePage(int,boolean) -> a
+    814:1057:void onActivityResult(int,int,android.content.Intent) -> onActivityResult
+    1062:1140:void onCreateContextMenu(android.view.ContextMenu,android.view.View,android.view.ContextMenu$ContextMenuInfo) -> onCreateContextMenu
+    1143:1202:boolean startDownload(java.lang.String,java.lang.String) -> a
+    1492:1494:boolean onMenuOpened(int,android.view.Menu) -> onMenuOpened
+    1499:1500:boolean onCreateOptionsMenu(android.view.Menu) -> onCreateOptionsMenu
+    1505:1515:android.widget.SimpleAdapter getMenuAdapter(java.lang.String[],int[]) -> a
+    1519:1526:void shareUrl(java.lang.String) -> c
+    1530:2230:void onCreate(android.os.Bundle) -> onCreate
+    2234:2242:void onDestroy() -> onDestroy
+    2284:2306:void gotoUrl(java.lang.String) -> a
+    2309:2347:void changePage(int) -> a
+    2351:2379:void onNewIntent(android.content.Intent) -> onNewIntent
+    2382:2404:void removeFavo(int) -> b
+    2407:2429:void removeHistory(int) -> c
+    2432:2485:void addFavo(java.lang.String,java.lang.String) -> b
+    2488:2520:boolean openNewPage(java.lang.String) -> d
+    2524:2530:void hideSearchBox() -> a
+    2533:2549:void findMatchCount() -> b
+    2553:2577:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    2581:2599:void readTextSize(android.content.SharedPreferences) -> a
+    2614:2628:int clearFolder(java.io.File) -> a
+    2632:2652:java.lang.String selectUA(int) -> d
+    2656:2686:java.lang.String getEncoding(int) -> e
+    2693:2693:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    2697:2703:void onResume() -> onResume
+    2707:2741:void onPause() -> onPause
+    2746:2746:java.io.File getCacheDir() -> getCacheDir
+    2751:2755:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
+    2758:2771:void setLayout() -> c
+    2778:2800:void createAd() -> d
+    2820:2824:void loadPage(boolean) -> a
+    2828:2965:java.lang.String homePage() -> e
+    3001:3033:void writeBookmark(java.lang.String,java.util.ArrayList) -> a
+    3036:3085:void getHistoryList() -> f
+    3088:3117:java.util.ArrayList readBookmark(java.lang.String) -> b
+    311:311:easy.lib.wrapValueCallback access$0(easy.lib.SimpleBrowser) -> a
+    311:311:void access$1(easy.lib.SimpleBrowser,easy.lib.wrapValueCallback) -> a
+    312:312:int access$2(easy.lib.SimpleBrowser) -> b
+    2487:2487:boolean access$3(easy.lib.SimpleBrowser,java.lang.String) -> a
+    1518:1518:void access$4(easy.lib.SimpleBrowser,java.lang.String) -> b
+    2431:2431:void access$5(easy.lib.SimpleBrowser,java.lang.String,java.lang.String) -> a
+    250:250:int access$6(easy.lib.SimpleBrowser) -> c
 easy.lib.SimpleBrowser$1 -> easy.lib.w:
     easy.lib.SimpleBrowser this$0 -> a
-    2244:2245:void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    2247:2248:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 easy.lib.SimpleBrowser$10 -> easy.lib.x:
     easy.lib.SimpleBrowser this$0 -> a
     android.content.Context val$localContext -> b
-    1699:1845:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-    1696:1696:easy.lib.SimpleBrowser access$0(easy.lib.SimpleBrowser$10) -> a
+    1702:1848:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+    1699:1699:easy.lib.SimpleBrowser access$0(easy.lib.SimpleBrowser$10) -> a
 easy.lib.SimpleBrowser$10$1 -> easy.lib.y:
     easy.lib.SimpleBrowser$10 this$1 -> a
-    1776:1782:void onClick(android.content.DialogInterface,int) -> onClick
+    1779:1785:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$10$2 -> easy.lib.z:
     easy.lib.SimpleBrowser$10 this$1 -> a
-    1791:1791:void onClick(android.content.DialogInterface,int) -> onClick
+    1794:1794:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$11 -> easy.lib.aa:
     easy.lib.SimpleBrowser this$0 -> a
-    1852:1869:void onClick(android.view.View) -> onClick
+    1855:1872:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$12 -> easy.lib.ab:
     easy.lib.SimpleBrowser this$0 -> a
-    1875:1891:void onClick(android.view.View) -> onClick
+    1878:1894:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$13 -> easy.lib.ac:
     easy.lib.SimpleBrowser this$0 -> a
-    1898:1899:void onClick(android.view.View) -> onClick
+    1901:1902:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$14 -> easy.lib.ad:
     easy.lib.SimpleBrowser this$0 -> a
-    1908:1916:boolean onKey(android.view.View,int,android.view.KeyEvent) -> onKey
+    1911:1919:boolean onKey(android.view.View,int,android.view.KeyEvent) -> onKey
 easy.lib.SimpleBrowser$15 -> easy.lib.ae:
     easy.lib.SimpleBrowser this$0 -> a
-    1926:1939:void onClick(android.view.View) -> onClick
+    1929:1942:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$16 -> easy.lib.af:
     easy.lib.SimpleBrowser this$0 -> a
-    1946:1947:void onClick(android.view.View) -> onClick
+    1949:1950:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$17 -> easy.lib.ag:
     easy.lib.SimpleBrowser this$0 -> a
-    1956:1957:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+    1959:1960:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
 easy.lib.SimpleBrowser$18 -> easy.lib.ah:
     easy.lib.SimpleBrowser this$0 -> a
-    1964:1965:boolean onEditorAction(android.widget.TextView,int,android.view.KeyEvent) -> onEditorAction
+    1967:1968:boolean onEditorAction(android.widget.TextView,int,android.view.KeyEvent) -> onEditorAction
 easy.lib.SimpleBrowser$19 -> easy.lib.ai:
     easy.lib.SimpleBrowser this$0 -> a
-    1971:1973:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
+    1974:1976:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
 easy.lib.SimpleBrowser$2 -> easy.lib.aj:
     easy.lib.SimpleBrowser this$0 -> a
-    2251:2252:void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    2254:2255:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 easy.lib.SimpleBrowser$20 -> easy.lib.ak:
     easy.lib.SimpleBrowser this$0 -> a
-    2114:2124:void onClick(android.view.View) -> onClick
+    2117:2127:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$21 -> easy.lib.al:
     easy.lib.SimpleBrowser this$0 -> a
-    2130:2140:void onClick(android.view.View) -> onClick
+    2133:2143:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$22 -> easy.lib.am:
     easy.lib.SimpleBrowser this$0 -> a
-    2146:2156:void onClick(android.view.View) -> onClick
+    2149:2159:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$23 -> easy.lib.an:
     easy.lib.SimpleBrowser this$0 -> a
-    2162:2163:void onClick(android.view.View) -> onClick
+    2165:2166:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$24 -> easy.lib.ao:
     easy.lib.SimpleBrowser this$0 -> a
-    2172:2179:void onClick(android.view.View) -> onClick
+    2175:2182:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$25 -> easy.lib.ap:
     easy.lib.SimpleBrowser this$0 -> a
-    2189:2190:void onClick(android.view.View) -> onClick
+    2192:2193:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$26 -> easy.lib.aq:
     easy.lib.SimpleBrowser this$0 -> a
     int val$order -> b
-    2389:2392:void onClick(android.content.DialogInterface,int) -> onClick
+    2392:2395:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$27 -> easy.lib.ar:
     easy.lib.SimpleBrowser this$0 -> a
-    2399:2399:void onClick(android.content.DialogInterface,int) -> onClick
+    2402:2402:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$28 -> easy.lib.as:
     easy.lib.SimpleBrowser this$0 -> a
     int val$order -> b
-    2414:2417:void onClick(android.content.DialogInterface,int) -> onClick
+    2417:2420:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$29 -> easy.lib.at:
     easy.lib.SimpleBrowser this$0 -> a
-    2424:2424:void onClick(android.content.DialogInterface,int) -> onClick
+    2427:2427:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$3 -> easy.lib.au:
     easy.lib.SimpleBrowser this$0 -> a
-    2259:2277:void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    2262:2280:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 easy.lib.SimpleBrowser$30 -> easy.lib.av:
     easy.lib.SimpleBrowser this$0 -> a
     java.lang.String val$url -> b
-    2450:2473:void onClick(android.content.DialogInterface,int) -> onClick
+    2453:2476:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$31 -> easy.lib.aw:
     easy.lib.SimpleBrowser this$0 -> a
-    2480:2480:void onClick(android.content.DialogInterface,int) -> onClick
+    2483:2483:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$4 -> easy.lib.ax:
     easy.lib.SimpleBrowser this$0 -> a
     android.webkit.WebView$HitTestResult val$result -> b
     java.lang.String val$url -> c
-    1066:1097:boolean onMenuItemClick(android.view.MenuItem) -> onMenuItemClick
+    1069:1100:boolean onMenuItemClick(android.view.MenuItem) -> onMenuItemClick
 easy.lib.SimpleBrowser$5 -> easy.lib.ay:
     easy.lib.SimpleBrowser this$0 -> a
-    1589:1614:void onClick(android.content.DialogInterface,int) -> onClick
+    1592:1617:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$6 -> easy.lib.az:
     easy.lib.SimpleBrowser this$0 -> a
-    1621:1621:void onClick(android.content.DialogInterface,int) -> onClick
+    1624:1624:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$7 -> easy.lib.ba:
     easy.lib.SimpleBrowser this$0 -> a
-    1659:1661:boolean onKey(android.content.DialogInterface,int,android.view.KeyEvent) -> onKey
+    1662:1664:boolean onKey(android.content.DialogInterface,int,android.view.KeyEvent) -> onKey
 easy.lib.SimpleBrowser$8 -> easy.lib.bb:
     easy.lib.SimpleBrowser this$0 -> a
-    1673:1683:void onClick(android.content.DialogInterface,int) -> onClick
+    1676:1686:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$9 -> easy.lib.bc:
     easy.lib.SimpleBrowser this$0 -> a
-    1690:1690:void onClick(android.content.DialogInterface,int) -> onClick
+    1693:1693:void onClick(android.content.DialogInterface,int) -> onClick
 easy.lib.SimpleBrowser$AppHandler -> easy.lib.bd:
     easy.lib.SimpleBrowser this$0 -> a
-    2786:2797:void handleMessage(android.os.Message) -> handleMessage
+    2805:2816:void handleMessage(android.os.Message) -> handleMessage
 easy.lib.SimpleBrowser$ClearFolderTask -> easy.lib.be:
     easy.lib.SimpleBrowser this$0 -> a
-    2602:2606:java.lang.String doInBackground(java.lang.String[]) -> a
+    2605:2609:java.lang.String doInBackground(java.lang.String[]) -> a
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 easy.lib.SimpleBrowser$DownloadTask -> easy.lib.bf:
     java.lang.String URL_str -> g
@@ -967,7 +1187,7 @@ easy.lib.SimpleBrowser$DownloadTask -> easy.lib.bf:
     boolean pauseDownload -> d
     boolean downloadFailed -> e
     easy.lib.SimpleBrowser this$0 -> f
-    1221:1482:java.lang.String doInBackground(java.lang.String[]) -> a
+    1224:1485:java.lang.String doInBackground(java.lang.String[]) -> a
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 easy.lib.SimpleBrowser$MyWebview -> easy.lib.bg:
     java.lang.String pageSource -> a
@@ -976,30 +1196,30 @@ easy.lib.SimpleBrowser$MyWebview -> easy.lib.bg:
     int mProgress -> d
     boolean isForeground -> e
     easy.lib.SimpleBrowser this$0 -> f
-    375:380:void getPageSource() -> a
-    366:366:easy.lib.SimpleBrowser access$0(easy.lib.SimpleBrowser$MyWebview) -> a
+    378:383:void getPageSource() -> a
+    369:369:easy.lib.SimpleBrowser access$0(easy.lib.SimpleBrowser$MyWebview) -> a
 easy.lib.SimpleBrowser$MyWebview$1 -> easy.lib.bh:
     easy.lib.SimpleBrowser$MyWebview this$1 -> a
-    462:471:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
+    465:474:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
 easy.lib.SimpleBrowser$MyWebview$2 -> easy.lib.bi:
     easy.lib.SimpleBrowser$MyWebview this$1 -> a
-    493:494:void onDownloadStart(java.lang.String,java.lang.String,java.lang.String,java.lang.String,long) -> onDownloadStart
+    496:497:void onDownloadStart(java.lang.String,java.lang.String,java.lang.String,java.lang.String,long) -> onDownloadStart
 easy.lib.SimpleBrowser$MyWebview$3 -> easy.lib.bj:
     easy.lib.SimpleBrowser$MyWebview this$1 -> a
-    500:510:void onProgressChanged(android.webkit.WebView,int) -> onProgressChanged
-    515:524:void openFileChooser(android.webkit.ValueCallback,java.lang.String) -> openFileChooser
-    528:529:void openFileChooser(android.webkit.ValueCallback) -> openFileChooser
-    555:561:boolean onCreateWindow(android.webkit.WebView,boolean,boolean,android.os.Message) -> onCreateWindow
+    503:513:void onProgressChanged(android.webkit.WebView,int) -> onProgressChanged
+    518:527:void openFileChooser(android.webkit.ValueCallback,java.lang.String) -> openFileChooser
+    531:532:void openFileChooser(android.webkit.ValueCallback) -> openFileChooser
+    558:564:boolean onCreateWindow(android.webkit.WebView,boolean,boolean,android.os.Message) -> onCreateWindow
 easy.lib.SimpleBrowser$MyWebview$4 -> easy.lib.bk:
     easy.lib.SimpleBrowser$MyWebview this$1 -> a
-    570:571:void onReceivedSslError(android.webkit.WebView,android.webkit.SslErrorHandler,android.net.http.SslError) -> onReceivedSslError
-    576:591:void onPageStarted(android.webkit.WebView,java.lang.String,android.graphics.Bitmap) -> onPageStarted
-    595:694:void onPageFinished(android.webkit.WebView,java.lang.String) -> onPageFinished
-    698:709:boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String) -> shouldOverrideUrlLoading
+    573:574:void onReceivedSslError(android.webkit.WebView,android.webkit.SslErrorHandler,android.net.http.SslError) -> onReceivedSslError
+    579:594:void onPageStarted(android.webkit.WebView,java.lang.String,android.graphics.Bitmap) -> onPageStarted
+    598:697:void onPageFinished(android.webkit.WebView,java.lang.String) -> onPageFinished
+    701:712:boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String) -> shouldOverrideUrlLoading
 easy.lib.SimpleBrowser$MyWebview$MyJavaScriptInterface -> easy.lib.bl:
     easy.lib.SimpleBrowser$MyWebview this$1 -> a
-    385:390:void processHTML(java.lang.String) -> processHTML
-    394:405:void saveCollapseState(int,boolean) -> saveCollapseState
+    388:393:void processHTML(java.lang.String) -> processHTML
+    397:408:void saveCollapseState(int,boolean) -> saveCollapseState
 easy.lib.SimpleBrowser$TitleUrl -> easy.lib.bm:
     java.lang.String m_title -> a
     java.lang.String m_url -> b
@@ -1008,19 +1228,19 @@ easy.lib.SimpleBrowser$TitleUrl -> easy.lib.bm:
 easy.lib.SimpleBrowser$WebAdapter -> easy.lib.bn:
     java.util.ArrayList localWeblist -> a
     easy.lib.SimpleBrowser this$0 -> b
-    726:769:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    715:715:easy.lib.SimpleBrowser access$0(easy.lib.SimpleBrowser$WebAdapter) -> a
+    729:772:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    718:718:easy.lib.SimpleBrowser access$0(easy.lib.SimpleBrowser$WebAdapter) -> a
 easy.lib.SimpleBrowser$WebAdapter$1 -> easy.lib.bo:
     easy.lib.SimpleBrowser$WebAdapter this$1 -> a
     int val$position -> b
-    755:757:void onClick(android.view.View) -> onClick
+    758:760:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$WebAdapter$2 -> easy.lib.bp:
     easy.lib.SimpleBrowser$WebAdapter this$1 -> a
     int val$position -> b
-    765:766:void onClick(android.view.View) -> onClick
+    768:769:void onClick(android.view.View) -> onClick
 easy.lib.SimpleBrowser$WriteTask -> easy.lib.bq:
     easy.lib.SimpleBrowser this$0 -> a
-    2968:2976:java.lang.String doInBackground(java.lang.String[]) -> a
+    2987:2995:java.lang.String doInBackground(java.lang.String[]) -> a
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 easy.lib.SimpleBrowser$packageIDpair -> easy.lib.br:
     java.lang.String packageName -> a
@@ -1093,17 +1313,17 @@ easy.lib.wrapAdView$Listener -> easy.lib.wrapAdView$Listener:
     54:54:void onReceiveAd(com.google.ads.Ad) -> a
 easy.lib.wrapValueCallback -> easy.lib.ca:
     android.webkit.ValueCallback mInstance -> a
-    130:130:void checkAvailable() -> a
-    133:134:void onReceiveValue(android.net.Uri) -> a
+    133:133:void checkAvailable() -> a
+    136:137:void onReceiveValue(android.net.Uri) -> a
 easy.lib.wrapWebSettings -> easy.lib.cb:
     android.webkit.WebSettings mInstance -> a
-    146:151:void setLoadWithOverviewMode(boolean) -> a
-    155:160:void setAppCacheEnabled(boolean) -> b
-    164:169:void setAppCachePath(java.lang.String) -> a
-    173:178:void setAppCacheMaxSize(long) -> a
-    182:187:void setDomStorageEnabled(boolean) -> c
-    191:196:void setDatabaseEnabled(boolean) -> d
-    200:205:void setDatabasePath(java.lang.String) -> b
+    149:154:void setLoadWithOverviewMode(boolean) -> a
+    158:163:void setAppCacheEnabled(boolean) -> b
+    167:172:void setAppCachePath(java.lang.String) -> a
+    176:181:void setAppCacheMaxSize(long) -> a
+    185:190:void setDomStorageEnabled(boolean) -> c
+    194:199:void setDatabaseEnabled(boolean) -> d
+    203:208:void setDatabasePath(java.lang.String) -> b
 f -> l:
     java.util.LinkedList b -> b
     long c -> c

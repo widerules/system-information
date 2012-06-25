@@ -10,8 +10,8 @@
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <!-- for baidu tongji uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/-->
 		
     <!--
     not need unless open geo location in websettings. it will cause app not avaiable on market for some user>
@@ -36,10 +36,8 @@
         android:description="@string/about_message"
         android:icon="@drawable/explorer"
         android:label="@string/browser_name" >
-    <!-- 渠道商编号 -->
-	<meta-data android:name="BaiduMobAd_CHANNEL" android:value="Baidu Market" />
-	<!-- 您从百度网站获取的APP KEY -->
-	<meta-data android:name="BaiduMobAd_STAT_ID" android:value="428da1b5ed" />
+		<!-- for baidu tongji meta-data android:name="BaiduMobAd_CHANNEL" android:value="Baidu Market" />
+		<meta-data android:name="BaiduMobAd_STAT_ID" android:value="428da1b5ed" /-->
         <activity
             android:name="easy.lib.SimpleBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

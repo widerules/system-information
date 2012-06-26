@@ -700,7 +700,7 @@ public class SimpleBrowser extends Activity {
 									// BLANK_PAGE when login.
 						return true;// we should do nothing but return true,
 									// otherwise may not login.
-					} else if (!url.startsWith("http")) {
+					} else if (!url.startsWith("http") && !url.startsWith("file")) {
 						Uri uri = Uri.parse(url);
 						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 						intent.addCategory(Intent.CATEGORY_BROWSABLE);

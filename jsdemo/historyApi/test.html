@@ -1,5 +1,8 @@
 <script type="text/javascript">
-	document.write('===============================window==================================<br>');
+	document.write('===============================object==================================<br>');
+	for (i in Object) document.write('Object.' + i + '= ' + Object[i] + '<br><br>');
+
+	document.write('<br>===============================window==================================<br>');
 	for (i in window) document.write('window.' + i + '= ' + window[i] + '<br><br>');
 
 	document.write('===============================document==================================<br>');

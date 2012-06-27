@@ -587,7 +587,7 @@ public class SimpleBrowser extends Activity {
 						imgRefresh.setImageResource(R.drawable.stop);
 					}
 
-					//if (adview != null)	adview.loadAd();// should only do this by wifi
+					if (adview != null)	adview.loadAd();// should only do this by wifi
 				}
 
 				@Override
@@ -790,6 +790,7 @@ public class SimpleBrowser extends Activity {
 			} catch (Exception e) {
 			}// null pointer reported by 3 user. really strange.
 			tmp.destroy();
+			System.gc();
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
 					webAdapter.getCount(), 2, mContext));// show the changed

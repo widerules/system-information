@@ -1,10 +1,13 @@
 <script type="text/javascript">
-	document.write('===============================object==================================<br>');
-	for (i in Object) document.write('Object.' + i + '= ' + Object[i] + '<br><br>');
+	function printObj(x) {
+		document.write('<br>===============================' + x + '==================================<br>');
+		for (i in x) document.write(x + '.' + i + '= ' + x[i] + '<br><br>');
+	}
 
-	document.write('<br>===============================window==================================<br>');
-	for (i in window) document.write('window.' + i + '= ' + window[i] + '<br><br>');
+	printObj(Object);
+	printObj(new Date());
+	printObj(printObj);
+	printObj(window);
+	printObj(document);
 
-	document.write('===============================document==================================<br>');
-	for (i in document) document.write('document.' + i + '= ' + document[i] + '<br>');
 </script>

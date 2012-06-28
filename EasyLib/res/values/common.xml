@@ -127,8 +127,8 @@
     <string name="clear_hint">will be cleared</string>
     <string name="data_cleared">cleared.</string>
     <string name="url_can_longclick">\t(url can be long click)</string>
-    <string name="pic_can_longclick">\t(image can be long click)</string>
-    <string name="text_can_longclick">\t(you may even long click text)</string>
+    <string name="pic_can_longclick">" "from native browser (image can be long click)</string>
+    <string name="text_can_longclick">" "from native browser (you may even long click text)</string>
     <string name="change_ua">Need change UA to access some website</string>
     <string name="cache_tosd">Cache to SD card</string>
     <string name="advance_button">Advanced Settings</string>

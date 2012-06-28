@@ -108,8 +108,8 @@
     <string name="clear_hint">クリアされます。</string>
     <string name="data_cleared">クリアされている</string>
     <string name="url_can_longclick">\t(あなたは長い間、すべてのURLをクリックする)</string>
-    <string name="pic_can_longclick">\t(あなたは長い間写真をクリックする)</string>
-    <string name="text_can_longclick">\t(あなたも長く、時にはテキストをクリックする)</string>
+    <string name="pic_can_longclick">" "ネイティブブラウザから (あなたは長い間写真をクリックする)</string>
+    <string name="text_can_longclick">" "ネイティブブラウザから (あなたも長く、時にはテキストをクリックする)</string>
     <string name="change_ua">いくつかのウェブサイトにアクセスするためにUAを変更する必要があり</string>
     <string name="cache_tosd">SDカードへのキャッシュ</string>
     <string name="advance_button">詳細設定</string>

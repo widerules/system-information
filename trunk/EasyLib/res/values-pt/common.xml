@@ -103,8 +103,8 @@
     <string name="clear_hint">será limpo</string>
     <string name="data_cleared">apuradas.</string>
     <string name="url_can_longclick">\t(URL pode ser clique de comprimento)</string>
-    <string name="pic_can_longclick">\t(imagem pode ser clique longa)</string>
-    <string name="text_can_longclick">\t(você pode mesmo tempo clique no texto)</string>
+    <string name="pic_can_longclick">" "a partir do browser nativo (imagem pode ser clique longa)</string>
+    <string name="text_can_longclick">" "a partir do browser nativo (você pode mesmo tempo clique no texto)</string>
     <string name="change_ua">Precisa mudar UA para acessar algum site</string>
     <string name="cache_tosd">Cache para cartão SD</string>
     <string name="advance_button">Configurações Avançadas</string>

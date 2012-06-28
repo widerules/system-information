@@ -95,8 +95,8 @@
     <string name="clear_hint">se borrará</string>
     <string name="data_cleared">aclaró.</string>
     <string name="url_can_longclick">\t(URL puede ser pulsación larga)</string>
-    <string name="pic_can_longclick">"\t(haga clic en la imagen puede ser largo)</string>
-    <string name="text_can_longclick">"\t(puede que incluso mucho tiempo, haga clic en el texto)</string>
+    <string name="pic_can_longclick">" "desde el navegador nativo de (haga clic en la imagen puede ser largo)</string>
+    <string name="text_can_longclick">" "desde el navegador nativo de (puede que incluso mucho tiempo, haga clic en el texto)</string>
     <string name="change_ua">¿Necesitas cambiar el acceso universal a acceder a un sitio web</string>
     <string name="cache_tosd">Caché a la tarjeta SD</string>
     <string name="advance_button">Configuración avanzada</string>

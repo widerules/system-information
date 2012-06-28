@@ -4,7 +4,14 @@
 		for (i in x) document.write(x + '.' + i + '= ' + x[i] + '<br><br>');
 	}
 
+	printObj(null);
+	printObj(undefined);
+	printObj(Array);
 	printObj(Object);
+	printObj(Function);
+	printObj(Function.prototype);
+	printObj(Array);
+	printObj(Array.prototype);
 	printObj(new Date());
 	printObj(printObj);
 	printObj(window);

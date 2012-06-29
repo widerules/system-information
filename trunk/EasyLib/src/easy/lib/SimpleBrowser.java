@@ -30,6 +30,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+//import com.tapit.adview.AdView;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -568,7 +570,7 @@ public class SimpleBrowser extends Activity {
 				public void onReceivedSslError(WebView view,
 						SslErrorHandler handler, SslError error) {
 					// accept ssl certification whenever needed.
-					handler.proceed();
+					if (handler != null) handler.proceed();
 				}
 
 				@Override
@@ -2757,7 +2759,7 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void createAd() {
-		//AdView adView = new AdView(this, "6148");
+		//AdView adView = new AdView(this, "6148");//adview of tapit
 		//adView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
 		//adContainer.addView(adView);
 

@@ -881,7 +881,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         	}
     	}
     	
-		myPagerAdapter.notifyDataSetChanged();
+		//myPagerAdapter.notifyDataSetChanged();//this will flash the screen?
     	
 		if (sysAlphaList.index > -1) 
 			homeTab = 1;

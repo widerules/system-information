@@ -2715,19 +2715,26 @@ public class SimpleBrowser extends Activity {
 
 		if (clickCount > 0) {
 			clickCount -= 1;
-			if (clickCount == 0) {// restore container height to show ad if
+			/*if (clickCount == 0) {// restore container height to show ad if
 						// onpause too many times. black screen will
 						// also onpause
-				// createAd();
 				LayoutParams lp = adContainer.getLayoutParams();
 				if (lp.height == 0)
 					lp.height = LayoutParams.WRAP_CONTENT;
-			}
+			}*/
 		}
+		removeAd();//ad will occupy cpu and data quota even in background
 
 		super.onPause();
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		if (clickCount == 0) createAd();
+	}
+	
 	@Override
 	public File getCacheDir() {
 		// NOTE: this method is used in Android 2.1
@@ -2758,17 +2765,22 @@ public class SimpleBrowser extends Activity {
 		createAd();
 	}
 
+	void removeAd() {
+		if (adview != null) {
+			adContainer.removeViewAt(0);
+			adview.destroy();
+			adview = null;
+		}
+	}
+	
 	void createAd() {
 		//AdView adView = new AdView(this, "6148");//adview of tapit
 		//adView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
 		//adContainer.addView(adView);
 
 		if (mAdAvailable) {
-			if (adview != null) {
-				adContainer.removeViewAt(0);
-				adview.destroy();
-			}
-
+			removeAd();
+			
 			if (width_density < 320) ;//do nothing for it is too narrow. 
 			// but it will cause force close if not create adview?
 			if (width_density < 468)// AdSize.BANNER require 320*50
@@ -2792,14 +2804,11 @@ public class SimpleBrowser extends Activity {
 		public void handleMessage(Message msg) {
 			if (msg.what > 0) {
 				clickCount += 2;// hide ad for three times
-				// if (adview != null) {
-				// adContainer.removeViewAt(0);
-				// adview.destroy();//not show ad after click ad
-				// }
-				LayoutParams lp = adContainer.getLayoutParams();
+				removeAd();
+				/*LayoutParams lp = adContainer.getLayoutParams();
 				lp.height = 0;// it will dismiss the banner for no enough space
 								// for new ad.
-				adContainer.requestLayout();
+				adContainer.requestLayout();*/
 			}
 		}
 	}

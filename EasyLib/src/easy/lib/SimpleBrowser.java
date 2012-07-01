@@ -463,8 +463,9 @@ public class SimpleBrowser extends Activity {
 				public boolean onTouch(View view, MotionEvent arg1) {
 					// close webcontrol page if it is open.
 					webControl.setVisibility(View.INVISIBLE);
-					// if (searchBar.getVisibility() == View.VISIBLE)
-					// hideSearchBox();
+					
+					if (fullScreen && (urlLine.getLayoutParams().height != 0)) hideBars();
+					
 					if (!view.isFocused()) {
 						view.requestFocusFromTouch();
 						view.setFocusable(true);
@@ -921,33 +922,11 @@ public class SimpleBrowser extends Activity {
 					getWindow().setFlags(
 							WindowManager.LayoutParams.FLAG_FULLSCREEN,
 							WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-					LayoutParams lp = webTools.getLayoutParams();
-					lp.height = 0;
-					webTools.requestLayout();
-
-					lp = urlLine.getLayoutParams();
-					lp.height = 0;
-					urlLine.requestLayout();
-
-					lp = margin1dip.getLayoutParams();
-					lp.height = 0;
-					margin1dip.requestLayout();
+					hideBars();
 				} else {
 					getWindow().clearFlags(
 							WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-					LayoutParams lp = webTools.getLayoutParams();
-					lp.height = LayoutParams.WRAP_CONTENT;
-					webTools.requestLayout();
-
-					lp = urlLine.getLayoutParams();
-					lp.height = LayoutParams.WRAP_CONTENT;
-					urlLine.requestLayout();
-
-					lp = margin1dip.getLayoutParams();
-					lp.height = dips;
-					margin1dip.requestLayout();
+					showBars();
 				}
 			}
 
@@ -1055,6 +1034,34 @@ public class SimpleBrowser extends Activity {
 			 */
 			sEdit.commit();
 		}
+	}
+	
+	public void hideBars() {
+		LayoutParams lp = webTools.getLayoutParams();
+		lp.height = 0;
+		webTools.requestLayout();
+
+		lp = urlLine.getLayoutParams();
+		lp.height = 0;
+		urlLine.requestLayout();
+
+		lp = margin1dip.getLayoutParams();
+		lp.height = 0;
+		margin1dip.requestLayout();
+	}
+	
+	public void showBars() {
+		LayoutParams lp = webTools.getLayoutParams();
+		lp.height = LayoutParams.WRAP_CONTENT;
+		webTools.requestLayout();
+
+		lp = urlLine.getLayoutParams();
+		lp.height = LayoutParams.WRAP_CONTENT;
+		urlLine.requestLayout();
+
+		lp = margin1dip.getLayoutParams();
+		lp.height = dips;
+		margin1dip.requestLayout();
 	}
 
 	@Override
@@ -1490,7 +1497,8 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		menuDialog.show();
+		if (fullScreen && (urlLine.getLayoutParams().height == 0)) showBars();
+		else menuDialog.show();
 
 		return false;// show system menu if return true.
 	}

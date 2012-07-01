@@ -590,7 +590,7 @@ public class SimpleBrowser extends Activity {
 						imgRefresh.setImageResource(R.drawable.stop);
 					}
 
-					Log.d("=============Ads onstart", clickCount + "");
+					//Log.d("=============Ads onstart", clickCount + "");
 					if (adview != null)	adview.loadAd();// should only do this by wifi
 				}
 
@@ -2729,20 +2729,28 @@ public class SimpleBrowser extends Activity {
 					lp.height = LayoutParams.WRAP_CONTENT;
 			}*/
 		}
-		Log.d("=============Ads onPause", clickCount + "");
-		removeAd();//ad will occupy cpu and data quota even in background
 		//StatService.onPause(this);//for baidu tongji
 
 		super.onPause();
+		
+		//Log.d("=============Ads onPause", clickCount + "");
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		
-		Log.d("=============Ads onResume", clickCount + "");
+		//Log.d("=============Ads onResume", clickCount + "");
 		if (clickCount == 0) createAd();
 		//StatService.onResume(this);//for baidu tongji
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		
+		//Log.d("=============Ads onStop", clickCount + "");
+		removeAd();//ad will occupy cpu and data quota even in background
 	}
 	
 	@Override
@@ -2814,7 +2822,7 @@ public class SimpleBrowser extends Activity {
 		public void handleMessage(Message msg) {
 			if (msg.what > 0) {
 				clickCount += 2;// hide ad for three times
-				Log.d("=============Ads removead", clickCount + "");
+				//Log.d("=============Ads removead", clickCount + "");
 				removeAd();
 				/*LayoutParams lp = adContainer.getLayoutParams();
 				lp.height = 0;// it will dismiss the banner for no enough space

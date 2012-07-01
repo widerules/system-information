@@ -30,7 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-//import com.tapit.adview.AdView;
+//import com.baidu.mobstat.StatService;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -589,6 +589,7 @@ public class SimpleBrowser extends Activity {
 						imgRefresh.setImageResource(R.drawable.stop);
 					}
 
+					Log.d("=============Ads onstart", clickCount + "");
 					if (adview != null)	adview.loadAd();// should only do this by wifi
 				}
 
@@ -2703,9 +2704,6 @@ public class SimpleBrowser extends Activity {
 			wtask.execute("bookmark");
 		}
 
-		if (adview != null)
-			adview.stopLoading();
-
 		sEdit.putBoolean("collapse1", collapse1);
 		sEdit.putBoolean("collapse2", collapse2);
 		sEdit.putBoolean("collapse3", collapse3);
@@ -2723,7 +2721,9 @@ public class SimpleBrowser extends Activity {
 					lp.height = LayoutParams.WRAP_CONTENT;
 			}*/
 		}
+		Log.d("=============Ads onPause", clickCount + "");
 		removeAd();//ad will occupy cpu and data quota even in background
+		//StatService.onPause(this);//for baidu tongji
 
 		super.onPause();
 	}
@@ -2732,7 +2732,9 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 		
+		Log.d("=============Ads onResume", clickCount + "");
 		if (clickCount == 0) createAd();
+		//StatService.onResume(this);//for baidu tongji
 	}
 	
 	@Override
@@ -2804,6 +2806,7 @@ public class SimpleBrowser extends Activity {
 		public void handleMessage(Message msg) {
 			if (msg.what > 0) {
 				clickCount += 2;// hide ad for three times
+				Log.d("=============Ads removead", clickCount + "");
 				removeAd();
 				/*LayoutParams lp = adContainer.getLayoutParams();
 				lp.height = 0;// it will dismiss the banner for no enough space
@@ -2943,7 +2946,7 @@ public class SimpleBrowser extends Activity {
 				sb.append("</h4>");
 				sb.append("<dl id=\"content3\" type=\"disc\">");
 			}
-			for (int i = 0; i < mHistory.size(); i++) {
+			for (int i = mHistory.size()-1; i >= 0; i--) {
 				sb.append(fileDir);
 				sb.append(mHistory.get(i).m_site);
 				sb.append(".png)'><a href=\"");

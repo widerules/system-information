@@ -24,6 +24,7 @@ public class wrapAdView {
 		public void onDismissScreen(Ad arg0) {// Called when an ad is clicked
 												// and about to return to the
 												// application.
+			//Log.d("=============Ads ondismiss", "");
 		}
 
 		@Override
@@ -37,6 +38,7 @@ public class wrapAdView {
 
 		@Override
 		public void onLeaveApplication(Ad arg0) {
+			//Log.d("=============Ads onleave", "");
 			if (mHandler != null) {
 				Message dismiss = mHandler.obtainMessage();
 				dismiss.what = 1;
@@ -47,6 +49,7 @@ public class wrapAdView {
 		@Override
 		public void onPresentScreen(Ad arg0) {// Called when an Activity is
 												// created in front of the app
+			//Log.d("=============Ads onpresent", "");
 		}
 
 		@Override
@@ -77,8 +80,6 @@ public class wrapAdView {
 			mInstance.setAdListener(new Listener());
 
 			adRequest = new AdRequest();
-			// adRequest.addTestDevice("DE5E4254FDBA0EF08F78AE96AB067716");//for
-			// test
 		} catch (Exception e) {
 		}
 	}
@@ -97,11 +98,6 @@ public class wrapAdView {
 	public void loadAd() {
 		if ((mInstance != null) && (adRequest != null))
 			mInstance.loadAd(adRequest);
-	}
-
-	public void stopLoading() {
-		if (mInstance != null)
-			mInstance.stopLoading();
 	}
 
 	void destroy() {

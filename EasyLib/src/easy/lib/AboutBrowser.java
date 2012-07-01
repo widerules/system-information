@@ -1,5 +1,7 @@
 package easy.lib;
 
+import java.lang.reflect.Method;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -356,6 +358,13 @@ public class AboutBrowser extends Activity {
 		clrPassword.setChecked(perferences.getBoolean("clear_password", false));
 		clrCache.setChecked(perferences.getBoolean("clear_cache", false));
 		super.onResume();
+		
+		try {
+			Class c = Class.forName("com.baidu.mobstat.StatService");
+			Method method = c.getMethod(
+					"onResume", new Class[] { Context.class });
+			method.invoke(this, this);//StatService.onResume(this);//for baidu tongji
+		} catch (Exception e) {}
 	}
 
 	@Override
@@ -434,5 +443,12 @@ public class AboutBrowser extends Activity {
 		editor.commit();
 
 		super.onPause();
+		
+		try {
+			Class c = Class.forName("com.baidu.mobstat.StatService");
+			Method method = c.getMethod(
+					"onPause", new Class[] { Context.class });
+			method.invoke(this, this);//StatService.onPause(this);//for baidu tongji
+		} catch (Exception e) {}
 	}
 }

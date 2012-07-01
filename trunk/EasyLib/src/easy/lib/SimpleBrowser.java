@@ -30,8 +30,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-//import com.baidu.mobstat.StatService;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -2719,37 +2717,36 @@ public class SimpleBrowser extends Activity {
 				.getBuiltInZoomControls());
 		sEdit.commit();
 
-		if (clickCount > 0) {
-			clickCount -= 1;
-			/*if (clickCount == 0) {// restore container height to show ad if
-						// onpause too many times. black screen will
-						// also onpause
-				LayoutParams lp = adContainer.getLayoutParams();
-				if (lp.height == 0)
-					lp.height = LayoutParams.WRAP_CONTENT;
-			}*/
-		}
-		//StatService.onPause(this);//for baidu tongji
+		if (clickCount > 0) clickCount -= 1;
+		
+		try {
+			Class c = Class.forName("com.baidu.mobstat.StatService");
+			Method method = c.getMethod(
+					"onPause", new Class[] { Context.class });
+			method.invoke(this, this);//StatService.onPause(this);//for baidu tongji
+		} catch (Exception e) {}
 
 		super.onPause();
-		
-		//Log.d("=============Ads onPause", clickCount + "");
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		
-		//Log.d("=============Ads onResume", clickCount + "");
 		if (clickCount == 0) createAd();
-		//StatService.onResume(this);//for baidu tongji
+		
+		try {
+			Class c = Class.forName("com.baidu.mobstat.StatService");
+			Method method = c.getMethod(
+					"onResume", new Class[] { Context.class });
+			method.invoke(this, this);//StatService.onResume(this);//for baidu tongji
+		} catch (Exception e) {}
 	}
 	
 	@Override
 	public void onStop() {
 		super.onStop();
 		
-		//Log.d("=============Ads onStop", clickCount + "");
 		removeAd();//ad will occupy cpu and data quota even in background
 	}
 	

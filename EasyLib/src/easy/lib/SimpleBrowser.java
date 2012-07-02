@@ -451,7 +451,7 @@ public class SimpleBrowser extends Activity {
 			localSettings.setTextSize(textSize);
 			localSettings.setSupportZoom(true);
 			localSettings.setBuiltInZoomControls(true);
-			if (!showZoom) setZoomControl(View.GONE);
+			setZoomControl(View.GONE);//default not show zoom control in new page
 
 			// otherwise can't scroll horizontal in some webpage, such as qiupu.
 			localSettings.setUseWideViewPort(true);
@@ -977,12 +977,9 @@ public class SimpleBrowser extends Activity {
 
 			WebSettings localSettings = serverWebs.get(webIndex).getSettings();
 
-			boolean tmpShowZoom = sp.getBoolean("show_zoom", false);
-			if (tmpShowZoom != showZoom) {
-				showZoom = tmpShowZoom;
-			    if (showZoom) serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
-			    else serverWebs.get(webIndex).setZoomControl(View.GONE);
-			}
+			showZoom = sp.getBoolean("show_zoom", false);
+		    if (showZoom) serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
+		    else serverWebs.get(webIndex).setZoomControl(View.GONE);
 
 			ua = sp.getInt("ua", 0);
 			if (ua <= 1)

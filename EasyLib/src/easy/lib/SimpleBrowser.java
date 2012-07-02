@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -111,6 +112,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import android.widget.ZoomButtonsController;
 
 //for get webpage source on cupcake
 class wrapValueCallback {
@@ -368,6 +370,8 @@ public class SimpleBrowser extends Activity {
 		public String pageSource = "", mUrl = "";
 
 		wrapWebSettings webSettings;
+		
+        ZoomButtonsController mZoomButtonsController = new ZoomButtonsController(this);
 
 		int mProgress = 0;
 		boolean isForeground = true;
@@ -406,6 +410,28 @@ public class SimpleBrowser extends Activity {
 			}
 		}
 
+		public void setZoomControl(int visibility){
+	        Class<?> classType;
+	        Field field;
+	        try {
+	            classType = WebView.class;
+	            field = classType.getDeclaredField("mZoomButtonsController");
+	            field.setAccessible(true);
+	            mZoomButtonsController.getZoomControls().setVisibility(visibility);
+	            try {
+	                field.set(this, mZoomButtonsController);
+	            } catch (IllegalArgumentException e) {
+	                e.printStackTrace();
+	            } catch (IllegalAccessException e) {
+	                e.printStackTrace();
+	            }
+	        } catch (SecurityException e) {
+	            e.printStackTrace();
+	        } catch (NoSuchFieldException e) {
+	            e.printStackTrace();
+	        }
+	    }
+		
 		public MyWebview(Context context) {
 			super(context);
 
@@ -424,7 +450,8 @@ public class SimpleBrowser extends Activity {
 			localSettings.setSaveFormData(true);
 			localSettings.setTextSize(textSize);
 			localSettings.setSupportZoom(true);
-			localSettings.setBuiltInZoomControls(showZoom);
+			localSettings.setBuiltInZoomControls(true);
+			if (!showZoom) setZoomControl(View.GONE);
 
 			// otherwise can't scroll horizontal in some webpage, such as qiupu.
 			localSettings.setUseWideViewPort(true);
@@ -950,8 +977,12 @@ public class SimpleBrowser extends Activity {
 
 			WebSettings localSettings = serverWebs.get(webIndex).getSettings();
 
-			showZoom = sp.getBoolean("show_zoom", false);
-			localSettings.setBuiltInZoomControls(showZoom);
+			boolean tmpShowZoom = sp.getBoolean("show_zoom", false);
+			if (tmpShowZoom != showZoom) {
+				showZoom = tmpShowZoom;
+			    if (showZoom) serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
+			    else serverWebs.get(webIndex).setZoomControl(View.GONE);
+			}
 
 			ua = sp.getInt("ua", 0);
 			if (ua <= 1)
@@ -2713,8 +2744,7 @@ public class SimpleBrowser extends Activity {
 		sEdit.putBoolean("collapse1", collapse1);
 		sEdit.putBoolean("collapse2", collapse2);
 		sEdit.putBoolean("collapse3", collapse3);
-		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).getSettings()
-				.getBuiltInZoomControls());
+		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).mZoomButtonsController.getZoomControls().getVisibility() == View.VISIBLE);
 		sEdit.commit();
 
 		if (clickCount > 0) clickCount -= 1;

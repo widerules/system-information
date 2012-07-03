@@ -432,6 +432,23 @@ public class SimpleBrowser extends Activity {
 	        }
 	    }
 		
+		@Override
+	    public boolean onTouchEvent(MotionEvent ev) {//onTouchListener may not work. so put relate code here
+			// close webcontrol page if it is open.
+			webControl.setVisibility(View.INVISIBLE);
+			
+			if (fullScreen && (urlLine.getLayoutParams().height != 0)) hideBars();
+			
+			if (!this.isFocused()) {
+				this.requestFocusFromTouch();
+				this.setFocusable(true);
+				webAddress.setFocusableInTouchMode(false);
+				webAddress.clearFocus();
+			}
+
+			return super.onTouchEvent(ev);
+		}
+
 		public MyWebview(Context context) {
 			super(context);
 
@@ -482,24 +499,6 @@ public class SimpleBrowser extends Activity {
 
 			// to get page source, part 2
 			addJavascriptInterface(new MyJavaScriptInterface(), "JSinterface");
-
-			setOnTouchListener(new OnTouchListener() {
-				@Override
-				public boolean onTouch(View view, MotionEvent arg1) {
-					// close webcontrol page if it is open.
-					webControl.setVisibility(View.INVISIBLE);
-					
-					if (fullScreen && (urlLine.getLayoutParams().height != 0)) hideBars();
-					
-					if (!view.isFocused()) {
-						view.requestFocusFromTouch();
-						view.setFocusable(true);
-						webAddress.setFocusableInTouchMode(false);
-						webAddress.clearFocus();
-					}
-					return false;
-				}
-			});
 
 			setDownloadListener(new DownloadListener() {
 				@Override

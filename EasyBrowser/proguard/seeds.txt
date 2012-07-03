@@ -1,8 +1,8 @@
 com.baidu.mobstat.SendStrategyEnum: com.baidu.mobstat.SendStrategyEnum[] values()
 com.baidu.mobstat.SendStrategyEnum: com.baidu.mobstat.SendStrategyEnum valueOf(java.lang.String)
-com.baidu.mobstat.StatActivity
 com.google.ads.Ad
 com.google.ads.AdActivity
+com.google.ads.AdActivity: AdActivity()
 com.google.ads.AdActivity: void onClick(android.view.View)
 com.google.ads.AdListener
 com.google.ads.AdRequest
@@ -14,8 +14,6 @@ com.google.ads.AdRequest$Gender: com.google.ads.AdRequest$Gender[] values()
 com.google.ads.AdRequest$Gender: com.google.ads.AdRequest$Gender valueOf(java.lang.String)
 com.google.ads.AdSize
 com.google.ads.AdView
-com.google.ads.AdView: AdView(android.content.Context,android.util.AttributeSet)
-com.google.ads.AdView: AdView(android.content.Context,android.util.AttributeSet,int)
 com.google.ads.AdView: void setAdListener(com.google.ads.AdListener)
 com.google.ads.InstallReceiver
 com.google.ads.InterstitialAd
@@ -29,7 +27,6 @@ com.google.ads.R$id: int admob_adView_320_50_test_4
 com.google.ads.R$id: int admob_layout_320_50_test
 com.google.ads.R$layout
 com.google.ads.R$layout: int admob_320_50_test
-com.google.ads.util.AdUtil$UserActivityReceiver
 com.google.ads.util.AdUtil$a: com.google.ads.util.AdUtil$a[] values()
 com.google.ads.util.AdUtil$a: com.google.ads.util.AdUtil$a valueOf(java.lang.String)
 easy.browser.R$drawable: int about
@@ -273,7 +270,6 @@ easy.browser.R$string: int sharetext
 easy.browser.R$string: int shareurl
 easy.browser.R$string: int show_zoom
 easy.browser.R$string: int snap
-easy.browser.R$string: int snap_size
 easy.browser.R$string: int sorry
 easy.browser.R$string: int source
 easy.browser.R$string: int start_download
@@ -294,7 +290,9 @@ easy.browser.R$string: int warning
 easy.browser.R$string: int wp
 easy.browser.R$string: int yandex
 easy.lib.AboutBrowser
+easy.lib.AboutBrowser: AboutBrowser()
 easy.lib.MyApp
+easy.lib.MyApp: MyApp()
 easy.lib.MyViewFlipper
 easy.lib.MyViewFlipper: MyViewFlipper(android.content.Context)
 easy.lib.MyViewFlipper: MyViewFlipper(android.content.Context,android.util.AttributeSet)
@@ -539,7 +537,6 @@ easy.lib.R$string: int sharetext
 easy.lib.R$string: int shareurl
 easy.lib.R$string: int show_zoom
 easy.lib.R$string: int snap
-easy.lib.R$string: int snap_size
 easy.lib.R$string: int sorry
 easy.lib.R$string: int source
 easy.lib.R$string: int start_download
@@ -560,11 +557,12 @@ easy.lib.R$string: int warning
 easy.lib.R$string: int wp
 easy.lib.R$string: int yandex
 easy.lib.SimpleBrowser
-easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback,java.lang.String)
-easy.lib.SimpleBrowser$MyWebview$3: void openFileChooser(android.webkit.ValueCallback)
+easy.lib.SimpleBrowser: SimpleBrowser()
+easy.lib.SimpleBrowser$MyWebview$2: void openFileChooser(android.webkit.ValueCallback,java.lang.String)
+easy.lib.SimpleBrowser$MyWebview$2: void openFileChooser(android.webkit.ValueCallback)
 easy.lib.SimpleBrowser$MyWebview$MyJavaScriptInterface: void processHTML(java.lang.String)
 easy.lib.SimpleBrowser$MyWebview$MyJavaScriptInterface: void saveCollapseState(int,boolean)
 easy.lib.downloadControl
+easy.lib.downloadControl: downloadControl()
 easy.lib.wrapAdView
 easy.lib.wrapAdView$Listener
-g

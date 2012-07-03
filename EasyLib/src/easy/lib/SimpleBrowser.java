@@ -1082,7 +1082,7 @@ public class SimpleBrowser extends Activity {
 		webTools.requestLayout();
 
 		lp = urlLine.getLayoutParams();
-		lp.height = LayoutParams.WRAP_CONTENT;
+		lp.height = 33;
 		urlLine.requestLayout();
 
 		lp = margin1dip.getLayoutParams();

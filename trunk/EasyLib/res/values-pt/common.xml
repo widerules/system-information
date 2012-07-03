@@ -4,7 +4,7 @@
     <string name="browser_name">Navegador Fácil</string>
     <string name="help_message">Encontre seu app por não mais de 2 clique. \nClique app ícone para pará-lo, \nClique nome app para lançar, \nClique versão aplicativo para desinstalar, \nlong clique em nome do aplicativo: atalho add, \atalho clique nlong para removê-lo.</string>
     <string name="auto_change_wallpaper">mudar papel de parede pela trepidação</string>
-    <string name="about_message">Navegador Fácil É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nLongo clique história/favorito para o apagar. \n\nPor favor vote-me 5 estrelas, se você amá-lo e compartilhá-lo aos seus amigos. graças!</string>
+    <string name="about_message">Navegador Fácil É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nLongo clique história/favorito para o apagar.</string>
     <string name="share_wallpaper">Wallpaper Compartilhar</string>
     <string name="share_desktop">Compartilhar desktop</string>
     <string name="warning">Somente o usuário root pode excluir aplicativo do sistema. \n\nExcluir sistema aplicativo pode causar telefone não pode arrancar. \n\nPor favor, pense com cuidado!</string>
@@ -25,7 +25,7 @@
     <string name="share_text1">" "selecionados." "</string>
     <string name="share_text2">" "Por telefone ou" "</string>
     <string name="share_text3">" "Pelo pc.</string>
-    <string name="vote">vote em mim</string>
+    <string name="vote">Por favor, votem para me 5 estrelas</string>
     <string name="favoriteapps">Atalho</string>
     <string name="systemapps">Sistêmica</string>
     <string name="userapps">msilva</string>

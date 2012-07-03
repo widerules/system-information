@@ -81,9 +81,8 @@
     <string name="list_view">Ver Lista</string>
     <string name="restart">É necessário reiniciar para mudar a vista. \nReiniciar agora?</string>
     <string name="snap">instantâneo</string>
-    <string name="snap_size">tirar tamanho</string>
     <string name="full_screen">Tela cheia</string>
-    <string name="full_webpage">página completa</string>
+    <string name="full_webpage">Snap shot para a página web completa</string>
     <string name="show_zoom">(Página atual) Controle de Zoom</string>
     <string name="block_image">Bloquear imagens para reduzir a largura de banda</string>
     <string name="homepage_css">Homepage fresco, mas um pouco lento</string>

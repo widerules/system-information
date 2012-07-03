@@ -84,9 +84,8 @@
     <string name="list_view">リストビュー</string>
     <string name="restart">ビューを変更するには、再起動する必要があります。 \n今すぐ再起動しますか？</string>
     <string name="snap">スナップショット</string>
-    <string name="snap_size">スナップサイズ</string>
     <string name="full_screen">全画面スクリーン</string>
-    <string name="full_webpage">全画面ウエブ</string>
+    <string name="full_webpage">完全なWebページ用に撮影したスナップ</string>
     <string name="show_zoom">(現在ページ)ズームコントロール</string>
     <string name="block_image">画像をブロック</string>
     <string name="homepage_css">クールなホームページですが、少し遅い</string>

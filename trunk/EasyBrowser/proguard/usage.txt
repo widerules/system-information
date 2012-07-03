@@ -2,30 +2,39 @@ a:
     private a()
 android.annotation.SuppressLint
 android.annotation.TargetApi
+com.baidu.mobstat.SendStrategyEnum
+com.baidu.mobstat.StatActivity
 com.baidu.mobstat.StatService:
     public static final int EXCEPTION_LOG
-    public StatService()
     private static boolean a()
     private static void b()
+    private static boolean a(java.lang.Class,java.lang.String)
+    public static synchronized void onResume(android.content.Context)
+    public static synchronized void onPause(android.content.Context)
     public static void setOn(android.content.Context,int)
     public static void setSendLogStrategy(android.content.Context,com.baidu.mobstat.SendStrategyEnum,int,boolean)
     public static void setSendLogStrategy(android.content.Context,com.baidu.mobstat.SendStrategyEnum,int)
     private static void a(android.content.Context)
     public static void onEvent(android.content.Context,java.lang.String,java.lang.String,int)
     public static void onEvent(android.content.Context,java.lang.String,java.lang.String)
-com.baidu.mobstat.a:
-    public void a(java.lang.String,java.lang.String,int,long)
-com.baidu.mobstat.a.a:
-    public a()
-com.baidu.mobstat.a.b:
-    public b()
+    private static boolean a(android.content.Context,java.lang.String)
+com.baidu.mobstat.a
+com.baidu.mobstat.a.a
+com.baidu.mobstat.a.b
 com.baidu.mobstat.b
 com.baidu.mobstat.c
-com.baidu.mobstat.f:
-    public void a(android.content.Context,com.baidu.mobstat.SendStrategyEnum,int,boolean)
-    public void a(boolean,android.content.Context)
-com.baidu.mobstat.o:
-    o()
+com.baidu.mobstat.d
+com.baidu.mobstat.e
+com.baidu.mobstat.f
+com.baidu.mobstat.g
+com.baidu.mobstat.h
+com.baidu.mobstat.i
+com.baidu.mobstat.j
+com.baidu.mobstat.k
+com.baidu.mobstat.l
+com.baidu.mobstat.m
+com.baidu.mobstat.n
+com.baidu.mobstat.o
 com.google.ads.Ad:
     public abstract boolean isReady()
     public abstract void loadAd(com.google.ads.AdRequest)
@@ -44,6 +53,7 @@ com.google.ads.AdRequest:
     public void setGender(com.google.ads.AdRequest$Gender)
     public void setBirthday(java.lang.String)
     public void setKeywords(java.util.Set)
+    public void addKeyword(java.lang.String)
     public void setExtras(java.util.Map)
     public void addExtra(java.lang.String,java.lang.Object)
     public void setLocation(android.location.Location)
@@ -53,6 +63,9 @@ com.google.ads.AdRequest:
 com.google.ads.AdSize:
     public AdSize(int,int)
 com.google.ads.AdView:
+    public AdView(android.content.Context,android.util.AttributeSet)
+    public AdView(android.content.Context,android.util.AttributeSet,int)
+    private void a(android.content.Context,android.util.AttributeSet)
     public boolean isReady()
 com.google.ads.InterstitialAd:
     private d a
@@ -80,7 +93,6 @@ easy.browser.R$id
 easy.browser.R$layout
 easy.browser.R$string
 easy.lib.AboutBrowser:
-    android.widget.CheckBox cbCss
     android.widget.RadioGroup historyCount
 easy.lib.HanziToPinyin:
     private static final java.lang.String TAG

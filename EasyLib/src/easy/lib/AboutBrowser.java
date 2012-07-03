@@ -34,9 +34,9 @@ import easy.lib.util;
 public class AboutBrowser extends Activity {
 
 	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD,
-			cbZoomControl, cbCss, cbHtml5, cbBlockImg, cbCachePrefer,
-			cbFullscreen, cbOverview;// , cbPageSource;
-	RadioGroup fontSize, historyCount, encodingType, snapSize, changeUA,
+			cbZoomControl, cbHtml5, cbBlockImg, cbCachePrefer,
+			cbFullscreen, cbOverview, cbSnapSize;
+	RadioGroup fontSize, historyCount, encodingType, changeUA,
 			searchEngine;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
 			clrCache;
@@ -206,13 +206,10 @@ public class AboutBrowser extends Activity {
 		});
 
 		cbFullscreen = (CheckBox) findViewById(R.id.full_screen);
-		// cbPageSource = (CheckBox) findViewById(R.id.enable_pagesource);
 		cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
 		cbBlockImg = (CheckBox) findViewById(R.id.block_image);
 		cbCachePrefer = (CheckBox) findViewById(R.id.cache_prefer);
-		// cbCss = (CheckBox) findViewById(R.id.homepage_css);
-		// historyCount = (RadioGroup) findViewById(R.id.max_history);
-		snapSize = (RadioGroup) findViewById(R.id.snap_size);
+		cbSnapSize = (CheckBox) findViewById(R.id.snap_size);
 		fontSize = (RadioGroup) findViewById(R.id.font_size);
 		searchEngine = (RadioGroup) findViewById(R.id.search_engine);
 
@@ -317,8 +314,6 @@ public class AboutBrowser extends Activity {
 	protected void onResume() {
 		cbFullscreen.setChecked(perferences.getBoolean("full_screen_display",
 				false));
-		// cbPageSource.setChecked(perferences.getBoolean("page_source",
-		// false));
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		cbCachePrefer.setChecked(perferences.getBoolean("cache_prefer", false));
@@ -328,7 +323,7 @@ public class AboutBrowser extends Activity {
 		cbCacheToSD.setChecked(perferences.getBoolean("cache_tosd", false));
 		//cbHideExit.setChecked(perferences.getBoolean("hide_exit", true));
 		cbOverview.setChecked(perferences.getBoolean("overview_page", false));
-		// cbCss.setChecked(perferences.getBoolean("css", false));
+		cbSnapSize.setChecked(perferences.getBoolean("full_web", false));
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
 		cbEnableProxy.setChecked(perferences.getBoolean("enable_proxy", false));
 		etPort.setText(perferences.getInt("local_port", 1984) + "");
@@ -336,16 +331,10 @@ public class AboutBrowser extends Activity {
 		etPort.setFocusable(cbEnableProxy.isChecked());
 		etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 
-		((RadioButton) snapSize
-				.getChildAt(perferences.getInt("full_screen", 1)))
-				.setChecked(true);
 		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2)))
 				.setChecked(true);// normal
 		((RadioButton) searchEngine.getChildAt(perferences.getInt(
 				"search_engine", 3))).setChecked(true);
-		// ((RadioButton)
-		// historyCount.getChildAt(perferences.getInt("history_count",
-		// 1))).setChecked(true);
 		((RadioButton) encodingType.getChildAt(perferences
 				.getInt("encoding", 0))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0)))
@@ -381,7 +370,7 @@ public class AboutBrowser extends Activity {
 
 			editor.putBoolean("block_popup", false);
 			editor.putBoolean("block_js", false);
-			//editor.putBoolean("hide_exit", true);
+			editor.putBoolean("full_web", false);
 			editor.putBoolean("overview_page", false);
 			editor.putBoolean("cache_tosd", false);
 			editor.putBoolean("html5", false);
@@ -402,12 +391,9 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
 			editor.putBoolean("cache_prefer", cbCachePrefer.isChecked());
-			// editor.putBoolean("css", cbCss.isChecked());
+			editor.putBoolean("full_web", cbSnapSize.isChecked());
 			// editor.putInt("history_count",
 			// historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
-			editor.putInt("full_screen", snapSize
-					.indexOfChild(findViewById(snapSize
-							.getCheckedRadioButtonId())));
 			editor.putInt("textsize", fontSize
 					.indexOfChild(findViewById(fontSize
 							.getCheckedRadioButtonId())));

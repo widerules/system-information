@@ -89,9 +89,8 @@
     <string name="list_view">列表视图</string>
     <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
     <string name="snap">截屏</string>
-    <string name="snap_size">截屏尺寸</string>
     <string name="full_screen">全屏</string>
-    <string name="full_webpage">全网页</string>
+    <string name="full_webpage">全网页截屏</string>
     <string name="show_zoom">(当前页)缩放按钮</string>
     <string name="block_image">没有图片，更快更省流量</string>
     <string name="homepage_css">主页特效，会有点慢</string>

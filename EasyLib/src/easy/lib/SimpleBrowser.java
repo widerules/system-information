@@ -233,7 +233,7 @@ public class SimpleBrowser extends Activity {
 	// settings
 	boolean fullScreen = false;
 	// boolean getPageSource = false;
-	boolean snapFullScreen = true;
+	boolean snapFullWeb = false;
 	boolean html5 = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
@@ -956,7 +956,7 @@ public class SimpleBrowser extends Activity {
 			}
 
 			// default to full screen now
-			snapFullScreen = (sp.getInt("full_screen", 1) == 1);
+			snapFullWeb = sp.getBoolean("full_web", false);
 
 			searchEngine = sp.getInt("search_engine", 3);
 
@@ -1593,7 +1593,7 @@ public class SimpleBrowser extends Activity {
 			searchEngine = sp.getInt("search_engine", 4);
 		fullScreen = sp.getBoolean("full_screen_display", false);
 		// default to full screen
-		snapFullScreen = (sp.getInt("full_screen", 1) == 1);
+		snapFullWeb = sp.getBoolean("full_web", false);
 		readTextSize(sp);// init the text size
 		enableProxy = sp.getBoolean("enable_proxy", false);
 		if (enableProxy) {
@@ -1835,7 +1835,7 @@ public class SimpleBrowser extends Activity {
 					try {// still got java.lang.RuntimeException: Canvas: trying
 							// to use a recycled bitmap android.graphics.Bitmap
 							// from one user. so catch it.
-						if (snapFullScreen) {
+						if (!snapFullWeb) {
 							// the snap will not refresh if not destroy cache
 							webpages.destroyDrawingCache();
 							webpages.setDrawingCacheEnabled(true);

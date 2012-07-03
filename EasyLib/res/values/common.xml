@@ -91,9 +91,8 @@
     <string name="list_view">List View</string>
     <string name="restart">It need restart to change the view. \nRestart now?</string>
     <string name="snap">Snap Shot</string>
-    <string name="snap_size">SnapSize</string>
     <string name="full_screen">FullScreen</string>
-    <string name="full_webpage">FullWeb</string>
+    <string name="full_webpage">Snap shot for full web page</string>
     <string name="show_zoom">(current page)Zoom Control</string>
     <string name="block_image">Block images to reduce bandwidth</string>
     <string name="homepage_css">Cool Homepage, but a little slow</string>

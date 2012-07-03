@@ -2603,8 +2603,7 @@ public class SimpleBrowser extends Activity {
 					moveTaskToBack(true);
 				} else if (serverWebs.get(webIndex).canGoBack())
 					imgPrev.performClick();
-				else
-					loadPage(true);
+				else closePage(webIndex, false);//close current page if can't go back
 
 				return true;
 			}
@@ -2816,12 +2815,12 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void createAd() {
+		if ((cm == null) || (cm.getActiveNetworkInfo() == null) || !cm.getActiveNetworkInfo().isConnected()) return;
+		
 		//AdView adView = new AdView(this, "6148");//adview of tapit
 		//adView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
 		//adContainer.addView(adView);
 
-		if ((cm == null) || (cm.getActiveNetworkInfo() == null) || !cm.getActiveNetworkInfo().isConnected()) return;
-		
 		if (mAdAvailable) {
 			removeAd();
 			

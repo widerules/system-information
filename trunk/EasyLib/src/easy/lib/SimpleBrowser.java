@@ -2803,7 +2803,7 @@ public class SimpleBrowser extends Activity {
 
 		width_density = width / dm.density;
 
-		createAd();
+		if (clickCount == 0) createAd();
 	}
 
 	void removeAd() {

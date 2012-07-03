@@ -337,6 +337,7 @@ public class SimpleBrowser extends Activity {
 	FrameLayout adContainer;
 	AppHandler mAppHandler = new AppHandler();
 	int clickCount = 0;
+	boolean gotoSettings = false;//will set to true if open settings activity, and set to false again after exit settings
 	float width_density;
 
 	// download related
@@ -1764,9 +1765,6 @@ public class SimpleBrowser extends Activity {
 					imm.toggleSoftInput(0, 0);
 					break;
 				case 3:// exit
-					//if (hideExit)
-						//moveTaskToBack(true);
-					//else
 						finish();
 					break;
 				case 0:// view page source
@@ -1869,9 +1867,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 7:// about
-					clickCount += 1;// show about activity will hide browser
-							// activity, and should not affect showing
-							// ad state
+					gotoSettings = true;
 					intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(),
 							"easy.lib.AboutBrowser");
@@ -2742,7 +2738,7 @@ public class SimpleBrowser extends Activity {
 		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).mZoomButtonsController.getZoomControls().getVisibility() == View.VISIBLE);
 		sEdit.commit();
 
-		if (clickCount > 0) clickCount -= 1;
+		if (!gotoSettings && (clickCount > 0)) clickCount -= 1;
 		
 		try {
 			Class c = Class.forName("com.baidu.mobstat.StatService");
@@ -2758,7 +2754,8 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 		
-		if (clickCount == 0) createAd();
+		if (gotoSettings) gotoSettings = false;
+		else if (clickCount == 0) createAd();
 		
 		try {
 			Class c = Class.forName("com.baidu.mobstat.StatService");
@@ -2772,7 +2769,7 @@ public class SimpleBrowser extends Activity {
 	public void onStop() {
 		super.onStop();
 		
-		removeAd();//ad will occupy cpu and data quota even in background
+		if (!gotoSettings) removeAd();//ad will occupy cpu and data quota even in background
 	}
 	
 	@Override

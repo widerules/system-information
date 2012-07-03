@@ -2820,6 +2820,8 @@ public class SimpleBrowser extends Activity {
 		//adView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
 		//adContainer.addView(adView);
 
+		if ((cm == null) || (cm.getActiveNetworkInfo() == null) || !cm.getActiveNetworkInfo().isConnected()) return;
+		
 		if (mAdAvailable) {
 			removeAd();
 			

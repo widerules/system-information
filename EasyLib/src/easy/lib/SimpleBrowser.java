@@ -372,7 +372,8 @@ public class SimpleBrowser extends Activity {
 
 		wrapWebSettings webSettings;
 		
-        ZoomButtonsController mZoomButtonsController = new ZoomButtonsController(this);
+        ZoomButtonsController mZoomButtonsController;
+        boolean zoomVisible = false;
 
 		int mProgress = 0;
 		boolean isForeground = true;
@@ -418,9 +419,18 @@ public class SimpleBrowser extends Activity {
 	            classType = WebView.class;
 	            field = classType.getDeclaredField("mZoomButtonsController");
 	            field.setAccessible(true);
-	            mZoomButtonsController.getZoomControls().setVisibility(visibility);
 	            try {
-	                field.set(this, mZoomButtonsController);
+	            	if (visibility == View.GONE) {
+	            		mZoomButtonsController = (ZoomButtonsController) field.get(this);//backup the original zoom controller
+	                    ZoomButtonsController myZoomButtonsController = new ZoomButtonsController(this);
+			            myZoomButtonsController.getZoomControls().setVisibility(visibility);
+		                field.set(this, myZoomButtonsController);
+		                zoomVisible = false;
+	            	}
+	            	else {
+	            		field.set(this, mZoomButtonsController);
+	            		zoomVisible = true;
+	            	}
 	            } catch (IllegalArgumentException e) {
 	                e.printStackTrace();
 	            } catch (IllegalAccessException e) {
@@ -2735,7 +2745,7 @@ public class SimpleBrowser extends Activity {
 		sEdit.putBoolean("collapse1", collapse1);
 		sEdit.putBoolean("collapse2", collapse2);
 		sEdit.putBoolean("collapse3", collapse3);
-		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).mZoomButtonsController.getZoomControls().getVisibility() == View.VISIBLE);
+		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);
 		sEdit.commit();
 
 		if (!gotoSettings && (clickCount > 0)) clickCount -= 1;

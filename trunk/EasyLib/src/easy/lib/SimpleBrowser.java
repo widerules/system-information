@@ -207,6 +207,17 @@ class wrapWebSettings {
 		}
 	}
 
+	synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
+		try {
+			Method method = WebSettings.class.getMethod("setDisplayZoomControls",
+					new Class[] { boolean.class });
+			method.invoke(mInstance, enabled);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	/*
 	 * synchronized void setGeolocationEnabled(boolean flag) {//API 5 try {
 	 * Method method = WebSettings.class.getMethod("setGeolocationEnabled", new
@@ -479,12 +490,12 @@ public class SimpleBrowser extends Activity {
 			localSettings.setTextSize(textSize);
 			localSettings.setSupportZoom(true);
 			localSettings.setBuiltInZoomControls(true);
-			setZoomControl(View.GONE);//default not show zoom control in new page
 
 			// otherwise can't scroll horizontal in some webpage, such as qiupu.
 			localSettings.setUseWideViewPort(true);
 
 			localSettings.setPluginsEnabled(true);
+			//localSettings.setPluginState(WebSettings.PluginState.ON);
 			// setInitialScale(1);
 			localSettings.setSupportMultipleWindows(true);
 			localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
@@ -499,6 +510,9 @@ public class SimpleBrowser extends Activity {
 				localSettings.setUserAgentString(selectUA(ua));
 
 			webSettings = new wrapWebSettings(localSettings);
+			if (!webSettings.setDisplayZoomControls(false)) //hide zoom button by default on API 11 and above
+				setZoomControl(View.GONE);//default not show zoom control in new page
+			
 			// webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
 			webSettings.setDomStorageEnabled(true);// API7, key to enable gmail
@@ -625,7 +639,6 @@ public class SimpleBrowser extends Activity {
 						imgRefresh.setImageResource(R.drawable.stop);
 					}
 
-					//Log.d("=============Ads onstart", clickCount + "");
 					if (adview != null)	adview.loadAd();// should only do this by wifi
 				}
 
@@ -987,10 +1000,6 @@ public class SimpleBrowser extends Activity {
 
 			WebSettings localSettings = serverWebs.get(webIndex).getSettings();
 
-			showZoom = sp.getBoolean("show_zoom", false);
-		    if (showZoom) serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
-		    else serverWebs.get(webIndex).setZoomControl(View.GONE);
-
 			ua = sp.getInt("ua", 0);
 			if (ua <= 1)
 				localSettings.setUserAgent(ua);
@@ -1022,9 +1031,19 @@ public class SimpleBrowser extends Activity {
 			blockJs = sp.getBoolean("block_js", false);
 			localSettings.setJavaScriptEnabled(!blockJs);
 
+			
+			
 			wrapWebSettings webSettings = new wrapWebSettings(localSettings);
 			overviewPage = sp.getBoolean("overview_page", false);
 			webSettings.setLoadWithOverviewMode(overviewPage);
+
+			showZoom = sp.getBoolean("show_zoom", false);
+			if (webSettings.setDisplayZoomControls(showZoom)) //hide zoom button by default on API 11 and above
+				serverWebs.get(webIndex).zoomVisible = showZoom;
+			else {
+			    if (showZoom) serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
+			    else serverWebs.get(webIndex).setZoomControl(View.GONE);
+			}
 
 			html5 = sp.getBoolean("html5", false);
 			webSettings.setAppCacheEnabled(html5);// API7

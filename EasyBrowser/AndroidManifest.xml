@@ -39,11 +39,12 @@
         android:label="@string/browser_name" >
         
 		<!-- for baidu tongji -->
-		<meta-data android:name="BaiduMobAd_CHANNEL" android:value="1mobile" />
+		<meta-data android:name="BaiduMobAd_CHANNEL" android:value="meizu" />
 		<meta-data android:name="BaiduMobAd_STAT_ID" android:value="428da1b5ed" />
 		
         <activity
             android:name="easy.lib.SimpleBrowser"
+            android:hardwareAccelerated="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:icon="@drawable/explorer"
             android:label="@string/browser_name"

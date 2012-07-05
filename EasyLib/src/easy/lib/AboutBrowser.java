@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
@@ -314,6 +315,16 @@ public class AboutBrowser extends Activity {
 	protected void onResume() {
 		cbFullscreen.setChecked(perferences.getBoolean("full_screen_display",
 				false));
+		boolean tmpFullScreen = perferences.getBoolean("full_screen_display", false);
+		if (tmpFullScreen)
+			getWindow().setFlags(
+					WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		else
+			getWindow().clearFlags(
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		cbFullscreen.setChecked(tmpFullScreen);
+
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		cbCachePrefer.setChecked(perferences.getBoolean("cache_prefer", false));

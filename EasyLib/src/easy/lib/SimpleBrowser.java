@@ -214,6 +214,7 @@ class wrapWebSettings {
 			method.invoke(mInstance, enabled);
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -1038,8 +1039,10 @@ public class SimpleBrowser extends Activity {
 			webSettings.setLoadWithOverviewMode(overviewPage);
 
 			showZoom = sp.getBoolean("show_zoom", false);
-			if (webSettings.setDisplayZoomControls(showZoom)) //hide zoom button by default on API 11 and above
+			if (webSettings.setDisplayZoomControls(showZoom)) {//hide zoom button by default on API 11 and above
+				localSettings.setBuiltInZoomControls(showZoom);//setDisplayZoomControls(false) not work, so we need disable zoom control
 				serverWebs.get(webIndex).zoomVisible = showZoom;
+			}
 			else {
 			    if (showZoom) serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
 			    else serverWebs.get(webIndex).setZoomControl(View.GONE);

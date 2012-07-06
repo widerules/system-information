@@ -302,7 +302,8 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	RelativeLayout webControl, webtools_center, webTools, urlLine;
+	RelativeLayout webControl, webtools_center, webTools;
+	LinearLayout urlLine;
 	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -2147,7 +2148,7 @@ public class SimpleBrowser extends Activity {
 		 */
 
 		webTools = (RelativeLayout) findViewById(R.id.webtools);
-		urlLine = (RelativeLayout) findViewById(R.id.urlline);
+		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		if (fullScreen) {// hide url bar and tools bar
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);

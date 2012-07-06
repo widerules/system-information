@@ -251,7 +251,7 @@ public class SimpleBrowser extends Activity {
 	boolean cachePrefer = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
-	boolean collapse1 = false, collapse2 = false, collapse3 = false;
+	boolean collapse1 = false, collapse2 = true, collapse3 = true;
 	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
 	long sizeM = 1024 * 1024;
@@ -2929,15 +2929,17 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.taobao.com.png)'><a href=\"http://www.taobao.com\">淘宝</a></li>");
 			sb.append(fileDir);
 			sb.append("www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
-			sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></li>");// no favicon
 			sb.append(fileDir);
-			sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
+			sb.append("www.baidu.com.png)'><a href=\"http://m.baidu.com/img?tn=bdLISTIphone&word=%E9%BB%91%E4%B8%9D&st=103110&prest=111051&pn=0&rn=10&vit=aladdin&from=844b&ssid=0&bd_page_type=1&ref=www_iphone&uid=wapp_1341302386788_619\">美女图片</a></li>");
+			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">九鱼</a></li>");// no favicon
+			//sb.append(fileDir);
+			//sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
 		} else {
 			// sb.append(fileDir);
 			// sb.append("www.amazon.com.png)'><a href=\"http://www.amazon.com\">Amazon</a></li>");
 			// sb.append(fileDir);
 			// sb.append("www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
-			sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");// no
+			//sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");// no
 																									// favicon
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");

@@ -1111,7 +1111,7 @@ public class SimpleBrowser extends Activity {
 		webTools.requestLayout();
 
 		lp = urlLine.getLayoutParams();
-		lp.height = (int) (33 * dm.density);
+		lp.height = LayoutParams.WRAP_CONTENT;
 		urlLine.requestLayout();
 	}
 

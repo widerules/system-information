@@ -80,7 +80,6 @@
     <string name="start_download">开始下载</string>
     <string name="downloading">正在下载...</string>
     <string name="download_finish">下载完成，点击查看</string>
-    <!-- string name="download_fail">下载失败，点击查看</string-->
     <string name="downloads">已下载</string>
     <string name="downloads_to">下载的文件位于</string>
     <string name="downloads_open">。您可以使用ES文件浏览器或其他文件管理器查看该目录。点确定下载ES文件管理器。</string>
@@ -128,7 +127,7 @@
     <string name="enable_proxy">使用代理，本地端口：</string>
     <!--string name="hide_exit">退出时只隐藏</string-->
     <string name="overview_page">以概览模式打开网页</string>
-    <string name="share_to_friends">分享给朋友</string>
+    <string name="share_to_friends">分享点点，关注点点</string>
     <string name="cache_prefer">缓存优先，节省流量</string>
 
 </resources>

@@ -185,20 +185,11 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/margin1dip"
-        android:layout_width="fill_parent"
-        android:layout_height="5dip"
-        android:layout_below="@id/adContainer"
-        android:orientation="horizontal" />
-
-    <RelativeLayout
         android:id="@+id/urlline"
         android:layout_width="fill_parent"
         android:layout_height="33dip"
-        android:layout_below="@id/margin1dip"
-        android:layout_marginLeft="3dip"
-        android:layout_marginRight="3dip"
-        android:background="@drawable/round_corner_white"
+        android:layout_below="@id/adContainer"
+        android:background="#f7f3f7"
         android:orientation="horizontal" >
 
         <ImageView

@@ -677,8 +677,10 @@ public class SimpleBrowser extends Activity {
 						loadProgress.setVisibility(View.VISIBLE);
 						webAddress.setText(url);
 						imgRefresh.setImageResource(R.drawable.stop);
+						
+						if (fullScreen) showBars();
 					}
-
+					
 					if (adview != null)	adview.loadAd();// should only do this by wifi
 				}
 
@@ -691,6 +693,8 @@ public class SimpleBrowser extends Activity {
 						loadProgress.setVisibility(View.INVISIBLE);
 						imgRefresh.setImageResource(R.drawable.refresh);
 						webControl.setVisibility(View.INVISIBLE);
+						
+						if (fullScreen) hideBars();
 					}
 					mProgress = 0;
 					// update the page title in webList

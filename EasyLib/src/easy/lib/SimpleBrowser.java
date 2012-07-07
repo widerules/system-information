@@ -1647,8 +1647,8 @@ public class SimpleBrowser extends Activity {
 		//hideExit = sp.getBoolean("hide_exit", true);
 		overviewPage = sp.getBoolean("overview_page", false);
 		collapse1 = sp.getBoolean("collapse1", false);
-		collapse2 = sp.getBoolean("collapse2", false);
-		collapse3 = sp.getBoolean("collapse3", false);
+		collapse2 = sp.getBoolean("collapse2", true);
+		collapse3 = sp.getBoolean("collapse3", true);
 		ua = sp.getInt("ua", 0);
 		showZoom = sp.getBoolean("show_zoom", false);
 		mLocale = getBaseContext().getResources().getConfiguration().locale;

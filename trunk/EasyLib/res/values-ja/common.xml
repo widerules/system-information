@@ -74,7 +74,9 @@
     <string name="start_download">ダウンロード開始</string>
     <string name="downloading">ダウンロード中...</string>
     <string name="download_finish">ダウンロードを完成しました。チェックをクリックしてください</string>
-    <!-- string name="download_fail">ダウンロードに失敗しました。チェックをクリックしてください</string-->
+    <string name="cant_open">申し訳ありませんが、デバイスには適用されないようでは、このファイルを開くことができます</string>
+    <string name="open">開く</string>
+    <string name="download">ダウンロード</string>
     <string name="downloads">ダウンロード</string>
     <string name="downloads_to">ダウンロードファイルは</string>
     <string name="downloads_open">にあります。ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには、[OK]をクリックしてください。</string>

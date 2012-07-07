@@ -529,8 +529,8 @@ public class SimpleBrowser extends Activity {
 
 			setDownloadListener(new DownloadListener() {
 				@Override
-				public void onDownloadStart(String url, String ua,
-						String contentDisposition, String mimetype,
+				public void onDownloadStart(final String url, String ua,
+						final String contentDisposition, String mimetype,
 						long contentLength) {
 					// need to know it is httpget, post or direct connect.
 					// for example, I don't know how to handle this
@@ -545,7 +545,45 @@ public class SimpleBrowser extends Activity {
 					// filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
 					// mimetype: application/octet-stream
 					// contentLength: 463624
-					startDownload(url, contentDisposition);
+					new AlertDialog.Builder(mContext)
+					.setMessage(url)
+					.setPositiveButton(R.string.open,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+									String mimeType = mimeTypeMap
+											.getMimeTypeFromExtension(MimeTypeMap
+													.getFileExtensionFromUrl(url))
+											+ "";
+									if (!"".equals(mimeType)) {
+										Intent intent = new Intent(Intent.ACTION_VIEW);
+										intent.setDataAndType(Uri.parse(url), mimeType);
+										util.startActivity(intent, false, mContext);
+									}
+									else {
+										Toast.makeText(mContext,
+												getString(R.string.cant_open),
+												Toast.LENGTH_LONG).show();
+									}
+								}
+							})
+					.setNeutralButton(R.string.download,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									startDownload(url, contentDisposition);
+								}
+							})
+					.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							}).show();
 				}
 			});
 

@@ -82,7 +82,9 @@
     <string name="start_download">start download</string>
     <string name="downloading">downloading...</string>
     <string name="download_finish">download finished, click to check</string>
-    <!-- string name="download_fail">download failed, click to check</string-->
+    <string name="cant_open">Sorry, seems no application on your device can open this file</string>
+    <string name="open">open</string>
+    <string name="download">download</string>
     <string name="downloads">Downloads</string>
     <string name="downloads_to">Files downloaded to" "</string>
     <string name="downloads_open">". "You can view the folder with ES File Explorer or other file manager. Click OK to download ES File Explorer.</string>

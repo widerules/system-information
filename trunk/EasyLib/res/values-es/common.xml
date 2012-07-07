@@ -64,9 +64,6 @@
     <string name="start_download">comenzar la descarga</string>
     <string name="downloading">descargando</string>
     <string name="download_finish">descarga termine, haga clic para ver</string>
-    <string name="cant_open">Lo sentimos, no parece ser de aplicación en su dispositivo puede abrir este archivo</string>
-    <string name="open">abrir</string>
-    <string name="download">descargar</string>
     <string name="downloads">Descargas</string>
     <string name="downloads_to">Los archivos descargados a" "</string>
     <string name="downloads_open">". "Se puede ver la carpeta con el archivo ES Explorer o otro administrador de archivos. Haga clic en Aceptar para descargar el Explorador de archivos ES.</string>

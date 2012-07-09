@@ -23,6 +23,7 @@
 -keepattributes SourceFile,LineNumberTable
 
 -keep public class com.google.ads.* 
+-keep public class com.baidu.mobstat.*
 -keep class easy.lib.wrapAdView*
 
 -keepclassmembers class * {
@@ -31,4 +32,6 @@
     public void openFileChooser(android.webkit.ValueCallback);
     public void processHTML(java.lang.String);
     public void saveCollapseState(int, boolean);
+    public void onResume(android.content.Context);
+    public void onPause(android.content.Context);
 }

@@ -3011,8 +3011,7 @@ public class SimpleBrowser extends Activity {
 			// sb.append(fileDir);
 			// sb.append("www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
 			// sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");//
-			// no
-			// favicon
+			// no favicon
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");
 			sb.append(fileDir);
@@ -3021,8 +3020,8 @@ public class SimpleBrowser extends Activity {
 			sb.append("mobile.twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
 			// sb.append(fileDir);
 			// sb.append("en.wikipedia.org.png)'><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
-			//sb.append(fileDir);
-			//sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">Phoenix3</a></li>");
+			// sb.append(fileDir);
+			// sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">Phoenix3</a></li>");
 		}
 		// additional top list for some locale
 		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {

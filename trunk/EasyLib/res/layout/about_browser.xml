@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dip"
-                android:text="@string/author"
+                android:text="@string/browser_author"
                 android:textColor="#F08080F0"
                 android:textSize="16dip" />
 

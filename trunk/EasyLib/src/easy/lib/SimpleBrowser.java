@@ -3021,8 +3021,8 @@ public class SimpleBrowser extends Activity {
 			sb.append("mobile.twitter.com.png)'><a href=\"http://twitter.com\">Twitter</a></li>");
 			// sb.append(fileDir);
 			// sb.append("en.wikipedia.org.png)'><a href=\"http://en.wikipedia.org/wiki/Main_Page\">Wikipedia</a></li>");
-			sb.append(fileDir);
-			sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">Phoenix3</a></li>");
+			//sb.append(fileDir);
+			//sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">Phoenix3</a></li>");
 		}
 		// additional top list for some locale
 		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {

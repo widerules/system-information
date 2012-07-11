@@ -70,7 +70,7 @@ public class AboutBrowser extends Activity {
 		String text = getString(R.string.browser_name)
 				+ ", "
 				+ getString(R.string.sharetext)
-				+ " https://play.google.com/store/apps/details?id=easy.browser, market://details?id=easy.browser";
+				+ " https://play.google.com/store/apps/details?id=" + getPackageName();
 
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
@@ -95,14 +95,9 @@ public class AboutBrowser extends Activity {
 		editor = perferences.edit();
 
 		Button btnTitle = (Button) findViewById(R.id.title);
-		if (getPackageName().equals("easy.browser"))
-			btnTitle.setText(getString(R.string.browser_name) + " "
-					+ util.getVersion(getBaseContext()) + " ("
-					+ util.getVersionCode(getBaseContext()) + ")");
-		else
-			btnTitle.setText(getString(R.string.browser_name));// not show
-																// version if
-																// embedded
+		btnTitle.setText(getString(R.string.browser_name) + " "
+				+ util.getVersion(getBaseContext()) + " ("
+				+ util.getVersionCode(getBaseContext()) + ")");
 		btnTitle.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -123,12 +118,12 @@ public class AboutBrowser extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=easy.browser"));
+						.parse("market://details?id=" + getPackageName()));
 				if (!util.startActivity(intent, false, getBaseContext())) {
 					finish();
 					intent.setAction(Intent.ACTION_VIEW);
 					intent.setData(Uri
-							.parse("https://play.google.com/store/apps/details?id=easy.browser"));
+							.parse("https://play.google.com/store/apps/details?id=" + getPackageName()));
 					intent.setClassName(getPackageName(),
 							"easy.lib.SimpleBrowser");
 					util.startActivity(intent, true, getBaseContext());
@@ -186,22 +181,14 @@ public class AboutBrowser extends Activity {
 		});
 
 		TextView tvMailTo = (TextView) findViewById(R.id.mailto);
-		if (getPackageName().equals("easy.browser"))
-			tvMailTo.setText(Html.fromHtml("<u>"
-					+ getString(R.string.browser_author) + "</u>"));
-		else
-			tvMailTo.setText(Html.fromHtml("<u>" + getString(R.string.author)
-					+ "</u>"));
+		tvMailTo.setText(Html.fromHtml("<u>"
+				+ getString(R.string.browser_author) + "</u>"));
 		tvMailTo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(Intent.ACTION_SENDTO);
-				if (getPackageName().equals("easy.browser"))
-					intent.setData(Uri.fromParts("mailto",
-							getString(R.string.browser_author), null));
-				else
-					intent.setData(Uri.fromParts("mailto",
-							getString(R.string.author), null));
+				intent.setData(Uri.fromParts("mailto",
+						getString(R.string.browser_author), null));
 				util.startActivity(intent, true, getBaseContext());
 			}
 		});

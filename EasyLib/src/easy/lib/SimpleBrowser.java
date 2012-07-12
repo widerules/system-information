@@ -2490,11 +2490,11 @@ public class SimpleBrowser extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								// deleteFile(mBookMark.get(ii).m_title +
-								// ".snap.png");//delete snap too
-								mBookMark.remove(order);
-								bookmarkChanged = true;
-								loadPage(false);
+								try {//index out of bound error reported by a few user
+									mBookMark.remove(order);
+									bookmarkChanged = true;
+									loadPage(false);
+								} catch (Exception e) {}
 							}
 						})
 				.setNegativeButton(R.string.cancel,
@@ -2515,11 +2515,11 @@ public class SimpleBrowser extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								// deleteFile(mBookMark.get(ii).m_title +
-								// ".snap.png");//delete snap too
-								mHistory.remove(order);
-								historyChanged = true;
-								loadPage(false);
+								try {//index out of bound error reported by a few user
+									mHistory.remove(order);
+									historyChanged = true;
+									loadPage(false);
+								} catch (Exception e) {}
 							}
 						})
 				.setNegativeButton(R.string.cancel,

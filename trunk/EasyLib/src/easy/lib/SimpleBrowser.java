@@ -246,7 +246,6 @@ public class SimpleBrowser extends Activity {
 	boolean fullScreen = false;
 	// boolean getPageSource = false;
 	boolean snapFullWeb = false;
-	boolean html5 = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
 	boolean blockPopup = false;
@@ -257,7 +256,6 @@ public class SimpleBrowser extends Activity {
 	long sizeM = 1024 * 1024;
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;
-	boolean showZoom = false;
 	int searchEngine = 3;
 	private int SETTING_RESULTCODE = 1002;
 	boolean enableProxy = false;
@@ -389,6 +387,7 @@ public class SimpleBrowser extends Activity {
 
 		ZoomButtonsController mZoomButtonsController;
 		boolean zoomVisible = false;
+		boolean html5 = false;
 
 		int mProgress = 0;
 		boolean isForeground = true;
@@ -1068,7 +1067,7 @@ public class SimpleBrowser extends Activity {
 			overviewPage = sp.getBoolean("overview_page", false);
 			webSettings.setLoadWithOverviewMode(overviewPage);
 
-			showZoom = sp.getBoolean("show_zoom", false);
+			boolean showZoom = sp.getBoolean("show_zoom", false);
 			if (webSettings.setDisplayZoomControls(showZoom)) {// hide zoom
 																// button by
 																// default on
@@ -1087,7 +1086,8 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).setZoomControl(View.GONE);
 			}
 
-			html5 = sp.getBoolean("html5", false);
+			boolean html5 = sp.getBoolean("html5", false);
+			serverWebs.get(webIndex).html5 = html5;
 			webSettings.setAppCacheEnabled(html5);// API7
 			webSettings.setDatabaseEnabled(html5);// API5
 			// webSettings.setGeolocationEnabled(html5);//API5
@@ -1101,8 +1101,6 @@ public class SimpleBrowser extends Activity {
 				// sdcard?
 				// webSettings.setGeolocationDatabasePath(getDir("databases",
 				// MODE_PRIVATE).getPath());//API5
-
-				sEdit.putBoolean("html5", false);// close html5 by default
 			}
 
 			String tmpEncoding = getEncoding(sp.getInt("encoding", 0));
@@ -1655,7 +1653,7 @@ public class SimpleBrowser extends Activity {
 		collapse2 = sp.getBoolean("collapse2", true);
 		collapse3 = sp.getBoolean("collapse3", true);
 		ua = sp.getInt("ua", 0);
-		showZoom = sp.getBoolean("show_zoom", false);
+		//showZoom = sp.getBoolean("show_zoom", false);
 		mLocale = getBaseContext().getResources().getConfiguration().locale;
 		if ("ru_RU".equals(mLocale) || "ru".equals(mLocale))
 			searchEngine = sp.getInt("search_engine", 3);
@@ -2811,6 +2809,7 @@ public class SimpleBrowser extends Activity {
 		sEdit.putBoolean("collapse2", collapse2);
 		sEdit.putBoolean("collapse3", collapse3);
 		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);
+		sEdit.putBoolean("html5", serverWebs.get(webIndex).html5);
 		sEdit.commit();
 
 		if (!gotoSettings && (clickCount > 0))

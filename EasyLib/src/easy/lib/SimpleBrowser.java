@@ -2998,9 +2998,9 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.taobao.com.png)'><a href=\"http://www.taobao.com\">淘宝</a></li>");
 			sb.append(fileDir);
 			sb.append("www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
-			//sb.append(fileDir);
-			//sb.append("www.baidu.com.png)'><a href=\"http://m.baidu.com/img?tn=bdLISTIphone&word=%E9%BB%91%E4%B8%9D&st=103110&prest=111051&pn=0&rn=10&vit=aladdin&from=844b&ssid=0&bd_page_type=1&ref=www_iphone&uid=wapp_1341302386788_619\">美女图片</a></li>");
-			sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");//
+			sb.append(fileDir);
+			sb.append("www.baidu.com.png)'><a href=\"http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF\">美图</a></li>");
+			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");//
 			// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");

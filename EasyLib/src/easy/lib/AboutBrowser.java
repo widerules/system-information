@@ -70,7 +70,7 @@ public class AboutBrowser extends Activity {
 		String text = getString(R.string.browser_name)
 				+ ", "
 				+ getString(R.string.sharetext)
-				+ " https://play.google.com/store/apps/details?id=" + getPackageName();
+				+ " http://bpc.borqs.com/market.html?id=" + getPackageName();
 
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");

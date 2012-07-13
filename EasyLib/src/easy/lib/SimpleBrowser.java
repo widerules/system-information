@@ -3011,6 +3011,7 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
 			// sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");//
 			// no favicon
+			if (mAdAvailable) sb.append("<li><a href=\"http://bpc.borqs.com/trans.html\">Ad free version of Easy Browser</a></li>");
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");
 			sb.append(fileDir);

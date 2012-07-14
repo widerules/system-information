@@ -49,6 +49,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
@@ -736,11 +737,25 @@ public class SimpleBrowser extends Activity {
 							} catch (FileNotFoundException e1) {
 								try {// save the Favicon
 									if (view.getFavicon() != null) {
-										FileOutputStream fos = openFileOutput(
-												site + ".png", 0);
-										view.getFavicon().compress(
-												Bitmap.CompressFormat.PNG, 90,
-												fos);
+										Bitmap favicon = view.getFavicon();
+										int width = favicon.getWidth();
+									    int height = favicon.getHeight();
+										if ((width > 16) || (height > 16)) {// scale the favicon if it is not 16*16
+										    // calculate the scale
+										    float scaleWidth = ((float) 16) / width;
+										    float scaleHeight = ((float) 16) / height;
+
+										    // createa matrix for the manipulation
+										    Matrix matrix = new Matrix();
+										    // resize the bit map
+										    matrix.postScale(scaleWidth, scaleHeight);
+
+										    // recreate the new Bitmap
+										    favicon = Bitmap.createBitmap(favicon, 0, 0, 
+										                      width, height, matrix, true); 
+										}
+										FileOutputStream fos = openFileOutput(site + ".png", 0);
+										favicon.compress(Bitmap.CompressFormat.PNG, 90,	fos);
 										fos.close();
 									}
 								} catch (Exception e) {

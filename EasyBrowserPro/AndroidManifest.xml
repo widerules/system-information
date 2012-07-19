@@ -99,7 +99,7 @@
             android:launchMode="singleInstance"
             android:noHistory="true" >
             <intent-filter>
-                <action android:name="easy.browser.downloadControl" />
+                <action android:name="easy.browser.pro.downloadControl" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

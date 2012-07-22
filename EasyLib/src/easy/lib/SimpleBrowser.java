@@ -1670,10 +1670,12 @@ public class SimpleBrowser extends Activity {
 		ua = sp.getInt("ua", 0);
 		//showZoom = sp.getBoolean("show_zoom", false);
 		mLocale = getBaseContext().getResources().getConfiguration().locale;
-		if ("ru_RU".equals(mLocale) || "ru".equals(mLocale))
-			searchEngine = sp.getInt("search_engine", 3);
+		if ("ru_RU".equals(mLocale.toString()))
+			searchEngine = sp.getInt("search_engine", 4); // yandex
+		else if (Locale.CHINA.equals(mLocale))
+			searchEngine = sp.getInt("search_engine", 2); // baidu
 		else
-			searchEngine = sp.getInt("search_engine", 4);
+			searchEngine = sp.getInt("search_engine", 3); // google
 		fullScreen = sp.getBoolean("full_screen_display", false);
 		// default to full screen
 		snapFullWeb = sp.getBoolean("full_web", false);

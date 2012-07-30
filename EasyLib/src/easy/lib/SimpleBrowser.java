@@ -43,7 +43,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -243,6 +246,7 @@ public class SimpleBrowser extends Activity {
 	ListView webList;
 	Context mContext;
 
+	//boolean flashInstalled = false;
 	// settings
 	boolean fullScreen = false;
 	// boolean getPageSource = false;
@@ -803,7 +807,42 @@ public class SimpleBrowser extends Activity {
 						Uri uri = Uri.parse(url);
 						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 						intent.addCategory(Intent.CATEGORY_BROWSABLE);
-						return util.startActivity(intent, false, mContext);
+						boolean started = util.startActivity(intent, false, mContext);
+						if (!started) {
+							String data = intent.getDataString();
+							if (!"".equals(data) && (data.startsWith("vnd.youtube"))) {
+								new AlertDialog.Builder(mContext)
+								.setMessage("You need install plugin or client to play video.")
+								.setPositiveButton("Youtube",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog,
+													int which) {
+												Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+														.parse("market://details?id=com.google.android.youtube"));
+												util.startActivity(intent, false, mContext);
+											}
+										})
+								.setNeutralButton("Adobe flash",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog,
+													int which) {
+												Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+														.parse("market://details?id=com.adobe.flashplayer"));
+												util.startActivity(intent, false, mContext);
+											}
+										})
+								.setNegativeButton(R.string.cancel,
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog,
+													int which) {
+											}
+										}).show();
+							}
+						}
+						return started;
 					} else
 						return false;
 				}
@@ -1686,6 +1725,16 @@ public class SimpleBrowser extends Activity {
 			ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
 		}
 
+		/*try {
+			PackageManager pm = getPackageManager();
+			ApplicationInfo ai = pm.getApplicationInfo("com.adobe.flashplayer", 0);
+			if (ai != null) flashInstalled = true;
+			else ai = pm.getApplicationInfo("com.htc.flash", 0); // for some htc device
+			if (ai != null) flashInstalled = true;
+		} catch (NameNotFoundException e) {
+			flashInstalled = false;
+		}*/
+		
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();
 		appstate = ((MyApp) getApplicationContext());

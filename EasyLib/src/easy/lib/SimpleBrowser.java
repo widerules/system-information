@@ -810,39 +810,39 @@ public class SimpleBrowser extends Activity {
 						String data = intent.getDataString();
 						if (!"".equals(data) && (data.startsWith("vnd.youtube"))) {
 							if (!util.startActivity(intent, false, mContext)) {
-									new AlertDialog.Builder(mContext)
-									.setMessage("You need install plugin or client to play video.")
-									.setPositiveButton("Youtube",
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(DialogInterface dialog,
-														int which) {
-													Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-															.parse("market://details?id=com.google.android.youtube"));
-													util.startActivity(intent, false, mContext);
-												}
-											})
-									.setNeutralButton("Adobe flash",
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(DialogInterface dialog,
-														int which) {
-													Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-															.parse("market://details?id=com.adobe.flashplayer"));
-													util.startActivity(intent, false, mContext);
-												}
-											})
-									.setNegativeButton(R.string.cancel,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(DialogInterface dialog,
-														int which) {
-												}
-											}).show();
-								}
+								new AlertDialog.Builder(mContext)
+								.setMessage("You need install plugin or client to play video.")
+								.setPositiveButton("Youtube",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog,
+													int which) {
+												Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+														.parse("market://details?id=com.google.android.youtube"));
+												util.startActivity(intent, false, mContext);
+											}
+										})
+								.setNeutralButton("Adobe flash",
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog,
+													int which) {
+												Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+														.parse("market://details?id=com.adobe.flashplayer"));
+												util.startActivity(intent, false, mContext);
+											}
+										})
+								.setNegativeButton(R.string.cancel,
+										new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialog,
+													int which) {
+											}
+										}).show();
+							}
 						}
 						else util.startActivity(intent, true, mContext);
-						return true;
+						return true; // not allow webpage to proceed
 					} else
 						return false;
 				}

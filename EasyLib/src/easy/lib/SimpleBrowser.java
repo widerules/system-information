@@ -37,6 +37,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -1725,6 +1726,24 @@ public class SimpleBrowser extends Activity {
 			ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
 		}
 
+		
+		
+		PackageManager pm = getPackageManager();
+		
+		pm.addPackageToPreferred(getPackageName()); // for 1.5 platform
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("android.intent.action.MAIN");
+		filter.addCategory("android.intent.category.BROWSABLE");
+		filter.addCategory("android.intent.category.DEFAULT");
+		
+		ComponentName component = new ComponentName(mContext.getPackageName(), "easy.lib.SimpleBrowser");
+
+		ComponentName[] components = new ComponentName[] {new ComponentName("com.android.launcher", "com.android.launcher.Launcher"), component};
+
+		//pm.clearPackagePreferredActivities("com.android.launcher");
+		pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_EMPTY, components, component); // for 1.6-2.1 platform
+
 		/*try {
 			PackageManager pm = getPackageManager();
 			ApplicationInfo ai = pm.getApplicationInfo("com.adobe.flashplayer", 0);
@@ -2382,7 +2401,7 @@ public class SimpleBrowser extends Activity {
 		// even you can get the full set. so don't set it.
 
 		// for package added
-		IntentFilter filter = new IntentFilter();
+		filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addDataScheme("package");
 		registerReceiver(packageReceiver, filter);

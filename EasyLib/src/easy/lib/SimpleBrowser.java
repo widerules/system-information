@@ -44,6 +44,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -1682,6 +1683,24 @@ public class SimpleBrowser extends Activity {
 				true, mContext);
 	}
 
+	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
+		List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
+		int size = resolveInfoList.size();
+		ComponentName[] arrayOfComponentName = new ComponentName[size];
+		for (int i = 0; i < size; i++) {
+			ActivityInfo activityInfo = resolveInfoList.get(i).activityInfo;
+			String packageName = activityInfo.packageName;
+			String className = activityInfo.name;
+			//clear default browser
+			pm.clearPackagePreferredActivities(packageName);
+			ComponentName componentName = new ComponentName(packageName, className);
+			arrayOfComponentName[i] = componentName;
+		}
+		
+		ComponentName component = new ComponentName(mContext.getPackageName(), "easy.lib.SimpleBrowser");
+		pm.addPreferredActivity(filter,	IntentFilter.MATCH_CATEGORY_SCHEME, arrayOfComponentName, component);
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -1732,18 +1751,38 @@ public class SimpleBrowser extends Activity {
 		
 		pm.addPackageToPreferred(getPackageName()); // for 1.5 platform
 		
+		// set default browser for 1.6-2.1 platform. not work for 2.2 and up platform
+		Intent intent = new Intent("android.intent.action.VIEW");
+		intent.addCategory("android.intent.category.BROWSABLE");
+		intent.addCategory("android.intent.category.DEFAULT");
+		
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.intent.action.MAIN");
+		filter.addAction("android.intent.action.VIEW");
 		filter.addCategory("android.intent.category.BROWSABLE");
 		filter.addCategory("android.intent.category.DEFAULT");
+		filter.addDataScheme("http");
 		
-		ComponentName component = new ComponentName(mContext.getPackageName(), "easy.lib.SimpleBrowser");
-
-		ComponentName[] components = new ComponentName[] {new ComponentName("com.android.launcher", "com.android.launcher.Launcher"), component};
-
-		//pm.clearPackagePreferredActivities("com.android.launcher");
-		pm.addPreferredActivity(filter, IntentFilter.MATCH_CATEGORY_EMPTY, components, component); // for 1.6-2.1 platform
-
+		Uri uri = Uri.parse("http://");
+		intent.setDataAndType(uri, null);
+		setDefault(pm, intent, filter);
+		
+		/*uri = Uri.parse("https://");
+		intent.setDataAndType(uri, null);
+		setDefault(pm, intent, filter);
+		
+		intent.setAction("android.intent.action.WEB_SEARCH");
+		filter = new IntentFilter();
+		filter.addAction("android.intent.action.WEB_SEARCH");
+		filter.addCategory("android.intent.category.BROWSABLE");
+		filter.addCategory("android.intent.category.DEFAULT");
+		filter.addDataScheme("https");
+		setDefault(pm, intent, filter);
+		
+		uri = Uri.parse("http://");
+		intent.setDataAndType(uri, null);
+		setDefault(pm, intent, filter);*/
+		
+		
 		/*try {
 			PackageManager pm = getPackageManager();
 			ApplicationInfo ai = pm.getApplicationInfo("com.adobe.flashplayer", 0);

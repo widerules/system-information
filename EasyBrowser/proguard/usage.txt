@@ -2,39 +2,6 @@ a:
     private a()
 android.annotation.SuppressLint
 android.annotation.TargetApi
-com.baidu.mobstat.SendStrategyEnum
-com.baidu.mobstat.StatActivity
-com.baidu.mobstat.StatService:
-    public static final int EXCEPTION_LOG
-    private static boolean a()
-    private static void b()
-    private static boolean a(java.lang.Class,java.lang.String)
-    public static synchronized void onResume(android.content.Context)
-    public static synchronized void onPause(android.content.Context)
-    public static void setOn(android.content.Context,int)
-    public static void setSendLogStrategy(android.content.Context,com.baidu.mobstat.SendStrategyEnum,int,boolean)
-    public static void setSendLogStrategy(android.content.Context,com.baidu.mobstat.SendStrategyEnum,int)
-    private static void a(android.content.Context)
-    public static void onEvent(android.content.Context,java.lang.String,java.lang.String,int)
-    public static void onEvent(android.content.Context,java.lang.String,java.lang.String)
-    private static boolean a(android.content.Context,java.lang.String)
-com.baidu.mobstat.a
-com.baidu.mobstat.a.a
-com.baidu.mobstat.a.b
-com.baidu.mobstat.b
-com.baidu.mobstat.c
-com.baidu.mobstat.d
-com.baidu.mobstat.e
-com.baidu.mobstat.f
-com.baidu.mobstat.g
-com.baidu.mobstat.h
-com.baidu.mobstat.i
-com.baidu.mobstat.j
-com.baidu.mobstat.k
-com.baidu.mobstat.l
-com.baidu.mobstat.m
-com.baidu.mobstat.n
-com.baidu.mobstat.o
 com.google.ads.Ad:
     public abstract boolean isReady()
     public abstract void loadAd(com.google.ads.AdRequest)
@@ -53,7 +20,6 @@ com.google.ads.AdRequest:
     public void setGender(com.google.ads.AdRequest$Gender)
     public void setBirthday(java.lang.String)
     public void setKeywords(java.util.Set)
-    public void addKeyword(java.lang.String)
     public void setExtras(java.util.Map)
     public void addExtra(java.lang.String,java.lang.Object)
     public void setLocation(android.location.Location)
@@ -63,9 +29,6 @@ com.google.ads.AdRequest:
 com.google.ads.AdSize:
     public AdSize(int,int)
 com.google.ads.AdView:
-    public AdView(android.content.Context,android.util.AttributeSet)
-    public AdView(android.content.Context,android.util.AttributeSet,int)
-    private void a(android.content.Context,android.util.AttributeSet)
     public boolean isReady()
 com.google.ads.InterstitialAd:
     private d a
@@ -76,6 +39,14 @@ com.google.ads.InterstitialAd:
     public void show()
     public void setAdListener(com.google.ads.AdListener)
     public void stopLoading()
+com.google.ads.R$id:
+    public static final int admob_adView_320_50_test_1
+    public static final int admob_adView_320_50_test_2
+    public static final int admob_adView_320_50_test_3
+    public static final int admob_adView_320_50_test_4
+    public static final int admob_layout_320_50_test
+com.google.ads.R$layout:
+    public static final int admob_320_50_test
 com.google.ads.util.AdUtil:
     private AdUtil()
 com.google.ads.util.a:
@@ -116,13 +87,136 @@ easy.lib.R:
     10:10:public R()
 easy.lib.R$attr
 easy.lib.R$drawable:
+    public static final int border
+    public static final int button_layout
+    public static final int button_layout_unselected
+    public static final int circle_transparent
+    public static final int favorites_add
+    public static final int go
+    public static final int home
+    public static final int next
+    public static final int prev
+    public static final int round_corner
+    public static final int round_corner_light
+    public static final int round_corner_white
     13:13:public R$drawable()
 easy.lib.R$id:
+    public static final int adsParent
+    public static final int control_buttons
+    public static final int help1
+    public static final int line1
+    public static final int line2
+    public static final int pause_download
+    public static final int web_list
     39:39:public R$id()
 easy.lib.R$layout:
-    116:116:public R$layout()
+    115:115:public R$layout()
 easy.lib.R$string:
-    127:127:public R$string()
+    public static final int about
+    public static final int about_message
+    public static final int addtoFavo
+    public static final int addtoShort
+    public static final int android
+    public static final int app_name
+    public static final int app_share_text
+    public static final int appdetail
+    public static final int author
+    public static final int auto_change_wallpaper
+    public static final int back
+    public static final int backapp
+    public static final int baidu
+    public static final int bb
+    public static final int bing
+    public static final int block_image
+    public static final int block_js
+    public static final int block_popup
+    public static final int cache
+    public static final int cache_prefer
+    public static final int cache_tosd
+    public static final int change_ua
+    public static final int chrome
+    public static final int clear_all
+    public static final int cookie
+    public static final int delete
+    public static final int enable_proxy
+    public static final int encoding
+    public static final int encoding_auto
+    public static final int encoding_big5
+    public static final int encoding_euc_jp
+    public static final int encoding_euc_kr
+    public static final int encoding_gb2312
+    public static final int encoding_gbk
+    public static final int encoding_jis
+    public static final int encoding_jp
+    public static final int encoding_latin1
+    public static final int encoding_utf8
+    public static final int favoriteapps
+    public static final int ff
+    public static final int font_larger
+    public static final int font_largest
+    public static final int font_normal
+    public static final int font_size
+    public static final int font_smaller
+    public static final int font_smallest
+    public static final int full_screen
+    public static final int full_webpage
+    public static final int google
+    public static final int grid_view
+    public static final int help
+    public static final int help_message
+    public static final int hideapp
+    public static final int hidepage
+    public static final int history_16
+    public static final int history_8
+    public static final int home
+    public static final int homepage
+    public static final int homepage_css
+    public static final int html5
+    public static final int ie
+    public static final int ipad
+    public static final int iphone
+    public static final int justreturn
+    public static final int killapp
+    public static final int list_view
+    public static final int loading
+    public static final int max_history
+    public static final int menu_choose_home
+    public static final int more
+    public static final int newpage
+    public static final int next
+    public static final int nokia
+    public static final int online
+    public static final int overview_page
+    public static final int packages
+    public static final int pc
+    public static final int recommend
+    public static final int removeFromFavo
+    public static final int removeFromShort
+    public static final int restart
+    public static final int safari
+    public static final int search_engine
+    public static final int select
+    public static final int share_desktop
+    public static final int share_text1
+    public static final int share_text2
+    public static final int share_text3
+    public static final int share_to_friends
+    public static final int share_wallpaper
+    public static final int show_zoom
+    public static final int stop
+    public static final int systemapps
+    public static final int to
+    public static final int userapps
+    public static final int view_bookmark
+    public static final int vote
+    public static final int wait
+    public static final int wallpaper
+    public static final int wallpaper_beauty
+    public static final int wallpaper_scene
+    public static final int warning
+    public static final int wp
+    public static final int yandex
+    126:126:public R$string()
 easy.lib.util:
     26:26:public util()
     59:83:public static boolean startApp(android.content.pm.ResolveInfo,android.content.Context)

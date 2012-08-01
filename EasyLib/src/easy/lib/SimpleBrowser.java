@@ -1765,7 +1765,8 @@ public class SimpleBrowser extends Activity {
 		Uri uri = Uri.parse("http://");
 		intent.setDataAndType(uri, null);
 		setDefault(pm, intent, filter);
-		
+
+		// we just want to handle admob link, so no need for https and WEB_SEARCH?
 		/*uri = Uri.parse("https://");
 		intent.setDataAndType(uri, null);
 		setDefault(pm, intent, filter);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="easy.browser"
-    android:versionCode="30"
+    android:versionCode="31"
     android:versionName="1.1.6" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,6 +10,7 @@
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
     
     <!-- for baidu tongji -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />

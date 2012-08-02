@@ -3056,7 +3056,7 @@ public class SimpleBrowser extends Activity {
 
 		public void handleMessage(Message msg) {
 			if (msg.what > 0) {
-				clickCount += 2;// hide ad for three times
+				clickCount += 3;// hide ad for three times
 				// Log.d("=============Ads removead", clickCount + "");
 				removeAd();
 				/*

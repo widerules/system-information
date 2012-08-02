@@ -1749,7 +1749,7 @@ public class SimpleBrowser extends Activity {
 		
 		PackageManager pm = getPackageManager();
 		
-		pm.addPackageToPreferred(getPackageName()); // for 1.5 platform
+		try {pm.addPackageToPreferred(getPackageName());} catch(Exception e) {} // for 1.5 platform
 		
 		// set default browser for 1.6-2.1 platform. not work for 2.2 and up platform
 		Intent intent = new Intent("android.intent.action.VIEW");

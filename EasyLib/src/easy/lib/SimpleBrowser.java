@@ -3125,8 +3125,7 @@ public class SimpleBrowser extends Activity {
 			sb.append("www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
 			sb.append(fileDir);
 			sb.append("www.baidu.com.png)'><a href=\"http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF\">美图</a></li>");
-			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");//
-			// no favicon
+			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");
 		} else {
@@ -3134,9 +3133,8 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.amazon.com.png)'><a href=\"http://www.amazon.com\">Amazon</a></li>");
 			// sb.append(fileDir);
 			// sb.append("www.bing.com.png>)'<a href=\"http://www.bing.com\">Bing</a></li>");
-			// sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");//
-			// no favicon
-			if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href=\"http://bpc.borqs.com/market.html?id=easy.browser.pro\">Ad free version of Easy Browser</a></li>");
+			// sb.append("<li><a href=\"http://www.1mobile.com/app/market/?cid=9\">1mobile</a></li>");// no favicon
+			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href=\"http://bpc.borqs.com/market.html?id=easy.browser.pro\">Ad free version of Easy Browser</a></li>"); // suspended
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href=\"http://www.facebook.com\">Facebook</a></li>");
 			sb.append(fileDir);

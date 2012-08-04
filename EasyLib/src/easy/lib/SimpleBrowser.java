@@ -354,10 +354,10 @@ public class SimpleBrowser extends Activity {
 	DisplayMetrics dm;
 	FrameLayout adContainer;
 	AppHandler mAppHandler = new AppHandler();
-	int clickCount = 0;
+	boolean clicked = false;
 	boolean gotoSettings = false;// will set to true if open settings activity,
 									// and set to false again after exit
-									// settings
+									// settings. not remove ad is goto settings
 	float width_density;
 
 	// download related
@@ -2468,7 +2468,6 @@ public class SimpleBrowser extends Activity {
 	BroadcastReceiver screenLockReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent intent) {
-			clickCount += 1;
 		}
 	};
 
@@ -2937,9 +2936,6 @@ public class SimpleBrowser extends Activity {
 		sEdit.putBoolean("html5", serverWebs.get(webIndex).html5);
 		sEdit.commit();
 
-		if (!gotoSettings && (clickCount > 0))
-			clickCount -= 1;
-
 		try {
 			Class c = Class.forName("com.baidu.mobstat.StatService");
 			Method method = c.getMethod("onPause",
@@ -2956,10 +2952,8 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		if (gotoSettings)
-			gotoSettings = false;
-		else if (clickCount == 0)
-			createAd();
+		if (gotoSettings) gotoSettings = false;
+		else if (!clicked) createAd();
 
 		try {
 			Class c = Class.forName("com.baidu.mobstat.StatService");
@@ -3006,8 +3000,7 @@ public class SimpleBrowser extends Activity {
 
 		width_density = width / dm.density;
 
-		if (clickCount == 0)
-			createAd();
+		if (!clicked) createAd();
 	}
 
 	void removeAd() {
@@ -3056,14 +3049,8 @@ public class SimpleBrowser extends Activity {
 
 		public void handleMessage(Message msg) {
 			if (msg.what > 0) {
-				clickCount += 3;// hide ad for three times
-				// Log.d("=============Ads removead", clickCount + "");
+				clicked = true;
 				removeAd();
-				/*
-				 * LayoutParams lp = adContainer.getLayoutParams(); lp.height =
-				 * 0;// it will dismiss the banner for no enough space // for
-				 * new ad. adContainer.requestLayout();
-				 */
 			}
 		}
 	}
@@ -3125,6 +3112,7 @@ public class SimpleBrowser extends Activity {
 			sb.append("www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
 			sb.append(fileDir);
 			sb.append("www.baidu.com.png)'><a href=\"http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF\">美图</a></li>");
+			sb.append("<li><a href=\"http://dp.sina.cn/dpool/sports/2012/medalrank/index.php\">奥运奖牌榜</a></li>");// no favicon
 			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");

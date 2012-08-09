@@ -2969,7 +2969,7 @@ public class SimpleBrowser extends Activity {
 	public void onStop() {
 		super.onStop();
 
-		if (!gotoSettings)
+		if (!gotoSettings) // will force close if removeAd in onResume. if transfer from activity A to activity B, then A.onPause()->B.onResume()->A.onStop()
 			removeAd();// ad will occupy cpu and data quota even in background
 	}
 

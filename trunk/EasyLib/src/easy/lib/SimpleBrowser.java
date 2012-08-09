@@ -935,8 +935,7 @@ public class SimpleBrowser extends Activity {
 					util.getResIcon(getResources(), R.drawable.newpage),
 					webAdapter.getCount(), 2, mContext));// show the changed
 			// page number
-			if ((webIndex > position) || (webIndex == webAdapter.getCount()))
-				webIndex -= 1;
+			if ((webIndex >= position) && (webIndex > 0)) webIndex -= 1;
 		} else {// return to home page if only one page when click close button
 			webControl.setVisibility(View.INVISIBLE);
 			loadPage(true);
@@ -2790,8 +2789,7 @@ public class SimpleBrowser extends Activity {
 				} else if (serverWebs.get(webIndex).canGoBack())
 					imgPrev.performClick();
 				else
-					closePage(webIndex, false);// close current page if can't go
-												// back
+					closePage(webIndex, false);// close current page if can't go back
 
 				return true;
 			}

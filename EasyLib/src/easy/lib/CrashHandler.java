@@ -121,7 +121,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		Intent intent = new Intent(Intent.ACTION_SENDTO);
 		intent.setData(Uri.fromParts("mailto",
 				mContext.getString(R.string.browser_author), null));
-		intent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+		intent.putExtra(Intent.EXTRA_TEXT, mContext.getString(R.string.feedback) + "\n\n\n\n\n====================\n" + sb.toString());
 		intent.putExtra(Intent.EXTRA_SUBJECT, mContext.getPackageName()
 				+ mContext.getString(R.string.sorry));
 		if (!util.startActivity(intent, false, mContext)) {

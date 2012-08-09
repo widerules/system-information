@@ -634,7 +634,7 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,
 						boolean isUserGesture, android.os.Message resultMsg) {
-					if (openNewPage(null)) {// open new page success
+					if (openNewPage(null, webIndex+1)) {// open new page success
 						((WebView.WebViewTransport) resultMsg.obj)
 								.setWebView(serverWebs.get(webIndex));
 						resultMsg.sendToTarget();
@@ -1245,7 +1245,7 @@ public class SimpleBrowser extends Activity {
 					removeHistory(item.getOrder());
 					break;
 				case 10:// open in new tab
-					openNewPage(url);
+					openNewPage(url, webIndex+1);
 					break;
 				}
 				return true;
@@ -2413,7 +2413,7 @@ public class SimpleBrowser extends Activity {
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
-				openNewPage("");
+				openNewPage("", webAdapter.getCount());
 			}
 		});
 		// web list
@@ -2592,7 +2592,7 @@ public class SimpleBrowser extends Activity {
 
 			if (!found) {
 				if (blankIndex < 0)
-					openNewPage(uri);
+					openNewPage(uri, webAdapter.getCount());
 				else {
 					serverWebs.get(blankIndex).loadUrl(uri);
 					changePage(blankIndex);
@@ -2709,21 +2709,20 @@ public class SimpleBrowser extends Activity {
 						}).show();
 	}
 
-	private boolean openNewPage(String url) {
+	private boolean openNewPage(String url, int newIndex) {
 		boolean result = true;
 
 		if (webAdapter.getCount() == 9) {// max pages is 9
-			Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG)
-					.show();
-			result = false;
+			Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
+			return false; // not open new page if got max pages
 		} else {
-			webAdapter.add(new MyWebview(mContext));
+			webAdapter.insert(new MyWebview(mContext), newIndex);
 			webAdapter.notifyDataSetInvalidated();
-			webpages.addView(webAdapter.getItem(webAdapter.getCount() - 1));
+			webpages.addView(webAdapter.getItem(newIndex), newIndex);
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
 					webAdapter.getCount(), 2, mContext));
-			changePage(webAdapter.getCount() - 1);
+			changePage(newIndex);
 		}
 
 		if (url != null) {
@@ -2734,10 +2733,7 @@ public class SimpleBrowser extends Activity {
 			// serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url="
 			// + url);
 			else {
-				try {
-					url = URLDecoder.decode(url);
-				} catch (Exception e) {
-				}
+				try {url = URLDecoder.decode(url);} catch (Exception e) {}
 				serverWebs.get(webIndex).loadUrl(url);
 			}
 		}

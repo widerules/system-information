@@ -21,10 +21,6 @@
     <string name="share">Compartilhar</string>
     <string name="sharemode">Modo Compartilhar</string>
     <string name="sharetext">simples e fácil de usar!</string>
-    <string name="app_share_text">" "É legal!</string>
-    <string name="share_text1">" "selecionados." "</string>
-    <string name="share_text2">" "Por telefone ou" "</string>
-    <string name="share_text3">" "Pelo pc.</string>
     <string name="vote">Por favor, votem para me 5 estrelas</string>
     <string name="favoriteapps">Atalho</string>
     <string name="systemapps">Sistêmica</string>

@@ -19,10 +19,6 @@
     <string name="share">シェア</string>
     <string name="sharemode">シェアモード</string>
     <string name="sharetext">シンプルで使いやすい</string>
-    <string name="app_share_text">" "クールだ！</string>
-    <string name="share_text1">チェック</string>
-    <string name="share_text2">" "電話を通じて" "</string>
-    <string name="share_text3">" "あるいはPCを通じて</string>
     <string name="vote">5つ星のための私を投票してください</string>
     <string name="favoriteapps">ショートカットキー</string>
     <string name="systemapps">システム</string>

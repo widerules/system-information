@@ -8,7 +8,7 @@
     <string name="browser_author">easy.browsers@gmail.com</string>
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     <string name="about_message">Easy Browser is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it.</string>
-    <string name="feedback">(optional)do you have any more comments to me?</string>
+    <string name="feedback">do you have any more comments to me? (optional. eg, how to reproduce this crash?)</string>
     <string name="share_wallpaper">Share Wallpaper</string>
     <string name="share_desktop">Share Desktop</string>
     <string name="warning">Only root user can delete system app.\n\nDelete system app may cause phone can not boot.\n\nPlease think carefully！</string>

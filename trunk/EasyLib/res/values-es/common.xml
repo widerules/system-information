@@ -2,7 +2,7 @@
 
     <string name="browser_name">Navegador Fácil</string>
     <string name="about_message">Navegador Fácil Es una muy pequeña, un navegador rápido, simple y poderoso. Usted puede ver la fuente de la página, dirección web y la cuota de tiro rápido a tus amigos. \n\nLong, haga clic en la historia/marcador para eliminarlo.</string>
-    <string name="feedback">(opcional)¿tienes más comentarios a mí?</string>
+    <string name="feedback">¿tienes más comentarios a mí? (Opcional, por ejemplo, cómo reproducir este accidente?)</string>
     <string name="select_file">Archivo Selector</string>
     <string name="about">Acerca de...</string>
     <string name="help">Ayuda</string>

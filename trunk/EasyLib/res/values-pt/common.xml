@@ -5,7 +5,7 @@
     <string name="help_message">Encontre seu app por não mais de 2 clique. \nClique app ícone para pará-lo, \nClique nome app para lançar, \nClique versão aplicativo para desinstalar, \nlong clique em nome do aplicativo: atalho add, \atalho clique nlong para removê-lo.</string>
     <string name="auto_change_wallpaper">mudar papel de parede pela trepidação</string>
     <string name="about_message">Navegador Fácil É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nLongo clique história/favorito para o apagar.</string>
-    <string name="feedback">(opcional)você tem qualquer comentários mais para mim?</string>
+    <string name="feedback">Você tem algum comentário mais nenhuma para mim? (Opcional, por exemplo, como reproduzir esse acidente?)</string>
     <string name="share_wallpaper">Wallpaper Compartilhar</string>
     <string name="share_desktop">Compartilhar desktop</string>
     <string name="warning">Somente o usuário root pode excluir aplicativo do sistema. \n\nExcluir sistema aplicativo pode causar telefone não pode arrancar. \n\nPor favor, pense com cuidado!</string>

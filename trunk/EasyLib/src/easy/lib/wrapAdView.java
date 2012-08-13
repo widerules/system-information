@@ -57,24 +57,23 @@ public class wrapAdView {
 		}
 	}
 
-	public wrapAdView(Activity activity, int size, String deviceID,
+	public wrapAdView(Activity activity, int size, String publisherID,
 			Handler handler) {
 		mHandler = handler;
 
 		try {
 			switch (size) {
 			case 0:
-				mInstance = new AdView(activity, AdSize.BANNER, deviceID);
+				mInstance = new AdView(activity, AdSize.BANNER, publisherID);
 				break;
 			case 1:
-				mInstance = new AdView(activity, AdSize.IAB_BANNER, deviceID);
+				mInstance = new AdView(activity, AdSize.IAB_BANNER, publisherID);
 				break;
 			case 2:
-				mInstance = new AdView(activity, AdSize.IAB_LEADERBOARD,
-						deviceID);
+				mInstance = new AdView(activity, AdSize.IAB_LEADERBOARD, publisherID);
 				break;
 			case 3:
-				mInstance = new AdView(activity, AdSize.IAB_MRECT, deviceID);
+				mInstance = new AdView(activity, AdSize.IAB_MRECT, publisherID);
 				break;
 			}
 			mInstance.setAdListener(new Listener());

@@ -672,8 +672,7 @@ public class SimpleBrowser extends Activity {
 							showBars();
 					}
 
-					if (adview != null)
-						adview.loadAd();// should only do this by wifi
+					//if (adview != null) adview.loadAd();// should only do this by wifi
 				}
 
 				@Override
@@ -3022,15 +3021,15 @@ public class SimpleBrowser extends Activity {
 				;// do nothing for it is too narrow.
 			// but it will cause force close if not create adview?
 			if (width_density < 468)// AdSize.BANNER require 320*50
-				adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);
+				adview = new wrapAdView(this, 0, "a1502880ce4208b", mAppHandler);
 			else if (width_density < 728)
-				adview = new wrapAdView(this, 1, "a14f3f6bc126143", mAppHandler);
+				adview = new wrapAdView(this, 1, "a1502880ce4208b", mAppHandler);
 			// AdSize.IAB_BANNER require 468*60 but return 702*90 on
 			// BKB(1024*600) and S1.
 			// return width = request width * density.
 			else
 				// AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
-				adview = new wrapAdView(this, 2, "a14f3f6bc126143", mAppHandler);
+				adview = new wrapAdView(this, 2, "a1502880ce4208b", mAppHandler);
 
 			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());

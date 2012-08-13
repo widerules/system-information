@@ -218,15 +218,16 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_toLeftOf="@id/go"
-                android:layout_toRightOf="@id/addfavorite" >
+                android:layout_marginLeft="32dip"
+                android:layout_marginRight="24dip" >
 
                 <AutoCompleteTextView
                     android:id="@+id/url"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dip"
-                    android:layout_marginTop="0dip"
+                    android:layout_margin="0dip"
+                    android:paddingLeft="2dip"
+                    android:paddingRight="0dip"
                     android:background="@drawable/circle_transparent"
                     android:completionThreshold="1"
                     android:imeOptions="actionGo|flagNoExtractUi"

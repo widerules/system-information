@@ -658,7 +658,7 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,
 						boolean isUserGesture, android.os.Message resultMsg) {
-					if (openNewPage(null, webIndex+1)) {// open new page success
+					if (openNewPage(null, webIndex+1, true)) {// open new page success
 						((WebView.WebViewTransport) resultMsg.obj)
 								.setWebView(serverWebs.get(webIndex));
 						resultMsg.sendToTarget();
@@ -1266,8 +1266,8 @@ public class SimpleBrowser extends Activity {
 				case 9:// remove history
 					removeHistory(item.getOrder());
 					break;
-				case 10:// open in new tab
-					openNewPage(url, webIndex+1);
+				case 10:// open in background
+					openNewPage(url, webAdapter.getCount(), false);// use openNewPage(url, webIndex+1, true) for open in new tab 
 					break;
 				}
 				return true;
@@ -1307,7 +1307,7 @@ public class SimpleBrowser extends Activity {
 					break;
 				}
 
-			menu.add(0, 10, 1000, R.string.open_new)
+			menu.add(0, 10, 1000, R.string.open_background)
 					.setOnMenuItemClickListener(handler);
 		}
 	}
@@ -2435,7 +2435,7 @@ public class SimpleBrowser extends Activity {
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
-				openNewPage("", webAdapter.getCount());
+				openNewPage("", webAdapter.getCount(), true);
 			}
 		});
 		// web list
@@ -2614,7 +2614,7 @@ public class SimpleBrowser extends Activity {
 
 			if (!found) {
 				if (blankIndex < 0)
-					openNewPage(uri, webAdapter.getCount());
+					openNewPage(uri, webAdapter.getCount(), true);
 				else {
 					serverWebs.get(blankIndex).loadUrl(uri);
 					changePage(blankIndex);
@@ -2731,7 +2731,7 @@ public class SimpleBrowser extends Activity {
 						}).show();
 	}
 
-	private boolean openNewPage(String url, int newIndex) {
+	private boolean openNewPage(String url, int newIndex, boolean changeToNewPage) {
 		boolean result = true;
 
 		if (webAdapter.getCount() == 9) {// max pages is 9
@@ -2744,7 +2744,8 @@ public class SimpleBrowser extends Activity {
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
 					webAdapter.getCount(), 2, mContext));
-			changePage(newIndex);
+			if (changeToNewPage) changePage(newIndex);
+			else serverWebs.get(newIndex).isForeground = false;
 		}
 
 		if (url != null) {
@@ -2756,7 +2757,7 @@ public class SimpleBrowser extends Activity {
 			// + url);
 			else {
 				try {url = URLDecoder.decode(url);} catch (Exception e) {}
-				serverWebs.get(webIndex).loadUrl(url);
+				serverWebs.get(newIndex).loadUrl(url);
 			}
 		}
 

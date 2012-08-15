@@ -57,6 +57,7 @@
     <string name="remove_history">履歴から削除</string>
     <string name="save">ファイルとして保存</string>
     <string name="open_new">新しいページで開く</string>
+    <string name="open_background">バックグラウンドで開く</string>
     <string name="copy_url">URLをコピー</string>
     <string name="copy">コピー</string>
     <string name="copy_hint">コピーしたがるテキストを長く押すしてください</string>

@@ -80,6 +80,9 @@
     <string name="downloading">downloading...</string>
     <string name="download_finish">download finished, click to check</string>
     <string name="downloads">Downloads</string>
+    <string name="download">Download</string>
+    <string name="open">Open</string>
+    <string name="choose">Please choose your option</string>
     <string name="downloads_to">Files downloaded to" "</string>
     <string name="downloads_open">". "You can view the folder with ES File Explorer or other file manager. Click OK to download ES File Explorer.</string>
     <string name="sorry">" "crashed, error log is" "</string>

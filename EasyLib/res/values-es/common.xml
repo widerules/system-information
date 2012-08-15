@@ -62,6 +62,9 @@
     <string name="downloading">descargando</string>
     <string name="download_finish">descarga termine, haga clic para ver</string>
     <string name="downloads">Descargas</string>
+    <string name="download">Descargar</string>
+    <string name="open">Abrir</string>
+    <string name="choose">Por favor, elija su opción</string>
     <string name="downloads_to">Los archivos descargados a" "</string>
     <string name="downloads_open">". "Se puede ver la carpeta con el archivo ES Explorer o otro administrador de archivos. Haga clic en Aceptar para descargar el Explorador de archivos ES.</string>
     <string name="sorry">" "Se estrelló, registro de errores es" "</string>

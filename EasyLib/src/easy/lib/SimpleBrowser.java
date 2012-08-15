@@ -566,12 +566,36 @@ public class SimpleBrowser extends Activity {
 					// mimetype: application/octet-stream
 					// contentLength: 463624
 					MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-					String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url)) + "";
+					final String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url)) + "";
 					if (!"".equals(mimeType)) {//open it if can open, otherwise download it.
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setDataAndType(Uri.parse(url), mimeType);
-						if (!util.startActivity(intent, false, mContext))
-							startDownload(url, contentDisposition);//download if open fail
+						new AlertDialog.Builder(mContext)
+						.setTitle(getString(R.string.choose))
+						.setPositiveButton(getString(R.string.open),
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										Intent intent = new Intent(Intent.ACTION_VIEW);
+										intent.setDataAndType(Uri.parse(url), mimeType);
+										if (!util.startActivity(intent, false, mContext))
+											startDownload(url, contentDisposition);//download if open fail
+									}
+								})
+						.setNeutralButton(getString(R.string.download),
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										startDownload(url, contentDisposition);
+									}
+								})
+						.setNegativeButton(getString(R.string.cancel),
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+									}
+								}).show();
 					} else startDownload(url, contentDisposition);
 				}
 			});

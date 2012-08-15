@@ -72,6 +72,9 @@
     <string name="downloading">ダウンロード中...</string>
     <string name="download_finish">ダウンロードを完成しました。チェックをクリックしてください</string>
     <string name="downloads">ダウンロード</string>
+    <string name="download">ダウンロード</string>
+    <string name="open">開く</string>
+    <string name="choose">あなたのオプションを選択してください</string>
     <string name="downloads_to">ダウンロードファイルは</string>
     <string name="downloads_open">にあります。ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには、[OK]をクリックしてください。</string>
     <string name="download_hint">ダウンロード</string>

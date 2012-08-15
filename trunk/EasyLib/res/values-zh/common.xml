@@ -78,6 +78,9 @@
     <string name="downloading">正在下载...</string>
     <string name="download_finish">下载完成，点击查看</string>
     <string name="downloads">已下载</string>
+    <string name="download">下载</string>
+    <string name="open">打开</string>
+    <string name="choose">请选择</string>
     <string name="downloads_to">下载的文件位于</string>
     <string name="downloads_open">。您可以使用ES文件浏览器或其他文件管理器查看该目录。点确定下载ES文件管理器。</string>
     <string name="sorry">出现异常退出，出错日志为</string>

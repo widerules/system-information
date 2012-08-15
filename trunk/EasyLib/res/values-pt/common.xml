@@ -70,6 +70,10 @@
     <string name="start_download">Iniciar download</string>
     <string name="downloading">Recebendo</string>
     <string name="download_finish">baixar acabado, clique para verificar</string>
+    <string name="downloads">Download</string>
+    <string name="download">Baixar</string>
+    <string name="open">Abrir</string>
+    <string name="choose">Por favor, escolha a sua opção</string>
     <string name="downloads_to">Arquivos baixados para" "</string>
     <string name="downloads_open">". "Você pode ver a pasta com arquivos ES Explorer ou outro gerenciador de arquivos. Clique em OK para baixar ES File Explorer.</string>
     <string name="sorry">" "Caiu, log de erro é" "</string>

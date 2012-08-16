@@ -398,6 +398,7 @@ public class SimpleBrowser extends Activity {
 
 		int mProgress = 0;
 		boolean isForeground = true;
+		boolean closeToBefore = true;
 
 		public void getPageSource() {// to get page source, part 3
 			if ("2.3.3".equals(android.os.Build.VERSION.RELEASE))
@@ -946,6 +947,7 @@ public class SimpleBrowser extends Activity {
 
 		if (webAdapter.getCount() > 1) {
 			MyWebview tmp = (MyWebview) webpages.getChildAt(position);
+			boolean toBefore = tmp.closeToBefore;
 			webAdapter.remove(tmp);
 			webAdapter.notifyDataSetInvalidated();
 			try {
@@ -958,7 +960,10 @@ public class SimpleBrowser extends Activity {
 					util.getResIcon(getResources(), R.drawable.newpage),
 					webAdapter.getCount(), 2, mContext));// show the changed
 			// page number
-			if ((webIndex >= position) && (webIndex > 0)) webIndex -= 1;
+			if ((position == webIndex) && !toBefore) {// change to the page after current page
+				if (webIndex == webAdapter.getCount()) webIndex -= 1;
+			}
+			else if ((webIndex >= position) && (webIndex > 0)) webIndex -= 1;// change to previous page by default
 		} else {// return to home page if only one page when click close button
 			webControl.setVisibility(View.INVISIBLE);
 			loadPage(true);
@@ -2746,6 +2751,7 @@ public class SimpleBrowser extends Activity {
 					webAdapter.getCount(), 2, mContext));
 			if (changeToNewPage) changePage(newIndex);
 			else serverWebs.get(newIndex).isForeground = false;
+			serverWebs.get(newIndex).closeToBefore = changeToNewPage;
 		}
 
 		if (url != null) {

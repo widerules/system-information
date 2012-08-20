@@ -90,7 +90,7 @@
     <string name="cache">Borrar la caché si se siente lento</string>
     <string name="formdata">Datos de Formulario</string>
     <string name="password">Contraseña</string>
-    <string name="clear_all">Limpiar debajo de los datos seleccionados</string>
+    <string name="clear_all">Pulse este botón para borrar los datos seleccionados</string>
     <string name="clear_hint">se borrará</string>
     <string name="data_cleared">aclaró.</string>
     <string name="url_can_longclick">\t(URL puede ser pulsación larga)</string>
@@ -102,7 +102,7 @@
     <string name="search_engine">"motor de búsqueda"</string>
     <string name="block_popup">Bloquea pop-up</string>
     <string name="block_js">Bloquear JavaScript</string>
-    <string name="reset">Restablecer las opciones por defecto</string>
+    <string name="reset">Pulse este de las opciones por defecto</string>
     <string name="enable_proxy">Habilitar el puerto del servidor proxy, local:</string>
     <!--string name="hide_exit">Ocultar lugar de salida</string-->
     <string name="overview_page">Abrir páginas en general</string>

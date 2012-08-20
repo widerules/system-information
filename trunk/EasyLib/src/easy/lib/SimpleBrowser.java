@@ -1289,29 +1289,31 @@ public class SimpleBrowser extends Activity {
 			menu.add(0, 0, 0, R.string.save)
 					.setOnMenuItemClickListener(handler);
 
-			boolean foundBookmark = false;
-			for (int i = mBookMark.size() - 1; i >= 0; i--)
-				if ((mBookMark.get(i).m_url.equals(url))
-						|| (url.equals(mBookMark.get(i).m_url + "/"))) {
-					foundBookmark = true;
-					menu.add(0, 8, i, R.string.remove_bookmark)
+			if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
+				boolean foundBookmark = false;
+				for (int i = mBookMark.size() - 1; i >= 0; i--)
+					if ((mBookMark.get(i).m_url.equals(url))
+							|| (url.equals(mBookMark.get(i).m_url + "/"))) {
+						foundBookmark = true;
+						menu.add(0, 8, i, R.string.remove_bookmark)
+								.setOnMenuItemClickListener(handler);
+						break;
+					}
+				if (!foundBookmark)
+					menu.add(0, 7, 0, R.string.add_bookmark)
 							.setOnMenuItemClickListener(handler);
-					break;
-				}
-			if (!foundBookmark)
-				menu.add(0, 7, 0, R.string.add_bookmark)
-						.setOnMenuItemClickListener(handler);
 
-			historyIndex = -1;
-			for (int i = mHistory.size() - 1; i >= 0; i--)
-				if ((mHistory.get(i).m_url.equals(url))
-						|| (url.equals(mHistory.get(i).m_url + "/"))) {
-					historyIndex = i;
-					menu.add(0, 9, i, R.string.remove_history)
-							.setOnMenuItemClickListener(handler);
-					break;
-				}
-
+				historyIndex = -1;
+				for (int i = mHistory.size() - 1; i >= 0; i--)
+					if ((mHistory.get(i).m_url.equals(url))
+							|| (url.equals(mHistory.get(i).m_url + "/"))) {
+						historyIndex = i;
+						menu.add(0, 9, i, R.string.remove_history)
+								.setOnMenuItemClickListener(handler);
+						break;
+					}
+			}
+			
 			menu.add(0, 10, 1000, R.string.open_background)
 					.setOnMenuItemClickListener(handler);
 		}

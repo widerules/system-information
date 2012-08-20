@@ -122,7 +122,7 @@
     <string name="cookie">Cookie</string>
     <string name="formdata">Form Data</string>
     <string name="password">Password</string>
-    <string name="clear_all">Clear below data selected</string>
+    <string name="clear_all">Press this to clear selected data</string>
     <string name="clear_hint">will be cleared</string>
     <string name="data_cleared">cleared.</string>
     <string name="url_can_longclick">\t(url can be long click)</string>
@@ -149,7 +149,7 @@
     <string name="yandex">Яндекс</string>
     <string name="block_popup">Block pop-up</string>
     <string name="block_js">Block JavaScript</string>
-    <string name="reset">Reset default options</string>
+    <string name="reset">Press this for default options</string>
     <string name="enable_proxy">Enable proxy, local port:</string>
     <!-- string name="hide_exit">Hide instead of exit</string-->
     <string name="overview_page">Open Pages in Overview</string>

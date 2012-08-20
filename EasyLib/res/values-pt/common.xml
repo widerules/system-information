@@ -99,7 +99,7 @@
     <string name="cache">Limpar cache se você se sentir lento</string>
     <string name="formdata">Dados de formulário</string>
     <string name="password">Senha</string>
-    <string name="clear_all">Limpar dados abaixo selecionados</string>
+    <string name="clear_all">Pressione este botão para limpar os dados selecionados</string>
     <string name="clear_hint">será limpo</string>
     <string name="data_cleared">apuradas.</string>
     <string name="url_can_longclick">\t(URL pode ser clique de comprimento)</string>
@@ -111,7 +111,7 @@
     <string name="search_engine">motor de busca</string>
     <string name="block_popup">bloquear pop-up</string>
     <string name="block_js">bloco de JavaScript</string>
-    <string name="reset">reset para padrão</string>
+    <string name="reset">Pressione este para opções padrão</string>
     <string name="enable_proxy">Enable proxy, porta local:</string>
     <!--string name="hide_exit">esconder, em vez de saída</string-->
     <string name="overview_page">abrir a página de visão geral do modo de</string>

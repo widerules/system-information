@@ -108,5 +108,6 @@
     <string name="overview_page">Abrir páginas en general</string>
     <string name="share_to_friends">Compartir con los amigos</string>
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
-
+    <string name="add_shortcut">Crear un acceso directo en la pantalla principal</string>
+    
 </resources>

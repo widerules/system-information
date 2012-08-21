@@ -1297,7 +1297,7 @@ public class SimpleBrowser extends Activity {
 					if ((mBookMark.get(i).m_url.equals(url))
 							|| (url.equals(mBookMark.get(i).m_url + "/"))) {
 						foundBookmark = true;
-						menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);
+						if (!mAdAvailable) menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);// only work in pro version
 						menu.add(0, 8, i, R.string.remove_bookmark)
 								.setOnMenuItemClickListener(handler);
 						break;

@@ -155,5 +155,6 @@
     <string name="overview_page">Open Pages in Overview</string>
     <string name="share_to_friends">Share to friends</string>
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
-
+    <string name="add_shortcut">Create shortcut on home screen</string>
+    
 </resources>

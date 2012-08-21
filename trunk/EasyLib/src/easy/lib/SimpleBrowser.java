@@ -1259,11 +1259,11 @@ public class SimpleBrowser extends Activity {
 				case 5:// share url
 					shareUrl(url);
 					break;
-				case 7:// add bookmark
-					if (historyIndex > -1)
-						addFavo(url, mHistory.get(historyIndex).m_title);
-					else
-						addFavo(url, url);
+				case 6:// open in background
+					openNewPage(url, webAdapter.getCount(), false);// use openNewPage(url, webIndex+1, true) for open in new tab 
+					break;
+				case 7:// add short cut
+					createShortcut(url, mBookMark.get(item.getOrder()).m_title);
 					break;
 				case 8:// remove bookmark
 					removeFavo(item.getOrder());
@@ -1271,8 +1271,10 @@ public class SimpleBrowser extends Activity {
 				case 9:// remove history
 					removeHistory(item.getOrder());
 					break;
-				case 10:// open in background
-					openNewPage(url, webAdapter.getCount(), false);// use openNewPage(url, webIndex+1, true) for open in new tab 
+				case 10:// add bookmark. not use now
+					if (historyIndex > -1)
+						addFavo(url, mHistory.get(historyIndex).m_title);
+					else addFavo(url, url);
 					break;
 				}
 				return true;
@@ -1286,22 +1288,21 @@ public class SimpleBrowser extends Activity {
 					handler);
 			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(
 					handler);
-			menu.add(0, 0, 0, R.string.save)
-					.setOnMenuItemClickListener(handler);
 
 			if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
+				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+				
 				boolean foundBookmark = false;
 				for (int i = mBookMark.size() - 1; i >= 0; i--)
 					if ((mBookMark.get(i).m_url.equals(url))
 							|| (url.equals(mBookMark.get(i).m_url + "/"))) {
 						foundBookmark = true;
+						menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);
 						menu.add(0, 8, i, R.string.remove_bookmark)
 								.setOnMenuItemClickListener(handler);
 						break;
 					}
-				if (!foundBookmark)
-					menu.add(0, 7, 0, R.string.add_bookmark)
-							.setOnMenuItemClickListener(handler);
+				//if (!foundBookmark) menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);// no add bookmark on long click?
 
 				historyIndex = -1;
 				for (int i = mHistory.size() - 1; i >= 0; i--)
@@ -1313,12 +1314,28 @@ public class SimpleBrowser extends Activity {
 						break;
 					}
 			}
-			
-			menu.add(0, 10, 1000, R.string.open_background)
-					.setOnMenuItemClickListener(handler);
+			else {
+				menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
+				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+			}
 		}
 	}
 
+	void createShortcut(String url, String title) {
+		Intent i = new Intent(this, SimpleBrowser.class);
+		i.setData(Uri.parse(url));
+	    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+		Intent shortcutIntent = new Intent();
+	    shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, i);
+	    shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
+	    shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(mContext, R.drawable.explorer));
+	    shortcutIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+	    shortcutIntent.putExtra("duplicate", false); // Just create once
+	    sendBroadcast(shortcutIntent);
+	}
+	
 	boolean startDownload(String url, String contentDisposition) {
 		int posQ = url.indexOf("src=");
 		if (posQ > 0)

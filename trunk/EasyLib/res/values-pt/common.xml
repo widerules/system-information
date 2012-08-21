@@ -117,5 +117,6 @@
     <string name="overview_page">abrir a página de visão geral do modo de</string>
     <string name="share_to_friends">compartilhar com os amigos</string>
     <string name="cache_prefer">preferem cache para reduzir a largura de banda</string>
-
+    <string name="add_shortcut">Criar atalho na tela inicial</string>
+    
 </resources>

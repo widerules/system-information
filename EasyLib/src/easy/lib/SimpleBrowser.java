@@ -1690,10 +1690,11 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (fullScreen && (urlLine.getLayoutParams().height == 0))
-			showBars();
-		else
+		if (fullScreen && (urlLine.getLayoutParams().height == 0)) showBars();
+		else {
+			if (fullScreen && (urlLine.getLayoutParams().height != 0)) hideBars();
 			menuDialog.show();
+		}
 
 		return false;// show system menu if return true.
 	}
@@ -2826,6 +2827,8 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if (searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
+				else if (fullScreen && (urlLine.getLayoutParams().height != 0)) 
+					hideBars();
 				else if (BLANK_PAGE.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

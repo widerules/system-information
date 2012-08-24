@@ -3058,10 +3058,6 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void createAd() {
-		if ((cm == null) || (cm.getActiveNetworkInfo() == null)
-				|| !cm.getActiveNetworkInfo().isConnected())
-			return;
-
 		// AdView adView = new AdView(this, "6148");//adview of tapit
 		// adView.setLayoutParams(new
 		// ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
@@ -3069,6 +3065,10 @@ public class SimpleBrowser extends Activity {
 
 		if (mAdAvailable) {
 			removeAd();
+
+			if ((cm == null) || (cm.getActiveNetworkInfo() == null)
+					|| !cm.getActiveNetworkInfo().isConnected())
+				return;// not create ad if network error
 
 			if (width_density < 320)
 				;// do nothing for it is too narrow.

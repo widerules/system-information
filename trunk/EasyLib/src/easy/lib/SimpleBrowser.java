@@ -486,7 +486,9 @@ public class SimpleBrowser extends Activity {
 				webAddress.clearFocus();
 			}
 
-			return super.onTouchEvent(ev);
+			boolean ret = true;
+			try{ ret = super.onTouchEvent(ev);} catch(Exception e) {}// catch a crash reported by one user}
+			return ret;
 		}
 
 		public MyWebview(Context context) {

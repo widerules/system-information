@@ -26,8 +26,8 @@
     <string name="exit">Exit</string>
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
-    <string name="sharetext">simple and easy to use!</string>
-    <string name="vote">If you like Easy Browser, Please vote 5 stars</string>
+    <string name="sharetext">the most fast, simple and small browser on Android!</string>
+    <string name="vote">Please vote 5 stars if you like Easy Browser</string>
     <string name="favoriteapps">Shortcut</string>
     <string name="systemapps">System</string>
     <string name="userapps">User</string>
@@ -153,7 +153,7 @@
     <string name="enable_proxy">Enable proxy, local port:</string>
     <!-- string name="hide_exit">Hide instead of exit</string-->
     <string name="overview_page">Open Pages in Overview</string>
-    <string name="share_to_friends">Share to friends</string>
+    <string name="share_to_friends">Share Easy Browser to your friends</string>
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
     <string name="add_shortcut">Create shortcut on home screen</string>
     

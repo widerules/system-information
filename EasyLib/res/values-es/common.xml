@@ -11,7 +11,7 @@
     <string name="exit">Salir</string>
     <string name="share">valores</string>
     <string name="sharemode">Compartir el modo de</string>
-    <string name="sharetext">simple y fácil de usar!</string>
+    <string name="sharetext">el navegador más rápido, sencillo y pequeño en Android!</string>
     <string name="vote">Por favor vote para mí 5 estrellas</string>
     <string name="online">En línea</string>
     <string name="home">Casa</string>
@@ -106,7 +106,7 @@
     <string name="enable_proxy">Habilitar el puerto del servidor proxy, local:</string>
     <!--string name="hide_exit">Ocultar lugar de salida</string-->
     <string name="overview_page">Abrir páginas en general</string>
-    <string name="share_to_friends">Compartir con los amigos</string>
+    <string name="share_to_friends">Easy Share Browser es muy facil</string>
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
     <string name="add_shortcut">Crear un acceso directo en la pantalla principal</string>
     

@@ -106,6 +106,44 @@
                 android:fadeScrollbars="true" >
 
                 <RadioGroup
+                    android:id="@+id/share_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/share_mode"
+                        android:textColor="#f0030f03"
+                        android:textSize="16dip" />
+
+                    <RadioButton
+                        android:text="@string/facebook"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/twitter"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/google_plus"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/native_apps"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
+            
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <RadioGroup
                     android:id="@+id/font_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

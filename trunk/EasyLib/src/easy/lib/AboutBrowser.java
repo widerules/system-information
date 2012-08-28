@@ -38,7 +38,7 @@ public class AboutBrowser extends Activity {
 			cbZoomControl, cbHtml5, cbBlockImg, cbCachePrefer,
 			cbFullscreen, cbOverview, cbSnapSize;
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
-			searchEngine;
+			searchEngine, shareMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
 			clrCache;
 	LinearLayout advanceSettings, basicSettings;
@@ -52,6 +52,8 @@ public class AboutBrowser extends Activity {
 	SharedPreferences perferences;
 	SharedPreferences.Editor editor;
 
+	String packageName;
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -67,18 +69,39 @@ public class AboutBrowser extends Activity {
 	}
 
 	void share() {
-		String text = getString(R.string.browser_name)
-				+ ", "
-				+ getString(R.string.sharetext)
-				+ " http://bpc.borqs.com/market.html?id=" + getPackageName();
+		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
+		shareIntent.setClassName(packageName, "easy.lib.SimpleBrowser");
+		Uri data = null;
 
-		Intent intent = new Intent(Intent.ACTION_SEND);
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-		intent.putExtra(Intent.EXTRA_TEXT, text);
-		util.startActivity(
-				Intent.createChooser(intent, getString(R.string.sharemode)),
-				true, getBaseContext());
+		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
+		case 1:// facebook
+			data = Uri.parse("http://www.facebook.com/sharer.php?u=https://market.android.com/details?id=" + packageName + "&t=Most+fast.+simple.+small+browser+on+Android");
+			break;
+		case 2:// twitter
+			data = Uri.parse("");
+			break;
+		case 3:// google+
+			data = Uri.parse("");
+			break;
+		case 4:
+		default:
+			String text = getString(R.string.browser_name)
+			+ ", "
+			+ getString(R.string.sharetext)
+			+ " http://bpc.borqs.com/market.html?id=" + packageName;
+
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+			intent.putExtra(Intent.EXTRA_TEXT, text);
+			util.startActivity(
+					Intent.createChooser(intent, getString(R.string.sharemode)),
+					true, getBaseContext());
+			return;
+		}
+		
+		shareIntent.setData(data);
+		util.startActivity(shareIntent, false, getBaseContext());
 	}
 
 	@Override
@@ -93,7 +116,8 @@ public class AboutBrowser extends Activity {
 
 		perferences = PreferenceManager.getDefaultSharedPreferences(this);
 		editor = perferences.edit();
-
+		packageName = getPackageName();
+		
 		Button btnTitle = (Button) findViewById(R.id.title);
 		btnTitle.setText(getString(R.string.browser_name) + " "
 				+ util.getVersion(getBaseContext()) + " ("
@@ -118,13 +142,13 @@ public class AboutBrowser extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=" + getPackageName()));
+						.parse("market://details?id=" + packageName));
 				if (!util.startActivity(intent, false, getBaseContext())) {
 					finish();
 					intent.setAction(Intent.ACTION_VIEW);
 					intent.setData(Uri
-							.parse("https://play.google.com/store/apps/details?id=" + getPackageName()));
-					intent.setClassName(getPackageName(),
+							.parse("https://play.google.com/store/apps/details?id=" + packageName));
+					intent.setClassName(packageName,
 							"easy.lib.SimpleBrowser");
 					util.startActivity(intent, true, getBaseContext());
 				}
@@ -198,6 +222,7 @@ public class AboutBrowser extends Activity {
 		cbBlockImg = (CheckBox) findViewById(R.id.block_image);
 		cbCachePrefer = (CheckBox) findViewById(R.id.cache_prefer);
 		cbSnapSize = (CheckBox) findViewById(R.id.snap_size);
+		shareMode = (RadioGroup) findViewById(R.id.share_mode);
 		fontSize = (RadioGroup) findViewById(R.id.font_size);
 		searchEngine = (RadioGroup) findViewById(R.id.search_engine);
 
@@ -329,6 +354,8 @@ public class AboutBrowser extends Activity {
 		etPort.setFocusable(cbEnableProxy.isChecked());
 		etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 
+		((RadioButton) shareMode.getChildAt(perferences.getInt(
+				"share_mode", 1))).setChecked(true);
 		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2)))
 				.setChecked(true);// normal
 		((RadioButton) searchEngine.getChildAt(perferences.getInt(
@@ -363,6 +390,7 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("block_image", false);
 			editor.putBoolean("cache_prefer", false);
 			editor.putInt("full_screen", 1);
+			editor.putInt("share_mode", 1);
 			editor.putInt("textsize", 2);
 			editor.putInt("search_engine", 3);
 
@@ -392,6 +420,9 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("full_web", cbSnapSize.isChecked());
 			// editor.putInt("history_count",
 			// historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
+			editor.putInt("share_mode", shareMode
+					.indexOfChild(findViewById(shareMode
+							.getCheckedRadioButtonId())));
 			editor.putInt("textsize", fontSize
 					.indexOfChild(findViewById(fontSize
 							.getCheckedRadioButtonId())));

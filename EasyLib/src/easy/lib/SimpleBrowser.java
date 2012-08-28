@@ -264,6 +264,7 @@ public class SimpleBrowser extends Activity {
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;
 	int searchEngine = 3;
+	int shareMode = 1;
 	private int SETTING_RESULTCODE = 1002;
 	boolean enableProxy = false;
 	int localPort;
@@ -1723,13 +1724,31 @@ public class SimpleBrowser extends Activity {
 	}
 
 	private void shareUrl(String text) {
-		Intent intent = new Intent(Intent.ACTION_SEND);
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-		intent.putExtra(Intent.EXTRA_TEXT, text);
-		util.startActivity(
-				Intent.createChooser(intent, getString(R.string.sharemode)),
-				true, mContext);
+		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
+		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
+		Uri data = null;
+		
+		switch (shareMode) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+		default:
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+			intent.putExtra(Intent.EXTRA_TEXT, text);
+			util.startActivity(
+					Intent.createChooser(intent, getString(R.string.sharemode)),
+					true, mContext);
+			return;
+		}
+		
+		shareIntent.setData(data);
+		util.startActivity(shareIntent, false, mContext);
 	}
 
 	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
@@ -1778,12 +1797,18 @@ public class SimpleBrowser extends Activity {
 		ua = sp.getInt("ua", 0);
 		//showZoom = sp.getBoolean("show_zoom", false);
 		mLocale = getBaseContext().getResources().getConfiguration().locale;
-		if ("ru_RU".equals(mLocale.toString()))
+		if ("ru_RU".equals(mLocale.toString())) {
 			searchEngine = sp.getInt("search_engine", 4); // yandex
-		else if (Locale.CHINA.equals(mLocale))
+			shareMode = sp.getInt("share_mode", 1); // share by facebook by default for none chinese locale
+		}
+		else if (Locale.CHINA.equals(mLocale)) {
 			searchEngine = sp.getInt("search_engine", 2); // baidu
-		else
+			shareMode = sp.getInt("share_mode", 4); // share by native app by default for chinese locale
+		}
+		else {
 			searchEngine = sp.getInt("search_engine", 3); // google
+			shareMode = sp.getInt("share_mode", 1); // share by facebook by default for none chinese locale
+		}
 		fullScreen = sp.getBoolean("full_screen_display", false);
 		// default to full screen
 		snapFullWeb = sp.getBoolean("full_web", false);

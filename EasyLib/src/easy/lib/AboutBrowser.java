@@ -72,28 +72,25 @@ public class AboutBrowser extends Activity {
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 		shareIntent.setClassName(packageName, "easy.lib.SimpleBrowser");
 		Uri data = null;
+		
+		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext);
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
 		case 1:// facebook
-			data = Uri.parse("http://www.facebook.com/sharer.php?u=https://market.android.com/details?id=" + packageName + "&t=Most+fast.+simple.+small+browser+on+Android");
+			data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=https://market.android.com/details?id=" + packageName);
 			break;
 		case 2:// twitter
-			data = Uri.parse("");
+			data = Uri.parse("http://twitter.com/intent/tweet?text=" + shareText + "&url=https://market.android.com/details?id=" + packageName);
 			break;
 		case 3:// google+
-			data = Uri.parse("");
+			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=https://market.android.com/details?id="+packageName);
 			break;
 		case 4:
 		default:
-			String text = getString(R.string.browser_name)
-			+ ", "
-			+ getString(R.string.sharetext)
-			+ " http://bpc.borqs.com/market.html?id=" + packageName;
-
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, text);
+			intent.putExtra(Intent.EXTRA_TEXT, shareText + " http://bpc.borqs.com/market.html?id=" + packageName);
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, getBaseContext());

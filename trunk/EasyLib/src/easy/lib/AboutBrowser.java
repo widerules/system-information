@@ -1,6 +1,7 @@
 package easy.lib;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -76,16 +77,16 @@ public class AboutBrowser extends Activity {
 		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext);
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
-		case 1:// facebook
+		case 2:// facebook
 			data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=https://market.android.com/details?id=" + packageName);
 			break;
-		case 2:// twitter
+		case 3:// twitter
 			data = Uri.parse("http://twitter.com/intent/tweet?text=" + shareText + "&url=https://market.android.com/details?id=" + packageName);
 			break;
-		case 3:// google+
+		case 4:// google+
 			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=https://market.android.com/details?id="+packageName);
 			break;
-		case 4:
+		case 1:
 		default:
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
@@ -390,6 +391,22 @@ public class AboutBrowser extends Activity {
 			editor.putInt("share_mode", 1);
 			editor.putInt("textsize", 2);
 			editor.putInt("search_engine", 3);
+			
+			// the default value of shareMode and searchEngine relies on locale.
+			Locale locale = getBaseContext().getResources().getConfiguration().locale;
+			if ("ru_RU".equals(locale.toString())) {
+				editor.putInt("share_mode", 2);
+				editor.putInt("search_engine", 4);
+			}
+			else if (Locale.CHINA.equals(locale)) {
+				editor.putInt("share_mode", 1);
+				editor.putInt("search_engine", 2);
+			}
+			else {
+				editor.putInt("share_mode", 2);
+				editor.putInt("search_engine", 3);
+			}
+
 
 			editor.putBoolean("block_popup", false);
 			editor.putBoolean("block_js", false);

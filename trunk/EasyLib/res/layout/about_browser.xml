@@ -119,6 +119,10 @@
                         android:textSize="16dip" />
 
                     <RadioButton
+                        android:text="@string/native_apps"
+                        android:textColor="#f0030f03" />
+                    
+                    <RadioButton
                         android:text="@string/facebook"
                         android:textColor="#f0030f03" />
 
@@ -128,10 +132,6 @@
 
                     <RadioButton
                         android:text="@string/google_plus"
-                        android:textColor="#f0030f03" />
-
-                    <RadioButton
-                        android:text="@string/native_apps"
                         android:textColor="#f0030f03" />
                 </RadioGroup>
             </HorizontalScrollView>

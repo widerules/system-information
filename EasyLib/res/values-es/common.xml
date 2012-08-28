@@ -109,5 +109,6 @@
     <string name="share_to_friends">Easy Share Browser es muy facil</string>
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
     <string name="add_shortcut">Crear un acceso directo en la pantalla principal</string>
+    <string name="share_mode">Cuota por</string>
     
 </resources>

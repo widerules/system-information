@@ -118,5 +118,6 @@
     <string name="share_to_friends">Navegador Easy Share para seus amigos</string>
     <string name="cache_prefer">preferem cache para reduzir a largura de banda</string>
     <string name="add_shortcut">Criar atalho na tela inicial</string>
+    <string name="share_mode">Partes por</string>
     
 </resources>

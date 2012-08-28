@@ -131,5 +131,6 @@
     <string name="share_to_friends">分享点点，关注点点</string>
     <string name="cache_prefer">缓存优先，节省流量</string>
     <string name="add_shortcut">创建桌面快捷方式</string>
+    <string name="share_mode">分享方式</string>
     
 </resources>

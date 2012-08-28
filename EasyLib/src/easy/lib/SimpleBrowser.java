@@ -1729,13 +1729,16 @@ public class SimpleBrowser extends Activity {
 		Uri data = null;
 		
 		switch (shareMode) {
-		case 1:
-			break;
 		case 2:
+			data = Uri.parse("http://www.facebook.com/sharer.php?t=" + text);
 			break;
 		case 3:
+			data = Uri.parse("http://twitter.com/intent/tweet?text=" + text);
 			break;
 		case 4:
+			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + text);
+			break;
+		case 1:
 		default:
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
@@ -1799,15 +1802,15 @@ public class SimpleBrowser extends Activity {
 		mLocale = getBaseContext().getResources().getConfiguration().locale;
 		if ("ru_RU".equals(mLocale.toString())) {
 			searchEngine = sp.getInt("search_engine", 4); // yandex
-			shareMode = sp.getInt("share_mode", 1); // share by facebook by default for none chinese locale
+			shareMode = sp.getInt("share_mode", 2); // share by facebook by default for none chinese locale
 		}
 		else if (Locale.CHINA.equals(mLocale)) {
 			searchEngine = sp.getInt("search_engine", 2); // baidu
-			shareMode = sp.getInt("share_mode", 4); // share by native app by default for chinese locale
+			shareMode = sp.getInt("share_mode", 1); // share by native app by default for chinese locale
 		}
 		else {
 			searchEngine = sp.getInt("search_engine", 3); // google
-			shareMode = sp.getInt("share_mode", 1); // share by facebook by default for none chinese locale
+			shareMode = sp.getInt("share_mode", 2); // share by facebook by default for none chinese locale
 		}
 		fullScreen = sp.getBoolean("full_screen_display", false);
 		// default to full screen

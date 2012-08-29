@@ -54,6 +54,8 @@ public class AboutBrowser extends Activity {
 	SharedPreferences.Editor editor;
 
 	String packageName;
+	String marketUrl = "http://bpc.borqs.com/market.html?id=";
+	String appUrl;
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -78,10 +80,10 @@ public class AboutBrowser extends Activity {
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
 		case 2:// facebook
-			data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=https://market.android.com/details?id=" + packageName);
+			data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=" + appUrl);
 			break;
 		case 3:// twitter
-			data = Uri.parse("http://twitter.com/intent/tweet?text=" + shareText + "&url=https://market.android.com/details?id=" + packageName);
+			data = Uri.parse("http://twitter.com/intent/tweet?text=" + shareText + "&url=" + appUrl);
 			break;
 		case 4:// google+
 			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=https://market.android.com/details?id="+packageName);
@@ -91,7 +93,7 @@ public class AboutBrowser extends Activity {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, shareText + " http://bpc.borqs.com/market.html?id=" + packageName);
+			intent.putExtra(Intent.EXTRA_TEXT, shareText + " " + appUrl);
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, getBaseContext());
@@ -115,6 +117,7 @@ public class AboutBrowser extends Activity {
 		perferences = PreferenceManager.getDefaultSharedPreferences(this);
 		editor = perferences.edit();
 		packageName = getPackageName();
+		appUrl = marketUrl + packageName;
 		
 		Button btnTitle = (Button) findViewById(R.id.title);
 		btnTitle.setText(getString(R.string.browser_name) + " "

@@ -1099,6 +1099,8 @@ public class SimpleBrowser extends Activity {
 			// default to full screen now
 			snapFullWeb = sp.getBoolean("full_web", false);
 
+			shareMode = sp.getInt("share_mode", 2);
+			
 			searchEngine = sp.getInt("search_engine", 3);
 
 			boolean tmpEnableProxy = sp.getBoolean("enable_proxy", false);
@@ -1730,10 +1732,10 @@ public class SimpleBrowser extends Activity {
 		
 		switch (shareMode) {
 		case 2:
-			data = Uri.parse("http://www.facebook.com/sharer.php?t=" + text);
+			data = Uri.parse("http://www.facebook.com/sharer.php?t=from Easy Browser" + "&u=" + text);
 			break;
 		case 3:
-			data = Uri.parse("http://twitter.com/intent/tweet?text=" + text);
+			data = Uri.parse("http://twitter.com/intent/tweet?text=from Easy Browser" + "&url=" + text);
 			break;
 		case 4:
 			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + text);

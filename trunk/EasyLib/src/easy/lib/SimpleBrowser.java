@@ -1732,10 +1732,10 @@ public class SimpleBrowser extends Activity {
 		
 		switch (shareMode) {
 		case 2:
-			data = Uri.parse("http://www.facebook.com/sharer.php?t=from Easy Browser" + "&u=" + text);
+			data = Uri.parse("http://www.facebook.com/sharer.php?t=(from Easy Browser)" + "&u=" + text);
 			break;
 		case 3:
-			data = Uri.parse("http://twitter.com/intent/tweet?text=from Easy Browser" + "&url=" + text);
+			data = Uri.parse("http://twitter.com/intent/tweet?text=(from Easy Browser)" + "&url=" + text);
 			break;
 		case 4:
 			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + text);
@@ -1933,14 +1933,14 @@ public class SimpleBrowser extends Activity {
 
 		// menu icon
 		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
-				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
-				R.drawable.share, R.drawable.search, R.drawable.about };
+				R.drawable.copy, R.drawable.about, R.drawable.downloads,
+				R.drawable.share, R.drawable.search, R.drawable.exit };
 		// menu text
 		String[] menu_name_array = { getString(R.string.source),
 				getString(R.string.snap), getString(R.string.copy),
-				getString(R.string.exit), getString(R.string.downloads),
+				getString(R.string.settings), getString(R.string.downloads),
 				getString(R.string.shareurl), getString(R.string.search),
-				getString(R.string.settings) };
+				getString(R.string.exit) };
 
 		// create AlertDialog
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
@@ -2007,38 +2007,6 @@ public class SimpleBrowser extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				switch (arg2) {
-				case 2:// copy
-					try {
-						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
-							Toast.makeText(mContext,
-									getString(R.string.copy_hint),
-									Toast.LENGTH_LONG).show();
-					} catch (Exception e) {
-					}
-
-					try {
-						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
-								KeyEvent.ACTION_DOWN,
-								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-						shiftPressEvent.dispatch(serverWebs.get(webIndex));
-					} catch (Exception e) {
-					}
-					break;
-				case 5:// share url
-					shareUrl(serverWebs.get(webIndex).getTitle() + " "
-							+ serverWebs.get(webIndex).getUrl());
-					break;
-				case 6:// search
-						// serverWebs.get(webIndex).showFindDialog("e", false);
-					searchBar.bringToFront();
-					searchBar.setVisibility(View.VISIBLE);
-					etSearch.requestFocus();
-					toSearch = "";
-					imm.toggleSoftInput(0, 0);
-					break;
-				case 3:// exit
-					finish();
-					break;
 				case 0:// view page source
 					try {
 						if ("".equals(serverWebs.get(webIndex).pageSource)) {
@@ -2059,45 +2027,6 @@ public class SimpleBrowser extends Activity {
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(),
 								Toast.LENGTH_LONG).show();
-					}
-					break;
-				case 4:// downloads
-					Intent intent = new Intent(
-							"com.estrongs.action.PICK_DIRECTORY");
-					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
-					if (!util.startActivity(intent, false, mContext)) {
-						if (downloadsDialog == null)
-							downloadsDialog = new AlertDialog.Builder(
-									localContext)
-									.setMessage(
-											getString(R.string.downloads_to)
-													+ downloadPath
-													+ getString(R.string.downloads_open))
-									.setPositiveButton(
-											R.string.ok,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-													Intent intent = new Intent(
-															Intent.ACTION_VIEW,
-															Uri.parse("market://details?id=com.estrongs.android.pop"));
-													util.startActivity(intent,
-															true,
-															getBaseContext());
-												}
-											})
-									.setNegativeButton(
-											R.string.cancel,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-												}
-											}).create();
-						downloadsDialog.show();
 					}
 					break;
 				case 1:// view snap
@@ -2138,12 +2067,83 @@ public class SimpleBrowser extends Activity {
 								Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 7:// about
+				case 2:// copy
+					try {
+						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
+							Toast.makeText(mContext,
+									getString(R.string.copy_hint),
+									Toast.LENGTH_LONG).show();
+					} catch (Exception e) {
+					}
+
+					try {
+						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
+								KeyEvent.ACTION_DOWN,
+								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+						shiftPressEvent.dispatch(serverWebs.get(webIndex));
+					} catch (Exception e) {
+					}
+					break;
+				case 3:// about
 					gotoSettings = true;
-					intent = new Intent("easy.lib.about");
+					Intent intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(),
 							"easy.lib.AboutBrowser");
 					startActivityForResult(intent, SETTING_RESULTCODE);
+					break;
+				case 4:// downloads
+					intent = new Intent(
+							"com.estrongs.action.PICK_DIRECTORY");
+					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
+					if (!util.startActivity(intent, false, mContext)) {
+						if (downloadsDialog == null)
+							downloadsDialog = new AlertDialog.Builder(
+									localContext)
+									.setMessage(
+											getString(R.string.downloads_to)
+													+ downloadPath
+													+ getString(R.string.downloads_open))
+									.setPositiveButton(
+											R.string.ok,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													Intent intent = new Intent(
+															Intent.ACTION_VIEW,
+															Uri.parse("market://details?id=com.estrongs.android.pop"));
+													util.startActivity(intent,
+															true,
+															getBaseContext());
+												}
+											})
+									.setNegativeButton(
+											R.string.cancel,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+												}
+											}).create();
+						downloadsDialog.show();
+					}
+					break;
+				case 5:// share url
+					shareUrl(serverWebs.get(webIndex).getTitle() + " "
+							+ serverWebs.get(webIndex).getUrl());
+					break;
+				case 6:// search
+						// serverWebs.get(webIndex).showFindDialog("e", false);
+					searchBar.bringToFront();
+					searchBar.setVisibility(View.VISIBLE);
+					etSearch.requestFocus();
+					toSearch = "";
+					imm.toggleSoftInput(0, 0);
+					break;
+				case 7:// exit
+					finish();
 					break;
 				}
 				menuDialog.dismiss();

@@ -1730,16 +1730,19 @@ public class SimpleBrowser extends Activity {
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 		Uri data = null;
-		String from = getString(R.string.from) + " ";
+		String from = "\n(" + getString(R.string.from) + " ";
 		
 		switch (shareMode) {
-		case 2:
-			data = Uri.parse("http://www.facebook.com/sharer.php?t=(" + from + browserName + ")&u=" + text);
+		case 2:// facebook or weibo
+			if (Locale.CHINA.equals(mLocale)) // weibo for chinese locale
+				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + text + "&title=" + from + browserName + ")");
+			else // facebook for none chinese locale
+				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + text + "&t=" + from + browserName + ")");
 			break;
-		case 3:
-			data = Uri.parse("http://twitter.com/intent/tweet?text=(" + from + browserName + ")&url=" + text);
+		case 3:// twitter
+			data = Uri.parse("http://twitter.com/intent/tweet?url=" + text + "&text=" + from + browserName + ")");
 			break;
-		case 4:
+		case 4:// google+
 			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + text);
 			break;
 		case 1:
@@ -1747,7 +1750,7 @@ public class SimpleBrowser extends Activity {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, "(" + from + browserName + ") " + text);
+			intent.putExtra(Intent.EXTRA_TEXT, text + from + browserName + ")");
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, mContext);
@@ -1806,18 +1809,13 @@ public class SimpleBrowser extends Activity {
 		ua = sp.getInt("ua", 0);
 		//showZoom = sp.getBoolean("show_zoom", false);
 		mLocale = getBaseContext().getResources().getConfiguration().locale;
-		if ("ru_RU".equals(mLocale.toString())) {
+		if ("ru_RU".equals(mLocale.toString()))
 			searchEngine = sp.getInt("search_engine", 4); // yandex
-			shareMode = sp.getInt("share_mode", 2); // share by facebook by default for none chinese locale
-		}
-		else if (Locale.CHINA.equals(mLocale)) {
+		else if (Locale.CHINA.equals(mLocale)) 
 			searchEngine = sp.getInt("search_engine", 2); // baidu
-			shareMode = sp.getInt("share_mode", 1); // share by native app by default for chinese locale
-		}
-		else {
+		else
 			searchEngine = sp.getInt("search_engine", 3); // google
-			shareMode = sp.getInt("share_mode", 2); // share by facebook by default for none chinese locale
-		}
+		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
 		fullScreen = sp.getBoolean("full_screen_display", false);
 		// default to full screen
 		snapFullWeb = sp.getBoolean("full_web", false);

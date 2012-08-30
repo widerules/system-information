@@ -79,8 +79,11 @@ public class AboutBrowser extends Activity {
 		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext) + "...\n\n";
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
-		case 2:// facebook
-			data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=" + appUrl);
+		case 2:
+			if (Locale.CHINA.equals(getBaseContext().getResources().getConfiguration().locale)) // weibo for chinese locale
+				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + appUrl + "&title=" + shareText);
+			else // facebook for none chinese locale
+				data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=" + appUrl);
 			break;
 		case 3:// twitter
 			data = Uri.parse("http://twitter.com/intent/tweet?text=" + shareText + "&url=" + appUrl);

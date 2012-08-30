@@ -1935,14 +1935,14 @@ public class SimpleBrowser extends Activity {
 
 		// menu icon
 		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
-				R.drawable.copy, R.drawable.about, R.drawable.downloads,
-				R.drawable.share, R.drawable.search, R.drawable.exit };
+				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
+				R.drawable.share, R.drawable.search, R.drawable.about };
 		// menu text
 		String[] menu_name_array = { getString(R.string.source),
 				getString(R.string.snap), getString(R.string.copy),
-				getString(R.string.settings), getString(R.string.downloads),
+				getString(R.string.exit), getString(R.string.downloads),
 				getString(R.string.shareurl), getString(R.string.search),
-				getString(R.string.exit) };
+				getString(R.string.settings) };
 
 		// create AlertDialog
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
@@ -2086,15 +2086,11 @@ public class SimpleBrowser extends Activity {
 					} catch (Exception e) {
 					}
 					break;
-				case 3:// about
-					gotoSettings = true;
-					Intent intent = new Intent("easy.lib.about");
-					intent.setClassName(getPackageName(),
-							"easy.lib.AboutBrowser");
-					startActivityForResult(intent, SETTING_RESULTCODE);
+				case 3:// exit
+					finish();
 					break;
 				case 4:// downloads
-					intent = new Intent(
+					Intent intent = new Intent(
 							"com.estrongs.action.PICK_DIRECTORY");
 					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
 					if (!util.startActivity(intent, false, mContext)) {
@@ -2143,8 +2139,12 @@ public class SimpleBrowser extends Activity {
 					toSearch = "";
 					imm.toggleSoftInput(0, 0);
 					break;
-				case 7:// exit
-					finish();
+				case 7:// settings
+					gotoSettings = true;
+					intent = new Intent("easy.lib.about");
+					intent.setClassName(getPackageName(),
+							"easy.lib.AboutBrowser");
+					startActivityForResult(intent, SETTING_RESULTCODE);
 					break;
 				}
 				menuDialog.dismiss();

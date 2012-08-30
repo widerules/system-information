@@ -26,7 +26,7 @@
     <string name="exit">Exit</string>
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
-    <string name="sharetext">the most fast and light browser on Android!</string>
+    <string name="sharetext">the most fast and light browser on Android! Check it out</string>
     <string name="vote">Vote 5 stars if you like Easy Browser</string>
     <string name="favoriteapps">Shortcut</string>
     <string name="systemapps">System</string>
@@ -160,5 +160,6 @@
     <string name="twitter">Twitter</string>
     <string name="google_plus">Google+</string>
     <string name="native_apps">Native apps</string>
-        
+    <string name="from">from</string>
+    
 </resources>

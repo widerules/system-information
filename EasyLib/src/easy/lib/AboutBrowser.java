@@ -76,7 +76,7 @@ public class AboutBrowser extends Activity {
 		shareIntent.setClassName(packageName, "easy.lib.SimpleBrowser");
 		Uri data = null;
 		
-		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext);
+		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext) + "...\n\n";
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
 		case 2:// facebook
@@ -93,7 +93,7 @@ public class AboutBrowser extends Activity {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, shareText + " " + appUrl);
+			intent.putExtra(Intent.EXTRA_TEXT, shareText + appUrl);
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, getBaseContext());

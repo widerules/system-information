@@ -247,6 +247,7 @@ public class SimpleBrowser extends Activity {
 
 	ListView webList;
 	Context mContext;
+	String browserName;
 
 	//boolean flashInstalled = false;
 	// settings
@@ -723,7 +724,7 @@ public class SimpleBrowser extends Activity {
 						title = url;
 
 					if (!BLANK_PAGE.equals(url)) {
-						if (getString(R.string.browser_name).equals(title))
+						if (browserName.equals(title))
 							// if title and url not sync, then sync it
 							webAddress.setText(BLANK_PAGE);
 						else {// handle the bookmark/history after load new page
@@ -1729,13 +1730,14 @@ public class SimpleBrowser extends Activity {
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 		Uri data = null;
+		String from = getString(R.string.from) + " ";
 		
 		switch (shareMode) {
 		case 2:
-			data = Uri.parse("http://www.facebook.com/sharer.php?t=(from Easy Browser)" + "&u=" + text);
+			data = Uri.parse("http://www.facebook.com/sharer.php?t=(" + from + browserName + ")&u=" + text);
 			break;
 		case 3:
-			data = Uri.parse("http://twitter.com/intent/tweet?text=(from Easy Browser)" + "&url=" + text);
+			data = Uri.parse("http://twitter.com/intent/tweet?text=(" + from + browserName + ")&url=" + text);
 			break;
 		case 4:
 			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + text);
@@ -1745,7 +1747,7 @@ public class SimpleBrowser extends Activity {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, text);
+			intent.putExtra(Intent.EXTRA_TEXT, "(" + from + browserName + ") " + text);
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, mContext);
@@ -1782,6 +1784,8 @@ public class SimpleBrowser extends Activity {
 		// select locale in google translate
 		mContext = this;
 
+		browserName = getString(R.string.browser_name);
+		
 		// init settings
 		sp = PreferenceManager.getDefaultSharedPreferences(mContext);
 		sEdit = sp.edit();
@@ -3151,7 +3155,7 @@ public class SimpleBrowser extends Activity {
 		sb.append("<head>");
 		sb.append("<link rel=\"shortcut icon\" href=\"file:///android_asset/favicon.ico\">");
 		sb.append("<title>");
-		sb.append(getString(R.string.browser_name));
+		sb.append(browserName);
 		sb.append("</title>");
 
 		sb.append("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">");

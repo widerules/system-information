@@ -123,5 +123,6 @@
     <string name="cache_prefer">キャッシュは、帯域幅を削減するために好ん</string>
     <string name="add_shortcut">ホーム画面にショートカットを作成</string>
     <string name="share_mode">別シェア</string>
+    <string name="from">から</string>
     
 </resources>

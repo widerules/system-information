@@ -1263,7 +1263,7 @@ public class SimpleBrowser extends Activity {
 					ClipMan.setText(url);
 					break;
 				case 5:// share url
-					shareUrl(url);
+					shareUrl("", url);
 					break;
 				case 6:// open in background
 					openNewPage(url, webAdapter.getCount(), false);// use openNewPage(url, webIndex+1, true) for open in new tab 
@@ -1726,7 +1726,7 @@ public class SimpleBrowser extends Activity {
 		return simperAdapter;
 	}
 
-	private void shareUrl(String text) {
+	private void shareUrl(String title, String url) {
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 		Uri data = null;
@@ -1735,22 +1735,22 @@ public class SimpleBrowser extends Activity {
 		switch (shareMode) {
 		case 2:// facebook or weibo
 			if (Locale.CHINA.equals(mLocale)) // weibo for chinese locale
-				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + text + "&title=" + from + browserName + ")");
+				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + url + "&title=" + title + from + browserName + ")");
 			else // facebook for none chinese locale
-				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + text + "&t=" + from + browserName + ")");
+				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + url + "&t=" + title + from + browserName + ")");
 			break;
 		case 3:// twitter
-			data = Uri.parse("http://twitter.com/intent/tweet?url=" + text + "&text=" + from + browserName + ")");
+			data = Uri.parse("http://twitter.com/intent/tweet?url=" + url + "&text=" + title + from + browserName + ")");
 			break;
 		case 4:// google+
-			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + text);
+			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + url);
 			break;
 		case 1:
 		default:
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, text + from + browserName + ")");
+			intent.putExtra(Intent.EXTRA_TEXT, title + url + from + browserName + ")");
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, mContext);
@@ -1991,7 +1991,7 @@ public class SimpleBrowser extends Activity {
 										serverWebs.get(webIndex).getTitle());
 								if (!util.startActivity(intent, false,
 										getBaseContext()))
-									shareUrl(serverWebs.get(webIndex).pageSource);
+									shareUrl("", serverWebs.get(webIndex).pageSource);
 							}
 						})
 				.setNegativeButton(R.string.cancel,
@@ -2133,8 +2133,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 5:// share url
-					shareUrl(serverWebs.get(webIndex).getTitle() + " "
-							+ serverWebs.get(webIndex).getUrl());
+					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).getUrl());
 					break;
 				case 6:// search
 						// serverWebs.get(webIndex).showFindDialog("e", false);

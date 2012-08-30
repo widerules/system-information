@@ -21,7 +21,7 @@
     <string name="exit">Sair</string>
     <string name="share">Compartilhar</string>
     <string name="sharemode">Modo Compartilhar</string>
-    <string name="sharetext">o navegador mais rápido e leve em Android!</string>
+    <string name="sharetext">o navegador mais rápido e leve em Android! confira</string>
     <string name="vote">Por favor, votem para me 5 estrelas</string>
     <string name="favoriteapps">Atalho</string>
     <string name="systemapps">Sistêmica</string>
@@ -119,5 +119,6 @@
     <string name="cache_prefer">preferem cache para reduzir a largura de banda</string>
     <string name="add_shortcut">Criar atalho na tela inicial</string>
     <string name="share_mode">Partes por</string>
+    <string name="from">de</string>
     
 </resources>

@@ -11,7 +11,7 @@
     <string name="exit">Salir</string>
     <string name="share">valores</string>
     <string name="sharemode">Compartir el modo de</string>
-    <string name="sharetext">el navegador más rápido y ligero en Android!</string>
+    <string name="sharetext">el navegador más rápido y ligero en Android! échale un vistazo</string>
     <string name="vote">Por favor vote para mí 5 estrellas</string>
     <string name="online">En línea</string>
     <string name="home">Casa</string>
@@ -110,5 +110,6 @@
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
     <string name="add_shortcut">Crear un acceso directo en la pantalla principal</string>
     <string name="share_mode">Cuota por</string>
+    <string name="from">de</string>
     
 </resources>

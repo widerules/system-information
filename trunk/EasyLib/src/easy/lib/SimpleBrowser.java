@@ -1735,7 +1735,7 @@ public class SimpleBrowser extends Activity {
 		switch (shareMode) {
 		case 2:// facebook or weibo
 			if (Locale.CHINA.equals(mLocale)) // weibo for chinese locale
-				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + url + "&title=" + title + from + browserName + ")");
+				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + url + "&title=" + title + "&appkey=3792856654");
 			else // facebook for none chinese locale
 				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + url + "&t=" + title + from + browserName + ")");
 			break;

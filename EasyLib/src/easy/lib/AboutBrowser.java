@@ -81,7 +81,7 @@ public class AboutBrowser extends Activity {
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
 		case 2:
 			if (Locale.CHINA.equals(getBaseContext().getResources().getConfiguration().locale)) // weibo for chinese locale
-				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + appUrl + "&title=" + shareText);
+				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + appUrl + "&appkey=3792856654&title=" + shareText);
 			else // facebook for none chinese locale
 				data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=" + appUrl);
 			break;

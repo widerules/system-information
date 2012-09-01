@@ -2493,7 +2493,7 @@ public class SimpleBrowser extends Activity {
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
-				openNewPage("", webAdapter.getCount(), true);
+				openNewPage("", webIndex+1, true);
 			}
 		});
 		// web list
@@ -2870,7 +2870,9 @@ public class SimpleBrowser extends Activity {
 					// user's page will not reopen.
 					// singleInstance will work here, but it will cause
 					// downloadControl not work? or select file not work?
-					moveTaskToBack(true);
+					if (serverWebs.size() == 1)
+						moveTaskToBack(true);
+					else closePage(webIndex, false); // close blank page if more than one page
 				} else if (serverWebs.get(webIndex).canGoBack())
 					imgPrev.performClick();
 				else

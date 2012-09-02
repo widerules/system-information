@@ -572,9 +572,10 @@ public class SimpleBrowser extends Activity {
 					// contentLength: 463624
 					MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 					final String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url)) + "";
-					if (!"".equals(mimeType)) {//open it if can open, otherwise download it.
+					if ((mimeType != null) && (!mimeType.equals("")) && (!mimeType.equals("null"))) {//open it if can open, otherwise download it.
 						new AlertDialog.Builder(mContext)
 						.setTitle(getString(R.string.choose))
+						.setMessage(mimeType)
 						.setPositiveButton(getString(R.string.open),
 								new DialogInterface.OnClickListener() {
 									@Override

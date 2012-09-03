@@ -161,5 +161,6 @@
     <string name="google_plus">Google+</string>
     <string name="native_apps">Native apps</string>
     <string name="from">from</string>
+    <string name="download_fail">Fail to download</string>
     
 </resources>

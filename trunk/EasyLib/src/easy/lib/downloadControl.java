@@ -33,6 +33,8 @@ public class downloadControl extends Activity {
 	MyApp appstate;
 	int id;
 	DownloadTask dlt;
+	
+	NotificationManager nManager;
 
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -58,17 +60,14 @@ public class downloadControl extends Activity {
 		init(getIntent());
 	}
 
-	private void clear() {
-		NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		nManager.cancel(id);
-		appstate.downloadState.remove(id);
-	}
-
 	private void init(Intent intent) {
 		tv = (TextView) findViewById(R.id.download_name);
 		btnPause = (Button) findViewById(R.id.pause);
 		btnStop = (Button) findViewById(R.id.stop);
 		
+		id = intent.getIntExtra("id", 0);
+		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
 		String errorMsg = intent.getStringExtra("errorMsg");
 		if (errorMsg != null) {
 			tv.setText(errorMsg);
@@ -77,6 +76,7 @@ public class downloadControl extends Activity {
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					nManager.cancel(id);// clear notification
 					finish();
 				}
 			});
@@ -84,8 +84,6 @@ public class downloadControl extends Activity {
 			return;
 		}
 		
-		id = intent.getIntExtra("id", 0);
-
 		appstate = (MyApp) getApplicationContext();
 		dlt = appstate.downloadState.get(id);
 
@@ -112,7 +110,9 @@ public class downloadControl extends Activity {
 			btnPause.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {// start new task to download
-					clear();
+					nManager.cancel(id);
+					appstate.downloadState.remove(id);
+					
 					Intent intent = new Intent(
 							"simpleHome.action.START_DOWNLOAD");
 					intent.putExtra("url", url);
@@ -124,7 +124,9 @@ public class downloadControl extends Activity {
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {// remove notification
-					clear();
+					nManager.cancel(id);
+					appstate.downloadState.remove(id);
+					
 					finish();
 				}
 			});

@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -64,6 +65,25 @@ public class downloadControl extends Activity {
 	}
 
 	private void init(Intent intent) {
+		tv = (TextView) findViewById(R.id.download_name);
+		btnPause = (Button) findViewById(R.id.pause);
+		btnStop = (Button) findViewById(R.id.stop);
+		
+		String errorMsg = intent.getStringExtra("errorMsg");
+		if (errorMsg != null) {
+			tv.setText(errorMsg);
+			btnPause.setVisibility(View.INVISIBLE);
+			btnStop.setText(getString(R.string.cancel));
+			btnStop.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					finish();
+				}
+			});
+
+			return;
+		}
+		
 		id = intent.getIntExtra("id", 0);
 
 		appstate = (MyApp) getApplicationContext();
@@ -73,24 +93,12 @@ public class downloadControl extends Activity {
 			pause = dlt.pauseDownload;
 			stop = dlt.stopDownload;
 			failed = dlt.downloadFailed;
-		} else {// the corresponding download state is deleted, so can't control
-				// it.
+		} else {// the corresponding download state is deleted, so can't control it.
 			finish();
 			return;
 		}
 
-		tv = (TextView) findViewById(R.id.download_name);
-		String hint = getString(R.string.download_hint) + "\n";
-		String name = intent.getStringExtra("name") + "\n";
-		String errorMsg = intent.getStringExtra("errorMsg");
-		if (errorMsg != null)
-			hint = errorMsg;
-		else
-			hint += name;
-		tv.setText(hint);
-
-		btnPause = (Button) findViewById(R.id.pause);
-		btnStop = (Button) findViewById(R.id.stop);
+		tv.setText(getString(R.string.download_hint) + "\n" + intent.getStringExtra("name") + "\n");
 
 		if (pause)
 			btnPause.setText(getString(R.string.resume));
@@ -140,5 +148,4 @@ public class downloadControl extends Activity {
 			});
 		}
 	}
-
 }

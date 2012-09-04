@@ -359,7 +359,7 @@ public class AboutBrowser extends Activity {
 		etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 
 		((RadioButton) shareMode.getChildAt(perferences.getInt(
-				"share_mode", 1))).setChecked(true);
+				"share_mode", 2))).setChecked(true);
 		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2)))
 				.setChecked(true);// normal
 		((RadioButton) searchEngine.getChildAt(perferences.getInt(
@@ -398,18 +398,16 @@ public class AboutBrowser extends Activity {
 			editor.putInt("textsize", 2);
 			editor.putInt("search_engine", 3);
 			
-			// the default value of shareMode and searchEngine relies on locale.
+			editor.putInt("share_mode", 2);
+			// the default value of searchEngine relies on locale.
 			Locale locale = getBaseContext().getResources().getConfiguration().locale;
 			if ("ru_RU".equals(locale.toString())) {
-				editor.putInt("share_mode", 2);
 				editor.putInt("search_engine", 4);
 			}
 			else if (Locale.CHINA.equals(locale)) {
-				editor.putInt("share_mode", 1);
 				editor.putInt("search_engine", 2);
 			}
 			else {
-				editor.putInt("share_mode", 2);
 				editor.putInt("search_engine", 3);
 			}
 

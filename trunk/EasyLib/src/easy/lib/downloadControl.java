@@ -69,20 +69,6 @@ public class downloadControl extends Activity {
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 		String errorMsg = intent.getStringExtra("errorMsg");
-		if (errorMsg != null) {
-			tv.setText(errorMsg);
-			btnPause.setVisibility(View.INVISIBLE);
-			btnStop.setText(getString(R.string.cancel));
-			btnStop.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					nManager.cancel(id);// clear notification
-					finish();
-				}
-			});
-
-			return;
-		}
 		
 		appstate = (MyApp) getApplicationContext();
 		dlt = appstate.downloadState.get(id);
@@ -91,12 +77,19 @@ public class downloadControl extends Activity {
 			pause = dlt.pauseDownload;
 			stop = dlt.stopDownload;
 			failed = dlt.downloadFailed;
-		} else {// the corresponding download state is deleted, so can't control it.
+			
+			tv.setText(getString(R.string.download_hint) + "\n" + intent.getStringExtra("name") + "\n");
+		} 
+		else if (errorMsg != null) {
+			failed = true;
+			pause = false;
+			
+			tv.setText(intent.getStringExtra("name") + " " + getString(R.string.download_fail) + "\n\n" + errorMsg + "\n");
+		}
+		else {// the corresponding download state is deleted, so can't control it.
 			finish();
 			return;
 		}
-
-		tv.setText(getString(R.string.download_hint) + "\n" + intent.getStringExtra("name") + "\n");
 
 		if (pause)
 			btnPause.setText(getString(R.string.resume));
@@ -111,7 +104,7 @@ public class downloadControl extends Activity {
 				@Override
 				public void onClick(View arg0) {// start new task to download
 					nManager.cancel(id);
-					appstate.downloadState.remove(id);
+					try {appstate.downloadState.remove(id);} catch(Exception e) {}
 					
 					Intent intent = new Intent(
 							"simpleHome.action.START_DOWNLOAD");
@@ -125,7 +118,7 @@ public class downloadControl extends Activity {
 				@Override
 				public void onClick(View arg0) {// remove notification
 					nManager.cancel(id);
-					appstate.downloadState.remove(id);
+					try {appstate.downloadState.remove(id);} catch(Exception e) {}
 					
 					finish();
 				}

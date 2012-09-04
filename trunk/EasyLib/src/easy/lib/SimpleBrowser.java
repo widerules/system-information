@@ -1671,7 +1671,7 @@ public class SimpleBrowser extends Activity {
 				e.printStackTrace();
 				downloadFailed = true;
 				notification.icon = android.R.drawable.stat_notify_error;
-				intent.putExtra("errorMsg", getString(R.string.download_fail) + " " + apkName + "\n\n" + e.toString());
+				intent.putExtra("errorMsg", e.toString());
 				// request_code will help to diff different thread
 				contentIntent = PendingIntent.getActivity(mContext,
 						NOTIFICATION_ID, intent,

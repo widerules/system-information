@@ -265,7 +265,7 @@ public class SimpleBrowser extends Activity {
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;
 	int searchEngine = 3;
-	int shareMode = 1;
+	int shareMode = 2;
 	private int SETTING_RESULTCODE = 1002;
 	boolean enableProxy = false;
 	int localPort;

@@ -3163,6 +3163,27 @@ public class SimpleBrowser extends Activity {
 
 		sb.append("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">");
 		sb.append("<script type=\"text/javascript\" src=\"file:///android_asset/easybrowser.js\"></script>");
+		
+		// for google analytics
+		sb.append("<script type=\"text/javascript\">");
+		sb.append("var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-34586734-1']);");
+		//sb.append("_gaq.push(['_trackPageview']);"); // should not track page view to reserve budget. over 1,0000,000 pageview per month will be charged
+		
+		//sb.append("var pageTracker = _gat._getTracker('UA-34586734-1');");
+		//sb.append("pageTracker._trackPageview('http://tiantian.m.the9.com');");// this will also be added to overrall pageview count
+		
+		sb.append("_gaq.push(function() {");
+		sb.append("var pageTracker = _gat._getTracker('UA-34586734-1');");
+		sb.append("var link = document.getElementById('the9');");
+		sb.append("link.href = pageTracker._getLinkerUrl('http://tiantian.m.the9.com');");
+		sb.append("});");
+		
+		sb.append("(function() {");
+		sb.append("var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;");
+		sb.append("ga.src = 'file:///android_asset/ga.js';");
+		sb.append("var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);");
+		sb.append("})();");
+		sb.append("</script>");
 
 		sb.append("</head>");
 		sb.append("<body>");
@@ -3198,7 +3219,7 @@ public class SimpleBrowser extends Activity {
 			//sb.append(fileDir);
 			//sb.append("www.baidu.com.png)'><a href=\"http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF\">美图</a></li>");
 			sb.append(fileDir);
-			sb.append("tiantian.m.the9.com.png)'><a href=\"http://tiantian.m.the9.com\">热门游戏</a></li>");// no favicon
+			sb.append("tiantian.m.the9.com.png)'><a id='the9' onclick='_gaq.push(['_trackEvent', 'category', 'action', 'opt_label', opt_value]);' href='http://tiantian.m.the9.com'>热门游戏</a></li>");// no favicon
 			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");

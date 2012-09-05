@@ -572,7 +572,7 @@ public class SimpleBrowser extends Activity {
 					// contentLength: 463624
 					MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 					final String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url)) + "";
-					if ((mimeType != null) && (!mimeType.equals("")) && (!mimeType.equals("null"))) {//open it if can open, otherwise download it.
+					if ((mimeType != null) && (!mimeType.equals("")) && (!mimeType.equals("null")) && (!mimeType.equals("application/vnd.android.package-archive"))) {//open it if can open, otherwise download it.
 						new AlertDialog.Builder(mContext)
 						.setTitle(getString(R.string.choose))
 						.setMessage(mimeType)
@@ -3192,8 +3192,9 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.taobao.com.png)'><a href=\"http://www.taobao.com\">淘宝</a></li>");
 			sb.append(fileDir);
 			sb.append("www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
-			sb.append(fileDir);
-			sb.append("www.baidu.com.png)'><a href=\"http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF\">美图</a></li>");
+			//sb.append(fileDir);
+			//sb.append("www.baidu.com.png)'><a href=\"http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF\">美图</a></li>");
+			sb.append("<li><a href=\"http://tiantian.m.the9.com\">天天游戏</a></li>");// no favicon
 			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");

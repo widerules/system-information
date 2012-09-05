@@ -570,9 +570,17 @@ public class SimpleBrowser extends Activity {
 					// filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
 					// mimetype: application/octet-stream
 					// contentLength: 463624
+					boolean canOpen = false;
 					MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-					final String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url)) + "";
-					if ((mimeType != null) && (!mimeType.equals("")) && (!mimeType.equals("null")) && (!mimeType.equals("application/vnd.android.package-archive"))) {//open it if can open, otherwise download it.
+					final String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url));
+					final Intent intent = new Intent(Intent.ACTION_VIEW);
+					if ((mimeType != null) && (!mimeType.equals("")) && (!mimeType.equals("application/vnd.android.package-archive"))) {//show chooser if it can open, otherwise download it.
+						intent.setDataAndType(Uri.parse(url), mimeType);
+						List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
+						if ((list != null) && !list.isEmpty()) canOpen = true;
+					}
+
+					if (canOpen) {
 						new AlertDialog.Builder(mContext)
 						.setTitle(getString(R.string.choose))
 						.setMessage(mimeType)
@@ -581,8 +589,6 @@ public class SimpleBrowser extends Activity {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										Intent intent = new Intent(Intent.ACTION_VIEW);
-										intent.setDataAndType(Uri.parse(url), mimeType);
 										if (!util.startActivity(intent, false, mContext))
 											startDownload(url, contentDisposition);//download if open fail
 									}
@@ -1512,11 +1518,8 @@ public class SimpleBrowser extends Activity {
 				download_file = new File(downloadPath + apkName);
 				boolean found = false;
 				MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-				String mimeType = mimeTypeMap
-						.getMimeTypeFromExtension(MimeTypeMap
-								.getFileExtensionFromUrl(apkName))
-						+ "";
-				if (!"".equals(mimeType)) {
+				String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(apkName));
+				if ((mimeType != null) && (!"".equals(mimeType))) {
 					intent.setAction(Intent.ACTION_VIEW);
 					intent.setDataAndType(Uri.fromFile(download_file), mimeType);
 					List<ResolveInfo> list = getPackageManager()
@@ -3194,7 +3197,8 @@ public class SimpleBrowser extends Activity {
 			sb.append("www.baidu.com.png)'><a href=\"http://www.baidu.com\">百度</a></li>");
 			//sb.append(fileDir);
 			//sb.append("www.baidu.com.png)'><a href=\"http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF\">美图</a></li>");
-			sb.append("<li><a href=\"http://tiantian.m.the9.com\">天天游戏</a></li>");// no favicon
+			sb.append(fileDir);
+			sb.append("tiantian.m.the9.com.png)'><a href=\"http://tiantian.m.the9.com\">天天游戏</a></li>");// no favicon
 			//sb.append("<li><a href=\"http://www.9yu.co/index.html?c=2\">美图</a></li>");// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href=\"http://bpc.borqs.com\">梧桐</a></li>");

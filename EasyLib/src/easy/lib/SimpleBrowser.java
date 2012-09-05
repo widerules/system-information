@@ -3110,9 +3110,9 @@ public class SimpleBrowser extends Activity {
 				;// do nothing for it is too narrow.
 			// but it will cause force close if not create adview?
 			if (width_density < 468)// AdSize.BANNER require 320*50
-				adview = new wrapAdView(this, 0, "a1502880ce4208b", mAppHandler);
+				adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);
 			else if (width_density < 728)
-				adview = new wrapAdView(this, 1, "a1502880ce4208b", mAppHandler);
+				adview = new wrapAdView(this, 1, "a14f3f6bc126143", mAppHandler);
 			// AdSize.IAB_BANNER require 468*60 but return 702*90 on
 			// BKB(1024*600) and S1.
 			// return width = request width * density.

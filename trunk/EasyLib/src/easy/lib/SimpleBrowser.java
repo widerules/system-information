@@ -1734,7 +1734,7 @@ public class SimpleBrowser extends Activity {
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 		Uri data = null;
-		String from = "\n(" + getString(R.string.from) + " ";
+		String from = "\n(from ";
 		
 		switch (shareMode) {
 		case 2:// facebook or weibo

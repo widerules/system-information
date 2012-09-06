@@ -2,10 +2,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Easy Launcher</string>
-    <string name="author">clickclick.home@gmail.com</string>
     <string name="browser_name">Easy Browser</string>
     <string name="help_message">Find you app by not more than 2 click. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
-    <string name="browser_author">easy.browsers@gmail.com</string>
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     <string name="about_message">Easy Browser is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it.</string>
     <string name="feedback">do you have any more comments to me? (optional. eg, how to reproduce this crash?)</string>
@@ -97,8 +95,6 @@
     <string name="block_image">Block images to reduce bandwidth</string>
     <string name="homepage_css">Cool Homepage, but a little slow</string>
     <string name="max_history">History</string>
-    <string name="history_8">10</string>
-    <string name="history_16">15</string>
     <string name="font_size">Font Size</string>
     <string name="font_smallest">smallest</string>
     <string name="font_smaller">small</string>
@@ -107,19 +103,9 @@
     <string name="font_largest">largest</string>
     <string name="encoding">Encoding in current page</string>
     <string name="encoding_auto">Auto</string>
-    <string name="encoding_utf8">UTF-8</string>
-    <string name="encoding_gb2312">GB2312</string>
-    <string name="encoding_big5">BIG5</string>
-    <string name="encoding_gbk">GBK</string>
-    <string name="encoding_latin1">Latin-1</string>
-    <string name="encoding_jp">ISO-2022-JP</string>
-    <string name="encoding_jis">SHIFT_JIS</string>
-    <string name="encoding_euc_jp">EUC-JP</string>
-    <string name="encoding_euc_kr">EUC-KR</string>
     <string name="search">Search</string>
     <string name="html5">(current page)Partially support HTML5</string>
     <string name="cache">Clear cache if you feel slow</string>
-    <string name="cookie">Cookie</string>
     <string name="formdata">Form Data</string>
     <string name="password">Password</string>
     <string name="clear_all">Press this to clear selected data</string>
@@ -133,20 +119,9 @@
     <string name="advance_button">Advanced Settings</string>
     <string name="android">Phone</string>
     <string name="pc">PC</string>
-    <string name="iphone">iPhone</string>
-    <string name="ipad">iPad</string>
-    <string name="chrome">Chrome</string>
-    <string name="ie">IE</string>
-    <string name="ff">Firefox</string>
-    <string name="safari">Safari</string>
-    <string name="wp">WP</string>
-    <string name="nokia">Nokia</string>
-    <string name="bb">BlackBerry</string>
     <string name="search_engine">SearchNg</string>
-    <string name="baidu">百度</string>
     <string name="bing">Bing</string>
     <string name="google">Google</string>
-    <string name="yandex">Яндекс</string>
     <string name="block_popup">Block pop-up</string>
     <string name="block_js">Block JavaScript</string>
     <string name="reset">Press this for default options</string>
@@ -157,10 +132,7 @@
     <string name="add_shortcut">Create shortcut on home screen</string>
     <string name="share_mode">Share by</string>
     <string name="facebook">Facebook</string>
-    <string name="twitter">Twitter</string>
-    <string name="google_plus">Google+</string>
     <string name="native_apps">Native apps</string>
-    <string name="from">from</string>
     <string name="download_fail">download fail.</string>
     
 </resources>

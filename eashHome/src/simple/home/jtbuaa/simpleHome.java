@@ -418,11 +418,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				        Intent intent = new Intent(Intent.ACTION_SEND);
 				        intent.setType("text/plain");  
 				        intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-				        String text = label + getString(R.string.app_share_text) + getString(R.string.share_text1) 
-				        	+ "http://opda.co/?s=D/" + packageName
-				        	+ getString(R.string.share_text2)
-				        	+ "https://market.android.com/details?id=" + packageName
-				        	+ getString(R.string.share_text3);
+				        String text = label + getString(R.string.app_share_text) 
+				        	+ "http://bpc.borqs.com/market.html?id=" + packageName;
 			    		intent.putExtra(Intent.EXTRA_TEXT, text);
 			   			util.startActivity(Intent.createChooser(intent, getString(R.string.sharemode)), true, getBaseContext());
 					}

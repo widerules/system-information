@@ -129,7 +129,11 @@ public class AboutBrowser extends Activity {
 		btnTitle.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				share();
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setClassName(packageName, "easy.lib.SimpleBrowser");
+				Uri data = Uri.parse("https://market.android.com/details?id="+packageName);
+				intent.setData(data);
+				util.startActivity(intent, false, getBaseContext());
 			}
 		});
 

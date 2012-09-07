@@ -79,18 +79,25 @@ public class AboutBrowser extends Activity {
 		Uri data = null;
 		
 		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext) + "...\n\n";
+		boolean chineseLocale = Locale.CHINA.equals(getBaseContext().getResources().getConfiguration().locale);
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
 		case 2:
-			if (Locale.CHINA.equals(getBaseContext().getResources().getConfiguration().locale)) // weibo for chinese locale
+			if (chineseLocale) // weibo for chinese locale
 				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + appUrl + "&appkey=3792856654&ralateUid=1877224203&source=bookmark&title=" + shareText);
 			else // facebook for none chinese locale
 				data = Uri.parse("http://www.facebook.com/sharer.php?t=" + shareText + "&u=" + appUrl);
 			break;
-		case 3:// twitter
-			data = Uri.parse("http://twitter.com/intent/tweet?text=" + shareText + "&url=" + appUrl);
+		case 3:
+			if (chineseLocale) // qzone for chinese locale
+				data = Uri.parse("http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=" + appUrl + "&desc=" + shareText + "&title" + shareText);				
+			else // twitter
+				data = Uri.parse("http://twitter.com/intent/tweet?text=" + shareText + "&url=" + appUrl);
 			break;
-		case 4:// google+
+		case 4:
+			if (chineseLocale) // tencent weibo for chinese locale
+				data = Uri.parse("http://share.v.t.qq.com/index.php?c=share&a=index&url=" + appUrl + "&title=" + shareText);
+			else // google+
 			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=https://market.android.com/details?id="+packageName);
 			break;
 		case 1:

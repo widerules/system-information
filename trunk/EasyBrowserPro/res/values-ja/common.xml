@@ -124,5 +124,6 @@
     <string name="add_shortcut">ホーム画面にショートカットを作成</string>
     <string name="share_mode">別シェア</string>
     <string name="from">から</string>
+    <string name="proxy_hint">GAEまたはOrbotが見つかりません。あなたは、プロキシの仕事を作るためにそれらをダウンロードする必要があるかもしれません。 GAE用のポートは1984です。 Orbotための8118</string>
     
 </resources>

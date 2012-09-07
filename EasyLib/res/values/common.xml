@@ -131,8 +131,10 @@
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
     <string name="add_shortcut">Create shortcut on home screen</string>
     <string name="share_mode">Share by</string>
-    <string name="facebook">Facebook</string>
     <string name="native_apps">Native apps</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="google_plus">Google+</string>
     <string name="download_fail">download fail.</string>
     <string name="proxy_hint">Not found GAE or Orbot. you may need download them to make the proxy work. port for GAE is 1984. 8118 for Orbot</string>
     

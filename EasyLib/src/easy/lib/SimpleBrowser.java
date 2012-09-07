@@ -1735,19 +1735,28 @@ public class SimpleBrowser extends Activity {
 		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 		Uri data = null;
 		String from = "\n(from ";
-		
+		boolean chineseLocale = Locale.CHINA.equals(mLocale);
+				
 		switch (shareMode) {
 		case 2:// facebook or weibo
-			if (Locale.CHINA.equals(mLocale)) // weibo for chinese locale
+			if (chineseLocale) // weibo for chinese locale
 				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + url + "&title=" + title + "&appkey=3792856654&ralateUid=1877224203&source=bookmark");
 			else // facebook for none chinese locale
 				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + url + "&t=" + title + from + browserName + ")");
 			break;
-		case 3:// twitter
-			data = Uri.parse("http://twitter.com/intent/tweet?url=" + url + "&text=" + title + from + browserName + ")");
+		case 3:
+			if (chineseLocale) {// qzone for chinese locale 
+				if ("".equals(title)) title = url;
+				data = Uri.parse("http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=" + url + "&desc=" + title + "&title" + title + "&site=" + browserName);
+			}
+			else // twitter for none chinese locale
+				data = Uri.parse("http://twitter.com/intent/tweet?url=" + url + "&text=" + title + from + browserName + ")");
 			break;
-		case 4:// google+
-			data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + url);
+		case 4:
+			if (chineseLocale) // tencent weibo for chinese localse
+				data = Uri.parse("http://share.v.t.qq.com/index.php?c=share&a=index&url=" + url + "&title=" + title + url + from + browserName + ")");
+			else // google+ for none chinese locale
+				data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + url);
 			break;
 		case 1:
 		default:

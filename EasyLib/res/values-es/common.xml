@@ -111,5 +111,6 @@
     <string name="add_shortcut">Crear un acceso directo en la pantalla principal</string>
     <string name="share_mode">Cuota por</string>
     <string name="from">de</string>
+    <string name="proxy_hint">No se ha encontrado GAE o Orbot. es posible que necesite descargar a hacer el trabajo de proxy. puerto para GAE es 1984. 8118 para Orbot</string>
     
 </resources>

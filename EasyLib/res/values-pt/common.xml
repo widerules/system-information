@@ -120,5 +120,6 @@
     <string name="add_shortcut">Criar atalho na tela inicial</string>
     <string name="share_mode">Partes por</string>
     <string name="from">de</string>
+    <string name="proxy_hint">Não foi encontrado GAE ou Orbot. você pode precisar baixá-los para fazer o trabalho de proxy. porta para GAE é 1984. 8118 para Orbot</string>
     
 </resources>

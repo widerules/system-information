@@ -1,6 +1,7 @@
 package easy.lib;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -10,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -286,10 +288,68 @@ public class AboutBrowser extends Activity {
 				etPort.setEnabled(proxyEnabled);
 				etPort.setFocusable(proxyEnabled);
 				etPort.setFocusableInTouchMode(proxyEnabled);
-				if (!proxyEnabled)
-					imm.hideSoftInputFromWindow(etPort.getWindowToken(), 0);// close
-																			// soft
-																			// keyboard
+				if (!proxyEnabled) // close soft keyboard
+					imm.hideSoftInputFromWindow(etPort.getWindowToken(), 0);
+				else { // detect GAE and Orbot
+					List<ApplicationInfo> li = getPackageManager().getInstalledApplications(0);
+					boolean found = false;
+					for (int i = 0; i < li.size(); i++) {
+						if ("org.gaeproxy".equals(li.get(i).packageName) || "org.torproject.android".equals(li.get(i).packageName)) {
+							found = true;
+							break;
+						}
+					}
+					if (!found) {
+						new AlertDialog.Builder(context)
+						.setTitle(getString(R.string.browser_name))
+						.setMessage(getString(R.string.proxy_hint))
+						.setPositiveButton("GAE proxy",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										Intent intent = new Intent(Intent.ACTION_VIEW);
+										Uri data = Uri.parse("market://details?id=org.gaeproxy");
+										intent.setData(data);
+										if (!util.startActivity(intent, false, getBaseContext())) {
+											intent.setData(Uri
+													.parse("https://play.google.com/store/apps/details?id=org.gaeproxy"));
+											intent.setClassName(packageName,
+													"easy.lib.SimpleBrowser");
+											util.startActivity(intent, true, getBaseContext());
+										}
+									}
+								})
+						.setNeutralButton("Orbot",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										Intent intent = new Intent(Intent.ACTION_VIEW);
+										Uri data = Uri.parse("market://details?id=org.torproject.android");
+										intent.setData(data);
+										if (!util.startActivity(intent, false, getBaseContext())) {
+											intent.setData(Uri
+													.parse("https://play.google.com/store/apps/details?id=org.torproject.android"));
+											intent.setClassName(packageName,
+													"easy.lib.SimpleBrowser");
+											util.startActivity(intent, true, getBaseContext());
+										}
+									}
+								})
+						.setNegativeButton(getString(R.string.cancel),
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										cbEnableProxy.setChecked(false);
+										etPort.setEnabled(false);
+										etPort.setFocusable(false);
+										etPort.setFocusableInTouchMode(false);
+									}
+								}).show();
+					}
+				}
 			}
 		});
 

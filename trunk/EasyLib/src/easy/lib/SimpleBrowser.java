@@ -347,7 +347,6 @@ public class SimpleBrowser extends Activity {
 	static Method baiduPause = null;
 	static Method baiduEvent = null;
 	static {
-		Log.d("==============", "start");
 		try {
 			Class c = Class.forName("com.baidu.mobstat.StatService");
 			baiduResume = c.getMethod("onResume", new Class[] { Context.class });
@@ -711,7 +710,6 @@ public class SimpleBrowser extends Activity {
 
 					try {
 						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
-						else Log.d("============", "baiduEvent is null");
 					} catch (Exception e) {e.printStackTrace();}
 					
 					pageSource = "";
@@ -3052,7 +3050,6 @@ public class SimpleBrowser extends Activity {
 
 		try {
 			if (baiduPause != null) baiduPause.invoke(this, this);
-			else Log.d("==============", "baiduPause is null");
 		} catch (Exception e) {}
 
 		super.onPause();
@@ -3067,7 +3064,6 @@ public class SimpleBrowser extends Activity {
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
-			else Log.d("==============", "baiduResume is null");
 		} catch (Exception e) {}
 	}
 
@@ -3185,18 +3181,6 @@ public class SimpleBrowser extends Activity {
 		sb.append("<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>");
 		sb.append("<script type='text/javascript' src='file:///android_asset/easybrowser.js'></script>");
 		
-		// for google analytics
-		sb.append("<script type='text/javascript'>");
-		sb.append("var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-34586734-1']);");
-		sb.append("_gaq.push(['_trackPageview']);"); // should not track page view to reserve budget. over 1,0000,000 pageview per month will be charged
-
-		sb.append("(function() {");
-		sb.append("var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;");
-		sb.append("ga.src = 'file:///android_asset/ga.js';");
-		sb.append("var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);");
-		sb.append("})();");
-		sb.append("</script>");
-
 		sb.append("</head>");
 		sb.append("<body>");
 

@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -341,6 +342,20 @@ public class SimpleBrowser extends Activity {
 	ImageView imgAddFavo, imgGo;
 	boolean noHistoryOnSdcard = true;
 
+	// baidu tongji
+	static Method baiduResume = null;
+	static Method baiduPause = null;
+	static Method baiduEvent = null;
+	static {
+		Log.d("==============", "start");
+		try {
+			Class c = Class.forName("com.baidu.mobstat.StatService");
+			baiduResume = c.getMethod("onResume", new Class[] { Context.class });
+			baiduPause = c.getMethod("onPause", new Class[] { Context.class });
+			baiduEvent = c.getMethod("onEvent", new Class[] { Context.class, String.class, String.class });
+		} catch (Exception e) {e.printStackTrace();}
+	}
+	
 	// ad
 	static boolean mAdAvailable;
 	static {
@@ -694,6 +709,11 @@ public class SimpleBrowser extends Activity {
 						Bitmap favicon) {
 					super.onPageStarted(view, url, favicon);
 
+					try {
+						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
+						else Log.d("============", "baiduEvent is null");
+					} catch (Exception e) {e.printStackTrace();}
+					
 					pageSource = "";
 					mUrl = url;
 
@@ -3031,13 +3051,9 @@ public class SimpleBrowser extends Activity {
 		sEdit.commit();
 
 		try {
-			Class c = Class.forName("com.baidu.mobstat.StatService");
-			Method method = c.getMethod("onPause",
-					new Class[] { Context.class });
-			method.invoke(this, this);// StatService.onPause(this);//for baidu
-										// tongji
-		} catch (Exception e) {
-		}
+			if (baiduPause != null) baiduPause.invoke(this, this);
+			else Log.d("==============", "baiduPause is null");
+		} catch (Exception e) {}
 
 		super.onPause();
 	}
@@ -3050,13 +3066,9 @@ public class SimpleBrowser extends Activity {
 		else if (!clicked) createAd();
 
 		try {
-			Class c = Class.forName("com.baidu.mobstat.StatService");
-			Method method = c.getMethod("onResume",
-					new Class[] { Context.class });
-			method.invoke(this, this);// StatService.onResume(this);//for baidu
-										// tongji
-		} catch (Exception e) {
-		}
+			if (baiduResume != null) baiduResume.invoke(this, this);
+			else Log.d("==============", "baiduResume is null");
+		} catch (Exception e) {}
 	}
 
 	@Override
@@ -3177,14 +3189,7 @@ public class SimpleBrowser extends Activity {
 		sb.append("<script type='text/javascript'>");
 		sb.append("var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-34586734-1']);");
 		sb.append("_gaq.push(['_trackPageview']);"); // should not track page view to reserve budget. over 1,0000,000 pageview per month will be charged
-		
-		/*sb.append("_gaq.push(function() {");
-		sb.append("var pageTracker = _gat._getTracker('UA-34586734-1');");
-		sb.append("var link = document.getElementById('the9');");
-		sb.append("link.href = pageTracker._getLinkerUrl('http://tiantian.m.the9.com');");
-		//sb.append("link.onclick='_gaq.push(['_trackEvent', 'category', 'action', 'opt_label', opt_value]);''");
-		sb.append("});");*/
-		
+
 		sb.append("(function() {");
 		sb.append("var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;");
 		sb.append("ga.src = 'file:///android_asset/ga.js';");
@@ -3226,7 +3231,7 @@ public class SimpleBrowser extends Activity {
 			//sb.append(fileDir);
 			//sb.append("www.baidu.com.png)'><a href='http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF'>美图</a></li>");
 			sb.append(fileDir);
-			sb.append("tiantian.m.the9.com.png)'><a id='the9' href='http://tiantian.m.the9.com'>热门游戏</a></li>");
+			sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>");
 			//sb.append("<li><a href='http://www.9yu.co/index.html?c=2'>美图</a></li>");// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href='http://bpc.borqs.com'>梧桐</a></li>");

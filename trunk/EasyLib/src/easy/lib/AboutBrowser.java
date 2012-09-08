@@ -310,7 +310,14 @@ public class AboutBrowser extends Activity {
 						new AlertDialog.Builder(context)
 						.setTitle(getString(R.string.browser_name))
 						.setMessage(getString(R.string.proxy_hint))
-						.setPositiveButton("GAE proxy",
+						.setPositiveButton(getString(R.string.ok),
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+									}
+								})
+						.setNeutralButton("GAE",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -321,23 +328,6 @@ public class AboutBrowser extends Activity {
 										if (!util.startActivity(intent, false, getBaseContext())) {
 											intent.setData(Uri
 													.parse("https://play.google.com/store/apps/details?id=org.gaeproxy"));
-											intent.setClassName(packageName,
-													"easy.lib.SimpleBrowser");
-											util.startActivity(intent, true, getBaseContext());
-										}
-									}
-								})
-						.setNeutralButton("Orbot",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										Intent intent = new Intent(Intent.ACTION_VIEW);
-										Uri data = Uri.parse("market://details?id=org.torproject.android");
-										intent.setData(data);
-										if (!util.startActivity(intent, false, getBaseContext())) {
-											intent.setData(Uri
-													.parse("https://play.google.com/store/apps/details?id=org.torproject.android"));
 											intent.setClassName(packageName,
 													"easy.lib.SimpleBrowser");
 											util.startActivity(intent, true, getBaseContext());

@@ -125,5 +125,8 @@
     <string name="share_mode">別シェア</string>
     <string name="from">から</string>
     <string name="proxy_hint">GAEまたはOrbotが見つかりません。あなたは、プロキシの仕事を作るためにそれらをダウンロードする必要があるかもしれません。 GAE用のポートは1984です。 Orbotための8118</string>
+    <string name="sendto">著者に送る</string>
+    <string name="click_for_detail">詳細はクリック</string>
+    <string name="crashed">クラッシュ</string>
     
 </resources>

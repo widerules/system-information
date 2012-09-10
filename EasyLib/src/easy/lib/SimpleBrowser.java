@@ -1059,8 +1059,7 @@ public class SimpleBrowser extends Activity {
 
 				if (clearHistory && clearBookmark && clearCache && clearCookie
 						&& clearFormdata && clearPassword) {// clear all
-					// mContext.deleteDatabase("webview.db");//this may get disk
-					// IO crash
+					// mContext.deleteDatabase("webview.db");//this may get disk IO crash
 					ClearFolderTask cltask = new ClearFolderTask();
 					// clear files folder and app_databases folder
 					cltask.execute(getFilesDir().getAbsolutePath(),

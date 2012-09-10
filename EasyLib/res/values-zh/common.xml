@@ -137,5 +137,8 @@
     <string name="google_plus">腾讯微博</string>
     <string name="download_fail">下载失败</string>
     <string name="proxy_hint">您没有安装GAE或Orbot，打开代理端口可能无效。您可以选择点击按钮下载。GAE的端口为1984，Orbot的为8118</string>
+    <string name="sendto">反馈给作者</string>
+    <string name="click_for_detail">点击查看详情</string>
+    <string name="crashed">出错了</string>
     
 </resources>

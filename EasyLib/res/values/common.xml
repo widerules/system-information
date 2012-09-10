@@ -137,5 +137,8 @@
     <string name="google_plus">Google+</string>
     <string name="download_fail">download fail.</string>
     <string name="proxy_hint">Not found GAE or Orbot. you may need download them to make the proxy work. port for GAE is 1984. 8118 for Orbot</string>
+    <string name="sendto">Feedback</string>
+    <string name="click_for_detail">Click for details</string>
+    <string name="crashed">crashed</string>
     
 </resources>

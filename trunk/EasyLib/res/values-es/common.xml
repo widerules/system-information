@@ -112,5 +112,8 @@
     <string name="share_mode">Cuota por</string>
     <string name="from">de</string>
     <string name="proxy_hint">No se ha encontrado GAE o Orbot. es posible que necesite descargar a hacer el trabajo de proxy. puerto para GAE es 1984. 8118 para Orbot</string>
+    <string name="sendto">Realimentación</string>
+    <string name="click_for_detail">Click para mas informacion</string>
+    <string name="crashed">se estrelló</string>
     
 </resources>

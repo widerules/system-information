@@ -14,10 +14,9 @@
         android:id="@+id/download_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_margin="10dip"
         android:gravity="center"
+        android:layout_gravity="center"
         android:text="@string/download_hint"
         android:textSize="18dip" />
 
@@ -25,7 +24,6 @@
         android:id="@+id/control_buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/download_name"
         android:gravity="center"
         android:orientation="horizontal" >
 
@@ -54,8 +52,7 @@
         android:id="@+id/adContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/control_buttons"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:layout_marginTop="50dip" />
     
 	</LinearLayout>

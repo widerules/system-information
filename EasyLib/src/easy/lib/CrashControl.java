@@ -78,7 +78,7 @@ public class CrashControl extends Activity {
 			}
 		});
 
-		retry = errorMsg.contains("SQLite");// should clear the database and retry if SQLite* exception
+		retry = errorMsg.contains("WebViewDatabase");// should clear the database and retry if SQLite* exception
 		
 		if (retry) {// clear database and retry
 			btnRetry.setText(getString(R.string.retry));

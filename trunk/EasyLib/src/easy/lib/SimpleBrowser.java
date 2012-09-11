@@ -1780,7 +1780,7 @@ public class SimpleBrowser extends Activity {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, title + url + from + browserName + ")");
+			intent.putExtra(Intent.EXTRA_TEXT, title + "\n" + url + from + browserName + ")");
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, mContext);

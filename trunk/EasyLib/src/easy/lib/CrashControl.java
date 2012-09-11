@@ -118,21 +118,12 @@ public class CrashControl extends Activity {
 					intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.feedback) + "\n\n\n\n\n====================\n" + sb.toString());
 					intent.putExtra(Intent.EXTRA_SUBJECT, getPackageName()
 							+ getString(R.string.sorry));
-					if (!util.startActivity(intent, false, CrashControl.this)) {
-						// save the error log
-						final String path = saveCrashInfo2File(sb);
-						// show toast
-						new Thread() {
-							@Override
-							public void run() {
-								Looper.prepare();
-								Toast.makeText(
-										CrashControl.this,
-										getPackageName() + getString(R.string.sorry) + path,
-										Toast.LENGTH_LONG).show();
-								Looper.loop();
-							}
-						}.start();
+					if (!util.startActivity(intent, false, CrashControl.this)) {// send mail by webpage if fail to send through mail client
+						Uri data = Uri.parse("https://mail.google.com/mail/?ui=2&view=cm&fs=1&tf=1&su=" + getString(R.string.sorry) + "&to=" + getString(R.string.browser_author) + "&body=" + getString(R.string.feedback) + "\n\n\n\n\n====================\n" + sb.toString());
+						intent = new Intent(Intent.ACTION_VIEW);
+						intent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
+						intent.setData(data);
+						util.startActivity(intent, true, CrashControl.this);
 					}
 					
 					nManager.cancel(id);// remove notification
@@ -160,33 +151,6 @@ public class CrashControl extends Activity {
 
 		infos.put("versionName", util.getVersion(ctx));
 		infos.put("versionCode", util.getVersionCode(ctx));
-	}
-
-	/**
-	 * save error log to file
-	 * 
-	 * @param ex
-	 * @return filename
-	 */
-	private String saveCrashInfo2File(StringBuffer sb) {
-
-		String path = util.preparePath(this) + "crash/";
-		try {
-			long timestamp = System.currentTimeMillis();
-			String time = formatter.format(new Date());
-			String fileName = "crash-" + time + "-" + timestamp + ".log";
-			File dir = new File(path);
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-			FileOutputStream fos = new FileOutputStream(path + fileName);
-			fos.write(sb.toString().getBytes());
-			fos.close();
-			return path + fileName;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "";
 	}
 
 }

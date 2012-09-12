@@ -1994,8 +1994,7 @@ public class SimpleBrowser extends Activity {
 				.setPositiveButton(R.string.share,
 						new DialogInterface.OnClickListener() {// share
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog,	int which) {
 								Intent intent = new Intent(Intent.ACTION_SENDTO);
 								intent.setData(Uri
 										.fromParts("mailto", "", null));
@@ -2003,16 +2002,15 @@ public class SimpleBrowser extends Activity {
 										serverWebs.get(webIndex).pageSource);
 								intent.putExtra(Intent.EXTRA_SUBJECT,
 										serverWebs.get(webIndex).getTitle());
-								if (!util.startActivity(intent, false,
-										getBaseContext()))
+								if (!util.startActivity(intent, true, getBaseContext())) {
 									shareUrl("", serverWebs.get(webIndex).pageSource);
+								}
 							}
 						})
 				.setNegativeButton(R.string.cancel,
 						new DialogInterface.OnClickListener() {// cancel
 							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+							public void onClick(DialogInterface dialog,	int which) {
 							}
 						}).create();
 

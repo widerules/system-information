@@ -772,10 +772,15 @@ public class SimpleBrowser extends Activity {
 
 							for (int i = mHistory.size() - 2; i >= 0; i--) {
 								if (mHistory.get(i).m_url.equals(url)) {
+									if (title.equals(url)) {// use meaningful title to replace title with url content
+										String meaningfulTitle = mHistory.get(i).m_title;
+										if (!meaningfulTitle.equals(url)) 
+											mHistory.set(mHistory.size()-1, mHistory.get(i));
+									}
 									mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
 									return;
 								} else if (mHistory.get(i).m_site.equals(site)) {
-									mHistory.remove(i);// only keep the latest history of the same site?
+									mHistory.remove(i);// only keep the latest history of the same site. is that good user experience?
 									break;
 								}
 							}

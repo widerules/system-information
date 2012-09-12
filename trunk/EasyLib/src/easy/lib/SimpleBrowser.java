@@ -66,6 +66,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1530,9 +1531,14 @@ public class SimpleBrowser extends Activity {
 
 				download_file = new File(downloadPath + apkName);
 				boolean found = false;
+				// apkName.split(".")[1] will get java.lang.ArrayIndexOutOfBoundsException if apkName contain chinese character
+				// MimeTypeMap.getFileExtensionFromUrl(apkName) will get null
+				String ext = apkName.substring(apkName.indexOf(".")+1, apkName.length());
+				
 				MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-				String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(apkName));
-				if ((mimeType != null) && (!"".equals(mimeType))) {
+				String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
+				if (mimeType == null) mimeType = "";// must set a value to mimeType otherwise it will error when download finished
+				if (!"".equals(mimeType)) {
 					intent.setAction(Intent.ACTION_VIEW);
 					intent.setDataAndType(Uri.fromFile(download_file), mimeType);
 					List<ResolveInfo> list = getPackageManager()
@@ -1643,7 +1649,7 @@ public class SimpleBrowser extends Activity {
 						ssize = df.format(total_read * 1.0 / sizeM) + "M ";
 					else if (total_read > 1024)
 						ssize = df.format(total_read * 1.0 / 1024) + "K ";
-
+					
 					contentIntent = PendingIntent.getActivity(mContext, 0,
 							intent, 0);
 					notification.contentView.setOnClickPendingIntent(
@@ -1674,8 +1680,7 @@ public class SimpleBrowser extends Activity {
 											downloadPath + apkName, 0);
 							downloadAppID.add(new packageIDpair(pi.packageName,
 									NOTIFICATION_ID, download_file));
-						} catch (Exception e) {
-						}
+						} catch (Exception e) {}
 
 					// call system package manager to install app.
 					// it will not return result code,

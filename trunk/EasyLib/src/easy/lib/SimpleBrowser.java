@@ -3382,7 +3382,7 @@ public class SimpleBrowser extends Activity {
 		}
 
 		if (cursor != null) {
-			if (cursor.moveToFirst()) {
+			try {if (cursor.moveToFirst()) {
 				int columnTitle = cursor
 						.getColumnIndex(Browser.BookmarkColumns.TITLE);
 				int columnUrl = cursor
@@ -3391,28 +3391,25 @@ public class SimpleBrowser extends Activity {
 						.getColumnIndex(Browser.BookmarkColumns.BOOKMARK);
 
 				while (!cursor.isAfterLast()) {
-					try {
-						String url = cursor.getString(columnUrl).trim();
-						String site = "";
-						String[] tmp = url.split("/");
-						if (tmp.length > 2)
-							site = tmp[2];// if url is http://m.baidu.com, then
-											// url.split("/")[2] is m.baidu.com
-						else
-							site = tmp[0];
+					String url = cursor.getString(columnUrl).trim();
+					String site = "";
+					String[] tmp = url.split("/");
+					if (tmp.length > 2)
+						site = tmp[2];// if url is http://m.baidu.com, then
+										// url.split("/")[2] is m.baidu.com
+					else
+						site = tmp[0];
 
-						TitleUrl titleUrl = new TitleUrl(
-								cursor.getString(columnTitle), url, site);
-						if (cursor.getInt(columnBookmark) >= 1)
-							mSystemBookMark.add(titleUrl);
-						else
-							mSystemHistory.add(titleUrl);
-					} catch (Exception e) {
-					}
+					TitleUrl titleUrl = new TitleUrl(
+							cursor.getString(columnTitle), url, site);
+					if (cursor.getInt(columnBookmark) >= 1)
+						mSystemBookMark.add(titleUrl);
+					else
+						mSystemHistory.add(titleUrl);
 
 					cursor.moveToNext();
 				}
-			}
+			}} catch (Exception e) {}
 			cursor.close();
 		}
 	}

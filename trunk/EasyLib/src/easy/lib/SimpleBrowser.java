@@ -759,21 +759,23 @@ public class SimpleBrowser extends Activity {
 						else {// handle the bookmark/history after load new page
 							String site = "";
 							String[] tmp = url.split("/");
-							if (tmp.length > 2)
-								site = tmp[2];
+							if (tmp.length > 2)	site = tmp[2];
 							// if url is http://m.baidu.com,
 							// then url.split("/")[2] is m.baidu.com
-							else
-								site = tmp[0];
-							for (int i = mHistory.size() - 1; i >= 0; i--) {
+							else site = tmp[0];
+							
+							if (mHistory.get(mHistory.size() - 1).m_url.equals(url)) return;// already the latest, no need to update history list
+							
+							TitleUrl titleUrl = new TitleUrl(title, url, site);
+							mHistory.add(titleUrl);// always add it to history if visit any page.
+							historyChanged = true;
+
+							for (int i = mHistory.size() - 2; i >= 0; i--) {
 								if (mHistory.get(i).m_url.equals(url)) {
-									mHistory.get(i).m_title = title;
-									return;// record one url only once in the
-											// history list.
+									mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
+									return;
 								} else if (mHistory.get(i).m_site.equals(site)) {
-									mHistory.remove(i);// only keep the latest
-									// history of the same
-									// site.
+									mHistory.remove(i);// only keep the latest history of the same site?
 									break;
 								}
 							}
@@ -788,15 +790,9 @@ public class SimpleBrowser extends Activity {
 								// array to store the site.
 							}
 
-							try {// try to open the png, if can't open, then
-									// need save
-								FileInputStream fis = openFileInput(site
-										+ ".png");
-								try {
-									fis.close();
-								} catch (IOException e) {
-									;
-								}
+							try {// try to open the png, if can't open, then need save
+								FileInputStream fis = openFileInput(site + ".png");
+								try {fis.close();} catch (IOException e) {}
 							} catch (FileNotFoundException e1) {
 								try {// save the Favicon
 									if (view.getFavicon() != null) {
@@ -825,13 +821,9 @@ public class SimpleBrowser extends Activity {
 								}
 							}
 
-							TitleUrl titleUrl = new TitleUrl(title, url, site);
-							mHistory.add(titleUrl);
-							historyChanged = true;
-
 							while (mHistory.size() > historyCount) {
 								// remove oldest history
-								site = mHistory.get(0).m_site;
+								//site = mHistory.get(0).m_site;
 								mHistory.remove(0);// delete the first history
 								// if list larger than
 								// historyCount;

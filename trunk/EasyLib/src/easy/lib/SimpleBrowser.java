@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,10 +45,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -69,7 +66,6 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1777,10 +1773,11 @@ public class SimpleBrowser extends Activity {
 			break;
 		case 1:
 		default:
+			if (!"".equals(title)) title = title + "\n";
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, title + "\n" + url + from + browserName + ")");
+			intent.putExtra(Intent.EXTRA_TEXT, title + url + from + browserName + ")");
 			util.startActivity(
 					Intent.createChooser(intent, getString(R.string.sharemode)),
 					true, mContext);

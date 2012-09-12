@@ -582,11 +582,16 @@ public class SimpleBrowser extends Activity {
 					// mimetype: application/octet-stream
 					// contentLength: 463624
 					boolean canOpen = false;
-					MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-					final String mimeType = mimeTypeMap.getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(url));
+					if ((mimetype == null) || ("".equals(mimetype))) {
+						MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+						// not accurate, sometime follow with other characters after the ext. 
+						// for example, mp3?xcode=fb5657ad8e05457600f94af7f4eefafa&response-content-disposition=attachment;
+						String ext = url.substring(url.lastIndexOf(".")+1, url.length());
+						mimetype = mimeTypeMap.getMimeTypeFromExtension(ext);
+					}
 					final Intent intent = new Intent(Intent.ACTION_VIEW);
-					if ((mimeType != null) && (!mimeType.equals("")) && (!mimeType.equals("application/vnd.android.package-archive"))) {//show chooser if it can open, otherwise download it.
-						intent.setDataAndType(Uri.parse(url), mimeType);
+					if ((mimetype != null) && (!mimetype.equals("")) && (!mimetype.equals("application/vnd.android.package-archive"))) {//show chooser if it can open, otherwise download it.
+						intent.setDataAndType(Uri.parse(url), mimetype);
 						List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
 						if ((list != null) && !list.isEmpty()) canOpen = true;
 					}
@@ -594,7 +599,7 @@ public class SimpleBrowser extends Activity {
 					if (canOpen) {
 						new AlertDialog.Builder(mContext)
 						.setTitle(getString(R.string.choose))
-						.setMessage(mimeType)
+						.setMessage(mimetype)
 						.setPositiveButton(getString(R.string.open),
 								new DialogInterface.OnClickListener() {
 									@Override

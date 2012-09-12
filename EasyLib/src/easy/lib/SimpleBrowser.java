@@ -584,9 +584,11 @@ public class SimpleBrowser extends Activity {
 					boolean canOpen = false;
 					if ((mimetype == null) || ("".equals(mimetype))) {
 						MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-						// not accurate, sometime follow with other characters after the ext. 
+						// sometime follow with post parameters after the ext. so need cut it off 
 						// for example, mp3?xcode=fb5657ad8e05457600f94af7f4eefafa&response-content-disposition=attachment;
 						String ext = url.substring(url.lastIndexOf(".")+1, url.length());
+						int posQ = ext.indexOf("?");
+						if (posQ > 0) ext = ext.substring(0, posQ);// cut off post parameters
 						mimetype = mimeTypeMap.getMimeTypeFromExtension(ext);
 					}
 					final Intent intent = new Intent(Intent.ACTION_VIEW);

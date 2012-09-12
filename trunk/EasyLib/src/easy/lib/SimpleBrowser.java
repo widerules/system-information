@@ -804,7 +804,7 @@ public class SimpleBrowser extends Activity {
 										    float scaleWidth = ((float) 16) / width;
 										    float scaleHeight = ((float) 16) / height;
 
-										    // createa matrix for the manipulation
+										    // create matrix for the manipulation
 										    Matrix matrix = new Matrix();
 										    // resize the bit map
 										    matrix.postScale(scaleWidth, scaleHeight);
@@ -821,27 +821,10 @@ public class SimpleBrowser extends Activity {
 								}
 							}
 
-							while (mHistory.size() > historyCount) {
-								// remove oldest history
-								//site = mHistory.get(0).m_site;
-								mHistory.remove(0);// delete the first history
-								// if list larger than
-								// historyCount;
-
-								/*
-								 * //not delete icon here. it can be clear when
-								 * clear all boolean found = false; for (int i =
-								 * mHistory.size()-1; i >= 0; i--) { if
-								 * (mHistory.get(i).m_site.equals(site)) { found
-								 * = true; break; } } if (!found) { for (int i =
-								 * mBookMark.size()-1; i >= 0; i--) { if
-								 * (mBookMark.get(i).m_site.equals(site)) {
-								 * found = true; break; } } if (!found)
-								 * deleteFile(mHistory.get(0).m_site +
-								 * ".png");//delete the Favicon if not any
-								 * reference }
-								 */
-							}
+							while (mHistory.size() > historyCount) 
+								// delete from the first history until the list is not larger than historyCount;
+								 //not delete icon here. it can be clear when clear all 
+								mHistory.remove(0);
 						}
 					}
 				}

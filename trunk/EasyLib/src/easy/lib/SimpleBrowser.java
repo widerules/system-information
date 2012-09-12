@@ -1533,7 +1533,7 @@ public class SimpleBrowser extends Activity {
 				boolean found = false;
 				// apkName.split(".")[1] will get java.lang.ArrayIndexOutOfBoundsException if apkName contain chinese character
 				// MimeTypeMap.getFileExtensionFromUrl(apkName) will get null
-				String ext = apkName.substring(apkName.indexOf(".")+1, apkName.length());
+				String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
 				
 				MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 				String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);

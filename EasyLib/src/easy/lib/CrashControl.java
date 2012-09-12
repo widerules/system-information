@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -79,6 +80,10 @@ public class CrashControl extends Activity {
 		});
 
 		retry = errorMsg.contains("WebViewDatabase");// should clear the database and retry if SQLite* exception
+		SharedPreferences perferences = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences.Editor editor = perferences.edit();
+		boolean retried = perferences.getBoolean("retried", false);
+		if (retried) retry = false;// don't retry 2 times
 		
 		if (retry) {// clear database and retry
 			btnRetry.setText(getString(R.string.retry));
@@ -86,6 +91,8 @@ public class CrashControl extends Activity {
 				@Override
 				public void onClick(View arg0) {// start new task to download
 					deleteDatabase("webview.db");
+					editor.putBoolean("retried", true);
+					editor.commit();
 					
 					Intent intent = new Intent("android.intent.action.MAIN");
 					intent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
@@ -100,6 +107,9 @@ public class CrashControl extends Activity {
 			btnRetry.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					editor.putBoolean("retried", false);
+					editor.commit();
+					
 					// collect device info
 					collectDeviceInfo(CrashControl.this);
 

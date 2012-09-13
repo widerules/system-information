@@ -582,17 +582,16 @@ public class SimpleBrowser extends Activity {
 					// mimetype: application/octet-stream
 					// contentLength: 463624
 					boolean canOpen = false;
+					String apkName = getName(url);
 					if ((mimetype == null) || ("".equals(mimetype))) {
 						MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-						// sometime follow with post parameters after the ext. so need cut it off 
-						// for example, mp3?xcode=fb5657ad8e05457600f94af7f4eefafa&response-content-disposition=attachment;
-						String ext = url.substring(url.lastIndexOf(".")+1, url.length());
-						int posQ = ext.indexOf("?");
-						if (posQ > 0) ext = ext.substring(0, posQ);// cut off post parameters
+						String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
 						mimetype = mimeTypeMap.getMimeTypeFromExtension(ext);
 					}
 					final Intent intent = new Intent(Intent.ACTION_VIEW);
-					if ((mimetype != null) && (!mimetype.equals("")) && (!mimetype.equals("application/vnd.android.package-archive"))) {//show chooser if it can open, otherwise download it.
+					if ((mimetype != null) && (!mimetype.equals("")) && (!mimetype.equals("application/vnd.android.package-archive")) && (!mimetype.equals("audio/mpeg"))) {
+						//show chooser if it can open, otherwise download it.
+						//download apk and mp3 directly without confirm. 
 						intent.setDataAndType(Uri.parse(url), mimetype);
 						List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
 						if ((list != null) && !list.isEmpty()) canOpen = true;
@@ -601,7 +600,7 @@ public class SimpleBrowser extends Activity {
 					if (canOpen) {
 						new AlertDialog.Builder(mContext)
 						.setTitle(getString(R.string.choose))
-						.setMessage(mimetype)
+						.setMessage(apkName)
 						.setPositiveButton(getString(R.string.open),
 								new DialogInterface.OnClickListener() {
 									@Override
@@ -1350,46 +1349,41 @@ public class SimpleBrowser extends Activity {
 	    sendBroadcast(shortcutIntent);
 	}
 	
-	boolean startDownload(String url, String contentDisposition) {
-		int posQ = url.indexOf("src=");
-		if (posQ > 0)
-			url = url.substring(posQ + 4);// get src part
-		url = url.replace("%2D", "-");
-		url = url.replace("%5F", "_");
-		url = url.replace("%3F", "?");
-		url = url.replace("%3D", "=");
-		url = url.replace("%2E", ".");
-		url = url.replace("%2F", "/");
-		url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any
-		if (url.endsWith("/"))
-			url = url.substring(0, url.length() - 1); // such as
-		// http://m.cnbeta.com/,
-		// http://www.google.com.hk/
-
+	String getName(String url) {
 		String readableUrl = url;
 		try {
-			readableUrl = URLDecoder.decode(url);
-		} catch (Exception e) {
-		}// report crash by Elad, so catch it.
-		posQ = readableUrl.indexOf("?");
+			readableUrl = URLDecoder.decode(url);// change something like http%3A%2F%2Fwww%2Ebaidu%2Ecom%3Fcid%3D%2D%5F1 to http://www.baidu.com?cid=-_1
+		} catch (Exception e) {}// report crash by Elad, so catch it.
+		
+		if (readableUrl.endsWith("/"))
+			readableUrl = readableUrl.substring(0, readableUrl.length() - 1); // such as http://m.cnbeta.com/, http://www.google.com.hk/
+		
+		int posQ = readableUrl.indexOf("?");
 		if (posQ > 0)
-			readableUrl = readableUrl.substring(0, posQ);// cut off post paras
-		// if any.
+			readableUrl = readableUrl.substring(0, posQ);// cut off post paras if any.
 
 		String ss[] = readableUrl.split("/");
 		String apkName = ss[ss.length - 1].toLowerCase(); // get download file
 		// name
 		if (apkName.contains("="))
 			apkName = apkName.split("=")[apkName.split("=").length - 1];
-		// image from shuimu do not have ext. so we add it manually
+
+		return apkName;
+	}
+	
+	boolean startDownload(String url, String contentDisposition) {
+		int posQ = url.indexOf("src=");
+		if (posQ > 0) url = url.substring(posQ + 4);// get src part
+
+		String apkName = getName(url);
+		// image file from shuimu do not have ext. so we add it manually
 		if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {
 			apkName += ".jpg";
 			contentDisposition = null;
 		}
 
 		if (downloadPath.startsWith(getFilesDir().getPath()))
-			Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
 
 		Iterator iter = appstate.downloadState.entrySet().iterator();
 		while (iter.hasNext()) {

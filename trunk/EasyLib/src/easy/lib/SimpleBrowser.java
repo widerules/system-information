@@ -753,7 +753,8 @@ public class SimpleBrowser extends Activity {
 					if (title == null)
 						title = url;
 
-					if (!HOME_PAGE.equals(url)) {
+					if (HOME_PAGE.equals(url)) updateHomePage();
+					else {
 						if (browserName.equals(title))
 							// if title and url not sync, then sync it
 							webAddress.setText(HOME_BLANK);
@@ -2451,11 +2452,11 @@ public class SimpleBrowser extends Activity {
 		adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		setLayout();
 
+		createHomePage();
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-				createHomePage();
 				loadPage();
 			}
 			else
@@ -3073,58 +3074,11 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void updateHomePage() {
-		if (!HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
+		//if (!HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
 		 
-		StringBuilder sb = new StringBuilder("javascript:test('");
-		for (int i = mHistory.size() - 1; i >= 0; i--) {
-			sb.append(mHistory.get(i).m_site + "...");
-			sb.append(mHistory.get(i).m_url + "...");
-			sb.append(mHistory.get(i).m_title + ",,,,");
-		}
-		sb.append("');");
-		serverWebs.get(webIndex).loadUrl(sb.toString());
-	}
-	
-	void loadPage() {
-		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
-	}
-
-	void createHomePage() {
-		String fileName = "home.html";
-		try {// try to open the file, if can't open, then need create
-			FileInputStream fis = openFileInput(fileName);
-			try {fis.close();} catch (IOException e) {}
-		} catch (FileNotFoundException e1) {
-			try {
-				FileOutputStream fos = openFileOutput(fileName, 0);
-				fos.write(homePage().toString().getBytes());
-				fos.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	StringBuilder homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
-						// scaled image, 3 is history displayed by link
-		String fileDir = "<li style='background-image:url(file://"
-				+ getFilesDir().getAbsolutePath() + "/";
-		String ret = "<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
-		StringBuilder sb = new StringBuilder(ret);
-		sb.append("<meta name='viewport' content='width=device-width'>");
-		sb.append("<html>");
-		sb.append("<head>");
-		sb.append("<link rel='shortcut icon' href='file:///android_asset/favicon.ico'>");
-		sb.append("<title>");
-		sb.append(browserName);
-		sb.append("</title>");
-
-		sb.append("<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>");
-		sb.append("<script type='text/javascript' src='file:///android_asset/easybrowser.js'></script>");
+		StringBuilder sb = new StringBuilder("javascript:inject(\"");
+		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		sb.append("</head>");
-		sb.append("<body>");
-
 		String tmp = getString(R.string.top);
 		if (countDown > 0)
 			tmp += getString(R.string.url_can_longclick);
@@ -3209,9 +3163,9 @@ public class SimpleBrowser extends Activity {
 			for (int i = 0; i < mBookMark.size(); i++) {
 				sb.append(fileDir);
 				sb.append(mBookMark.get(i).m_site);
-				sb.append(".png)'><a href=\"");
+				sb.append(".png)'><a href='");
 				sb.append(mBookMark.get(i).m_url);
-				sb.append("\">");
+				sb.append("'>");
 				sb.append(mBookMark.get(i).m_title);
 				sb.append("</a></li>");
 			}
@@ -3237,9 +3191,9 @@ public class SimpleBrowser extends Activity {
 			for (int i = mHistory.size() - 1; i >= 0; i--) {
 				sb.append(fileDir);
 				sb.append(mHistory.get(i).m_site);
-				sb.append(".png)'><a href=\"");
+				sb.append(".png)'><a href='");
 				sb.append(mHistory.get(i).m_url);
-				sb.append("\">");
+				sb.append("'>");
 				sb.append(mHistory.get(i).m_title);
 				sb.append("</a></li>");
 			}
@@ -3248,8 +3202,47 @@ public class SimpleBrowser extends Activity {
 		if (countDown > 0)
 			countDown -= 1;
 
-		sb.append("</body>");
-		sb.append("</html>");
+		sb.append("\");");
+		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject content to html
+	}
+	
+	void loadPage() {
+		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
+	}
+
+	void createHomePage() {
+		String fileName = "home.html";
+		try {// try to open the file, if can't open, then need create
+			FileInputStream fis = openFileInput(fileName);
+			try {fis.close();} catch (IOException e) {}
+		} catch (FileNotFoundException e1) {
+			try {
+				FileOutputStream fos = openFileOutput(fileName, 0);
+				fos.write(homePage().toString().getBytes());
+				fos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	StringBuilder homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
+						// scaled image, 3 is history displayed by link
+		String ret = "<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
+		StringBuilder sb = new StringBuilder(ret);
+		sb.append("<meta name='viewport' content='width=device-width'>");
+		sb.append("<html>");
+		sb.append("<head>");
+		sb.append("<link rel='shortcut icon' href='file:///android_asset/favicon.ico'>");
+		sb.append("<title>");
+		sb.append(browserName);
+		sb.append("</title>");
+
+		sb.append("<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>");
+		sb.append("<script type='text/javascript' src='file:///android_asset/easybrowser.js'></script>");
+		
+		sb.append("</head><body></body></html>");
+		
 		return sb;
 	}
 

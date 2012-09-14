@@ -240,6 +240,7 @@ class wrapWebSettings {
 public class SimpleBrowser extends Activity {
 
 	String HOME_PAGE = "file:///data/data/";
+	final String HOME_BLANK = "about:blank";
 	boolean firstRun = false;
 	int countDown = 0;
 
@@ -401,7 +402,7 @@ public class SimpleBrowser extends Activity {
 	}
 
 	class MyWebview extends WebView {
-		public String pageSource = "", mUrl = "";
+		public String pageSource = "";
 
 		wrapWebSettings webSettings;
 
@@ -716,17 +717,18 @@ public class SimpleBrowser extends Activity {
 					} catch (Exception e) {e.printStackTrace();}
 					
 					pageSource = "";
-					mUrl = url;
 
 					if (isForeground) {
 						// close soft keyboard
 						imm.hideSoftInputFromWindow(getWindowToken(), 0);
 						loadProgress.setVisibility(View.VISIBLE);
-						webAddress.setText(url);
+						
+						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
+						else webAddress.setText(url);
+						
 						imgRefresh.setImageResource(R.drawable.stop);
 
-						if (fullScreen)
-							showBars();
+						if (fullScreen) showBars();
 					}
 
 					//if (adview != null) adview.loadAd();// should only do this by wifi
@@ -754,7 +756,7 @@ public class SimpleBrowser extends Activity {
 					if (!HOME_PAGE.equals(url)) {
 						if (browserName.equals(title))
 							// if title and url not sync, then sync it
-							webAddress.setText(HOME_PAGE);
+							webAddress.setText(HOME_BLANK);
 						else {// handle the bookmark/history after load new page
 							String site = "";
 							String[] tmp = url.split("/");
@@ -1053,7 +1055,7 @@ public class SimpleBrowser extends Activity {
 					mHistory.clear();
 					writeBookmark("history", mHistory);
 					historyChanged = false;
-					if (HOME_PAGE.equals(webAddress.getText().toString()))
+					if (HOME_BLANK.equals(webAddress.getText().toString()))
 						shouldReload = true;
 				}
 
@@ -1061,7 +1063,7 @@ public class SimpleBrowser extends Activity {
 					mBookMark.clear();
 					writeBookmark("bookmark", mBookMark);
 					bookmarkChanged = false;
-					if (HOME_PAGE.equals(webAddress.getText().toString()))
+					if (HOME_BLANK.equals(webAddress.getText().toString()))
 						shouldReload = true;
 				}
 
@@ -2530,7 +2532,8 @@ public class SimpleBrowser extends Activity {
 	};
 
 	void gotoUrl(String url) {
-		if (!url.contains(".")) {
+		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
+		else if (!url.contains(".")) {
 			switch (searchEngine) {
 			case 1:// bing
 				url = "http://www.bing.com/search?q=" + url;
@@ -2547,8 +2550,8 @@ public class SimpleBrowser extends Activity {
 				url = "http://www.google.com/search?q=" + url;
 				break;
 			}
-		} else if (!url.contains("://"))
-			url = "http://" + url;
+		} 
+		else if (!url.contains("://")) url = "http://" + url;
 		serverWebs.get(webIndex).loadUrl(url);
 	}
 
@@ -2561,8 +2564,10 @@ public class SimpleBrowser extends Activity {
 		}
 		serverWebs.get(position).isForeground = true;
 		webIndex = position;
-		webAddress.setText(serverWebs.get(webIndex).mUrl);// refresh the display
-															// url
+		String url = serverWebs.get(webIndex).getUrl();
+		if (url == null) url = "";
+		else if (HOME_PAGE.equals(url)) url = HOME_BLANK;
+		webAddress.setText(url);// refresh the display url
 
 		// global settings
 		WebSettings localSettings = serverWebs.get(webIndex).getSettings();
@@ -2803,7 +2808,7 @@ public class SimpleBrowser extends Activity {
 					hideSearchBox();
 				else if (fullScreen && (urlLine.getLayoutParams().height != 0)) 
 					hideBars();
-				else if (HOME_PAGE.equals(webAddress.getText().toString())) {
+				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return
 					// super.onKeyDown(keyCode, event), app will exit.

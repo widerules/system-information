@@ -239,7 +239,7 @@ class wrapWebSettings {
 
 public class SimpleBrowser extends Activity {
 
-	final String BLANK_PAGE = "about:blank";
+	String HOME_PAGE = "file:///data/data/";
 	boolean firstRun = false;
 	int countDown = 0;
 
@@ -751,10 +751,10 @@ public class SimpleBrowser extends Activity {
 					if (title == null)
 						title = url;
 
-					if (!BLANK_PAGE.equals(url)) {
+					if (!HOME_PAGE.equals(url)) {
 						if (browserName.equals(title))
 							// if title and url not sync, then sync it
-							webAddress.setText(BLANK_PAGE);
+							webAddress.setText(HOME_PAGE);
 						else {// handle the bookmark/history after load new page
 							String site = "";
 							String[] tmp = url.split("/");
@@ -763,7 +763,7 @@ public class SimpleBrowser extends Activity {
 							// then url.split("/")[2] is m.baidu.com
 							else site = tmp[0];
 							
-							if (mHistory.get(mHistory.size() - 1).m_url.equals(url)) return;// already the latest, no need to update history list
+							if ((mHistory.size() > 0) && (mHistory.get(mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
 							
 							TitleUrl titleUrl = new TitleUrl(title, url, site);
 							mHistory.add(titleUrl);// always add it to history if visit any page.
@@ -835,7 +835,7 @@ public class SimpleBrowser extends Activity {
 
 				@Override
 				public boolean shouldOverrideUrlLoading(WebView view, String url) {
-					if (BLANK_PAGE.equals(url)) {// some site such as weibo and
+					if ("about:blank".equals(url)) {// some site such as weibo and
 						// mysilkbaby will send
 						// BLANK_PAGE when login.
 						return true;// we should do nothing but return true,
@@ -978,9 +978,9 @@ public class SimpleBrowser extends Activity {
 			else if ((webIndex >= position) && (webIndex > 0)) webIndex -= 1;// change to previous page by default
 		} else {// return to home page if only one page when click close button
 			webControl.setVisibility(View.INVISIBLE);
-			loadPage(true);
+			loadPage();
 			webIndex = 0;
-			serverWebs.get(webIndex).clearHistory();
+			//serverWebs.get(webIndex).clearHistory();// is that necessary to clear history?
 		}
 		changePage(webIndex);
 	}
@@ -1053,7 +1053,7 @@ public class SimpleBrowser extends Activity {
 					mHistory.clear();
 					writeBookmark("history", mHistory);
 					historyChanged = false;
-					if (BLANK_PAGE.equals(webAddress.getText().toString()))
+					if (HOME_PAGE.equals(webAddress.getText().toString()))
 						shouldReload = true;
 				}
 
@@ -1061,7 +1061,7 @@ public class SimpleBrowser extends Activity {
 					mBookMark.clear();
 					writeBookmark("bookmark", mBookMark);
 					bookmarkChanged = false;
-					if (BLANK_PAGE.equals(webAddress.getText().toString()))
+					if (HOME_PAGE.equals(webAddress.getText().toString()))
 						shouldReload = true;
 				}
 
@@ -1207,22 +1207,7 @@ public class SimpleBrowser extends Activity {
 				shouldReload = true;
 			}
 
-			if (shouldReload) {
-				if (BLANK_PAGE.equals(webAddress.getText().toString()))
-					loadPage(true);
-				else
-					serverWebs.get(webIndex).reload();
-			}
-			/*
-			 * css default to true now. String url =
-			 * serverWebs.get(webIndex).getUrl() + ""; boolean oldCss = css; css
-			 * = sp.getBoolean("css", false); if ((oldCss != css) &&
-			 * url.equals(BLANK_PAGE)) loadPage(true);//reload homepage if css
-			 * effect changed
-			 * 
-			 * disable setting of historyCount historyCount =
-			 * sp.getInt("history_count", 1) == 1 ? 10 : 15;
-			 */
+			if (shouldReload) serverWebs.get(webIndex).reload();
 			sEdit.commit();
 		}
 	}
@@ -1302,7 +1287,7 @@ public class SimpleBrowser extends Activity {
 			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(
 					handler);
 
-			if (BLANK_PAGE.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
+			if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
 				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
 				
 				boolean foundBookmark = false;
@@ -1801,6 +1786,7 @@ public class SimpleBrowser extends Activity {
 		mContext = this;
 
 		browserName = getString(R.string.browser_name);
+		HOME_PAGE += mContext.getPackageName() + "/files/home.html";
 		
 		// init settings
 		sp = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -2029,8 +2015,7 @@ public class SimpleBrowser extends Activity {
 
 						m_sourceDialog.setTitle(serverWebs.get(webIndex)
 								.getTitle());
-						if (BLANK_PAGE
-								.equals(serverWebs.get(webIndex).getUrl()))
+						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
 							m_sourceDialog.setIcon(R.drawable.explorer);
 						else
 							m_sourceDialog.setIcon(new BitmapDrawable(
@@ -2068,8 +2053,7 @@ public class SimpleBrowser extends Activity {
 						snapView.setImageBitmap(bmp);
 						snapDialog
 								.setTitle(serverWebs.get(webIndex).getTitle());
-						if (BLANK_PAGE
-								.equals(serverWebs.get(webIndex).getUrl()))
+						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
 							snapDialog.setIcon(R.drawable.explorer);
 						else
 							snapDialog.setIcon(new BitmapDrawable(serverWebs
@@ -2241,8 +2225,8 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				String url = serverWebs.get(webIndex).getUrl();
-				if (BLANK_PAGE.equals(url))
-					return;// not add blank page
+				if (HOME_PAGE.equals(url))
+					return;// not add home page
 
 				boolean foundBookmark = false;
 				for (int i = mBookMark.size() - 1; i >= 0; i--)
@@ -2374,42 +2358,6 @@ public class SimpleBrowser extends Activity {
 		webpages = (MyViewFlipper) findViewById(R.id.webpages);
 		webpages.addView(serverWebs.get(webIndex));
 
-		/*
-		 * try {//so many error report on 2.3.6 related to clearcache
-		 * Log.d("================", "try clear the cache");
-		 * serverWebs.get(webIndex).clearCache(true);
-		 * mContext.deleteDatabase("webviewCache.db"); } catch (Exception e) {
-		 * e.printStackTrace(); new AlertDialog.Builder(this).
-		 * setTitle(R.string.browser_name).
-		 * setMessage("It seems the database of webview is corrupted.").
-		 * setPositiveButton(R.string.share, new
-		 * DialogInterface.OnClickListener() {//share
-		 * 
-		 * @Override public void onClick(DialogInterface dialog, int which) {
-		 * Intent intent = new Intent(Intent.ACTION_VIEW, null);
-		 * intent.addCategory(Intent.CATEGORY_DEFAULT); List<ResolveInfo>
-		 * viewApps = getPackageManager().queryIntentActivities(intent, 0);
-		 * ResolveInfo appDetail = null; for (int i = 0; i < viewApps.size();
-		 * i++) { if
-		 * (viewApps.get(i).activityInfo.name.contains("InstalledAppDetails")) {
-		 * appDetail = viewApps.get(i);//get the activity for app detail setting
-		 * break; } } if (appDetail != null) { intent = new
-		 * Intent(Intent.ACTION_VIEW);
-		 * intent.setClassName(appDetail.activityInfo.packageName,
-		 * appDetail.activityInfo.name); intent.putExtra("pkg",
-		 * mContext.getPackageName());
-		 * intent.putExtra("com.android.settings.ApplicationPkgName",
-		 * mContext.getPackageName()); } else {//2.6 tahiti change the action.
-		 * intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS",
-		 * Uri.fromParts("package", mContext.getPackageName(), null)); }
-		 * util.startActivity(intent, true, getBaseContext()); }
-		 * }).setNegativeButton(R.string.cancel, new
-		 * DialogInterface.OnClickListener() {//cancel
-		 * 
-		 * @Override public void onClick(DialogInterface dialog, int which) { }
-		 * }).show(); }
-		 */
-
 		webTools = (RelativeLayout) findViewById(R.id.webtools);
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		if (fullScreen) {// hide url bar and tools bar
@@ -2430,14 +2378,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoForward()) {
-					WebBackForwardList wbfl = serverWebs.get(webIndex)
-							.copyBackForwardList();
-					if (BLANK_PAGE.equals(wbfl.getItemAtIndex(
-							wbfl.getCurrentIndex() + 1).getUrl()))
-						loadPage(true);// goBack will show blank page at this
-										// time, so load the home page.
-					else
-						serverWebs.get(webIndex).goForward();
+					serverWebs.get(webIndex).goForward();
 				}
 			}
 		});
@@ -2446,14 +2387,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoBack()) {
-					WebBackForwardList wbfl = serverWebs.get(webIndex)
-							.copyBackForwardList();
-					if (BLANK_PAGE.equals(wbfl.getItemAtIndex(
-							wbfl.getCurrentIndex() - 1).getUrl()))
-						loadPage(true);// goBack will show blank page at this
-										// time, so load the home page.
-					else
-						serverWebs.get(webIndex).goBack();
+					serverWebs.get(webIndex).goBack();
 				}
 			}
 		});
@@ -2466,10 +2400,7 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).stopLoading();
 					loadProgress.setVisibility(View.INVISIBLE);
 				} else {// reload the webpage
-					if (!BLANK_PAGE.equals(webAddress.getText().toString()))
-						serverWebs.get(webIndex).reload();
-					else
-						loadPage(true);
+					serverWebs.get(webIndex).reload();
 				}
 			}
 		});
@@ -2477,7 +2408,7 @@ public class SimpleBrowser extends Activity {
 		imgHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				loadPage(true);
+				loadPage();
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);
@@ -2521,8 +2452,10 @@ public class SimpleBrowser extends Activity {
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
-			if (Intent.ACTION_MAIN.equals(getIntent().getAction()))
-				loadPage(false);
+			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
+				createHomePage();
+				loadPage();
+			}
 			else
 				serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
 		} catch (Exception e) {
@@ -2597,28 +2530,26 @@ public class SimpleBrowser extends Activity {
 	};
 
 	void gotoUrl(String url) {
-		if (!BLANK_PAGE.equals(url)) {
-			if (!url.contains(".")) {
-				switch (searchEngine) {
-				case 1:// bing
-					url = "http://www.bing.com/search?q=" + url;
-					break;
-				case 2:// baidu
-					url = "http://www.baidu.com/s?wd=" + url;
-					break;
-				case 4:// yandex
-					url = "http://yandex.ru/yandsearch?clid=1911433&text="
-							+ url;
-					break;
-				case 3:// google
-				default:
-					url = "http://www.google.com/search?q=" + url;
-					break;
-				}
-			} else if (!url.contains("://"))
-				url = "http://" + url;
-			serverWebs.get(webIndex).loadUrl(url);
-		}
+		if (!url.contains(".")) {
+			switch (searchEngine) {
+			case 1:// bing
+				url = "http://www.bing.com/search?q=" + url;
+				break;
+			case 2:// baidu
+				url = "http://www.baidu.com/s?wd=" + url;
+				break;
+			case 4:// yandex
+				url = "http://yandex.ru/yandsearch?clid=1911433&text="
+						+ url;
+				break;
+			case 3:// google
+			default:
+				url = "http://www.google.com/search?q=" + url;
+				break;
+			}
+		} else if (!url.contains("://"))
+			url = "http://" + url;
+		serverWebs.get(webIndex).loadUrl(url);
 	}
 
 	void changePage(int position) {
@@ -2677,7 +2608,7 @@ public class SimpleBrowser extends Activity {
 					changePage(i); // show correct page
 					found = true;
 					break;
-				} else if (BLANK_PAGE.equals(url))
+				} else if (HOME_PAGE.equals(url))
 					blankIndex = i;
 			}
 
@@ -2706,7 +2637,7 @@ public class SimpleBrowser extends Activity {
 								try {//index out of bound error reported by a few user
 									mBookMark.remove(order);
 									bookmarkChanged = true;
-									loadPage(false);
+									//loadPage(false);
 								} catch (Exception e) {}
 							}
 						})
@@ -2731,7 +2662,6 @@ public class SimpleBrowser extends Activity {
 								try {//index out of bound error reported by a few user
 									mHistory.remove(order);
 									historyChanged = true;
-									loadPage(false);
 								} catch (Exception e) {}
 							}
 						})
@@ -2786,7 +2716,7 @@ public class SimpleBrowser extends Activity {
 								mBookMark.add(titleUrl);
 								// sort by name
 								Collections.sort(mBookMark, new myComparator());
-								loadPage(false);
+								//loadPage(false);
 
 								bookmarkChanged = true;
 							}
@@ -2820,7 +2750,7 @@ public class SimpleBrowser extends Activity {
 
 		if (url != null) {
 			if ("".equals(url))
-				loadPage(true);
+				loadPage();
 			// else if (url.endsWith(".pdf"))//can't open local pdf by google
 			// doc
 			// serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url="
@@ -2873,7 +2803,7 @@ public class SimpleBrowser extends Activity {
 					hideSearchBox();
 				else if (fullScreen && (urlLine.getLayoutParams().height != 0)) 
 					hideBars();
-				else if (BLANK_PAGE.equals(webAddress.getText().toString())) {
+				else if (HOME_PAGE.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return
 					// super.onKeyDown(keyCode, event), app will exit.
@@ -3137,14 +3067,40 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void loadPage(boolean notJudge) {
-		if ((notJudge) || (serverWebs.get(webIndex).getUrl() == null)
-				|| (serverWebs.get(webIndex).getUrl().equals(BLANK_PAGE)))
-			serverWebs.get(webIndex).loadDataWithBaseURL(BLANK_PAGE,
-					homePage(), "text/html", "utf-8", BLANK_PAGE);
+	void updateHomePage() {
+		if (!HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
+		 
+		StringBuilder sb = new StringBuilder("javascript:test('");
+		for (int i = mHistory.size() - 1; i >= 0; i--) {
+			sb.append(mHistory.get(i).m_site + "...");
+			sb.append(mHistory.get(i).m_url + "...");
+			sb.append(mHistory.get(i).m_title + ",,,,");
+		}
+		sb.append("');");
+		serverWebs.get(webIndex).loadUrl(sb.toString());
+	}
+	
+	void loadPage() {
+		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 	}
 
-	String homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
+	void createHomePage() {
+		String fileName = "home.html";
+		try {// try to open the file, if can't open, then need create
+			FileInputStream fis = openFileInput(fileName);
+			try {fis.close();} catch (IOException e) {}
+		} catch (FileNotFoundException e1) {
+			try {
+				FileOutputStream fos = openFileOutput(fileName, 0);
+				fos.write(homePage().toString().getBytes());
+				fos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	StringBuilder homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
 						// scaled image, 3 is history displayed by link
 		String fileDir = "<li style='background-image:url(file://"
 				+ getFilesDir().getAbsolutePath() + "/";
@@ -3289,7 +3245,7 @@ public class SimpleBrowser extends Activity {
 
 		sb.append("</body>");
 		sb.append("</html>");
-		return sb.toString();
+		return sb;
 	}
 
 	class TitleUrl {

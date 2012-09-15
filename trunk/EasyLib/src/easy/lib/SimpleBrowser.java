@@ -426,10 +426,10 @@ public class SimpleBrowser extends Activity {
 		class MyJavaScriptInterface {
 			@SuppressWarnings("unused")
 			public void processHTML(String html) {
-				if (html.contains("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
+				//if (html.contains("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
 					// don't show source of home
-					pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
-				else
+					//pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
+				//else
 					pageSource = html;// to get page source, part 1
 			}
 
@@ -3074,11 +3074,11 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void updateHomePage() {
-		if (!HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
+		//if (!HOME_BLANK.equals(serverWebs.get(webIndex).getUrl())) return;
 		
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		StringBuilder sb = new StringBuilder("javascript:inject(\"toplist");	
+		StringBuilder sb = new StringBuilder("javascript:test(\"1::::");	
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
 			sb.append(fileDir);
 			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>....");
@@ -3128,10 +3128,10 @@ public class SimpleBrowser extends Activity {
 			sb.append("www.yandex.ru.png)'><a href='http://www.yandex.ru/?clid=1911433'>Яндекс</a></li>....");
 		}
 		sb.append("\");");
+		Log.d("==============", sb.toString());
 		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject toplist
 
-		
-		sb = new StringBuilder("javascript:inject(\"bookmark::::");
+		sb = new StringBuilder("javascript:test(\"2::::");
 		for (int i = 0; i < mBookMark.size(); i++) {
 			sb.append(fileDir);
 			sb.append(mBookMark.get(i).m_site);
@@ -3144,7 +3144,7 @@ public class SimpleBrowser extends Activity {
 		sb.append("\");");
 		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject bookmark
 
-		sb = new StringBuilder("javascript:inject(\"history::::");
+		sb = new StringBuilder("javascript:test(\"3::::");
 		for (int i = mHistory.size() - 1; i >= 0; i--) {
 			sb.append(fileDir);
 			sb.append(mHistory.get(i).m_site);
@@ -3194,6 +3194,7 @@ public class SimpleBrowser extends Activity {
 
 		sb.append("<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>");
 		sb.append("<script type='text/javascript' src='file:///android_asset/easybrowser.js'></script>");
+		sb.append("<script type='text/javascript'>function test(data){alert(data);}</script>");
 		
 		sb.append("</head><body>");
 

@@ -3078,7 +3078,7 @@ public class SimpleBrowser extends Activity {
 		
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		StringBuilder sb = new StringBuilder("javascript:test(\"1::::");	
+		StringBuilder sb = new StringBuilder("javascript:inject(\"1::::");	
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
 			sb.append(fileDir);
 			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>....");
@@ -3128,10 +3128,9 @@ public class SimpleBrowser extends Activity {
 			sb.append("www.yandex.ru.png)'><a href='http://www.yandex.ru/?clid=1911433'>Яндекс</a></li>....");
 		}
 		sb.append("\");");
-		Log.d("==============", sb.toString());
 		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject toplist
 
-		sb = new StringBuilder("javascript:test(\"2::::");
+		sb = new StringBuilder("javascript:inject(\"2::::");
 		for (int i = 0; i < mBookMark.size(); i++) {
 			sb.append(fileDir);
 			sb.append(mBookMark.get(i).m_site);
@@ -3144,7 +3143,7 @@ public class SimpleBrowser extends Activity {
 		sb.append("\");");
 		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject bookmark
 
-		sb = new StringBuilder("javascript:test(\"3::::");
+		sb = new StringBuilder("javascript:inject(\"3::::");
 		for (int i = mHistory.size() - 1; i >= 0; i--) {
 			sb.append(fileDir);
 			sb.append(mHistory.get(i).m_site);
@@ -3193,8 +3192,38 @@ public class SimpleBrowser extends Activity {
 		sb.append("</title>");
 
 		sb.append("<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>");
-		sb.append("<script type='text/javascript' src='file:///android_asset/easybrowser.js'></script>");
-		sb.append("<script type='text/javascript'>function test(data){alert(data);}</script>");
+		
+		sb.append("<script type='text/javascript'>");
+		
+		sb.append("function collapse(index) {"); 
+		sb.append("title = document.getElementById('title' + index).firstChild;"); 
+		sb.append("obj = document.getElementById('content' + index);"); 
+		sb.append("collapsed = (obj.style.display === 'none');"); 
+		sb.append("window.JSinterface.saveCollapseState(index, !collapsed);"); 
+		sb.append("if (collapsed) {"); 
+		sb.append("obj.style.display = '';"); 
+		sb.append("title.nodeValue = '-' + title.nodeValue.substring(1);"); 
+		sb.append("} else {"); 
+		sb.append("obj.style.display = 'none';"); 
+		sb.append("title.nodeValue = '+' + title.nodeValue.substring(1);}}");
+		
+		sb.append("function inject(data) {");
+		sb.append("if (data.indexOf('::::') > 0) {");
+		sb.append("var tmp = data.split('::::');");
+		sb.append("var array = tmp[1].split('....');");
+		sb.append("var title = document.getElementById('content' + tmp[0]);");
+		sb.append("for (i = 0; i < array.length-1; i++) {");
+		sb.append("if (title.children.length <= i) {");
+		sb.append("var li=document.createElement('li');");
+		sb.append("li.innerHTML = array[i];");
+		sb.append("title.appendChild(li);");
+		sb.append("} else title.children[i].innerHTML = array[i]; }");
+		sb.append("var arrayLength = array.length;");
+		sb.append("while (title.children.length > arrayLength) {");
+		sb.append("child = title.children[arrayLength];");
+		sb.append("title.removeChild(child);}}}");
+		
+		sb.append("</script>");
 		
 		sb.append("</head><body>");
 

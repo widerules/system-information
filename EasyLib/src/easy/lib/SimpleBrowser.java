@@ -3073,29 +3073,31 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void updateHomePage() {
-		//if (!HOME_BLANK.equals(serverWebs.get(webIndex).getUrl())) return;
-		
+	String getTopList(String splitter) {
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		StringBuilder sb = new StringBuilder("javascript:inject(\"1::::");	
+		StringBuilder sb = new StringBuilder("");	
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
 			sb.append(fileDir);
-			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>....");
+			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>");
+			sb.append(splitter);
 			// sb.append(fileDir);
 			// sb.append("3g.gfan.com.png)'><a href='http://3g.gfan.com'>机锋市场</a></li>");
 			// sb.append(fileDir);
 			// sb.append("www.appchina.com.png)'><a href='http://www.appchina.com'>应用汇</a></li>");
 			sb.append(fileDir);
-			sb.append("m.hao123.com.png)'><a href='http://m.hao123.com/?type=android&tn=easy.browser'>好123</a></li>....");
+			sb.append("m.hao123.com.png)'><a href='http://m.hao123.com/?type=android&tn=easy.browser'>好123</a></li>");
+			sb.append(splitter);
 			// sb.append(fileDir);
 			// sb.append("www.taobao.com.png)'><a href='http://www.taobao.com'>淘宝</a></li>");
 			sb.append(fileDir);
-			sb.append("www.baidu.com.png)'><a href='http://www.baidu.com'>百度</a></li>....");
+			sb.append("www.baidu.com.png)'><a href='http://www.baidu.com'>百度</a></li>");
+			sb.append(splitter);
 			//sb.append(fileDir);
 			//sb.append("www.baidu.com.png)'><a href='http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF'>美图</a></li>");
 			sb.append(fileDir);
-			sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>....");
+			sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>");
+			sb.append(splitter);
 			//sb.append("<li><a href='http://www.9yu.co/index.html?c=2'>美图</a></li>");// no favicon
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href='http://bpc.borqs.com'>梧桐</a></li>");
@@ -3107,13 +3109,17 @@ public class SimpleBrowser extends Activity {
 			// sb.append("<li><a href='http://www.1mobile.com/app/market/?cid=9'>1mobile</a></li>");// no favicon
 			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='http://bpc.borqs.com/market.html?id=easy.browser.pro'>Ad free version of Easy Browser</a></li>"); // suspended
 			sb.append(fileDir);
-			sb.append("www.appeggs.com.png)'><a href='http://www.appeggs.com'>AppEggs</a></li>....");
+			sb.append("www.appeggs.com.png)'><a href='http://www.appeggs.com'>AppEggs</a></li>");
+			sb.append(splitter);
 			sb.append(fileDir);
-			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>....");
+			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
+			sb.append(splitter);
 			sb.append(fileDir);
-			sb.append("www.google.com.png)'><a href='http://www.google.com'>Google</a></li>....");
+			sb.append("www.google.com.png)'><a href='http://www.google.com'>Google</a></li>");
+			sb.append(splitter);
 			sb.append(fileDir);
-			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>....");
+			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
+			sb.append(splitter);
 			// sb.append(fileDir);
 			// sb.append("en.wikipedia.org.png)'><a href='http://en.wikipedia.org/wiki/Main_Page'>Wikipedia</a></li>");
 			// sb.append(fileDir);
@@ -3122,15 +3128,21 @@ public class SimpleBrowser extends Activity {
 		// additional top list for some locale
 		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {
 			sb.append(fileDir);
-			sb.append("m.yahoo.co.jp.png)'><a href='http://www.yahoo.co.jp'>Yahoo!JAPAN</a></li>....");
+			sb.append("m.yahoo.co.jp.png)'><a href='http://www.yahoo.co.jp'>Yahoo!JAPAN</a></li>");
+			sb.append(splitter);
 		} else if ("ru_RU".equals(mLocale.toString())) {
 			sb.append(fileDir);
-			sb.append("www.yandex.ru.png)'><a href='http://www.yandex.ru/?clid=1911433'>Яндекс</a></li>....");
+			sb.append("www.yandex.ru.png)'><a href='http://www.yandex.ru/?clid=1911433'>Яндекс</a></li>");
+			sb.append(splitter);
 		}
-		sb.append("\");");
-		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject toplist
-
-		sb = new StringBuilder("javascript:inject(\"2::::");
+		
+		return sb.toString();
+	}
+	
+	String getBookmark(String splitter) {
+		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
+		
+		StringBuilder sb = new StringBuilder();	
 		for (int i = 0; i < mBookMark.size(); i++) {
 			sb.append(fileDir);
 			sb.append(mBookMark.get(i).m_site);
@@ -3138,12 +3150,17 @@ public class SimpleBrowser extends Activity {
 			sb.append(mBookMark.get(i).m_url);
 			sb.append("'>");
 			sb.append(mBookMark.get(i).m_title);
-			sb.append("</a></li>....");
+			sb.append("</a></li>");
+			sb.append(splitter);
 		}
-		sb.append("\");");
-		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject bookmark
-
-		sb = new StringBuilder("javascript:inject(\"3::::");
+		
+		return sb.toString();
+	}
+	
+	String getHistory(String splitter) {
+		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
+		
+		StringBuilder sb = new StringBuilder();			
 		for (int i = mHistory.size() - 1; i >= 0; i--) {
 			sb.append(fileDir);
 			sb.append(mHistory.get(i).m_site);
@@ -3151,11 +3168,24 @@ public class SimpleBrowser extends Activity {
 			sb.append(mHistory.get(i).m_url);
 			sb.append("'>");
 			sb.append(mHistory.get(i).m_title);
-			sb.append("</a></li>....");
+			sb.append("</a></li>");
+			sb.append(splitter);
 		}
-		sb.append("\");");
-		serverWebs.get(webIndex).loadUrl(sb.toString());// call javascript to inject history
 		
+		return sb.toString();
+	}
+	
+	void updateHomePage() {
+		//if (!HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
+		
+		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + collapse1 + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + collapse2 + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + collapse3 + "\");");
+		
+		serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
+		serverWebs.get(webIndex).loadUrl("javascript:inject(\"2::::" + getBookmark("....") + "\");");// call javascript to inject bookmark
+		serverWebs.get(webIndex).loadUrl("javascript:inject(\"3::::" + getHistory("....") + "\");");// call javascript to inject bookmark
+
 		if (countDown > 0) countDown -= 1;
 	}
 	
@@ -3195,11 +3225,14 @@ public class SimpleBrowser extends Activity {
 		
 		sb.append("<script type='text/javascript'>");
 		
-		sb.append("function collapse(index) {"); 
+		sb.append("function collapse(para) {");
+		sb.append("var tmp = para.split(',');");
+		sb.append("var index = tmp[0];");
 		sb.append("title = document.getElementById('title' + index).firstChild;"); 
 		sb.append("obj = document.getElementById('content' + index);"); 
 		sb.append("collapsed = (obj.style.display === 'none');"); 
-		sb.append("window.JSinterface.saveCollapseState(index, !collapsed);"); 
+		sb.append("if (tmp.length == 1) window.JSinterface.saveCollapseState(index, !collapsed);");
+		sb.append("else collapsed = tmp[1];");
 		sb.append("if (collapsed) {"); 
 		sb.append("obj.style.display = '';"); 
 		sb.append("title.nodeValue = '-' + title.nodeValue.substring(1);"); 
@@ -3217,7 +3250,7 @@ public class SimpleBrowser extends Activity {
 		sb.append("var li=document.createElement('li');");
 		sb.append("li.innerHTML = array[i];");
 		sb.append("title.appendChild(li);");
-		sb.append("} else title.children[i].innerHTML = array[i]; }");
+		sb.append("} else if (title.children[i].innerHTML != array[i]) title.children[i].innerHTML = array[i]; }");
 		sb.append("var arrayLength = array.length;");
 		sb.append("while (title.children.length > arrayLength) {");
 		sb.append("child = title.children[arrayLength];");
@@ -3242,6 +3275,7 @@ public class SimpleBrowser extends Activity {
 			sb.append("</h4>");
 			sb.append("<dl id='content1' type='disc'>");
 		}
+		sb.append(getTopList(""));
 		sb.append("</dl>");
 
 		// bookmark bar
@@ -3259,6 +3293,7 @@ public class SimpleBrowser extends Activity {
 			sb.append("</h4>");
 			sb.append("<dl id='content2' type='disc'>");
 		}
+		sb.append(getBookmark(""));
 		sb.append("</dl>");
 		
 		// history bar
@@ -3276,6 +3311,7 @@ public class SimpleBrowser extends Activity {
 			sb.append("</h4>");
 			sb.append("<dl id='content3' type='disc'>");
 		}
+		sb.append(getHistory(""));
 		sb.append("</dl>");
 
 		sb.append("</body></html>");

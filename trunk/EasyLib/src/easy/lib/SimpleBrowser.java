@@ -2642,8 +2642,8 @@ public class SimpleBrowser extends Activity {
 									int which) {
 								try {//index out of bound error reported by a few user
 									mBookMark.remove(order);
+									updateBookmark();
 									bookmarkChanged = true;
-									//loadPage(false);
 								} catch (Exception e) {}
 							}
 						})
@@ -2667,6 +2667,7 @@ public class SimpleBrowser extends Activity {
 									int which) {
 								try {//index out of bound error reported by a few user
 									mHistory.remove(order);
+									updateHistory();
 									historyChanged = true;
 								} catch (Exception e) {}
 							}
@@ -3175,16 +3176,22 @@ public class SimpleBrowser extends Activity {
 		return sb.toString();
 	}
 	
+	void updateBookmark() {
+		serverWebs.get(webIndex).loadUrl("javascript:inject(\"2::::" + getBookmark("....") + "\");");// call javascript to inject bookmark
+	}
+	
+	void updateHistory() {
+		serverWebs.get(webIndex).loadUrl("javascript:inject(\"3::::" + getHistory("....") + "\");");// call javascript to inject bookmark
+	}
+	
 	void updateHomePage() {
-		//if (!HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
-		
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + !collapse1 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + !collapse2 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + !collapse3 + "\");");
 		
 		serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
-		serverWebs.get(webIndex).loadUrl("javascript:inject(\"2::::" + getBookmark("....") + "\");");// call javascript to inject bookmark
-		serverWebs.get(webIndex).loadUrl("javascript:inject(\"3::::" + getHistory("....") + "\");");// call javascript to inject bookmark
+		updateBookmark();
+		updateHistory();
 
 		if (countDown > 0) countDown -= 1;
 	}

@@ -3143,7 +3143,7 @@ public class SimpleBrowser extends Activity {
 	String getBookmark(String splitter) {
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		StringBuilder sb = new StringBuilder();	
+		StringBuilder sb = new StringBuilder("");	
 		for (int i = 0; i < mBookMark.size(); i++) {
 			sb.append(fileDir);
 			sb.append(mBookMark.get(i).m_site);
@@ -3161,7 +3161,7 @@ public class SimpleBrowser extends Activity {
 	String getHistory(String splitter) {
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		StringBuilder sb = new StringBuilder();			
+		StringBuilder sb = new StringBuilder("");			
 		for (int i = mHistory.size() - 1; i >= 0; i--) {
 			sb.append(fileDir);
 			sb.append(mHistory.get(i).m_site);
@@ -3228,33 +3228,37 @@ public class SimpleBrowser extends Activity {
 		sb.append("function collapse(para) {");
 		sb.append("var tmp = String(para).split(',');");
 		sb.append("var index = tmp[0];");
-		sb.append("title = document.getElementById('title' + index).firstChild;"); 
-		sb.append("obj = document.getElementById('content' + index);"); 
-		sb.append("collapsed = (obj.style.display === 'none');"); 
+		sb.append("var title = document.getElementById('title' + index).firstChild;"); 
+		sb.append("var content = document.getElementById('content' + index);"); 
+		sb.append("var collapsed = (content.style.display === 'none');"); 
 		sb.append("if (tmp.length == 1) window.JSinterface.saveCollapseState(index, !collapsed);");
 		sb.append("else collapsed = (tmp[1] == 'true')?true:false;");
 		sb.append("if (collapsed) {"); 
-		sb.append("obj.style.display = '';"); 
+		sb.append("content.style.display = '';"); 
 		sb.append("title.nodeValue = '-' + title.nodeValue.substring(1);"); 
 		sb.append("} else {"); 
-		sb.append("obj.style.display = 'none';"); 
+		sb.append("content.style.display = 'none';"); 
 		sb.append("title.nodeValue = '+' + title.nodeValue.substring(1);}}");
 		
 		sb.append("function inject(data) {");
 		sb.append("if (data.indexOf('::::') > 0) {");
 		sb.append("var tmp = data.split('::::');");
 		sb.append("var array = tmp[1].split('....');");
-		sb.append("var title = document.getElementById('content' + tmp[0]);");
-		sb.append("for (i = 0; i < array.length-1; i++) {");
-		sb.append("if (title.children.length <= i) {");
+		sb.append("var title = document.getElementById('title' + tmp[0]);");
+		sb.append("var content = document.getElementById('content' + tmp[0]);");
+		sb.append("var arrayLength = array.length - 1;");// the last element is noise
+		sb.append("for (i = 0; i < arrayLength; i++) {");
+		sb.append("if (content.children.length <= i) {");
 		sb.append("var li=document.createElement('li');");
-		sb.append("li.outerHTML = array[i];");
-		sb.append("title.appendChild(li);");
-		sb.append("} else if (title.children[i].outerHTML != array[i]) title.children[i].outerHTML = array[i]; }");
-		sb.append("var arrayLength = array.length;");
-		sb.append("while (title.children.length > arrayLength) {");
-		sb.append("child = title.children[arrayLength];");
-		sb.append("title.removeChild(child);}}}");
+		sb.append("content.appendChild(li);");
+		sb.append("li.outerHTML = array[i];");// must set value after append, otherwise got NO_MODIFICATION_ALLOWED_ERR
+		sb.append("} else if (content.children[i].outerHTML != array[i]) content.children[i].outerHTML = array[i]; }");
+		sb.append("while (content.children.length > arrayLength) {");
+		sb.append("child = content.children[arrayLength];");
+		sb.append("content.removeChild(child);}");
+		sb.append("if (arrayLength == 0) title.style.display = 'none';");
+		sb.append("else title.style.display = '';");
+		sb.append("}}");
 		
 		sb.append("</script>");
 		

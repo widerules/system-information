@@ -3178,9 +3178,9 @@ public class SimpleBrowser extends Activity {
 	void updateHomePage() {
 		//if (!HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
 		
-		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + collapse1 + "\");");
-		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + collapse2 + "\");");
-		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + collapse3 + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + !collapse1 + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + !collapse2 + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + !collapse3 + "\");");
 		
 		serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
 		serverWebs.get(webIndex).loadUrl("javascript:inject(\"2::::" + getBookmark("....") + "\");");// call javascript to inject bookmark
@@ -3226,13 +3226,13 @@ public class SimpleBrowser extends Activity {
 		sb.append("<script type='text/javascript'>");
 		
 		sb.append("function collapse(para) {");
-		sb.append("var tmp = para.split(',');");
+		sb.append("var tmp = String(para).split(',');");
 		sb.append("var index = tmp[0];");
 		sb.append("title = document.getElementById('title' + index).firstChild;"); 
 		sb.append("obj = document.getElementById('content' + index);"); 
 		sb.append("collapsed = (obj.style.display === 'none');"); 
 		sb.append("if (tmp.length == 1) window.JSinterface.saveCollapseState(index, !collapsed);");
-		sb.append("else collapsed = tmp[1];");
+		sb.append("else collapsed = (tmp[1] == 'true')?true:false;");
 		sb.append("if (collapsed) {"); 
 		sb.append("obj.style.display = '';"); 
 		sb.append("title.nodeValue = '-' + title.nodeValue.substring(1);"); 

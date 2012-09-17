@@ -3195,18 +3195,11 @@ public class SimpleBrowser extends Activity {
 
 	void createHomePage() {
 		String fileName = "home.html";
-		try {// try to open the file, if can't open, then need create
-			FileInputStream fis = openFileInput(fileName);
-			try {fis.close();} catch (IOException e) {}
-		} catch (FileNotFoundException e1) {
-			try {
-				FileOutputStream fos = openFileOutput(fileName, 0);
-				fos.write(homePage().toString().getBytes());
-				fos.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		try {// create the file everytime?
+			FileOutputStream fos = openFileOutput(fileName, 0);
+			fos.write(homePage().toString().getBytes());
+			fos.close();
+		} catch (Exception e) {	e.printStackTrace(); }
 	}
 	
 	StringBuilder homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
@@ -3248,9 +3241,9 @@ public class SimpleBrowser extends Activity {
 		sb.append("for (i = 0; i < array.length-1; i++) {");
 		sb.append("if (title.children.length <= i) {");
 		sb.append("var li=document.createElement('li');");
-		sb.append("li.innerHTML = array[i];");
+		sb.append("li.outerHTML = array[i];");
 		sb.append("title.appendChild(li);");
-		sb.append("} else if (title.children[i].innerHTML != array[i]) title.children[i].innerHTML = array[i]; }");
+		sb.append("} else if (title.children[i].outerHTML != array[i]) title.children[i].outerHTML = array[i]; }");
 		sb.append("var arrayLength = array.length;");
 		sb.append("while (title.children.length > arrayLength) {");
 		sb.append("child = title.children[arrayLength];");

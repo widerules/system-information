@@ -434,18 +434,13 @@ public class SimpleBrowser extends Activity {
 			}
 
 			@SuppressWarnings("unused")
-			public void saveCollapseState(int item, boolean state) {
-				switch (item) {
-				case 1:
+			public void saveCollapseState(String item, boolean state) {
+				if ("1".equals(item))
 					collapse1 = state;
-					break;
-				case 2:
+				if ("2".equals(item))
 					collapse2 = state;
-					break;
-				case 3:
+				if ("3".equals(item))
 					collapse3 = state;
-					break;
-				}
 			}
 		}
 
@@ -3193,8 +3188,17 @@ public class SimpleBrowser extends Activity {
 		if (countDown > 0) countDown -= 1;
 	}
 	
-	void loadPage() {
-		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
+	void loadPage() {// load home page
+		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+		if ((wbfl.getCurrentItem() != null) && HOME_PAGE.equals(wbfl.getCurrentItem().getUrl())) 
+			serverWebs.get(webIndex).reload();
+		else if (serverWebs.get(webIndex).canGoBack() && (wbfl != null) &&
+			HOME_PAGE.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex() - 1).getUrl()))
+				serverWebs.get(webIndex).goBack();
+		else if (serverWebs.get(webIndex).canGoForward() &&
+			HOME_PAGE.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex() + 1).getUrl())) 
+				serverWebs.get(webIndex).goForward();
+		else serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 	}
 
 	void createHomePage() {

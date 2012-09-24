@@ -3263,7 +3263,7 @@ public class SimpleBrowser extends Activity {
 		
 		sb.append("</script>");
 		
-		sb.append("</head><body>");
+		sb.append("</head><body style='background-image:url(file:///android_asset/noise_bg.png)'>");
 
 		// top bar
 		String tmp = getString(R.string.top);

@@ -414,12 +414,7 @@ public class SimpleBrowser extends Activity {
 		boolean closeToBefore = true;
 
 		public void getPageSource() {// to get page source, part 3
-			if ("2.3.3".equals(android.os.Build.VERSION.RELEASE))
-				// it will cause webkit crash on 2.3.3
-				pageSource = getString(R.string.not_avaiable);
-			else
-				// not work for wml. some webkit even not parse wml.
-				loadUrl("javascript:window.JSinterface.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
+			loadUrl("javascript:window.JSinterface.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
 		}
 
 		class MyJavaScriptInterface {

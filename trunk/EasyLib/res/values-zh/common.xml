@@ -52,7 +52,6 @@
     <string name="bookmark">书签</string>
     <string name="top">常用</string>
     <string name="source">源码</string>
-    <string name="not_avaiable">抱歉，在安卓2.3.3上无法查看网页源码。</string>
     <string name="homepage">主页</string>
     <string name="shareurl">分享网址</string>
     <string name="recommend">推荐</string>

@@ -218,7 +218,6 @@ class wrapWebSettings {
 			method.invoke(mInstance, enabled);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
 			return false;
 		}
 	}
@@ -350,7 +349,7 @@ public class SimpleBrowser extends Activity {
 			baiduResume = c.getMethod("onResume", new Class[] { Context.class });
 			baiduPause = c.getMethod("onPause", new Class[] { Context.class });
 			baiduEvent = c.getMethod("onEvent", new Class[] { Context.class, String.class, String.class });
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {}
 	}
 	
 	// ad
@@ -451,31 +450,21 @@ public class SimpleBrowser extends Activity {
 				classType = WebView.class;
 				field = classType.getDeclaredField("mZoomButtonsController");
 				field.setAccessible(true);
-				try {
-					if (visibility == View.GONE) {
-						mZoomButtonsController = (ZoomButtonsController) field
-								.get(this);// backup the original zoom
-											// controller
-						ZoomButtonsController myZoomButtonsController = new ZoomButtonsController(
-								this);
-						myZoomButtonsController.getZoomControls()
-								.setVisibility(visibility);
-						field.set(this, myZoomButtonsController);
-						zoomVisible = false;
-					} else {
-						field.set(this, mZoomButtonsController);
-						zoomVisible = true;
-					}
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+				if (visibility == View.GONE) {
+					mZoomButtonsController = (ZoomButtonsController) field
+							.get(this);// backup the original zoom
+										// controller
+					ZoomButtonsController myZoomButtonsController = new ZoomButtonsController(
+							this);
+					myZoomButtonsController.getZoomControls()
+							.setVisibility(visibility);
+					field.set(this, myZoomButtonsController);
+					zoomVisible = false;
+				} else {
+					field.set(this, mZoomButtonsController);
+					zoomVisible = true;
 				}
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (NoSuchFieldException e) {
-				e.printStackTrace();
-			}
+			} catch (Exception e) {}
 		}
 
 		@Override
@@ -709,7 +698,7 @@ public class SimpleBrowser extends Activity {
 
 					try {
 						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
-					} catch (Exception e) {e.printStackTrace();}
+					} catch (Exception e) {}
 					
 					pageSource = "";
 
@@ -3207,7 +3196,7 @@ public class SimpleBrowser extends Activity {
 			FileOutputStream fos = openFileOutput(fileName, 0);
 			fos.write(homePage().toString().getBytes());
 			fos.close();
-		} catch (Exception e) {	e.printStackTrace(); }
+		} catch (Exception e) {}
 	}
 	
 	StringBuilder homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
@@ -3387,7 +3376,6 @@ public class SimpleBrowser extends Activity {
 			oos.close();
 			fo.close();
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

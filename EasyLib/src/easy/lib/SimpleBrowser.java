@@ -401,7 +401,7 @@ public class SimpleBrowser extends Activity {
 	}
 
 	class MyWebview extends WebView {
-		public String pageSource = "";
+		public String pageSource = "", m_url = "";
 
 		wrapWebSettings webSettings;
 
@@ -691,9 +691,7 @@ public class SimpleBrowser extends Activity {
 						Bitmap favicon) {
 					super.onPageStarted(view, url, favicon);
 
-					try {
-						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
-					} catch (Exception e) {}
+					m_url = url;
 					
 					pageSource = "";
 
@@ -709,6 +707,24 @@ public class SimpleBrowser extends Activity {
 
 						if (fullScreen) showBars();
 					}
+
+					try {
+						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
+					} catch (Exception e) {}
+					
+
+					try {// write opened url to /data/data/easy.browser/files/pages
+						FileOutputStream fo = openFileOutput("pages", 0);
+						ObjectOutputStream oos = new ObjectOutputStream(fo);
+						for (int i = 0; i < serverWebs.size(); i++) {
+							if (!HOME_PAGE.equals(serverWebs.get(i).m_url)) {
+								oos.writeObject(serverWebs.get(i).m_url);
+							}
+						}
+						oos.flush();
+						oos.close();
+						fo.close();
+					} catch (Exception e) {}
 
 					//if (adview != null) adview.loadAd();// should only do this by wifi
 				}
@@ -729,8 +745,7 @@ public class SimpleBrowser extends Activity {
 					webAdapter.notifyDataSetChanged();
 
 					String title = view.getTitle();
-					if (title == null)
-						title = url;
+					if (title == null) title = url;
 
 					if (HOME_PAGE.equals(url)) updateHomePage();
 					else {
@@ -2064,6 +2079,15 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 3:// exit
+					try {// clear the pages file
+						FileOutputStream fo = openFileOutput("pages", 0);
+						ObjectOutputStream oos = new ObjectOutputStream(fo);
+						oos.writeObject("");
+						oos.flush();
+						oos.close();
+						fo.close();
+					} catch (Exception e) {}
+
 					finish();
 					break;
 				case 4:// downloads
@@ -2432,11 +2456,29 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 
 		createHomePage();
+		
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-				loadPage();
+				ObjectInputStream ois = null;
+				FileInputStream fi = null;
+				String url = null;
+				try {
+					fi = openFileInput("pages");
+					ois = new ObjectInputStream(fi);
+					while ((url = (String) ois.readObject()) != null) {
+						if (!"".equals(url)) openNewPage(url, webAdapter.getCount(), false);
+					}
+				} catch (EOFException e) {// only when read eof need send out msg.
+					try {
+						ois.close();
+						fi.close();
+					} catch (Exception e1) {}
+				} catch (Exception e) {}
+				
+				if ((url == null) || "".equals(url)) loadPage();// load about:blank if no url saved
+				else closePage(0, false);// the first page is no use now
 			}
 			else
 				serverWebs.get(webIndex).loadUrl(getIntent().getDataString());

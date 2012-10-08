@@ -128,5 +128,6 @@
     <string name="click_for_detail">詳細はクリック</string>
     <string name="crashed">クラッシュ</string>
     <string name="set_homepage">ホームページとして設定する</string>
+    <string name="icon">アイコン</string>
     
 </resources>

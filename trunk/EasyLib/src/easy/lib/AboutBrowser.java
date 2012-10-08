@@ -43,7 +43,7 @@ public class AboutBrowser extends Activity {
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
 			searchEngine, shareMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
-			clrCache;
+			clrCache, clrIcon;
 	LinearLayout advanceSettings, basicSettings;
 	Button btnAdvance, btnReset;
 	EditText etPort;
@@ -186,10 +186,12 @@ public class AboutBrowser extends Activity {
 					message += getString(R.string.bookmark) + ", ";
 				if (clrCookie.isChecked())
 					message += "Cookie, ";
-				if (clrFormdata.isChecked())
-					message += getString(R.string.formdata) + ", ";
 				if (clrPassword.isChecked())
 					message += getString(R.string.password) + ", ";
+				if (clrFormdata.isChecked())
+					message += getString(R.string.formdata) + ", ";
+				if (clrIcon.isChecked())
+					message += getString(R.string.icon) + ", ";
 				message = message.trim();
 				if ("".equals(message))
 					return;// return if no data selected.
@@ -353,12 +355,13 @@ public class AboutBrowser extends Activity {
 		encodingType = (RadioGroup) findViewById(R.id.encoding);
 		changeUA = (RadioGroup) findViewById(R.id.ua_group);
 
+		clrCache = (CheckBox) findViewById(R.id.clear_cache);
 		clrHistory = (CheckBox) findViewById(R.id.clear_history);
 		clrBookmark = (CheckBox) findViewById(R.id.clear_bookmark);
 		clrCookie = (CheckBox) findViewById(R.id.clear_cookie);
-		clrFormdata = (CheckBox) findViewById(R.id.clear_formdata);
 		clrPassword = (CheckBox) findViewById(R.id.clear_password);
-		clrCache = (CheckBox) findViewById(R.id.clear_cache);
+		clrFormdata = (CheckBox) findViewById(R.id.clear_formdata);
+		clrIcon = (CheckBox) findViewById(R.id.clear_icon);
 
 		btnReset = (Button) findViewById(R.id.reset);
 		btnReset.setOnClickListener(new OnClickListener() {
@@ -430,12 +433,13 @@ public class AboutBrowser extends Activity {
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0)))
 				.setChecked(true);
 
+		clrCache.setChecked(perferences.getBoolean("clear_cache", false));
 		clrHistory.setChecked(perferences.getBoolean("clear_history", false));
 		clrBookmark.setChecked(perferences.getBoolean("clear_bookmark", false));
 		clrCookie.setChecked(perferences.getBoolean("clear_cookie", false));
 		clrFormdata.setChecked(perferences.getBoolean("clear_formdata", false));
 		clrPassword.setChecked(perferences.getBoolean("clear_password", false));
-		clrCache.setChecked(perferences.getBoolean("clear_cache", false));
+		clrIcon.setChecked(perferences.getBoolean("clear_icon", false));
 		super.onResume();
 		
 		try {
@@ -527,12 +531,13 @@ public class AboutBrowser extends Activity {
 			editor.putInt("ua", changeUA.indexOfChild(findViewById(changeUA
 					.getCheckedRadioButtonId())));
 
+			editor.putBoolean("clear_cache", clrCache.isChecked());
 			editor.putBoolean("clear_history", clrHistory.isChecked());
 			editor.putBoolean("clear_bookmark", clrBookmark.isChecked());
 			editor.putBoolean("clear_cookie", clrCookie.isChecked());
 			editor.putBoolean("clear_formdata", clrFormdata.isChecked());
 			editor.putBoolean("clear_password", clrPassword.isChecked());
-			editor.putBoolean("clear_cache", clrCache.isChecked());
+			editor.putBoolean("clear_icon", clrIcon.isChecked());
 		}
 		editor.commit();
 

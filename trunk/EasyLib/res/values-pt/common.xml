@@ -124,5 +124,6 @@
     <string name="click_for_detail">Clique para detalhes</string>
     <string name="crashed">caiu</string>
     <string name="set_homepage">definir como homepage</string>
+    <string name="icon">ícone</string>
     
 </resources>

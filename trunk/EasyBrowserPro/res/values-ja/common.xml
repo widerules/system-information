@@ -127,5 +127,6 @@
     <string name="sendto">著者に送る</string>
     <string name="click_for_detail">詳細はクリック</string>
     <string name="crashed">クラッシュ</string>
+    <string name="set_homepage">ホームページとして設定する</string>
     
 </resources>

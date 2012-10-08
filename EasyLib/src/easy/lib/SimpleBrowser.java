@@ -1260,6 +1260,16 @@ public class SimpleBrowser extends Activity {
 				case 7:// add short cut
 					createShortcut(url, mBookMark.get(item.getOrder()).m_title);
 					break;
+				case 11://set homepage
+					try {// write opened url to /data/data/easy.browser/files/pages
+						FileOutputStream fo = openFileOutput("homepage", 0);
+						ObjectOutputStream oos = new ObjectOutputStream(fo);
+						oos.writeObject(url);
+						oos.flush();
+						oos.close();
+						fo.close();
+					} catch (Exception e) {}
+					break;
 				case 8:// remove bookmark
 					removeFavo(item.getOrder());
 					break;
@@ -1292,7 +1302,10 @@ public class SimpleBrowser extends Activity {
 					if ((mBookMark.get(i).m_url.equals(url))
 							|| (url.equals(mBookMark.get(i).m_url + "/"))) {
 						foundBookmark = true;
-						if (!mAdAvailable) menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);// only work in pro version
+						if (!mAdAvailable) {
+							menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);// only work in pro version
+							menu.add(0, 11, i, R.string.set_homepage).setOnMenuItemClickListener(handler);// only work in pro version
+						}
 						menu.add(0, 8, i, R.string.remove_bookmark)
 								.setOnMenuItemClickListener(handler);
 						break;
@@ -2461,24 +2474,9 @@ public class SimpleBrowser extends Activity {
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-				ObjectInputStream ois = null;
-				FileInputStream fi = null;
-				String url = null;
-				try {
-					fi = openFileInput("pages");
-					ois = new ObjectInputStream(fi);
-					while ((url = (String) ois.readObject()) != null) {
-						if (!"".equals(url)) openNewPage(url, webAdapter.getCount(), false);
-					}
-				} catch (EOFException e) {// only when read eof need send out msg.
-					try {
-						ois.close();
-						fi.close();
-					} catch (Exception e1) {}
-				} catch (Exception e) {}
-				
-				if ((url == null) || "".equals(url)) loadPage();// load about:blank if no url saved
-				else closePage(0, false);// the first page is no use now
+				if (!readPages("pages") && (!mAdAvailable && !readPages("homepage")))
+					loadPage();// load about:blank if no url saved or homepage specified
+				else closePage(0, false);// the first page is no use if open saved url or homepage
 			}
 			else
 				serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
@@ -2501,6 +2499,26 @@ public class SimpleBrowser extends Activity {
 		registerReceiver(screenLockReceiver, filter);
 	}
 
+	boolean readPages(String filename) {
+		ObjectInputStream ois = null;
+		FileInputStream fi = null;
+		String url = null;
+		try {
+			fi = openFileInput(filename);
+			ois = new ObjectInputStream(fi);
+			while ((url = (String) ois.readObject()) != null) {
+				if (!"".equals(url)) openNewPage(url, webAdapter.getCount(), false);
+			}
+		} catch (EOFException e) {// only when read eof need send out msg.
+			try {
+				ois.close();
+				fi.close();
+			} catch (Exception e1) {}
+		} catch (Exception e) {}
+
+		return ((url != null) && !"".equals(url));
+	}
+	
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(screenLockReceiver);

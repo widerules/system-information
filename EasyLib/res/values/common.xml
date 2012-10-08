@@ -139,5 +139,6 @@
     <string name="sendto">Feedback</string>
     <string name="click_for_detail">Click for details</string>
     <string name="crashed">crashed</string>
+    <string name="set_homepage">Set as homepage</string>
     
 </resources>

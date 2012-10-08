@@ -139,5 +139,6 @@
     <string name="sendto">反馈给作者</string>
     <string name="click_for_detail">点击查看详情</string>
     <string name="crashed">出错了</string>
+    <string name="set_homepage">设为首页</string>
     
 </resources>

@@ -114,5 +114,6 @@
     <string name="sendto">Realimentación</string>
     <string name="click_for_detail">Click para mas informacion</string>
     <string name="crashed">se estrelló</string>
+    <string name="set_homepage">establecer como página de inicio</string>
     
 </resources>

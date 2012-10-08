@@ -1034,11 +1034,20 @@ public class SimpleBrowser extends Activity {
 							.clearUsernamePassword();
 				}
 
+				boolean clearIcon = sp.getBoolean("clear_icon", false);
+				if (clearIcon) {
+					ClearFolderTask cltask = new ClearFolderTask();
+					// clear cache on sdcard and in data folder
+					cltask.execute("/data/data/" + mContext.getPackageName()
+									+ "/files/", "png");
+					if (HOME_BLANK.equals(webAddress.getText().toString())) shouldReload = true;
+				}
+				
 				boolean clearHistory = sp.getBoolean("clear_history", false);
 				boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
 
 				if (clearHistory && clearBookmark && clearCache && clearCookie
-						&& clearFormdata && clearPassword) {// clear all
+						&& clearFormdata && clearPassword && clearIcon) {// clear all
 					// mContext.deleteDatabase("webview.db");//this may get disk IO crash
 					ClearFolderTask cltask = new ClearFolderTask();
 					// clear files folder and app_databases folder
@@ -1075,6 +1084,8 @@ public class SimpleBrowser extends Activity {
 					message += getString(R.string.formdata) + ", ";
 				if (clearPassword)
 					message += getString(R.string.password) + ", ";
+				if (clearIcon)
+					message += getString(R.string.icon) + ", ";
 				message = message.trim();
 				if (!"".equals(message)) {
 					if (message.endsWith(","))
@@ -2895,26 +2906,33 @@ public class SimpleBrowser extends Activity {
 	class ClearFolderTask extends AsyncTask<String, Integer, String> {
 
 		@Override
-		protected String doInBackground(String... params) {
-			clearFolder(new File(params[0]));
-			if (!params[0].equals(params[1]))
-				clearFolder(new File(params[1]));
-
+		protected String doInBackground(String... params) {// ugly to handle png file in this way
+			if ("png".equals(params[1]))
+				clearFolder(new File(params[0]), "png");
+			else {
+				clearFolder(new File(params[0]), "");
+				if (!params[0].equals(params[1]))
+					clearFolder(new File(params[1]), "");
+			}
+			
 			return null;
 		}
 	}
 
-	static int clearFolder(final File dir) {
+	static int clearFolder(final File dir, String suffix) {
 		int deletedFiles = 0;
 		if (dir != null && dir.isDirectory()) {
 			try {
 				for (File child : dir.listFiles()) {
 					// first delete subdirectories recursively
 					if (child.isDirectory())
-						deletedFiles += clearFolder(child);
+						deletedFiles += clearFolder(child, suffix);
 					// then delete the files and subdirectories in this dir
-					if (child.delete())
-						deletedFiles++;
+					if (!"".equals(suffix)) {
+						if (child.getName().endsWith(suffix))
+							if (child.delete()) deletedFiles++;
+					}
+					else if (child.delete()) deletedFiles++;
 				}
 			} catch (Exception e) {
 			}

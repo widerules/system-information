@@ -140,5 +140,6 @@
     <string name="click_for_detail">点击查看详情</string>
     <string name="crashed">出错了</string>
     <string name="set_homepage">设为首页</string>
+    <string name="icon">图标</string>
     
 </resources>

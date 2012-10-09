@@ -2615,7 +2615,7 @@ public class SimpleBrowser extends Activity {
 		}
 		serverWebs.get(position).isForeground = true;
 		webIndex = position;
-		String url = serverWebs.get(webIndex).getUrl();
+		String url = serverWebs.get(webIndex).m_url;
 		if (url == null) url = "";
 		else if (HOME_PAGE.equals(url)) url = HOME_BLANK;
 		webAddress.setText(url);// refresh the display url

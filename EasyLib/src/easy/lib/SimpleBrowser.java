@@ -687,8 +687,7 @@ public class SimpleBrowser extends Activity {
 				}
 
 				@Override
-				public void onPageStarted(WebView view, String url,
-						Bitmap favicon) {
+				public void onPageStarted(WebView view, String url, Bitmap favicon) {
 					super.onPageStarted(view, url, favicon);
 
 					m_url = url;
@@ -2430,7 +2429,12 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).stopLoading();
 					loadProgress.setVisibility(View.INVISIBLE);
 				} else {// reload the webpage
-					serverWebs.get(webIndex).reload();
+					String url = serverWebs.get(webIndex).getUrl();
+					String m_url = serverWebs.get(webIndex).m_url;
+					if (m_url.equals(url))
+						serverWebs.get(webIndex).reload();
+					else 
+						serverWebs.get(webIndex).loadUrl(m_url);
 				}
 			}
 		});

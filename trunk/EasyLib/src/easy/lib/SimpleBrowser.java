@@ -919,7 +919,7 @@ public class SimpleBrowser extends Activity {
 			if ((wv.getTitle() != null) && (!"".equals(wv.getTitle())))
 				webname.setText(wv.getTitle());
 			else
-				webname.setText(wv.getUrl());
+				webname.setText(wv.m_url);
 
 			webname.setOnClickListener(new OnClickListener() {
 				@Override

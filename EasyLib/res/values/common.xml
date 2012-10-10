@@ -122,7 +122,7 @@
     <string name="bing">Bing</string>
     <string name="google">Google</string>
     <string name="block_popup">Block pop-up</string>
-    <string name="block_js">Block JavaScript</string>
+    <string name="block_js">Block JavaScript and Flash</string>
     <string name="reset">Press this for default options</string>
     <string name="enable_proxy">Enable proxy, local port:</string>
     <string name="overview_page">Open Pages in Overview</string>

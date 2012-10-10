@@ -122,7 +122,7 @@
     <string name="google">谷歌</string>
     <string name="bing">必应</string>
     <string name="block_popup">禁止弹窗</string>
-    <string name="block_js">禁止JS</string>
+    <string name="block_js">禁止JS, Flash</string>
     <string name="reset">恢复默认设置</string>
     <string name="enable_proxy">使用代理，本地端口：</string>
     <string name="overview_page">以概览模式打开网页</string>

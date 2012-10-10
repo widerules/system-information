@@ -2256,7 +2256,7 @@ public class SimpleBrowser extends Activity {
 		imgAddFavo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				String url = serverWebs.get(webIndex).getUrl();
+				String url = serverWebs.get(webIndex).m_url;
 				if (HOME_PAGE.equals(url))
 					return;// not add home page
 

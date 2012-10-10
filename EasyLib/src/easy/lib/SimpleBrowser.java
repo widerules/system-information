@@ -1735,6 +1735,9 @@ public class SimpleBrowser extends Activity {
 	}
 
 	private void shareUrl(String title, String url) {
+		if (title == null) title = "";
+		if (url == null) url = "";
+		
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
 		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 		Uri data = null;
@@ -2153,7 +2156,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 5:// share url
-					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).getUrl());
+					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
 				case 6:// search
 						// serverWebs.get(webIndex).showFindDialog("e", false);

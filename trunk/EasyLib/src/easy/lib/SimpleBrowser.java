@@ -732,12 +732,17 @@ public class SimpleBrowser extends Activity {
 				public void onPageFinished(WebView view, String url) {
 					pageSource = "";// prevent get incomplete page source during
 									// page loading
+					
+					m_url = url;
 
 					if (isForeground) {
 						// hide progressbar anyway
 						loadProgress.setVisibility(View.INVISIBLE);
 						imgRefresh.setImageResource(R.drawable.refresh);
 						webControl.setVisibility(View.INVISIBLE);
+						
+						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
+						else webAddress.setText(url);						
 					}
 					mProgress = 0;
 					// update the page title in webList
@@ -748,9 +753,9 @@ public class SimpleBrowser extends Activity {
 
 					if (HOME_PAGE.equals(url)) updateHomePage();
 					else {
-						if (browserName.equals(title))
+						if (browserName.equals(title)) ;
 							// if title and url not sync, then sync it
-							webAddress.setText(HOME_BLANK);
+							//webAddress.setText(HOME_BLANK);
 						else {// handle the bookmark/history after load new page
 							String site = "";
 							String[] tmp = url.split("/");

@@ -240,6 +240,7 @@ public class SimpleBrowser extends Activity {
 
 	String HOME_PAGE = "file:///data/data/";
 	final String HOME_BLANK = "about:blank";
+	String m_homepage = null;
 	boolean firstRun = false;
 	int countDown = 0;
 
@@ -733,7 +734,7 @@ public class SimpleBrowser extends Activity {
 					pageSource = "";// prevent get incomplete page source during
 									// page loading
 					
-					m_url = url;
+					m_url = url;// must sync the url for it may change after pagestarted.
 
 					if (isForeground) {
 						// hide progressbar anyway
@@ -2450,7 +2451,8 @@ public class SimpleBrowser extends Activity {
 		imgHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				loadPage();
+				if ((m_homepage != null) && (!"".equals(m_homepage))) serverWebs.get(webIndex).loadUrl(m_homepage);
+				else loadPage();
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);
@@ -2493,13 +2495,29 @@ public class SimpleBrowser extends Activity {
 
 		createHomePage();
 		
+		if (!mAdAvailable) {
+			ObjectInputStream ois = null;
+			FileInputStream fi = null;
+			String url = null;
+			try {
+				fi = openFileInput("homepage");
+				ois = new ObjectInputStream(fi);
+				m_homepage = (String) ois.readObject();
+			} catch (EOFException e) {// only when read eof need send out msg.
+				try {
+					ois.close();
+					fi.close();
+				} catch (Exception e1) {}
+			} catch (Exception e) {}
+		}
+		
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-				if (!readPages("pages") && (!mAdAvailable && !readPages("homepage")))
-					loadPage();// load about:blank if no url saved or homepage specified
-				else closePage(0, false);// the first page is no use if open saved url or homepage
+				if (readPages("pages")) closePage(0, false);// the first page is no use if open saved url or homepage
+				else if ((m_homepage != null) && !"".equals(m_homepage)) serverWebs.get(webIndex).loadUrl(m_homepage);
+				else loadPage();// load about:blank if no url saved or homepage specified
 			}
 			else
 				serverWebs.get(webIndex).loadUrl(getIntent().getDataString());

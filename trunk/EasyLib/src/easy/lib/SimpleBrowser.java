@@ -1048,6 +1048,12 @@ public class SimpleBrowser extends Activity {
 					if (HOME_BLANK.equals(webAddress.getText().toString())) shouldReload = true;
 				}
 				
+				boolean clearHome = sp.getBoolean("clear_home", false);
+				if (clearHome) {
+					m_homepage = null;
+					sEdit.putString("homepage", null);
+				}
+				
 				boolean clearHistory = sp.getBoolean("clear_history", false);
 				boolean clearBookmark = sp.getBoolean("clear_bookmark", false);
 
@@ -1091,6 +1097,8 @@ public class SimpleBrowser extends Activity {
 					message += getString(R.string.password) + ", ";
 				if (clearIcon)
 					message += getString(R.string.icon) + ", ";
+				if (clearHome)
+					message += getString(R.string.home) + ", ";
 				message = message.trim();
 				if (!"".equals(message)) {
 					if (message.endsWith(","))
@@ -1277,14 +1285,9 @@ public class SimpleBrowser extends Activity {
 					createShortcut(url, mBookMark.get(item.getOrder()).m_title);
 					break;
 				case 11://set homepage
-					try {// write opened url to /data/data/easy.browser/files/pages
-						FileOutputStream fo = openFileOutput("homepage", 0);
-						ObjectOutputStream oos = new ObjectOutputStream(fo);
-						oos.writeObject(url);
-						oos.flush();
-						oos.close();
-						fo.close();
-					} catch (Exception e) {}
+					m_homepage = url;
+					sEdit.putString("homepage", url);
+					sEdit.commit();
 					break;
 				case 8:// remove bookmark
 					removeFavo(item.getOrder());
@@ -1853,6 +1856,7 @@ public class SimpleBrowser extends Activity {
 			localPort = sp.getInt("local_port", 1984);
 			ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
 		}
+		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
 
 		
 		
@@ -2494,23 +2498,7 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 
 		createHomePage();
-		
-		if (!mAdAvailable) {
-			ObjectInputStream ois = null;
-			FileInputStream fi = null;
-			String url = null;
-			try {
-				fi = openFileInput("homepage");
-				ois = new ObjectInputStream(fi);
-				m_homepage = (String) ois.readObject();
-			} catch (EOFException e) {// only when read eof need send out msg.
-				try {
-					ois.close();
-					fi.close();
-				} catch (Exception e1) {}
-			} catch (Exception e) {}
-		}
-		
+				
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.

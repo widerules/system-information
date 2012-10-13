@@ -544,7 +544,15 @@
                         android:checked="false"
                         android:text="@string/icon"
                         android:textColor="#f0030f03" />
-                </LinearLayout>
+                    
+                    <CheckBox
+                        android:id="@+id/clear_home"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"
+                        android:text="@string/home"
+                        android:textColor="#f0030f03" />
+                    </LinearLayout>
             </HorizontalScrollView>
 
             <Button

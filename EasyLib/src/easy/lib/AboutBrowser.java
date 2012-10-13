@@ -43,7 +43,7 @@ public class AboutBrowser extends Activity {
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
 			searchEngine, shareMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
-			clrCache, clrIcon;
+			clrCache, clrIcon, clrHome;
 	LinearLayout advanceSettings, basicSettings;
 	Button btnAdvance, btnReset;
 	EditText etPort;
@@ -192,6 +192,8 @@ public class AboutBrowser extends Activity {
 					message += getString(R.string.formdata) + ", ";
 				if (clrIcon.isChecked())
 					message += getString(R.string.icon) + ", ";
+				if (clrHome.isChecked())
+					message += getString(R.string.home) + ", ";
 				message = message.trim();
 				if ("".equals(message))
 					return;// return if no data selected.
@@ -275,7 +277,6 @@ public class AboutBrowser extends Activity {
 
 		cbBlockPopup = (CheckBox) findViewById(R.id.block_popup);
 		cbBlockJs = (CheckBox) findViewById(R.id.block_js);
-		//cbHideExit = (CheckBox) findViewById(R.id.hide_exit);
 		cbOverview = (CheckBox) findViewById(R.id.overview_page);
 		cbCacheToSD = (CheckBox) findViewById(R.id.cache_tosd);
 		cbHtml5 = (CheckBox) findViewById(R.id.html5);
@@ -362,6 +363,7 @@ public class AboutBrowser extends Activity {
 		clrPassword = (CheckBox) findViewById(R.id.clear_password);
 		clrFormdata = (CheckBox) findViewById(R.id.clear_formdata);
 		clrIcon = (CheckBox) findViewById(R.id.clear_icon);
+		clrHome = (CheckBox) findViewById(R.id.clear_home);
 
 		btnReset = (Button) findViewById(R.id.reset);
 		btnReset.setOnClickListener(new OnClickListener() {
@@ -412,7 +414,6 @@ public class AboutBrowser extends Activity {
 		cbBlockPopup.setChecked(perferences.getBoolean("block_popup", false));
 		cbBlockJs.setChecked(perferences.getBoolean("block_js", false));
 		cbCacheToSD.setChecked(perferences.getBoolean("cache_tosd", false));
-		//cbHideExit.setChecked(perferences.getBoolean("hide_exit", true));
 		cbOverview.setChecked(perferences.getBoolean("overview_page", false));
 		cbSnapSize.setChecked(perferences.getBoolean("full_web", false));
 		cbHtml5.setChecked(perferences.getBoolean("html5", false));
@@ -440,6 +441,7 @@ public class AboutBrowser extends Activity {
 		clrFormdata.setChecked(perferences.getBoolean("clear_formdata", false));
 		clrPassword.setChecked(perferences.getBoolean("clear_password", false));
 		clrIcon.setChecked(perferences.getBoolean("clear_icon", false));
+		clrHome.setChecked(perferences.getBoolean("clear_home", false));
 		super.onResume();
 		
 		try {
@@ -454,7 +456,6 @@ public class AboutBrowser extends Activity {
 	protected void onPause() {
 		if (resetDefault) {
 			editor.putBoolean("full_screen_display", false);
-			// editor.putBoolean("page_source", false);
 			editor.putBoolean("show_zoom", false);
 			editor.putBoolean("block_image", false);
 			editor.putBoolean("cache_prefer", false);
@@ -488,21 +489,20 @@ public class AboutBrowser extends Activity {
 			editor.putInt("encoding", 0);
 			editor.putInt("ua", 0);
 
+			editor.putBoolean("clear_cache", false);
 			editor.putBoolean("clear_history", false);
 			editor.putBoolean("clear_bookmark", false);
 			editor.putBoolean("clear_cookie", false);
-			editor.putBoolean("clear_formdata", false);
 			editor.putBoolean("clear_password", false);
-			editor.putBoolean("clear_cache", false);
+			editor.putBoolean("clear_formdata", false);
+			editor.putBoolean("clear_icon", false);
+			editor.putBoolean("clear_home", false);
 		} else {
 			editor.putBoolean("full_screen_display", cbFullscreen.isChecked());
-			// editor.putBoolean("page_source", cbPageSource.isChecked());
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
 			editor.putBoolean("cache_prefer", cbCachePrefer.isChecked());
 			editor.putBoolean("full_web", cbSnapSize.isChecked());
-			// editor.putInt("history_count",
-			// historyCount.indexOfChild(findViewById(historyCount.getCheckedRadioButtonId())));
 			editor.putInt("share_mode", shareMode
 					.indexOfChild(findViewById(shareMode
 							.getCheckedRadioButtonId())));
@@ -515,7 +515,6 @@ public class AboutBrowser extends Activity {
 
 			editor.putBoolean("block_popup", cbBlockPopup.isChecked());
 			editor.putBoolean("block_js", cbBlockJs.isChecked());
-			//editor.putBoolean("hide_exit", cbHideExit.isChecked());
 			editor.putBoolean("overview_page", cbOverview.isChecked());
 			editor.putBoolean("cache_tosd", cbCacheToSD.isChecked());
 			editor.putBoolean("html5", cbHtml5.isChecked());
@@ -538,6 +537,7 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("clear_formdata", clrFormdata.isChecked());
 			editor.putBoolean("clear_password", clrPassword.isChecked());
 			editor.putBoolean("clear_icon", clrIcon.isChecked());
+			editor.putBoolean("clear_home", clrHome.isChecked());
 		}
 		editor.commit();
 

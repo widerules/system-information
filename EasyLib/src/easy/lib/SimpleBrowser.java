@@ -715,19 +715,7 @@ public class SimpleBrowser extends Activity {
 						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
 					} catch (Exception e) {}
 					
-
-					try {// write opened url to /data/data/easy.browser/files/pages
-						FileOutputStream fo = openFileOutput("pages", 0);
-						ObjectOutputStream oos = new ObjectOutputStream(fo);
-						for (int i = 0; i < serverWebs.size(); i++) {
-							if (!HOME_PAGE.equals(serverWebs.get(i).m_url)) {
-								oos.writeObject(serverWebs.get(i).m_url);
-							}
-						}
-						oos.flush();
-						oos.close();
-						fo.close();
-					} catch (Exception e) {}
+					recordPages();
 
 					//if (adview != null) adview.loadAd();// should only do this by wifi
 				}
@@ -951,6 +939,21 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	void recordPages() {
+		try {// write opened url to /data/data/easy.browser/files/pages
+			FileOutputStream fo = openFileOutput("pages", 0);
+			ObjectOutputStream oos = new ObjectOutputStream(fo);
+			for (int i = 0; i < serverWebs.size(); i++) {
+				if (!HOME_PAGE.equals(serverWebs.get(i).m_url)) {
+					oos.writeObject(serverWebs.get(i).m_url);
+				}
+			}
+			oos.flush();
+			oos.close();
+			fo.close();
+		} catch (Exception e) {}
+	}
+	
 	void closePage(int position, boolean clearData) {
 		if (position == webIndex) {
 			// remove current page, so stop loading at first
@@ -988,6 +991,8 @@ public class SimpleBrowser extends Activity {
 			//serverWebs.get(webIndex).clearHistory();// is that necessary to clear history?
 		}
 		changePage(webIndex);
+		
+		recordPages();
 	}
 
 	@Override
@@ -2888,7 +2893,7 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if (searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if (urlLine.getLayoutParams().height != 0) { 
+				else if ((urlLine.getLayoutParams().height != 0) && (displayMode > 1)) { 
 					if (displayMode == 2) hideBars();
 					else if (displayMode == 3) hideUrl();
 				}

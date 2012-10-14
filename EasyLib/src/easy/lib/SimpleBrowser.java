@@ -251,6 +251,7 @@ public class SimpleBrowser extends Activity {
 	//boolean flashInstalled = false;
 	// settings
 	int displayMode = 1;
+	int rotateMode = 1;
 	// boolean getPageSource = false;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
@@ -1132,6 +1133,11 @@ public class SimpleBrowser extends Activity {
 					showBars();
 				}
 			}
+			
+			rotateMode = sp.getInt("rotate_mode", 1);
+			if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+			else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 			// default to full screen now
 			snapFullWeb = sp.getBoolean("full_web", false);
@@ -1867,8 +1873,6 @@ public class SimpleBrowser extends Activity {
 		else
 			searchEngine = sp.getInt("search_engine", 3); // google
 		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
-		displayMode = sp.getInt("display_mode", 1);
-		// default to full screen
 		snapFullWeb = sp.getBoolean("full_web", false);
 		readTextSize(sp);// init the text size
 		enableProxy = sp.getBoolean("enable_proxy", false);
@@ -1878,7 +1882,13 @@ public class SimpleBrowser extends Activity {
 		}
 		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
 
+		displayMode = sp.getInt("display_mode", 1);
 		
+		rotateMode = sp.getInt("rotate_mode", 1);
+		if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+		else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 		
 		PackageManager pm = getPackageManager();
 		

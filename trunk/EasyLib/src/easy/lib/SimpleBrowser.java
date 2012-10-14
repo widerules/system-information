@@ -2420,6 +2420,26 @@ public class SimpleBrowser extends Activity {
 			countDown = 1;
 		}
 
+		// read search words
+		ObjectInputStream ois = null;
+		FileInputStream fi = null;
+		String word = null;
+		try {
+			fi = openFileInput("searchwords");
+			ois = new ObjectInputStream(fi);
+			while ((word = (String) ois.readObject()) != null) {
+				if (siteArray.indexOf(word) < 0) {
+					siteArray.add(word);
+					urlAdapter.add(word);
+				}
+			}
+		} catch (EOFException e) {// only when read eof need send out msg.
+			try {
+				ois.close();
+				fi.close();
+			} catch (Exception e1) {}
+		} catch (Exception e) {}
+		
 		urlAdapter.sort(new stringComparator());
 		webAddress.setAdapter(urlAdapter);
 
@@ -2631,6 +2651,19 @@ public class SimpleBrowser extends Activity {
 	void gotoUrl(String url) {
 		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
 		else if (!url.contains(".")) {
+			if ((!incognitoMode) && (siteArray.indexOf(url) < 0)) {
+				siteArray.add(url);
+				urlAdapter.add(url);
+				try {// write to /data/data/easy.browser/files/
+					FileOutputStream fo = openFileOutput("searchwords", MODE_APPEND);
+					ObjectOutputStream oos = new ObjectOutputStream(fo);
+					oos.writeObject(url);// record new search word
+					oos.flush();
+					oos.close();
+					fo.close();
+				} catch (Exception e) {}
+			}
+			
 			switch (searchEngine) {
 			case 1:// bing
 				url = "http://www.bing.com/search?q=" + url;

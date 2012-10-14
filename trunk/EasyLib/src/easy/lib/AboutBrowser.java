@@ -39,9 +39,9 @@ public class AboutBrowser extends Activity {
 
 	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD,
 			cbZoomControl, cbHtml5, cbBlockImg, cbCachePrefer,
-			cbFullscreen, cbOverview, cbSnapSize;
+			cbOverview, cbSnapSize;
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
-			searchEngine, shareMode;
+			searchEngine, shareMode, displayMode, rotateMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
 			clrCache, clrIcon, clrHome;
 	LinearLayout advanceSettings, basicSettings;
@@ -238,7 +238,7 @@ public class AboutBrowser extends Activity {
 			}
 		});
 
-		cbFullscreen = (CheckBox) findViewById(R.id.full_screen);
+		displayMode = (RadioGroup) findViewById(R.id.display_mode);
 		cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
 		cbBlockImg = (CheckBox) findViewById(R.id.block_image);
 		cbCachePrefer = (CheckBox) findViewById(R.id.cache_prefer);
@@ -395,17 +395,15 @@ public class AboutBrowser extends Activity {
 
 	@Override
 	protected void onResume() {
-		cbFullscreen.setChecked(perferences.getBoolean("full_screen_display",
-				false));
-		boolean tmpFullScreen = perferences.getBoolean("full_screen_display", false);
-		if (tmpFullScreen)
+		int tmpMode = perferences.getInt("display_mode", 1);
+		((RadioButton) displayMode.getChildAt(tmpMode)).setChecked(true);
+		if (tmpMode == 2)
 			getWindow().setFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		else
 			getWindow().clearFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		cbFullscreen.setChecked(tmpFullScreen);
 
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
@@ -455,7 +453,7 @@ public class AboutBrowser extends Activity {
 	@Override
 	protected void onPause() {
 		if (resetDefault) {
-			editor.putBoolean("full_screen_display", false);
+			editor.putInt("display_mode", 1);
 			editor.putBoolean("show_zoom", false);
 			editor.putBoolean("block_image", false);
 			editor.putBoolean("cache_prefer", false);
@@ -498,7 +496,7 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("clear_icon", false);
 			editor.putBoolean("clear_home", false);
 		} else {
-			editor.putBoolean("full_screen_display", cbFullscreen.isChecked());
+			editor.putInt("display_mode", displayMode.indexOfChild(findViewById(displayMode.getCheckedRadioButtonId())));
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
 			editor.putBoolean("cache_prefer", cbCachePrefer.isChecked());

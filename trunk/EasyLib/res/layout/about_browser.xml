@@ -62,15 +62,6 @@
                 android:textSize="16dip" />
 
             <CheckBox
-                android:id="@+id/full_screen"
-                android:layout_width="wrap_content"
-                android:layout_height="0dip"
-                android:layout_marginLeft="15dip"
-                android:checked="false"
-                android:text="@string/full_screen"
-                android:textColor="#f0030f03" />
-
-            <CheckBox
                 android:id="@+id/show_zoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

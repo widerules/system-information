@@ -1135,9 +1135,6 @@ public class SimpleBrowser extends Activity {
 			}
 			
 			rotateMode = sp.getInt("rotate_mode", 1);
-			if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-			else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 			// default to full screen now
 			snapFullWeb = sp.getBoolean("full_web", false);
@@ -1888,7 +1885,6 @@ public class SimpleBrowser extends Activity {
 		if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 		
 		PackageManager pm = getPackageManager();
 		
@@ -3104,9 +3100,8 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig); // not restart activity each
-		// time screen orientation
-		// changes
+		super.onConfigurationChanged(newConfig); 
+		// not restart activity each time screen orientation changes
 		setLayout();
 	}
 

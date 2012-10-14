@@ -250,7 +250,7 @@ public class SimpleBrowser extends Activity {
 
 	//boolean flashInstalled = false;
 	// settings
-	boolean fullScreen = false;
+	int displayMode = 1;
 	// boolean getPageSource = false;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
@@ -470,8 +470,10 @@ public class SimpleBrowser extends Activity {
 			// close webcontrol page if it is open.
 			webControl.setVisibility(View.INVISIBLE);
 
-			if (fullScreen && (urlLine.getLayoutParams().height != 0))
-				hideBars();
+			if (urlLine.getLayoutParams().height != 0) {
+				if (displayMode == 2) hideBars();
+				else if (displayMode == 3) hideUrl();
+			}
 
 			if (!this.isFocused()) {
 				this.requestFocusFromTouch();
@@ -705,7 +707,8 @@ public class SimpleBrowser extends Activity {
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
-						if (fullScreen) showBars();
+						if (displayMode == 2) showBars();
+						else if (displayMode == 3) showUrl();
 					}
 
 					try {
@@ -1109,11 +1112,11 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 
-			boolean tmpFullScreen = sp.getBoolean("full_screen_display", false);
+			int tmpMode = sp.getInt("display_mode", 1);
 			// hide url editor and tool buttons
-			if (tmpFullScreen != fullScreen) {
-				fullScreen = tmpFullScreen;
-				if (fullScreen) {
+			if (tmpMode != displayMode) {
+				displayMode = tmpMode;
+				if (displayMode == 2) {
 					getWindow().setFlags(
 							WindowManager.LayoutParams.FLAG_FULLSCREEN,
 							WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -1233,24 +1236,32 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	public void hideUrl() {
+		LayoutParams lp = urlLine.getLayoutParams();
+		lp.height = 0;
+		urlLine.requestLayout();
+	}
+	
 	public void hideBars() {
 		LayoutParams lp = webTools.getLayoutParams();
 		lp.height = 0;
 		webTools.requestLayout();
 
-		lp = urlLine.getLayoutParams();
-		lp.height = 0;
-		urlLine.requestLayout();
+		hideUrl();
 	}
 
+	public void showUrl() {
+		LayoutParams lp = urlLine.getLayoutParams();
+		lp.height = LayoutParams.WRAP_CONTENT;
+		urlLine.requestLayout();
+	}
+	
 	public void showBars() {
 		LayoutParams lp = webTools.getLayoutParams();
 		lp.height = LayoutParams.WRAP_CONTENT;
 		webTools.requestLayout();
 
-		lp = urlLine.getLayoutParams();
-		lp.height = LayoutParams.WRAP_CONTENT;
-		urlLine.requestLayout();
+		showUrl();
 	}
 
 	@Override
@@ -1713,9 +1724,13 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (fullScreen && (urlLine.getLayoutParams().height == 0)) showBars();
+		if (urlLine.getLayoutParams().height == 0) {
+			if (displayMode == 2) showBars();
+			else if (displayMode == 3) showUrl();
+		}
 		else {
-			if (fullScreen && (urlLine.getLayoutParams().height != 0)) hideBars();
+			if (displayMode == 2) hideBars();
+			else if (displayMode == 3) hideUrl();
 			menuDialog.show();
 		}
 
@@ -1847,7 +1862,7 @@ public class SimpleBrowser extends Activity {
 		else
 			searchEngine = sp.getInt("search_engine", 3); // google
 		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
-		fullScreen = sp.getBoolean("full_screen_display", false);
+		displayMode = sp.getInt("display_mode", 1);
 		// default to full screen
 		snapFullWeb = sp.getBoolean("full_web", false);
 		readTextSize(sp);// init the text size
@@ -2402,16 +2417,13 @@ public class SimpleBrowser extends Activity {
 
 		webTools = (RelativeLayout) findViewById(R.id.webtools);
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
-		if (fullScreen) {// hide url bar and tools bar
+		if (displayMode == 2) {// hide url bar and tools bar
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-			LayoutParams lp = webTools.getLayoutParams();
-			lp.height = 0;
-
-			lp = urlLine.getLayoutParams();
-			lp.height = 0;
+			hideBars();
 		}
+		else if (displayMode == 3) hideUrl();
 
 		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 
@@ -2876,8 +2888,10 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if (searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if (fullScreen && (urlLine.getLayoutParams().height != 0)) 
-					hideBars();
+				else if (urlLine.getLayoutParams().height != 0) { 
+					if (displayMode == 2) hideBars();
+					else if (displayMode == 3) hideUrl();
+				}
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

@@ -96,7 +96,7 @@
     <string name="max_history">History</string>
     <string name="font_size">Font"    "</string>
     <string name="font_smallest">Smallest</string>
-    <string name="font_smaller">Small</string>
+    <string name="font_smaller">Small"  "</string>
     <string name="font_normal">Normal"     "</string>
     <string name="font_larger">Large"    "</string>
     <string name="font_largest">Largest</string>
@@ -142,7 +142,7 @@
     <string name="set_homepage">Set as homepage</string>
     <string name="icon">Icon</string>
     <string name="display_mode">display</string>
-    <string name="normal">normal" "</string>
+    <string name="normal">normal</string>
     <string name="hide_url">Hide url</string>
     <string name="rotate_mode">Rotate" "</string>
     <string name="system">System</string>

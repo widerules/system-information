@@ -20,7 +20,7 @@
     <string name="wp">WP</string>
     <string name="nokia">Nokia</string>
     <string name="bb">BlackBerry</string>
-    <string name="baidu">百度</string>
+    <string name="baidu">百度"          "</string>
     <string name="yandex">Яндекс</string>
 
 </resources>

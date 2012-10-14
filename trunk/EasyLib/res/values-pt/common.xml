@@ -87,10 +87,10 @@
     <string name="block_image">Bloquear imagens para reduzir a largura de banda</string>
     <string name="homepage_css">Homepage fresco, mas um pouco lento</string>
     <string name="max_history">Histórico</string>
-    <string name="font_size">Tamanho da fonte</string>
+    <string name="font_size">Fonte</string>
     <string name="font_smallest">Menor</string>
     <string name="font_smaller">Pequeno</string>
-    <string name="font_larger">Grande</string>
+    <string name="font_larger">Grande"  "</string>
     <string name="font_largest">Maior</string>
     <string name="encoding">Codificação na página atual</string>
     <string name="search">Pesquisar</string>
@@ -107,7 +107,7 @@
     <string name="change_ua">Precisa mudar UA para acessar algum site</string>
     <string name="cache_tosd">Cache para cartão SD</string>
     <string name="advance_button">Configurações Avançadas</string>
-    <string name="search_engine">motor de busca</string>
+    <string name="search_engine">Motor</string>
     <string name="block_popup">bloquear pop-up</string>
     <string name="block_js">bloco de JavaScript</string>
     <string name="reset">Pressione este para opções padrão</string>
@@ -117,7 +117,7 @@
     <string name="share_to_friends">Navegador Easy Share para seus amigos</string>
     <string name="cache_prefer">preferem cache para reduzir a largura de banda</string>
     <string name="add_shortcut">Criar atalho na tela inicial</string>
-    <string name="share_mode">Partes por</string>
+    <string name="share_mode">Ação"  "</string>
     <string name="from">de</string>
     <string name="proxy_hint">Não foi encontrado GAE ou Orbot. você pode precisar baixá-los para fazer o trabalho de proxy. porta para GAE é 1984. 8118 para Orbot</string>
     <string name="sendto">Comentários</string>
@@ -125,5 +125,11 @@
     <string name="crashed">caiu</string>
     <string name="set_homepage">definir como homepage</string>
     <string name="icon">ícone</string>
+    <string name="display_mode">Exibir" "</string>
+    <string name="hide_url">Esconder url</string>
+    <string name="rotate_mode">Rodar</string>
+    <string name="system">Sistema</string>
+    <string name="landscape">Paisagem</string>
+    <string name="portrait">Retrato</string>
     
 </resources>

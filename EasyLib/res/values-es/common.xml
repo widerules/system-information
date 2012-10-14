@@ -78,11 +78,11 @@
     <string name="block_image">Bloquear imágenes para reducir el ancho de banda</string>
     <string name="homepage_css">Página de inicio frío, pero un poco lento</string>
     <string name="max_history">historia</string>
-    <string name="font_size">Tamaño de letra</string>
-    <string name="font_smallest">más pequeño</string>
-    <string name="font_smaller">pequeño</string>
-    <string name="font_larger">grande</string>
-    <string name="font_largest">más grande</string>
+    <string name="font_size">Son"       "</string>
+    <string name="font_smallest">Más pequeño</string>
+    <string name="font_smaller">Pequeño</string>
+    <string name="font_larger">Grande"  "</string>
+    <string name="font_largest">Más grande</string>
     <string name="encoding">Codificación de la página actual</string>
     <string name="search">Búsquedas</string>
     <string name="html5">(Página actual) apoyan parcialmente HTML5</string>
@@ -98,7 +98,7 @@
     <string name="change_ua">¿Necesitas cambiar el acceso universal a acceder a un sitio web</string>
     <string name="cache_tosd">Caché a la tarjeta SD</string>
     <string name="advance_button">Configuración avanzada</string>
-    <string name="search_engine">"motor de búsqueda"</string>
+    <string name="search_engine">Buscar"  "</string>
     <string name="block_popup">Bloquea pop-up</string>
     <string name="block_js">Bloquear JavaScript</string>
     <string name="reset">Pulse este de las opciones por defecto</string>
@@ -108,7 +108,7 @@
     <string name="share_to_friends">Easy Share Browser es muy facil</string>
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
     <string name="add_shortcut">Crear un acceso directo en la pantalla principal</string>
-    <string name="share_mode">Cuota por</string>
+    <string name="share_mode">Cuota"    "</string>
     <string name="from">de</string>
     <string name="proxy_hint">No se ha encontrado GAE o Orbot. es posible que necesite descargar a hacer el trabajo de proxy. puerto para GAE es 1984. 8118 para Orbot</string>
     <string name="sendto">Realimentación</string>
@@ -116,5 +116,11 @@
     <string name="crashed">se estrelló</string>
     <string name="set_homepage">establecer como página de inicio</string>
     <string name="icon">icono</string>
+    <string name="display_mode">Mostrar</string>
+    <string name="hide_url">ocultar url</string>
+    <string name="rotate_mode">Girar"      "</string>
+    <string name="system">Sistema</string>
+    <string name="landscape">paisaje"    "</string>
+    <string name="portrait">retrato</string>
     
 </resources>

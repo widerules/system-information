@@ -64,7 +64,7 @@
             <CheckBox
                 android:id="@+id/full_screen"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dip"
                 android:layout_marginLeft="15dip"
                 android:checked="false"
                 android:text="@string/full_screen"
@@ -144,7 +144,7 @@
                 android:fadeScrollbars="true" >
 
                 <RadioGroup
-                    android:id="@+id/font_size"
+                    android:id="@+id/rotate_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" >
@@ -152,32 +152,58 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/font_size"
+                        android:text="@string/rotate_mode"
                         android:textColor="#f0030f03"
                         android:textSize="16dip" />
 
                     <RadioButton
-                        android:text="@string/font_larger"
+                        android:text="@string/system"
+                        android:textColor="#f0030f03" />
+                    
+                    <RadioButton
+                        android:text="@string/landscape"
                         android:textColor="#f0030f03" />
 
                     <RadioButton
-                        android:text="@string/font_normal"
-                        android:textColor="#f0030f03" />
-
-                    <RadioButton
-                        android:text="@string/font_smaller"
-                        android:textColor="#f0030f03" />
-
-                    <RadioButton
-                        android:text="@string/font_smallest"
-                        android:textColor="#f0030f03" />
-
-                    <RadioButton
-                        android:text="@string/font_largest"
+                        android:text="@string/portrait"
                         android:textColor="#f0030f03" />
                 </RadioGroup>
             </HorizontalScrollView>
+            
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
 
+                <RadioGroup
+                    android:id="@+id/display_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/display_mode"
+                        android:textColor="#f0030f03"
+                        android:textSize="16dip" />
+
+                    <RadioButton
+                        android:text="@string/normal"
+                        android:textColor="#f0030f03" />
+                    
+                    <RadioButton
+                        android:text="@string/full_screen"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/hide_url"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
+        
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -215,6 +241,49 @@
                         android:textColor="#f0030f03" />
                 </RadioGroup>
             </HorizontalScrollView>
+            
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <RadioGroup
+                    android:id="@+id/font_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/font_size"
+                        android:textColor="#f0030f03"
+                        android:textSize="16dip" />
+
+                    <RadioButton
+                        android:text="@string/font_larger"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_normal"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_smaller"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_smallest"
+                        android:textColor="#f0030f03" />
+
+                    <RadioButton
+                        android:text="@string/font_largest"
+                        android:textColor="#f0030f03" />
+                </RadioGroup>
+            </HorizontalScrollView>
+
         </LinearLayout>
 
         <Button

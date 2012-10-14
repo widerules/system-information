@@ -129,5 +129,12 @@
     <string name="crashed">クラッシュ</string>
     <string name="set_homepage">ホームページとして設定する</string>
     <string name="icon">アイコン</string>
+    <string name="display_mode">表示</string>
+    <string name="normal">通常の</string>
+    <string name="hide_url">URLを隠す</string>
+    <string name="rotate_mode">回転させる</string>
+    <string name="system">次のシステム</string>
+    <string name="landscape">横画面をロック</string>
+    <string name="portrait">垂直画面をロック</string>
     
 </resources>

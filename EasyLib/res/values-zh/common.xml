@@ -121,6 +121,7 @@
     <string name="search_engine">搜索引擎</string>
     <string name="google">谷歌</string>
     <string name="bing">必应</string>
+    <string name="baidu">百度</string>
     <string name="block_popup">禁止弹窗</string>
     <string name="block_js">禁止JS, Flash</string>
     <string name="reset">恢复默认设置</string>
@@ -141,5 +142,12 @@
     <string name="crashed">出错了</string>
     <string name="set_homepage">设为首页</string>
     <string name="icon">图标</string>
+    <string name="display_mode">显示模式</string>
+    <string name="normal">正常</string>
+    <string name="hide_url">隐藏地址栏</string>
+    <string name="rotate_mode">转屏模式</string>
+    <string name="system">跟随系统</string>
+    <string name="landscape">锁定横屏</string>
+    <string name="portrait">锁定竖屏</string>
     
 </resources>

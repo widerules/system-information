@@ -94,12 +94,12 @@
     <string name="block_image">Block images to reduce bandwidth</string>
     <string name="homepage_css">Cool Homepage, but a little slow</string>
     <string name="max_history">History</string>
-    <string name="font_size">Font Size</string>
-    <string name="font_smallest">smallest</string>
-    <string name="font_smaller">small</string>
-    <string name="font_normal">normal</string>
-    <string name="font_larger">large</string>
-    <string name="font_largest">largest</string>
+    <string name="font_size">Font"    "</string>
+    <string name="font_smallest">Smallest</string>
+    <string name="font_smaller">Small</string>
+    <string name="font_normal">Normal"     "</string>
+    <string name="font_larger">Large"    "</string>
+    <string name="font_largest">Largest</string>
     <string name="encoding">Encoding in current page</string>
     <string name="encoding_auto">Auto</string>
     <string name="search">Search</string>
@@ -118,8 +118,8 @@
     <string name="advance_button">Advanced Settings</string>
     <string name="android">Phone</string>
     <string name="pc">PC</string>
-    <string name="search_engine">SearchNg</string>
-    <string name="bing">Bing</string>
+    <string name="search_engine">Engine</string>
+    <string name="bing">Bing"      "</string>
     <string name="google">Google</string>
     <string name="block_popup">Block pop-up</string>
     <string name="block_js">Block JavaScript and Flash</string>
@@ -129,9 +129,9 @@
     <string name="share_to_friends">Share Easy Browser to your friends</string>
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
     <string name="add_shortcut">Create shortcut on home screen</string>
-    <string name="share_mode">Share by</string>
-    <string name="native_apps">Native apps</string>
-    <string name="facebook">Facebook</string>
+    <string name="share_mode">Share2</string>
+    <string name="native_apps">Apps"    "</string>
+    <string name="facebook">Facebook" "</string>
     <string name="twitter">Twitter</string>
     <string name="google_plus">Google+</string>
     <string name="download_fail">download fail.</string>
@@ -141,5 +141,12 @@
     <string name="crashed">crashed</string>
     <string name="set_homepage">Set as homepage</string>
     <string name="icon">Icon</string>
+    <string name="display_mode">display</string>
+    <string name="normal">normal" "</string>
+    <string name="hide_url">Hide url</string>
+    <string name="rotate_mode">Rotate" "</string>
+    <string name="system">System</string>
+    <string name="landscape">landscape</string>
+    <string name="portrait">Portrait</string>
     
 </resources>

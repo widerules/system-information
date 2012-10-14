@@ -2711,7 +2711,7 @@ public class SimpleBrowser extends Activity {
 
 			if (!found) {
 				if (blankIndex < 0)
-					openNewPage(uri, webAdapter.getCount(), true);
+					openNewPage(uri, webIndex + 1, true);
 				else {
 					serverWebs.get(blankIndex).loadUrl(uri);
 					changePage(blankIndex);

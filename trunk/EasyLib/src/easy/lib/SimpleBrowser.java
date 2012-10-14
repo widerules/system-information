@@ -1078,6 +1078,9 @@ public class SimpleBrowser extends Activity {
 				if (clearHistory) {
 					mHistory.clear();
 					writeBookmark("history", mHistory);
+					clearFile("searchwords");
+					siteArray.clear();
+					urlAdapter.clear();
 					historyChanged = false;
 					if (HOME_BLANK.equals(webAddress.getText().toString()))
 						shouldReload = true;
@@ -1249,6 +1252,17 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	void clearFile(String filename) {
+		try {// clear the pages file
+			FileOutputStream fo = openFileOutput(filename, 0);
+			ObjectOutputStream oos = new ObjectOutputStream(fo);
+			oos.writeObject("");
+			oos.flush();
+			oos.close();
+			fo.close();
+		} catch (Exception e) {}
+	}
+	
 	public void hideUrl() {
 		LayoutParams lp = urlLine.getLayoutParams();
 		lp.height = 0;
@@ -2146,14 +2160,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 3:// exit
-					try {// clear the pages file
-						FileOutputStream fo = openFileOutput("pages", 0);
-						ObjectOutputStream oos = new ObjectOutputStream(fo);
-						oos.writeObject("");
-						oos.flush();
-						oos.close();
-						fo.close();
-					} catch (Exception e) {}
+					clearFile("pages");
 
 					finish();
 					break;

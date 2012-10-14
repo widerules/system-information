@@ -252,7 +252,7 @@ public class SimpleBrowser extends Activity {
 	// settings
 	int displayMode = 1;
 	int rotateMode = 1;
-	// boolean getPageSource = false;
+	boolean incognitoMode = false;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
@@ -716,7 +716,7 @@ public class SimpleBrowser extends Activity {
 						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
 					} catch (Exception e) {}
 					
-					recordPages();
+					if (!incognitoMode) recordPages();
 
 					//if (adview != null) adview.loadAd();// should only do this by wifi
 				}
@@ -749,7 +749,7 @@ public class SimpleBrowser extends Activity {
 						if (browserName.equals(title)) ;
 							// if title and url not sync, then sync it
 							//webAddress.setText(HOME_BLANK);
-						else {// handle the bookmark/history after load new page
+						else if (!incognitoMode) {// handle the bookmark/history after load new page
 							String site = "";
 							String[] tmp = url.split("/");
 							if (tmp.length > 2)	site = tmp[2];
@@ -1142,6 +1142,8 @@ public class SimpleBrowser extends Activity {
 			// default to full screen now
 			snapFullWeb = sp.getBoolean("full_web", false);
 
+			incognitoMode = sp.getBoolean("incognito", false);
+			
 			shareMode = sp.getInt("share_mode", 2);
 			
 			searchEngine = sp.getInt("search_engine", 3);

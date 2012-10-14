@@ -131,5 +131,6 @@
     <string name="system">Sistema</string>
     <string name="landscape">Paisagem</string>
     <string name="portrait">Retrato</string>
+    <string name="incognito">Modo incógnito</string>
     
 </resources>

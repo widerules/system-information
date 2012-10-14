@@ -149,5 +149,6 @@
     <string name="system">跟随系统</string>
     <string name="landscape">锁定横屏</string>
     <string name="portrait">锁定竖屏</string>
+    <string name="incognito">隐私浏览模式</string>
     
 </resources>

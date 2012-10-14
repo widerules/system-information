@@ -148,5 +148,6 @@
     <string name="system">System</string>
     <string name="landscape">landscape</string>
     <string name="portrait">Portrait</string>
+    <string name="incognito">Incognito mode</string>
     
 </resources>

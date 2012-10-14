@@ -88,7 +88,7 @@
     <string name="list_view">列表视图</string>
     <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
     <string name="snap">截屏</string>
-    <string name="full_screen">全屏</string>
+    <string name="full_screen">全屏"        "</string>
     <string name="full_webpage">全网页截屏</string>
     <string name="show_zoom">(当前页)缩放按钮</string>
     <string name="block_image">没有图片，更快更省流量</string>
@@ -96,9 +96,9 @@
     <string name="max_history">历史记录</string>
     <string name="font_size">字体大小</string>
     <string name="font_smallest">最小</string>
-    <string name="font_smaller">小</string>
-    <string name="font_normal">中</string>
-    <string name="font_larger">大</string>
+    <string name="font_smaller">小"    "</string>
+    <string name="font_normal">中"            "</string>
+    <string name="font_larger">大"            "</string>
     <string name="font_largest">最大</string>
     <string name="encoding">当前页文字编码</string>
     <string name="encoding_auto">自动</string>
@@ -120,8 +120,8 @@
     <string name="pc">电脑</string>
     <string name="search_engine">搜索引擎</string>
     <string name="google">谷歌</string>
-    <string name="bing">必应</string>
-    <string name="baidu">百度</string>
+    <string name="bing">必应"        "</string>
+    <string name="baidu">百度"        "</string>
     <string name="block_popup">禁止弹窗</string>
     <string name="block_js">禁止JS, Flash</string>
     <string name="reset">恢复默认设置</string>
@@ -143,7 +143,7 @@
     <string name="set_homepage">设为首页</string>
     <string name="icon">图标</string>
     <string name="display_mode">显示模式</string>
-    <string name="normal">正常</string>
+    <string name="normal">正常"        "</string>
     <string name="hide_url">隐藏地址栏</string>
     <string name="rotate_mode">转屏模式</string>
     <string name="system">跟随系统</string>

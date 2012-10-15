@@ -1898,6 +1898,8 @@ public class SimpleBrowser extends Activity {
 		}
 		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
 
+		incognitoMode = sp.getBoolean("incognito", false);
+		
 		displayMode = sp.getInt("display_mode", 1);
 		
 		rotateMode = sp.getInt("rotate_mode", 1);
@@ -2558,7 +2560,7 @@ public class SimpleBrowser extends Activity {
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-				if (readPages("pages")) closePage(0, false);// the first page is no use if open saved url or homepage
+				if (!incognitoMode && readPages("pages")) closePage(0, false);// the first page is no use if open saved url or homepage
 				else if ((m_homepage != null) && !"".equals(m_homepage)) serverWebs.get(webIndex).loadUrl(m_homepage);
 				else loadPage();// load about:blank if no url saved or homepage specified
 			}

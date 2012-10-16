@@ -2751,7 +2751,7 @@ public class SimpleBrowser extends Activity {
 			boolean found = false;
 			int blankIndex = -1;
 			for (int i = 0; i < serverWebs.size(); i++) {
-				String url = serverWebs.get(i).getUrl();
+				String url = serverWebs.get(i).m_url;
 				if ((uri + "/").equals(url) || uri.equals(url)) {
 					changePage(i); // show correct page
 					found = true;

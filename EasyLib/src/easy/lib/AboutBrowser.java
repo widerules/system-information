@@ -405,6 +405,7 @@ public class AboutBrowser extends Activity {
 	@Override
 	protected void onResume() {
 		int tmpMode = perferences.getInt("display_mode", 1);
+		if (tmpMode < 0) tmpMode = 1;
 		((RadioButton) displayMode.getChildAt(tmpMode)).setChecked(true);
 		if (tmpMode == 2)
 			getWindow().setFlags(
@@ -415,6 +416,7 @@ public class AboutBrowser extends Activity {
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		tmpMode = perferences.getInt("rotate_mode", 1);
+		if (tmpMode < 0) tmpMode = 1;
 		((RadioButton) rotateMode.getChildAt(tmpMode)).setChecked(true);
 		if (tmpMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		else if (tmpMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -437,6 +439,7 @@ public class AboutBrowser extends Activity {
 		etPort.setFocusable(cbEnableProxy.isChecked());
 		etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 
+		try {
 		((RadioButton) shareMode.getChildAt(perferences.getInt(
 				"share_mode", 2))).setChecked(true);
 		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2)))
@@ -447,6 +450,7 @@ public class AboutBrowser extends Activity {
 				.getInt("encoding", 0))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0)))
 				.setChecked(true);
+		} catch(Exception e) {} // some device will return -1, then cause error. catch it.
 
 		clrCache.setChecked(perferences.getBoolean("clear_cache", false));
 		clrHistory.setChecked(perferences.getBoolean("clear_history", false));

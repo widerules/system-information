@@ -104,7 +104,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 				System.currentTimeMillis());
 
 		notification.setLatestEventInfo(mContext, 
-				mContext.getString(R.string.browser_name) + mContext.getString(R.string.crashed),
+				mContext.getString(R.string.browser_name) + " " + mContext.getString(R.string.crashed),
 				mContext.getString(R.string.click_for_detail), contentIntent);
 		
 		NotificationManager nManager = (NotificationManager) mContext.getSystemService(android.content.Context.NOTIFICATION_SERVICE);

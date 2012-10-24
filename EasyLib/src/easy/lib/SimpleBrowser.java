@@ -31,6 +31,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import easy.lib.MyHorizontalScrollView.SizeCallback;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -293,13 +295,17 @@ public class SimpleBrowser extends Activity {
 	EditText titleText;
 
 	// menu dialog
-	AlertDialog menuDialog;// menu菜单Dialog
+	AlertDialog menuDialog;// menu Dialog
 	GridView menuGrid;
 	View menuView;
 	int historyIndex = -1;
 	AlertDialog downloadsDialog = null;
 
 	// browser related
+	MyHorizontalScrollView scrollView;
+	boolean menuOut = false;
+	int menuWidth = 120;
+	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
 	ArrayList<String> siteArray;
@@ -1762,7 +1768,15 @@ public class SimpleBrowser extends Activity {
 		else {
 			if (displayMode == 2) hideBars();
 			else if (displayMode == 3) hideUrl();
-			menuDialog.show();
+			else if (menuOut) {
+				menuOut = false;
+				scrollView.smoothScrollTo(menuWidth, 0);
+			}
+			else {
+				menuOut = true;
+				scrollView.smoothScrollTo(0, 0);
+			}
+			//menuDialog.show();
 		}
 
 		return false;// show system menu if return true.
@@ -1855,6 +1869,37 @@ public class SimpleBrowser extends Activity {
 		pm.addPreferredActivity(filter,	IntentFilter.MATCH_CATEGORY_SCHEME, arrayOfComponentName, component);
 	}
 	
+    /**
+     * Helper that remembers the width of the 'slide' button, so that the 'slide' button remains in view, even when the menu is
+     * showing.
+     */
+    static class SizeCallbackForMenu implements SizeCallback {
+        int btnWidth;
+        View btnSlide;
+
+        public SizeCallbackForMenu(int btnWidth) {
+            super();
+            this.btnWidth = btnWidth;
+        }
+
+        @Override
+        public void onGlobalLayout() {
+            //btnWidth = btnSlide.getMeasuredWidth();
+            //System.out.println("btnWidth=" + btnWidth);
+        }
+
+        @Override
+        public void getViewSize(int idx, int w, int h, int[] dims) {
+            dims[0] = w;
+            dims[1] = h;
+            final int menuIdx = 0;
+            if (idx == menuIdx) {
+                dims[0] = w - btnWidth;
+            }
+        	Log.d("==============", dims[0]+"dims0");
+        }
+    }
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -1968,7 +2013,19 @@ public class SimpleBrowser extends Activity {
 
 		// hide titlebar of application, must be before setting the layout
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.browser);
+		
+        LayoutInflater inflater = LayoutInflater.from(this);
+        scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
+        setContentView(scrollView);
+		//setContentView(R.layout.browser);
+        View menu = inflater.inflate(R.layout.about_browser, null);
+        View app = inflater.inflate(R.layout.browser, null);
+        final View[] children = new View[] { menu, app };
+
+        // Scroll to app (view[1]) when layout finished.
+        int scrollToViewIdx = 1;
+        scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(menuWidth));
+
 
 		snapView = (ImageView) getLayoutInflater().inflate(
 				R.layout.snap_browser, null);
@@ -2057,7 +2114,7 @@ public class SimpleBrowser extends Activity {
 			}
 
 		});
-
+		
 		m_sourceDialog = new AlertDialog.Builder(this)
 				.setTitle(R.string.browser_name)
 				.setPositiveButton(R.string.share,

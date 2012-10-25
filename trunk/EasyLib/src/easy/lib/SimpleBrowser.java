@@ -304,7 +304,7 @@ public class SimpleBrowser extends Activity {
 	// browser related
 	MyHorizontalScrollView scrollView;
 	boolean menuOut = false;
-	int menuWidth = 120;
+	int menuWidth = 180;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -1874,12 +1874,12 @@ public class SimpleBrowser extends Activity {
      * showing.
      */
     static class SizeCallbackForMenu implements SizeCallback {
-        int btnWidth;
-        View btnSlide;
+        int offset;
+        //View btnSlide;
 
-        public SizeCallbackForMenu(int btnWidth) {
+        public SizeCallbackForMenu(int offset) {
             super();
-            this.btnWidth = btnWidth;
+            this.offset = offset;
         }
 
         @Override
@@ -1894,9 +1894,8 @@ public class SimpleBrowser extends Activity {
             dims[1] = h;
             final int menuIdx = 0;
             if (idx == menuIdx) {
-                dims[0] = w - btnWidth;
+                dims[0] = offset;
             }
-        	Log.d("==============", dims[0]+"dims0");
         }
     }
 

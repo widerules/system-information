@@ -1896,6 +1896,7 @@ public class SimpleBrowser extends Activity {
             if (idx == menuIdx) {
                 dims[0] = offset;
             }
+            Log.d("=============", idx+"");
         }
     }
 
@@ -2021,6 +2022,9 @@ public class SimpleBrowser extends Activity {
         View app = inflater.inflate(R.layout.browser, null);
         final View[] children = new View[] { menu, app };
 
+		dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		menuWidth = dm.widthPixels * 3 / 4;
         // Scroll to app (view[1]) when layout finished.
         int scrollToViewIdx = 1;
         scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(menuWidth));
@@ -2091,8 +2095,6 @@ public class SimpleBrowser extends Activity {
 				.getAttributes();
 		// 240 for 1024h, 140 for 800h, 70 for 480h, to show menu dialog in
 		// correct position
-		dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		if (dm.heightPixels <= 480)
 			params.y = 70;
 		else if (dm.heightPixels <= 800)

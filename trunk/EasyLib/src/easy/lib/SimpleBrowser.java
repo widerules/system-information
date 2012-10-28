@@ -1774,7 +1774,7 @@ public class SimpleBrowser extends Activity {
 			}
 			else {
 				menuOut = true;
-				scrollView.smoothScrollTo(0, 0);
+				scrollView.smoothScrollTo(menuWidth+240, 0);
 			}
 			//menuDialog.show();
 		}
@@ -1893,7 +1893,7 @@ public class SimpleBrowser extends Activity {
             dims[0] = w;
             dims[1] = h;
             final int menuIdx = 0;
-            if (idx == menuIdx) {
+            if (idx != 1) {
                 dims[0] = offset;
             }
             Log.d("=============", idx+"");
@@ -2020,7 +2020,8 @@ public class SimpleBrowser extends Activity {
 		//setContentView(R.layout.browser);
         View menu = inflater.inflate(R.layout.about_browser, null);
         View app = inflater.inflate(R.layout.browser, null);
-        final View[] children = new View[] { menu, app };
+        View pause = inflater.inflate(R.layout.pause, null);
+        final View[] children = new View[] { menu, app, pause };
 
 		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);

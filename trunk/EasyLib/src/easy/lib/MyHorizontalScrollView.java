@@ -67,7 +67,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
      * @param sizeCallback
      *            A SizeCallback to interact with the HSV.
      */
-    public void initViews(View[] children, int scrollToViewIdx, SizeCallback sizeCallback) {
+    public void initViews(View[] children, int scrollToViewIdx, int menuWidth) {
         // A ViewGroup MUST be the only child of the HSV
         ViewGroup parent = (ViewGroup) getChildAt(0);
 
@@ -76,11 +76,10 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             children[i].setVisibility(View.INVISIBLE);
             parent.addView(children[i]);
         }
-    	Log.d("==============", children.length+"init");
 
         // Add a layout listener to this HSV
         // This listener is responsible for arranging the child views.
-        OnGlobalLayoutListener listener = new MyOnGlobalLayoutListener(parent, children, scrollToViewIdx, sizeCallback);
+        OnGlobalLayoutListener listener = new MyOnGlobalLayoutListener(parent, children, scrollToViewIdx, menuWidth);
         getViewTreeObserver().addOnGlobalLayoutListener(listener);
     }
 
@@ -105,7 +104,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         View[] children;
         int scrollToViewIdx;
         int scrollToViewPos = 0;
-        SizeCallback sizeCallback;
+        int menuWidth;
 
         /**
          * @param parent
@@ -117,11 +116,11 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
          * @param sizeCallback
          *            A SizeCallback to interact with the HSV.
          */
-        public MyOnGlobalLayoutListener(ViewGroup parent, View[] children, int scrollToViewIdx, SizeCallback sizeCallback) {
+        public MyOnGlobalLayoutListener(ViewGroup parent, View[] children, int scrollToViewIdx, int menuWidth) {
             this.parent = parent;
             this.children = children;
             this.scrollToViewIdx = scrollToViewIdx;
-            this.sizeCallback = sizeCallback;
+            this.menuWidth = menuWidth;
         }
 
         @Override
@@ -133,10 +132,6 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             // The listener will remove itself as a layout listener to the HSV
             me.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
-            // Allow the SizeCallback to 'see' the Views before we remove them and re-add them.
-            // This lets the SizeCallback prepare View sizes, ahead of calls to SizeCallback.getViewSize().
-            sizeCallback.onGlobalLayout();
-
             parent.removeViewsInLayout(0, children.length);
 
             final int w = me.getMeasuredWidth();
@@ -145,18 +140,12 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             // System.out.println("w=" + w + ", h=" + h);
 
             // Add each view in turn, and apply the width and height returned by the SizeCallback.
-            int[] dims = new int[2];
-            scrollToViewPos = 0;
+            scrollToViewPos = menuWidth;
             for (int i = 0; i < children.length; i++) {
-                sizeCallback.getViewSize(i, w, h, dims);
                 children[i].setVisibility(View.VISIBLE);
-                parent.addView(children[i], dims[0], dims[1]);
-            	Log.d("=============="+i, "dims[0]" + dims[0]+", dims[1]" + dims[1]);
-                if (i < scrollToViewIdx) {
-                    scrollToViewPos += dims[0];
-                }
+                if (i == 1) parent.addView(children[i], w, h);
+                else parent.addView(children[i], menuWidth, h);
             }
-        	Log.d("==============", scrollToViewPos+"");
 
             // For some reason we need to post this action, rather than call immediately.
             // If we try immediately, it will not scroll.
@@ -169,27 +158,4 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         }
     }
 
-    /**
-     * Callback interface to interact with the HSV.
-     */
-    public interface SizeCallback {
-        /**
-         * Used to allow clients to measure Views before re-adding them.
-         */
-        public void onGlobalLayout();
-
-        /**
-         * Used by clients to specify the View dimensions.
-         * 
-         * @param idx
-         *            Index of the View.
-         * @param w
-         *            Width of the parent View.
-         * @param h
-         *            Height of the parent View.
-         * @param dims
-         *            dims[0] should be set to View width. dims[1] should be set to View height.
-         */
-        public void getViewSize(int idx, int w, int h, int[] dims);
-    }
 }

@@ -64,13 +64,13 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
      *            The child Views to add to parent.
      * @param scrollToViewIdx
      *            The index of the View to scroll to after initialisation.
-     * @param sizeCallback
-     *            A SizeCallback to interact with the HSV.
+     * @param menuWidth
+     *            A para to set the view width of menu.
      */
     public void initViews(View[] children, int scrollToViewIdx, int menuWidth) {
         // A ViewGroup MUST be the only child of the HSV
         ViewGroup parent = (ViewGroup) getChildAt(0);
-
+       
         // Add all the children, but add them invisible so that the layouts are calculated, but you can't see the Views
         for (int i = 0; i < children.length; i++) {
             children[i].setVisibility(View.INVISIBLE);
@@ -113,8 +113,8 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
          *            The child Views to add to parent.
          * @param scrollToViewIdx
          *            The index of the View to scroll to after initialisation.
-         * @param sizeCallback
-         *            A SizeCallback to interact with the HSV.
+         * @param menuWidth
+         *            A para to set menu view width.
          */
         public MyOnGlobalLayoutListener(ViewGroup parent, View[] children, int scrollToViewIdx, int menuWidth) {
             this.parent = parent;
@@ -125,8 +125,6 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 
         @Override
         public void onGlobalLayout() {
-            // System.out.println("onGlobalLayout");
-
             final HorizontalScrollView me = MyHorizontalScrollView.this;
 
             // The listener will remove itself as a layout listener to the HSV
@@ -139,7 +137,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 
             // System.out.println("w=" + w + ", h=" + h);
 
-            // Add each view in turn, and apply the width and height returned by the SizeCallback.
+            // Add each view in turn, and apply the specified width and height.
             scrollToViewPos = menuWidth;
             for (int i = 0; i < children.length; i++) {
                 children[i].setVisibility(View.VISIBLE);

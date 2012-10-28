@@ -127,7 +127,6 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         @Override
         public void onGlobalLayout() {
             // System.out.println("onGlobalLayout");
-        	Log.d("==============", "onGlobalLayout");
 
             final HorizontalScrollView me = MyHorizontalScrollView.this;
 
@@ -139,7 +138,6 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             sizeCallback.onGlobalLayout();
 
             parent.removeViewsInLayout(0, children.length);
-        	Log.d("==============", children.length+"");
 
             final int w = me.getMeasuredWidth();
             final int h = me.getMeasuredHeight();
@@ -151,9 +149,9 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             scrollToViewPos = 0;
             for (int i = 0; i < children.length; i++) {
                 sizeCallback.getViewSize(i, w, h, dims);
-                // System.out.println("addView w=" + dims[0] + ", h=" + dims[1]);
                 children[i].setVisibility(View.VISIBLE);
                 parent.addView(children[i], dims[0], dims[1]);
+            	Log.d("=============="+i, "dims[0]" + dims[0]+", dims[1]" + dims[1]);
                 if (i < scrollToViewIdx) {
                     scrollToViewPos += dims[0];
                 }

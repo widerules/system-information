@@ -31,8 +31,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import easy.lib.MyHorizontalScrollView.SizeCallback;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -1869,37 +1867,6 @@ public class SimpleBrowser extends Activity {
 		pm.addPreferredActivity(filter,	IntentFilter.MATCH_CATEGORY_SCHEME, arrayOfComponentName, component);
 	}
 	
-    /**
-     * Helper that remembers the width of the 'slide' button, so that the 'slide' button remains in view, even when the menu is
-     * showing.
-     */
-    static class SizeCallbackForMenu implements SizeCallback {
-        int offset;
-        //View btnSlide;
-
-        public SizeCallbackForMenu(int offset) {
-            super();
-            this.offset = offset;
-        }
-
-        @Override
-        public void onGlobalLayout() {
-            //btnWidth = btnSlide.getMeasuredWidth();
-            //System.out.println("btnWidth=" + btnWidth);
-        }
-
-        @Override
-        public void getViewSize(int idx, int w, int h, int[] dims) {
-            dims[0] = w;
-            dims[1] = h;
-            final int menuIdx = 0;
-            if (idx != 1) {
-                dims[0] = offset;
-            }
-            Log.d("=============", idx+"");
-        }
-    }
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -2028,7 +1995,7 @@ public class SimpleBrowser extends Activity {
 		menuWidth = dm.widthPixels * 3 / 4;
         // Scroll to app (view[1]) when layout finished.
         int scrollToViewIdx = 1;
-        scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(menuWidth));
+        scrollView.initViews(children, scrollToViewIdx, menuWidth);
 
 
 		snapView = (ImageView) getLayoutInflater().inflate(

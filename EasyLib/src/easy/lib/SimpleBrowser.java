@@ -1435,6 +1435,13 @@ public class SimpleBrowser extends Activity {
 		int posQ = url.indexOf("src=");
 		if (posQ > 0) url = url.substring(posQ + 4);// get src part
 
+		url = url.replace("%2D", "-");
+        url = url.replace("%5F", "_");
+        url = url.replace("%3F", "?");
+        url = url.replace("%3D", "=");
+        url = url.replace("%2E", ".");
+        url = url.replace("%2F", "/");
+        url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any for URLDecoder.decode(url) fail for some url, such as baidu tieba
 		String apkName = getName(url);
 		// image file from shuimu do not have ext. so we add it manually
 		if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {

@@ -1766,15 +1766,15 @@ public class SimpleBrowser extends Activity {
 		else {
 			if (displayMode == 2) hideBars();
 			else if (displayMode == 3) hideUrl();
-			else if (menuOut) {
+			/*else if (menuOut) {
 				menuOut = false;
 				scrollView.smoothScrollTo(menuWidth, 0);
 			}
 			else {
 				menuOut = true;
 				scrollView.smoothScrollTo(menuWidth+240, 0);
-			}
-			//menuDialog.show();
+			}*/
+			menuDialog.show();
 		}
 
 		return false;// show system menu if return true.
@@ -1981,21 +1981,23 @@ public class SimpleBrowser extends Activity {
 		// hide titlebar of application, must be before setting the layout
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
+		dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		
+		setContentView(R.layout.browser);
         LayoutInflater inflater = LayoutInflater.from(this);
-        scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
+        
+        /*scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
         setContentView(scrollView);
-		//setContentView(R.layout.browser);
         View menu = inflater.inflate(R.layout.about_browser, null);
         View app = inflater.inflate(R.layout.browser, null);
         View pause = inflater.inflate(R.layout.pause, null);
         final View[] children = new View[] { menu, app, pause };
 
-		dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		menuWidth = dm.widthPixels * 3 / 4;
         // Scroll to app (view[1]) when layout finished.
         int scrollToViewIdx = 1;
-        scrollView.initViews(children, scrollToViewIdx, menuWidth);
+        scrollView.initViews(children, scrollToViewIdx, menuWidth);*/
 
 
 		snapView = (ImageView) getLayoutInflater().inflate(
@@ -3273,7 +3275,8 @@ public class SimpleBrowser extends Activity {
 			//sb.append(fileDir);
 			//sb.append("www.baidu.com.png)'><a href='http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF'>美图</a></li>");
 			sb.append(fileDir);
-			sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>");
+			sb.append("easybrowser.shupeng.com.png)'><a href='http://easybrowser.shupeng.com'>书朋小说网</a></li>");
+			//sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>");
 			sb.append(splitter);
 			//sb.append("<li><a href='http://www.9yu.co/index.html?c=2'>美图</a></li>");// no favicon
 			// sb.append(fileDir);

@@ -258,7 +258,7 @@ public class SimpleBrowser extends Activity {
 	boolean cachePrefer = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
-	boolean collapse1 = false, collapse2 = true, collapse3 = true;
+	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
 	TextSize textSize = TextSize.NORMAL;
 	int historyCount = 16;
 	long sizeM = 1024 * 1024;

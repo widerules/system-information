@@ -256,6 +256,7 @@ public class SimpleBrowser extends Activity {
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
+	boolean clrCacheOnExit = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
 	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
@@ -1000,6 +1001,17 @@ public class SimpleBrowser extends Activity {
 		recordPages();
 	}
 
+	public void ClearCache() {
+		serverWebs.get(webIndex).clearCache(true);
+		// mContext.deleteDatabase("webviewCache.db");//this may get
+		// disk IO crash
+		ClearFolderTask cltask = new ClearFolderTask();
+		// clear cache on sdcard and in data folder
+		cltask.execute(downloadPath + "cache/webviewCache/",
+				"/data/data/" + mContext.getPackageName()
+						+ "/cache/webviewCache/");		
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
@@ -1022,16 +1034,7 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(i).stopLoading();// stop loading while clear
 
 				boolean clearCache = sp.getBoolean("clear_cache", false);
-				if (clearCache) {
-					serverWebs.get(webIndex).clearCache(true);
-					// mContext.deleteDatabase("webviewCache.db");//this may get
-					// disk IO crash
-					ClearFolderTask cltask = new ClearFolderTask();
-					// clear cache on sdcard and in data folder
-					cltask.execute(downloadPath + "cache/webviewCache/",
-							"/data/data/" + mContext.getPackageName()
-									+ "/cache/webviewCache/");
-				}
+				if (clearCache) ClearCache();
 
 				boolean clearCookie = sp.getBoolean("clear_cookie", false);
 				if (clearCookie) {
@@ -1207,6 +1210,8 @@ public class SimpleBrowser extends Activity {
 			blockJs = sp.getBoolean("block_js", false);
 			localSettings.setJavaScriptEnabled(!blockJs);
 
+			clrCacheOnExit = sp.getBoolean("clear_cache_onexit", false);
+			
 			wrapWebSettings webSettings = new wrapWebSettings(localSettings);
 			overviewPage = sp.getBoolean("overview_page", false);
 			webSettings.setLoadWithOverviewMode(overviewPage);
@@ -2202,7 +2207,7 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 3:// exit
 					clearFile("pages");
-
+					if (clrCacheOnExit) ClearCache();
 					finish();
 					break;
 				case 4:// downloads

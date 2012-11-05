@@ -319,6 +319,15 @@
                 android:text="@string/block_js"
                 android:textColor="#f0030f03" />
 
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#ffc5c5c5" />
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#fff5f5f5" />
+        
             <CheckBox
                 android:id="@+id/cache_tosd"
                 android:layout_width="wrap_content"
@@ -328,6 +337,33 @@
                 android:text="@string/cache_tosd"
                 android:textColor="#f0030f03" />
 
+            <CheckBox
+                android:id="@+id/clear_cache_onexit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/clear_cache_onexit"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
+                android:id="@+id/cache_prefer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/cache_prefer"
+                android:textColor="#f0030f03" />
+
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#ffc5c5c5" />
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#fff5f5f5" />
+        
             <CheckBox
                 android:id="@+id/overview_page"
                 android:layout_width="wrap_content"
@@ -346,15 +382,15 @@
                 android:text="@string/full_webpage"
                 android:textColor="#f0030f03" />
 
-            <CheckBox
-                android:id="@+id/cache_prefer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dip"
-                android:checked="false"
-                android:text="@string/cache_prefer"
-                android:textColor="#f0030f03" />
-
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#ffc5c5c5" />
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#fff5f5f5" />
+        
             <CheckBox
                 android:id="@+id/html5"
                 android:layout_width="wrap_content"

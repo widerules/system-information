@@ -132,5 +132,6 @@
     <string name="landscape">Paisagem</string>
     <string name="portrait">Retrato</string>
     <string name="incognito">Modo incógnito</string>
+    <string name="clear_cache_onexit">Limpar cache ao sair</string>
     
 </resources>

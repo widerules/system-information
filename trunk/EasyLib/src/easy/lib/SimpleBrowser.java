@@ -722,7 +722,7 @@ public class SimpleBrowser extends Activity {
 					
 					if (!incognitoMode) recordPages();
 
-					//if (adview != null) adview.loadAd();// should only do this by wifi
+					if (adview != null) adview.loadAd();// should only do this by wifi
 				}
 
 				@Override

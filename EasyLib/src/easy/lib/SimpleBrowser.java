@@ -443,6 +443,28 @@ public class SimpleBrowser extends Activity {
 				if ("3".equals(item))
 					collapse3 = state;
 			}
+			
+			@SuppressWarnings("unused")
+			public void deleteItems(String bookmarks, String historys) {
+				Log.d("============history", historys);
+				Log.d("============bookmark", bookmarks);
+				String[] tmp1 = historys.split(",,,,");
+				for (int i = tmp1.length-2; i >= 0; i--) {
+					mHistory.remove(Integer.valueOf(tmp1[i]) - mBookMark.size());
+				}
+				if (tmp1.length > 1) {
+					updateHistory();
+					historyChanged = true;
+				}
+				
+				String[] tmp2 = bookmarks.split(",,,,");
+				for (int i = tmp2.length-2; i >= 0; i--) 
+					mBookMark.remove(Integer.getInteger(tmp2[i]));
+				if (tmp2.length > 1) {
+					updateBookmark();
+					bookmarkChanged = true;
+				}
+			}
 		}
 
 		public void setZoomControl(int visibility) {
@@ -3335,7 +3357,7 @@ public class SimpleBrowser extends Activity {
 		for (int i = 0; i < mBookMark.size(); i++) {
 			sb.append(fileDir);
 			sb.append(mBookMark.get(i).m_site);
-			sb.append(".png)'><a href='");
+			sb.append(".png)'><input class='bookmark' type='checkbox' style='display:none; margin-right:20px'><a href='");
 			sb.append(mBookMark.get(i).m_url);
 			sb.append("'>");
 			sb.append(mBookMark.get(i).m_title);
@@ -3353,7 +3375,7 @@ public class SimpleBrowser extends Activity {
 		for (int i = mHistory.size() - 1; i >= 0; i--) {
 			sb.append(fileDir);
 			sb.append(mHistory.get(i).m_site);
-			sb.append(".png)'><a href='");
+			sb.append(".png)'><input class='history' type='checkbox' style='display:none; margin-right:20px'><a href='");
 			sb.append(mHistory.get(i).m_url);
 			sb.append("'>");
 			sb.append(mHistory.get(i).m_title);
@@ -3457,6 +3479,35 @@ public class SimpleBrowser extends Activity {
 		sb.append("else title.style.display = '';");
 		sb.append("}}");
 		
+		sb.append("function showCheckbox() {");
+		sb.append("document.getElementById('edit_home').style.display=\"none\";");
+		sb.append("document.getElementById('delete_selected').style.display=\"\";");
+		sb.append("document.getElementById('cancel_edit').style.display=\"\";");
+		sb.append("var inputs = document.getElementsByTagName('input');");
+		sb.append("for (var i = 0; i < inputs.length; i++) inputs[i].style.display='';");
+		sb.append("}");
+		
+		sb.append("function hideCheckbox() {");
+		sb.append("document.getElementById('edit_home').style.display=\"\";");
+		sb.append("document.getElementById('delete_selected').style.display=\"none\";");
+		sb.append("document.getElementById('cancel_edit').style.display=\"none\";");
+		sb.append("var inputs = document.getElementsByTagName('input');");
+		sb.append("for (var i = 0; i < inputs.length; i++) inputs[i].style.display='none';");
+		sb.append("}");
+		
+		sb.append("function deleteSelected() {");
+		sb.append("var bookmarks = '';");
+		sb.append("var historys = '';");
+		sb.append("var inputs = document.getElementsByTagName('input');");
+		sb.append("for (var i = 0; i < inputs.length; i++) {");
+		sb.append("if (inputs[i].checked) {");
+		sb.append("if (inputs[i].attributes['class'].nodeValue == 'bookmark') bookmarks += i + ',,,,';");
+		sb.append("else historys += i + ',,,,';");
+		sb.append("}");
+		sb.append("}");
+		sb.append("window.JSinterface.deleteItems(bookmarks, historys);");
+		sb.append("hideCheckbox();}");
+		
 		sb.append("</script>");
 		
 		sb.append("</head><body style='background-image:url(file:///android_asset/noise_bg.png)'>");
@@ -3481,7 +3532,7 @@ public class SimpleBrowser extends Activity {
 
 		// bookmark bar
 		tmp = getString(R.string.bookmark);
-		if (countDown > 0)
+		if (countDown > 0) 
 			tmp += getString(R.string.pic_can_longclick);
 		if (collapse2) {
 			sb.append("<h4 id='title2' onClick='collapse(2)' >+\t");
@@ -3494,6 +3545,7 @@ public class SimpleBrowser extends Activity {
 			sb.append("</h4>");
 			sb.append("<dl id='content2' type='disc'>");
 		}
+		
 		sb.append(getBookmark(""));
 		sb.append("</dl>");
 		
@@ -3514,6 +3566,14 @@ public class SimpleBrowser extends Activity {
 		}
 		sb.append(getHistory(""));
 		sb.append("</dl>");
+
+		sb.append("<table style='margin:auto'>");
+		sb.append("<tr>");
+		sb.append("<td><a id='edit_home' href='javascript:showCheckbox();'>" + "edit" + "</a></td>");
+		sb.append("<td><a id='delete_selected' href='javascript:deleteSelected();' style='display:none'>" + getString(R.string.delete) + "</a></td>");
+		sb.append("<td><a id='cancel_edit' href='javascript:hideCheckbox();' style='display:none'>" + getString(R.string.cancel) + "</a></td>");
+		sb.append("</tr>");
+		sb.append("</table><br>");
 
 		sb.append("</body></html>");
 		

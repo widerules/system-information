@@ -448,19 +448,21 @@ public class SimpleBrowser extends Activity {
 			public void deleteItems(String bookmarks, String historys) {
 				Log.d("============history", historys);
 				Log.d("============bookmark", bookmarks);
-				String[] tmp1 = historys.split(",,,,");
-				for (int i = tmp1.length-2; i >= 0; i--) {
-					mHistory.remove(Integer.valueOf(tmp1[i]) - mBookMark.size());
-				}
-				if (tmp1.length > 1) {
+				Log.d("============bookmark size", mBookMark.size()+"");
+				Log.d("============history size", mHistory.size()+"");
+				
+				if (!"".equals(historys) && !",,,,".equals(historys)) {
+					String[] tmp1 = historys.split(",,,,");
+					for (int i = 0; i < tmp1.length; i++) // the display of history is in revert order, so delete in revert order
+						mHistory.remove(mHistory.size() - 1 + i - (Integer.valueOf(tmp1[i]) - mBookMark.size()));
 					updateHistory();
 					historyChanged = true;
 				}
 				
-				String[] tmp2 = bookmarks.split(",,,,");
-				for (int i = tmp2.length-2; i >= 0; i--) 
-					mBookMark.remove(Integer.getInteger(tmp2[i]));
-				if (tmp2.length > 1) {
+				if (!"".equals(bookmarks) && !",,,,".equals(bookmarks)) {
+					String[] tmp2 = bookmarks.split(",,,,");
+					for (int i = tmp2.length-1; i >= 0; i--) 
+						mBookMark.remove(Integer.getInteger(tmp2[i]));
 					updateBookmark();
 					bookmarkChanged = true;
 				}

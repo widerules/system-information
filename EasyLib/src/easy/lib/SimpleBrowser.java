@@ -446,11 +446,6 @@ public class SimpleBrowser extends Activity {
 			
 			@SuppressWarnings("unused")
 			public void deleteItems(String bookmarks, String historys) {
-				Log.d("============history", historys);
-				Log.d("============bookmark", bookmarks);
-				Log.d("============bookmark size", mBookMark.size()+"");
-				Log.d("============history size", mHistory.size()+"");
-				
 				if (!"".equals(historys) && !",,,,".equals(historys)) {
 					String[] tmp1 = historys.split(",,,,");
 					for (int i = 0; i < tmp1.length; i++) // the display of history is in revert order, so delete in revert order
@@ -462,7 +457,7 @@ public class SimpleBrowser extends Activity {
 				if (!"".equals(bookmarks) && !",,,,".equals(bookmarks)) {
 					String[] tmp2 = bookmarks.split(",,,,");
 					for (int i = tmp2.length-1; i >= 0; i--) 
-						mBookMark.remove(Integer.getInteger(tmp2[i]));
+						mBookMark.remove(Integer.valueOf(tmp2[i]) + 0);// it will not treat as integer if not add 0
 					updateBookmark();
 					bookmarkChanged = true;
 				}
@@ -3355,7 +3350,7 @@ public class SimpleBrowser extends Activity {
 	String getBookmark(String splitter) {
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		StringBuilder sb = new StringBuilder("");	
+		StringBuilder sb = new StringBuilder("");
 		for (int i = 0; i < mBookMark.size(); i++) {
 			sb.append(fileDir);
 			sb.append(mBookMark.get(i).m_site);

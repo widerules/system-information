@@ -405,6 +405,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dip"
                 android:layout_marginRight="10dip"
+                android:layout_marginBottom="5dip"
                 android:fadeScrollbars="true" >
 
                 <LinearLayout
@@ -431,14 +432,18 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#ffc5c5c5" />
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#fff5f5f5" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="1dip"
-                android:layout_marginRight="1dip"
-                android:background="#e0e0e0"
                 android:gravity="center"
-                android:paddingBottom="5dip"
                 android:paddingTop="5dip"
                 android:text="@string/encoding"
                 android:textColor="#ff000000"
@@ -499,14 +504,18 @@
                 </RadioGroup>
             </HorizontalScrollView>
 
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#ffc5c5c5" />
+	        <View
+    	        android:layout_width="match_parent"
+        	    android:layout_height="1px"
+            	android:background="#fff5f5f5" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="1dip"
-                android:layout_marginRight="1dip"
-                android:background="#e0e0e0"
                 android:gravity="center"
-                android:paddingBottom="5dip"
                 android:paddingTop="5dip"
                 android:text="@string/change_ua"
                 android:textColor="#ff000000"

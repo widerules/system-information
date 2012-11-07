@@ -3566,7 +3566,7 @@ public class SimpleBrowser extends Activity {
 
 		sb.append("<table style='margin:auto'>");
 		sb.append("<tr>");
-		sb.append("<td><a id='edit_home' href='javascript:showCheckbox();'>" + "edit" + "</a></td>");
+		sb.append("<td><a id='edit_home' href='javascript:showCheckbox();'>" + getString(R.string.edit_home) + "</a></td>");
 		sb.append("<td><a id='delete_selected' href='javascript:deleteSelected();' style='display:none'>" + getString(R.string.delete) + "</a></td>");
 		sb.append("<td><a id='cancel_edit' href='javascript:hideCheckbox();' style='display:none'>" + getString(R.string.cancel) + "</a></td>");
 		sb.append("</tr>");

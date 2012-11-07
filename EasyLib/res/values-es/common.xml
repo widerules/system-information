@@ -124,5 +124,6 @@
     <string name="portrait">retrato</string>
     <string name="incognito">Modo incógnito</string>
     <string name="clear_cache_onexit">Borrar caché al salir</string>
+    <string name="edit_home">Editar</string>
     
 </resources>

@@ -138,5 +138,6 @@
     <string name="portrait">垂直画面をロック</string>
     <string name="incognito">シークレットモード</string>
     <string name="clear_cache_onexit">終了時にキャッシュをクリア</string>
+    <string name="edit_home">編集</string>
     
 </resources>

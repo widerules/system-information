@@ -256,7 +256,6 @@ public class SimpleBrowser extends Activity {
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
-	boolean clrCacheOnExit = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
 	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
@@ -1229,8 +1228,6 @@ public class SimpleBrowser extends Activity {
 			blockJs = sp.getBoolean("block_js", false);
 			localSettings.setJavaScriptEnabled(!blockJs);
 
-			clrCacheOnExit = sp.getBoolean("clear_cache_onexit", false);
-			
 			wrapWebSettings webSettings = new wrapWebSettings(localSettings);
 			overviewPage = sp.getBoolean("overview_page", false);
 			webSettings.setLoadWithOverviewMode(overviewPage);
@@ -2226,7 +2223,7 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 3:// exit
 					clearFile("pages");
-					if (clrCacheOnExit) ClearCache();
+					ClearCache(); // clear cache when exit
 					finish();
 					break;
 				case 4:// downloads

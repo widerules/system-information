@@ -41,7 +41,7 @@ public class AboutBrowser extends Activity {
 
 	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD,
 			cbZoomControl, cbHtml5, cbBlockImg, cbCachePrefer,
-			cbOverview, cbSnapSize, cbIncognito, cbClrCacheOnExit;
+			cbOverview, cbSnapSize, cbIncognito;
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
 			searchEngine, shareMode, displayMode, rotateMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
@@ -283,7 +283,6 @@ public class AboutBrowser extends Activity {
 		cbBlockJs = (CheckBox) findViewById(R.id.block_js);
 		cbOverview = (CheckBox) findViewById(R.id.overview_page);
 		cbCacheToSD = (CheckBox) findViewById(R.id.cache_tosd);
-		cbClrCacheOnExit = (CheckBox) findViewById(R.id.clear_cache_onexit);
 		cbHtml5 = (CheckBox) findViewById(R.id.html5);
 		try {
 			WebSettings.class.getMethod("setAppCacheEnabled",
@@ -430,7 +429,6 @@ public class AboutBrowser extends Activity {
 
 		cbBlockPopup.setChecked(perferences.getBoolean("block_popup", false));
 		cbBlockJs.setChecked(perferences.getBoolean("block_js", false));
-		cbClrCacheOnExit.setChecked(perferences.getBoolean("clear_cache_onexit", false));
 		cbCacheToSD.setChecked(perferences.getBoolean("cache_tosd", false));
 		cbOverview.setChecked(perferences.getBoolean("overview_page", false));
 		cbSnapSize.setChecked(perferences.getBoolean("full_web", false));
@@ -505,7 +503,6 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("full_web", false);
 			editor.putBoolean("overview_page", false);
 			editor.putBoolean("cache_tosd", false);
-			editor.putBoolean("clear_cache_onexit", false);
 			editor.putBoolean("html5", false);
 			editor.putBoolean("enable_proxy", false);
 			editor.putInt("local_port", 1984);
@@ -527,7 +524,6 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
 			editor.putBoolean("cache_prefer", cbCachePrefer.isChecked());
-			editor.putBoolean("clear_cache_onexit", cbClrCacheOnExit.isChecked());
 			editor.putBoolean("full_web", cbSnapSize.isChecked());
 			editor.putInt("share_mode", shareMode
 					.indexOfChild(findViewById(shareMode

@@ -150,7 +150,6 @@
     <string name="landscape">锁定横屏</string>
     <string name="portrait">锁定竖屏</string>
     <string name="incognito">隐私浏览模式</string>
-    <string name="clear_cache_onexit">退出时清缓存</string>
     <string name="edit_home">编辑</string>
     
 </resources>

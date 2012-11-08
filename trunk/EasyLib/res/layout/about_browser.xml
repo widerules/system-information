@@ -338,15 +338,6 @@
                 android:textColor="#f0030f03" />
 
             <CheckBox
-                android:id="@+id/clear_cache_onexit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dip"
-                android:checked="false"
-                android:text="@string/clear_cache_onexit"
-                android:textColor="#f0030f03" />
-
-            <CheckBox
                 android:id="@+id/cache_prefer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

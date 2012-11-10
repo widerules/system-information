@@ -1894,22 +1894,29 @@ public class SimpleBrowser extends Activity {
 		ComponentName component = new ComponentName(mContext.getPackageName(), "easy.lib.SimpleBrowser");
 		pm.addPreferredActivity(filter,	IntentFilter.MATCH_CATEGORY_SCHEME, arrayOfComponentName, component);
 	}
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 
-		// mContext = getApplicationContext();//this will cause force close when
-		// select locale in google translate
-		mContext = this;
-
-		browserName = getString(R.string.browser_name);
-		HOME_PAGE += mContext.getPackageName() + "/files/home.html";
+	public void setAsDefaultApp() {
+		PackageManager pm = getPackageManager();
 		
-		// init settings
-		sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-		sEdit = sp.edit();
-
+		try {pm.addPackageToPreferred(getPackageName());} catch(Exception e) {} // for 1.5 platform
+		
+		// set default browser for 1.6-2.1 platform. not work for 2.2 and up platform
+		Intent intent = new Intent("android.intent.action.VIEW");
+		intent.addCategory("android.intent.category.BROWSABLE");
+		intent.addCategory("android.intent.category.DEFAULT");
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("android.intent.action.VIEW");
+		filter.addCategory("android.intent.category.BROWSABLE");
+		filter.addCategory("android.intent.category.DEFAULT");
+		filter.addDataScheme("http");
+		
+		Uri uri = Uri.parse("http://");
+		intent.setDataAndType(uri, null);
+		setDefault(pm, intent, filter);		
+	}
+	
+	public void readPreference() {
 		// paid = sp.getBoolean("paid", false);
 		// debug = sp.getBoolean("debug", false);
 		// css = sp.getBoolean("css", false);
@@ -1950,84 +1957,11 @@ public class SimpleBrowser extends Activity {
 		if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 		else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-		PackageManager pm = getPackageManager();
+	}
+	
+	public void initSnapDialog() {
+		if (snapDialog != null) return;
 		
-		try {pm.addPackageToPreferred(getPackageName());} catch(Exception e) {} // for 1.5 platform
-		
-		// set default browser for 1.6-2.1 platform. not work for 2.2 and up platform
-		Intent intent = new Intent("android.intent.action.VIEW");
-		intent.addCategory("android.intent.category.BROWSABLE");
-		intent.addCategory("android.intent.category.DEFAULT");
-		
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.intent.action.VIEW");
-		filter.addCategory("android.intent.category.BROWSABLE");
-		filter.addCategory("android.intent.category.DEFAULT");
-		filter.addDataScheme("http");
-		
-		Uri uri = Uri.parse("http://");
-		intent.setDataAndType(uri, null);
-		setDefault(pm, intent, filter);
-
-		// we just want to handle admob link, so no need for https and WEB_SEARCH?
-		/*uri = Uri.parse("https://");
-		intent.setDataAndType(uri, null);
-		setDefault(pm, intent, filter);
-		
-		intent.setAction("android.intent.action.WEB_SEARCH");
-		filter = new IntentFilter();
-		filter.addAction("android.intent.action.WEB_SEARCH");
-		filter.addCategory("android.intent.category.BROWSABLE");
-		filter.addCategory("android.intent.category.DEFAULT");
-		filter.addDataScheme("https");
-		setDefault(pm, intent, filter);
-		
-		uri = Uri.parse("http://");
-		intent.setDataAndType(uri, null);
-		setDefault(pm, intent, filter);*/
-		
-		
-		/*try {
-			PackageManager pm = getPackageManager();
-			ApplicationInfo ai = pm.getApplicationInfo("com.adobe.flashplayer", 0);
-			if (ai != null) flashInstalled = true;
-			else ai = pm.getApplicationInfo("com.htc.flash", 0); // for some htc device
-			if (ai != null) flashInstalled = true;
-		} catch (NameNotFoundException e) {
-			flashInstalled = false;
-		}*/
-		
-		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		downloadAppID = new ArrayList();
-		appstate = ((MyApp) getApplicationContext());
-
-		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-		getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-		// hide titlebar of application, must be before setting the layout
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		
-		setContentView(R.layout.browser);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        
-        /*scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
-        setContentView(scrollView);
-        View menu = inflater.inflate(R.layout.about_browser, null);
-        View app = inflater.inflate(R.layout.browser, null);
-        View pause = inflater.inflate(R.layout.pause, null);
-        final View[] children = new View[] { menu, app, pause };
-
-		menuWidth = dm.widthPixels * 3 / 4;
-        // Scroll to app (view[1]) when layout finished.
-        int scrollToViewIdx = 1;
-        scrollView.initViews(children, scrollToViewIdx, menuWidth);*/
-
-
 		snapView = (ImageView) getLayoutInflater().inflate(
 				R.layout.snap_browser, null);
 		snapDialog = new AlertDialog.Builder(this)
@@ -2073,7 +2007,40 @@ public class SimpleBrowser extends Activity {
 									int which) {
 							}
 						}).create();
+	}
 
+	public void initSourceDialog() {
+		if (m_sourceDialog != null) return;
+		
+		m_sourceDialog = new AlertDialog.Builder(this)
+		.setTitle(R.string.browser_name)
+		.setPositiveButton(R.string.share,
+				new DialogInterface.OnClickListener() {// share
+					@Override
+					public void onClick(DialogInterface dialog,	int which) {
+						Intent intent = new Intent(Intent.ACTION_SENDTO);
+						intent.setData(Uri
+								.fromParts("mailto", "", null));
+						intent.putExtra(Intent.EXTRA_TEXT,
+								serverWebs.get(webIndex).pageSource);
+						intent.putExtra(Intent.EXTRA_SUBJECT,
+								serverWebs.get(webIndex).getTitle());
+						if (!util.startActivity(intent, true, getBaseContext())) {
+							shareUrl("", serverWebs.get(webIndex).pageSource);
+						}
+					}
+				})
+		.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener() {// cancel
+					@Override
+					public void onClick(DialogInterface dialog,	int which) {
+					}
+				}).create();
+	}
+	
+	public void initMenuDialog() {
+		if (menuDialog != null) return;
+		
 		// menu icon
 		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
 				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
@@ -2113,31 +2080,6 @@ public class SimpleBrowser extends Activity {
 			}
 
 		});
-		
-		m_sourceDialog = new AlertDialog.Builder(this)
-				.setTitle(R.string.browser_name)
-				.setPositiveButton(R.string.share,
-						new DialogInterface.OnClickListener() {// share
-							@Override
-							public void onClick(DialogInterface dialog,	int which) {
-								Intent intent = new Intent(Intent.ACTION_SENDTO);
-								intent.setData(Uri
-										.fromParts("mailto", "", null));
-								intent.putExtra(Intent.EXTRA_TEXT,
-										serverWebs.get(webIndex).pageSource);
-								intent.putExtra(Intent.EXTRA_SUBJECT,
-										serverWebs.get(webIndex).getTitle());
-								if (!util.startActivity(intent, true, getBaseContext())) {
-									shareUrl("", serverWebs.get(webIndex).pageSource);
-								}
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {// cancel
-							@Override
-							public void onClick(DialogInterface dialog,	int which) {
-							}
-						}).create();
 
 		final Context localContext = this;
 		menuGrid = (GridView) menuView.findViewById(R.id.gridview);
@@ -2287,7 +2229,11 @@ public class SimpleBrowser extends Activity {
 				menuDialog.dismiss();
 			}
 		});
-
+	}
+	
+	public void initSearchBar() {
+		if (searchBar != null) return;
+		
 		imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		imgSearchPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2358,7 +2304,61 @@ public class SimpleBrowser extends Activity {
 					}
 				return false;
 			}
-		});
+		});		
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// mContext = getApplicationContext();//this will cause force close when
+		// select locale in google translate
+		mContext = this;
+
+		browserName = getString(R.string.browser_name);
+		HOME_PAGE += mContext.getPackageName() + "/files/home.html";
+		
+		// init settings
+		sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+		sEdit = sp.edit();
+		readPreference();
+
+		setAsDefaultApp();
+		
+		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		downloadAppID = new ArrayList();
+		appstate = ((MyApp) getApplicationContext());
+
+		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+		// hide titlebar of application, must be before setting the layout
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+		dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		
+		setContentView(R.layout.browser);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        
+        /*scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
+        setContentView(scrollView);
+        View menu = inflater.inflate(R.layout.about_browser, null);
+        View app = inflater.inflate(R.layout.browser, null);
+        View pause = inflater.inflate(R.layout.pause, null);
+        final View[] children = new View[] { menu, app, pause };
+
+		menuWidth = dm.widthPixels * 3 / 4;
+        // Scroll to app (view[1]) when layout finished.
+        int scrollToViewIdx = 1;
+        scrollView.initViews(children, scrollToViewIdx, menuWidth);*/
+
+        initSnapDialog();
+        initMenuDialog();
+		initSourceDialog();		
+		initSearchBar();
+
 
 		loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
 
@@ -2629,11 +2629,8 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {
 		}
 
-		// setPrefer();//can't get complete component set. can't work on 2.2
-		// even you can get the full set. so don't set it.
-
 		// for package added
-		filter = new IntentFilter();
+		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
 		filter.addDataScheme("package");
 		registerReceiver(packageReceiver, filter);

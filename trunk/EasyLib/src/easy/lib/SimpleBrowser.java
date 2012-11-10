@@ -1802,6 +1802,7 @@ public class SimpleBrowser extends Activity {
 				menuOut = true;
 				scrollView.smoothScrollTo(menuWidth+240, 0);
 			}*/
+			if (menuDialog == null) initMenuDialog();
 			menuDialog.show();
 		}
 
@@ -1959,9 +1960,7 @@ public class SimpleBrowser extends Activity {
 		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 	
-	public void initSnapDialog() {
-		if (snapDialog != null) return;
-		
+	public void initSnapDialog() {		
 		snapView = (ImageView) getLayoutInflater().inflate(
 				R.layout.snap_browser, null);
 		snapDialog = new AlertDialog.Builder(this)
@@ -2009,9 +2008,7 @@ public class SimpleBrowser extends Activity {
 						}).create();
 	}
 
-	public void initSourceDialog() {
-		if (m_sourceDialog != null) return;
-		
+	public void initSourceDialog() {		
 		m_sourceDialog = new AlertDialog.Builder(this)
 		.setTitle(R.string.browser_name)
 		.setPositiveButton(R.string.share,
@@ -2038,9 +2035,7 @@ public class SimpleBrowser extends Activity {
 				}).create();
 	}
 	
-	public void initMenuDialog() {
-		if (menuDialog != null) return;
-		
+	public void initMenuDialog() {		
 		// menu icon
 		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
 				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
@@ -2095,6 +2090,7 @@ public class SimpleBrowser extends Activity {
 							serverWebs.get(webIndex).getPageSource();
 						}
 
+						if (m_sourceDialog == null) initSourceDialog();
 						m_sourceDialog.setTitle(serverWebs.get(webIndex)
 								.getTitle());
 						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
@@ -2132,9 +2128,10 @@ public class SimpleBrowser extends Activity {
 							Canvas canvas = new Canvas(bmp);
 							pic.draw(canvas);
 						}
+						
+						if (snapDialog == null) initSnapDialog();
 						snapView.setImageBitmap(bmp);
-						snapDialog
-								.setTitle(serverWebs.get(webIndex).getTitle());
+						snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
 						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
 							snapDialog.setIcon(R.drawable.explorer);
 						else
@@ -2212,6 +2209,7 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 6:// search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
+					if (searchBar == null) initSearchBar();
 					searchBar.bringToFront();
 					searchBar.setVisibility(View.VISIBLE);
 					etSearch.requestFocus();
@@ -2231,9 +2229,7 @@ public class SimpleBrowser extends Activity {
 		});
 	}
 	
-	public void initSearchBar() {
-		if (searchBar != null) return;
-		
+	public void initSearchBar() {		
 		imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		imgSearchPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2307,6 +2303,26 @@ public class SimpleBrowser extends Activity {
 		});		
 	}
 	
+	public void initWebControl() {
+		// web control
+		webControl = (RelativeLayout) findViewById(R.id.webcontrol);
+
+		btnNewpage = (Button) findViewById(R.id.opennewpage);
+		btnNewpage.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {// add a new page
+				openNewPage("", webIndex+1, true);
+			}
+		});
+		// web list
+		webAdapter = new WebAdapter(mContext, serverWebs);
+		webList = (ListView) findViewById(R.id.weblist);
+		webList.inflate(mContext, R.layout.web_list, null);
+		webList.setFadingEdgeLength(0);// no shadow when scroll
+		webList.setScrollingCacheEnabled(false);
+		webList.setAdapter(webAdapter);
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -2354,11 +2370,7 @@ public class SimpleBrowser extends Activity {
         int scrollToViewIdx = 1;
         scrollView.initViews(children, scrollToViewIdx, menuWidth);*/
 
-        initSnapDialog();
-        initMenuDialog();
-		initSourceDialog();		
-		initSearchBar();
-
+		initWebControl();
 
 		loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
 
@@ -2592,24 +2604,6 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
-
-		// web control
-		webControl = (RelativeLayout) findViewById(R.id.webcontrol);
-
-		btnNewpage = (Button) findViewById(R.id.opennewpage);
-		btnNewpage.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {// add a new page
-				openNewPage("", webIndex+1, true);
-			}
-		});
-		// web list
-		webAdapter = new WebAdapter(mContext, serverWebs);
-		webList = (ListView) findViewById(R.id.weblist);
-		webList.inflate(mContext, R.layout.web_list, null);
-		webList.setFadingEdgeLength(0);// no shadow when scroll
-		webList.setScrollingCacheEnabled(false);
-		webList.setAdapter(webAdapter);
 
 		adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		setLayout();

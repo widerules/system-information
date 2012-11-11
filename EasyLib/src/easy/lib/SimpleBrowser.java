@@ -2995,7 +2995,7 @@ public class SimpleBrowser extends Activity {
 				// press Back key in webview will go backword.
 				if (webControl.getVisibility() == View.VISIBLE)
 					imgNew.performClick();// hide web control
-				else if (searchBar.getVisibility() == View.VISIBLE)
+				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
 				else if ((urlLine.getLayoutParams().height != 0) && (displayMode > 1)) { 
 					if (displayMode == 2) hideBars();

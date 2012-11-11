@@ -179,7 +179,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/opennewpage"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/border"
+	        android:background="@drawable/panel_background"
             android:divider="#1e2337"
             android:dividerHeight="2dip" />
     </RelativeLayout>

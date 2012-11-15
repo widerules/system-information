@@ -924,9 +924,9 @@ public class SimpleBrowser extends Activity {
 						.inflate(R.layout.web_list, parent, false);
 			}
 			if (position == webIndex)
-				convertView.setBackgroundColor(0xAA222222);
+				convertView.setBackgroundColor(0x60efefef);
 			else
-				convertView.setBackgroundColor(0xDD111111);
+				convertView.setBackgroundColor(0);
 
 			final ImageView btnIcon = (ImageView) convertView
 					.findViewById(R.id.webicon);

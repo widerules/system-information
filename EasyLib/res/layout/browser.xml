@@ -154,9 +154,10 @@
         android:id="@+id/webcontrol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_above="@id/webtools"
         android:layout_centerHorizontal="true"
-        android:layout_margin="15dip"
+        android:background="@drawable/panel_background"
         android:orientation="vertical"
         android:visibility="invisible" >
 
@@ -166,10 +167,10 @@
             android:layout_height="40dip"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="#DD111111"
+            android:background="@drawable/button_layout"
             android:gravity="center"
             android:text="@string/newpage"
-            android:textColor="#FF96c732"
+            android:textColor="#FF333333"
             android:textSize="20dip"
             android:textStyle="bold" />
 
@@ -179,7 +180,6 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/opennewpage"
             android:layout_centerHorizontal="true"
-	        android:background="@drawable/panel_background"
             android:divider="#1e2337"
             android:dividerHeight="2dip" />
     </RelativeLayout>

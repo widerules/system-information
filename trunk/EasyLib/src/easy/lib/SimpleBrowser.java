@@ -2144,6 +2144,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 2:// copy
+					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
 					try {
 						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
 							Toast.makeText(mContext,
@@ -2208,6 +2209,7 @@ public class SimpleBrowser extends Activity {
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
 				case 6:// search
+					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
 					if (searchBar == null) initSearchBar();
 					searchBar.bringToFront();

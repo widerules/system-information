@@ -150,22 +150,28 @@
         android:layout_above="@id/line1"
         android:background="#ffc5c5c5" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/webcontrol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@drawable/panel_background"
         android:layout_above="@id/webtools"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/panel_background"
         android:orientation="vertical"
         android:visibility="invisible" >
 
+        <ListView
+            android:id="@+id/weblist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            />
+        
         <Button
             android:id="@+id/opennewpage"
             android:layout_width="fill_parent"
             android:layout_height="40dip"
-            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/button_layout"
             android:gravity="center"
@@ -174,16 +180,8 @@
             android:textSize="20dip"
             android:textStyle="bold" />
 
-        <ListView
-            android:id="@+id/weblist"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/opennewpage"
-            android:layout_centerHorizontal="true"
-            android:divider="#1e2337"
-            android:dividerHeight="2dip" />
-    </RelativeLayout>
-
+        </LinearLayout>
+    
     <LinearLayout
         android:id="@+id/urlline"
         android:layout_width="fill_parent"

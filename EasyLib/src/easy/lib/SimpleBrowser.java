@@ -313,8 +313,8 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	RelativeLayout webControl, webtools_center, webTools;
-	LinearLayout urlLine;
+	RelativeLayout webtools_center, webTools;
+	LinearLayout webControl, urlLine;
 	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -2307,7 +2307,7 @@ public class SimpleBrowser extends Activity {
 	
 	public void initWebControl() {
 		// web control
-		webControl = (RelativeLayout) findViewById(R.id.webcontrol);
+		webControl = (LinearLayout) findViewById(R.id.webcontrol);
 
 		btnNewpage = (Button) findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {

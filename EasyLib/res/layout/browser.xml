@@ -159,6 +159,7 @@
         android:layout_above="@id/webtools"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
+        android:gravity="bottom"
         android:visibility="invisible" >
 
         <ListView

@@ -100,12 +100,15 @@ public class wrapAdView {
 	}
 
 	void destroy() {
-		if (mInstance != null) {
+		/*if (mInstance != null) {
+			// seems easy to cause android.util.AndroidRuntimeException: 
+			// Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag
+			// which can't catch
 			try {
 				mInstance.stopLoading();
 				mInstance.destroy();
 			} catch(Exception e) {}
-		}
+		}*/
 	}
 
 	public View getInstance() {

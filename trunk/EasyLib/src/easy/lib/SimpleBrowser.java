@@ -3379,20 +3379,21 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateHomePage() {
+		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"" + getString(R.string.browser_name) + "\");");
 		// top bar
 		String tmp = getString(R.string.top);
 		if (countDown > 0) tmp += getString(R.string.url_can_longclick);
-		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"1," + collapse1 + "," + tmp + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"1," + collapse1 + "," + tmp + "\");");
 		
 		// bookmark bar
 		tmp = getString(R.string.bookmark);
 		if (countDown > 0) tmp += getString(R.string.pic_can_longclick);
-		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"2," + collapse2 + "," + tmp + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"2," + collapse2 + "," + tmp + "\");");
 
 		// history bar
 		tmp = getString(R.string.history);
 		if (countDown > 0) tmp += getString(R.string.text_can_longclick);
-		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"3," + collapse3 + "," + tmp + "\");");
+		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"3," + collapse3 + "," + tmp + "\");");
 
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + !collapse1 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + !collapse2 + "\");");

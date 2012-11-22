@@ -46,6 +46,10 @@ function inject(data) {
 }
 
 function setTitle(para) {
+	document.title = para;
+}
+
+function setTitleBar(para) {
 	var data = String(para).split(',');
 	var title = document.getElementById('title' + data[0]);
 	var content = document.getElementById('content' + data[0]);

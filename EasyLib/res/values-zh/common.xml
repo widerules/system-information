@@ -5,7 +5,7 @@
     <string name="browser_name">点点浏览器</string>
     <string name="help_message">两次点击/滑动之内找到你的应用\n单击应用图标：结束应用\n单击应用名称：启动应用\n单击应用版本：删除应用\n长按应用名称：添加快捷方式\n长按快捷方式：删除快捷方式</string>
     <string name="auto_change_wallpaper">晃动手机换壁纸</string>
-    <string name="about_message">点点浏览器是一个小巧、方便，功能完备的浏览器，不但速度飞快，还可以查看网页源码，分享网址和截图给好友。\n\n如需删除书签/历史请长按该链接。</string>
+    <string name="about_message">点点浏览器是一个小巧、方便，功能完备的浏览器，不但速度飞快，还可以查看网页源码，分享网址和截图给好友。\n\n如需删除收藏/历史请长按该链接。</string>
     <string name="feedback">(可选)有什么建议或反馈吗？比如怎么重现这次的问题？</string>
     <string name="share_wallpaper">分享壁纸</string>
     <string name="share_desktop">分享桌面</string>
@@ -49,15 +49,14 @@
     <string name="newpage">新建窗口</string>
     <string name="nomore_pages">打开的页面太多了。</string>
     <string name="history">历史</string>
-    <string name="bookmark">书签</string>
+    <string name="bookmark">收藏</string>
     <string name="top">常用</string>
     <string name="source">源码</string>
     <string name="homepage">主页</string>
     <string name="shareurl">分享网址</string>
     <string name="recommend">推荐</string>
-    <string name="add_bookmark">添加书签</string>
-    <string name="remove_bookmark">删除书签</string>
-    <string name="view_bookmark">查看书签</string>
+    <string name="add_bookmark">添加收藏</string>
+    <string name="remove_bookmark">删除收藏</string>
     <string name="remove_history">删除历史</string>
     <string name="save">存为文件</string>
     <string name="open_new">在新窗口中打开</string>

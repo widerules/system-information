@@ -52,7 +52,6 @@
     <string name="recommend">おすすめ</string>
     <string name="add_bookmark">ブックマークに追加</string>
     <string name="remove_bookmark">ブックマークから削除</string>
-    <string name="view_bookmark">ブックマークを見る</string>
     <string name="remove_history">履歴から削除</string>
     <string name="save">ファイルとして保存</string>
     <string name="open_new">新しいページで開く</string>

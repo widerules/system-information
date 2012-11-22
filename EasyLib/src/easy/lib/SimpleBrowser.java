@@ -238,7 +238,7 @@ class wrapWebSettings {
 
 public class SimpleBrowser extends Activity {
 
-	String HOME_PAGE = "file:///data/data/";
+	String HOME_PAGE = "file:///android_asset/home.html";
 	final String HOME_BLANK = "about:blank";
 	String m_homepage = null;
 	boolean firstRun = false;
@@ -2334,7 +2334,6 @@ public class SimpleBrowser extends Activity {
 		mContext = this;
 
 		browserName = getString(R.string.browser_name);
-		HOME_PAGE += mContext.getPackageName() + "/files/home.html";
 		
 		// init settings
 		sp = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -2610,8 +2609,6 @@ public class SimpleBrowser extends Activity {
 		adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		setLayout();
 
-		createHomePage();
-				
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
@@ -3382,6 +3379,21 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateHomePage() {
+		// top bar
+		String tmp = getString(R.string.top);
+		if (countDown > 0) tmp += getString(R.string.url_can_longclick);
+		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"1," + collapse1 + "," + tmp + "\");");
+		
+		// bookmark bar
+		tmp = getString(R.string.bookmark);
+		if (countDown > 0) tmp += getString(R.string.pic_can_longclick);
+		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"2," + collapse2 + "," + tmp + "\");");
+
+		// history bar
+		tmp = getString(R.string.history);
+		if (countDown > 0) tmp += getString(R.string.text_can_longclick);
+		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"3," + collapse3 + "," + tmp + "\");");
+
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + !collapse1 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + !collapse2 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + !collapse3 + "\");");
@@ -3390,6 +3402,8 @@ public class SimpleBrowser extends Activity {
 		updateBookmark();
 		updateHistory();
 
+		serverWebs.get(webIndex).loadUrl("javascript:setButton(\"" + getString(R.string.edit_home) + "," + getString(R.string.delete) + "," + getString(R.string.cancel) + "\");");
+		
 		if (countDown > 0) countDown -= 1;
 	}
 	
@@ -3404,167 +3418,8 @@ public class SimpleBrowser extends Activity {
 			HOME_PAGE.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex() + 1).getUrl())) 
 				serverWebs.get(webIndex).goForward();
 		else serverWebs.get(webIndex).loadUrl(HOME_PAGE);
-	}
-
-	void createHomePage() {
-		String fileName = "home.html";
-		try {// create the file everytime?
-			FileOutputStream fos = openFileOutput(fileName, 0);
-			fos.write(homePage().toString().getBytes());
-			fos.close();
-		} catch (Exception e) {}
-	}
-	
-	StringBuilder homePage() {// three part, 1 is recommend, 2 is bookmark displayed by
-						// scaled image, 3 is history displayed by link
-		String ret = "<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>";
-		StringBuilder sb = new StringBuilder(ret);
-		sb.append("<meta name='viewport' content='width=device-width'>");
-		sb.append("<html>");
-		sb.append("<head>");
-		sb.append("<link rel='shortcut icon' href='file:///android_asset/favicon.ico'>");
-		sb.append("<title>");
-		sb.append(browserName);
-		sb.append("</title>");
-
-		sb.append("<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>");
 		
-		sb.append("<script type='text/javascript'>");
-		
-		sb.append("function collapse(para) {");
-		sb.append("var tmp = String(para).split(',');");
-		sb.append("var index = tmp[0];");
-		sb.append("var title = document.getElementById('title' + index).firstChild;"); 
-		sb.append("var content = document.getElementById('content' + index);"); 
-		sb.append("var collapsed = (content.style.display === 'none');"); 
-		sb.append("if (tmp.length == 1) window.JSinterface.saveCollapseState(index, !collapsed);");
-		sb.append("else collapsed = (tmp[1] == 'true')?true:false;");
-		sb.append("if (collapsed) {"); 
-		sb.append("content.style.display = '';"); 
-		sb.append("title.nodeValue = '-' + title.nodeValue.substring(1);"); 
-		sb.append("} else {"); 
-		sb.append("content.style.display = 'none';"); 
-		sb.append("title.nodeValue = '+' + title.nodeValue.substring(1);}}");
-		
-		sb.append("function inject(data) {");
-		sb.append("if (data.indexOf('::::') > 0) {");
-		sb.append("var tmp = data.split('::::');");
-		sb.append("var array = tmp[1].split('....');");
-		sb.append("var title = document.getElementById('title' + tmp[0]);");
-		sb.append("var content = document.getElementById('content' + tmp[0]);");
-		sb.append("var arrayLength = array.length - 1;");// the last element is noise
-		sb.append("for (i = 0; i < arrayLength; i++) {");
-		sb.append("if (content.children.length <= i) {");
-		sb.append("var li=document.createElement('li');");
-		sb.append("content.appendChild(li);");
-		sb.append("li.outerHTML = array[i];");// must set value after append, otherwise got NO_MODIFICATION_ALLOWED_ERR
-		sb.append("} else if (content.children[i].outerHTML != array[i]) content.children[i].outerHTML = array[i]; }");
-		sb.append("while (content.children.length > arrayLength) {");
-		sb.append("child = content.children[arrayLength];");
-		sb.append("content.removeChild(child);}");
-		sb.append("if (arrayLength == 0) title.style.display = 'none';");
-		sb.append("else title.style.display = '';");
-		sb.append("}}");
-		
-		sb.append("function showCheckbox() {");
-		sb.append("document.getElementById('edit_home').style.display=\"none\";");
-		sb.append("document.getElementById('delete_selected').style.display=\"\";");
-		sb.append("document.getElementById('cancel_edit').style.display=\"\";");
-		sb.append("var inputs = document.getElementsByTagName('input');");
-		sb.append("for (var i = 0; i < inputs.length; i++) inputs[i].style.display='';");
-		sb.append("}");
-		
-		sb.append("function hideCheckbox() {");
-		sb.append("document.getElementById('edit_home').style.display=\"\";");
-		sb.append("document.getElementById('delete_selected').style.display=\"none\";");
-		sb.append("document.getElementById('cancel_edit').style.display=\"none\";");
-		sb.append("var inputs = document.getElementsByTagName('input');");
-		sb.append("for (var i = 0; i < inputs.length; i++) inputs[i].style.display='none';");
-		sb.append("}");
-		
-		sb.append("function deleteSelected() {");
-		sb.append("var bookmarks = '';");
-		sb.append("var historys = '';");
-		sb.append("var inputs = document.getElementsByTagName('input');");
-		sb.append("for (var i = 0; i < inputs.length; i++) {");
-		sb.append("if (inputs[i].checked) {");
-		sb.append("if (inputs[i].attributes['class'].nodeValue == 'bookmark') bookmarks += i + ',,,,';");
-		sb.append("else historys += i + ',,,,';");
-		sb.append("}");
-		sb.append("}");
-		sb.append("window.JSinterface.deleteItems(bookmarks, historys);");
-		sb.append("hideCheckbox();}");
-		
-		sb.append("</script>");
-		
-		sb.append("</head><body style='background-image:url(file:///android_asset/noise_bg.png)'>");
-
-		// top bar
-		String tmp = getString(R.string.top);
-		if (countDown > 0)
-			tmp += getString(R.string.url_can_longclick);
-		if (collapse1) {
-			sb.append("<h4 id='title1' onClick='collapse(1)'>+\t");
-			sb.append(tmp);
-			sb.append("</h4>");
-			sb.append("<dl id='content1' type='disc' style='display: none;'>");
-		} else {
-			sb.append("<h4 id='title1' onClick='collapse(1)'>-\t");
-			sb.append(tmp);
-			sb.append("</h4>");
-			sb.append("<dl id='content1' type='disc'>");
-		}
-		sb.append(getTopList(""));
-		sb.append("</dl>");
-
-		// bookmark bar
-		tmp = getString(R.string.bookmark);
-		if (countDown > 0) 
-			tmp += getString(R.string.pic_can_longclick);
-		if (collapse2) {
-			sb.append("<h4 id='title2' onClick='collapse(2)' >+\t");
-			sb.append(tmp);
-			sb.append("</h4>");
-			sb.append("<dl id='content2' type='disc' style='display:none;'>");
-		} else {
-			sb.append("<h4 id='title2' onClick='collapse(2)'>-\t");
-			sb.append(tmp);
-			sb.append("</h4>");
-			sb.append("<dl id='content2' type='disc'>");
-		}
-		
-		sb.append(getBookmark(""));
-		sb.append("</dl>");
-		
-		// history bar
-		tmp = getString(R.string.history);
-		if (countDown > 0)
-			tmp += getString(R.string.text_can_longclick);
-		if (collapse3) {
-			sb.append("<h4 id='title3' onClick='collapse(3)'>+\t");
-			sb.append(tmp);
-			sb.append("</h4>");
-			sb.append("<dl id='content3' type='disc' style='display:none;'>");
-		} else {
-			sb.append("<h4 id='title3' onClick='collapse(3)'>-\t");
-			sb.append(tmp);
-			sb.append("</h4>");
-			sb.append("<dl id='content3' type='disc'>");
-		}
-		sb.append(getHistory(""));
-		sb.append("</dl>");
-
-		sb.append("<table style='margin:auto'>");
-		sb.append("<tr>");
-		sb.append("<td><a id='edit_home' href='javascript:showCheckbox();'>" + getString(R.string.edit_home) + "</a></td>");
-		sb.append("<td><a id='delete_selected' href='javascript:deleteSelected();' style='display:none'>" + getString(R.string.delete) + "</a></td>");
-		sb.append("<td><a id='cancel_edit' href='javascript:hideCheckbox();' style='display:none'>" + getString(R.string.cancel) + "</a></td>");
-		sb.append("</tr>");
-		sb.append("</table><br>");
-
-		sb.append("</body></html>");
-		
-		return sb;
+		updateHomePage();
 	}
 
 	class TitleUrl {

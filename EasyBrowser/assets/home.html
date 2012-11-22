@@ -1,0 +1,29 @@
+<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+<meta name='viewport' content='width=device-width'>
+<html>
+<head>
+	<link rel='shortcut icon' href='file:///android_asset/favicon.ico'>
+	<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>
+	<link rel='text/javascript' href='file:///android_asset/easybrowser.js'>
+	<title>homepage</title>
+</head>
+
+<body style='background-image:url(file:///android_asset/noise_bg.png)'>
+
+	<h4 id='title1' onClick='collapse(1)'></h4><!--top list-->
+	<dl id='content1' type='disc'></dl>
+
+	<h4 id='title2' onClick='collapse(2)' ></h4><!--bookmark-->
+	<dl id='content2' type='disc'></dl>
+		
+	<h4 id='title3' onClick='collapse(3)'></h4><!--history-->
+	<dl id='content3' type='disc'></dl>
+
+	<table style='margin:auto'><tr>
+		<td><a id='edit_home' href='javascript:showCheckbox();'></a></td>
+		<td><a id='delete_selected' href='javascript:deleteSelected();' style='display:none'></a></td>
+		<td><a id='cancel_edit' href='javascript:hideCheckbox();' style='display:none'></a></td>
+	</tr></table><br>
+
+</body></html>
+

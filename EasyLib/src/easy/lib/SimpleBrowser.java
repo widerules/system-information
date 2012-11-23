@@ -2741,7 +2741,7 @@ public class SimpleBrowser extends Activity {
 			}
 		} 
 		else if (!url.contains("://")) url = "http://" + url;
-		serverWebs.get(webIndex).loadUrl(url);
+		if (!url.equals(serverWebs.get(webIndex).getUrl())) serverWebs.get(webIndex).loadUrl(url);//only load page if input different url
 	}
 
 	void changePage(int position) {
@@ -3409,6 +3409,8 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void loadPage() {// load home page
+		if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
+		
 		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 		if ((wbfl.getCurrentItem() != null) && HOME_PAGE.equals(wbfl.getCurrentItem().getUrl())) 
 			serverWebs.get(webIndex).reload();

@@ -3412,16 +3412,18 @@ public class SimpleBrowser extends Activity {
 		if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
 		
 		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-		if ((wbfl.getCurrentItem() != null) && HOME_PAGE.equals(wbfl.getCurrentItem().getUrl())) 
-			serverWebs.get(webIndex).reload();
-		else if (serverWebs.get(webIndex).canGoBack() && (wbfl != null) &&
-			HOME_PAGE.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex() - 1).getUrl()))
-				serverWebs.get(webIndex).goBack();
-		else if (serverWebs.get(webIndex).canGoForward() &&
-			HOME_PAGE.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex() + 1).getUrl())) 
-				serverWebs.get(webIndex).goForward();
-		else serverWebs.get(webIndex).loadUrl(HOME_PAGE);
+		if (wbfl != null) {
+			int size = wbfl.getSize();
+			int current = wbfl.getCurrentIndex();
+			for (int i = 0; i < size; i++) {
+				if (HOME_PAGE.equals(wbfl.getItemAtIndex(i).getUrl())) {
+					serverWebs.get(webIndex).goBackOrForward(i - current);
+					return;
+				}
+			}
+		}
 		
+		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 		updateHomePage();
 	}
 

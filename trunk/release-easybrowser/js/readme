@@ -1,0 +1,2 @@
+1, perl jsPacker.pl -i easybrowser.js -o home62.js -e62
+2, use content of home62.js to replace js code in home.html

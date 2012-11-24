@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="browser_author">easy.browsers@gmail.com</string>
+    <string name="encoding_utf8">UTF-8</string>
+    <string name="encoding_gb2312">GB2312</string>
+    <string name="encoding_big5">BIG5</string>
+    <string name="encoding_gbk">GBK</string>
+    <string name="encoding_latin1">Latin-1</string>
+    <string name="encoding_jp">ISO-2022-JP</string>
+    <string name="encoding_jis">SHIFT_JIS</string>
+    <string name="encoding_euc_jp">EUC-JP</string>
+    <string name="encoding_euc_kr">EUC-KR</string>
+    <string name="cookie">Cookie</string>
+    <string name="iphone">iPhone</string>
+    <string name="ipad">iPad</string>
+    <string name="chrome">Chrome</string>
+    <string name="ie">IE</string>
+    <string name="ff">Firefox</string>
+    <string name="safari">Safari</string>
+    <string name="wp">WP</string>
+    <string name="nokia">Nokia</string>
+    <string name="bb">BlackBerry</string>
+    <string name="baidu">百度"          "</string>
+    <string name="yandex">Яндекс</string>
+
+</resources>

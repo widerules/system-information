@@ -1,7 +1,10 @@
 package easy.lib;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -14,10 +17,29 @@ import com.google.ads.AdRequest.ErrorCode;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
 
+import easy.lib.SimpleBrowser.ClearFolderTask;
+
 public class wrapAdView {
 	AdView mInstance;
 	AdRequest adRequest;
 	Handler mHandler;
+
+	class DestroyTask extends AsyncTask<String, Integer, String> {
+		@Override
+		protected String doInBackground(String... params) {
+			if (mInstance != null) {
+				// seems easy to cause android.util.AndroidRuntimeException: 
+				// Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag
+				// which can't catch. add sleep seems ok. and put in AsyncTask will not block UI thread
+				try {
+					Thread.sleep(10000);
+					mInstance.stopLoading();
+					mInstance.destroy();
+				} catch (Exception e) {}
+			}
+			return null;
+		}
+	}
 
 	class Listener implements AdListener {
 		@Override
@@ -100,15 +122,8 @@ public class wrapAdView {
 	}
 
 	void destroy() {
-		/*if (mInstance != null) {
-			// seems easy to cause android.util.AndroidRuntimeException: 
-			// Calling startActivity() from outside of an Activity  context requires the FLAG_ACTIVITY_NEW_TASK flag
-			// which can't catch
-			try {
-				mInstance.stopLoading();
-				mInstance.destroy();
-			} catch(Exception e) {}
-		}*/
+		DestroyTask dtask = new DestroyTask();
+		dtask.execute();
 	}
 
 	public View getInstance() {

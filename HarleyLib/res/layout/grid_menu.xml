@@ -8,7 +8,7 @@
         android:id="@+id/gridview"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:gravity="center"
+	    android:layout_gravity="bottom"
         android:stretchMode="columnWidth" />
 
 </LinearLayout>

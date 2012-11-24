@@ -19,7 +19,7 @@
         android:id="@+id/appname"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:singleLine="true"
         android:textColor="#FF333333"
         android:textSize="14dip" />

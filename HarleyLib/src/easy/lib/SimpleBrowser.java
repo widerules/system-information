@@ -2036,14 +2036,14 @@ public class SimpleBrowser extends Activity {
 	public void initMenuDialog() {		
 		// menu icon
 		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
-				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
-				R.drawable.share, R.drawable.search, R.drawable.about };
+				R.drawable.copy, R.drawable.about, R.drawable.downloads,
+				R.drawable.share, R.drawable.search, R.drawable.exit };
 		// menu text
 		String[] menu_name_array = { getString(R.string.source),
 				getString(R.string.snap), getString(R.string.copy),
-				getString(R.string.exit), getString(R.string.downloads),
+				getString(R.string.settings), getString(R.string.downloads),
 				getString(R.string.shareurl), getString(R.string.search),
-				getString(R.string.settings) };
+				getString(R.string.exit) };
 
 		final Context localContext = this;
 		menuGrid = (ListView) menuView.findViewById(R.id.gridview);
@@ -2131,13 +2131,15 @@ public class SimpleBrowser extends Activity {
 					} catch (Exception e) {
 					}
 					break;
-				case 3:// exit
-					clearFile("pages");
-					ClearCache(); // clear cache when exit
-					finish();
+				case 3:// settings
+					gotoSettings = true;
+					Intent intent = new Intent("easy.lib.about");
+					intent.setClassName(getPackageName(),
+							"easy.lib.AboutBrowser");
+					startActivityForResult(intent, SETTING_RESULTCODE);
 					break;
 				case 4:// downloads
-					Intent intent = new Intent(
+					intent = new Intent(
 							"com.estrongs.action.PICK_DIRECTORY");
 					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
 					if (!util.startActivity(intent, false, mContext)) {
@@ -2188,12 +2190,10 @@ public class SimpleBrowser extends Activity {
 					toSearch = "";
 					imm.toggleSoftInput(0, 0);
 					break;
-				case 7:// settings
-					gotoSettings = true;
-					intent = new Intent("easy.lib.about");
-					intent.setClassName(getPackageName(),
-							"easy.lib.AboutBrowser");
-					startActivityForResult(intent, SETTING_RESULTCODE);
+				case 7:// exit
+					clearFile("pages");
+					ClearCache(); // clear cache when exit
+					finish();
 					break;
 				}
 				//menuDialog.dismiss();
@@ -2331,10 +2331,10 @@ public class SimpleBrowser extends Activity {
         
         scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
         setContentView(scrollView);
-        View menu = inflater.inflate(R.layout.about_browser, null);
+        View bookmarks = inflater.inflate(R.layout.bookmarks, null);
         View app = inflater.inflate(R.layout.browser, null);
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
-        final View[] children = new View[] { menu, app, menuView };
+        final View[] children = new View[] { bookmarks, app, menuView };
 
 		menuWidth = dm.widthPixels * 3 / 4;
         // Scroll to app (view[1]) when layout finished.
@@ -2576,7 +2576,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		adContainer = (FrameLayout) findViewById(R.id.adContainer);
+		adContainer = (FrameLayout) bookmarks.findViewById(R.id.adContainer);
 		setLayout();
 
 		try {// there are a null pointer error reported for the if line below,

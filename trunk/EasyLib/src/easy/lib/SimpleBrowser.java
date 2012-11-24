@@ -300,10 +300,6 @@ public class SimpleBrowser extends Activity {
 	AlertDialog downloadsDialog = null;
 
 	// browser related
-	MyHorizontalScrollView scrollView;
-	boolean menuOut = false;
-	int menuWidth = 180;
-	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
 	ArrayList<String> siteArray;
@@ -1794,14 +1790,7 @@ public class SimpleBrowser extends Activity {
 		else {
 			if (displayMode == 2) hideBars();
 			else if (displayMode == 3) hideUrl();
-			/*else if (menuOut) {
-				menuOut = false;
-				scrollView.smoothScrollTo(menuWidth, 0);
-			}
-			else {
-				menuOut = true;
-				scrollView.smoothScrollTo(menuWidth+240, 0);
-			}*/
+			
 			if (menuDialog == null) initMenuDialog();
 			menuDialog.show();
 		}
@@ -2359,18 +2348,6 @@ public class SimpleBrowser extends Activity {
 		setContentView(R.layout.browser);
         LayoutInflater inflater = LayoutInflater.from(this);
         
-        /*scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
-        setContentView(scrollView);
-        View menu = inflater.inflate(R.layout.about_browser, null);
-        View app = inflater.inflate(R.layout.browser, null);
-        View pause = inflater.inflate(R.layout.pause, null);
-        final View[] children = new View[] { menu, app, pause };
-
-		menuWidth = dm.widthPixels * 3 / 4;
-        // Scroll to app (view[1]) when layout finished.
-        int scrollToViewIdx = 1;
-        scrollView.initViews(children, scrollToViewIdx, menuWidth);*/
-
 		initWebControl();
 
 		loadProgress = (ProgressBar) findViewById(R.id.loadprogress);

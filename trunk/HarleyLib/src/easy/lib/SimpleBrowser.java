@@ -2047,6 +2047,7 @@ public class SimpleBrowser extends Activity {
 
 		final Context localContext = this;
 		menuGrid = (ListView) menuView.findViewById(R.id.gridview);
+		menuGrid.setFadingEdgeLength(0);
 		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
 		menuGrid.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,

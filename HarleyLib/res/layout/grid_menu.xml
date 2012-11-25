@@ -9,6 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
 	    android:layout_gravity="bottom"
-        android:stretchMode="columnWidth" />
+	    android:cacheColorHint="#00000000"
+        />
 
 </LinearLayout>

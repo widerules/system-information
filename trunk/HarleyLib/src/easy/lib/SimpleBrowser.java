@@ -312,7 +312,7 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	RelativeLayout webtools_center, webTools;
+	LinearLayout webTools;
 	LinearLayout webControl, urlLine;
 	int dips = 5;
 	Button btnNewpage;
@@ -2503,7 +2503,7 @@ public class SimpleBrowser extends Activity {
 		webpages = (MyViewFlipper) findViewById(R.id.webpages);
 		webpages.addView(serverWebs.get(webIndex));
 
-		webTools = (RelativeLayout) findViewById(R.id.webtools);
+		webTools = (LinearLayout) findViewById(R.id.webtools);
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		if (displayMode == 2) {// hide url bar and tools bar
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -2512,8 +2512,6 @@ public class SimpleBrowser extends Activity {
 			hideBars();
 		}
 		else if (displayMode == 3) hideUrl();
-
-		webtools_center = (RelativeLayout) findViewById(R.id.webtools_center);
 
 		imgNext = (ImageView) findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -3175,15 +3173,7 @@ public class SimpleBrowser extends Activity {
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-		int width = dm.widthPixels;
-
-		LayoutParams lp = webtools_center.getLayoutParams();
-		if (width >= 320)
-			lp.width = width / 2 + 30;
-		else
-			lp.width = width / 2 + 20;
-
-		width_density = width / dm.density;
+		width_density = dm.widthPixels / dm.density;
 
 		if (!clicked) createAd();
 	}

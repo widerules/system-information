@@ -8,6 +8,16 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
+    <FrameLayout
+        android:id="@+id/adContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:foregroundGravity="center"
+        android:orientation="vertical" >
+    </FrameLayout>
+
     <RelativeLayout
         android:id="@+id/search_bar"
         android:layout_width="fill_parent"
@@ -78,6 +88,14 @@
         android:orientation="horizontal" >
 
         <ImageView
+            android:id="@+id/bookmark"
+            android:layout_width="0dip"
+            android:layout_height="35dip"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/bookmark" />
+
+        <ImageView
             android:id="@+id/refresh"
             android:layout_width="0dip"
             android:layout_height="35dip"
@@ -94,14 +112,6 @@
             android:src="@drawable/prev" />
 
         <ImageView
-            android:id="@+id/newpage"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_weight="1"
-            android:scaleType="fitCenter"
-            android:src="@drawable/newpage" />
-
-        <ImageView
             android:id="@+id/next"
             android:layout_width="0dip"
             android:layout_height="35dip"
@@ -110,12 +120,20 @@
             android:src="@drawable/next" />
         
         <ImageView
-            android:id="@+id/home"
+            android:id="@+id/newpage"
             android:layout_width="0dip"
             android:layout_height="35dip"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/home" />
+            android:src="@drawable/newpage" />
+
+        <ImageView
+            android:id="@+id/menu"
+            android:layout_width="0dip"
+            android:layout_height="35dip"
+            android:layout_weight="1"
+            android:scaleType="center"
+            android:src="@drawable/menu" />
     </LinearLayout>
 
     <View

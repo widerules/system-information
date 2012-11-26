@@ -2549,7 +2549,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
-		imgHome = (ImageView) findViewById(R.id.home);
+		imgHome = (ImageView) findViewById(R.id.menu);
 		imgHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {

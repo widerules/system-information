@@ -339,7 +339,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	boolean historyChanged = false, bookmarkChanged = false;
 	ImageView imgAddFavo, imgGo;
-	boolean noHistoryOnSdcard = true;
+	boolean noSdcard = false, noHistoryOnSdcard = false;
 
 	// baidu tongji
 	static Method baiduResume = null;
@@ -2409,35 +2409,36 @@ public class SimpleBrowser extends Activity {
 
 		downloadPath = util.preparePath(mContext);
 		if (downloadPath == null)
-			downloadPath = "/data/data/" + getPackageName() + "/";// fix null
-																	// pointer
-																	// close for
-																	// 4 users
-		mHistory = readBookmark("history");
-		mBookMark = readBookmark("bookmark");
-		// Collections.sort(mBookMark, new myComparator());//sort the bookmark
+			downloadPath = "/data/data/" + getPackageName() + "/";// fix null pointer close for 4 users
+		if (downloadPath.startsWith(getFilesDir().getPath())) noSdcard = true;
 
+		// should read in below sequence: 1, sdcard. 2, data/data. 3, native browser
+		try {
+			FileInputStream fi = null;
+			if (noSdcard) fi = openFileInput("history");
+			else {
+				try {// try to open history on sdcard at first
+					File file = new File(downloadPath + "bookmark/history");
+					fi = new FileInputStream(file);
+				} catch (FileNotFoundException e) {// read from /data/data if fail
+					noHistoryOnSdcard = true;
+					fi = openFileInput("history");
+				}
+			}
+			
+			try {// close anyway
+				fi.close();
+			} catch (Exception e) {}
+		} catch (FileNotFoundException e1) {
+			firstRun = true;
+		}
+		
 		siteArray = new ArrayList<String>();
 		urlAdapter = new ArrayAdapter<String>(mContext,
 				android.R.layout.simple_dropdown_item_1line,
 				new ArrayList<String>());
+		getHistoryList();// read history and bookmark from native browser
 		String site;
-		for (int i = 0; i < mHistory.size(); i++) {
-			site = mHistory.get(i).m_site;
-			if (siteArray.indexOf(site) < 0) {
-				siteArray.add(site);
-				urlAdapter.add(site);
-			}
-		}
-		for (int i = 0; i < mBookMark.size(); i++) {
-			site = mBookMark.get(i).m_site;
-			if (siteArray.indexOf(mBookMark.get(i).m_site) < 0) {
-				siteArray.add(site);
-				urlAdapter.add(site);
-			}
-		}
-
-		getHistoryList();// read history from native browser
 		for (int i = 0; i < mSystemHistory.size(); i++) {
 			site = mSystemHistory.get(i).m_site;
 			if (siteArray.indexOf(site) < 0) {
@@ -2445,27 +2446,57 @@ public class SimpleBrowser extends Activity {
 				urlAdapter.add(site);
 			}
 		}
-
-		try {
-			FileInputStream fi = null;
-			try {// try to open history on sdcard at first
-				File file = new File(downloadPath + "bookmark/history");
-				fi = new FileInputStream(file);
-				noHistoryOnSdcard = false;
-			} catch (FileNotFoundException e) {// read from /data/data if fail
-				fi = openFileInput("history");
+		for (int i = 0; i < mSystemBookMark.size(); i++) {
+			site = mSystemBookMark.get(i).m_site;
+			if (siteArray.indexOf(site) < 0) {
+				siteArray.add(site);
+				urlAdapter.add(site);
 			}
-			try {
-				fi.close();
-			} catch (Exception e) {
-			}
-		} catch (FileNotFoundException e1) {
-			firstRun = true;
 		}
-		if (firstRun) {// copy from system bookmark if first run
+		
+		if (!firstRun) {
+			mHistory = readBookmark("history");
+			mBookMark = readBookmark("bookmark");
+			Collections.sort(mBookMark, new myComparator());
+
+			for (int i = 0; i < mHistory.size(); i++) {
+				site = mHistory.get(i).m_site;
+				if (siteArray.indexOf(site) < 0) {
+					siteArray.add(site);
+					urlAdapter.add(site);
+				}
+			}
+			for (int i = 0; i < mBookMark.size(); i++) {
+				site = mBookMark.get(i).m_site;
+				if (siteArray.indexOf(site) < 0) {
+					siteArray.add(site);
+					urlAdapter.add(site);
+				}
+			}
+
+			// read search words
+			ObjectInputStream ois = null;
+			FileInputStream fi = null;
+			String word = null;
+			try {
+				fi = openFileInput("searchwords");
+				ois = new ObjectInputStream(fi);
+				while ((word = (String) ois.readObject()) != null) {
+					if (siteArray.indexOf(word) < 0) {
+						siteArray.add(word);
+						urlAdapter.add(word);
+					}
+				}
+			} catch (EOFException e) {// only when read eof need send out msg.
+				try {
+					ois.close();
+					fi.close();
+				} catch (Exception e1) {}
+			} catch (Exception e) {}
+		}
+		else {// copy from system bookmark if first run
 			for (int i = 0; i < mSystemHistory.size(); i++) {
-				if (i > historyCount)
-					break;
+				if (i > historyCount) break;
 				mHistory.add(mSystemHistory.get(i));
 			}
 
@@ -2479,26 +2510,6 @@ public class SimpleBrowser extends Activity {
 			countDown = 1;
 		}
 
-		// read search words
-		ObjectInputStream ois = null;
-		FileInputStream fi = null;
-		String word = null;
-		try {
-			fi = openFileInput("searchwords");
-			ois = new ObjectInputStream(fi);
-			while ((word = (String) ois.readObject()) != null) {
-				if (siteArray.indexOf(word) < 0) {
-					siteArray.add(word);
-					urlAdapter.add(word);
-				}
-			}
-		} catch (EOFException e) {// only when read eof need send out msg.
-			try {
-				ois.close();
-				fi.close();
-			} catch (Exception e1) {}
-		} catch (Exception e) {}
-		
 		urlAdapter.sort(new stringComparator());
 		webAddress.setAdapter(urlAdapter);
 
@@ -3121,11 +3132,11 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	protected void onPause() {
-		if (historyChanged || noHistoryOnSdcard) {
+		if (historyChanged) {
 			WriteTask wtask = new WriteTask();
 			wtask.execute("history");
 		}
-		if (bookmarkChanged || noHistoryOnSdcard) {
+		if (bookmarkChanged) {
 			WriteTask wtask = new WriteTask();
 			wtask.execute("bookmark");
 		}
@@ -3442,7 +3453,8 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {
 		}
 
-		try {// write to /sdcard/simpleHome/bookmark/
+		if (!noSdcard)
+		try {// try to write to /sdcard/simpleHome/bookmark/
 			File file = new File(downloadPath + "bookmark/" + filename);
 			FileOutputStream fo = new FileOutputStream(file, false);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);
@@ -3514,12 +3526,12 @@ public class SimpleBrowser extends Activity {
 		ObjectInputStream ois = null;
 		FileInputStream fi = null;
 		try {// read favorite or shortcut data from sdcard at first. if fail
-				// then read from /data/data
-			try {
+			 // then read from /data/data
+			if (noSdcard || noHistoryOnSdcard) 
+				fi = openFileInput(filename);
+			else {
 				File file = new File(downloadPath + "bookmark/" + filename);
 				fi = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				fi = openFileInput(filename);
 			}
 			ois = new ObjectInputStream(fi);
 			TitleUrl tu;

@@ -3233,7 +3233,6 @@ public class SimpleBrowser extends Activity {
 
 			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());
-				adview.loadAd();
 			}
 		}
 	}

@@ -1266,10 +1266,13 @@ public class SimpleBrowser extends Activity {
 
 			String tmpEncoding = getEncoding(sp.getInt("encoding", 0));
 			if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
-				localSettings.setDefaultTextEncodingName(tmpEncoding);
-				// set default encoding to autoselect
-				sEdit.putInt("encoding", 0);
-				shouldReload = true;
+				if ("AUTOSELECT".equals(tmpEncoding) && "Latin-1".equals(localSettings.getDefaultTextEncodingName())) ;//not reload in this case
+				else {
+					localSettings.setDefaultTextEncodingName(tmpEncoding);
+					// set default encoding to autoselect
+					sEdit.putInt("encoding", 0);
+					shouldReload = true;
+				}
 			}
 
 			if (shouldReload) serverWebs.get(webIndex).reload();

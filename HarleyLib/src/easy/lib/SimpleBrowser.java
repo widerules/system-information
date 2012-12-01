@@ -726,7 +726,10 @@ public class SimpleBrowser extends Activity {
 						loadProgress.setVisibility(View.VISIBLE);
 						
 						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
-						else webAddress.setText(url);
+						else {
+							webAddress.setText(url);
+							if (adview != null) adview.loadAd();// should only do this by wifi
+						}
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
@@ -739,8 +742,6 @@ public class SimpleBrowser extends Activity {
 					} catch (Exception e) {}
 					
 					if (!incognitoMode) recordPages();
-
-					if (adview != null) adview.loadAd();// should only do this by wifi
 				}
 
 				@Override

@@ -93,6 +93,7 @@
             android:layout_height="35dip"
             android:layout_weight="1"
             android:scaleType="center"
+            android:background="@drawable/imagebutton_layout"
             android:src="@drawable/refresh" />
 
         <ImageView
@@ -101,6 +102,7 @@
             android:layout_height="35dip"
             android:layout_weight="1"
             android:scaleType="fitCenter"
+            android:background="@drawable/imagebutton_layout"
             android:src="@drawable/prev" />
 
         <ImageView
@@ -109,6 +111,7 @@
             android:layout_height="35dip"
             android:layout_weight="1"
             android:scaleType="fitCenter"
+            android:background="@drawable/imagebutton_layout"
             android:src="@drawable/newpage" />
 
         <ImageView
@@ -117,6 +120,7 @@
             android:layout_height="35dip"
             android:layout_weight="1"
             android:scaleType="fitCenter"
+            android:background="@drawable/imagebutton_layout"
             android:src="@drawable/next" />
         
         <ImageView
@@ -125,6 +129,7 @@
             android:layout_height="35dip"
             android:layout_weight="1"
             android:scaleType="fitCenter"
+            android:background="@drawable/imagebutton_layout"
             android:src="@drawable/home" />
     </LinearLayout>
 
@@ -194,6 +199,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:scaleType="centerCrop"
+    	        android:background="@drawable/imagebutton_layout"
                 android:src="@drawable/favorites_add" />
 
             <ImageView
@@ -203,6 +209,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:scaleType="center"
+	            android:background="@drawable/imagebutton_layout"
                 android:src="@drawable/go" />
 
             <FrameLayout

@@ -62,12 +62,10 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
     /**
      * @param children
      *            The child Views to add to parent.
-     * @param scrollToViewIdx
-     *            The index of the View to scroll to after initialisation.
      * @param menuWidth
      *            A para to set the view width of menu.
      */
-    public void initViews(View[] children, int scrollToViewIdx, int menuWidth) {
+    public void initViews(View[] children, int[] menuWidth) {
         // A ViewGroup MUST be the only child of the HSV
         ViewGroup parent = (ViewGroup) getChildAt(0);
        
@@ -79,7 +77,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 
         // Add a layout listener to this HSV
         // This listener is responsible for arranging the child views.
-        OnGlobalLayoutListener listener = new MyOnGlobalLayoutListener(parent, children, scrollToViewIdx, menuWidth);
+        OnGlobalLayoutListener listener = new MyOnGlobalLayoutListener(parent, children, menuWidth);
         getViewTreeObserver().addOnGlobalLayoutListener(listener);
     }
 
@@ -102,24 +100,19 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
     class MyOnGlobalLayoutListener implements OnGlobalLayoutListener {
         ViewGroup parent;
         View[] children;
-        int scrollToViewIdx;
-        int scrollToViewPos = 0;
-        int menuWidth;
+        int[] menuWidth;
 
         /**
          * @param parent
          *            The parent to which the child Views should be added.
          * @param children
          *            The child Views to add to parent.
-         * @param scrollToViewIdx
-         *            The index of the View to scroll to after initialisation.
          * @param menuWidth
          *            A para to set menu view width.
          */
-        public MyOnGlobalLayoutListener(ViewGroup parent, View[] children, int scrollToViewIdx, int menuWidth) {
+        public MyOnGlobalLayoutListener(ViewGroup parent, View[] children, int[] menuWidth) {
             this.parent = parent;
             this.children = children;
-            this.scrollToViewIdx = scrollToViewIdx;
             this.menuWidth = menuWidth;
         }
 
@@ -136,11 +129,9 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             final int h = me.getMeasuredHeight();
 
             // Add each view in turn, and apply the specified width and height.
-            scrollToViewPos = menuWidth;
             for (int i = 0; i < children.length; i++) {
                 children[i].setVisibility(View.VISIBLE);
-                if (i == 1) parent.addView(children[i], w, h);
-                else parent.addView(children[i], menuWidth, h);
+                parent.addView(children[i], menuWidth[i], h);
             }
 
             // For some reason we need to post this action, rather than call immediately.
@@ -148,7 +139,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-                    me.scrollBy(scrollToViewPos, 0);
+                    me.scrollBy(0, 0);
                 }
             });
         }

@@ -300,8 +300,8 @@ public class SimpleBrowser extends Activity {
 
 	// browser related
 	MyHorizontalScrollView scrollView;
-	boolean menuOut = false;
-	int menuWidth = 180;
+	boolean menuOut = false, bookmarkOut = false;
+	int[] menuWidth;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -310,7 +310,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
 	MyViewFlipper webpages;
-	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
+	ImageView imgNext, imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark;
 	WebAdapter webAdapter;
 	LinearLayout webTools;
 	LinearLayout webControl, urlLine;
@@ -1800,11 +1800,11 @@ public class SimpleBrowser extends Activity {
 			else if (displayMode == 3) hideUrl();
 			else if (menuOut) {
 				menuOut = false;
-				scrollView.smoothScrollTo(menuWidth, 0);
+				scrollView.smoothScrollTo(menuWidth[0], 0);
 			}
 			else {
 				menuOut = true;
-				scrollView.smoothScrollTo(menuWidth+240, 0);
+				scrollView.smoothScrollTo(menuWidth[0]+menuWidth[2], 0);
 			}
 		}
 
@@ -2340,10 +2340,8 @@ public class SimpleBrowser extends Activity {
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
         final View[] children = new View[] { bookmarks, app, menuView };
 
-		menuWidth = dm.widthPixels * 3 / 4;
-        // Scroll to app (view[1]) when layout finished.
-        int scrollToViewIdx = 1;
-        scrollView.initViews(children, scrollToViewIdx, menuWidth);
+        menuWidth = new int[] {dm.widthPixels * 3 / 4, dm.widthPixels, 120};
+        scrollView.initViews(children, menuWidth);
 
 		initWebControl();
 
@@ -2564,12 +2562,25 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
-		imgHome = (ImageView) findViewById(R.id.menu);
-		imgHome.setOnClickListener(new OnClickListener() {
+		imgMenu = (ImageView) findViewById(R.id.menu);
+		imgMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if ((m_homepage != null) && (!"".equals(m_homepage))) serverWebs.get(webIndex).loadUrl(m_homepage);
-				else loadPage();
+				onMenuOpened(0, null);
+			}
+		});
+		imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
+		imgBookmark.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (bookmarkOut) {
+					bookmarkOut = false;
+					scrollView.smoothScrollTo(0, 0);
+				}
+				else {
+					bookmarkOut = true;
+					scrollView.smoothScrollTo(menuWidth[0], 0);
+				}
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);

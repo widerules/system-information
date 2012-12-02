@@ -2340,7 +2340,9 @@ public class SimpleBrowser extends Activity {
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
         final View[] children = new View[] { bookmarks, app, menuView };
 
-        menuWidth = new int[] {dm.widthPixels * 3 / 4, dm.widthPixels, 120};
+        int bookmarkWidth = dm.widthPixels * 3 / 4;
+        if (bookmarkWidth > 320) bookmarkWidth = 320;
+        menuWidth = new int[] {bookmarkWidth, dm.widthPixels, 120};
         scrollView.initViews(children, menuWidth);
 
 		initWebControl();

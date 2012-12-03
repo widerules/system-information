@@ -2340,9 +2340,6 @@ public class SimpleBrowser extends Activity {
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
         final View[] children = new View[] { bookmarks, browserView, menuView };
 
-        int bookmarkWidth = dm.widthPixels * 3 / 4;
-        if (bookmarkWidth > 320) bookmarkWidth = 320;
-        menuWidth = new int[] {bookmarkWidth, dm.widthPixels, 120};
         scrollView.initViews(children);
 
 		initWebControl();
@@ -3203,9 +3200,9 @@ public class SimpleBrowser extends Activity {
 
 		width_density = dm.widthPixels / dm.density;
 		
-        menuWidth[0] = dm.widthPixels * 3 / 4;
-        if (menuWidth[0] > 320) menuWidth[0] = 320;
-        menuWidth[1] = dm.widthPixels;
+        int bookmarkWidth = dm.widthPixels * 3 / 4;
+        if (bookmarkWidth > 320) bookmarkWidth = 320;
+        menuWidth = new int[] {bookmarkWidth, dm.widthPixels, 120};
         
         int clientHeight = dm.heightPixels;
         if (displayMode != 2) {//not full screen mode
@@ -3213,9 +3210,10 @@ public class SimpleBrowser extends Activity {
             Window window= getWindow();
             window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
             int statusbarHeight= rectgle.top;
+            if (statusbarHeight == 0) statusbarHeight = 25;
             clientHeight -= statusbarHeight;
         }
-        
+
         scrollView.setLayout(clientHeight, menuWidth);
 
 		if (!clicked) createAd();

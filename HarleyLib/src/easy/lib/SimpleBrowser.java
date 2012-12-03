@@ -294,7 +294,7 @@ public class SimpleBrowser extends Activity {
 
 	// menu
 	ListView menuGrid = null;
-	View menuView;
+	View menuView, browserView;
 	int historyIndex = -1;
 	AlertDialog downloadsDialog = null;
 
@@ -2281,9 +2281,9 @@ public class SimpleBrowser extends Activity {
 	
 	public void initWebControl() {
 		// web control
-		webControl = (LinearLayout) findViewById(R.id.webcontrol);
+		webControl = (LinearLayout) browserView.findViewById(R.id.webcontrol);
 
-		btnNewpage = (Button) findViewById(R.id.opennewpage);
+		btnNewpage = (Button) browserView.findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
@@ -2292,7 +2292,7 @@ public class SimpleBrowser extends Activity {
 		});
 		// web list
 		webAdapter = new WebAdapter(mContext, serverWebs);
-		webList = (ListView) findViewById(R.id.weblist);
+		webList = (ListView) browserView.findViewById(R.id.weblist);
 		webList.inflate(mContext, R.layout.web_list, null);
 		webList.setFadingEdgeLength(0);// no shadow when scroll
 		webList.setScrollingCacheEnabled(false);
@@ -2330,26 +2330,25 @@ public class SimpleBrowser extends Activity {
 		dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
-		setContentView(R.layout.browser);
         LayoutInflater inflater = LayoutInflater.from(this);
         
         scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
         setContentView(scrollView);
         View bookmarks = inflater.inflate(R.layout.bookmarks, null);
-        View app = inflater.inflate(R.layout.browser, null);
+        browserView = inflater.inflate(R.layout.browser, null);
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
-        final View[] children = new View[] { bookmarks, app, menuView };
+        final View[] children = new View[] { bookmarks, browserView, menuView };
 
         int bookmarkWidth = dm.widthPixels * 3 / 4;
         if (bookmarkWidth > 320) bookmarkWidth = 320;
         menuWidth = new int[] {bookmarkWidth, dm.widthPixels, 120};
-        scrollView.initViews(children, menuWidth);
+        scrollView.initViews(children);
 
 		initWebControl();
 
-		loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
+		loadProgress = (ProgressBar) browserView.findViewById(R.id.loadprogress);
 
-		imgAddFavo = (ImageView) findViewById(R.id.addfavorite);
+		imgAddFavo = (ImageView) browserView.findViewById(R.id.addfavorite);
 		imgAddFavo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2369,7 +2368,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		imgGo = (ImageView) findViewById(R.id.go);
+		imgGo = (ImageView) browserView.findViewById(R.id.go);
 		imgGo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2377,7 +2376,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		webAddress = (AutoCompleteTextView) findViewById(R.id.url);
+		webAddress = (AutoCompleteTextView) browserView.findViewById(R.id.url);
 		webAddress.bringToFront();
 		webAddress.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -2515,11 +2514,11 @@ public class SimpleBrowser extends Activity {
 				getDir("databases", MODE_PRIVATE).getPath());
 		webIndex = 0;
 		serverWebs.add(new MyWebview(mContext));
-		webpages = (MyViewFlipper) findViewById(R.id.webpages);
+		webpages = (MyViewFlipper) browserView.findViewById(R.id.webpages);
 		webpages.addView(serverWebs.get(webIndex));
 
-		webTools = (LinearLayout) findViewById(R.id.webtools);
-		urlLine = (LinearLayout) findViewById(R.id.urlline);
+		webTools = (LinearLayout) browserView.findViewById(R.id.webtools);
+		urlLine = (LinearLayout) browserView.findViewById(R.id.urlline);
 		if (displayMode == 2) {// hide url bar and tools bar
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -2528,7 +2527,7 @@ public class SimpleBrowser extends Activity {
 		}
 		else if (displayMode == 3) hideUrl();
 
-		imgNext = (ImageView) findViewById(R.id.next);
+		imgNext = (ImageView) browserView.findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2537,7 +2536,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
-		imgPrev = (ImageView) findViewById(R.id.prev);
+		imgPrev = (ImageView) browserView.findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2546,7 +2545,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
-		imgRefresh = (ImageView) findViewById(R.id.refresh);
+		imgRefresh = (ImageView) browserView.findViewById(R.id.refresh);
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -2564,14 +2563,14 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
-		imgMenu = (ImageView) findViewById(R.id.menu);
+		imgMenu = (ImageView) browserView.findViewById(R.id.menu);
 		imgMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				onMenuOpened(0, null);
 			}
 		});
-		imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
+		imgBookmark = (ImageView) browserView.findViewById(R.id.bookmark_icon);
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2585,7 +2584,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
-		imgNew = (ImageView) findViewById(R.id.newpage);
+		imgNew = (ImageView) browserView.findViewById(R.id.newpage);
 		imgNew.setImageBitmap(util.generatorCountIcon(
 				util.getResIcon(getResources(), R.drawable.newpage), 1, 2,
 				mContext));
@@ -3202,6 +3201,11 @@ public class SimpleBrowser extends Activity {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
 		width_density = dm.widthPixels / dm.density;
+		
+        menuWidth[0] = dm.widthPixels * 3 / 4;
+        if (menuWidth[0] > 320) menuWidth[0] = 320;
+        menuWidth[1] = dm.widthPixels;
+        scrollView.setLayout(dm.heightPixels, menuWidth);
 
 		if (!clicked) createAd();
 	}

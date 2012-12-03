@@ -24,11 +24,9 @@ package easy.lib;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
 
 /**
@@ -38,6 +36,9 @@ import android.widget.HorizontalScrollView;
  * passed in to the initViews() method.
  */
 public class MyHorizontalScrollView extends HorizontalScrollView {
+	ViewGroup parent;
+	View[] children;
+	
     public MyHorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
@@ -65,22 +66,37 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
      * @param menuWidth
      *            A para to set the view width of menu.
      */
-    public void initViews(View[] children, int[] menuWidth) {
+    public void initViews(View[] children) {
         // A ViewGroup MUST be the only child of the HSV
-        ViewGroup parent = (ViewGroup) getChildAt(0);
+        parent = (ViewGroup) getChildAt(0);
+        this.children = children;
        
         // Add all the children, but add them invisible so that the layouts are calculated, but you can't see the Views
         for (int i = 0; i < children.length; i++) {
             children[i].setVisibility(View.INVISIBLE);
             parent.addView(children[i]);
         }
-
-        // Add a layout listener to this HSV
-        // This listener is responsible for arranging the child views.
-        OnGlobalLayoutListener listener = new MyOnGlobalLayoutListener(parent, children, menuWidth);
-        getViewTreeObserver().addOnGlobalLayoutListener(listener);
     }
 
+    public void setLayout(int h, int[] menuWidth) {
+        parent.removeViewsInLayout(0, children.length);
+
+        // Add each view in turn, and apply the specified width and height.
+        for (int i = 0; i < children.length; i++) {
+            children[i].setVisibility(View.VISIBLE);
+            parent.addView(children[i], menuWidth[i], h);
+        }
+        
+        // For some reason we need to post this action, rather than call immediately.
+        // If we try immediately, it will not scroll.
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+            	MyHorizontalScrollView.this.scrollBy(0, 0);
+            }
+        });
+    }
+    
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Do not allow touch events.
@@ -92,57 +108,4 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         // Do not allow touch events.
         return false;
     }
-
-    /**
-     * An OnGlobalLayoutListener impl that passes on the call to onGlobalLayout to a SizeCallback, before removing all the Views
-     * in the HSV and adding them again with calculated widths and heights.
-     */
-    class MyOnGlobalLayoutListener implements OnGlobalLayoutListener {
-        ViewGroup parent;
-        View[] children;
-        int[] menuWidth;
-
-        /**
-         * @param parent
-         *            The parent to which the child Views should be added.
-         * @param children
-         *            The child Views to add to parent.
-         * @param menuWidth
-         *            A para to set menu view width.
-         */
-        public MyOnGlobalLayoutListener(ViewGroup parent, View[] children, int[] menuWidth) {
-            this.parent = parent;
-            this.children = children;
-            this.menuWidth = menuWidth;
-        }
-
-        @Override
-        public void onGlobalLayout() {
-            final HorizontalScrollView me = MyHorizontalScrollView.this;
-
-            // The listener will remove itself as a layout listener to the HSV
-            me.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
-            parent.removeViewsInLayout(0, children.length);
-
-            final int w = me.getMeasuredWidth();
-            final int h = me.getMeasuredHeight();
-
-            // Add each view in turn, and apply the specified width and height.
-            for (int i = 0; i < children.length; i++) {
-                children[i].setVisibility(View.VISIBLE);
-                parent.addView(children[i], menuWidth[i], h);
-            }
-
-            // For some reason we need to post this action, rather than call immediately.
-            // If we try immediately, it will not scroll.
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    me.scrollBy(0, 0);
-                }
-            });
-        }
-    }
-
 }

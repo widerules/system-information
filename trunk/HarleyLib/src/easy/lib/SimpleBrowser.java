@@ -54,6 +54,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Picture;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -3205,7 +3206,17 @@ public class SimpleBrowser extends Activity {
         menuWidth[0] = dm.widthPixels * 3 / 4;
         if (menuWidth[0] > 320) menuWidth[0] = 320;
         menuWidth[1] = dm.widthPixels;
-        scrollView.setLayout(dm.heightPixels, menuWidth);
+        
+        int clientHeight = dm.heightPixels;
+        if (displayMode != 2) {//not full screen mode
+            Rect rectgle= new Rect();
+            Window window= getWindow();
+            window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
+            int statusbarHeight= rectgle.top;
+            clientHeight -= statusbarHeight;
+        }
+        
+        scrollView.setLayout(clientHeight, menuWidth);
 
 		if (!clicked) createAd();
 	}

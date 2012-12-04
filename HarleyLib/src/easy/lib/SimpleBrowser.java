@@ -310,7 +310,7 @@ public class SimpleBrowser extends Activity {
 	ArrayAdapter<String> urlAdapter;
 	ArrayList<String> siteArray;
 
-	MyListAdapter bookmarkAdapter;
+	MyListAdapter bookmarkAdapter, historyAdapter, topAdapter;
 	
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
@@ -978,13 +978,13 @@ public class SimpleBrowser extends Activity {
 				convertView = inflater
 						.inflate(R.layout.web_list, parent, false);
 			}
-			convertView.setBackgroundColor(0xff000000);
+			convertView.setBackgroundColor(0xff333333);
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
-			/*try {
-				btnIcon.setImageBitmap(wv.getFavicon());
+			try {
+				btnIcon.setImageURI(Uri.parse("file://" + getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png"));
 			} catch (Exception e) {
-			}// catch an null pointer exception on 1.6}*/
+			}// catch an null pointer exception on 1.6}
 
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
 			webname.setText(wv.m_title);
@@ -995,8 +995,8 @@ public class SimpleBrowser extends Activity {
 				}
 			});
 
-			ImageView btnStop = (ImageView) convertView
-					.findViewById(R.id.webclose);
+			ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
+			btnStop.setVisibility(View.INVISIBLE);//hide at beginning
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -2351,6 +2351,13 @@ public class SimpleBrowser extends Activity {
 		bookmarkList.setFadingEdgeLength(0);// no shadow when scroll
 		bookmarkList.setScrollingCacheEnabled(false);
 		bookmarkList.setAdapter(bookmarkAdapter);
+		
+		historyAdapter = new MyListAdapter(mContext, mHistory);
+		ListView historyList = (ListView) bookmarkView.findViewById(R.id.history);
+		historyList.inflate(mContext, R.layout.web_list, null);
+		historyList.setFadingEdgeLength(0);// no shadow when scroll
+		historyList.setScrollingCacheEnabled(false);
+		historyList.setAdapter(historyAdapter);
 	}
 	
 	@Override

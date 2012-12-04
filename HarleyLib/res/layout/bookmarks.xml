@@ -17,21 +17,21 @@
     <ListView
         android:id="@+id/toplist"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:stretchMode="columnWidth" />
 
     <ListView
         android:id="@+id/bookmark"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:stretchMode="columnWidth" />
     
     <ListView
         android:id="@+id/history"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:stretchMode="columnWidth" />
 </LinearLayout>

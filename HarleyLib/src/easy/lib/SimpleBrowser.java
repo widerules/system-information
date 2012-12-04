@@ -310,6 +310,8 @@ public class SimpleBrowser extends Activity {
 	ArrayAdapter<String> urlAdapter;
 	ArrayList<String> siteArray;
 
+	MyListAdapter bookmarkAdapter;
+	
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
 	MyViewFlipper webpages;
@@ -958,6 +960,53 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	private class MyListAdapter extends ArrayAdapter<TitleUrl> {
+		ArrayList localList;
+
+		public MyListAdapter(Context context, List<TitleUrl> titles) {
+			super(context, 0, titles);
+			localList = (ArrayList) titles;
+		}
+
+		@Override
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
+			final TitleUrl wv = (TitleUrl) localList.get(position);
+
+			if (convertView == null) {
+				final LayoutInflater inflater = getLayoutInflater();
+				convertView = inflater
+						.inflate(R.layout.web_list, parent, false);
+			}
+			convertView.setBackgroundColor(0xff000000);
+
+			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
+			/*try {
+				btnIcon.setImageBitmap(wv.getFavicon());
+			} catch (Exception e) {
+			}// catch an null pointer exception on 1.6}*/
+
+			TextView webname = (TextView) convertView.findViewById(R.id.webname);
+			webname.setText(wv.m_title);
+
+			webname.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+				}
+			});
+
+			ImageView btnStop = (ImageView) convertView
+					.findViewById(R.id.webclose);
+			btnStop.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+				}
+			});
+
+			return convertView;
+		}
+	}
+	
 	void recordPages() {
 		try {// write opened url to /data/data/easy.browser/files/pages
 			FileOutputStream fo = openFileOutput("pages", 0);
@@ -2295,6 +2344,15 @@ public class SimpleBrowser extends Activity {
 		webList.setAdapter(webAdapter);
 	}
 	
+	public void initBookmarks() {
+		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
+		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);
+		bookmarkList.inflate(mContext, R.layout.web_list, null);
+		bookmarkList.setFadingEdgeLength(0);// no shadow when scroll
+		bookmarkList.setScrollingCacheEnabled(false);
+		bookmarkList.setAdapter(bookmarkAdapter);
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -2570,6 +2628,7 @@ public class SimpleBrowser extends Activity {
 				}
 				else {
 					bookmarkOut = true;
+					if (bookmarkAdapter == null) initBookmarks();
 					scrollView.smoothScrollTo(menuWidth[0], 0);
 				}
 			}

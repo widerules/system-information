@@ -80,6 +80,8 @@ import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -3172,9 +3174,21 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig); 
-		// not restart activity each time screen orientation changes
-		setLayout();
+		super.onConfigurationChanged(newConfig);
+		
+	    ViewTreeObserver observer = scrollView.getViewTreeObserver();
+	    observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+
+	        @Override
+	        public void onGlobalLayout() {
+	            Log.v("================",
+	                    String.format("new width=%d; new height=%d", 
+	                    		scrollView.getWidth(),
+	                    		scrollView.getHeight()));
+	            setLayout();
+	            scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+	        }
+	    });
 	}
 
 	void setLayout() {
@@ -3186,17 +3200,7 @@ public class SimpleBrowser extends Activity {
         if (bookmarkWidth > 320) bookmarkWidth = 320;
         menuWidth = new int[] {bookmarkWidth, dm.widthPixels, 120};
         
-        int clientHeight = dm.heightPixels;
-        if (displayMode != 2) {//not full screen mode
-            Rect rectgle= new Rect();
-            Window window= getWindow();
-            window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
-            int statusbarHeight= rectgle.top;
-            if (statusbarHeight == 0) statusbarHeight = 25;
-            clientHeight -= statusbarHeight;
-        }
-
-        scrollView.setLayout(clientHeight, menuWidth);
+        scrollView.setLayout(menuWidth);
 	}
 
 	void createAd() {

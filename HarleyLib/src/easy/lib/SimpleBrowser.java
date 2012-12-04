@@ -372,8 +372,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 	wrapAdView adview;
-	DisplayMetrics dm;
-	float width_density;
 
 	// download related
 	String downloadPath = "";
@@ -2323,9 +2321,6 @@ public class SimpleBrowser extends Activity {
 		// hide titlebar of application, must be before setting the layout
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
-		dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		
         LayoutInflater inflater = LayoutInflater.from(this);
         
         scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
@@ -3176,31 +3171,26 @@ public class SimpleBrowser extends Activity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		
+		setLayout();
+	}
+
+	void setLayout() {
 	    ViewTreeObserver observer = scrollView.getViewTreeObserver();
 	    observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
 	        @Override
 	        public void onGlobalLayout() {
-	            Log.v("================",
-	                    String.format("new width=%d; new height=%d", 
-	                    		scrollView.getWidth(),
-	                    		scrollView.getHeight()));
-	            setLayout();
 	            scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+	            int w = scrollView.getWidth();
+	            int h = scrollView.getHeight();
+	            
+	            int bookmarkWidth = w * 3 / 4;
+	            if (bookmarkWidth > 320) bookmarkWidth = 320;
+	            menuWidth = new int[] {bookmarkWidth, w, 120};
+	            
+	            scrollView.setLayout(h, menuWidth);
 	        }
 	    });
-	}
-
-	void setLayout() {
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-		width_density = dm.widthPixels / dm.density;
-		
-        int bookmarkWidth = dm.widthPixels * 3 / 4;
-        if (bookmarkWidth > 320) bookmarkWidth = 320;
-        menuWidth = new int[] {bookmarkWidth, dm.widthPixels, 120};
-        
-        scrollView.setLayout(menuWidth);
 	}
 
 	void createAd() {

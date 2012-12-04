@@ -24,11 +24,9 @@ package easy.lib;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
 
 /**
@@ -80,24 +78,12 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
             children[i].setVisibility(View.INVISIBLE);
             parent.addView(children[i]);
         }
-
-        // Add a layout listener to this HSV
-        // This listener is responsible for arranging the child views.
-        OnGlobalLayoutListener listener = new MyOnGlobalLayoutListener();
-        getViewTreeObserver().addOnGlobalLayoutListener(listener);
     }
 
-    public void setHeight(int h) {
-    	this.height = h;
-    	if (menuWidth != null) setLayout(menuWidth);
-    }
-    
-    public void setLayout(int[] menuWidth) {
+    public void setLayout(int h, int[] menuWidth) {
     	this.menuWidth = menuWidth;
     	
         parent.removeViewsInLayout(0, children.length);
-        int h = parent.getMeasuredHeight();
-    	Log.d("=================", h+"");
 
         // Add each view in turn, and apply the specified width and height.
         for (int i = 0; i < children.length; i++) {
@@ -120,28 +106,4 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         // Do not allow touch events.
         return false;
     }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Do not allow touch events.
-        return false;
-    }
-
-    /**
-     * An OnGlobalLayoutListener impl that passes on the call to onGlobalLayout to a SizeCallback, before removing all the Views
-     * in the HSV and adding them again with calculated widths and heights.
-     */
-    class MyOnGlobalLayoutListener implements OnGlobalLayoutListener {
-        @Override
-        public void onGlobalLayout() {
-            final HorizontalScrollView me = MyHorizontalScrollView.this;
-
-            // The listener will remove itself as a layout listener to the HSV. otherwise it will be invoked very frequently
-            me.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-
-            final int h = me.getMeasuredHeight();
-            setHeight(h);
-        }
-    }
-
 }

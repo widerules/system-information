@@ -22,7 +22,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:textColor="#FF333333"
+        android:textColor="#FFFFFFFF"
         android:textSize="12dip" />
 
 </LinearLayout>

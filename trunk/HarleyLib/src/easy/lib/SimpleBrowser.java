@@ -295,7 +295,7 @@ public class SimpleBrowser extends Activity {
 
 	// menu
 	GridView menuGrid = null;
-	View menuView, browserView;
+	View menuView, browserView, bookmarkView;
 	int historyIndex = -1;
 	AlertDialog downloadsDialog = null;
 
@@ -371,12 +371,6 @@ public class SimpleBrowser extends Activity {
 	}
 	wrapAdView adview;
 	DisplayMetrics dm;
-	FrameLayout adContainer;
-	AppHandler mAppHandler = new AppHandler();
-	boolean clicked = false;
-	boolean gotoSettings = false;// will set to true if open settings activity,
-									// and set to false again after exit
-									// settings. not remove ad is goto settings
 	float width_density;
 
 	// download related
@@ -2137,7 +2131,6 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 3:// settings
-					gotoSettings = true;
 					Intent intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(),
 							"easy.lib.AboutBrowser");
@@ -2335,10 +2328,10 @@ public class SimpleBrowser extends Activity {
         
         scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
         setContentView(scrollView);
-        View bookmarks = inflater.inflate(R.layout.bookmarks, null);
+        bookmarkView = inflater.inflate(R.layout.bookmarks, null);
         browserView = inflater.inflate(R.layout.browser, null);
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
-        final View[] children = new View[] { bookmarks, browserView, menuView };
+        final View[] children = new View[] { bookmarkView, browserView, menuView };
 
         scrollView.initViews(children);
 
@@ -2599,7 +2592,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		adContainer = (FrameLayout) bookmarks.findViewById(R.id.adContainer);
+		createAd();
 		setLayout();
 
 		try {// there are a null pointer error reported for the if line below,
@@ -3166,20 +3159,9 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		if (gotoSettings) gotoSettings = false;
-		else if (!clicked) createAd();
-
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
 		} catch (Exception e) {}
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-
-		if (!gotoSettings) // will force close if removeAd in onResume. if transfer from activity A to activity B, then A.onPause()->B.onResume()->A.onStop()
-			removeAd();// ad will occupy cpu and data quota even in background
 	}
 
 	@Override
@@ -3215,16 +3197,6 @@ public class SimpleBrowser extends Activity {
         }
 
         scrollView.setLayout(clientHeight, menuWidth);
-
-		if (!clicked) createAd();
-	}
-
-	void removeAd() {
-		if (adview != null) {
-			adContainer.removeViewAt(0);
-			adview.destroy();
-			adview = null;
-		}
 	}
 
 	void createAd() {
@@ -3233,26 +3205,18 @@ public class SimpleBrowser extends Activity {
 		// ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
 		// adContainer.addView(adView);
 
+		if (adview != null) return;// only create ad for one time.
+		
 		if (mAdAvailable) {
-			removeAd();
 
 			if ((cm == null) || (cm.getActiveNetworkInfo() == null)
 					|| !cm.getActiveNetworkInfo().isConnected())
 				return;// not create ad if network error
 
-			adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);// AdSize.BANNER require 320*50
+			adview = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
+				FrameLayout adContainer = (FrameLayout) bookmarkView.findViewById(R.id.adContainer);
 				adContainer.addView(adview.getInstance());
-			}
-		}
-	}
-
-	class AppHandler extends Handler {
-
-		public void handleMessage(Message msg) {
-			if (msg.what > 0) {
-				clicked = true;
-				removeAd();
 			}
 		}
 	}

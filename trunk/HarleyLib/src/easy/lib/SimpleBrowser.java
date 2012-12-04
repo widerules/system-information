@@ -294,7 +294,7 @@ public class SimpleBrowser extends Activity {
 	EditText titleText;
 
 	// menu
-	ListView menuGrid = null;
+	GridView menuGrid = null;
 	View menuView, browserView;
 	int historyIndex = -1;
 	AlertDialog downloadsDialog = null;
@@ -2051,7 +2051,7 @@ public class SimpleBrowser extends Activity {
 				getString(R.string.exit) };
 
 		final Context localContext = this;
-		menuGrid = (ListView) menuView.findViewById(R.id.gridview);
+		menuGrid = (GridView) menuView.findViewById(R.id.gridview);
 		menuGrid.setFadingEdgeLength(0);
 		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
 		menuGrid.setOnItemClickListener(new OnItemClickListener() {

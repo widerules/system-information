@@ -1155,6 +1155,7 @@ public class SimpleBrowser extends Activity {
 							WindowManager.LayoutParams.FLAG_FULLSCREEN);
 					showBars();
 				}
+				setLayout();
 			}
 			
 			tmpMode = sp.getInt("rotate_mode", 1);
@@ -1163,7 +1164,6 @@ public class SimpleBrowser extends Activity {
 				if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 				else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 				else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-				setLayout();
 			}
 
 			// default to full screen now
@@ -1790,10 +1790,12 @@ public class SimpleBrowser extends Activity {
 			else if (displayMode == 3) showUrl();
 		}
 		else {
-			if (menuGrid == null) initMenuDialog();
 			if (displayMode == 2) hideBars();
 			else if (displayMode == 3) hideUrl();
-			else if (menuOut) {
+			
+			if (menuGrid == null) initMenuDialog();
+			
+			if (menuOut) {
 				menuOut = false;
 				scrollView.smoothScrollTo(menuWidth[0], 0);
 			}

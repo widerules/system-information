@@ -38,8 +38,6 @@ import android.widget.HorizontalScrollView;
 public class MyHorizontalScrollView extends HorizontalScrollView {
 	ViewGroup parent;
 	View[] children;
-	int[] menuWidth;
-	public int height;
 	
     public MyHorizontalScrollView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -81,8 +79,6 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
     }
 
     public void setLayout(int h, int[] menuWidth) {
-    	this.menuWidth = menuWidth;
-    	
         parent.removeViewsInLayout(0, children.length);
 
         // Add each view in turn, and apply the specified width and height.

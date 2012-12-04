@@ -992,6 +992,8 @@ public class SimpleBrowser extends Activity {
 			webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					serverWebs.get(webIndex).loadUrl(wv.m_url);
+					imgBookmark.performClick();
 				}
 			});
 

@@ -303,7 +303,7 @@ public class SimpleBrowser extends Activity {
 
 	// browser related
 	MyHorizontalScrollView scrollView;
-	boolean menuOut = false, bookmarkOut = false;
+	int scrollState = 1;
 	int[] menuWidth;
 	
 	AutoCompleteTextView webAddress;
@@ -489,6 +489,11 @@ public class SimpleBrowser extends Activity {
 														// code here
 			// close webcontrol page if it is open.
 			webControl.setVisibility(View.INVISIBLE);
+			
+			if (scrollState != 1) {
+				scrollState = 1;
+				scrollView.smoothScrollTo(menuWidth[0], 0);
+			}
 
 			if (urlLine.getLayoutParams().height != 0) {
 				if (displayMode == 2) hideBars();
@@ -1842,17 +1847,16 @@ public class SimpleBrowser extends Activity {
 		}
 		else {
 			if (displayMode == 2) hideBars();
-			else if (displayMode == 3) hideUrl();
+			else if (displayMode == 3) hideUrl();			
 			
-			if (menuGrid == null) initMenuDialog();
-			
-			if (menuOut) {
-				menuOut = false;
+			if (scrollState == 2) {
+				scrollState = 1;
 				scrollView.smoothScrollTo(menuWidth[0], 0);
 			}
 			else {
-				menuOut = true;
-				scrollView.smoothScrollTo(menuWidth[0]+menuWidth[2], 0);
+				scrollState = 2;
+				if (menuGrid == null) initMenuDialog();
+				scrollView.smoothScrollTo(menuWidth[0] + menuWidth[scrollState], 0);
 			}
 		}
 
@@ -2631,14 +2635,14 @@ public class SimpleBrowser extends Activity {
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (bookmarkOut) {
-					bookmarkOut = false;
-					scrollView.smoothScrollTo(0, 0);
+				if (scrollState == 0) {
+					scrollState = 1;
+					scrollView.smoothScrollTo(menuWidth[0], 0);
 				}
 				else {
-					bookmarkOut = true;
+					scrollState = 0;
 					if (bookmarkAdapter == null) initBookmarks();
-					scrollView.smoothScrollTo(menuWidth[0], 0);
+					scrollView.smoothScrollTo(0, 0);
 				}
 			}
 		});

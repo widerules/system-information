@@ -1856,7 +1856,7 @@ public class SimpleBrowser extends Activity {
 			else {
 				scrollState = 2;
 				if (menuGrid == null) initMenuDialog();
-				scrollView.smoothScrollTo(menuWidth[0] + menuWidth[scrollState], 0);
+				scrollView.smoothScrollTo(menuWidth[0] + menuWidth[2], 0);
 			}
 		}
 
@@ -3262,7 +3262,7 @@ public class SimpleBrowser extends Activity {
 	            if (bookmarkWidth > 320) bookmarkWidth = 320;
 	            menuWidth = new int[] {bookmarkWidth, w, 120};
 	            
-	            scrollView.setLayout(h, menuWidth);
+	            scrollView.setLayout(h, menuWidth, scrollState);
 	        }
 	    });
 	}

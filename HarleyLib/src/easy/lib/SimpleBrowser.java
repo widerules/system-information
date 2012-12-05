@@ -297,7 +297,8 @@ public class SimpleBrowser extends Activity {
 
 	// menu
 	GridView menuGrid = null;
-	View menuView, browserView, bookmarkView;
+	View menuView, bookmarkView;
+	FrameLayout browserView;
 	int historyIndex = -1;
 	AlertDialog downloadsDialog = null;
 
@@ -490,10 +491,12 @@ public class SimpleBrowser extends Activity {
 			// close webcontrol page if it is open.
 			webControl.setVisibility(View.INVISIBLE);
 			
-			if (scrollState != 1) {
+			if (scrollState != 1) {//scroll to browser view
 				scrollState = 1;
 				scrollView.smoothScrollTo(menuWidth[0], 0);
+				browserView.getForeground().setAlpha(0);//restore from blur
 			}
+
 
 			if (urlLine.getLayoutParams().height != 0) {
 				if (displayMode == 2) hideBars();
@@ -1852,11 +1855,14 @@ public class SimpleBrowser extends Activity {
 			if (scrollState == 2) {
 				scrollState = 1;
 				scrollView.smoothScrollTo(menuWidth[0], 0);
+				browserView.getForeground().setAlpha(0);//restore
+
 			}
 			else {
 				scrollState = 2;
 				if (menuGrid == null) initMenuDialog();
 				scrollView.smoothScrollTo(menuWidth[0] + menuWidth[2], 0);
+				browserView.getForeground().setAlpha(120);//blur
 			}
 		}
 
@@ -2399,7 +2405,8 @@ public class SimpleBrowser extends Activity {
         scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
         setContentView(scrollView);
         bookmarkView = inflater.inflate(R.layout.bookmarks, null);
-        browserView = inflater.inflate(R.layout.browser, null);
+        browserView = (FrameLayout) inflater.inflate(R.layout.browser, null);
+        browserView.getForeground().setAlpha(0);
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
         final View[] children = new View[] { bookmarkView, browserView, menuView };
 
@@ -2638,11 +2645,13 @@ public class SimpleBrowser extends Activity {
 				if (scrollState == 0) {
 					scrollState = 1;
 					scrollView.smoothScrollTo(menuWidth[0], 0);
+					browserView.getForeground().setAlpha(0);//restore
 				}
 				else {
 					scrollState = 0;
 					if (bookmarkAdapter == null) initBookmarks();
 					scrollView.smoothScrollTo(0, 0);
+					browserView.getForeground().setAlpha(120);//blur
 				}
 			}
 		});

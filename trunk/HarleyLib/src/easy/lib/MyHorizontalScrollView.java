@@ -78,7 +78,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         }
     }
 
-    public void setLayout(int h, int[] menuWidth) {
+    public void setLayout(int h, final int[] menuWidth, final int index) {
         parent.removeViewsInLayout(0, children.length);
 
         // Add each view in turn, and apply the specified width and height.
@@ -92,7 +92,11 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-            	MyHorizontalScrollView.this.scrollBy(0, 0);
+            	int x;
+            	if (index == 0) x = 0;
+            	else if (index == 1) x = menuWidth[0];
+            	else x = menuWidth[0] + menuWidth[2];
+            	MyHorizontalScrollView.this.smoothScrollTo(x, 0);
             }
         });
     }

@@ -102,4 +102,10 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
         // Do not allow touch events.
         return false;
     }
+    
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // Do not allow touch events.
+        return false;
+    }
 }

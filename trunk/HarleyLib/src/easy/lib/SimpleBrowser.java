@@ -2359,6 +2359,13 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void initBookmarks() {
+		topAdapter = new MyListAdapter(mContext, mTop);
+		ListView topkList = (ListView) bookmarkView.findViewById(R.id.toplist);
+		topkList.inflate(mContext, R.layout.web_list, null);
+		topkList.setFadingEdgeLength(0);// no shadow when scroll
+		topkList.setScrollingCacheEnabled(false);
+		topkList.setAdapter(topAdapter);
+		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
 		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);
 		bookmarkList.inflate(mContext, R.layout.web_list, null);
@@ -3307,8 +3314,19 @@ public class SimpleBrowser extends Activity {
 	String getTopList(String splitter) {
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
+		TitleUrl titleUrl;
+
 		StringBuilder sb = new StringBuilder("");	
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
+			titleUrl = new TitleUrl("新浪微博", "http://weibo.com", "weibo.com");
+			mTop.add(titleUrl);
+			titleUrl = new TitleUrl("好123", "http://m.hao123.com/?type=android&tn=easy.browser", "m.hao123.com");
+			mTop.add(titleUrl);
+			titleUrl = new TitleUrl("百度", "http://www.baidu.com", "www.baidu.com");
+			mTop.add(titleUrl);
+			titleUrl = new TitleUrl("书朋小说网", "http://easybrowser.shupeng.com", "easybrowser.shupeng.com");
+			mTop.add(titleUrl);
+
 			sb.append(fileDir);
 			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>");
 			sb.append(splitter);
@@ -3334,6 +3352,13 @@ public class SimpleBrowser extends Activity {
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href='http://bpc.borqs.com'>梧桐</a></li>");
 		} else {
+			titleUrl = new TitleUrl("Facebook", "http://www.facebook.com", "www.facebook.com");
+			mTop.add(titleUrl);
+			titleUrl = new TitleUrl("Google", "http://www.google.com", "www.google.com");
+			mTop.add(titleUrl);
+			titleUrl = new TitleUrl("Twitter", "http://twitter.com", "twitter.com");
+			mTop.add(titleUrl);
+
 			// sb.append(fileDir);
 			// sb.append("www.amazon.com.png)'><a href='http://www.amazon.com'>Amazon</a></li>");
 			// sb.append(fileDir);
@@ -3356,10 +3381,16 @@ public class SimpleBrowser extends Activity {
 		}
 		// additional top list for some locale
 		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {
+			titleUrl = new TitleUrl("Yahoo!JAPAN", "http://www.yahoo.co.jp", "www.yahoo.co.jp");
+			mTop.add(titleUrl);
+
 			sb.append(fileDir);
 			sb.append("m.yahoo.co.jp.png)'><a href='http://www.yahoo.co.jp'>Yahoo!JAPAN</a></li>");
 			sb.append(splitter);
 		} else if ("ru_RU".equals(mLocale.toString())) {
+			titleUrl = new TitleUrl("Яндекс", "http://www.yandex.ru/?clid=1911433", "www.yandex.ru");
+			mTop.add(titleUrl);
+
 			sb.append(fileDir);
 			sb.append("www.yandex.ru.png)'><a href='http://www.yandex.ru/?clid=1911433'>Яндекс</a></li>");
 			sb.append(splitter);

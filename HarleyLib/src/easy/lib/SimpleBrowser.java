@@ -306,6 +306,7 @@ public class SimpleBrowser extends Activity {
 	MyHorizontalScrollView scrollView;
 	int scrollState = 1;
 	int[] menuWidth;
+	DisplayMetrics dm;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -2672,6 +2673,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
+		dm = new DisplayMetrics();
 		createAd();
 		setLayout();
 
@@ -3267,9 +3269,12 @@ public class SimpleBrowser extends Activity {
 	            int w = scrollView.getWidth();
 	            int h = scrollView.getHeight();
 	            
+	            getWindowManager().getDefaultDisplay().getMetrics(dm);
+	            
 	            int bookmarkWidth = w * 3 / 4;
-	            if (bookmarkWidth > 320) bookmarkWidth = 320;
-	            menuWidth = new int[] {bookmarkWidth, w, 120};
+	            int minWidth = (int) (320 * dm.density);
+	            if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
+	            menuWidth = new int[] {bookmarkWidth, w, (int) (120*dm.density)};
 	            
 	            scrollView.setLayout(h, menuWidth, scrollState);
 	        }
@@ -3290,7 +3295,7 @@ public class SimpleBrowser extends Activity {
 					|| !cm.getActiveNetworkInfo().isConnected())
 				return;// not create ad if network error
 
-			adview = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
+			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
 				FrameLayout adContainer = (FrameLayout) bookmarkView.findViewById(R.id.adContainer);
 				adContainer.addView(adview.getInstance());

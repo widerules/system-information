@@ -2360,11 +2360,12 @@ public class SimpleBrowser extends Activity {
 	
 	public void initBookmarks() {
 		topAdapter = new MyListAdapter(mContext, mTop);
-		ListView topkList = (ListView) bookmarkView.findViewById(R.id.toplist);
-		topkList.inflate(mContext, R.layout.web_list, null);
-		topkList.setFadingEdgeLength(0);// no shadow when scroll
-		topkList.setScrollingCacheEnabled(false);
-		topkList.setAdapter(topAdapter);
+		getTopList("");
+		ListView topList = (ListView) bookmarkView.findViewById(R.id.toplist);
+		topList.inflate(mContext, R.layout.web_list, null);
+		topList.setFadingEdgeLength(0);// no shadow when scroll
+		topList.setScrollingCacheEnabled(false);
+		topList.setAdapter(topAdapter);
 		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
 		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);
@@ -3315,6 +3316,7 @@ public class SimpleBrowser extends Activity {
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
 		TitleUrl titleUrl;
+		mTop.clear();
 
 		StringBuilder sb = new StringBuilder("");	
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {

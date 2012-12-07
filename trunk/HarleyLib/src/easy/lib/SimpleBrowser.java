@@ -343,6 +343,7 @@ public class SimpleBrowser extends Activity {
 
 	// bookmark and history
 	AlertDialog m_sourceDialog = null;
+	ArrayList<TitleUrl> mTop = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
@@ -3404,11 +3405,11 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateBookmark() {
-		serverWebs.get(webIndex).loadUrl("javascript:inject(\"2::::" + getBookmark("....") + "\");");// call javascript to inject bookmark
+		bookmarkAdapter.localList = mBookMark;
 	}
 	
 	void updateHistory() {
-		serverWebs.get(webIndex).loadUrl("javascript:inject(\"3::::" + getHistory("....") + "\");");// call javascript to inject bookmark
+		historyAdapter.localList = mHistory;
 	}
 	
 	void updateHomePage() {
@@ -3433,8 +3434,6 @@ public class SimpleBrowser extends Activity {
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + !collapse3 + "\");");
 		
 		serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
-		updateBookmark();
-		updateHistory();
 
 		serverWebs.get(webIndex).loadUrl("javascript:setButton(\"" + getString(R.string.edit_home) + "," + getString(R.string.delete) + "," + getString(R.string.cancel) + "\");");
 		

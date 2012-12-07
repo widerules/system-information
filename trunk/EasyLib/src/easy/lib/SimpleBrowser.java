@@ -3233,7 +3233,7 @@ public class SimpleBrowser extends Activity {
 			// return width = request width * density.
 			else
 				// AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
-				adview = new wrapAdView(this, 2, "a1502880ce4208b", mAppHandler);
+				adview = new wrapAdView(this, 2, "a14f3f6bc126143", mAppHandler);
 
 			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());

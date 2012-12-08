@@ -5,16 +5,6 @@
     android:background="#FF333333"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:id="@+id/adContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:foregroundGravity="center"
-        android:orientation="vertical" >
-    </FrameLayout>
-
     <ListView
         android:id="@+id/history"
         android:layout_width="wrap_content"
@@ -22,12 +12,15 @@
         android:gravity="center"
         android:stretchMode="columnWidth" />
     
-    <TextView
-        android:layout_width="fill_parent"
+    <FrameLayout
+        android:id="@+id/adContainer"
+        android:layout_width="320dip"
         android:layout_height="wrap_content"
-        android:background="#aaaaaaaa"
-        />
-        
+        android:layout_gravity="right"
+        android:foregroundGravity="center"
+        android:orientation="vertical" >
+    </FrameLayout>
+
     <ListView
         android:id="@+id/bookmark"
         android:layout_width="wrap_content"

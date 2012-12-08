@@ -15,33 +15,8 @@
         android:orientation="vertical" >
     </FrameLayout>
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="5dip"
-        android:padding="5dip"
-        android:text="@string/top"
-        android:textColor="#ffffffff"
-        android:textSize="16dip" />    
     <ListView
-        android:id="@+id/toplist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:stretchMode="columnWidth" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="5dip"
-        android:padding="5dip"
-        android:text="@string/bookmark"
-        android:textColor="#ffffffff"
-        android:textSize="16dip" />    
-    <ListView
-        android:id="@+id/bookmark"
+        android:id="@+id/history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -50,14 +25,11 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="5dip"
-        android:padding="5dip"
-        android:text="@string/history"
-        android:textColor="#ffffffff"
-        android:textSize="16dip" />    
+        android:background="#aaaaaaaa"
+        />
+        
     <ListView
-        android:id="@+id/history"
+        android:id="@+id/bookmark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

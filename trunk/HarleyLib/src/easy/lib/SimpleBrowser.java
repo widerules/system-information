@@ -263,7 +263,7 @@ public class SimpleBrowser extends Activity {
 	boolean blockJs = false;
 	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
 	TextSize textSize = TextSize.NORMAL;
-	int historyCount = 16;
+	int historyCount = 3;
 	long sizeM = 1024 * 1024;
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;
@@ -2359,13 +2359,13 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void initBookmarks() {
-		topAdapter = new MyListAdapter(mContext, mTop);
+		/*topAdapter = new MyListAdapter(mContext, mTop);
 		getTopList("");
 		ListView topList = (ListView) bookmarkView.findViewById(R.id.toplist);
 		topList.inflate(mContext, R.layout.web_list, null);
 		topList.setFadingEdgeLength(0);// no shadow when scroll
 		topList.setScrollingCacheEnabled(false);
-		topList.setAdapter(topAdapter);
+		topList.setAdapter(topAdapter);*/
 		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
 		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);

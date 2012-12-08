@@ -64,7 +64,7 @@
             <CheckBox
                 android:id="@+id/incognito_mode"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dip"
                 android:layout_marginLeft="15dip"
                 android:checked="false"
                 android:text="@string/incognito"
@@ -604,7 +604,7 @@
 
                     <CheckBox
                         android:id="@+id/clear_history"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:checked="false"
                         android:text="@string/history"

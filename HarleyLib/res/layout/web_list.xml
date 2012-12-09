@@ -16,7 +16,7 @@
             android:layout_width="28dip"
             android:layout_height="28dip"
             android:layout_marginRight="5dip"
-            android:layout_marginTop="4dip"
+            android:layout_marginTop="6dip"
             android:focusable="false"
             android:gravity="center"
             android:scaleType="centerCrop" />

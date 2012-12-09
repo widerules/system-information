@@ -429,35 +429,6 @@ public class SimpleBrowser extends Activity {
 				//else
 					pageSource = html;// to get page source, part 1
 			}
-
-			@SuppressWarnings("unused")
-			public void saveCollapseState(String item, boolean state) {
-				if ("1".equals(item))
-					collapse1 = state;
-				if ("2".equals(item))
-					collapse2 = state;
-				if ("3".equals(item))
-					collapse3 = state;
-			}
-			
-			@SuppressWarnings("unused")
-			public void deleteItems(String bookmarks, String historys) {
-				if (!"".equals(historys) && !",,,,".equals(historys)) {
-					String[] tmp1 = historys.split(",,,,");
-					for (int i = 0; i < tmp1.length; i++) // the display of history is in revert order, so delete in revert order
-						mHistory.remove(mHistory.size() - 1 + i - (Integer.valueOf(tmp1[i]) - mBookMark.size()));
-					updateHistory();
-					historyChanged = true;
-				}
-				
-				if (!"".equals(bookmarks) && !",,,,".equals(bookmarks)) {
-					String[] tmp2 = bookmarks.split(",,,,");
-					for (int i = tmp2.length-1; i >= 0; i--) 
-						mBookMark.remove(Integer.valueOf(tmp2[i]) + 0);// it will not treat as integer if not add 0
-					updateBookmark();
-					bookmarkChanged = true;
-				}
-			}
 		}
 
 		public void setZoomControl(int visibility) {
@@ -794,6 +765,7 @@ public class SimpleBrowser extends Activity {
 											mHistory.set(mHistory.size()-1, mHistory.get(i));
 									}
 									mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
+									updateHistory();
 									return;
 								} else if (mHistory.get(i).m_site.equals(site)) {
 									mHistory.remove(i);// only keep the latest history of the same site. is that good user experience?
@@ -1153,6 +1125,7 @@ public class SimpleBrowser extends Activity {
 
 				if (clearHistory) {
 					mHistory.clear();
+					updateHistory();
 					writeBookmark("history", mHistory);
 					clearFile("searchwords");
 					siteArray.clear();
@@ -1164,6 +1137,7 @@ public class SimpleBrowser extends Activity {
 
 				if (clearBookmark) {
 					mBookMark.clear();
+					updateBookmark();
 					writeBookmark("bookmark", mBookMark);
 					bookmarkChanged = false;
 					if (HOME_BLANK.equals(webAddress.getText().toString()))
@@ -2956,25 +2930,19 @@ public class SimpleBrowser extends Activity {
 									int which) {
 								String site = "";
 								String[] tmp = url.split("/");
-								if (tmp.length >= 2)
-									site = tmp[2];// if url is
-								// http://m.baidu.com, then
-								// url.split("/")[2] is
-								// m.baidu.com
-								else
-									site = tmp[0];
+								// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+								if (tmp.length >= 2) site = tmp[2];
+								else site = tmp[0];
 
 								String title = titleText.getText().toString();
-								if ("".equals(title))
-									title += (char) 0xa0;// add a blank
-								// character to
-								// occupy the space
-								TitleUrl titleUrl = new TitleUrl(title, url,
-										site);
+								// add a blank character to occupy the space
+								if ("".equals(title)) title += (char) 0xa0;
+								TitleUrl titleUrl = new TitleUrl(title, url, site);
 								mBookMark.add(titleUrl);
 								// sort by name
 								Collections.sort(mBookMark, new myComparator());
 								//loadPage(false);
+								updateBookmark();
 
 								bookmarkChanged = true;
 							}

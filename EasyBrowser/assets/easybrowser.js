@@ -1,1 +1,0 @@
-../../EasyBrowserClassic/assets/easybrowser.js

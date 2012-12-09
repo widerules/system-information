@@ -245,7 +245,6 @@ public class SimpleBrowser extends Activity {
 	final String HOME_BLANK = "about:blank";
 	String m_homepage = null;
 	boolean firstRun = false;
-	int countDown = 0;
 
 	ListView webList;
 	Context mContext;
@@ -343,7 +342,6 @@ public class SimpleBrowser extends Activity {
 
 	// bookmark and history
 	AlertDialog m_sourceDialog = null;
-	ArrayList<TitleUrl> mTop = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
@@ -774,7 +772,7 @@ public class SimpleBrowser extends Activity {
 					String title = view.getTitle();
 					if (title == null) title = url;
 
-					if (HOME_PAGE.equals(url)) updateHomePage();
+					if (HOME_PAGE.equals(url)) loadPage();
 					else {
 						if (browserName.equals(title)) ;
 							// if title and url not sync, then sync it
@@ -2359,14 +2357,6 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void initBookmarks() {
-		/*topAdapter = new MyListAdapter(mContext, mTop);
-		getTopList("");
-		ListView topList = (ListView) bookmarkView.findViewById(R.id.toplist);
-		topList.inflate(mContext, R.layout.web_list, null);
-		topList.setFadingEdgeLength(0);// no shadow when scroll
-		topList.setScrollingCacheEnabled(false);
-		topList.setAdapter(topAdapter);*/
-		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
 		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);
 		bookmarkList.inflate(mContext, R.layout.web_list, null);
@@ -2580,8 +2570,6 @@ public class SimpleBrowser extends Activity {
 
 			historyChanged = true;
 			bookmarkChanged = true;
-
-			countDown = 1;
 		}
 
 		urlAdapter.sort(new stringComparator());
@@ -3315,20 +3303,8 @@ public class SimpleBrowser extends Activity {
 	String getTopList(String splitter) {
 		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
 		
-		TitleUrl titleUrl;
-		mTop.clear();
-
 		StringBuilder sb = new StringBuilder("");	
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
-			titleUrl = new TitleUrl("新浪微博", "http://weibo.com", "weibo.com");
-			mTop.add(titleUrl);
-			titleUrl = new TitleUrl("好123", "http://m.hao123.com/?type=android&tn=easy.browser", "m.hao123.com");
-			mTop.add(titleUrl);
-			titleUrl = new TitleUrl("百度", "http://www.baidu.com", "www.baidu.com");
-			mTop.add(titleUrl);
-			titleUrl = new TitleUrl("书朋小说网", "http://easybrowser.shupeng.com", "easybrowser.shupeng.com");
-			mTop.add(titleUrl);
-
 			sb.append(fileDir);
 			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>");
 			sb.append(splitter);
@@ -3354,13 +3330,6 @@ public class SimpleBrowser extends Activity {
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href='http://bpc.borqs.com'>梧桐</a></li>");
 		} else {
-			titleUrl = new TitleUrl("Facebook", "http://www.facebook.com", "www.facebook.com");
-			mTop.add(titleUrl);
-			titleUrl = new TitleUrl("Google", "http://www.google.com", "www.google.com");
-			mTop.add(titleUrl);
-			titleUrl = new TitleUrl("Twitter", "http://twitter.com", "twitter.com");
-			mTop.add(titleUrl);
-
 			// sb.append(fileDir);
 			// sb.append("www.amazon.com.png)'><a href='http://www.amazon.com'>Amazon</a></li>");
 			// sb.append(fileDir);
@@ -3383,54 +3352,12 @@ public class SimpleBrowser extends Activity {
 		}
 		// additional top list for some locale
 		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {
-			titleUrl = new TitleUrl("Yahoo!JAPAN", "http://www.yahoo.co.jp", "www.yahoo.co.jp");
-			mTop.add(titleUrl);
-
 			sb.append(fileDir);
 			sb.append("m.yahoo.co.jp.png)'><a href='http://www.yahoo.co.jp'>Yahoo!JAPAN</a></li>");
 			sb.append(splitter);
 		} else if ("ru_RU".equals(mLocale.toString())) {
-			titleUrl = new TitleUrl("Яндекс", "http://www.yandex.ru/?clid=1911433", "www.yandex.ru");
-			mTop.add(titleUrl);
-
 			sb.append(fileDir);
 			sb.append("www.yandex.ru.png)'><a href='http://www.yandex.ru/?clid=1911433'>Яндекс</a></li>");
-			sb.append(splitter);
-		}
-		
-		return sb.toString();
-	}
-	
-	String getBookmark(String splitter) {
-		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
-		
-		StringBuilder sb = new StringBuilder("");
-		for (int i = 0; i < mBookMark.size(); i++) {
-			sb.append(fileDir);
-			sb.append(mBookMark.get(i).m_site);
-			sb.append(".png)'><input class='bookmark' type='checkbox' style='display:none; margin-right:20px'><a href='");
-			sb.append(mBookMark.get(i).m_url);
-			sb.append("'>");
-			sb.append(mBookMark.get(i).m_title);
-			sb.append("</a></li>");
-			sb.append(splitter);
-		}
-		
-		return sb.toString();
-	}
-	
-	String getHistory(String splitter) {
-		String fileDir = "<li style='background-image:url(file://" + getFilesDir().getAbsolutePath() + "/";
-		
-		StringBuilder sb = new StringBuilder("");			
-		for (int i = mHistory.size() - 1; i >= 0; i--) {
-			sb.append(fileDir);
-			sb.append(mHistory.get(i).m_site);
-			sb.append(".png)'><input class='history' type='checkbox' style='display:none; margin-right:20px'><a href='");
-			sb.append(mHistory.get(i).m_url);
-			sb.append("'>");
-			sb.append(mHistory.get(i).m_title);
-			sb.append("</a></li>");
 			sb.append(splitter);
 		}
 		
@@ -3445,51 +3372,33 @@ public class SimpleBrowser extends Activity {
 		historyAdapter.localList = mHistory;
 	}
 	
-	void updateHomePage() {
-		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"" + getString(R.string.browser_name) + "\");");
-		// top bar
-		String tmp = getString(R.string.top);
-		if (countDown > 0) tmp += getString(R.string.url_can_longclick);
-		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"1," + collapse1 + "," + tmp + "\");");
-		
-		// bookmark bar
-		tmp = getString(R.string.bookmark);
-		if (countDown > 0) tmp += getString(R.string.pic_can_longclick);
-		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"2," + collapse2 + "," + tmp + "\");");
+	String homePage() {
+		StringBuilder sb = new StringBuilder("");	
+		sb.append("<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>");
+		sb.append("<meta name='viewport' content='width=device-width'>");
+		sb.append("<html>");
+		sb.append("<head>");
+		sb.append("<link rel='shortcut icon' href='file:///android_asset/favicon.ico'>");
+		sb.append("<link rel='stylesheet' href='file:///android_asset/easybrowser.css'>");
+		sb.append("<title>" + getString(R.string.browser_name) + "</title>");
+		sb.append("</head>");
 
-		// history bar
-		tmp = getString(R.string.history);
-		if (countDown > 0) tmp += getString(R.string.text_can_longclick);
-		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"3," + collapse3 + "," + tmp + "\");");
+		sb.append("<body style='background-image:url(file:///android_asset/noise_bg.png)'>");
 
-		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + !collapse1 + "\");");
-		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + !collapse2 + "\");");
-		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + !collapse3 + "\");");
-		
-		serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
+		sb.append("<h4 id='title1'>&nbsp" + getString(R.string.top) + "</h4>");
+		sb.append("<dl id='content1' type='disc'>");
+		sb.append(getTopList(""));
+		sb.append("</dl>");
 
-		serverWebs.get(webIndex).loadUrl("javascript:setButton(\"" + getString(R.string.edit_home) + "," + getString(R.string.delete) + "," + getString(R.string.cancel) + "\");");
+		sb.append("</body></html>");
 		
-		if (countDown > 0) countDown -= 1;
+		return sb.toString();
 	}
 	
 	void loadPage() {// load home page
 		if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
-		
-		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-		if (wbfl != null) {
-			int size = wbfl.getSize();
-			int current = wbfl.getCurrentIndex();
-			for (int i = 0; i < size; i++) {
-				if (HOME_PAGE.equals(wbfl.getItemAtIndex(i).getUrl())) {
-					serverWebs.get(webIndex).goBackOrForward(i - current);
-					return;
-				}
-			}
-		}
-		
-		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
-		updateHomePage();
+			
+		serverWebs.get(webIndex).loadDataWithBaseURL(HOME_BLANK, homePage(), "text/html", "utf-8", HOME_BLANK);
 	}
 
 	class TitleUrl {

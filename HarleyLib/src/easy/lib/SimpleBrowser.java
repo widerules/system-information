@@ -241,7 +241,6 @@ class wrapWebSettings {
 
 public class SimpleBrowser extends Activity {
 
-	String HOME_PAGE = "file:///android_asset/home.html";
 	final String HOME_BLANK = "about:blank";
 	String m_homepage = null;
 	boolean firstRun = false;
@@ -730,11 +729,8 @@ public class SimpleBrowser extends Activity {
 						imm.hideSoftInputFromWindow(getWindowToken(), 0);
 						loadProgress.setVisibility(View.VISIBLE);
 						
-						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
-						else {
-							webAddress.setText(url);
-							if (adview != null) adview.loadAd();// should only do this by wifi
-						}
+						webAddress.setText(url);
+						if (adview != null) adview.loadAd();// should only do this by wifi
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
@@ -761,9 +757,7 @@ public class SimpleBrowser extends Activity {
 						loadProgress.setVisibility(View.INVISIBLE);
 						imgRefresh.setImageResource(R.drawable.refresh);
 						webControl.setVisibility(View.INVISIBLE);
-						
-						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
-						else webAddress.setText(url);						
+						webAddress.setText(url);						
 					}
 					mProgress = 0;
 					// update the page title in webList
@@ -772,7 +766,7 @@ public class SimpleBrowser extends Activity {
 					String title = view.getTitle();
 					if (title == null) title = url;
 
-					if (HOME_PAGE.equals(url)) loadPage();
+					if (HOME_BLANK.equals(url)) loadPage();
 					else {
 						if (browserName.equals(title)) ;
 							// if title and url not sync, then sync it
@@ -1022,7 +1016,7 @@ public class SimpleBrowser extends Activity {
 			FileOutputStream fo = openFileOutput("pages", 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);
 			for (int i = 0; i < serverWebs.size(); i++) {
-				if (!HOME_PAGE.equals(serverWebs.get(i).m_url)) {
+				if (!HOME_BLANK.equals(serverWebs.get(i).m_url)) {
 					oos.writeObject(serverWebs.get(i).m_url);
 				}
 			}
@@ -1437,7 +1431,7 @@ public class SimpleBrowser extends Activity {
 			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(
 					handler);
 
-			if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
+			if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
 				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
 				
 				boolean foundBookmark = false;
@@ -2125,7 +2119,7 @@ public class SimpleBrowser extends Activity {
 						if (m_sourceDialog == null) initSourceDialog();
 						m_sourceDialog.setTitle(serverWebs.get(webIndex)
 								.getTitle());
-						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
+						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
 							m_sourceDialog.setIcon(R.drawable.explorer);
 						else
 							m_sourceDialog.setIcon(new BitmapDrawable(
@@ -2164,7 +2158,7 @@ public class SimpleBrowser extends Activity {
 						if (snapDialog == null) initSnapDialog();
 						snapView.setImageBitmap(bmp);
 						snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
-						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
+						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
 							snapDialog.setIcon(R.drawable.explorer);
 						else
 							snapDialog.setIcon(new BitmapDrawable(serverWebs
@@ -2421,8 +2415,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				String url = serverWebs.get(webIndex).m_url;
-				if (HOME_PAGE.equals(url))
-					return;// not add home page
+				if (HOME_BLANK.equals(url))	return;// not add home page
 
 				boolean foundBookmark = false;
 				for (int i = mBookMark.size() - 1; i >= 0; i--)
@@ -2773,7 +2766,10 @@ public class SimpleBrowser extends Activity {
 	};
 
 	void gotoUrl(String url) {
-		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
+		if (HOME_BLANK.equals(url)) {
+			loadPage();
+			return;
+		}
 		else if (!url.contains(".")) {
 			if ((!incognitoMode) && (siteArray.indexOf(url) < 0)) {
 				siteArray.add(url);
@@ -2820,7 +2816,6 @@ public class SimpleBrowser extends Activity {
 		webIndex = position;
 		String url = serverWebs.get(webIndex).m_url;
 		if (url == null) url = "";
-		else if (HOME_PAGE.equals(url)) url = HOME_BLANK;
 		webAddress.setText(url);// refresh the display url
 
 		// global settings
@@ -2867,7 +2862,7 @@ public class SimpleBrowser extends Activity {
 					changePage(i); // show correct page
 					found = true;
 					break;
-				} else if (HOME_PAGE.equals(url))
+				} else if (HOME_BLANK.equals(url))
 					blankIndex = i;
 			}
 
@@ -3396,7 +3391,7 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void loadPage() {// load home page
-		if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
+		//if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
 			
 		serverWebs.get(webIndex).loadDataWithBaseURL(HOME_BLANK, homePage(), "text/html", "utf-8", HOME_BLANK);
 	}

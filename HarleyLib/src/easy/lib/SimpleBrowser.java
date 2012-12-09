@@ -310,7 +310,7 @@ public class SimpleBrowser extends Activity {
 	ArrayAdapter<String> urlAdapter;
 	ArrayList<String> siteArray;
 
-	MyListAdapter bookmarkAdapter, historyAdapter, topAdapter;
+	MyListAdapter bookmarkAdapter, historyAdapter;
 	
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
@@ -766,7 +766,7 @@ public class SimpleBrowser extends Activity {
 					String title = view.getTitle();
 					if (title == null) title = url;
 
-					if (HOME_BLANK.equals(url)) loadPage();
+					if (HOME_BLANK.equals(url)) ;// do nothing
 					else {
 						if (browserName.equals(title)) ;
 							// if title and url not sync, then sync it
@@ -845,6 +845,8 @@ public class SimpleBrowser extends Activity {
 								// delete from the first history until the list is not larger than historyCount;
 								 //not delete icon here. it can be clear when clear all 
 								mHistory.remove(0);
+							
+							updateHistory();
 						}
 					}
 				}
@@ -3360,11 +3362,11 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateBookmark() {
-		bookmarkAdapter.localList = mBookMark;
+		if (bookmarkAdapter != null) bookmarkAdapter.notifyDataSetInvalidated();
 	}
 	
 	void updateHistory() {
-		historyAdapter.localList = mHistory;
+		if (historyAdapter != null) historyAdapter.notifyDataSetInvalidated();
 	}
 	
 	String homePage() {

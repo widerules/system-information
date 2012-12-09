@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/web_list"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingLeft="5dip"
-    android:paddingRight="5dip"
-    android:shrinkColumns="1"
-    android:stretchColumns="1" >
-
-    <TableRow>
+    android:paddingRight="5dip" >
 
         <ImageView
             android:id="@+id/webicon"
@@ -17,29 +13,30 @@
             android:layout_height="16dip"
             android:layout_marginRight="10dip"
             android:layout_marginLeft="10dip"
-            android:layout_marginTop="12dip"
-            android:focusable="false"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             android:gravity="center"
             android:scaleType="centerCrop" />
-
-        <TextView
-            android:id="@+id/webname"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:singleLine="true"
-            android:textColor="#FFFFFFFF"
-            android:textSize="14dip" />
 
         <ImageView
             android:id="@+id/webclose"
             android:layout_width="30dip"
             android:layout_height="30dip"
             android:layout_margin="5dip"
-            android:focusable="false"
-            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
             android:src="@drawable/stop" />
-    </TableRow>
 
-</TableLayout>
+        <TextView
+            android:id="@+id/webname"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_toRightOf="@id/webicon"
+            android:layout_toLeftOf="@id/webclose"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14dip" />
+
+</RelativeLayout>

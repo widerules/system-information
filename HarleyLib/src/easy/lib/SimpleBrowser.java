@@ -3054,7 +3054,12 @@ public class SimpleBrowser extends Activity {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				// press Back key in webview will go backword.
-				if (webControl.getVisibility() == View.VISIBLE)
+				if (scrollState != 1) {
+					scrollState = 1;
+					scrollView.smoothScrollTo(menuWidth[0], 0);
+					browserView.getForeground().setAlpha(0);//restore from blur
+				}
+				else if (webControl.getVisibility() == View.VISIBLE)
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();

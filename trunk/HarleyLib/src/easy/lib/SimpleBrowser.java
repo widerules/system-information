@@ -318,7 +318,8 @@ public class SimpleBrowser extends Activity {
 	ImageView imgNext, imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark;
 	WebAdapter webAdapter;
 	LinearLayout webTools;
-	LinearLayout webControl, urlLine;
+	LinearLayout webControl;
+	RelativeLayout urlLine;
 	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -2579,7 +2580,7 @@ public class SimpleBrowser extends Activity {
 		webpages.addView(serverWebs.get(webIndex));
 
 		webTools = (LinearLayout) browserView.findViewById(R.id.webtools);
-		urlLine = (LinearLayout) browserView.findViewById(R.id.urlline);
+		urlLine = (RelativeLayout) browserView.findViewById(R.id.urlline);
 		if (displayMode == 2) {// hide url bar and tools bar
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);

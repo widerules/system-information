@@ -343,6 +343,7 @@ public class SimpleBrowser extends Activity {
 	// bookmark and history
 	AlertDialog m_sourceDialog = null;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
+	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
@@ -2335,7 +2336,7 @@ public class SimpleBrowser extends Activity {
 		bookmarkList.setScrollingCacheEnabled(false);
 		bookmarkList.setAdapter(bookmarkAdapter);
 		
-		historyAdapter = new MyListAdapter(mContext, mHistory);
+		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
 		ListView historyList = (ListView) bookmarkView.findViewById(R.id.history);
 		historyList.inflate(mContext, R.layout.web_list, null);
 		historyList.setFadingEdgeLength(0);// no shadow when scroll
@@ -3336,7 +3337,12 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateHistory() {
-		if (historyAdapter != null) historyAdapter.notifyDataSetInvalidated();
+		if (historyAdapter != null) {
+			mHistoryForAdapter.clear();
+			for (int i = mHistory.size()-1; i >= 0; i--)
+				mHistoryForAdapter.add(mHistory.get(i));
+			historyAdapter.notifyDataSetInvalidated();
+		}
 	}
 	
 	String homePage() {

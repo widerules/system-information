@@ -15,7 +15,8 @@
     <FrameLayout
         android:id="@+id/adContainer"
         android:layout_width="320dip"
-        android:layout_height="wrap_content"
+        android:layout_height="50dip"
+        android:background="#ffaaaaaa"
         android:layout_gravity="right"
         android:foregroundGravity="center"
         android:orientation="vertical" >

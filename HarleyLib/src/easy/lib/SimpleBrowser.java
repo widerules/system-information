@@ -374,7 +374,7 @@ public class SimpleBrowser extends Activity {
 			mAdAvailable = false;
 		}
 	}
-	wrapAdView adview;
+	wrapAdView adview = null;
 
 	// download related
 	String downloadPath = "";
@@ -702,7 +702,6 @@ public class SimpleBrowser extends Activity {
 						loadProgress.setVisibility(View.VISIBLE);
 						
 						webAddress.setText(url);
-						//if (adview != null) adview.loadAd();// should only do this by wifi
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
@@ -2618,6 +2617,7 @@ public class SimpleBrowser extends Activity {
 					scrollState = 0;
 					scrollView.smoothScrollTo(0, 0);
 					browserView.getForeground().setAlpha(120);//blur
+					if (adview != null) adview.loadAd();
 				}
 			}
 		});
@@ -2639,10 +2639,10 @@ public class SimpleBrowser extends Activity {
 		});
 
 		dm = new DisplayMetrics();
-		createAd();
 		setLayout();
 		initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		initBookmarks();
+		createAd();
 
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
@@ -3254,15 +3254,9 @@ public class SimpleBrowser extends Activity {
 		// adView.setLayoutParams(new
 		// ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
 		// adContainer.addView(adView);
-
 		if (adview != null) return;// only create ad for one time.
 		
 		if (mAdAvailable) {
-
-			if ((cm == null) || (cm.getActiveNetworkInfo() == null)
-					|| !cm.getActiveNetworkInfo().isConnected())
-				return;// not create ad if network error
-
 			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
 				FrameLayout adContainer = (FrameLayout) bookmarkView.findViewById(R.id.adContainer);

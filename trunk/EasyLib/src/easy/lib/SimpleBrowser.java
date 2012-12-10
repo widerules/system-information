@@ -310,7 +310,8 @@ public class SimpleBrowser extends Activity {
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	LinearLayout webTools;
-	LinearLayout webControl, urlLine;
+	LinearLayout webControl;
+	RelativeLayout urlLine;
 	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -725,7 +726,7 @@ public class SimpleBrowser extends Activity {
 						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 						else {
 							webAddress.setText(url);
-							if (adview != null) adview.loadAd();// should only do this by wifi
+							if (adview != null) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
 						}
 						
 						imgRefresh.setImageResource(R.drawable.stop);
@@ -2526,7 +2527,7 @@ public class SimpleBrowser extends Activity {
 		webpages.addView(serverWebs.get(webIndex));
 
 		webTools = (LinearLayout) findViewById(R.id.webtools);
-		urlLine = (LinearLayout) findViewById(R.id.urlline);
+		urlLine = (RelativeLayout) findViewById(R.id.urlline);
 		if (displayMode == 2) {// hide url bar and tools bar
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -725,7 +725,7 @@ public class SimpleBrowser extends Activity {
 						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 						else {
 							webAddress.setText(url);
-							//if (adview != null) adview.loadAd();// should only do this by wifi
+							if (adview != null) adview.loadAd();// should only do this by wifi
 						}
 						
 						imgRefresh.setImageResource(R.drawable.stop);

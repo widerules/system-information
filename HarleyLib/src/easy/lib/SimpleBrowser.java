@@ -957,10 +957,12 @@ public class SimpleBrowser extends Activity {
 			convertView.setBackgroundColor(0xff333333);
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
-			try {
-				btnIcon.setImageURI(Uri.parse("file://" + getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png"));
-			} catch (Exception e) {
-			}// catch an null pointer exception on 1.6}
+			String filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
+			File f = new File(filename);
+			if (f.exists())
+				try {
+					btnIcon.setImageURI(Uri.parse(filename));
+				} catch (Exception e) {}// catch an null pointer exception on 1.6}
 
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
 			webname.setText(wv.m_title);

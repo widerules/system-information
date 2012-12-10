@@ -82,7 +82,7 @@
     <LinearLayout
         android:id="@+id/webtools"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dip"
         android:layout_alignParentBottom="true"
         android:background="@drawable/round_corner"
         android:orientation="horizontal" >
@@ -92,6 +92,7 @@
             android:layout_width="0dip"
             android:layout_height="35dip"
             android:layout_weight="1"
+            android:layout_marginTop="2dip"
             android:scaleType="center"
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/refresh" />
@@ -101,6 +102,7 @@
             android:layout_width="0dip"
             android:layout_height="35dip"
             android:layout_weight="1"
+            android:layout_marginTop="2dip"
             android:scaleType="fitCenter"
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/prev" />
@@ -110,6 +112,7 @@
             android:layout_width="0dip"
             android:layout_height="35dip"
             android:layout_weight="1"
+            android:layout_marginTop="2dip"
             android:scaleType="fitCenter"
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/newpage" />
@@ -119,6 +122,7 @@
             android:layout_width="0dip"
             android:layout_height="35dip"
             android:layout_weight="1"
+            android:layout_marginTop="2dip"
             android:scaleType="fitCenter"
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/next" />
@@ -128,6 +132,7 @@
             android:layout_width="0dip"
             android:layout_height="35dip"
             android:layout_weight="1"
+            android:layout_marginTop="2dip"
             android:scaleType="fitCenter"
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/home" />
@@ -180,16 +185,11 @@
 
         </LinearLayout>
     
-    <LinearLayout
-        android:id="@+id/urlline"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/adContainer"
-        android:orientation="vertical" >
-
         <RelativeLayout
+	        android:id="@+id/urlline"
             android:layout_width="fill_parent"
-            android:layout_height="33dip"
+            android:layout_height="40dip"
+	        android:layout_below="@id/adContainer"
             android:orientation="horizontal" >
 
             <ImageView
@@ -246,21 +246,24 @@
         </RelativeLayout>
 
         <View
+    	    android:id="@+id/line3"
             android:layout_width="match_parent"
             android:layout_height="1px"
+	        android:layout_below="@id/urlline"
             android:background="#ffc5c5c5" />
 
         <View
+	        android:id="@+id/line4"
             android:layout_width="match_parent"
             android:layout_height="1px"
+	        android:layout_below="@id/line3"
             android:background="#fff5f5f5" />
-    </LinearLayout>
 
     <easy.lib.MyViewFlipper
         android:id="@+id/webpages"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/line2"
-        android:layout_below="@id/urlline" />
+        android:layout_below="@id/line4" />
 
 </RelativeLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="browser_name">Easy Browser</string>
+    <string name="browser_name">Easy Browser Free</string>
     <string name="help_message">Find you app by not more than 2 click. \nClick app icon to stop it, \nClick app name to launch, \nclick app version to uninstall, \nlong click app name: add shortcut, \nlong click shortcut to remove it.</string>
     <string name="auto_change_wallpaper">change wallpaper by shake</string>
     <string name="about_message">Easy Browser is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it.</string>

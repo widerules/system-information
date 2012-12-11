@@ -103,16 +103,6 @@
             android:src="@drawable/prev" />
 
         <ImageView
-            android:id="@+id/next"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:scaleType="fitCenter"
-            android:background="@drawable/imagebutton_layout"
-            android:src="@drawable/next" />
-        
-        <ImageView
             android:id="@+id/refresh"
             android:layout_width="0dip"
             android:layout_height="35dip"
@@ -122,6 +112,16 @@
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/refresh" />
 
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="0dip"
+            android:layout_height="35dip"
+            android:layout_weight="1"
+            android:layout_marginTop="2dip"
+            android:scaleType="fitCenter"
+            android:background="@drawable/imagebutton_layout"
+            android:src="@drawable/next" />
+        
         <ImageView
             android:id="@+id/newpage"
             android:layout_width="0dip"

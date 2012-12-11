@@ -963,7 +963,9 @@ public class SimpleBrowser extends Activity {
 			if (f.exists())
 				try {
 					btnIcon.setImageURI(Uri.parse(filename));
-				} catch (Exception e) {}// catch an null pointer exception on 1.6}
+					btnIcon.setVisibility(View.VISIBLE);
+				} catch (Exception e) {}// catch an null pointer exception on 1.6
+			else btnIcon.setVisibility(View.INVISIBLE);
 
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
 			webname.setText(wv.m_title);

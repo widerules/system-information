@@ -77,6 +77,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -967,6 +968,14 @@ public class SimpleBrowser extends Activity {
 				} catch (Exception e) {}// catch an null pointer exception on 1.6
 			else btnIcon.setVisibility(View.INVISIBLE);
 
+			final ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
+			btnStop.setVisibility(View.INVISIBLE);//hide at beginning
+			btnStop.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+				}
+			});
+
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
 			webname.setText(wv.m_title);
 
@@ -977,12 +986,13 @@ public class SimpleBrowser extends Activity {
 					imgBookmark.performClick();
 				}
 			});
-
-			ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
-			btnStop.setVisibility(View.INVISIBLE);//hide at beginning
-			btnStop.setOnClickListener(new OnClickListener() {
+			webname.setOnLongClickListener(new OnLongClickListener() {
 				@Override
-				public void onClick(View arg0) {
+				public boolean onLongClick(View v) {
+					if (btnStop.getVisibility() == View.INVISIBLE) 
+						btnStop.setVisibility(View.VISIBLE);
+					else btnStop.setVisibility(View.INVISIBLE);
+					return true;
 				}
 			});
 

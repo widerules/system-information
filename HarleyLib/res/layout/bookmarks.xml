@@ -15,11 +15,16 @@
     <FrameLayout
         android:id="@+id/adContainer"
         android:layout_width="320dip"
-        android:layout_height="50dip"
-        android:background="#ffaaaaaa"
+        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:foregroundGravity="center"
         android:orientation="vertical" >
+        
+        <View
+	        android:layout_width="wrap_content"
+    	    android:layout_height="20dip"
+        	android:background="@drawable/button_layout"
+            />
     </FrameLayout>
 
     <ListView

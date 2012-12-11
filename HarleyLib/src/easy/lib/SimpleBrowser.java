@@ -2344,6 +2344,7 @@ public class SimpleBrowser extends Activity {
 		historyList.setFadingEdgeLength(0);// no shadow when scroll
 		historyList.setScrollingCacheEnabled(false);
 		historyList.setAdapter(historyAdapter);
+		updateHistory();
 	}
 	
 	@Override
@@ -3266,6 +3267,7 @@ public class SimpleBrowser extends Activity {
 			if ((adview != null) && (adview.getInstance() != null)) {
 				FrameLayout adContainer = (FrameLayout) bookmarkView.findViewById(R.id.adContainer);
 				adContainer.addView(adview.getInstance());
+				adContainer.bringChildToFront(adview.getInstance());
 			}
 		}
 	}

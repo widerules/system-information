@@ -940,6 +940,7 @@ public class SimpleBrowser extends Activity {
 
 	private class MyListAdapter extends ArrayAdapter<TitleUrl> {
 		ArrayList localList;
+		boolean isBookmark = true;
 
 		public MyListAdapter(Context context, List<TitleUrl> titles) {
 			super(context, 0, titles);
@@ -973,6 +974,14 @@ public class SimpleBrowser extends Activity {
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					if (isBookmark) {
+						mBookMark.remove(position);
+						updateBookmark();
+					}
+					else {
+						mHistory.remove(mHistory.size() - 1 - position);
+						updateHistory();
+					}
 				}
 			});
 
@@ -2349,6 +2358,7 @@ public class SimpleBrowser extends Activity {
 		bookmarkList.setAdapter(bookmarkAdapter);
 		
 		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
+		historyAdapter.isBookmark = false;
 		ListView historyList = (ListView) bookmarkView.findViewById(R.id.history);
 		historyList.inflate(mContext, R.layout.web_list, null);
 		historyList.setFadingEdgeLength(0);// no shadow when scroll

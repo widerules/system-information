@@ -827,7 +827,7 @@ public class SimpleBrowser extends Activity {
 
 				@Override
 				public boolean shouldOverrideUrlLoading(WebView view, String url) {
-					if ("about:blank".equals(url)) {// some site such as weibo and
+					if (HOME_BLANK.equals(url)) {// some site such as weibo and
 						// mysilkbaby will send
 						// BLANK_PAGE when login.
 						return true;// we should do nothing but return true,
@@ -2593,7 +2593,10 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoForward()) {
-					serverWebs.get(webIndex).goForward();
+					WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+                    if (HOME_BLANK.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl()))
+                            loadPage();//goForward will show blank page at this time, so load the home page.
+                    else serverWebs.get(webIndex).goForward();
 				}
 			}
 		});
@@ -2602,7 +2605,10 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoBack()) {
-					serverWebs.get(webIndex).goBack();
+					WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+                    if (HOME_BLANK.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex()-1).getUrl()))
+                            loadPage();//goBack will show blank page at this time, so load the home page.
+                    else serverWebs.get(webIndex).goBack();
 				}
 			}
 		});
@@ -2617,8 +2623,11 @@ public class SimpleBrowser extends Activity {
 				} else {// reload the webpage
 					String url = serverWebs.get(webIndex).getUrl();
 					String m_url = serverWebs.get(webIndex).m_url;
-					if (m_url.equals(url))
-						serverWebs.get(webIndex).reload();
+					if (m_url.equals(url)) {
+						if (!HOME_BLANK.equals(url))
+                            serverWebs.get(webIndex).reload();
+						else loadPage();
+					}
 					else 
 						serverWebs.get(webIndex).loadUrl(m_url);
 				}

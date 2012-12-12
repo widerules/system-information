@@ -1854,6 +1854,7 @@ public class SimpleBrowser extends Activity {
 			}
 			else {
 				scrollState = 2;
+				if (menuGrid == null) initMenuDialog();
 				scrollView.smoothScrollTo(menuWidth[0] + menuWidth[2], 0);
 				browserView.getForeground().setAlpha(120);//blur
 			}
@@ -2641,6 +2642,7 @@ public class SimpleBrowser extends Activity {
 				}
 				else {
 					scrollState = 0;
+					if (bookmarkAdapter == null) initBookmarks();
 					scrollView.smoothScrollTo(0, 0);
 					browserView.getForeground().setAlpha(120);//blur
 					if (adview != null) adview.loadAd();
@@ -2666,8 +2668,8 @@ public class SimpleBrowser extends Activity {
 
 		dm = new DisplayMetrics();
 		setLayout();
-		initMenuDialog();// if not init here, it will show blank on some device with scroll ball
-		initBookmarks();
+		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
+		//initBookmarks();
 		createAd();
 
 		try {// there are a null pointer error reported for the if line below,

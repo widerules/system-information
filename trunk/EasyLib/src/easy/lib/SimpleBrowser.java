@@ -989,6 +989,7 @@ public class SimpleBrowser extends Activity {
 
 		if (webAdapter.getCount() > 1) {
 			MyWebview tmp = (MyWebview) webpages.getChildAt(position);
+			if (tmp == null) return;//sometime it is null if close page very quick
 			boolean toBefore = tmp.closeToBefore;
 			webAdapter.remove(tmp);
 			webAdapter.notifyDataSetInvalidated();

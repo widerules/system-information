@@ -1233,9 +1233,7 @@ public class SimpleBrowser extends Activity {
 				else
 					try {
 						ProxySettings.resetProxy(mContext);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					} catch (Exception e) {}
 			}
 
 			WebSettings localSettings = serverWebs.get(webIndex).getSettings();
@@ -1804,7 +1802,6 @@ public class SimpleBrowser extends Activity {
 				}
 
 			} catch (Exception e) {
-				e.printStackTrace();
 				downloadFailed = true;
 				notification.icon = android.R.drawable.stat_notify_error;
 				intent.putExtra("errorMsg", e.toString());

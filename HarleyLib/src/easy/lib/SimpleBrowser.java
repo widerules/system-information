@@ -716,109 +716,10 @@ public class SimpleBrowser extends Activity {
 
 				@Override
 				public void onPageFinished(WebView view, String url) {
-					pageSource = "";// prevent get incomplete page source during
-									// page loading
-					
+					pageSource = "";// prevent get incomplete page source during page loading
 					m_url = url;// must sync the url for it may change after pagestarted.
-
-					if (isForeground) {
-						// hide progressbar anyway
-						loadProgress.setVisibility(View.INVISIBLE);
-						imgRefresh.setImageResource(R.drawable.refresh);
-						webControl.setVisibility(View.INVISIBLE);
-						webAddress.setText(url);						
-					}
 					mProgress = 0;
-					// update the page title in webList
-					webAdapter.notifyDataSetChanged();
-
-					String title = view.getTitle();
-					if (title == null) title = url;
-
-					if (HOME_BLANK.equals(url)) ;// do nothing
-					else {
-						if (browserName.equals(title)) ;
-							// if title and url not sync, then sync it
-							//webAddress.setText(HOME_BLANK);
-						else if (!incognitoMode) {// handle the bookmark/history after load new page
-							String site = "";
-							String[] tmp = url.split("/");
-							if (tmp.length > 2)	site = tmp[2];
-							// if url is http://m.baidu.com,
-							// then url.split("/")[2] is m.baidu.com
-							else site = tmp[0];
-							
-							if ((mHistory.size() > 0) && (mHistory.get(mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
-							
-							TitleUrl titleUrl = new TitleUrl(title, url, site);
-							mHistory.add(titleUrl);// always add it to history if visit any page.
-							historyChanged = true;
-
-							for (int i = mHistory.size() - 2; i >= 0; i--) {
-								if (mHistory.get(i).m_url.equals(url)) {
-									if (title.equals(url)) {// use meaningful title to replace title with url content
-										String meaningfulTitle = mHistory.get(i).m_title;
-										if (!meaningfulTitle.equals(url)) 
-											mHistory.set(mHistory.size()-1, mHistory.get(i));
-									}
-									mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
-									updateHistory();
-									return;
-								} else if (mHistory.get(i).m_site.equals(site)) {
-									mHistory.remove(i);// only keep the latest history of the same site. is that good user experience?
-									break;
-								}
-							}
-
-							if (siteArray.indexOf(site) < 0) {
-								urlAdapter.add(site);// update the auto-complete
-								// edittext without
-								// duplicate
-								siteArray.add(site);// the adapter will always
-								// return 0 when get count
-								// or search, so we use an
-								// array to store the site.
-							}
-
-							try {// try to open the png, if can't open, then need save
-								FileInputStream fis = openFileInput(site + ".png");
-								try {fis.close();} catch (IOException e) {}
-							} catch (FileNotFoundException e1) {
-								try {// save the Favicon
-									if (view.getFavicon() != null) {
-										Bitmap favicon = view.getFavicon();
-										int width = favicon.getWidth();
-									    int height = favicon.getHeight();
-										if ((width > 16) || (height > 16)) {// scale the favicon if it is not 16*16
-										    // calculate the scale
-										    float scaleWidth = ((float) 16) / width;
-										    float scaleHeight = ((float) 16) / height;
-
-										    // create matrix for the manipulation
-										    Matrix matrix = new Matrix();
-										    // resize the bit map
-										    matrix.postScale(scaleWidth, scaleHeight);
-
-										    // recreate the new Bitmap
-										    favicon = Bitmap.createBitmap(favicon, 0, 0, 
-										                      width, height, matrix, true); 
-										}
-										FileOutputStream fos = openFileOutput(site + ".png", 0);
-										favicon.compress(Bitmap.CompressFormat.PNG, 90,	fos);
-										fos.close();
-									}
-								} catch (Exception e) {
-								}
-							}
-
-							while (mHistory.size() > historyCount) 
-								// delete from the first history until the list is not larger than historyCount;
-								 //not delete icon here. it can be clear when clear all 
-								mHistory.remove(0);
-							
-							updateHistory();
-						}
-					}
+					pageFinishAction(view, url, isForeground);
 				}
 
 				@Override
@@ -876,6 +777,106 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	void pageFinishAction(WebView view, String url, boolean isForeground) {
+		if (isForeground) {
+			// hide progressbar anyway
+			loadProgress.setVisibility(View.INVISIBLE);
+			imgRefresh.setImageResource(R.drawable.refresh);
+			webControl.setVisibility(View.INVISIBLE);
+			webAddress.setText(url);						
+		}
+		// update the page title in webList
+		webAdapter.notifyDataSetChanged();
+
+		String title = view.getTitle();
+		if (title == null) title = url;
+
+		if (HOME_BLANK.equals(url)) ;// do nothing
+		else {
+			if (browserName.equals(title)) ;
+				// if title and url not sync, then sync it
+				//webAddress.setText(HOME_BLANK);
+			else if (!incognitoMode) {// handle the bookmark/history after load new page
+				String site = "";
+				String[] tmp = url.split("/");
+				if (tmp.length > 2)	site = tmp[2];
+				// if url is http://m.baidu.com,
+				// then url.split("/")[2] is m.baidu.com
+				else site = tmp[0];
+				
+				if ((mHistory.size() > 0) && (mHistory.get(mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
+				
+				TitleUrl titleUrl = new TitleUrl(title, url, site);
+				mHistory.add(titleUrl);// always add it to history if visit any page.
+				historyChanged = true;
+
+				for (int i = mHistory.size() - 2; i >= 0; i--) {
+					if (mHistory.get(i).m_url.equals(url)) {
+						if (title.equals(url)) {// use meaningful title to replace title with url content
+							String meaningfulTitle = mHistory.get(i).m_title;
+							if (!meaningfulTitle.equals(url)) 
+								mHistory.set(mHistory.size()-1, mHistory.get(i));
+						}
+						mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
+						updateHistory();
+						return;
+					} else if (mHistory.get(i).m_site.equals(site)) {
+						mHistory.remove(i);// only keep the latest history of the same site. is that good user experience?
+						break;
+					}
+				}
+
+				if (siteArray.indexOf(site) < 0) {
+					urlAdapter.add(site);// update the auto-complete
+					// edittext without
+					// duplicate
+					siteArray.add(site);// the adapter will always
+					// return 0 when get count
+					// or search, so we use an
+					// array to store the site.
+				}
+
+				try {// try to open the png, if can't open, then need save
+					FileInputStream fis = openFileInput(site + ".png");
+					try {fis.close();} catch (IOException e) {}
+				} catch (FileNotFoundException e1) {
+					try {// save the Favicon
+						if (view.getFavicon() != null) {
+							Bitmap favicon = view.getFavicon();
+							int width = favicon.getWidth();
+						    int height = favicon.getHeight();
+							if ((width > 16) || (height > 16)) {// scale the favicon if it is not 16*16
+							    // calculate the scale
+							    float scaleWidth = ((float) 16) / width;
+							    float scaleHeight = ((float) 16) / height;
+
+							    // create matrix for the manipulation
+							    Matrix matrix = new Matrix();
+							    // resize the bit map
+							    matrix.postScale(scaleWidth, scaleHeight);
+
+							    // recreate the new Bitmap
+							    favicon = Bitmap.createBitmap(favicon, 0, 0, 
+							                      width, height, matrix, true); 
+							}
+							FileOutputStream fos = openFileOutput(site + ".png", 0);
+							favicon.compress(Bitmap.CompressFormat.PNG, 90,	fos);
+							fos.close();
+						}
+					} catch (Exception e) {
+					}
+				}
+
+				while (mHistory.size() > historyCount) 
+					// delete from the first history until the list is not larger than historyCount;
+					 //not delete icon here. it can be clear when clear all 
+					mHistory.remove(0);
+				
+				updateHistory();
+			}
+		}
+	}
+	
 	private class WebAdapter extends ArrayAdapter<MyWebview> {
 		ArrayList localWeblist;
 

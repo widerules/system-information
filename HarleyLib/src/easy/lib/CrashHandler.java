@@ -62,9 +62,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		} else {
 			try {
 				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			} catch (InterruptedException e) {}
 			// exit
 			android.os.Process.killProcess(android.os.Process.myPid());
 			System.exit(1);
@@ -75,7 +73,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		if (ex == null) {
 			return false;
 		}
-		ex.printStackTrace();
 
 		Writer writer = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(writer);

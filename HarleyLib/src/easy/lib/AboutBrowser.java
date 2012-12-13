@@ -467,7 +467,7 @@ public class AboutBrowser extends Activity {
 			Method method = c.getMethod(
 					"onResume", new Class[] { Context.class });
 			method.invoke(this, this);//StatService.onResume(this);//for baidu tongji
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {}
 	}
 
 	@Override
@@ -570,6 +570,6 @@ public class AboutBrowser extends Activity {
 			Method method = c.getMethod(
 					"onPause", new Class[] { Context.class });
 			method.invoke(this, this);//StatService.onPause(this);//for baidu tongji
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {}
 	}
 }

@@ -141,101 +141,6 @@ class wrapValueCallback {
 	}
 }
 
-class wrapWebSettings {
-	WebSettings mInstance;
-
-	wrapWebSettings(WebSettings settings) {
-		mInstance = settings;
-	}
-
-	synchronized void setLoadWithOverviewMode(boolean overview) {// API 7
-		try {
-			Method method = WebSettings.class.getMethod(
-					"setLoadWithOverviewMode", new Class[] { boolean.class });
-			method.invoke(mInstance, overview);
-		} catch (Exception e) {
-		}
-	}
-
-	synchronized void setAppCacheEnabled(boolean flag) {// API 7
-		try {
-			Method method = WebSettings.class.getMethod("setAppCacheEnabled",
-					new Class[] { boolean.class });
-			method.invoke(mInstance, flag);
-		} catch (Exception e) {
-		}
-	}
-
-	synchronized void setAppCachePath(String databasePath) {// API 7
-		try {
-			Method method = WebSettings.class.getMethod("setAppCachePath",
-					new Class[] { String.class });
-			method.invoke(mInstance, databasePath);
-		} catch (Exception e) {
-		}
-	}
-
-	synchronized void setAppCacheMaxSize(long max) {// API 7
-		try {
-			Method method = WebSettings.class.getMethod("setAppCacheMaxSize",
-					new Class[] { long.class });
-			method.invoke(mInstance, max);
-		} catch (Exception e) {
-		}
-	}
-
-	synchronized void setDomStorageEnabled(boolean flag) {// API 7
-		try {
-			Method method = WebSettings.class.getMethod("setDomStorageEnabled",
-					new Class[] { boolean.class });
-			method.invoke(mInstance, flag);
-		} catch (Exception e) {
-		}
-	}
-
-	synchronized void setDatabaseEnabled(boolean flag) {// API 5
-		try {
-			Method method = WebSettings.class.getMethod("setDatabaseEnabled",
-					new Class[] { boolean.class });
-			method.invoke(mInstance, flag);
-		} catch (Exception e) {
-		}
-	}
-
-	synchronized void setDatabasePath(String databasePath) {// API 5
-		try {
-			Method method = WebSettings.class.getMethod("setDatabasePath",
-					new Class[] { String.class });
-			method.invoke(mInstance, databasePath);
-		} catch (Exception e) {
-		}
-	}
-
-	synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
-		try {
-			Method method = WebSettings.class.getMethod(
-					"setDisplayZoomControls", new Class[] { boolean.class });
-			method.invoke(mInstance, enabled);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	/*
-	 * synchronized void setGeolocationEnabled(boolean flag) {//API 5 try {
-	 * Method method = WebSettings.class.getMethod("setGeolocationEnabled", new
-	 * Class[] {boolean.class}); method.invoke(mInstance, flag); }
-	 * catch(Exception e) {} }
-	 * 
-	 * synchronized void setGeolocationDatabasePath(String databasePath) {//API
-	 * 5 try { Method method =
-	 * WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[]
-	 * {String.class}); method.invoke(mInstance, databasePath); }
-	 * catch(Exception e) {} }
-	 */
-}
-
 public class SimpleBrowser extends Activity {
 
 	String HOME_PAGE = "file:///android_asset/home.html";
@@ -394,15 +299,108 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	public void freeMemory(MyWebview webview) {// API 7
-		try {
-			Method method = WebView.class.getMethod("freeMemory");
-			method.invoke(webview);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	static Method freeMemoryMethod = null;
+	static Method setLoadWithOverviewMode = null;
+	static Method setAppCacheEnabled = null;
+	static Method setAppCachePath = null;
+	static Method setAppCacheMaxSize = null;
+	static Method setDomStorageEnabled = null;
+	static Method setDatabaseEnabled = null;
+	static Method setDatabasePath = null;
+	static Method setDisplayZoomControls = null;
+	static Method setScrollbarFadingEnabled = null;
+	static {
+		try {//API 7
+			freeMemoryMethod  = WebView.class.getMethod("freeMemory");
+			setLoadWithOverviewMode = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] { boolean.class });
+			setAppCacheEnabled = WebSettings.class.getMethod("setAppCacheEnabled", new Class[] { boolean.class });
+			setAppCachePath = WebSettings.class.getMethod("setAppCachePath", new Class[] { String.class });
+			setAppCacheMaxSize = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] { long.class });
+			setDomStorageEnabled = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] { boolean.class });
+		} catch (Exception e) {}
+
+		try {//API 5
+			setDatabaseEnabled = WebSettings.class.getMethod("setDatabaseEnabled", new Class[] { boolean.class });
+			setDatabasePath = WebSettings.class.getMethod("setDatabasePath", new Class[] { String.class });
+			setScrollbarFadingEnabled = WebView.class.getMethod("setScrollbarFadingEnabled", new Class[] { boolean.class });
+		} catch (Exception e) {}
+
+		try {//API 11
+			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
+		} catch (Exception e) {}
+
+	}
+	
+	public void freeMemory(MyWebview webview) {
+		if (freeMemoryMethod != null)
+			try {freeMemoryMethod.invoke(webview);} catch (Exception e) {}
 	}
 
+	class wrapWebSettings {
+		WebSettings mInstance;
+
+		wrapWebSettings(WebSettings settings) {
+			mInstance = settings;
+		}
+
+		synchronized void setLoadWithOverviewMode(boolean overview) {// API 7
+			if (setLoadWithOverviewMode != null)
+				try {setLoadWithOverviewMode.invoke(mInstance, overview);} catch (Exception e) {}
+		}
+
+		synchronized void setAppCacheEnabled(boolean flag) {// API 7
+			if (setAppCacheEnabled != null)
+				try {setAppCacheEnabled.invoke(mInstance, flag);} catch (Exception e) {}
+		}
+
+		synchronized void setAppCachePath(String databasePath) {// API 7
+			if (setAppCachePath != null)
+				try {setAppCachePath.invoke(mInstance, databasePath);} catch (Exception e) {}
+		}
+
+		synchronized void setAppCacheMaxSize(long max) {// API 7
+			if (setAppCacheMaxSize != null)
+				try {setAppCacheMaxSize.invoke(mInstance, max);} catch (Exception e) {}
+		}
+
+		synchronized void setDomStorageEnabled(boolean flag) {// API 7
+			if (setDomStorageEnabled != null)
+				try {setDomStorageEnabled.invoke(mInstance, flag);} catch (Exception e) {}
+		}
+
+		synchronized void setDatabaseEnabled(boolean flag) {// API 5
+			if (setDatabaseEnabled != null)
+				try {setDatabaseEnabled.invoke(mInstance, flag);} catch (Exception e) {}
+		}
+
+		synchronized void setDatabasePath(String databasePath) {// API 5
+			if (setDatabasePath != null)
+				try {setDatabasePath.invoke(mInstance, databasePath);} catch (Exception e) {}
+		}
+
+		synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
+			if (setDisplayZoomControls != null)
+				try {
+					setDisplayZoomControls.invoke(mInstance, enabled);
+					return true;
+				} catch (Exception e) {}
+			return false;
+		}
+
+		/*
+		 * synchronized void setGeolocationEnabled(boolean flag) {//API 5 try {
+		 * Method method = WebSettings.class.getMethod("setGeolocationEnabled", new
+		 * Class[] {boolean.class}); method.invoke(mInstance, flag); }
+		 * catch(Exception e) {} }
+		 * 
+		 * synchronized void setGeolocationDatabasePath(String databasePath) {//API
+		 * 5 try { Method method =
+		 * WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[]
+		 * {String.class}); method.invoke(mInstance, databasePath); }
+		 * catch(Exception e) {} }
+		 */
+	}
+	
 	class MyWebview extends WebView {
 		public String pageSource = "", m_url = "";
 
@@ -497,9 +495,10 @@ public class SimpleBrowser extends Activity {
 			}
 
 			if (!this.isFocused()) {
-				if (this == null) return true;// sometime it is null if close page too quick
-				this.requestFocusFromTouch();
-				this.setFocusable(true);
+				try {// sometime it is null if close page too quick
+					this.requestFocusFromTouch();
+					this.setFocusable(true);
+				} catch(Exception e) {}
 				webAddress.setFocusableInTouchMode(false);
 				webAddress.clearFocus();
 			}
@@ -512,17 +511,12 @@ public class SimpleBrowser extends Activity {
 		public MyWebview(Context context) {
 			super(context);
 
-			setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-			// no white blank on the right of webview
+			setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);// no white blank on the right of webview
+			
 			try {
-				Method method = WebView.class.getMethod(
-						"setScrollbarFadingEnabled",
-						new Class[] { boolean.class });
-				// hide scroll bar when not scroll. from API5, not work on
-				// cupcake.
-				method.invoke(this, true);
-			} catch (Exception e) {
-			}
+				// hide scroll bar when not scroll. from API5, not work on cupcake.
+				setScrollbarFadingEnabled.invoke(this, true);
+			} catch (Exception e) {}
 
 			WebSettings localSettings = getSettings();
 			localSettings.setSaveFormData(true);

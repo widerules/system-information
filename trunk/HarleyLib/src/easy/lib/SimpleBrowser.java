@@ -262,7 +262,7 @@ public class SimpleBrowser extends Activity {
 	boolean blockJs = false;
 	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
 	TextSize textSize = TextSize.NORMAL;
-	int historyCount = 3;
+	final int historyCount = 10;
 	long sizeM = 1024 * 1024;
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;
@@ -312,6 +312,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<String> siteArray;
 
 	MyListAdapter bookmarkAdapter, historyAdapter;
+	ListView historyList;
 	
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
@@ -2357,7 +2358,7 @@ public class SimpleBrowser extends Activity {
 		
 		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
 		historyAdapter.isBookmark = false;
-		ListView historyList = (ListView) bookmarkView.findViewById(R.id.history);
+		historyList = (ListView) bookmarkView.findViewById(R.id.history);
 		historyList.inflate(mContext, R.layout.web_list, null);
 		historyList.setFadingEdgeLength(0);// no shadow when scroll
 		historyList.setScrollingCacheEnabled(false);
@@ -3362,6 +3363,13 @@ public class SimpleBrowser extends Activity {
 	
 	void updateHistory() {
 		if (historyAdapter != null) {
+			//reset height of history list so that only display 3 items
+			int size = mHistory.size();
+			if (size > 3) size = 3;
+			int height = (int) (40 * size * dm.density);
+			LayoutParams lp = historyList.getLayoutParams();
+			lp.height = height;
+
 			mHistoryForAdapter.clear();
 			for (int i = mHistory.size()-1; i >= 0; i--)
 				mHistoryForAdapter.add(mHistory.get(i));

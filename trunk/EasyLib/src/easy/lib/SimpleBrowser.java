@@ -497,6 +497,7 @@ public class SimpleBrowser extends Activity {
 			}
 
 			if (!this.isFocused()) {
+				if (this == null) return true;// sometime it is null if close page too quick
 				this.requestFocusFromTouch();
 				this.setFocusable(true);
 				webAddress.setFocusableInTouchMode(false);

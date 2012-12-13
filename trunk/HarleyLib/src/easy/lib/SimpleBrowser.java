@@ -464,12 +464,7 @@ public class SimpleBrowser extends Activity {
 			// close webcontrol page if it is open.
 			webControl.setVisibility(View.INVISIBLE);
 			
-			if (scrollState != 1) {//scroll to browser view
-				scrollState = 1;
-				scrollView.smoothScrollTo(menuWidth[0], 0);
-				browserView.getForeground().setAlpha(0);//restore from blur
-			}
-
+			if (scrollState != 1) scrollToMain();
 
 			if (urlLine.getLayoutParams().height != 0) {
 				if (displayMode == 2) hideBars();
@@ -1836,6 +1831,12 @@ public class SimpleBrowser extends Activity {
 
 	}
 
+	void scrollToMain() {
+		scrollState = 1;
+		scrollView.smoothScrollTo(menuWidth[0], 0);
+		browserView.getForeground().setAlpha(0);//restore		
+	}
+	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		if (urlLine.getLayoutParams().height == 0) {
@@ -1846,12 +1847,7 @@ public class SimpleBrowser extends Activity {
 			if (displayMode == 2) hideBars();
 			else if (displayMode == 3) hideUrl();			
 			
-			if (scrollState == 2) {
-				scrollState = 1;
-				scrollView.smoothScrollTo(menuWidth[0], 0);
-				browserView.getForeground().setAlpha(0);//restore
-
-			}
+			if (scrollState != 1) scrollToMain();
 			else {
 				scrollState = 2;
 				if (menuGrid == null) initMenuDialog();
@@ -2170,6 +2166,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 2:// copy
+					scrollToMain();
 					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
 					try {
 						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
@@ -2236,6 +2233,7 @@ public class SimpleBrowser extends Activity {
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
 				case 6:// search
+					scrollToMain();
 					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
 					if (searchBar == null) initSearchBar();
@@ -2251,7 +2249,6 @@ public class SimpleBrowser extends Activity {
 					finish();
 					break;
 				}
-				//menuDialog.dismiss();
 			}
 		});
 	}
@@ -2644,11 +2641,7 @@ public class SimpleBrowser extends Activity {
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (scrollState == 0) {
-					scrollState = 1;
-					scrollView.smoothScrollTo(menuWidth[0], 0);
-					browserView.getForeground().setAlpha(0);//restore
-				}
+				if (scrollState != 1) scrollToMain();
 				else {
 					scrollState = 0;
 					if (bookmarkAdapter == null) initBookmarks();
@@ -3060,11 +3053,7 @@ public class SimpleBrowser extends Activity {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				// press Back key in webview will go backword.
-				if (scrollState != 1) {
-					scrollState = 1;
-					scrollView.smoothScrollTo(menuWidth[0], 0);
-					browserView.getForeground().setAlpha(0);//restore from blur
-				}
+				if (scrollState != 1) scrollToMain();
 				else if (webControl.getVisibility() == View.VISIBLE)
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)

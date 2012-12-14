@@ -64,6 +64,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1192,7 +1193,6 @@ public class SimpleBrowser extends Activity {
 							WindowManager.LayoutParams.FLAG_FULLSCREEN);
 					showBars();
 				}
-				setLayout();
 			}
 			
 			tmpMode = sp.getInt("rotate_mode", 1);
@@ -1818,9 +1818,9 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void scrollToMain() {
+		if (scrollState == 0) bookmarkView.setVisibility(View.INVISIBLE);
+		else if (scrollState == 2) menuGrid.setVisibility(View.INVISIBLE);
 		scrollState = 1;
-		bookmarkView.setVisibility(View.INVISIBLE);
-		menuGrid.setVisibility(View.INVISIBLE);
 	}
 	
 	@Override
@@ -3200,8 +3200,6 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		setLayout();
-		
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
 		} catch (Exception e) {}
@@ -3229,9 +3227,13 @@ public class SimpleBrowser extends Activity {
         
 		LayoutParams lp = bookmarkView.getLayoutParams();
 		lp.width = bookmarkWidth;
+		bookmarkView.requestLayout();
 
 		lp = menuGrid.getLayoutParams();
 		lp.width = (int) (120*dm.density);
+		
+		if (scrollState == 0) bookmarkView.requestLayout();
+		else if (scrollState == 2) menuGrid.requestLayout();
 	}
 
 	void createAd() {

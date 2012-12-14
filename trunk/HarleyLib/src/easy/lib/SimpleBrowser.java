@@ -159,7 +159,6 @@ public class SimpleBrowser extends Activity {
 	boolean cachePrefer = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
-	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
 	TextSize textSize = TextSize.NORMAL;
 	final int historyCount = 10;
 	long sizeM = 1024 * 1024;
@@ -253,13 +252,13 @@ public class SimpleBrowser extends Activity {
 	// baidu tongji
 	static Method baiduResume = null;
 	static Method baiduPause = null;
-	static Method baiduEvent = null;
+	//static Method baiduEvent = null;
 	static {
 		try {
 			Class c = Class.forName("com.baidu.mobstat.StatService");
 			baiduResume = c.getMethod("onResume", new Class[] { Context.class });
 			baiduPause = c.getMethod("onPause", new Class[] { Context.class });
-			baiduEvent = c.getMethod("onEvent", new Class[] { Context.class, String.class, String.class });
+			//baiduEvent = c.getMethod("onEvent", new Class[] { Context.class, String.class, String.class });
 		} catch (Exception e) {}
 	}
 	
@@ -267,7 +266,6 @@ public class SimpleBrowser extends Activity {
 	static boolean mAdAvailable;
 	static {
 		try {
-			wrapAdView.checkAvailable();
 			Class.forName("com.google.ads.AdView");
 			mAdAvailable = true;
 		} catch (Throwable t) {
@@ -632,9 +630,8 @@ public class SimpleBrowser extends Activity {
 						else if (displayMode == 3) showUrl();
 					}
 
-					try {
-						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
-					} catch (Exception e) {}
+					//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
+					//} catch (Exception e) {}
 					
 					if (!incognitoMode) recordPages();
 				}
@@ -1966,9 +1963,6 @@ public class SimpleBrowser extends Activity {
 		blockJs = sp.getBoolean("block_js", false);
 		// hideExit = sp.getBoolean("hide_exit", true);
 		overviewPage = sp.getBoolean("overview_page", false);
-		collapse1 = sp.getBoolean("collapse1", false);
-		collapse2 = sp.getBoolean("collapse2", true);
-		collapse3 = sp.getBoolean("collapse3", true);
 		ua = sp.getInt("ua", 0);
 		//showZoom = sp.getBoolean("show_zoom", false);
 		mLocale = getBaseContext().getResources().getConfiguration().locale;
@@ -2679,9 +2673,6 @@ public class SimpleBrowser extends Activity {
 
 		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
 		registerReceiver(downloadReceiver, filter);
-
-		filter = new IntentFilter("android.intent.action.SCREEN_OFF");
-		registerReceiver(screenLockReceiver, filter);
 	}
 
 	boolean readPages(String filename) {
@@ -2706,7 +2697,6 @@ public class SimpleBrowser extends Activity {
 	
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(screenLockReceiver);
 		unregisterReceiver(downloadReceiver);
 		unregisterReceiver(packageReceiver);
 
@@ -2715,12 +2705,6 @@ public class SimpleBrowser extends Activity {
 
 		super.onDestroy();
 	}
-
-	BroadcastReceiver screenLockReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-		}
-	};
 
 	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		@Override
@@ -3201,9 +3185,6 @@ public class SimpleBrowser extends Activity {
 			wtask.execute("bookmark");
 		}
 
-		sEdit.putBoolean("collapse1", collapse1);
-		sEdit.putBoolean("collapse2", collapse2);
-		sEdit.putBoolean("collapse3", collapse3);
 		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);
 		sEdit.putBoolean("html5", serverWebs.get(webIndex).html5);
 		sEdit.commit();
@@ -3219,6 +3200,8 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 
+		setLayout();
+		
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
 		} catch (Exception e) {}

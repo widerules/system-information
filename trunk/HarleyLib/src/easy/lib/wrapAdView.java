@@ -105,17 +105,6 @@ public class wrapAdView {
 		}
 	}
 
-	static {
-		try {
-			Class.forName("com.google.ads.AdView");
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
-	public static void checkAvailable() {
-	}
-
 	public void loadAd() {
 		if ((mInstance != null) && (adRequest != null))
 			mInstance.loadAd(adRequest);

@@ -2381,7 +2381,6 @@ public class SimpleBrowser extends Activity {
         bookmarkView = browserView.findViewById(R.id.bookmarkView);
 		menuGrid = (GridView) browserView.findViewById(R.id.grid_menu);
 
-
 		initWebControl();
 
 		loadProgress = (ProgressBar) browserView.findViewById(R.id.loadprogress);
@@ -2592,6 +2591,7 @@ public class SimpleBrowser extends Activity {
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				if (scrollState != 1) scrollToMain();
 				if (loadProgress.getVisibility() == View.VISIBLE) {
 					// webpage is loading then stop it
 					serverWebs.get(webIndex).stopLoading();
@@ -2613,6 +2613,7 @@ public class SimpleBrowser extends Activity {
 		imgMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				webControl.setVisibility(View.INVISIBLE);
 				onMenuOpened(0, null);
 			}
 		});
@@ -2622,6 +2623,7 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View arg0) {
 				if (scrollState != 1) scrollToMain();
 				else {
+					webControl.setVisibility(View.INVISIBLE);
 					scrollState = 0;
 					if (bookmarkAdapter == null) initBookmarks();
 					if (adview != null) adview.loadAd();
@@ -2636,13 +2638,12 @@ public class SimpleBrowser extends Activity {
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				if (scrollState != 1) scrollToMain();
 				if (webControl.getVisibility() == View.INVISIBLE) {
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
 					webControl.bringToFront();
-				} else {
-					webControl.setVisibility(View.INVISIBLE);
-				}
+				} else webControl.setVisibility(View.INVISIBLE);
 			}
 		});
 

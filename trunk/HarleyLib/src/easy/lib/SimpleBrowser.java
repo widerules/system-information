@@ -949,7 +949,7 @@ public class SimpleBrowser extends Activity {
 				convertView = inflater
 						.inflate(R.layout.web_list, parent, false);
 			}
-			convertView.setBackgroundColor(0xff333333);
+			convertView.setBackgroundColor(0x00333333);
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
 			String filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
@@ -2079,7 +2079,7 @@ public class SimpleBrowser extends Activity {
 				}).create();
 	}
 	
-	public void initMenuDialog() {		
+	public void initMenuDialog() {
 		// menu icon
 		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
 				R.drawable.copy, R.drawable.about, R.drawable.downloads,

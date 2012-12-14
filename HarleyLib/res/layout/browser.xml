@@ -273,7 +273,7 @@
 	    android:gravity="bottom"
 	    android:visibility="invisible"
 	    android:cacheColorHint="#00000000"
-	    android:background="#ff333333"
+	    android:background="#ee333333"
         android:numColumns="2"
         android:stretchMode="columnWidth" />
     
@@ -283,7 +283,7 @@
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
     android:visibility="invisible"
-    android:background="#FF333333"
+    android:background="#ee333333"
     android:orientation="vertical" >
 
     <ListView

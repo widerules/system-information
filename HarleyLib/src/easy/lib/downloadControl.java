@@ -17,7 +17,6 @@ public class downloadControl extends Activity {
 	static boolean mAdAvailable;
 	static {
 		try {
-			wrapAdView.checkAvailable();
 			Class.forName("com.google.ads.AdView");
 			mAdAvailable = true;
 		} catch (Throwable t) {

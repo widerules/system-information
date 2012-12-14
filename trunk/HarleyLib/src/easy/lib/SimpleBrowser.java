@@ -54,20 +54,16 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Picture;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -81,8 +77,6 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -1845,7 +1839,7 @@ public class SimpleBrowser extends Activity {
 			if (scrollState != 1) scrollToMain();
 			else {
 				scrollState = 2;
-				if (menuGrid == null) initMenuDialog();
+				if (menuGrid.getChildCount() == 0) initMenuDialog();
 				menuGrid.setVisibility(View.VISIBLE);
 			}
 		}

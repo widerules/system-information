@@ -283,6 +283,7 @@
     android:layout_width="320dip"
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
+    android:gravity="bottom"
     android:visibility="invisible"
     android:background="#ee333333"
     android:orientation="vertical" >

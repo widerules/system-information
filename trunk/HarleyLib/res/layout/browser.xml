@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:foreground="@drawable/shape_window_dim"
-	>
-
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#FFFFFFFF"
@@ -271,5 +265,54 @@
         android:layout_above="@id/line2"
         android:layout_below="@id/line4" />
 
+    <GridView
+        android:id="@+id/grid_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+	    android:gravity="bottom"
+	    android:visibility="invisible"
+	    android:cacheColorHint="#00000000"
+	    android:background="#ff333333"
+        android:numColumns="2"
+        android:stretchMode="columnWidth" />
+    
+<LinearLayout 
+    android:id="@+id/bookmarkView"
+    android:layout_width="320dip"
+    android:layout_height="fill_parent"
+    android:layout_alignParentLeft="true"
+    android:visibility="invisible"
+    android:background="#FF333333"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:stretchMode="columnWidth" />
+    
+    <FrameLayout
+        android:id="@+id/adContainer"
+        android:layout_width="320dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:foregroundGravity="center"
+        android:orientation="vertical" >
+        
+        <View
+	        android:layout_width="wrap_content"
+    	    android:layout_height="20dip"
+        	android:background="@drawable/button_layout"
+            />
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/bookmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:stretchMode="columnWidth" />
+</LinearLayout>    
 </RelativeLayout>
-</FrameLayout>

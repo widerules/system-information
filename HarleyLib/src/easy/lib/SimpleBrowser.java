@@ -199,18 +199,15 @@ public class SimpleBrowser extends Activity {
 	// favo dialog
 	EditText titleText;
 
-	// menu
-	GridView menuGrid = null;
-	View menuView, bookmarkView;
-	FrameLayout browserView;
-	int historyIndex = -1;
+	// download dialog
 	AlertDialog downloadsDialog = null;
 
 	// browser related
-	MyHorizontalScrollView scrollView;
+	GridView menuGrid = null;
+	View bookmarkView;
+	RelativeLayout browserView;
+	int historyIndex = -1;
 	int scrollState = 1;
-	int[] menuWidth;
-	DisplayMetrics dm;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -233,6 +230,7 @@ public class SimpleBrowser extends Activity {
 	ProgressBar loadProgress;
 
 	ConnectivityManager cm;
+	DisplayMetrics dm;
 
 	// upload related
 	static boolean mValueCallbackAvailable;
@@ -1830,8 +1828,8 @@ public class SimpleBrowser extends Activity {
 
 	void scrollToMain() {
 		scrollState = 1;
-		scrollView.smoothScrollTo(menuWidth[0], 0);
-		browserView.getForeground().setAlpha(0);//restore		
+		bookmarkView.setVisibility(View.INVISIBLE);
+		menuGrid.setVisibility(View.INVISIBLE);
 	}
 	
 	@Override
@@ -1848,8 +1846,7 @@ public class SimpleBrowser extends Activity {
 			else {
 				scrollState = 2;
 				if (menuGrid == null) initMenuDialog();
-				scrollView.smoothScrollTo(menuWidth[0] + menuWidth[2], 0);
-				browserView.getForeground().setAlpha(120);//blur
+				menuGrid.setVisibility(View.VISIBLE);
 			}
 		}
 
@@ -2095,7 +2092,6 @@ public class SimpleBrowser extends Activity {
 				getString(R.string.exit) };
 
 		final Context localContext = this;
-		menuGrid = (GridView) menuView.findViewById(R.id.gridview);
 		menuGrid.setFadingEdgeLength(0);
 		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
 		menuGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -2392,15 +2388,11 @@ public class SimpleBrowser extends Activity {
 		
         LayoutInflater inflater = LayoutInflater.from(this);
         
-        scrollView = (MyHorizontalScrollView) inflater.inflate(R.layout.horz_scroll_with_list_menu, null);
-        setContentView(scrollView);
-        bookmarkView = inflater.inflate(R.layout.bookmarks, null);
-        browserView = (FrameLayout) inflater.inflate(R.layout.browser, null);
-        browserView.getForeground().setAlpha(0);
-		menuView = View.inflate(mContext, R.layout.grid_menu, null);
-        final View[] children = new View[] { bookmarkView, browserView, menuView };
+        browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
+        setContentView(browserView);
+        bookmarkView = browserView.findViewById(R.id.bookmarkView);
+		menuGrid = (GridView) browserView.findViewById(R.id.grid_menu);
 
-        scrollView.initViews(children);
 
 		initWebControl();
 
@@ -2642,9 +2634,8 @@ public class SimpleBrowser extends Activity {
 				else {
 					scrollState = 0;
 					if (bookmarkAdapter == null) initBookmarks();
-					scrollView.smoothScrollTo(0, 0);
-					browserView.getForeground().setAlpha(120);//blur
 					if (adview != null) adview.loadAd();
+					bookmarkView.setVisibility(View.VISIBLE);
 				}
 			}
 		});
@@ -3251,23 +3242,26 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void setLayout() {
-	    ViewTreeObserver observer = scrollView.getViewTreeObserver();
+	    ViewTreeObserver observer = browserView.getViewTreeObserver();
 	    observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 
 	        @Override
 	        public void onGlobalLayout() {
-	            scrollView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-	            int w = scrollView.getWidth();
-	            int h = scrollView.getHeight();
+	        	browserView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+	            int w = browserView.getWidth();
+	            int h = browserView.getHeight();
 	            
 	            getWindowManager().getDefaultDisplay().getMetrics(dm);
 	            
 	            int bookmarkWidth = w * 3 / 4;
 	            int minWidth = (int) (320 * dm.density);
 	            if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
-	            menuWidth = new int[] {bookmarkWidth, w, (int) (120*dm.density)};
 	            
-	            scrollView.setLayout(h, menuWidth, scrollState);
+				LayoutParams lp = bookmarkView.getLayoutParams();
+				lp.width = bookmarkWidth;
+
+				lp = menuGrid.getLayoutParams();
+				lp.width = (int) (120*dm.density);
 	        }
 	    });
 	}

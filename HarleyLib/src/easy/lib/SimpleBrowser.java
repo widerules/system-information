@@ -2448,6 +2448,7 @@ public class SimpleBrowser extends Activity {
 			public boolean onTouch(View view, MotionEvent event) {
 				view.setFocusableInTouchMode(true);
 				serverWebs.get(webIndex).setFocusable(false);
+				if (scrollState != 1) scrollToMain();
 				return false;
 			}
 		});
@@ -2566,6 +2567,7 @@ public class SimpleBrowser extends Activity {
 
 		webTools = (LinearLayout) browserView.findViewById(R.id.webtools);
 		urlLine = (RelativeLayout) browserView.findViewById(R.id.urlline);
+		
 		if (displayMode == 2) {// hide url bar and tools bar
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -3242,28 +3244,17 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void setLayout() {
-	    ViewTreeObserver observer = browserView.getViewTreeObserver();
-	    observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		
+        int bookmarkWidth = dm.widthPixels * 3 / 4;
+        int minWidth = (int) (320 * dm.density);
+        if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
+        
+		LayoutParams lp = bookmarkView.getLayoutParams();
+		lp.width = bookmarkWidth;
 
-	        @Override
-	        public void onGlobalLayout() {
-	        	browserView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-	            int w = browserView.getWidth();
-	            int h = browserView.getHeight();
-	            
-	            getWindowManager().getDefaultDisplay().getMetrics(dm);
-	            
-	            int bookmarkWidth = w * 3 / 4;
-	            int minWidth = (int) (320 * dm.density);
-	            if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
-	            
-				LayoutParams lp = bookmarkView.getLayoutParams();
-				lp.width = bookmarkWidth;
-
-				lp = menuGrid.getLayoutParams();
-				lp.width = (int) (120*dm.density);
-	        }
-	    });
+		lp = menuGrid.getLayoutParams();
+		lp.width = (int) (120*dm.density);
 	}
 
 	void createAd() {

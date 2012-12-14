@@ -274,6 +274,7 @@
 	    android:visibility="invisible"
 	    android:cacheColorHint="#00000000"
 	    android:background="#ee333333"
+	    android:stackFromBottom="true"
         android:numColumns="2"
         android:stretchMode="columnWidth" />
     

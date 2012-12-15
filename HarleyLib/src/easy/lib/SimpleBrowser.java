@@ -795,7 +795,6 @@ public class SimpleBrowser extends Activity {
 				
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 				mHistory.add(titleUrl);// always add it to history if visit any page.
-				historyChanged = true;
 
 				for (int i = mHistory.size() - 2; i >= 0; i--) {
 					if (mHistory.get(i).m_url.equals(url)) {
@@ -2896,7 +2895,6 @@ public class SimpleBrowser extends Activity {
 								try {//index out of bound error reported by a few user
 									mBookMark.remove(order);
 									updateBookmark();
-									bookmarkChanged = true;
 								} catch (Exception e) {}
 							}
 						})
@@ -2921,7 +2919,6 @@ public class SimpleBrowser extends Activity {
 								try {//index out of bound error reported by a few user
 									mHistory.remove(order);
 									updateHistory();
-									historyChanged = true;
 								} catch (Exception e) {}
 							}
 						})
@@ -2971,8 +2968,6 @@ public class SimpleBrowser extends Activity {
 								Collections.sort(mBookMark, new myComparator());
 								//loadPage(false);
 								updateBookmark();
-
-								bookmarkChanged = true;
 							}
 						})
 				.setNegativeButton(R.string.cancel,
@@ -3349,6 +3344,7 @@ public class SimpleBrowser extends Activity {
 	
 	void updateBookmark() {
 		if (bookmarkAdapter != null) bookmarkAdapter.notifyDataSetInvalidated();
+		bookmarkChanged = true;
 	}
 	
 	void updateHistory() {
@@ -3365,6 +3361,7 @@ public class SimpleBrowser extends Activity {
 				mHistoryForAdapter.add(mHistory.get(i));
 			historyAdapter.notifyDataSetInvalidated();
 		}
+		historyChanged = true;
 	}
 	
 	String homePage() {
@@ -3380,7 +3377,6 @@ public class SimpleBrowser extends Activity {
 
 		sb.append("<body style='background-image:url(file:///android_asset/noise_bg.png)'>");
 
-		sb.append("<h4 id='title1'>&nbsp" + getString(R.string.top) + "</h4>");
 		sb.append("<dl id='content1' type='disc'>");
 		sb.append(getTopList(""));
 		sb.append("</dl>");

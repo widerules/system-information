@@ -938,10 +938,8 @@ public class SimpleBrowser extends Activity {
 
 			if (convertView == null) {
 				final LayoutInflater inflater = getLayoutInflater();
-				convertView = inflater
-						.inflate(R.layout.web_list, parent, false);
+				convertView = inflater.inflate(R.layout.web_list, parent, false);
 			}
-			convertView.setBackgroundColor(0x00333333);
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
 			String filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
@@ -2340,7 +2338,18 @@ public class SimpleBrowser extends Activity {
 		bookmarkList.setFadingEdgeLength(0);// no shadow when scroll
 		bookmarkList.setScrollingCacheEnabled(false);
 		bookmarkList.setAdapter(bookmarkAdapter);
-		
+		bookmarkList.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+					ListView lv = (ListView) v;
+					serverWebs.get(webIndex).loadUrl(mBookMark.get(lv.getSelectedItemPosition()).m_url);
+					imgBookmark.performClick();
+				}
+				return false;
+			}
+		});
+
 		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
 		historyAdapter.isBookmark = false;
 		historyList = (ListView) bookmarkView.findViewById(R.id.history);
@@ -2348,6 +2357,18 @@ public class SimpleBrowser extends Activity {
 		historyList.setFadingEdgeLength(0);// no shadow when scroll
 		historyList.setScrollingCacheEnabled(false);
 		historyList.setAdapter(historyAdapter);
+		historyList.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+					ListView lv = (ListView) v;
+					serverWebs.get(webIndex).loadUrl(mHistory.get(mHistory.size() - 1 - lv.getSelectedItemPosition()).m_url);
+					imgBookmark.performClick();
+				}
+				return false;
+			}
+		});
+		
 		updateHistory();
 	}
 	

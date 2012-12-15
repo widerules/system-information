@@ -1833,9 +1833,13 @@ public class SimpleBrowser extends Activity {
 			if (displayMode == 2) hideBars();
 			else if (displayMode == 3) hideUrl();			
 			
-			if (scrollState != 1) scrollToMain();
+			if (scrollState == 2) {
+				menuGrid.setVisibility(View.INVISIBLE);
+				scrollState = 1;
+			}
 			else {
 				webControl.setVisibility(View.INVISIBLE);
+				bookmarkView.setVisibility(View.INVISIBLE);
 				scrollState = 2;
 				if (menuGrid.getChildCount() == 0) initMenuDialog();
 				menuGrid.setVisibility(View.VISIBLE);
@@ -2621,9 +2625,13 @@ public class SimpleBrowser extends Activity {
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (scrollState != 1) scrollToMain();
+				if (scrollState == 0) {
+					bookmarkView.setVisibility(View.INVISIBLE);
+					scrollState = 1;
+				}
 				else {
 					webControl.setVisibility(View.INVISIBLE);
+					menuGrid.setVisibility(View.INVISIBLE);
 					scrollState = 0;
 					if (bookmarkAdapter == null) initBookmarks();
 					if (adview != null) adview.loadAd();

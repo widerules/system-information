@@ -1835,6 +1835,7 @@ public class SimpleBrowser extends Activity {
 			
 			if (scrollState != 1) scrollToMain();
 			else {
+				webControl.setVisibility(View.INVISIBLE);
 				scrollState = 2;
 				if (menuGrid.getChildCount() == 0) initMenuDialog();
 				menuGrid.setVisibility(View.VISIBLE);
@@ -2613,7 +2614,6 @@ public class SimpleBrowser extends Activity {
 		imgMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				webControl.setVisibility(View.INVISIBLE);
 				onMenuOpened(0, null);
 			}
 		});

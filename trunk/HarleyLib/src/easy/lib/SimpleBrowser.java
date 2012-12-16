@@ -3405,9 +3405,8 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void loadPage() {// load home page
-		//if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
-			
 		serverWebs.get(webIndex).loadDataWithBaseURL(HOME_BLANK, homePage(), "text/html", "utf-8", HOME_BLANK);
+		imgBookmark.performClick();// show bookmark if load new page
 	}
 
 	class TitleUrl {

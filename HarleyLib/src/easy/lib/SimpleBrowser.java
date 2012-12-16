@@ -3274,7 +3274,10 @@ public class SimpleBrowser extends Activity {
 		lp = menuGrid.getLayoutParams();
 		lp.width = (int) (120*dm.density);
 		
-		if (scrollState == 0) bookmarkView.requestLayout();
+		if (scrollState == 0) {
+			bookmarkView.requestLayout();
+			updateHistoryViewHeight();
+		}
 		else if (scrollState == 2) menuGrid.requestLayout();
 	}
 
@@ -3360,25 +3363,34 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateBookmark() {
-		if (bookmarkAdapter != null) bookmarkAdapter.notifyDataSetInvalidated();
+		if (bookmarkAdapter != null) {
+			bookmarkAdapter.notifyDataSetInvalidated();
+			updateHistoryViewHeight();
+		}
 		bookmarkChanged = true;
 	}
 	
 	void updateHistory() {
 		if (historyAdapter != null) {
-			//reset height of history list so that only display 3 items
-			int size = mHistory.size();
-			if (size > 3) size = 3;
-			int height = (int) (40 * size * dm.density);
-			LayoutParams lp = historyList.getLayoutParams();
-			lp.height = height;
-
+			updateHistoryViewHeight();
+			
 			mHistoryForAdapter.clear();
 			for (int i = mHistory.size()-1; i >= 0; i--)
 				mHistoryForAdapter.add(mHistory.get(i));
 			historyAdapter.notifyDataSetInvalidated();
 		}
 		historyChanged = true;
+	}
+	
+	void updateHistoryViewHeight() {
+		//reset height of history list so that only display 3 items
+		int height = (int) (dm.heightPixels - (50 + 40 * mBookMark.size()) * dm.density);//50 is the height of ad banner
+		if (height < 160 * dm.density) height = (int) (3 * 40 * dm.density);//at least it is 3*40
+		else height = (height / 40) * 40;// let it be x*40
+		
+		LayoutParams lp = historyList.getLayoutParams();
+		lp.height = height;
+		historyList.requestLayout();
 	}
 	
 	String homePage() {

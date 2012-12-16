@@ -3285,7 +3285,7 @@ public class SimpleBrowser extends Activity {
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
 			sb.append("<a href='http://weibo.com'>");
 			sb.append(fileDir);
-			sb.append("weibo.com.png><strong>新浪微博</strong></a>");
+			sb.append("weibo.cn.png><strong>微博</strong></a>");
 			sb.append(splitter);
 			// sb.append(fileDir);
 			// sb.append("3g.gfan.com.png)'><a href='http://3g.gfan.com'>机锋市场</a></li>");
@@ -3293,8 +3293,9 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.appchina.com.png)'><a href='http://www.appchina.com'>应用汇</a></li>");
 			sb.append("<a href='http://m.hao123.com/?type=android&tn=easy.browser'>");
 			sb.append(fileDir);
-			sb.append("m.hao123.com.png><strong>好123</strong></a>");
+			sb.append("m.hao123.com.png><strong>123</strong></a>");
 			sb.append(splitter);
+			sb.append("</div><div>");
 			// sb.append(fileDir);
 			// sb.append("www.taobao.com.png)'><a href='http://www.taobao.com'>淘宝</a></li>");
 			sb.append("<a href='http://www.baidu.com'>");
@@ -3305,7 +3306,7 @@ public class SimpleBrowser extends Activity {
 			//sb.append("www.baidu.com.png)'><a href='http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF'>美图</a></li>");
 			sb.append("<a href='http://easybrowser.shupeng.com'>");
 			sb.append(fileDir);
-			sb.append("easybrowser.shupeng.com.png><strong>书朋小说网</strong></a>");
+			sb.append("easybrowser.shupeng.com.png><strong>小说</strong></a>");
 			//sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>");
 			sb.append(splitter);
 			//sb.append("<li><a href='http://www.9yu.co/index.html?c=2'>美图</a></li>");// no favicon
@@ -3326,6 +3327,7 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("www.google.com.png><strong>Google</strong></a>");
 			sb.append(splitter);
+			sb.append("</div><div>");
 			sb.append("<a href='http://twitter.com'>");
 			sb.append(fileDir);
 			sb.append("mobile.twitter.com.png><strong>Twitter</strong></a>");

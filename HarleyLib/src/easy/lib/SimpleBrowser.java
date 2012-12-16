@@ -3383,10 +3383,17 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateHistoryViewHeight() {
-		//reset height of history list so that only display 3 items
+		//reset height of history list so that it display not too many items
 		int height = (int) (dm.heightPixels - (50 + 40 * mBookMark.size()) * dm.density);//50 is the height of ad banner
-		if (height < 160 * dm.density) height = (int) (3 * 40 * dm.density);//at least it is 3*40
-		else height = (height / 40) * 40;// let it be x*40
+		int maxSize = (int) (height / dm.density / 40);
+		if (maxSize > 3) {
+			if (mHistory.size() > maxSize) height = (int) (maxSize * 40 * dm.density);
+			else height = (int) (mHistory.size() * 40 * dm.density);
+		}
+		else {
+			if (mHistory.size() > 3) height = (int) (3 * 40 * dm.density);
+			else height = (int) (mHistory.size() * 40 * dm.density);			
+		}
 		
 		LayoutParams lp = historyList.getLayoutParams();
 		lp.height = height;

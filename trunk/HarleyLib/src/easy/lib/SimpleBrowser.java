@@ -1306,7 +1306,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 
-			if (shouldReload) serverWebs.get(webIndex).reload();
+			if (shouldReload) reloadPage();
 			sEdit.commit();
 		}
 	}
@@ -2630,21 +2630,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View view) {
 				if (scrollState != 1) scrollToMain();
-				if (loadProgress.getVisibility() == View.VISIBLE) {
-					// webpage is loading then stop it
-					serverWebs.get(webIndex).stopLoading();
-					loadProgress.setVisibility(View.INVISIBLE);
-				} else {// reload the webpage
-					String url = serverWebs.get(webIndex).getUrl();
-					String m_url = serverWebs.get(webIndex).m_url;
-					if (m_url.equals(url)) {
-						if (!HOME_BLANK.equals(url))
-                            serverWebs.get(webIndex).reload();
-						else loadPage();
-					}
-					else 
-						serverWebs.get(webIndex).loadUrl(m_url);
-				}
+				reloadPage();
 			}
 		});
 		imgMenu = (ImageView) browserView.findViewById(R.id.menu);
@@ -2717,6 +2703,24 @@ public class SimpleBrowser extends Activity {
 		registerReceiver(downloadReceiver, filter);
 	}
 
+	void reloadPage() {
+		if (loadProgress.getVisibility() == View.VISIBLE) {
+			// webpage is loading then stop it
+			serverWebs.get(webIndex).stopLoading();
+			loadProgress.setVisibility(View.INVISIBLE);
+		} else {// reload the webpage
+			String url = serverWebs.get(webIndex).getUrl();
+			String m_url = serverWebs.get(webIndex).m_url;
+			if (m_url.equals(url)) {
+				if (!HOME_BLANK.equals(url))
+                    serverWebs.get(webIndex).reload();
+				else loadPage();
+			}
+			else 
+				serverWebs.get(webIndex).loadUrl(m_url);
+		}		
+	}
+	
 	boolean readPages(String filename) {
 		ObjectInputStream ois = null;
 		FileInputStream fi = null;

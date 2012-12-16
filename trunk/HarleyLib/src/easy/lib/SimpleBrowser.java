@@ -1877,6 +1877,7 @@ public class SimpleBrowser extends Activity {
 		String from = "\n(from ";
 		boolean chineseLocale = Locale.CHINA.equals(mLocale);
 				
+		if (shareMode != 1) scrollToMain();
 		switch (shareMode) {
 		case 2:// facebook or weibo
 			if (chineseLocale) // weibo for chinese locale
@@ -2071,15 +2072,27 @@ public class SimpleBrowser extends Activity {
 	
 	public void initMenuDialog() {
 		// menu icon
-		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
-				R.drawable.copy, R.drawable.about, R.drawable.downloads,
-				R.drawable.share, R.drawable.search, R.drawable.exit };
+		int[] menu_image_array = { 
+				R.drawable.html_w, 
+				R.drawable.exit, 
+				R.drawable.capture,
+				R.drawable.downloads,
+				R.drawable.copy, 
+				R.drawable.search, 
+				R.drawable.share, 
+				R.drawable.about 
+			};
 		// menu text
-		String[] menu_name_array = { getString(R.string.source),
-				getString(R.string.snap), getString(R.string.copy),
-				getString(R.string.settings), getString(R.string.downloads),
-				getString(R.string.shareurl), getString(R.string.search),
-				getString(R.string.exit) };
+		String[] menu_name_array = { 
+				getString(R.string.source),
+				getString(R.string.exit),
+				getString(R.string.snap), 
+				getString(R.string.downloads),
+				getString(R.string.copy),
+				getString(R.string.search),
+				getString(R.string.shareurl), 
+				getString(R.string.settings) 
+			};
 
 		final Context localContext = this;
 		menuGrid.setFadingEdgeLength(0);
@@ -2110,7 +2123,12 @@ public class SimpleBrowser extends Activity {
 								Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 1:// view snap
+				case 1:// exit
+					clearFile("pages");
+					ClearCache(); // clear cache when exit
+					finish();
+					break;
+				case 2:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
 							// to use a recycled bitmap android.graphics.Bitmap
 							// from one user. so catch it.
@@ -2148,33 +2166,8 @@ public class SimpleBrowser extends Activity {
 								Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 2:// copy
-					scrollToMain();
-					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
-					try {
-						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
-							Toast.makeText(mContext,
-									getString(R.string.copy_hint),
-									Toast.LENGTH_LONG).show();
-					} catch (Exception e) {
-					}
-
-					try {
-						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
-								KeyEvent.ACTION_DOWN,
-								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-						shiftPressEvent.dispatch(serverWebs.get(webIndex));
-					} catch (Exception e) {
-					}
-					break;
-				case 3:// settings
-					Intent intent = new Intent("easy.lib.about");
-					intent.setClassName(getPackageName(),
-							"easy.lib.AboutBrowser");
-					startActivityForResult(intent, SETTING_RESULTCODE);
-					break;
-				case 4:// downloads
-					intent = new Intent(
+				case 3:// downloads
+					Intent intent = new Intent(
 							"com.estrongs.action.PICK_DIRECTORY");
 					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
 					if (!util.startActivity(intent, false, mContext)) {
@@ -2212,10 +2205,26 @@ public class SimpleBrowser extends Activity {
 						downloadsDialog.show();
 					}
 					break;
-				case 5:// share url
-					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
+				case 4:// copy
+					scrollToMain();
+					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
+					try {
+						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
+							Toast.makeText(mContext,
+									getString(R.string.copy_hint),
+									Toast.LENGTH_LONG).show();
+					} catch (Exception e) {
+					}
+
+					try {
+						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
+								KeyEvent.ACTION_DOWN,
+								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+						shiftPressEvent.dispatch(serverWebs.get(webIndex));
+					} catch (Exception e) {
+					}
 					break;
-				case 6:// search
+				case 5:// search
 					scrollToMain();
 					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
@@ -2226,10 +2235,14 @@ public class SimpleBrowser extends Activity {
 					toSearch = "";
 					imm.toggleSoftInput(0, 0);
 					break;
-				case 7:// exit
-					clearFile("pages");
-					ClearCache(); // clear cache when exit
-					finish();
+				case 6:// share url
+					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
+					break;
+				case 7:// settings
+					intent = new Intent("easy.lib.about");
+					intent.setClassName(getPackageName(),
+							"easy.lib.AboutBrowser");
+					startActivityForResult(intent, SETTING_RESULTCODE);
 					break;
 				}
 			}

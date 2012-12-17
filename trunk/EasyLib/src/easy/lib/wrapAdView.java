@@ -121,9 +121,9 @@ public class wrapAdView {
 			mInstance.loadAd(adRequest);
 	}
 
-	void destroy() {
-		DestroyTask dtask = new DestroyTask();
-		dtask.execute();
+	void destroy() {//do nothing on destroy?
+		//DestroyTask dtask = new DestroyTask();
+		//dtask.execute();
 	}
 
 	public View getInstance() {

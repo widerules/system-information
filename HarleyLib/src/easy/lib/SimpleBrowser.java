@@ -1386,12 +1386,6 @@ public class SimpleBrowser extends Activity {
 					sEdit.putString("homepage", url);
 					sEdit.commit();
 					break;
-				case 8:// remove bookmark
-					removeFavo(item.getOrder());
-					break;
-				case 9:// remove history
-					removeHistory(item.getOrder());
-					break;
 				case 10:// add bookmark. not use now
 					if (historyIndex > -1)
 						addFavo(url, mHistory.get(historyIndex).m_title);
@@ -1410,37 +1404,11 @@ public class SimpleBrowser extends Activity {
 			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(
 					handler);
 
-			if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
-				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
-				
-				boolean foundBookmark = false;
-				for (int i = mBookMark.size() - 1; i >= 0; i--)
-					if ((mBookMark.get(i).m_url.equals(url))
-							|| (url.equals(mBookMark.get(i).m_url + "/"))) {
-						foundBookmark = true;
-						if (!mAdAvailable) {
-							menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);// only work in pro version
-							menu.add(0, 11, i, R.string.set_homepage).setOnMenuItemClickListener(handler);// only work in pro version
-						}
-						menu.add(0, 8, i, R.string.remove_bookmark)
-								.setOnMenuItemClickListener(handler);
-						break;
-					}
-				//if (!foundBookmark) menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);// no add bookmark on long click?
-
-				historyIndex = -1;
-				for (int i = mHistory.size() - 1; i >= 0; i--)
-					if ((mHistory.get(i).m_url.equals(url))
-							|| (url.equals(mHistory.get(i).m_url + "/"))) {
-						historyIndex = i;
-						menu.add(0, 9, i, R.string.remove_history)
-								.setOnMenuItemClickListener(handler);
-						break;
-					}
-			}
-			else {
-				menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
-				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
+			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+			if (!mAdAvailable) {// only work in pro version. should move to side menu
+				menu.add(0, 7, 0, R.string.add_shortcut).setOnMenuItemClickListener(handler);
+				menu.add(0, 11, 0, R.string.set_homepage).setOnMenuItemClickListener(handler);
 			}
 		}
 	}

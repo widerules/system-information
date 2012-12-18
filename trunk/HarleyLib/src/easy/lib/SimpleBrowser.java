@@ -3240,10 +3240,17 @@ public class SimpleBrowser extends Activity {
         
 		LayoutParams lp = bookmarkView.getLayoutParams();
 		lp.width = bookmarkWidth;
-		bookmarkView.requestLayout();
 
 		lp = menuGrid.getLayoutParams();
-		lp.width = (int) (120*dm.density);
+		int size = (int) (dm.heightPixels / 72 / dm.density);
+		if (size > 5) {
+			lp.width = (int) (80*dm.density);
+			menuGrid.setNumColumns(1);
+		}
+		else {
+			lp.width = (int) (120*dm.density);
+			menuGrid.setNumColumns(2);
+		}
 		
 		if (scrollState == 0) {
 			bookmarkView.requestLayout();

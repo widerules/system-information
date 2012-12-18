@@ -489,10 +489,6 @@ public class SimpleBrowser extends Activity {
 			// close webcontrol page if it is open.
 			webControl.setVisibility(View.INVISIBLE);
 
-			if (urlLine.getLayoutParams().height != 0) {
-				if (displayMode == 2) hideBars();
-				else if (displayMode == 3) hideUrl();
-			}
 
 			if (!this.isFocused()) {
 				try {// sometime it is null if close page too quick
@@ -691,8 +687,7 @@ public class SimpleBrowser extends Activity {
 								.setWebView(serverWebs.get(webIndex));
 						resultMsg.sendToTarget();
 						return true;
-					} else
-						return false;
+					} else return false;
 				}
 			});
 
@@ -701,16 +696,13 @@ public class SimpleBrowser extends Activity {
 				public void onReceivedSslError(WebView view,
 						SslErrorHandler handler, SslError error) {
 					// accept ssl certification whenever needed.
-					if (handler != null)
-						handler.proceed();
+					if (handler != null) handler.proceed();
 				}
 
 				@Override
 				public void onPageStarted(WebView view, String url, Bitmap favicon) {
 					super.onPageStarted(view, url, favicon);
-
 					m_url = url;
-					
 					pageSource = "";
 
 					if (isForeground) {
@@ -807,6 +799,11 @@ public class SimpleBrowser extends Activity {
 			imgRefresh.setImageResource(R.drawable.refresh);
 			webControl.setVisibility(View.INVISIBLE);
 			
+			if (urlLine.getLayoutParams().height != 0) {
+				if (displayMode == 2) hideBars();
+				else if (displayMode == 3) hideUrl();
+			}
+
 			if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 			else webAddress.setText(url);						
 		}
@@ -1463,9 +1460,12 @@ public class SimpleBrowser extends Activity {
         url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any for URLDecoder.decode(url) fail for some url, such as baidu tieba
 		String apkName = getName(url);
 		// image file from shuimu do not have ext. so we add it manually
-		if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {
-			apkName += ".jpg";
-			contentDisposition = null;
+		if (!apkName.contains(".")) {
+			if (".jpg".equals(contentDisposition)) {
+				apkName += ".jpg";
+				contentDisposition = null;
+			}
+			else apkName += ".html";// if no ext, set as html file. maybe need consider contentDisposition.
 		}
 
 		if (downloadPath.startsWith(getFilesDir().getPath()))

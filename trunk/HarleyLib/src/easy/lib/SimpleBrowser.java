@@ -456,11 +456,6 @@ public class SimpleBrowser extends Activity {
 			
 			if (scrollState != 1) scrollToMain();
 
-			if (urlLine.getLayoutParams().height != 0) {
-				if (displayMode == 2) hideBars();
-				else if (displayMode == 3) hideUrl();
-			}
-
 			if (!this.isFocused()) {
 				try {// sometime it is null if close page too quick
 					this.requestFocusFromTouch();
@@ -770,7 +765,12 @@ public class SimpleBrowser extends Activity {
 			loadProgress.setVisibility(View.INVISIBLE);
 			imgRefresh.setImageResource(R.drawable.refresh);
 			webControl.setVisibility(View.INVISIBLE);
-			webAddress.setText(url);						
+			webAddress.setText(url);
+			
+			if (urlLine.getLayoutParams().height != 0) {
+				if (displayMode == 2) hideBars();
+				else if (displayMode == 3) hideUrl();
+			}
 		}
 		// update the page title in webList
 		webAdapter.notifyDataSetChanged();
@@ -1463,9 +1463,12 @@ public class SimpleBrowser extends Activity {
         url = url.replace("%3A", ":");// replace %3A%2F%2F to :// if any for URLDecoder.decode(url) fail for some url, such as baidu tieba
 		String apkName = getName(url);
 		// image file from shuimu do not have ext. so we add it manually
-		if (!apkName.contains(".") && ".jpg".equals(contentDisposition)) {
-			apkName += ".jpg";
-			contentDisposition = null;
+		if (!apkName.contains(".")) {
+			if (".jpg".equals(contentDisposition)) {
+				apkName += ".jpg";
+				contentDisposition = null;
+			}
+			else apkName += ".html";// if no ext, set as html file. maybe need consider contentDisposition.
 		}
 
 		if (downloadPath.startsWith(getFilesDir().getPath()))

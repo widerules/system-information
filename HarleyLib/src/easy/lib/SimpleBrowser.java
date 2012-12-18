@@ -610,7 +610,7 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public void onPageStarted(WebView view, String url, Bitmap favicon) {
 					super.onPageStarted(view, url, favicon);
-					m_url = url;				
+					m_url = url;
 					pageSource = "";
 
 					if (isForeground) {

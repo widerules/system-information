@@ -178,40 +178,6 @@
                 android:fadeScrollbars="true" >
 
                 <RadioGroup
-                    android:id="@+id/display_mode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/display_mode"
-                        android:textColor="#f0030f03"
-                        android:textSize="16dip" />
-
-                    <RadioButton
-                        android:text="@string/normal"
-                        android:textColor="#f0030f03" />
-                    
-                    <RadioButton
-                        android:text="@string/full_screen"
-                        android:textColor="#f0030f03" />
-
-                    <RadioButton
-                        android:text="@string/hide_url"
-                        android:textColor="#f0030f03" />
-                </RadioGroup>
-            </HorizontalScrollView>
-        
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dip"
-                android:layout_marginRight="10dip"
-                android:fadeScrollbars="true" >
-
-                <RadioGroup
                     android:id="@+id/search_engine"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -282,6 +248,52 @@
                         android:text="@string/font_largest"
                         android:textColor="#f0030f03" />
                 </RadioGroup>
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="10dip"
+                android:fadeScrollbars="true" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/display_mode"
+                        android:textColor="#f0030f03"
+                        android:textSize="16dip" />
+
+                    <CheckBox
+                        android:id="@+id/show_url"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/show_url"
+                        android:textColor="#f0030f03" />
+
+                    <CheckBox
+                        android:id="@+id/show_controlBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/show_controlBar"
+                        android:textColor="#f0030f03" />
+
+                    <CheckBox
+                        android:id="@+id/show_statusBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="@string/show_statusBar"
+                        android:textColor="#f0030f03" />
+
+                    </LinearLayout>
             </HorizontalScrollView>
 
         </LinearLayout>

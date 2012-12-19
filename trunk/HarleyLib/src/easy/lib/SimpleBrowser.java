@@ -2032,8 +2032,8 @@ public class SimpleBrowser extends Activity {
 	public void initMenuDialog() {
 		// menu icon
 		int[] menu_image_array = {
-				R.drawable.set_home,
 				R.drawable.exit, 
+				R.drawable.set_home,
 				R.drawable.pin,
 				R.drawable.downloads,
 				R.drawable.copy, 
@@ -2045,8 +2045,8 @@ public class SimpleBrowser extends Activity {
 			};
 		// menu text
 		String[] menu_name_array = {
-				getString(R.string.set_homepage),
 				getString(R.string.exit),
+				getString(R.string.set_homepage),
 				getString(R.string.add_shortcut),
 				getString(R.string.downloads),
 				getString(R.string.copy),
@@ -2064,16 +2064,16 @@ public class SimpleBrowser extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				switch (arg2) {
-				case 0:// set homepage
+				case 0:// exit
+					clearFile("pages");
+					ClearCache(); // clear cache when exit
+					finish();
+					break;
+				case 1:// set homepage
 					m_homepage = serverWebs.get(webIndex).getUrl();
 					sEdit.putString("homepage", m_homepage);
 					sEdit.commit();
 					Toast.makeText(mContext, serverWebs.get(webIndex).getTitle() + " " + getString(R.string.set_homepage), Toast.LENGTH_LONG).show();
-					break;
-				case 1:// exit
-					clearFile("pages");
-					ClearCache(); // clear cache when exit
-					finish();
 					break;
 				case 2:// add short cut
 					createShortcut(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
@@ -2641,7 +2641,7 @@ public class SimpleBrowser extends Activity {
 				if (webControl.getVisibility() == View.INVISIBLE) {
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
-					//webControl.bringToFront();
+					webControl.bringToFront();
 				} else webControl.setVisibility(View.INVISIBLE);
 			}
 		});

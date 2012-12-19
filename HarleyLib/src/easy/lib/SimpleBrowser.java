@@ -152,7 +152,9 @@ public class SimpleBrowser extends Activity {
 
 	//boolean flashInstalled = false;
 	// settings
-	int displayMode = 1;
+	boolean showUrl = true;
+	boolean showControlBar = true;
+	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
 	boolean snapFullWeb = false;
@@ -622,8 +624,8 @@ public class SimpleBrowser extends Activity {
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
-						if (displayMode == 2) showBars();
-						else if (displayMode == 3) showUrl();
+						if (!showControlBar) showBar();
+						if (!showUrl) showUrl();
 					}
 
 					//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
@@ -768,8 +770,8 @@ public class SimpleBrowser extends Activity {
 			webAddress.setText(url);
 			
 			if (urlLine.getLayoutParams().height != 0) {
-				if (displayMode == 2) hideBars();
-				else if (displayMode == 3) hideUrl();
+				if (!showControlBar) hideBar();
+				if (!showUrl) hideUrl();
 			}
 		}
 		// update the page title in webList
@@ -1176,23 +1178,34 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 
-			int tmpMode = sp.getInt("display_mode", 1);
-			// hide url editor and tool buttons
-			if (tmpMode != displayMode) {
-				displayMode = tmpMode;
-				if (displayMode == 2) {
+			boolean tmpShow = sp.getBoolean("show_statusBar", true);
+			if (tmpShow != showStatusBar) {
+				showStatusBar = tmpShow;
+				if (!showStatusBar) {// full screen
 					getWindow().setFlags(
 							WindowManager.LayoutParams.FLAG_FULLSCREEN,
 							WindowManager.LayoutParams.FLAG_FULLSCREEN);
-					hideBars();
 				} else {
 					getWindow().clearFlags(
 							WindowManager.LayoutParams.FLAG_FULLSCREEN);
-					showBars();
 				}
 			}
 			
-			tmpMode = sp.getInt("rotate_mode", 1);
+			tmpShow = sp.getBoolean("show_url", true);
+			if (tmpShow != showUrl) {
+				showUrl = tmpShow;
+				if (!showUrl) hideUrl();
+				else showUrl();
+			}
+			
+			tmpShow = sp.getBoolean("show_controlBar", true);
+			if (tmpShow != showControlBar) {
+				showControlBar = tmpShow;
+				if (!showControlBar) hideBar();
+				else showBar();
+			}
+			
+			int tmpMode = sp.getInt("rotate_mode", 1);
 			if (rotateMode != tmpMode) {
 				rotateMode = tmpMode;
 				if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -1328,12 +1341,10 @@ public class SimpleBrowser extends Activity {
 		urlLine.requestLayout();
 	}
 	
-	public void hideBars() {
+	public void hideBar() {
 		LayoutParams lp = webTools.getLayoutParams();
 		lp.height = 0;
 		webTools.requestLayout();
-
-		hideUrl();
 	}
 
 	public void showUrl() {
@@ -1342,12 +1353,10 @@ public class SimpleBrowser extends Activity {
 		urlLine.requestLayout();
 	}
 	
-	public void showBars() {
+	public void showBar() {
 		LayoutParams lp = webTools.getLayoutParams();
 		lp.height = LayoutParams.WRAP_CONTENT;
 		webTools.requestLayout();
-
-		showUrl();
 	}
 
 	@Override
@@ -1782,12 +1791,12 @@ public class SimpleBrowser extends Activity {
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		if (urlLine.getLayoutParams().height == 0) {
-			if (displayMode == 2) showBars();
-			else if (displayMode == 3) showUrl();
+			if (!showControlBar) showBar();
+			if (!showUrl) showUrl();
 		}
 		else {
-			if (displayMode == 2) hideBars();
-			else if (displayMode == 3) hideUrl();			
+			if (!showControlBar) hideBar();
+			if (!showUrl) hideUrl();			
 			
 			if (scrollState == 2) {
 				menuGrid.setVisibility(View.INVISIBLE);
@@ -1946,7 +1955,10 @@ public class SimpleBrowser extends Activity {
 
 		incognitoMode = sp.getBoolean("incognito", false);
 		
-		displayMode = sp.getInt("display_mode", 1);
+		showStatusBar = sp.getBoolean("show_statusBar", true);
+		showUrl = sp.getBoolean("show_url", true);
+		showControlBar = sp.getBoolean("show_controlBar", true);
+		
 		
 		rotateMode = sp.getInt("rotate_mode", 1);
 		if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -2565,13 +2577,11 @@ public class SimpleBrowser extends Activity {
 		webTools = (LinearLayout) browserView.findViewById(R.id.webtools);
 		urlLine = (RelativeLayout) browserView.findViewById(R.id.urlline);
 		
-		if (displayMode == 2) {// hide url bar and tools bar
+		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-			hideBars();
-		}
-		else if (displayMode == 3) hideUrl();
+		if (!showUrl) hideUrl();
+		if (!showControlBar) hideBar();
 
 		imgNext = (ImageView) browserView.findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -3040,9 +3050,9 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if ((urlLine.getLayoutParams().height != 0) && (displayMode > 1)) { 
-					if (displayMode == 2) hideBars();
-					else if (displayMode == 3) hideUrl();
+				else if (urlLine.getLayoutParams().height != 0) { 
+					if (!showControlBar) hideBar();
+					if (!showUrl) hideUrl();
 				}
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.

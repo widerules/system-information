@@ -149,5 +149,8 @@
     <string name="portrait">锁定竖屏</string>
     <string name="incognito">隐私浏览模式</string>
     <string name="edit_home">编辑</string>
+    <string name="show_url">地址栏"     "</string>
+    <string name="show_controlBar">控制栏"    "</string>
+    <string name="show_statusBar">状态栏</string>
     
 </resources>

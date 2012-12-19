@@ -87,7 +87,6 @@
     <string name="list_view">List View</string>
     <string name="restart">It need restart to change the view. \nRestart now?</string>
     <string name="snap">Snap Shot</string>
-    <string name="full_screen">FullScreen</string>
     <string name="full_webpage">Snap shot for full web page</string>
     <string name="show_zoom">(current page)Zoom Control</string>
     <string name="block_image">Block images to reduce bandwidth</string>
@@ -141,13 +140,14 @@
     <string name="set_homepage">Set as homepage</string>
     <string name="icon">Icon</string>
     <string name="display_mode">display</string>
-    <string name="normal">normal</string>
-    <string name="hide_url">Hide url</string>
     <string name="rotate_mode">Rotate" "</string>
     <string name="system">System</string>
     <string name="landscape">landscape</string>
     <string name="portrait">Portrait</string>
     <string name="incognito">Incognito mode</string>
     <string name="edit_home">Edit</string>
+    <string name="show_url">Url"        "</string>
+    <string name="show_controlBar">Control Bar</string>
+    <string name="show_statusBar">Status Bar</string>
     
 </resources>

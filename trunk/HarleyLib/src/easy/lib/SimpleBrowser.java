@@ -152,7 +152,7 @@ public class SimpleBrowser extends Activity {
 
 	//boolean flashInstalled = false;
 	// settings
-	boolean showUrl = true;
+	boolean showUrl = false;
 	boolean showControlBar = true;
 	boolean showStatusBar = true;
 	int rotateMode = 1;
@@ -1191,7 +1191,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 			
-			tmpShow = sp.getBoolean("show_url", true);
+			tmpShow = sp.getBoolean("show_url", false);
 			if (tmpShow != showUrl) {
 				showUrl = tmpShow;
 				if (!showUrl) hideUrl();
@@ -1956,7 +1956,7 @@ public class SimpleBrowser extends Activity {
 		incognitoMode = sp.getBoolean("incognito", false);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
-		showUrl = sp.getBoolean("show_url", true);
+		showUrl = sp.getBoolean("show_url", false);
 		showControlBar = sp.getBoolean("show_controlBar", true);
 		
 		

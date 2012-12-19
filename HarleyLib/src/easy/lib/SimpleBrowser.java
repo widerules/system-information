@@ -1378,14 +1378,6 @@ public class SimpleBrowser extends Activity {
 				case 6:// open in background
 					openNewPage(url, webAdapter.getCount(), false);// use openNewPage(url, webIndex+1, true) for open in new tab 
 					break;
-				case 7:// add short cut
-					createShortcut(url, mBookMark.get(item.getOrder()).m_title);
-					break;
-				case 11://set homepage
-					m_homepage = url;
-					sEdit.putString("homepage", url);
-					sEdit.commit();
-					break;
 				case 10:// add bookmark. not use now
 					if (historyIndex > -1)
 						addFavo(url, mHistory.get(historyIndex).m_title);
@@ -1406,10 +1398,6 @@ public class SimpleBrowser extends Activity {
 
 			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
 			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
-			if (!mAdAvailable) {// only work in pro version. should move to side menu
-				menu.add(0, 7, 0, R.string.add_shortcut).setOnMenuItemClickListener(handler);
-				menu.add(0, 11, 0, R.string.set_homepage).setOnMenuItemClickListener(handler);
-			}
 		}
 	}
 
@@ -1954,7 +1942,7 @@ public class SimpleBrowser extends Activity {
 			localPort = sp.getInt("local_port", 1984);
 			ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
 		}
-		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
+		m_homepage = sp.getString("homepage", null);
 
 		incognitoMode = sp.getBoolean("incognito", false);
 		
@@ -2043,25 +2031,29 @@ public class SimpleBrowser extends Activity {
 	
 	public void initMenuDialog() {
 		// menu icon
-		int[] menu_image_array = { 
-				R.drawable.html_w, 
+		int[] menu_image_array = {
+				R.drawable.set_home,
 				R.drawable.exit, 
-				R.drawable.capture,
+				R.drawable.pin,
 				R.drawable.downloads,
 				R.drawable.copy, 
 				R.drawable.search, 
+				R.drawable.capture,
 				R.drawable.share, 
+				R.drawable.html_w,
 				R.drawable.about 
 			};
 		// menu text
-		String[] menu_name_array = { 
-				getString(R.string.source),
+		String[] menu_name_array = {
+				getString(R.string.set_homepage),
 				getString(R.string.exit),
-				getString(R.string.snap), 
+				getString(R.string.add_shortcut),
 				getString(R.string.downloads),
 				getString(R.string.copy),
 				getString(R.string.search),
+				getString(R.string.snap), 
 				getString(R.string.shareurl), 
+				getString(R.string.source),
 				getString(R.string.settings) 
 			};
 
@@ -2072,70 +2064,20 @@ public class SimpleBrowser extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				switch (arg2) {
-				case 0:// view page source
-					try {
-						if ("".equals(serverWebs.get(webIndex).pageSource)) {
-							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
-							serverWebs.get(webIndex).getPageSource();
-						}
-
-						if (m_sourceDialog == null) initSourceDialog();
-						m_sourceDialog.setTitle(serverWebs.get(webIndex)
-								.getTitle());
-						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
-							m_sourceDialog.setIcon(R.drawable.explorer);
-						else
-							m_sourceDialog.setIcon(new BitmapDrawable(
-									serverWebs.get(webIndex).getFavicon()));
-						m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
-						m_sourceDialog.show();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
-					}
+				case 0:// set homepage
+					m_homepage = serverWebs.get(webIndex).getUrl();
+					sEdit.putString("homepage", m_homepage);
+					sEdit.commit();
+					Toast.makeText(mContext, serverWebs.get(webIndex).getTitle() + " " + getString(R.string.set_homepage), Toast.LENGTH_LONG).show();
 					break;
 				case 1:// exit
 					clearFile("pages");
 					ClearCache(); // clear cache when exit
 					finish();
 					break;
-				case 2:// view snap
-					try {// still got java.lang.RuntimeException: Canvas: trying
-							// to use a recycled bitmap android.graphics.Bitmap
-							// from one user. so catch it.
-						if (!snapFullWeb) {
-							// the snap will not refresh if not destroy cache
-							webpages.destroyDrawingCache();
-							webpages.setDrawingCacheEnabled(true);
-							bmp = webpages.getDrawingCache();
-						} else {
-							Picture pic = serverWebs.get(webIndex)
-									.capturePicture();
-
-							// bmp = Bitmap.createScaledBitmap(???,
-							// pic.getWidth(), pic.getHeight(), false);//check
-							// here http://stackoverflow.com/questions/477572
-							bmp = Bitmap.createBitmap(pic.getWidth(),
-									pic.getHeight(), Bitmap.Config.ARGB_4444);
-							// the size of the web page may be very large.
-
-							Canvas canvas = new Canvas(bmp);
-							pic.draw(canvas);
-						}
-						
-						if (snapDialog == null) initSnapDialog();
-						snapView.setImageBitmap(bmp);
-						snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
-						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
-							snapDialog.setIcon(R.drawable.explorer);
-						else
-							snapDialog.setIcon(new BitmapDrawable(serverWebs
-									.get(webIndex).getFavicon()));
-						snapDialog.show();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
-					}
+				case 2:// add short cut
+					createShortcut(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
+					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
 					break;
 				case 3:// downloads
 					Intent intent = new Intent(
@@ -2206,10 +2148,68 @@ public class SimpleBrowser extends Activity {
 					toSearch = "";
 					imm.toggleSoftInput(0, 0);
 					break;
-				case 6:// share url
+				case 6:// view snap
+					try {// still got java.lang.RuntimeException: Canvas: trying
+							// to use a recycled bitmap android.graphics.Bitmap
+							// from one user. so catch it.
+						if (!snapFullWeb) {
+							// the snap will not refresh if not destroy cache
+							webpages.destroyDrawingCache();
+							webpages.setDrawingCacheEnabled(true);
+							bmp = webpages.getDrawingCache();
+						} else {
+							Picture pic = serverWebs.get(webIndex)
+									.capturePicture();
+
+							// bmp = Bitmap.createScaledBitmap(???,
+							// pic.getWidth(), pic.getHeight(), false);//check
+							// here http://stackoverflow.com/questions/477572
+							bmp = Bitmap.createBitmap(pic.getWidth(),
+									pic.getHeight(), Bitmap.Config.ARGB_4444);
+							// the size of the web page may be very large.
+
+							Canvas canvas = new Canvas(bmp);
+							pic.draw(canvas);
+						}
+						
+						if (snapDialog == null) initSnapDialog();
+						snapView.setImageBitmap(bmp);
+						snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
+						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
+							snapDialog.setIcon(R.drawable.explorer);
+						else
+							snapDialog.setIcon(new BitmapDrawable(serverWebs
+									.get(webIndex).getFavicon()));
+						snapDialog.show();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(),
+								Toast.LENGTH_LONG).show();
+					}
+					break;
+				case 7:// share url
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
-				case 7:// settings
+				case 8:// view page source
+					try {
+						if ("".equals(serverWebs.get(webIndex).pageSource)) {
+							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
+							serverWebs.get(webIndex).getPageSource();
+						}
+
+						if (m_sourceDialog == null) initSourceDialog();
+						m_sourceDialog.setTitle(serverWebs.get(webIndex)
+								.getTitle());
+						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
+							m_sourceDialog.setIcon(R.drawable.explorer);
+						else
+							m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+						m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
+						m_sourceDialog.show();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+					}
+					break;
+				case 9:// settings
 					intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(),
 							"easy.lib.AboutBrowser");
@@ -2302,7 +2302,8 @@ public class SimpleBrowser extends Activity {
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
-				openNewPage("", webIndex+1, true);
+				if (m_homepage != null) openNewPage(m_homepage, webIndex+1, true);
+				else openNewPage("", webIndex+1, true);
 			}
 		});
 		// web list
@@ -2640,7 +2641,7 @@ public class SimpleBrowser extends Activity {
 				if (webControl.getVisibility() == View.INVISIBLE) {
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
-					webControl.bringToFront();
+					//webControl.bringToFront();
 				} else webControl.setVisibility(View.INVISIBLE);
 			}
 		});

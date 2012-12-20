@@ -41,9 +41,10 @@ public class AboutBrowser extends Activity {
 
 	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD,
 			cbZoomControl, cbHtml5, cbBlockImg, cbCachePrefer,
-			cbOverview, cbSnapSize, cbIncognito;
+			cbOverview, cbSnapSize, cbIncognito,
+			cbUrl, cbControlBar, cbStatusBar;
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
-			searchEngine, shareMode, displayMode, rotateMode;
+			searchEngine, shareMode, rotateMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
 			clrCache, clrIcon, clrHome;
 	LinearLayout advanceSettings, basicSettings;
@@ -240,7 +241,6 @@ public class AboutBrowser extends Activity {
 			}
 		});
 
-		displayMode = (RadioGroup) findViewById(R.id.display_mode);
 		rotateMode = (RadioGroup) findViewById(R.id.rotate_mode);
 		cbIncognito = (CheckBox) findViewById(R.id.incognito_mode);
 		cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
@@ -250,6 +250,9 @@ public class AboutBrowser extends Activity {
 		shareMode = (RadioGroup) findViewById(R.id.share_mode);
 		fontSize = (RadioGroup) findViewById(R.id.font_size);
 		searchEngine = (RadioGroup) findViewById(R.id.search_engine);
+		cbUrl = (CheckBox) findViewById(R.id.show_url);
+		cbControlBar = (CheckBox) findViewById(R.id.show_controlBar);
+		cbStatusBar = (CheckBox) findViewById(R.id.show_statusBar);
 
 		advanceSettings = (LinearLayout) findViewById(R.id.advance_settings);
 		basicSettings = (LinearLayout) findViewById(R.id.basic_settings);
@@ -404,18 +407,19 @@ public class AboutBrowser extends Activity {
 
 	@Override
 	protected void onResume() {
-		int tmpMode = perferences.getInt("display_mode", 1);
-		if (tmpMode < 0) tmpMode = 1;
-		((RadioButton) displayMode.getChildAt(tmpMode)).setChecked(true);
-		if (tmpMode == 2)
+		boolean showStatusBar = perferences.getBoolean("show_statusBar", true);
+		cbStatusBar.setChecked(showStatusBar);
+		if (!showStatusBar)
 			getWindow().setFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		else
 			getWindow().clearFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		cbUrl.setChecked(perferences.getBoolean("show_url", false));
+		cbControlBar.setChecked(perferences.getBoolean("show_controlBar", true));
 
-		tmpMode = perferences.getInt("rotate_mode", 1);
+		int tmpMode = perferences.getInt("rotate_mode", 1);
 		if (tmpMode < 0) tmpMode = 1;
 		((RadioButton) rotateMode.getChildAt(tmpMode)).setChecked(true);
 		if (tmpMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
@@ -467,13 +471,15 @@ public class AboutBrowser extends Activity {
 			Method method = c.getMethod(
 					"onResume", new Class[] { Context.class });
 			method.invoke(this, this);//StatService.onResume(this);//for baidu tongji
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {}
 	}
 
 	@Override
 	protected void onPause() {
 		if (resetDefault) {
-			editor.putInt("display_mode", 1);
+			editor.putBoolean("show_url", false);
+			editor.putBoolean("show_controlBar", true);
+			editor.putBoolean("show_statusBar", true);
 			editor.putInt("rotate_mode", 1);
 			editor.putBoolean("incognito", false);
 			editor.putBoolean("show_zoom", false);
@@ -518,7 +524,9 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("clear_icon", false);
 			editor.putBoolean("clear_home", false);
 		} else {
-			editor.putInt("display_mode", displayMode.indexOfChild(findViewById(displayMode.getCheckedRadioButtonId())));
+			editor.putBoolean("show_url", cbUrl.isChecked());
+			editor.putBoolean("show_controlBar", cbControlBar.isChecked());
+			editor.putBoolean("show_statusBar", cbStatusBar.isChecked());
 			editor.putInt("rotate_mode", rotateMode.indexOfChild(findViewById(rotateMode.getCheckedRadioButtonId())));
 			editor.putBoolean("incognito", cbIncognito.isChecked());
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
@@ -570,6 +578,6 @@ public class AboutBrowser extends Activity {
 			Method method = c.getMethod(
 					"onPause", new Class[] { Context.class });
 			method.invoke(this, this);//StatService.onPause(this);//for baidu tongji
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {}
 	}
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="browser_name">Harley Browser</string>
-    <string name="about_message">Harley Browser is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it.</string>
+    <string name="browser_name">Easy Browser</string>
+    <string name="about_message">Easy Browser is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it.</string>
     <string name="feedback">do you have any more comments to me? (optional. eg, how to reproduce this crash?)</string>
     <string name="select_file">File Chooser</string>
     <string name="about">About...</string>

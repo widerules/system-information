@@ -1,19 +1,10 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Lançador fácil</string>
     <string name="browser_name">Navegador Fácil</string>
-    <string name="help_message">Encontre seu app por não mais de 2 clique. \nClique app ícone para pará-lo, \nClique nome app para lançar, \nClique versão aplicativo para desinstalar, \nlong clique em nome do aplicativo: atalho add, \atalho clique nlong para removê-lo.</string>
-    <string name="auto_change_wallpaper">mudar papel de parede pela trepidação</string>
     <string name="about_message">Navegador Fácil É muito pequena, browser rápido, simples e poderoso. Você pode exibir código fonte da página, o endereço web partes e snap shot da página para seus amigos. \n\nLongo clique história/favorito para o apagar.</string>
     <string name="feedback">Você tem algum comentário mais nenhuma para mim? (Opcional, por exemplo, como reproduzir esse acidente?)</string>
-    <string name="share_wallpaper">Wallpaper Compartilhar</string>
-    <string name="share_desktop">Compartilhar desktop</string>
-    <string name="warning">Somente o usuário root pode excluir aplicativo do sistema. \n\nExcluir sistema aplicativo pode causar telefone não pode arrancar. \n\nPor favor, pense com cuidado!</string>
-    <string name="menu_choose_home">Mudar Início</string>
     <string name="select">Selecione Home</string>
     <string name="select_file">Seletor de arquivos</string>
-    <string name="wallpaper_beauty">Belezas</string>
-    <string name="wallpaper">Papel de parede</string>
     <string name="about">Sobre ...</string>
     <string name="help">Útil</string>
     <string name="settings">fixação</string>
@@ -23,17 +14,6 @@
     <string name="sharemode">Modo Compartilhar</string>
     <string name="sharetext">o navegador mais rápido e leve em Android! confira</string>
     <string name="vote">Por favor, votem para me 5 estrelas</string>
-    <string name="favoriteapps">Atalho</string>
-    <string name="systemapps">Sistêmica</string>
-    <string name="userapps">msilva</string>
-    <string name="home">Lares</string>
-    <string name="packages">Provedores de Serviço</string>
-    <string name="addtoFavo">Adicionar ao lar</string>
-    <string name="removeFromFavo">Excluir</string>
-    <string name="addtoShort">Adicionar ao atalho</string>
-    <string name="removeFromShort">Excluir este atalho</string>
-    <string name="appdetail">Detalhe</string>
-    <string name="killapp">Para com isso</string>
     <string name="to">para</string>
     <string name="more">Leia mais...</string>
     <string name="delete">Excluir</string>
@@ -125,12 +105,13 @@
     <string name="set_homepage">definir como homepage</string>
     <string name="icon">ícone</string>
     <string name="display_mode">Exibir" "</string>
-    <string name="hide_url">Esconder url</string>
     <string name="rotate_mode">Rodar</string>
     <string name="system">Sistema</string>
     <string name="landscape">Paisagem</string>
     <string name="portrait">Retrato</string>
     <string name="incognito">Modo incógnito</string>
     <string name="edit_home">Editar</string>
+    <string name="show_controlBar">Barra de controle</string>
+    <string name="show_statusBar">Barra de status</string>
     
 </resources>

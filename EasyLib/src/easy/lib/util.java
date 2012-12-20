@@ -32,7 +32,6 @@ public class util {
 			context.startActivity(intent);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (showToast)
 				try {
 					AlertDialog dlg = new AlertDialog.Builder(context)
@@ -47,9 +46,7 @@ public class util {
 									}).create();
 					dlg.show();
 				} catch (Exception ee) {
-					ee.printStackTrace();
-					Toast.makeText(context, e.toString(), Toast.LENGTH_LONG)
-							.show();
+					Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
 				}
 			return false;
 		}
@@ -69,7 +66,6 @@ public class util {
 								}).create();
 				dlg.show();
 			} catch (Exception ee) {
-				ee.printStackTrace();
 				Toast.makeText(context, "null pointer error of resolveInfo",
 						Toast.LENGTH_LONG).show();
 			}
@@ -92,9 +88,7 @@ public class util {
 			if (pi != null)
 				version = pi.versionName == null ? String
 						.valueOf(pi.versionCode) : pi.versionName;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {}
 		return version;
 	}
 
@@ -106,9 +100,7 @@ public class util {
 					PackageManager.GET_ACTIVITIES);
 			if (pi != null)
 				version = String.valueOf(pi.versionCode);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {}
 		return version;
 	}
 

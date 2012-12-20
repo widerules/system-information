@@ -103,9 +103,7 @@ public class ProxySettings {
 				}
 			} else
 				ret = setICSProxy(host, port);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (Exception e) {}
 
 		return ret;
 	}

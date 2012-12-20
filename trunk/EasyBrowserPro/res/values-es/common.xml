@@ -13,21 +13,8 @@
     <string name="sharemode">Compartir el modo de</string>
     <string name="sharetext">el navegador más rápido y ligero en Android! échale un vistazo</string>
     <string name="vote">Por favor vote para mí 5 estrellas</string>
-    <string name="online">En línea</string>
-    <string name="home">Casa</string>
-    <string name="packages">Servicios provistos</string>
-    <string name="addtoFavo">Añadir a su casa</string>
-    <string name="removeFromFavo">Eliminar</string>
-    <string name="addtoShort">Añadir el atajo</string>
-    <string name="removeFromShort">Eliminar este acceso directo</string>
-    <string name="appdetail">Detalle...</string>
-    <string name="killapp">Basta ya</string>
-    <string name="backapp">Hacer la copia</string>
-    <string name="to">a</string>
     <string name="more">Más información...</string>
     <string name="delete">Eliminar</string>
-    <string name="hideapp">Ocultar</string>
-    <string name="hidepage">Ocultar la página actual</string>
     <string name="back">espalda</string>
     <string name="next">Próximo</string>
     <string name="newpage">Nueva página</string>
@@ -71,7 +58,6 @@
     <string name="list_view">Ver la lista de</string>
     <string name="restart">Es necesario reiniciar para cambiar la vista. \n¿Reiniciar ahora?</string>
     <string name="snap">instantánea</string>
-    <string name="full_screen">Pantalla completa</string>
     <string name="full_webpage">Snap Shot para la página web completa</string>
     <string name="show_zoom">(Página actual) de control de zoom</string>
     <string name="block_image">Bloquear imágenes para reducir el ancho de banda</string>
@@ -115,13 +101,12 @@
     <string name="crashed">se estrelló</string>
     <string name="set_homepage">establecer como página de inicio</string>
     <string name="icon">icono</string>
-    <string name="display_mode">Mostrar</string>
-    <string name="hide_url">ocultar url</string>
     <string name="rotate_mode">Girar"      "</string>
     <string name="system">Sistema</string>
     <string name="landscape">paisaje"    "</string>
     <string name="portrait">retrato</string>
     <string name="incognito">Modo incógnito</string>
     <string name="edit_home">Editar</string>
+    <string name="show_controlBar">Barra de control</string>
     
 </resources>

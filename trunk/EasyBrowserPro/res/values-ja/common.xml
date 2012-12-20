@@ -1,19 +1,10 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">ひかりのランチャー</string>
     <string name="browser_name">ひかりのブラウザ</string>
-    <string name="help_message">2クリック以上しないことにより、あなたのアプリを見つける。 \nClickアプリのアイコンは、\nClickアプリケーション名が起動し、それを停止します\nclickアプリのバージョンはアンインストールするには、\nlongクリックしてアプリ名：アドインをショートカット、それを削除する\nlongクリックのショートカット。</string>
     <string name="feedback">あなたは私にこれ以上のコメントがありますか？ （このクラッシュを再現する方法を省略可能、例えば？）</string>
-    <string name="auto_change_wallpaper">シェイクで壁紙を変更でき</string>
     <string name="about_message">ひかりのブラウザは非常に小さく、高速、シンプルかつ強力なブラウザです。ページソースをご覧いただけ、 ウェブアドレスとスナップショットを友だちとシェアすることができます。 \n\nクリックのリンクを長く押すと、ブックマークと履歴を削除できます。</string>
-    <string name="share_wallpaper">壁紙をシェア</string>
-    <string name="share_desktop">デスクトップをシェア</string>
-    <string name="warning">rootユーザーだけがシステムのアプリケーションを削除することができます。\n\n削除システムアプリは電話がブートできない可能性があります。\n\nしばらくは慎重にと思います！</string>
-    <string name="menu_choose_home">ホームを切り替え</string>
     <string name="select">ホームを選択</string>
     <string name="select_file">ファイルをセレクタ</string>
-    <string name="wallpaper_scene">Baiduの画像</string>
-    <string name="wallpaper_beauty">美しさ</string>
     <string name="settings">設定</string>
     <string name="cancel">キャンセル</string>
     <string name="exit">終了</string>
@@ -21,20 +12,6 @@
     <string name="sharemode">シェアモード</string>
     <string name="sharetext">シンプルで使いやすい</string>
     <string name="vote">5つ星のための私を投票してください</string>
-    <string name="favoriteapps">ショートカットキー</string>
-    <string name="systemapps">システム</string>
-    <string name="userapps">ユーザー</string>
-    <string name="online">オンライン</string>
-    <string name="home">ホーム</string>
-    <string name="packages">サービスあるいはプロバイダ</string>
-    <string name="addtoFavo">ホームに追加する</string>
-    <string name="removeFromFavo">削除</string>
-    <string name="addtoShort">ショートカットに追加</string>
-    <string name="removeFromShort">このショートカットを削除</string>
-    <string name="appdetail">詳細な情報</string>
-    <string name="killapp">ストップ</string>
-    <string name="backapp">バックアップ</string>
-    <string name="to">へ</string>
     <string name="more">もっと..</string>
     <string name="delete">削除</string>
     <string name="hideapp">隠す</string>
@@ -129,13 +106,13 @@
     <string name="set_homepage">ホームページとして設定する</string>
     <string name="icon">アイコン</string>
     <string name="display_mode">表示</string>
-    <string name="normal">通常の</string>
-    <string name="hide_url">URLを隠す</string>
     <string name="rotate_mode">回転させる</string>
     <string name="system">次のシステム</string>
     <string name="landscape">横画面をロック</string>
     <string name="portrait">垂直画面をロック</string>
     <string name="incognito">シークレットモード</string>
     <string name="edit_home">編集</string>
+    <string name="show_controlBar">コントロールバー</string>
+    <string name="show_statusBar">ステータスバー</string>
     
 </resources>

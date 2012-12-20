@@ -769,10 +769,8 @@ public class SimpleBrowser extends Activity {
 			webControl.setVisibility(View.INVISIBLE);
 			webAddress.setText(url);
 			
-			if (urlLine.getLayoutParams().height != 0) {
-				if (!showControlBar) hideBar();
-				if (!showUrl) hideUrl();
-			}
+			if ((urlLine.getLayoutParams().height != 0) && !showUrl) hideUrl();
+			if ((webTools.getLayoutParams().height != 0) &&  !showControlBar) hideBar();			
 		}
 		// update the page title in webList
 		webAdapter.notifyDataSetChanged();
@@ -1790,7 +1788,7 @@ public class SimpleBrowser extends Activity {
 	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (urlLine.getLayoutParams().height == 0) {
+		if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {
 			if (scrollState == 2) {
 				menuGrid.setVisibility(View.INVISIBLE);
 				scrollState = 1;
@@ -3056,9 +3054,9 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if (urlLine.getLayoutParams().height != 0) { 
-					if (!showControlBar) hideBar();
-					if (!showUrl) hideUrl();
+				else if ((urlLine.getLayoutParams().height != 0) || (webTools.getLayoutParams().height != 0)) {
+						if (!showUrl) hideUrl();
+						if (!showControlBar) hideBar();
 				}
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.

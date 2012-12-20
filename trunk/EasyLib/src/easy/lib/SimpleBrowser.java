@@ -799,10 +799,8 @@ public class SimpleBrowser extends Activity {
 			imgRefresh.setImageResource(R.drawable.refresh);
 			webControl.setVisibility(View.INVISIBLE);
 			
-			if (urlLine.getLayoutParams().height != 0) {
-				if (!showControlBar) hideBar();
-				if (!showUrl) hideUrl();
-			}
+			if ((urlLine.getLayoutParams().height != 0) && !showUrl) hideUrl();
+			if ((webTools.getLayoutParams().height != 0) &&  !showControlBar) hideBar();			
 
 			if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 			else webAddress.setText(url);						
@@ -1789,7 +1787,7 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (urlLine.getLayoutParams().height == 0) {
+		if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {
 			if (!showControlBar) showBar();
 			if (!showUrl) showUrl();
 		}
@@ -2988,9 +2986,9 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if (urlLine.getLayoutParams().height != 0) { 
-					if (!showControlBar) hideBar();
-					if (!showUrl) hideUrl();
+				else if ((urlLine.getLayoutParams().height != 0) || (webTools.getLayoutParams().height != 0)) {
+						if (!showUrl) hideUrl();
+						if (!showControlBar) hideBar();
 				}
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.

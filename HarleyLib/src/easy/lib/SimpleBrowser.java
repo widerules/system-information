@@ -1791,8 +1791,14 @@ public class SimpleBrowser extends Activity {
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		if (urlLine.getLayoutParams().height == 0) {
-			if (!showControlBar) showBar();
-			if (!showUrl) showUrl();
+			if (scrollState == 2) {
+				menuGrid.setVisibility(View.INVISIBLE);
+				scrollState = 1;
+			}
+			else {
+				if (!showControlBar) showBar();
+				if (!showUrl) showUrl();
+			}
 		}
 		else {
 			if (!showControlBar) hideBar();
@@ -3254,7 +3260,7 @@ public class SimpleBrowser extends Activity {
 
 		lp = menuGrid.getLayoutParams();
 		int size = (int) (dm.heightPixels / 72 / dm.density);
-		if (size > 5) {
+		if (size > 6) {
 			lp.width = (int) (80*dm.density);
 			menuGrid.setNumColumns(1);
 		}

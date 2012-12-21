@@ -1853,13 +1853,13 @@ public class SimpleBrowser extends Activity {
 		if (shareMode != 1) scrollToMain();
 		switch (shareMode) {
 		case 2:// facebook or weibo
-			if (chineseLocale) // weibo for chinese locale
+			if ((chineseLocale) || "easy.browser".equals(getPackageName()))// weibo for chinese locale
 				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + url + "&title=" + title + "&appkey=3792856654&ralateUid=1877224203&source=bookmark");
 			else // facebook for none chinese locale
 				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + url + "&t=" + title + from + browserName + ")");
 			break;
 		case 3:
-			if (chineseLocale) {// qzone for chinese locale 
+			if ((chineseLocale) || "easy.browser".equals(getPackageName())) {// qzone for chinese locale 
 				if ("".equals(title)) title = url;
 				data = Uri.parse("http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=" + url + "&desc=" + title + "&title" + title + "&site=" + browserName);
 			}
@@ -1867,7 +1867,7 @@ public class SimpleBrowser extends Activity {
 				data = Uri.parse("http://twitter.com/intent/tweet?url=" + url + "&text=" + title + from + browserName + ")");
 			break;
 		case 4:
-			if (chineseLocale) // tencent weibo for chinese localse
+			if ((chineseLocale) || "easy.browser".equals(getPackageName())) // tencent weibo for chinese localse
 				data = Uri.parse("http://share.v.t.qq.com/index.php?c=share&a=index&url=" + url + "&title=" + title + url + from + browserName + ")");
 			else // google+ for none chinese locale
 				data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + url);

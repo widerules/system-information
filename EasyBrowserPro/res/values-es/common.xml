@@ -1,7 +1,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="browser_name">Navegador Fácil</string>
-    <string name="about_message">Navegador Fácil Es una muy pequeña, un navegador rápido, simple y poderoso. Usted puede ver la fuente de la página, dirección web y la cuota de tiro rápido a tus amigos. \n\nLong, haga clic en la historia/marcador para eliminarlo.</string>
+    <string name="about_message">Este es un muy pequeño navegador rápido, simple y potente. Puede ver fuente de la página, la dirección web y la participación instantánea a tus amigos.\n\nLong clic historia/marcador para eliminarlo.</string>
     <string name="feedback">¿tienes más comentarios a mí? (Opcional, por ejemplo, cómo reproducir este accidente?)</string>
     <string name="select_file">Archivo Selector</string>
     <string name="about">Acerca de...</string>
@@ -90,7 +90,7 @@
     <string name="enable_proxy">Habilitar el puerto del servidor proxy, local:</string>
     <!--string name="hide_exit">Ocultar lugar de salida</string-->
     <string name="overview_page">Abrir páginas en general</string>
-    <string name="share_to_friends">Easy Share Browser es muy facil</string>
+    <string name="share_to_friends">Compartir y seguir</string>
     <string name="cache_prefer">prefieren caché para reducir el ancho de banda</string>
     <string name="add_shortcut">Crear un acceso directo en la pantalla principal</string>
     <string name="share_mode">Cuota"    "</string>

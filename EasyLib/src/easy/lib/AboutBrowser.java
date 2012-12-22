@@ -141,11 +141,10 @@ public class AboutBrowser extends Activity {
 		btnTitle.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setClassName(packageName, "easy.lib.SimpleBrowser");
-				Uri data = Uri.parse("https://market.android.com/details?id="+packageName);
-				intent.setData(data);
-				util.startActivity(intent, false, getBaseContext());
+				Intent intent = new Intent(Intent.ACTION_SENDTO);
+				intent.setData(Uri.fromParts("mailto",
+						getString(R.string.browser_author), null));
+				util.startActivity(intent, true, getBaseContext());
 			}
 		});
 
@@ -225,19 +224,6 @@ public class AboutBrowser extends Activity {
 											int which) {
 									}
 								}).show();
-			}
-		});
-
-		TextView tvMailTo = (TextView) findViewById(R.id.mailto);
-		tvMailTo.setText(Html.fromHtml("<u>"
-				+ getString(R.string.browser_author) + "</u>"));
-		tvMailTo.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(Intent.ACTION_SENDTO);
-				intent.setData(Uri.fromParts("mailto",
-						getString(R.string.browser_author), null));
-				util.startActivity(intent, true, getBaseContext());
 			}
 		});
 

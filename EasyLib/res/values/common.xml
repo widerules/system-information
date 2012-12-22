@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="browser_name">Easy Browser</string>
-    <string name="about_message">Easy Browser is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it.</string>
+    <string name="about_message">This is a very small, fast, simple and powerful browser. You can view page source, share web address and snap shot to your friends. \n\nLong click history/bookmark to delete it.</string>
     <string name="feedback">do you have any more comments to me? (optional. eg, how to reproduce this crash?)</string>
     <string name="select_file">File Chooser</string>
     <string name="about">About...</string>
@@ -14,7 +14,7 @@
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
     <string name="sharetext">the most fast and light browser on Android! Check it out</string>
-    <string name="vote">Vote 5 stars if you like Easy Browser</string>
+    <string name="vote">Vote 5 stars if you like it</string>
     <string name="online">Online</string>
     <string name="home">Home</string>
     <string name="packages">Services/Providers</string>
@@ -101,7 +101,7 @@
     <string name="reset">Press this for default options</string>
     <string name="enable_proxy">Enable proxy, local port:</string>
     <string name="overview_page">Open Pages in Overview</string>
-    <string name="share_to_friends">Share Easy Browser to your friends</string>
+    <string name="share_to_friends">Share and follow</string>
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
     <string name="add_shortcut">Create shortcut on home screen</string>
     <string name="share_mode">Share2</string>

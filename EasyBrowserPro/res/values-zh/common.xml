@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="about_message">点点浏览器是一个小巧、方便，功能完备的浏览器，不但速度飞快，还可以查看网页源码，分享网址和截图给好友。\n\n如需删除收藏/历史请长按该链接。</string>
+    <string name="about_message">这是一个小巧、方便，功能完备的浏览器，不但速度飞快，还可以查看网页源码，分享网址和截图给好友。\n\n如需删除收藏/历史请长按该链接。</string>
     <string name="feedback">(可选)有什么建议或反馈吗？比如怎么重现这次的问题？</string>
     <string name="about">关于...</string>
     <string name="help">帮助</string>
@@ -11,7 +11,7 @@
     <string name="exit">退出</string>
     <string name="share">分享</string>
     <string name="sharemode">分享方式</string>
-    <string name="sharetext">屌丝必备的浏览器,今天你用了吗?</string>
+    <string name="sharetext">我最喜欢的安卓浏览器,今天你用了吗?</string>
     <string name="vote">喜欢就给我打5星</string>
     <string name="more">更多...</string>
     <string name="delete">删除</string>
@@ -99,7 +99,7 @@
     <string name="reset">恢复默认设置</string>
     <string name="enable_proxy">使用代理，本地端口：</string>
     <string name="overview_page">以概览模式打开网页</string>
-    <string name="share_to_friends">分享点点，关注点点</string>
+    <string name="share_to_friends">分享和关注</string>
     <string name="cache_prefer">缓存优先，节省流量</string>
     <string name="add_shortcut">创建桌面快捷方式</string>
     <string name="share_mode">分享方式</string>

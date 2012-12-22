@@ -1,8 +1,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="browser_name">ひかりのブラウザ</string>
+    <string name="about_message">これは非常に小さく、高速で、シンプルかつ強力なブラウザです。あなたは、ページのソース、共有のWebアドレスとあなたの友人へのスナップショットを表示することができます。 \n\nLongは、[履歴]をクリックします/それを削除するブックマーク。</string>
     <string name="feedback">あなたは私にこれ以上のコメントがありますか？ （このクラッシュを再現する方法を省略可能、例えば？）</string>
-    <string name="about_message">ひかりのブラウザは非常に小さく、高速、シンプルかつ強力なブラウザです。ページソースをご覧いただけ、 ウェブアドレスとスナップショットを友だちとシェアすることができます。 \n\nクリックのリンクを長く押すと、ブックマークと履歴を削除できます。</string>
     <string name="select">ホームを選択</string>
     <string name="select_file">ファイルをセレクタ</string>
     <string name="settings">設定</string>

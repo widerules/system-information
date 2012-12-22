@@ -59,7 +59,7 @@ public class AboutBrowser extends Activity {
 	SharedPreferences.Editor editor;
 
 	String packageName;
-	String marketUrl = "http://bpc.borqs.com/market.html%3Fid%3D";
+	String marketUrl = "http://bpc.borqs.com/market.html?id=";
 	String appUrl;
 	
 	@Override

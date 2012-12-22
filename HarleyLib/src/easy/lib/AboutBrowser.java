@@ -196,7 +196,7 @@ public class AboutBrowser extends Activity {
 				if (clrIcon.isChecked())
 					message += getString(R.string.icon) + ", ";
 				if (clrHome.isChecked())
-					message += getString(R.string.home) + ", ";
+					message += getString(R.string.homepage) + ", ";
 				message = message.trim();
 				if ("".equals(message))
 					return;// return if no data selected.

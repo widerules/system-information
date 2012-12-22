@@ -469,7 +469,7 @@ public class SimpleBrowser extends Activity {
 			}
 
 			boolean ret = true;
-			try{ ret = super.onTouchEvent(ev);} catch(Exception e) {}// catch a crash reported by one user}
+			try{ ret = super.onTouchEvent(ev);} catch(Exception e) {}// catch a crash reported by one user
 			return ret;
 		}
 
@@ -3058,10 +3058,8 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if ((urlLine.getLayoutParams().height != 0) || (webTools.getLayoutParams().height != 0)) {
-						if (!showUrl) hideUrl();
-						if (!showControlBar) hideBar();
-				}
+				else if ((urlLine.getLayoutParams().height != 0) && (!showUrl)) hideUrl();
+				else if ((webTools.getLayoutParams().height != 0) && (!showControlBar)) hideBar();
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

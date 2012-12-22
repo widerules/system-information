@@ -454,23 +454,19 @@ public class SimpleBrowser extends Activity {
 		public boolean onTouchEvent(MotionEvent ev) {// onTouchListener may not
 														// work. so put relate
 														// code here
-			// close webcontrol page if it is open.
-			webControl.setVisibility(View.INVISIBLE);
-			
-			if (scrollState != 1) scrollToMain();
-
-			if (!this.isFocused()) {
-				try {// sometime it is null if close page too quick
-					this.requestFocusFromTouch();
-					this.setFocusable(true);
-				} catch(Exception e) {}
-				webAddress.setFocusableInTouchMode(false);
-				webAddress.clearFocus();
+			if (ev.getAction() == 0) {// touch down
+				if (scrollState != 1) scrollToMain();
+				else if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
+					webControl.setVisibility(View.INVISIBLE);
+				else if (!this.isFocused()) {
+					this.setFocusableInTouchMode(true);
+					this.requestFocus();
+					webAddress.setFocusableInTouchMode(false);
+					webAddress.clearFocus();
+				}
 			}
-
-			boolean ret = true;
-			try{ ret = super.onTouchEvent(ev);} catch(Exception e) {}// catch a crash reported by one user
-			return ret;
+			
+			return super.onTouchEvent(ev);
 		}
 
 		public MyWebview(Context context) {

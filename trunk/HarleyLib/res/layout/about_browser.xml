@@ -25,22 +25,6 @@
                 android:gravity="center_horizontal"
                 android:textSize="16dip" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/explorer" />
-
-            <TextView
-                android:id="@+id/mailto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dip"
-                android:text="@string/browser_author"
-                android:textColor="#F08080F0"
-                android:textSize="16dip" />
-
             <TextView
                 android:id="@+id/help1"
                 android:layout_width="fill_parent"

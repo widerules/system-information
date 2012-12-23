@@ -15,22 +15,23 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="40dip"
+        android:background="#00000000"
         >
         
         <ImageView
             android:id="@+id/page_up"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-	        android:background="@drawable/circle_transparent"
+	        android:src="@drawable/c_a_u"
             />
         
         <ImageView
             android:id="@+id/page_down"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-	        android:background="@drawable/circle_transparent"
+	        android:src="@drawable/c_a_d"
             />
         </RelativeLayout>
     

@@ -152,7 +152,7 @@ public class SimpleBrowser extends Activity {
 
 	//boolean flashInstalled = false;
 	// settings
-	boolean showUrl = false;
+	boolean showUrl = true;
 	boolean showControlBar = true;
 	boolean showStatusBar = true;
 	int rotateMode = 1;
@@ -1190,7 +1190,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 			
-			tmpShow = sp.getBoolean("show_url", false);
+			tmpShow = sp.getBoolean("show_url", true);
 			if (tmpShow != showUrl) {
 				showUrl = tmpShow;
 				if (!showUrl) hideUrl();
@@ -1961,7 +1961,7 @@ public class SimpleBrowser extends Activity {
 		incognitoMode = sp.getBoolean("incognito", false);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
-		showUrl = sp.getBoolean("show_url", false);
+		showUrl = sp.getBoolean("show_url", true);
 		showControlBar = sp.getBoolean("show_controlBar", true);
 		
 		
@@ -2239,7 +2239,7 @@ public class SimpleBrowser extends Activity {
 	
 	public void initUpDown() {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
-		//upAndDown.bringToFront();
+		upAndDown.bringToFront();
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setOnClickListener(new OnClickListener() {
@@ -2689,8 +2689,8 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
+		//initUpDown();
 		createAd();
-		initUpDown();
 		
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test

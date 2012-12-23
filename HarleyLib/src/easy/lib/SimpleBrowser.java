@@ -1624,7 +1624,7 @@ public class SimpleBrowser extends Activity {
 					// found local file with same name and length,
 					// no need to download, just send intent to view it
 					String[] tmp = apkName.split("\\.");
-					util.startActivity(intent, false, mContext);
+					util.startActivity(intent, true, mContext);
 					appstate.downloadState.remove(NOTIFICATION_ID);
 					nManager.cancel(NOTIFICATION_ID);
 					return downloadPath + apkName;
@@ -1691,15 +1691,11 @@ public class SimpleBrowser extends Activity {
 				if (stopDownload)
 					nManager.cancel(NOTIFICATION_ID);
 
-				try {
-					fos.close();
-				} catch (IOException e1) {
-				}
+				try { fos.close();
+				} catch (IOException e1) {}
 
-				try {
-					is.close();
-				} catch (IOException e1) {
-				}
+				try { is.close();
+				} catch (IOException e1) {}
 
 				if (httpConnection != null)
 					httpConnection.disconnect();
@@ -1710,8 +1706,7 @@ public class SimpleBrowser extends Activity {
 									// start package manager to install package
 					notification.icon = android.R.drawable.stat_sys_download_done;
 
-					DecimalFormat df = (DecimalFormat) NumberFormat
-							.getInstance();
+					DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
 					df.setMaximumFractionDigits(2);
 					String ssize = total_read + "B ";
 					if (total_read > sizeM)
@@ -1729,10 +1724,8 @@ public class SimpleBrowser extends Activity {
 											// progress bar
 					nManager.notify(NOTIFICATION_ID, notification);
 
-					// change file property, for on some device the property is
-					// wrong
-					Process p = Runtime.getRuntime().exec(
-							"chmod 644 " + download_file.getPath());
+					// change file property, for on some device the property is wrong
+					Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());
 					p.waitFor();
 
 					if (mimeType.startsWith("image")) {
@@ -1742,19 +1735,20 @@ public class SimpleBrowser extends Activity {
 						// add to picture list and enable change background by
 						// shake
 						sendBroadcast(intentAddPic);
-					} else if (mimeType.startsWith("application"))
+					} 
+					else if (mimeType.startsWith("application/vnd.android.package-archive")) {
 						try {
 							PackageInfo pi = getPackageManager()
-									.getPackageArchiveInfo(
-											downloadPath + apkName, 0);
+									.getPackageArchiveInfo(downloadPath + apkName, 0);
 							downloadAppID.add(new packageIDpair(pi.packageName,
 									NOTIFICATION_ID, download_file));
 						} catch (Exception e) {}
 
-					// call system package manager to install app.
-					// it will not return result code,
-					// so not use startActivityForResult();
-					util.startActivity(intent, false, mContext);
+						// call system package manager to install app.
+						// it will not return result code,
+						// so not use startActivityForResult();
+						util.startActivity(intent, false, mContext);
+					}
 				}
 
 			} catch (Exception e) {
@@ -1762,11 +1756,16 @@ public class SimpleBrowser extends Activity {
 				notification.icon = android.R.drawable.stat_notify_error;
 				intent.putExtra("errorMsg", e.toString());
 				// request_code will help to diff different thread
-				contentIntent = PendingIntent.getActivity(mContext,
-						NOTIFICATION_ID, intent,
+				contentIntent = PendingIntent.getActivity(
+						mContext,
+						NOTIFICATION_ID, 
+						intent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
-				notification.setLatestEventInfo(mContext, apkName,
-						e.toString(), contentIntent);
+				notification.setLatestEventInfo(
+						mContext, 
+						apkName,
+						e.toString(), 
+						contentIntent);
 				nManager.notify(NOTIFICATION_ID, notification);
 
 				// below line will cause error simetime, reported by emilio. so
@@ -2093,7 +2092,9 @@ public class SimpleBrowser extends Activity {
 					ClearCache(); // clear cache when exit
 					finish();
 					break;
-				case 1:
+				case 1:// pdf
+					scrollToMain();
+					serverWebs.get(webIndex).loadUrl("http://www.web2pdfconvert.com/engine?curl=" + serverWebs.get(webIndex).m_url);
 					break;
 				case 2:// set homepage
 					m_homepage = serverWebs.get(webIndex).getUrl();

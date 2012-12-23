@@ -67,6 +67,7 @@ import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,6 +75,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnDragListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
@@ -2050,29 +2052,31 @@ public class SimpleBrowser extends Activity {
 	public void initMenuDialog() {
 		// menu icon
 		int[] menu_image_array = {
-				R.drawable.exit, 
+				R.drawable.exit,
+				R.drawable.recycle,
 				R.drawable.set_home,
 				R.drawable.pin,
 				R.drawable.downloads,
-				R.drawable.copy, 
+				R.drawable.copy,
 				R.drawable.search, 
-				R.drawable.share, 
+				R.drawable.share,
 				R.drawable.capture,
 				R.drawable.link,
 				R.drawable.html_w,
-				R.drawable.about 
+				R.drawable.about
 			};
 		// menu text
 		String[] menu_name_array = {
 				getString(R.string.exit),
+				"PDF",
 				getString(R.string.set_homepage),
 				getString(R.string.add_shortcut),
 				getString(R.string.downloads),
 				getString(R.string.copy),
 				getString(R.string.search),
 				getString(R.string.shareurl), 
-				getString(R.string.snap), 
-				"cookie", 
+				getString(R.string.snap),
+				"cookie",
 				getString(R.string.source),
 				getString(R.string.settings)
 			};
@@ -2089,17 +2093,19 @@ public class SimpleBrowser extends Activity {
 					ClearCache(); // clear cache when exit
 					finish();
 					break;
-				case 1:// set homepage
+				case 1:
+					break;
+				case 2:// set homepage
 					m_homepage = serverWebs.get(webIndex).getUrl();
 					sEdit.putString("homepage", m_homepage);
 					sEdit.commit();
 					Toast.makeText(mContext, serverWebs.get(webIndex).getTitle() + " " + getString(R.string.set_homepage), Toast.LENGTH_LONG).show();
 					break;
-				case 2:// add short cut
+				case 3:// add short cut
 					createShortcut(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
 					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
 					break;
-				case 3:// downloads
+				case 4:// downloads
 					Intent intent = new Intent(
 							"com.estrongs.action.PICK_DIRECTORY");
 					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
@@ -2138,7 +2144,7 @@ public class SimpleBrowser extends Activity {
 						downloadsDialog.show();
 					}
 					break;
-				case 4:// copy
+				case 5:// copy
 					scrollToMain();
 					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
 					try {
@@ -2155,7 +2161,7 @@ public class SimpleBrowser extends Activity {
 						shiftPressEvent.dispatch(serverWebs.get(webIndex));
 					} catch (Exception e) {}
 					break;
-				case 5:// search
+				case 6:// search
 					scrollToMain();
 					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
@@ -2166,7 +2172,7 @@ public class SimpleBrowser extends Activity {
 					toSearch = "";
 					imm.toggleSoftInput(0, 0);
 					break;
-				case 6:// view snap
+				case 7:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
 							// to use a recycled bitmap android.graphics.Bitmap
 							// from one user. so catch it.
@@ -2203,10 +2209,10 @@ public class SimpleBrowser extends Activity {
 								Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 7:// share url
+				case 8:// share url
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
-				case 8:// cookie
+				case 9:// cookie
 					CookieManager cookieManager = CookieManager.getInstance(); 
 					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
 					
@@ -2219,7 +2225,7 @@ public class SimpleBrowser extends Activity {
 					m_sourceDialog.setMessage(cookie);
 					m_sourceDialog.show();
 					break;
-				case 9:// view page source
+				case 10:// view page source
 					try {
 						if ("".equals(serverWebs.get(webIndex).pageSource)) {
 							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
@@ -2238,7 +2244,7 @@ public class SimpleBrowser extends Activity {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 10:// settings
+				case 11:// settings
 					intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(),
 							"easy.lib.AboutBrowser");
@@ -2253,6 +2259,12 @@ public class SimpleBrowser extends Activity {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
 		upAndDown.setVisibility(View.VISIBLE);
 		upAndDown.bringToFront();
+		/*upAndDown.setOnDragListener(new OnDragListener() {
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+				return false;
+			}
+		});*/
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setAlpha(80);
@@ -2704,7 +2716,7 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
-		//initUpDown();
+		initUpDown();
 		createAd();
 		
 		try {// there are a null pointer error reported for the if line below,

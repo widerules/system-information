@@ -2242,6 +2242,7 @@ public class SimpleBrowser extends Activity {
 		upAndDown.bringToFront();
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
+		upButton.setAlpha(80);
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -2250,6 +2251,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
+		downButton.setAlpha(80);
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -2689,7 +2691,7 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
-		//initUpDown();
+		initUpDown();
 		createAd();
 		
 		try {// there are a null pointer error reported for the if line below,

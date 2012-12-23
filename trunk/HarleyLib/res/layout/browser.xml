@@ -19,20 +19,18 @@
         
         <ImageView
             android:id="@+id/page_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
             android:layout_alignParentTop="true"
-            android:src="@drawable/br_up" 
-	        android:background="@drawable/imagebutton_layout"
+	        android:background="@drawable/circle_transparent"
             />
         
         <ImageView
             android:id="@+id/page_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/br_down" 
-	        android:background="@drawable/imagebutton_layout"
+	        android:background="@drawable/circle_transparent"
             />
         </RelativeLayout>
     
@@ -254,7 +252,7 @@
                     android:layout_margin="0dip"
                     android:paddingLeft="2dip"
                     android:paddingRight="0dip"
-                    android:background="@drawable/circle_transparent"
+                    android:background="#00000000"
                     android:completionThreshold="1"
                     android:imeOptions="actionGo|flagNoExtractUi"
                     android:inputType="textUri"

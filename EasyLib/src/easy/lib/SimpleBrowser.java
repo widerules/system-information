@@ -1146,7 +1146,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 			
-			tmpShow = sp.getBoolean("show_url", false);
+			tmpShow = sp.getBoolean("show_url", true);
 			if (tmpShow != showUrl) {
 				showUrl = tmpShow;
 				if (!showUrl) hideUrl();
@@ -1943,7 +1943,7 @@ public class SimpleBrowser extends Activity {
 		incognitoMode = sp.getBoolean("incognito", false);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
-		showUrl = sp.getBoolean("show_url", false);
+		showUrl = sp.getBoolean("show_url", true);
 		showControlBar = sp.getBoolean("show_controlBar", true);
 		
 		

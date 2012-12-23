@@ -29,6 +29,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
@@ -2055,8 +2056,9 @@ public class SimpleBrowser extends Activity {
 				R.drawable.downloads,
 				R.drawable.copy, 
 				R.drawable.search, 
-				R.drawable.capture,
 				R.drawable.share, 
+				R.drawable.capture,
+				R.drawable.link,
 				R.drawable.html_w,
 				R.drawable.about 
 			};
@@ -2068,10 +2070,11 @@ public class SimpleBrowser extends Activity {
 				getString(R.string.downloads),
 				getString(R.string.copy),
 				getString(R.string.search),
-				getString(R.string.snap), 
 				getString(R.string.shareurl), 
+				getString(R.string.snap), 
+				"cookie", 
 				getString(R.string.source),
-				getString(R.string.settings) 
+				getString(R.string.settings)
 			};
 
 		final Context localContext = this;
@@ -2143,16 +2146,14 @@ public class SimpleBrowser extends Activity {
 							Toast.makeText(mContext,
 									getString(R.string.copy_hint),
 									Toast.LENGTH_LONG).show();
-					} catch (Exception e) {
-					}
+					} catch (Exception e) {}
 
 					try {
 						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
 								KeyEvent.ACTION_DOWN,
 								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
 						shiftPressEvent.dispatch(serverWebs.get(webIndex));
-					} catch (Exception e) {
-					}
+					} catch (Exception e) {}
 					break;
 				case 5:// search
 					scrollToMain();
@@ -2195,8 +2196,7 @@ public class SimpleBrowser extends Activity {
 						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
 							snapDialog.setIcon(R.drawable.explorer);
 						else
-							snapDialog.setIcon(new BitmapDrawable(serverWebs
-									.get(webIndex).getFavicon()));
+							snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
 						snapDialog.show();
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(),
@@ -2206,7 +2206,20 @@ public class SimpleBrowser extends Activity {
 				case 7:// share url
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
-				case 8:// view page source
+				case 8:// cookie
+					CookieManager cookieManager = CookieManager.getInstance(); 
+					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
+					
+					if (m_sourceDialog == null) initSourceDialog();
+					m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
+					if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
+						m_sourceDialog.setIcon(R.drawable.explorer);
+					else
+						m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+					m_sourceDialog.setMessage(cookie);
+					m_sourceDialog.show();
+					break;
+				case 9:// view page source
 					try {
 						if ("".equals(serverWebs.get(webIndex).pageSource)) {
 							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
@@ -2214,8 +2227,7 @@ public class SimpleBrowser extends Activity {
 						}
 
 						if (m_sourceDialog == null) initSourceDialog();
-						m_sourceDialog.setTitle(serverWebs.get(webIndex)
-								.getTitle());
+						m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
 						if (HOME_BLANK.equals(serverWebs.get(webIndex).getUrl()))
 							m_sourceDialog.setIcon(R.drawable.explorer);
 						else
@@ -2226,7 +2238,7 @@ public class SimpleBrowser extends Activity {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 9:// settings
+				case 10:// settings
 					intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(),
 							"easy.lib.AboutBrowser");
@@ -2239,6 +2251,7 @@ public class SimpleBrowser extends Activity {
 	
 	public void initUpDown() {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
+		upAndDown.setVisibility(View.VISIBLE);
 		upAndDown.bringToFront();
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
@@ -2691,7 +2704,7 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
-		initUpDown();
+		//initUpDown();
 		createAd();
 		
 		try {// there are a null pointer error reported for the if line below,
@@ -3282,7 +3295,7 @@ public class SimpleBrowser extends Activity {
 
 		lp = menuGrid.getLayoutParams();
 		int size = (int) (dm.heightPixels / 72 / dm.density);
-		if (size > 6) {
+		if (size > 7) {
 			lp.width = (int) (80*dm.density);
 			menuGrid.setNumColumns(1);
 		}

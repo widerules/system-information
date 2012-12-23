@@ -20,7 +20,7 @@
  
     <item >
         <shape>
-            <gradient android:startColor="#10000000" android:endColor="#10000000" android:angle="90" />
+            <gradient android:startColor="#100000ff" android:endColor="#200000ff" android:angle="90" />
             <corners android:radius="20dip" />
             <padding android:left="0dip" android:top="0dip"
                 android:right="0dip" android:bottom="0dip" />

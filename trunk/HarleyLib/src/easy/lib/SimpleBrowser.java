@@ -2237,7 +2237,6 @@ public class SimpleBrowser extends Activity {
 				case 9:// cookie
 					CookieManager cookieManager = CookieManager.getInstance(); 
 					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
-					cookie.replaceAll(";", "\r\n");
 					
 					if (m_sourceDialog == null) initSourceDialog();
 					m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
@@ -2245,7 +2244,7 @@ public class SimpleBrowser extends Activity {
 						m_sourceDialog.setIcon(R.drawable.explorer);
 					else
 						m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
-					m_sourceDialog.setMessage(cookie);
+					m_sourceDialog.setMessage(cookie.replaceAll("; ", "\n\n"));
 					m_sourceDialog.show();
 					break;
 				case 10:// view page source

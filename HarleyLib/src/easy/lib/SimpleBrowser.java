@@ -2239,7 +2239,7 @@ public class SimpleBrowser extends Activity {
 	
 	public void initUpDown() {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
-		//upAndDown.bringToFront();
+		upAndDown.bringToFront();
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setOnClickListener(new OnClickListener() {

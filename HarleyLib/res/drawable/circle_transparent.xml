@@ -2,28 +2,28 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape>
-            <gradient android:startColor="#0096c732" android:endColor="#00FFFFFF" android:angle="90" />
-            <corners android:radius="10dip" />
-            <padding android:left="5dip" android:top="5dip"
-                android:right="5dip" android:bottom="5dip" />
+            <gradient android:startColor="#110000ff" android:endColor="#220000ff" android:angle="90" />
+            <corners android:radius="20dip" />
+            <padding android:left="0dip" android:top="0dip"
+                android:right="0dip" android:bottom="0dip" />
         </shape>
     </item>
  
     <item android:state_focused="true">
         <shape>
-            <gradient android:startColor="#0096c732" android:endColor="#00FFFFFF" android:angle="90" />
-            <corners android:radius="10dip" />
-            <padding android:left="5dip" android:top="5dip"
-                android:right="5dip" android:bottom="5dip" />
+            <gradient android:startColor="#11ffffff" android:endColor="#22ffffff" android:angle="90" />
+            <corners android:radius="20dip" />
+            <padding android:left="0dip" android:top="0dip"
+                android:right="0dip" android:bottom="0dip" />
         </shape>
     </item>
  
     <item >
         <shape>
-            <gradient android:startColor="#00CCCCCC" android:endColor="#00FFFFFF" android:angle="90" />
-            <corners android:radius="10dip" />
-            <padding android:left="5dip" android:top="5dip"
-                android:right="5dip" android:bottom="5dip" />
+            <gradient android:startColor="#10000000" android:endColor="#10000000" android:angle="90" />
+            <corners android:radius="20dip" />
+            <padding android:left="0dip" android:top="0dip"
+                android:right="0dip" android:bottom="0dip" />
         </shape>
     </item>
 </selector>

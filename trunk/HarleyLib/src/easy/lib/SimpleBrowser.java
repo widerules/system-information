@@ -198,6 +198,10 @@ public class SimpleBrowser extends Activity {
 	// download dialog
 	AlertDialog downloadsDialog = null;
 
+	// page up and down button
+	RelativeLayout upAndDown;
+	ImageView upButton, downButton;
+	
 	// browser related
 	GridView menuGrid = null;
 	View bookmarkView;
@@ -2233,6 +2237,27 @@ public class SimpleBrowser extends Activity {
 		});
 	}
 	
+	public void initUpDown() {
+		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
+		upAndDown.bringToFront();
+		
+		upButton = (ImageView) findViewById(R.id.page_up);
+		upButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				serverWebs.get(webIndex).scrollBy(0, -dm.heightPixels*4/5);
+			}
+		});
+		
+		downButton = (ImageView) findViewById(R.id.page_down);
+		downButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				serverWebs.get(webIndex).scrollBy(0, dm.heightPixels*4/5);
+			}
+		});
+	}
+	
 	public void initSearchBar() {		
 		imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		imgSearchPrev.setOnClickListener(new OnClickListener() {
@@ -2665,7 +2690,8 @@ public class SimpleBrowser extends Activity {
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
 		createAd();
-
+		initUpDown();
+		
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
@@ -2674,10 +2700,8 @@ public class SimpleBrowser extends Activity {
 				else if ((m_homepage != null) && !"".equals(m_homepage)) serverWebs.get(webIndex).loadUrl(m_homepage);
 				else loadPage();// load about:blank if no url saved or homepage specified
 			}
-			else
-				serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
-		} catch (Exception e) {
-		}
+			else serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
+		} catch (Exception e) {}
 
 		// for package added
 		IntentFilter filter = new IntentFilter();

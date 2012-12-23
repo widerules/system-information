@@ -8,6 +8,35 @@
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/up_down"
+        android:layout_width="wrap_content"
+        android:layout_height="160dip"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="40dip"
+        >
+        
+        <ImageView
+            android:id="@+id/page_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/br_up" 
+	        android:background="@drawable/imagebutton_layout"
+            />
+        
+        <ImageView
+            android:id="@+id/page_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/br_down" 
+	        android:background="@drawable/imagebutton_layout"
+            />
+        </RelativeLayout>
+    
+    <RelativeLayout
         android:id="@+id/search_bar"
         android:layout_width="fill_parent"
         android:layout_height="36dip"

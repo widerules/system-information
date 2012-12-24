@@ -2224,7 +2224,9 @@ public class SimpleBrowser extends Activity {
 				case 9:// cookie
 					CookieManager cookieManager = CookieManager.getInstance(); 
 					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
-					sourceOrCookie = cookie.replaceAll("; ", "\n\n");
+					if (cookie != null)
+						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
+					else sourceOrCookie = "No cookie on this page.";
 					
 					if (m_sourceDialog == null) initSourceDialog();
 					m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());

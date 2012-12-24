@@ -1713,8 +1713,8 @@ public class SimpleBrowser extends Activity {
 			} catch (Exception e) {
 				downloadFailed = true;
 				notification.icon = android.R.drawable.stat_notify_error;
-				intent.setAction(getPackageName() + ".crashControl");
-				intent.setClassName(getPackageName(), CrashControl.class.getName());
+				intent.setAction(getPackageName() + ".downloadControl");
+				intent.setClassName(getPackageName(), downloadControl.class.getName());
 				
 				Writer writer = new StringWriter();
 				PrintWriter printWriter = new PrintWriter(writer);
@@ -2056,9 +2056,8 @@ public class SimpleBrowser extends Activity {
 						intent.setData(Uri.fromParts("mailto", "", null));
 						intent.putExtra(Intent.EXTRA_TEXT, sourceOrCookie);
 						intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
-						if (!util.startActivity(intent, false, getBaseContext())) {
+						if (!util.startActivity(intent, false, getBaseContext())) 
 							shareUrl("", sourceOrCookie);
-						}
 					}
 				})
 		.setNegativeButton(R.string.cancel,
@@ -2739,7 +2738,7 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
-		initUpDown();
+		//initUpDown();
 		createAd();
 		
 		try {// there are a null pointer error reported for the if line below,

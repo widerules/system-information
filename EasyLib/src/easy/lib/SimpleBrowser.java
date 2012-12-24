@@ -488,8 +488,7 @@ public class SimpleBrowser extends Activity {
 														// work. so put relate
 														// code here
 			if (ev.getAction() == 0) {// touch down
-				if (scrollState != 1) scrollToMain();
-				else if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
+				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
 					webControl.setVisibility(View.INVISIBLE);
 				else if (!this.isFocused()) {
 					this.setFocusableInTouchMode(true);
@@ -1526,8 +1525,7 @@ public class SimpleBrowser extends Activity {
 					System.currentTimeMillis());
 
 			Intent intent = new Intent();
-			PendingIntent contentIntent = PendingIntent.getActivity(mContext,
-					0, intent, 0);
+			PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 			notification.setLatestEventInfo(mContext, apkName,
 					getString(R.string.start_download), contentIntent);
 			nManager.notify(NOTIFICATION_ID, notification);
@@ -1621,10 +1619,7 @@ public class SimpleBrowser extends Activity {
 				if (download_file.length() == apk_length) {
 					// found local file with same name and length,
 					// no need to download, just send intent to view it
-					String[] tmp = apkName.split("\\.");
-					util.startActivity(intent, false, mContext);
-					appstate.downloadState.remove(NOTIFICATION_ID);
-					nManager.cancel(NOTIFICATION_ID);
+					downloadSuccessRoutine(notification, apk_length, intent, download_file, NOTIFICATION_ID, mimeType);
 					return downloadPath + apkName;
 				} else if (download_file.length() < apk_length) {
 					// local file size < need to download,
@@ -1686,18 +1681,13 @@ public class SimpleBrowser extends Activity {
 				}
 				// stop download by user. clear notification here for the
 				// close() and shutdown() may be very slow
-				if (stopDownload)
-					nManager.cancel(NOTIFICATION_ID);
+				if (stopDownload) nManager.cancel(NOTIFICATION_ID);
 
-				try {
-					fos.close();
-				} catch (IOException e1) {
-				}
+				try { fos.close();
+				} catch (IOException e1) {}
 
-				try {
-					is.close();
-				} catch (IOException e1) {
-				}
+				try { is.close();
+				} catch (IOException e1) {}
 
 				if (httpConnection != null)
 					httpConnection.disconnect();
@@ -1706,53 +1696,7 @@ public class SimpleBrowser extends Activity {
 
 				if (!stopDownload) {// download success. change notification,
 									// start package manager to install package
-					notification.icon = android.R.drawable.stat_sys_download_done;
-
-					DecimalFormat df = (DecimalFormat) NumberFormat
-							.getInstance();
-					df.setMaximumFractionDigits(2);
-					String ssize = total_read + "B ";
-					if (total_read > sizeM)
-						ssize = df.format(total_read * 1.0 / sizeM) + "M ";
-					else if (total_read > 1024)
-						ssize = df.format(total_read * 1.0 / 1024) + "K ";
-					
-					contentIntent = PendingIntent.getActivity(mContext, 0,
-							intent, 0);
-					notification.contentView.setOnClickPendingIntent(
-							R.id.notification_dialog, contentIntent);
-					notification.setLatestEventInfo(mContext, apkName, ssize
-							+ getString(R.string.download_finish),
-							contentIntent);// click listener for download
-											// progress bar
-					nManager.notify(NOTIFICATION_ID, notification);
-
-					// change file property, for on some device the property is
-					// wrong
-					Process p = Runtime.getRuntime().exec(
-							"chmod 644 " + download_file.getPath());
-					p.waitFor();
-
-					if (mimeType.startsWith("image")) {
-						Intent intentAddPic = new Intent(
-								"simpleHome.action.PIC_ADDED");
-						intentAddPic.putExtra("picFile", apkName);
-						// add to picture list and enable change background by
-						// shake
-						sendBroadcast(intentAddPic);
-					} else if (mimeType.startsWith("application"))
-						try {
-							PackageInfo pi = getPackageManager()
-									.getPackageArchiveInfo(
-											downloadPath + apkName, 0);
-							downloadAppID.add(new packageIDpair(pi.packageName,
-									NOTIFICATION_ID, download_file));
-						} catch (Exception e) {}
-
-					// call system package manager to install app.
-					// it will not return result code,
-					// so not use startActivityForResult();
-					util.startActivity(intent, false, mContext);
+					downloadSuccessRoutine(notification, total_read, intent, download_file, NOTIFICATION_ID, mimeType);
 				}
 
 			} catch (Exception e) {
@@ -1782,6 +1726,57 @@ public class SimpleBrowser extends Activity {
 
 	}
 
+	void downloadSuccessRoutine(Notification notification, long total_read, Intent intent, File download_file, int NOTIFICATION_ID, String mimeType) {
+		notification.icon = android.R.drawable.stat_sys_download_done;
+
+		DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
+		df.setMaximumFractionDigits(2);
+		String ssize = total_read + "B ";
+		if (total_read > sizeM)
+			ssize = df.format(total_read * 1.0 / sizeM) + "M ";
+		else if (total_read > 1024)
+			ssize = df.format(total_read * 1.0 / 1024) + "K ";
+		
+		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+		notification.contentView.setOnClickPendingIntent(
+				R.id.notification_dialog, contentIntent);
+		notification.setLatestEventInfo(mContext, download_file.getPath(), ssize
+				+ getString(R.string.download_finish),
+				contentIntent);// click listener for download
+								// progress bar
+		nManager.notify(NOTIFICATION_ID, notification);
+
+		// change file property, for on some device the property is wrong
+		try {
+			Process p = Runtime.getRuntime().exec("chmod 644 " + download_file.getPath());
+			try {
+				p.waitFor();
+			} catch (InterruptedException e) {}
+		} catch (IOException e1) {}
+
+		if (mimeType.startsWith("image")) {
+			Intent intentAddPic = new Intent(
+					"simpleHome.action.PIC_ADDED");
+			intentAddPic.putExtra("picFile", download_file.getName());
+			// add to picture list and enable change background by
+			// shake
+			sendBroadcast(intentAddPic);
+		} 
+		else if (mimeType.startsWith("application/vnd.android.package-archive")) {
+			try {
+				PackageInfo pi = getPackageManager()
+						.getPackageArchiveInfo(downloadPath + download_file.getName(), 0);
+				downloadAppID.add(new packageIDpair(pi.packageName,
+						NOTIFICATION_ID, download_file));
+			} catch (Exception e) {}
+
+			// call system package manager to install app.
+			// it will not return result code,
+			// so not use startActivityForResult();
+			util.startActivity(intent, false, mContext);
+		}		
+	}
+	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {

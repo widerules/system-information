@@ -1713,20 +1713,8 @@ public class SimpleBrowser extends Activity {
 			} catch (Exception e) {
 				downloadFailed = true;
 				notification.icon = android.R.drawable.stat_notify_error;
-				intent.setAction(getPackageName() + ".downloadControl");
-				intent.setClassName(getPackageName(), downloadControl.class.getName());
 				
-				Writer writer = new StringWriter();
-				PrintWriter printWriter = new PrintWriter(writer);
-				e.printStackTrace(printWriter);
-				Throwable cause = e.getCause();
-				while (cause != null) {
-					cause.printStackTrace(printWriter);
-					cause = cause.getCause();
-				}
-				printWriter.close();
-				
-				intent.putExtra("errorMsg", writer.toString());
+				intent.putExtra("errorMsg", e.toString());
 				intent.putExtra("id", NOTIFICATION_ID);
 				// request_code will help to diff different thread
 				contentIntent = PendingIntent.getActivity(

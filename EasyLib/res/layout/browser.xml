@@ -226,7 +226,7 @@
                     android:layout_margin="0dip"
                     android:paddingLeft="2dip"
                     android:paddingRight="0dip"
-                    android:background="@drawable/circle_transparent"
+                    android:background="#00000000"
                     android:completionThreshold="1"
                     android:imeOptions="actionGo|flagNoExtractUi"
                     android:inputType="textUri"

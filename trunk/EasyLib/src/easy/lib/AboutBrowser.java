@@ -82,7 +82,7 @@ public class AboutBrowser extends Activity {
 		Uri data = null;
 		
 		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext) + "...\n\n";
-		boolean chineseLocale = Locale.CHINA.equals(getBaseContext().getResources().getConfiguration().locale);
+		boolean chineseLocale = Locale.CHINA.equals(getBaseContext().getResources().getConfiguration().locale) || "easy.browser".equals(getPackageName());
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
 		case 2:
@@ -195,7 +195,7 @@ public class AboutBrowser extends Activity {
 				if (clrIcon.isChecked())
 					message += getString(R.string.icon) + ", ";
 				if (clrHome.isChecked())
-					message += getString(R.string.home) + ", ";
+					message += getString(R.string.homepage) + ", ";
 				message = message.trim();
 				if ("".equals(message))
 					return;// return if no data selected.

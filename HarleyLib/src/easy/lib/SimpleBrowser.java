@@ -2065,8 +2065,8 @@ public class SimpleBrowser extends Activity {
 				R.drawable.pin,
 				R.drawable.downloads,
 				R.drawable.copy,
-				R.drawable.search, 
 				R.drawable.share,
+				R.drawable.search, 
 				R.drawable.capture,
 				R.drawable.link,
 				R.drawable.html_w,
@@ -2080,8 +2080,8 @@ public class SimpleBrowser extends Activity {
 				getString(R.string.add_shortcut),
 				getString(R.string.downloads),
 				getString(R.string.copy),
+				getString(R.string.shareurl),
 				getString(R.string.search),
-				getString(R.string.shareurl), 
 				getString(R.string.snap),
 				"cookie",
 				getString(R.string.source),
@@ -2170,7 +2170,10 @@ public class SimpleBrowser extends Activity {
 						shiftPressEvent.dispatch(serverWebs.get(webIndex));
 					} catch (Exception e) {}
 					break;
-				case 6:// search
+				case 6:// share url
+					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
+					break;
+				case 7:// search
 					scrollToMain();
 					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
@@ -2181,7 +2184,7 @@ public class SimpleBrowser extends Activity {
 					toSearch = "";
 					imm.toggleSoftInput(0, 0);
 					break;
-				case 7:// view snap
+				case 8:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
 							// to use a recycled bitmap android.graphics.Bitmap
 							// from one user. so catch it.
@@ -2217,9 +2220,6 @@ public class SimpleBrowser extends Activity {
 						Toast.makeText(mContext, e.toString(),
 								Toast.LENGTH_LONG).show();
 					}
-					break;
-				case 8:// share url
-					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
 				case 9:// cookie
 					CookieManager cookieManager = CookieManager.getInstance(); 

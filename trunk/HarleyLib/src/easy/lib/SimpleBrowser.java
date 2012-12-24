@@ -206,6 +206,10 @@ public class SimpleBrowser extends Activity {
 	// download dialog
 	AlertDialog downloadsDialog = null;
 
+	// source dialog
+	AlertDialog m_sourceDialog = null;
+	String sourceOrCookie = "";
+	
 	// page up and down button
 	RelativeLayout upAndDown;
 	ImageView upButton, downButton;
@@ -254,7 +258,6 @@ public class SimpleBrowser extends Activity {
 	private int FILECHOOSER_RESULTCODE = 1001;
 
 	// bookmark and history
-	AlertDialog m_sourceDialog = null;
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
@@ -2050,14 +2053,11 @@ public class SimpleBrowser extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog,	int which) {
 						Intent intent = new Intent(Intent.ACTION_SENDTO);
-						intent.setData(Uri
-								.fromParts("mailto", "", null));
-						intent.putExtra(Intent.EXTRA_TEXT,
-								serverWebs.get(webIndex).pageSource);
-						intent.putExtra(Intent.EXTRA_SUBJECT,
-								serverWebs.get(webIndex).getTitle());
-						if (!util.startActivity(intent, true, getBaseContext())) {
-							shareUrl("", serverWebs.get(webIndex).pageSource);
+						intent.setData(Uri.fromParts("mailto", "", null));
+						intent.putExtra(Intent.EXTRA_TEXT, sourceOrCookie);
+						intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
+						if (!util.startActivity(intent, false, getBaseContext())) {
+							shareUrl("", sourceOrCookie);
 						}
 					}
 				})
@@ -2237,6 +2237,7 @@ public class SimpleBrowser extends Activity {
 				case 9:// cookie
 					CookieManager cookieManager = CookieManager.getInstance(); 
 					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
+					sourceOrCookie = cookie.replaceAll("; ", "\n\n");
 					
 					if (m_sourceDialog == null) initSourceDialog();
 					m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
@@ -2244,7 +2245,7 @@ public class SimpleBrowser extends Activity {
 						m_sourceDialog.setIcon(R.drawable.explorer);
 					else
 						m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
-					m_sourceDialog.setMessage(cookie.replaceAll("; ", "\n\n"));
+					m_sourceDialog.setMessage(sourceOrCookie);
 					m_sourceDialog.show();
 					break;
 				case 10:// view page source
@@ -2260,7 +2261,8 @@ public class SimpleBrowser extends Activity {
 							m_sourceDialog.setIcon(R.drawable.explorer);
 						else
 							m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
-						m_sourceDialog.setMessage(serverWebs.get(webIndex).pageSource);
+						sourceOrCookie = serverWebs.get(webIndex).pageSource;
+						m_sourceDialog.setMessage(sourceOrCookie);
 						m_sourceDialog.show();
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();

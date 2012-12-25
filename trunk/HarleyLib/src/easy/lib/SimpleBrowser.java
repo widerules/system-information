@@ -160,8 +160,8 @@ public class SimpleBrowser extends Activity {
 
 	//boolean flashInstalled = false;
 	// settings
-	boolean showUrl = true;
-	boolean showControlBar = true;
+	boolean showUrl = true, showUrlNow = true;
+	boolean showControlBar = true, showBarNow = true;
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
@@ -636,8 +636,7 @@ public class SimpleBrowser extends Activity {
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
-						if (!showControlBar) showBar();
-						if (!showUrl) showUrl();
+						if (!showControlBar || !showUrl) setWebpagesLayout(true, true);
 					}
 
 					//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
@@ -781,8 +780,7 @@ public class SimpleBrowser extends Activity {
 			webControl.setVisibility(View.INVISIBLE);
 			webAddress.setText(url);
 			
-			if ((urlLine.getLayoutParams().height != 0) && !showUrl) hideUrl();
-			if ((webTools.getLayoutParams().height != 0) &&  !showControlBar) hideBar();			
+			if (!showUrl || !showControlBar) setWebpagesLayout(showUrl, showControlBar);
 		}
 		// update the page title in webList
 		webAdapter.notifyDataSetChanged();
@@ -1201,19 +1199,9 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 			
-			tmpShow = sp.getBoolean("show_url", true);
-			if (tmpShow != showUrl) {
-				showUrl = tmpShow;
-				if (!showUrl) hideUrl();
-				else showUrl();
-			}
-			
-			tmpShow = sp.getBoolean("show_controlBar", true);
-			if (tmpShow != showControlBar) {
-				showControlBar = tmpShow;
-				if (!showControlBar) hideBar();
-				else showBar();
-			}
+			showUrl = sp.getBoolean("show_url", true);
+			showControlBar = sp.getBoolean("show_controlBar", true);
+			setWebpagesLayout(showUrl, showControlBar);
 			
 			int tmpMode = sp.getInt("rotate_mode", 1);
 			if (rotateMode != tmpMode) {
@@ -1345,30 +1333,19 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {}
 	}
 	
-	public void hideUrl() {
-		LayoutParams lp = urlLine.getLayoutParams();
-		lp.height = 0;
-		urlLine.requestLayout();
+	public void setWebpagesLayout(boolean show_url, boolean show_bar) {
+		showUrlNow = show_url;
+		showBarNow = show_bar;
+		
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(-1, -1);
+		if (showUrlNow) lp.addRule(RelativeLayout.BELOW, R.id.line4);
+		else lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		if (showBarNow) lp.addRule(RelativeLayout.ABOVE, R.id.line2);
+		else lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		webpages.setLayoutParams(lp);
+		webpages.requestLayout();
 	}
 	
-	public void hideBar() {
-		LayoutParams lp = webTools.getLayoutParams();
-		lp.height = 0;
-		webTools.requestLayout();
-	}
-
-	public void showUrl() {
-		LayoutParams lp = urlLine.getLayoutParams();
-		lp.height = LayoutParams.WRAP_CONTENT;
-		urlLine.requestLayout();
-	}
-	
-	public void showBar() {
-		LayoutParams lp = webTools.getLayoutParams();
-		lp.height = LayoutParams.WRAP_CONTENT;
-		webTools.requestLayout();
-	}
-
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -1803,31 +1780,21 @@ public class SimpleBrowser extends Activity {
 	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {
-			if (scrollState == 2) {
-				menuGrid.setVisibility(View.INVISIBLE);
-				scrollState = 1;
-			}
-			else {
-				if (!showControlBar) showBar();
-				if (!showUrl) showUrl();
-			}
+		if ((showUrl != showUrlNow) || (showControlBar != showBarNow)) {
+			setWebpagesLayout(showUrl, showControlBar);			
+			
+			webControl.setVisibility(View.INVISIBLE);
+			bookmarkView.setVisibility(View.INVISIBLE);
+			scrollState = 2;
+			if (menuGrid.getChildCount() == 0) initMenuDialog();
+			menuGrid.setVisibility(View.VISIBLE);
 		}
 		else {
-			if (!showControlBar) hideBar();
-			if (!showUrl) hideUrl();			
-			
 			if (scrollState == 2) {
 				menuGrid.setVisibility(View.INVISIBLE);
 				scrollState = 1;
 			}
-			else {
-				webControl.setVisibility(View.INVISIBLE);
-				bookmarkView.setVisibility(View.INVISIBLE);
-				scrollState = 2;
-				if (menuGrid.getChildCount() == 0) initMenuDialog();
-				menuGrid.setVisibility(View.VISIBLE);
-			}
+			else if (!showControlBar || !showUrl) setWebpagesLayout(true, true);
 		}
 
 		return false;// show system menu if return true.
@@ -2648,8 +2615,7 @@ public class SimpleBrowser extends Activity {
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		if (!showUrl) hideUrl();
-		if (!showControlBar) hideBar();
+		setWebpagesLayout(showUrl, showControlBar);
 
 		/*imgNext = (ImageView) browserView.findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -3117,8 +3083,7 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if ((urlLine.getLayoutParams().height != 0) && (!showUrl)) hideUrl();
-				else if ((webTools.getLayoutParams().height != 0) && (!showControlBar)) hideBar();
+				else if ((showUrl != showUrlNow) || (showControlBar != showBarNow)) setWebpagesLayout(showUrl, showControlBar);
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

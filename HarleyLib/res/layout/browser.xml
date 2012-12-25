@@ -145,7 +145,7 @@
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/prev" />
 
-        <ImageView
+        <!-- ImageView
             android:id="@+id/next"
             android:layout_width="0dip"
             android:layout_height="35dip"
@@ -153,7 +153,7 @@
             android:layout_marginTop="2dip"
             android:scaleType="fitCenter"
             android:background="@drawable/imagebutton_layout"
-            android:src="@drawable/next" />
+            android:src="@drawable/next" /-->
         
         <ImageView
             android:id="@+id/menu"

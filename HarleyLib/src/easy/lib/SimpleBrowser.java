@@ -2728,7 +2728,7 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
-		//initUpDown();
+		initUpDown();
 		createAd();
 		
 		try {// there are a null pointer error reported for the if line below,

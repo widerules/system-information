@@ -637,8 +637,7 @@ public class SimpleBrowser extends Activity {
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
-						if (!showUrl) urlLine.setVisibility(View.VISIBLE);
-						if (!showControlBar) webTools.setVisibility(View.VISIBLE);
+						if (!showUrl) setWebpagesLayout(true, showControlBar);
 					}
 
 					//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
@@ -782,8 +781,7 @@ public class SimpleBrowser extends Activity {
 			webControl.setVisibility(View.INVISIBLE);
 			webAddress.setText(url);
 			
-			if (!showUrl) urlLine.setVisibility(View.INVISIBLE);
-			if (!showControlBar) webTools.setVisibility(View.INVISIBLE);
+			if (!showUrl) setWebpagesLayout(showUrl, showControlBar);
 		}
 		// update the page title in webList
 		webAdapter.notifyDataSetChanged();
@@ -1800,16 +1798,23 @@ public class SimpleBrowser extends Activity {
 	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (scrollState == 2) {
+		if (scrollState == 2) {// hide menu if menu showed
 			menuGrid.setVisibility(View.INVISIBLE);
 			scrollState = 1;
 		}
 		else {
-			webControl.setVisibility(View.INVISIBLE);
-			bookmarkView.setVisibility(View.INVISIBLE);
-			scrollState = 2;
-			if (menuGrid.getChildCount() == 0) initMenuDialog();
-			menuGrid.setVisibility(View.VISIBLE);
+			if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0))
+				setWebpagesLayout(true, true);
+			else {
+				setWebpagesLayout(showUrl, showControlBar);
+				
+				webControl.setVisibility(View.INVISIBLE);
+				bookmarkView.setVisibility(View.INVISIBLE);
+				scrollState = 2;
+				if (menuGrid.getChildCount() == 0) initMenuDialog();
+				menuGrid.setVisibility(View.VISIBLE);
+				menuGrid.bringToFront();
+			}
 		}
 
 		return false;// show system menu if return true.
@@ -3098,8 +3103,8 @@ public class SimpleBrowser extends Activity {
 					imgNew.performClick();// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if (!showUrl && (urlLine.getVisibility() == View.VISIBLE)) urlLine.setVisibility(View.INVISIBLE);
-				else if (!showControlBar && (webTools.getVisibility() == View.VISIBLE)) webTools.setVisibility(View.INVISIBLE);
+				else if (((urlLine.getLayoutParams().height == 0) == showUrl) ||
+                	((webTools.getLayoutParams().height == 0) == showControlBar)) setWebpagesLayout(showUrl, showControlBar);
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

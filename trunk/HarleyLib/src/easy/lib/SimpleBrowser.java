@@ -221,6 +221,7 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout browserView;
 	int historyIndex = -1;
 	int scrollState = 1;
+	int bookmarkWidth = LayoutParams.WRAP_CONTENT, menuWidth = LayoutParams.WRAP_CONTENT;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -1800,15 +1801,22 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void scrollToMain() {
-		if (scrollState == 0) bookmarkView.setVisibility(View.INVISIBLE);
-		else if (scrollState == 2) menuGrid.setVisibility(View.INVISIBLE);
+		if (scrollState == 0) {
+			bookmarkView.getLayoutParams().width = 0;
+			bookmarkView.requestLayout();
+		}
+		else if (scrollState == 2) { 
+			menuGrid.getLayoutParams().width = 0;
+			menuGrid.requestLayout();
+		}
 		scrollState = 1;
 	}
 	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		if (scrollState == 2) {// hide menu if menu showed
-			menuGrid.setVisibility(View.INVISIBLE);
+			menuGrid.getLayoutParams().width = 0;
+			menuGrid.requestLayout();
 			scrollState = 1;
 		}
 		else {
@@ -1817,11 +1825,12 @@ public class SimpleBrowser extends Activity {
 			else {
 				setWebpagesLayout(showUrl, showControlBar);
 				
-				webControl.setVisibility(View.INVISIBLE);
-				bookmarkView.setVisibility(View.INVISIBLE);
+				bookmarkView.getLayoutParams().width = 0;
+				bookmarkView.requestLayout();
 				scrollState = 2;
 				if (menuGrid.getChildCount() == 0) initMenuDialog();
-				menuGrid.setVisibility(View.VISIBLE);
+				menuGrid.getLayoutParams().width = menuWidth;
+				menuGrid.requestLayout();
 				menuGrid.bringToFront();
 			}
 		}
@@ -2518,7 +2527,6 @@ public class SimpleBrowser extends Activity {
 			public boolean onTouch(View view, MotionEvent event) {
 				view.setFocusableInTouchMode(true);
 				serverWebs.get(webIndex).setFocusable(false);
-				if (scrollState != 1) scrollToMain();
 				return false;
 			}
 		});
@@ -2673,7 +2681,7 @@ public class SimpleBrowser extends Activity {
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (scrollState != 1) scrollToMain();
+				//if (scrollState != 1) scrollToMain();
 				reloadPage();
 			}
 		});
@@ -2689,17 +2697,19 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (scrollState == 0) {
-					bookmarkView.setVisibility(View.INVISIBLE);
+					bookmarkView.getLayoutParams().width = 0;
 					scrollState = 1;
 				}
 				else {
-					webControl.setVisibility(View.INVISIBLE);
-					menuGrid.setVisibility(View.INVISIBLE);
+					menuGrid.getLayoutParams().width = 0;
+					menuGrid.requestLayout();
+					bookmarkView.getLayoutParams().width = bookmarkWidth;
+					if (bookmarkWidth < 320) webControl.setVisibility(View.INVISIBLE);
 					scrollState = 0;
 					if (bookmarkAdapter == null) initBookmarks();
 					if (adview != null) adview.loadAd();
-					bookmarkView.setVisibility(View.VISIBLE);
 				}
+				bookmarkView.requestLayout();
 			}
 		});
 		imgNew = (ImageView) browserView.findViewById(R.id.newpage);
@@ -2709,7 +2719,7 @@ public class SimpleBrowser extends Activity {
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (scrollState != 1) scrollToMain();
+				if ((scrollState == 0) && (bookmarkWidth < 320)) scrollToMain();// otherwise may not display weblist correctly
 				if (webControl.getVisibility() == View.INVISIBLE) {
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
@@ -3109,7 +3119,7 @@ public class SimpleBrowser extends Activity {
 				// press Back key in webview will go backword.
 				if (scrollState != 1) scrollToMain();
 				else if (webControl.getVisibility() == View.VISIBLE)
-					imgNew.performClick();// hide web control
+					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
 				else if (((urlLine.getLayoutParams().height == 0) == showUrl) ||
@@ -3305,32 +3315,33 @@ public class SimpleBrowser extends Activity {
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
-        int bookmarkWidth = dm.widthPixels * 3 / 4;
+        bookmarkWidth = dm.widthPixels * 3 / 4;
         int minWidth = (int) (320 * dm.density);
         if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
         
-		LayoutParams lp = bookmarkView.getLayoutParams();
-		lp.width = bookmarkWidth;
-
-		lp = menuGrid.getLayoutParams();
 		int height = (int) (dm.heightPixels / dm.density);
 		if (showUrl) height -= urlHeight;
 		if (showControlBar) height -= barHeight;
 		int size = height / 72;// 72 is the height of each menu item
 		if (size > 7) {
-			lp.width = (int) (80*dm.density);// 80 dip for single column
+			menuWidth = (int) (80*dm.density);// 80 dip for single column
 			menuGrid.setNumColumns(1);
 		}
 		else {
-			lp.width = (int) (120*dm.density);// 120 dip for 2 column
+			menuWidth = (int) (120*dm.density);// 120 dip for 2 column
 			menuGrid.setNumColumns(2);
 		}
 		
 		if (scrollState == 0) {
+			bookmarkView.getLayoutParams().width = bookmarkWidth;
 			bookmarkView.requestLayout();
 			updateHistoryViewHeight();
+			if (bookmarkWidth < 320) webControl.setVisibility(View.INVISIBLE);
 		}
-		else if (scrollState == 2) menuGrid.requestLayout();
+		else if (scrollState == 2) {
+			menuGrid.getLayoutParams().width = menuWidth;
+			menuGrid.requestLayout();
+		}
 	}
 
 	void createAd() {

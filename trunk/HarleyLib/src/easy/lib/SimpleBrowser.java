@@ -1338,28 +1338,39 @@ public class SimpleBrowser extends Activity {
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(-1, -1);
 		LayoutParams lpUrl = urlLine.getLayoutParams();
 		LayoutParams lpBar = webTools.getLayoutParams();
-		if (showUrlNow) {
-			urlLine.bringToFront();
-			lpUrl.height = (int) (40 * dm.density);
+		if (showUrl) {
 			lp.addRule(RelativeLayout.BELOW, R.id.line4);
 		}
 		else {
-			lpUrl.height = 0;
 			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		}
-		if (showBarNow) {
-			webTools.bringToFront();
-			lpBar.height = (int) (40 * dm.density);
+		if (showControlBar) {
 			lp.addRule(RelativeLayout.ABOVE, R.id.line2);
 		}
 		else {
-			lpBar.height = 0;
 			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		}
 		webpages.setLayoutParams(lp);
 		webpages.requestLayout();
+		
+		if (showUrlNow) {
+			urlLine.bringToFront();
+			lpUrl.height = (int) (40 * dm.density);
+		}
+		else {
+			lpUrl.height = 0;
+		}
 		urlLine.requestLayout();
+		
+		if (showBarNow) {
+			webTools.bringToFront();
+			lpBar.height = (int) (40 * dm.density);
+		}
+		else {
+			lpBar.height = 0;
+		}
 		webTools.requestLayout();
+		
 		if (menuGrid.getVisibility() == View.VISIBLE) menuGrid.requestLayout();
 		if (bookmarkView.getVisibility() == View.VISIBLE) bookmarkView.requestLayout();
 	}

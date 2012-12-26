@@ -162,6 +162,7 @@ public class SimpleBrowser extends Activity {
 	// settings
 	boolean showUrl = true;
 	boolean showControlBar = true;
+	final int urlHeight = 40, barHeight = 40;
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
@@ -1203,7 +1204,7 @@ public class SimpleBrowser extends Activity {
 			
 			showUrl = sp.getBoolean("show_url", true);
 			showControlBar = sp.getBoolean("show_controlBar", true);
-			setWebpagesLayout();
+			setWebpagesLayout(showUrl, showControlBar);
 			
 			int tmpMode = sp.getInt("rotate_mode", 1);
 			if (rotateMode != tmpMode) {
@@ -1335,39 +1336,34 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {}
 	}
 	
-	public void setWebpagesLayout() {
+	public void setWebpagesLayout(boolean showUrlNow, boolean showBarNow) {
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(-1, -1);
-		LayoutParams lpMenu = menuGrid.getLayoutParams();
-		LayoutParams lpBookmark = bookmarkView.getLayoutParams();
-		if (showUrl) {
-			urlLine.setVisibility(View.VISIBLE);
+		LayoutParams lpUrl = urlLine.getLayoutParams();
+		LayoutParams lpBar = webTools.getLayoutParams();
+		if (showUrlNow) {
+			urlLine.bringToFront();
+			lpUrl.height = (int) (40 * dm.density);
 			lp.addRule(RelativeLayout.BELOW, R.id.line4);
-			((RelativeLayout.LayoutParams) lpMenu).addRule(RelativeLayout.BELOW, R.id.line4);
-			((RelativeLayout.LayoutParams) lpBookmark).addRule(RelativeLayout.BELOW, R.id.line4);
 		}
 		else {
-			urlLine.setVisibility(View.INVISIBLE);
+			lpUrl.height = 0;
 			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			((RelativeLayout.LayoutParams) lpMenu).addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			((RelativeLayout.LayoutParams) lpBookmark).addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		}
-		if (showControlBar) {
-			webTools.setVisibility(View.VISIBLE);
+		if (showBarNow) {
+			webTools.bringToFront();
+			lpBar.height = (int) (40 * dm.density);
 			lp.addRule(RelativeLayout.ABOVE, R.id.line2);
 		}
 		else {
-			webTools.setVisibility(View.INVISIBLE);
+			lpBar.height = 0;
 			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		}
 		webpages.setLayoutParams(lp);
-		menuGrid.setLayoutParams(lpMenu);
-		bookmarkView.setLayoutParams(lpBookmark);
 		webpages.requestLayout();
-		menuGrid.requestLayout();
-		bookmarkView.requestLayout();
-		
-		urlLine.bringToFront();
-		webTools.bringToFront();
+		urlLine.requestLayout();
+		webTools.requestLayout();
+		if (menuGrid.getVisibility() == View.VISIBLE) menuGrid.requestLayout();
+		if (bookmarkView.getVisibility() == View.VISIBLE) bookmarkView.requestLayout();
 	}
 	
 	@Override
@@ -2634,7 +2630,6 @@ public class SimpleBrowser extends Activity {
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setWebpagesLayout();
 
 		/*imgNext = (ImageView) browserView.findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -2711,6 +2706,7 @@ public class SimpleBrowser extends Activity {
 
 		dm = new DisplayMetrics();
 		setLayout();
+		setWebpagesLayout(showUrl, showControlBar);
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
 		initUpDown();
@@ -3304,15 +3300,15 @@ public class SimpleBrowser extends Activity {
 
 		lp = menuGrid.getLayoutParams();
 		int height = (int) (dm.heightPixels / dm.density);
-		if (showUrl) height -= 40;
-		if (showControlBar) height -= 40;
+		if (showUrl) height -= urlHeight;
+		if (showControlBar) height -= barHeight;
 		int size = height / 72;// 72 is the height of each menu item
 		if (size > 7) {
-			lp.width = (int) (80*dm.density);
+			lp.width = (int) (80*dm.density);// 80 dip for single column
 			menuGrid.setNumColumns(1);
 		}
 		else {
-			lp.width = (int) (120*dm.density);
+			lp.width = (int) (120*dm.density);// 120 dip for 2 column
 			menuGrid.setNumColumns(2);
 		}
 		
@@ -3444,7 +3440,7 @@ public class SimpleBrowser extends Activity {
 	void updateBookmark() {
 		if (bookmarkAdapter != null) {
 			bookmarkAdapter.notifyDataSetInvalidated();
-			updateHistoryViewHeight();
+			//updateHistoryViewHeight();
 		}
 		bookmarkChanged = true;
 	}
@@ -3463,11 +3459,11 @@ public class SimpleBrowser extends Activity {
 	
 	void updateHistoryViewHeight() {
 		//reset height of history list so that it display not too many items
-		int height = (int) (dm.heightPixels - (50 + 40 * mBookMark.size()) * dm.density);//50 is the height of ad banner
-		if (showUrl) height -= 40 * dm.density;// 40 is the height of url line
-		if (showControlBar) height -= 40 * dm.density;// 40 is the height of control bar
-		int maxSize = (int) (height / dm.density / 40);// 40 here is the height of each bookmark
-		height = (int) (Math.min(Math.max(3, maxSize), mHistory.size()) * 41 * dm.density);//select a value from 3, maxSize and mHistory.size().
+		int height = (int) (dm.heightPixels / dm.density - 50);//50 is the height of ad banner
+		if (showUrl) height -= urlHeight;
+		if (showControlBar) height -= barHeight;
+		int maxSize = height / 2 / 40;// 40 here is the height of each history. should display equal rows of history and bookmark
+		height = (int) (Math.min(maxSize, mHistory.size()) * 41 * dm.density);//select a value from maxSize and mHistory.size().
 		
 		LayoutParams lp = historyList.getLayoutParams();
 		lp.height = height;

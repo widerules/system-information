@@ -2719,8 +2719,8 @@ public class SimpleBrowser extends Activity {
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if ((scrollState == 0) && (bookmarkWidth < 320)) scrollToMain();// otherwise may not display weblist correctly
 				if (webControl.getVisibility() == View.INVISIBLE) {
+					if ((scrollState == 0) && (bookmarkWidth < 320)) scrollToMain();// otherwise may not display weblist correctly
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
 					webControl.bringToFront();
@@ -3341,6 +3341,12 @@ public class SimpleBrowser extends Activity {
 		else if (scrollState == 2) {
 			menuGrid.getLayoutParams().width = menuWidth;
 			menuGrid.requestLayout();
+		}
+		else if (scrollState == 1) {
+			menuGrid.getLayoutParams().width = 0;
+			menuGrid.requestLayout();
+			bookmarkView.getLayoutParams().width = 0;
+			bookmarkView.requestLayout();			
 		}
 	}
 

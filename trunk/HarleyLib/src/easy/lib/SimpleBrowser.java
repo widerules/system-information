@@ -234,9 +234,7 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark;//imgNext, 
 	WebAdapter webAdapter;
-	LinearLayout webTools;
-	LinearLayout webControl;
-	RelativeLayout urlLine;
+	LinearLayout webTools, webControl, urlLine;
 	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -1335,17 +1333,17 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void setWebpagesLayout(boolean showUrlNow, boolean showBarNow) {
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(-1, -1);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		LayoutParams lpUrl = urlLine.getLayoutParams();
 		LayoutParams lpBar = webTools.getLayoutParams();
 		if (showUrl) {
-			lp.addRule(RelativeLayout.BELOW, R.id.line4);
+			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
 		}
 		else {
 			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		}
 		if (showControlBar) {
-			lp.addRule(RelativeLayout.ABOVE, R.id.line2);
+			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
 		}
 		else {
 			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -1355,7 +1353,7 @@ public class SimpleBrowser extends Activity {
 		
 		if (showUrlNow) {
 			urlLine.bringToFront();
-			lpUrl.height = (int) (40 * dm.density);
+			lpUrl.height = LayoutParams.WRAP_CONTENT;
 		}
 		else {
 			lpUrl.height = 0;
@@ -1364,7 +1362,7 @@ public class SimpleBrowser extends Activity {
 		
 		if (showBarNow) {
 			webTools.bringToFront();
-			lpBar.height = (int) (40 * dm.density);
+			lpBar.height = LayoutParams.WRAP_CONTENT;
 		}
 		else {
 			lpBar.height = 0;
@@ -2641,7 +2639,7 @@ public class SimpleBrowser extends Activity {
 		webpages.addView(serverWebs.get(webIndex));
 
 		webTools = (LinearLayout) browserView.findViewById(R.id.webtools);
-		urlLine = (RelativeLayout) browserView.findViewById(R.id.urlline);
+		urlLine = (LinearLayout) browserView.findViewById(R.id.urlline);
 		
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

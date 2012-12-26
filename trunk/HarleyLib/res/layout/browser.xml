@@ -101,9 +101,25 @@
     <LinearLayout
         android:id="@+id/webtools"
         android:layout_width="fill_parent"
-        android:layout_height="40dip"
-        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         android:background="@drawable/round_corner"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
+
+    	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#ffc5c5c5" />
+        
+        <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#fff5f5f5" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
         android:orientation="horizontal" >
 
         <ImageView
@@ -166,26 +182,12 @@
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/menu" />
     </LinearLayout>
-
-    <View
-        android:id="@+id/line1"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_above="@id/webtools"
-        android:background="#fff5f5f5" />
-
-    <View
-        android:id="@+id/line2"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_above="@id/line1"
-        android:background="#ffc5c5c5" />
-
+    </LinearLayout>
+    
     <LinearLayout
         android:id="@+id/webcontrol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:background="@drawable/panel_background"
         android:layout_above="@id/webtools"
         android:layout_centerHorizontal="true"
@@ -197,14 +199,12 @@
             android:id="@+id/weblist"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             />
         
         <Button
             android:id="@+id/opennewpage"
             android:layout_width="fill_parent"
             android:layout_height="40dip"
-            android:layout_centerHorizontal="true"
             android:background="@drawable/button_layout"
             android:gravity="center"
             android:text="@string/newpage"
@@ -213,14 +213,19 @@
             android:textStyle="bold" />
 
         </LinearLayout>
-    
+
+    <LinearLayout
+        android:id="@+id/urlline"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffffff" 
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
+        >
         <RelativeLayout
-	        android:id="@+id/urlline"
             android:layout_width="fill_parent"
             android:layout_height="40dip"
-	        android:layout_alignParentTop="true"
             android:orientation="horizontal"
-            android:background="#ffffffff" 
             >
 
             <ImageView
@@ -275,27 +280,24 @@
                     android:visibility="invisible" />
             </FrameLayout>
         </RelativeLayout>
-
         <View
-    	    android:id="@+id/line3"
             android:layout_width="match_parent"
             android:layout_height="1px"
-	        android:layout_below="@id/urlline"
             android:background="#ffc5c5c5" />
 
         <View
-	        android:id="@+id/line4"
             android:layout_width="match_parent"
             android:layout_height="1px"
-	        android:layout_below="@id/line3"
             android:background="#fff5f5f5" />
-
+        
+    </LinearLayout>
+        
     <easy.lib.MyViewFlipper
         android:id="@+id/webpages"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/line2"
-        android:layout_below="@id/line4" 
+        android:layout_above="@id/webtools"
+        android:layout_below="@id/urlline" 
         />
 
     <GridView
@@ -303,8 +305,8 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
-        android:layout_above="@id/line2"
-        android:layout_below="@id/line4" 
+        android:layout_above="@id/webtools"
+        android:layout_below="@id/urlline" 
 	    android:gravity="bottom"
 	    android:visibility="invisible"
 	    android:cacheColorHint="#00000000"
@@ -318,8 +320,8 @@
     android:layout_width="320dip"
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
-    android:layout_above="@id/line2"
-    android:layout_below="@id/line4" 
+    android:layout_above="@id/webtools"
+    android:layout_below="@id/urlline" 
     android:gravity="bottom"
     android:visibility="invisible"
     android:background="#ee333333"

@@ -471,9 +471,11 @@ public class SimpleBrowser extends Activity {
 														// code here
 			if (ev.getAction() == 0) {// touch down
 				if (scrollState != 1) scrollToMain();
-				else if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
+				
+				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
 					webControl.setVisibility(View.INVISIBLE);
-				else if (!this.isFocused()) {
+				
+				if (!this.isFocused()) {
 					this.setFocusableInTouchMode(true);
 					this.requestFocus();
 					webAddress.setFocusableInTouchMode(false);
@@ -636,7 +638,7 @@ public class SimpleBrowser extends Activity {
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
-						if (!showUrl) setWebpagesLayout(true, showControlBar);
+						if (!showUrl) setUrlHeight(true);
 					}
 
 					//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
@@ -780,7 +782,7 @@ public class SimpleBrowser extends Activity {
 			webControl.setVisibility(View.INVISIBLE);
 			webAddress.setText(url);
 			
-			if (!showUrl) setWebpagesLayout(showUrl, showControlBar);
+			if (!showUrl) setUrlHeight(false);
 		}
 		// update the page title in webList
 		webAdapter.notifyDataSetChanged();
@@ -1201,7 +1203,7 @@ public class SimpleBrowser extends Activity {
 			
 			showUrl = sp.getBoolean("show_url", true);
 			showControlBar = sp.getBoolean("show_controlBar", true);
-			setWebpagesLayout(showUrl, showControlBar);
+			setWebpagesLayout();
 			
 			int tmpMode = sp.getInt("rotate_mode", 1);
 			if (rotateMode != tmpMode) {
@@ -1333,10 +1335,8 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {}
 	}
 	
-	public void setWebpagesLayout(boolean showUrlNow, boolean showBarNow) {
+	public void setWebpagesLayout() {
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-		LayoutParams lpUrl = urlLine.getLayoutParams();
-		LayoutParams lpBar = webTools.getLayoutParams();
 		if (showUrl) {
 			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
 		}
@@ -1351,7 +1351,10 @@ public class SimpleBrowser extends Activity {
 		}
 		webpages.setLayoutParams(lp);
 		webpages.requestLayout();
-		
+	}
+	
+	void setUrlHeight(boolean showUrlNow) {
+		LayoutParams lpUrl = urlLine.getLayoutParams();
 		if (showUrlNow) {
 			urlLine.bringToFront();
 			lpUrl.height = LayoutParams.WRAP_CONTENT;
@@ -1359,8 +1362,11 @@ public class SimpleBrowser extends Activity {
 		else {
 			lpUrl.height = 0;
 		}
-		urlLine.requestLayout();
-		
+		urlLine.requestLayout();		
+	}
+	
+	void setBarHeight(boolean showBarNow) {
+		LayoutParams lpBar = webTools.getLayoutParams();
 		if (showBarNow) {
 			webTools.bringToFront();
 			lpBar.height = LayoutParams.WRAP_CONTENT;
@@ -1368,10 +1374,7 @@ public class SimpleBrowser extends Activity {
 		else {
 			lpBar.height = 0;
 		}
-		webTools.requestLayout();
-		
-		if (menuGrid.getVisibility() == View.VISIBLE) menuGrid.requestLayout();
-		if (bookmarkView.getVisibility() == View.VISIBLE) bookmarkView.requestLayout();
+		webTools.requestLayout();		
 	}
 	
 	@Override
@@ -1820,10 +1823,13 @@ public class SimpleBrowser extends Activity {
 			scrollState = 1;
 		}
 		else {
-			if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0))
-				setWebpagesLayout(true, true);
+			if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {
+				if (!showUrl) setUrlHeight(true);
+				if (!showControlBar) setBarHeight(true);
+			}
 			else {
-				setWebpagesLayout(showUrl, showControlBar);
+				setUrlHeight(showControlBar);
+				setBarHeight(showUrl);
 				
 				bookmarkView.getLayoutParams().width = 0;
 				bookmarkView.requestLayout();
@@ -2730,7 +2736,7 @@ public class SimpleBrowser extends Activity {
 
 		dm = new DisplayMetrics();
 		setLayout();
-		setWebpagesLayout(showUrl, showControlBar);
+		setWebpagesLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
 		initUpDown();
@@ -3122,8 +3128,8 @@ public class SimpleBrowser extends Activity {
 					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if (((urlLine.getLayoutParams().height == 0) == showUrl) ||
-                	((webTools.getLayoutParams().height == 0) == showControlBar)) setWebpagesLayout(showUrl, showControlBar);
+				else if ((urlLine.getLayoutParams().height == 0) == showUrl) setUrlHeight(showUrl); 
+				else if ((webTools.getLayoutParams().height == 0) == showControlBar) setBarHeight(showControlBar);
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

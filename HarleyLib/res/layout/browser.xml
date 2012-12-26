@@ -101,7 +101,7 @@
     <LinearLayout
         android:id="@+id/webtools"
         android:layout_width="fill_parent"
-        android:layout_height="39dip"
+        android:layout_height="40dip"
         android:layout_alignParentBottom="true"
         android:background="@drawable/round_corner"
         android:orientation="horizontal" >
@@ -293,13 +293,16 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/line2"
-        android:layout_below="@id/line4" />
+        android:layout_below="@id/line4" 
+        />
 
     <GridView
         android:id="@+id/grid_menu"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
+        android:layout_above="@id/line2"
+        android:layout_below="@id/line4" 
 	    android:gravity="bottom"
 	    android:visibility="invisible"
 	    android:cacheColorHint="#00000000"
@@ -313,6 +316,8 @@
     android:layout_width="320dip"
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
+    android:layout_above="@id/line2"
+    android:layout_below="@id/line4" 
     android:gravity="bottom"
     android:visibility="invisible"
     android:background="#ee333333"

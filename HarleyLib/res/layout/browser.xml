@@ -185,36 +185,6 @@
     </LinearLayout>
     
     <LinearLayout
-        android:id="@+id/webcontrol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/panel_background"
-        android:layout_above="@id/webtools"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:visibility="invisible" >
-
-        <ListView
-            android:id="@+id/weblist"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            />
-        
-        <Button
-            android:id="@+id/opennewpage"
-            android:layout_width="fill_parent"
-            android:layout_height="40dip"
-            android:background="@drawable/button_layout"
-            android:gravity="center"
-            android:text="@string/newpage"
-            android:textColor="#FF333333"
-            android:textSize="20dip"
-            android:textStyle="bold" />
-
-        </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/urlline"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -308,7 +278,6 @@
         android:layout_above="@id/webtools"
         android:layout_below="@id/urlline" 
 	    android:gravity="bottom"
-	    android:visibility="invisible"
 	    android:cacheColorHint="#00000000"
 	    android:background="#ee333333"
 	    android:stackFromBottom="true"
@@ -323,7 +292,6 @@
     android:layout_above="@id/webtools"
     android:layout_below="@id/urlline" 
     android:gravity="bottom"
-    android:visibility="invisible"
     android:background="#ee333333"
     android:orientation="vertical" >
 
@@ -355,5 +323,38 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:stretchMode="columnWidth" />
-</LinearLayout>    
+</LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/webcontrol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/panel_background"
+        android:layout_above="@id/webtools"
+        android:layout_toLeftOf="@id/grid_menu"
+        android:layout_toRightOf="@id/bookmarkView"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/weblist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+        
+        <Button
+            android:id="@+id/opennewpage"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:background="@drawable/button_layout"
+            android:gravity="center"
+            android:text="@string/newpage"
+            android:textColor="#FF333333"
+            android:textSize="20dip"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 </RelativeLayout>

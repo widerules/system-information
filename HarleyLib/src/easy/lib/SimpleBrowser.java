@@ -1823,13 +1823,9 @@ public class SimpleBrowser extends Activity {
 			scrollState = 1;
 		}
 		else {
-			if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {
-				if (!showUrl) setUrlHeight(true);
-				if (!showControlBar) setBarHeight(true);
-			}
-			else {
-				setUrlHeight(showControlBar);
-				setBarHeight(showUrl);
+			if (((urlLine.getLayoutParams().height == 0) == showUrl) || ((webTools.getLayoutParams().height == 0) == showControlBar)) { 
+				setUrlHeight(showUrl);
+				setBarHeight(showControlBar);
 				
 				bookmarkView.getLayoutParams().width = 0;
 				bookmarkView.requestLayout();
@@ -1838,6 +1834,10 @@ public class SimpleBrowser extends Activity {
 				menuGrid.getLayoutParams().width = menuWidth;
 				menuGrid.requestLayout();
 				menuGrid.bringToFront();
+			}
+			else {
+				if (!showUrl) setUrlHeight(true);
+				if (!showControlBar) setBarHeight(true);
 			}
 		}
 

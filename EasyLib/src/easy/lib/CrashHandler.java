@@ -73,7 +73,6 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		if (ex == null) {
 			return false;
 		}
-		ex.printStackTrace();
 
 		Writer writer = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(writer);

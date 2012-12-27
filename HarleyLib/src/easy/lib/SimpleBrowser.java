@@ -172,7 +172,7 @@ public class SimpleBrowser extends Activity {
 	boolean blockPopup = false;
 	boolean blockJs = false;
 	TextSize textSize = TextSize.NORMAL;
-	final int historyCount = 10;
+	final int historyCount = 16;
 	long sizeM = 1024 * 1024;
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;
@@ -1338,6 +1338,9 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void setWebpagesLayout() {
+		setUrlHeight(showUrl);
+		setBarHeight(showControlBar);
+
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		if (showUrl) {
 			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
@@ -1378,7 +1381,7 @@ public class SimpleBrowser extends Activity {
 		}
 		webTools.requestLayout();		
 	}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {

@@ -1350,20 +1350,16 @@ public class SimpleBrowser extends Activity {
 	
 	void setUrlHeight(boolean showUrlNow) {
 		LayoutParams lpUrl = urlLine.getLayoutParams();
-		if (showUrlNow) {
-			urlLine.bringToFront();
+		if (showUrlNow) 
 			lpUrl.height = LayoutParams.WRAP_CONTENT;
-		}
 		else lpUrl.height = 0;
 		urlLine.requestLayout();		
 	}
 	
 	void setBarHeight(boolean showBarNow) {
 		LayoutParams lpBar = webTools.getLayoutParams();
-		if (showBarNow) {
-			webTools.bringToFront();
+		if (showBarNow) 
 			lpBar.height = LayoutParams.WRAP_CONTENT;
-		}
 		else lpBar.height = 0;
 		webTools.requestLayout();		
 	}
@@ -1824,7 +1820,6 @@ public class SimpleBrowser extends Activity {
 				if (menuGrid.getChildCount() == 0) initMenuDialog();
 				menuGrid.getLayoutParams().width = menuWidth;
 				menuGrid.requestLayout();
-				menuGrid.bringToFront();
 			}
 			else {// show bars if hided
 				if (!showUrl) setUrlHeight(true);
@@ -2272,7 +2267,6 @@ public class SimpleBrowser extends Activity {
 	public void initUpDown() {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
 		upAndDown.setVisibility(View.VISIBLE);
-		upAndDown.bringToFront();
 		/*upAndDown.setOnDragListener(new OnDragListener() {
 			@Override
 			public boolean onDrag(View v, DragEvent event) {
@@ -2740,7 +2734,6 @@ public class SimpleBrowser extends Activity {
 					if ((scrollState == 0) && (bookmarkWidth < 320)) scrollToMain();// otherwise may not display weblist correctly
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
-					webControl.bringToFront();
 				} else webControl.setVisibility(View.INVISIBLE);
 			}
 		});
@@ -2753,6 +2746,9 @@ public class SimpleBrowser extends Activity {
 		initUpDown();
 		createAd();
 		
+		urlLine.bringToFront();// decide the z-order
+		webTools.bringToFront();
+
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.

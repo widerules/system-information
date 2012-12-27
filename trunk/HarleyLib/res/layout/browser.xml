@@ -183,7 +183,7 @@
             android:src="@drawable/menu" />
     </LinearLayout>
     </LinearLayout>
-    
+
     <LinearLayout
         android:id="@+id/urlline"
         android:layout_width="fill_parent"
@@ -250,6 +250,7 @@
                     android:visibility="invisible" />
             </FrameLayout>
         </RelativeLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
@@ -267,8 +268,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/webtools"
-        android:layout_below="@id/urlline" 
-        />
+        android:layout_below="@id/urlline" />
 
     <GridView
         android:id="@+id/grid_menu"

@@ -155,8 +155,9 @@ public class SimpleBrowser extends Activity {
 
 	//boolean flashInstalled = false;
 	// settings
-	boolean showUrl = false;
+	boolean showUrl = true;
 	boolean showControlBar = true;
+	final int urlHeight = 40, barHeight = 40;
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
@@ -167,7 +168,7 @@ public class SimpleBrowser extends Activity {
 	boolean blockJs = false;
 	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
 	TextSize textSize = TextSize.NORMAL;
-	int historyCount = 16;
+	final int historyCount = 16;
 	long sizeM = 1024 * 1024;
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;
@@ -216,9 +217,7 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	LinearLayout webTools;
-	LinearLayout webControl;
-	RelativeLayout urlLine;
+	LinearLayout webTools, webControl, urlLine;
 	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -490,7 +489,11 @@ public class SimpleBrowser extends Activity {
 			if (ev.getAction() == 0) {// touch down
 				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
 					webControl.setVisibility(View.INVISIBLE);
-				else if (!this.isFocused()) {
+								
+				if (!showUrl) setUrlHeight(false);
+				if (!showControlBar) setBarHeight(false);
+
+				if (!this.isFocused()) {
 					this.setFocusableInTouchMode(true);
 					this.requestFocus();
 					webAddress.setFocusableInTouchMode(false);
@@ -714,8 +717,8 @@ public class SimpleBrowser extends Activity {
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
-						if (!showControlBar) showBar();
-						if (!showUrl) showUrl();
+						if (!showUrl) setUrlHeight(true);
+						if (!showControlBar) setBarHeight(true);
 					}
 
 					try {
@@ -795,9 +798,6 @@ public class SimpleBrowser extends Activity {
 			imgRefresh.setImageResource(R.drawable.refresh);
 			webControl.setVisibility(View.INVISIBLE);
 			
-			if ((urlLine.getLayoutParams().height != 0) && !showUrl) hideUrl();
-			if ((webTools.getLayoutParams().height != 0) &&  !showControlBar) hideBar();			
-
 			if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 			else webAddress.setText(url);						
 		}
@@ -1145,19 +1145,9 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 			
-			tmpShow = sp.getBoolean("show_url", true);
-			if (tmpShow != showUrl) {
-				showUrl = tmpShow;
-				if (!showUrl) hideUrl();
-				else showUrl();
-			}
-			
-			tmpShow = sp.getBoolean("show_controlBar", true);
-			if (tmpShow != showControlBar) {
-				showControlBar = tmpShow;
-				if (!showControlBar) hideBar();
-				else showBar();
-			}
+			showUrl = sp.getBoolean("show_url", true);
+			showControlBar = sp.getBoolean("show_controlBar", true);
+			setWebpagesLayout();
 			
 			int tmpMode = sp.getInt("rotate_mode", 1);
 			if (rotateMode != tmpMode) {
@@ -1290,28 +1280,48 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {}
 	}
 	
-	public void hideUrl() {
-		LayoutParams lp = urlLine.getLayoutParams();
-		lp.height = 0;
-		urlLine.requestLayout();
+	public void setWebpagesLayout() {
+		setUrlHeight(showUrl);
+		setBarHeight(showControlBar);
+		
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		
+		if (showUrl) 
+			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
+		else 
+			lp.addRule(RelativeLayout.BELOW, R.id.adContainer);
+		
+		if (showControlBar) 
+			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
+		else 
+			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		
+		webpages.setLayoutParams(lp);
+		webpages.requestLayout();
 	}
 	
-	public void hideBar() {
-		LayoutParams lp = webTools.getLayoutParams();
-		lp.height = 0;
-		webTools.requestLayout();
-	}
-
-	public void showUrl() {
-		LayoutParams lp = urlLine.getLayoutParams();
-		lp.height = LayoutParams.WRAP_CONTENT;
-		urlLine.requestLayout();
+	void setUrlHeight(boolean showUrlNow) {
+		LayoutParams lpUrl = urlLine.getLayoutParams();
+		if (showUrlNow) {
+			urlLine.bringToFront();
+			lpUrl.height = LayoutParams.WRAP_CONTENT;
+		}
+		else {
+			lpUrl.height = 0;
+		}
+		urlLine.requestLayout();		
 	}
 	
-	public void showBar() {
-		LayoutParams lp = webTools.getLayoutParams();
-		lp.height = LayoutParams.WRAP_CONTENT;
-		webTools.requestLayout();
+	void setBarHeight(boolean showBarNow) {
+		LayoutParams lpBar = webTools.getLayoutParams();
+		if (showBarNow) {
+			webTools.bringToFront();
+			lpBar.height = LayoutParams.WRAP_CONTENT;
+		}
+		else {
+			lpBar.height = 0;
+		}
+		webTools.requestLayout();		
 	}
 
 	@Override
@@ -1779,15 +1789,17 @@ public class SimpleBrowser extends Activity {
 	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {
-			if (!showControlBar) showBar();
-			if (!showUrl) showUrl();
+		if (menuDialog == null) initMenuDialog();
+		
+		if (menuDialog.isShowing()) menuDialog.dismiss();
+		else if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0) ) { 
+			if (!showUrl) setUrlHeight(true);
+			if (!showControlBar) setBarHeight(true);
 		}
 		else {
-			if (!showControlBar) hideBar();
-			if (!showUrl) hideUrl();			
+			setUrlHeight(showUrl);
+			setBarHeight(showControlBar);
 			
-			if (menuDialog == null) initMenuDialog();
 			menuDialog.show();
 		}
 
@@ -1820,14 +1832,14 @@ public class SimpleBrowser extends Activity {
 		if (url == null) url = "";
 		
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
-		shareIntent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
+		shareIntent.setClassName(getPackageName(), SimpleBrowser.class.getName());
 		Uri data = null;
 		String from = "\n(from ";
-		boolean chineseLocale = Locale.CHINA.equals(mLocale);
+		boolean chineseLocale = Locale.CHINA.equals(mLocale) || "easy.browser".equals(getPackageName());//easy.browser only release in China
 				
 		switch (shareMode) {
 		case 2:// facebook or weibo
-			if (chineseLocale) // weibo for chinese locale
+			if (chineseLocale)// weibo for chinese locale
 				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + url + "&title=" + title + "&appkey=3792856654&ralateUid=1877224203&source=bookmark");
 			else // facebook for none chinese locale
 				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + url + "&t=" + title + from + browserName + ")");
@@ -2521,13 +2533,11 @@ public class SimpleBrowser extends Activity {
 		webpages.addView(serverWebs.get(webIndex));
 
 		webTools = (LinearLayout) findViewById(R.id.webtools);
-		urlLine = (RelativeLayout) findViewById(R.id.urlline);
+		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		if (!showUrl) hideUrl();
-		if (!showControlBar) hideBar();
 
 		imgNext = (ImageView) findViewById(R.id.next);
 		imgNext.setOnClickListener(new OnClickListener() {
@@ -2590,6 +2600,7 @@ public class SimpleBrowser extends Activity {
 
 		adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		setLayout();
+		setWebpagesLayout();
 
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
@@ -2975,11 +2986,11 @@ public class SimpleBrowser extends Activity {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				// press Back key in webview will go backword.
 				if (webControl.getVisibility() == View.VISIBLE)
-					imgNew.performClick();// hide web control
+					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if ((urlLine.getLayoutParams().height != 0) && (!showUrl)) hideUrl();
-				else if ((webTools.getLayoutParams().height != 0) && (!showControlBar)) hideBar();
+				else if ((urlLine.getLayoutParams().height == 0) == showUrl) setUrlHeight(showUrl); 
+				else if ((webTools.getLayoutParams().height == 0) == showControlBar) setBarHeight(showControlBar);
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

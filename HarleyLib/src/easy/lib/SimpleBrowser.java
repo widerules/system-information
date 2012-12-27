@@ -9,10 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -33,7 +29,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
@@ -65,12 +60,10 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -2292,7 +2285,16 @@ public class SimpleBrowser extends Activity {
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
+				setUrlHeight(showUrl);
+				setBarHeight(showControlBar);
+				serverWebs.get(webIndex).pageUp(false);
+			}
+		});
+		upButton.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				serverWebs.get(webIndex).pageUp(true);
+				return false;
 			}
 		});
 		
@@ -2301,7 +2303,16 @@ public class SimpleBrowser extends Activity {
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
+				setUrlHeight(showUrl);
+				setBarHeight(showControlBar);
+				serverWebs.get(webIndex).pageDown(false);
+			}
+		});
+		downButton.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				serverWebs.get(webIndex).pageDown(true);
+				return false;
 			}
 		});
 	}

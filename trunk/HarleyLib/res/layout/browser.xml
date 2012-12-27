@@ -263,20 +263,25 @@
         
     </LinearLayout>
         
+    <RelativeLayout
+        android:id="@+id/webs"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/webtools"
+        android:layout_below="@id/urlline"
+        >
+        
     <easy.lib.MyViewFlipper
         android:id="@+id/webpages"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/webtools"
-        android:layout_below="@id/urlline" />
+        />
 
     <GridView
         android:id="@+id/grid_menu"
-        android:layout_width="wrap_content"
+        android:layout_width="120dip"
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
-        android:layout_above="@id/webtools"
-        android:layout_below="@id/urlline" 
 	    android:gravity="bottom"
 	    android:cacheColorHint="#00000000"
 	    android:background="#ee333333"
@@ -286,11 +291,9 @@
     
 <LinearLayout 
     android:id="@+id/bookmarkView"
-    android:layout_width="320dip"
+    android:layout_width="120dip"
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
-    android:layout_above="@id/webtools"
-    android:layout_below="@id/urlline" 
     android:gravity="bottom"
     android:background="#ee333333"
     android:orientation="vertical" >
@@ -334,6 +337,7 @@
         android:layout_toLeftOf="@id/grid_menu"
         android:layout_toRightOf="@id/bookmarkView"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:gravity="bottom"
         android:visibility="invisible" >
@@ -356,5 +360,6 @@
             android:textStyle="bold" />
 
     </LinearLayout>
+</RelativeLayout>
 
 </RelativeLayout>

@@ -236,6 +236,7 @@ public class SimpleBrowser extends Activity {
 	ImageView imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark;//imgNext, 
 	WebAdapter webAdapter;
 	LinearLayout webTools, webControl, urlLine;
+	RelativeLayout webs;
 	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -1342,20 +1343,16 @@ public class SimpleBrowser extends Activity {
 		setBarHeight(showControlBar);
 
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-		if (showUrl) {
+		if (showUrl) 
 			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
-		}
-		else {
+		else 
 			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		}
-		if (showControlBar) {
+		if (showControlBar) 
 			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
-		}
-		else {
+		else 
 			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		}
-		webpages.setLayoutParams(lp);
-		webpages.requestLayout();
+		webs.setLayoutParams(lp);
+		webs.requestLayout();
 	}
 	
 	void setUrlHeight(boolean showUrlNow) {
@@ -1364,9 +1361,7 @@ public class SimpleBrowser extends Activity {
 			urlLine.bringToFront();
 			lpUrl.height = LayoutParams.WRAP_CONTENT;
 		}
-		else {
-			lpUrl.height = 0;
-		}
+		else lpUrl.height = 0;
 		urlLine.requestLayout();		
 	}
 	
@@ -1376,9 +1371,7 @@ public class SimpleBrowser extends Activity {
 			webTools.bringToFront();
 			lpBar.height = LayoutParams.WRAP_CONTENT;
 		}
-		else {
-			lpBar.height = 0;
-		}
+		else lpBar.height = 0;
 		webTools.requestLayout();		
 	}
 
@@ -1840,7 +1833,7 @@ public class SimpleBrowser extends Activity {
 				menuGrid.requestLayout();
 				menuGrid.bringToFront();
 			}
-			else {// show bars if hide
+			else {// show bars if hided
 				if (!showUrl) setUrlHeight(true);
 				if (!showControlBar) setBarHeight(true);
 			}
@@ -2659,6 +2652,7 @@ public class SimpleBrowser extends Activity {
 
 		webTools = (LinearLayout) browserView.findViewById(R.id.webtools);
 		urlLine = (LinearLayout) browserView.findViewById(R.id.urlline);
+		webs = (RelativeLayout) findViewById(R.id.webs);
 		
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -2707,11 +2701,12 @@ public class SimpleBrowser extends Activity {
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (scrollState == 0) {
+				if (scrollState == 0) {// hide bookmark
 					bookmarkView.getLayoutParams().width = 0;
 					scrollState = 1;
 				}
-				else {
+				else {// show bookmark
+					if (!showUrl) setUrlHeight(showUrl);// hide url if it should not display
 					menuGrid.getLayoutParams().width = 0;
 					menuGrid.requestLayout();
 					bookmarkView.getLayoutParams().width = bookmarkWidth;

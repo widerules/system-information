@@ -474,7 +474,10 @@ public class SimpleBrowser extends Activity {
 				
 				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
 					webControl.setVisibility(View.INVISIBLE);
-				
+								
+				if (!showUrl) setUrlHeight(false);
+				if (!showControlBar) setBarHeight(false);
+
 				if (!this.isFocused()) {
 					this.setFocusableInTouchMode(true);
 					this.requestFocus();
@@ -639,6 +642,7 @@ public class SimpleBrowser extends Activity {
 						imgRefresh.setImageResource(R.drawable.stop);
 
 						if (!showUrl) setUrlHeight(true);
+						if (!showControlBar) setBarHeight(true);
 					}
 
 					//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
@@ -781,8 +785,6 @@ public class SimpleBrowser extends Activity {
 			imgRefresh.setImageResource(R.drawable.refresh);
 			webControl.setVisibility(View.INVISIBLE);
 			webAddress.setText(url);
-			
-			if (!showUrl) setUrlHeight(false);
 		}
 		// update the page title in webList
 		webAdapter.notifyDataSetChanged();
@@ -1823,7 +1825,7 @@ public class SimpleBrowser extends Activity {
 			scrollState = 1;
 		}
 		else {
-			if (((urlLine.getLayoutParams().height == 0) == showUrl) || ((webTools.getLayoutParams().height == 0) == showControlBar)) { 
+			if (((urlLine.getLayoutParams().height == 0) == showUrl) || ((webTools.getLayoutParams().height == 0) == showControlBar)) {//restore bars and show menu 
 				setUrlHeight(showUrl);
 				setBarHeight(showControlBar);
 				
@@ -1835,7 +1837,7 @@ public class SimpleBrowser extends Activity {
 				menuGrid.requestLayout();
 				menuGrid.bringToFront();
 			}
-			else {
+			else {// show bars if hide
 				if (!showUrl) setUrlHeight(true);
 				if (!showControlBar) setBarHeight(true);
 			}

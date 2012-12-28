@@ -64,6 +64,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -1710,7 +1711,6 @@ public class SimpleBrowser extends Activity {
 				notification.icon = android.R.drawable.stat_notify_error;
 				
 				intent.putExtra("errorMsg", e.toString());
-				intent.putExtra("id", NOTIFICATION_ID);
 				// request_code will help to diff different thread
 				contentIntent = PendingIntent.getActivity(
 						mContext,
@@ -1786,8 +1786,8 @@ public class SimpleBrowser extends Activity {
 			// call system package manager to install app.
 			// it will not return result code,
 			// so not use startActivityForResult();
-			util.startActivity(intent, false, mContext);
-		}		
+		}
+		util.startActivity(intent, false, mContext);// try to start some app to launch the download file
 	}
 	
 	void scrollToMain() {
@@ -2275,7 +2275,7 @@ public class SimpleBrowser extends Activity {
 		});*/
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(80);
+		upButton.setAlpha(40);
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -2295,7 +2295,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(80);
+		downButton.setAlpha(40);
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

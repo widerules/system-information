@@ -1783,8 +1783,8 @@ public class SimpleBrowser extends Activity {
 			// call system package manager to install app.
 			// it will not return result code,
 			// so not use startActivityForResult();
-			util.startActivity(intent, false, mContext);
-		}		
+		}
+		util.startActivity(intent, false, mContext);// try to start some app to launch the download file
 	}
 	
 	@Override

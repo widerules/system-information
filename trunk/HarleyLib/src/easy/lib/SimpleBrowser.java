@@ -2279,16 +2279,18 @@ public class SimpleBrowser extends Activity {
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				setUrlHeight(showUrl);
-				setBarHeight(showControlBar);
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
 				serverWebs.get(webIndex).pageUp(false);
 			}
 		});
 		upButton.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
 				serverWebs.get(webIndex).pageUp(true);
-				return false;
+				return true;
 			}
 		});
 		
@@ -2297,16 +2299,18 @@ public class SimpleBrowser extends Activity {
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				setUrlHeight(showUrl);
-				setBarHeight(showControlBar);
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
 				serverWebs.get(webIndex).pageDown(false);
 			}
 		});
 		downButton.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
 				serverWebs.get(webIndex).pageDown(true);
-				return false;
+				return true;
 			}
 		});
 	}

@@ -113,5 +113,6 @@
     <string name="edit_home">Editar</string>
     <string name="show_controlBar">Barra de controle</string>
     <string name="show_statusBar">Barra de status</string>
+    <string name="page_updown">Botão de rolagem</string>
     
 </resources>

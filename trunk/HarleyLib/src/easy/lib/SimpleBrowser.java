@@ -160,6 +160,7 @@ public class SimpleBrowser extends Activity {
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
+	boolean updownButton = false;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
@@ -1230,6 +1231,10 @@ public class SimpleBrowser extends Activity {
 
 			incognitoMode = sp.getBoolean("incognito", false);
 			
+			updownButton = sp.getBoolean("up_down", false);
+			if (updownButton) upAndDown.setVisibility(View.VISIBLE);
+			else upAndDown.setVisibility(View.INVISIBLE);
+			
 			shareMode = sp.getInt("share_mode", 2);
 			
 			searchEngine = sp.getInt("search_engine", 3);
@@ -1985,6 +1990,7 @@ public class SimpleBrowser extends Activity {
 		m_homepage = sp.getString("homepage", null);
 
 		incognitoMode = sp.getBoolean("incognito", false);
+		updownButton = sp.getBoolean("up_down", false);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
 		showUrl = sp.getBoolean("show_url", true);
@@ -2281,7 +2287,8 @@ public class SimpleBrowser extends Activity {
 	
 	public void initUpDown() {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
-		upAndDown.setVisibility(View.VISIBLE);
+		if (updownButton) upAndDown.setVisibility(View.VISIBLE);
+		else upAndDown.setVisibility(View.INVISIBLE);
 		/*upAndDown.setOnDragListener(new OnDragListener() {
 			@Override
 			public boolean onDrag(View v, DragEvent event) {

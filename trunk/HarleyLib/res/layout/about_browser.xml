@@ -55,6 +55,15 @@
                 android:textColor="#f0030f03" />
 
             <CheckBox
+                android:id="@+id/page_updown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dip"
+                android:checked="false"
+                android:text="@string/page_updown"
+                android:textColor="#f0030f03" />
+
+            <CheckBox
                 android:id="@+id/show_zoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

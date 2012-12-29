@@ -316,6 +316,7 @@ public class SimpleBrowser extends Activity {
 	static Method setDatabasePath = null;
 	static Method setDisplayZoomControls = null;
 	static Method setScrollbarFadingEnabled = null;
+	static Method canScrollVerticallyMethod = null;
 	static {
 		try {//API 7
 			freeMemoryMethod  = WebView.class.getMethod("freeMemory");
@@ -334,6 +335,10 @@ public class SimpleBrowser extends Activity {
 
 		try {//API 11
 			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
+		} catch (Exception e) {}
+		
+		try {//API 14
+			canScrollVerticallyMethod = WebView.class.getMethod("canScrollVertically", new Class[] { int.class });
 		} catch (Exception e) {}
 
 	}
@@ -421,6 +426,16 @@ public class SimpleBrowser extends Activity {
 		boolean isForeground = true;
 		boolean closeToBefore = true;
 
+		public boolean myCanScrollVertically(int direction) {
+			if (canScrollVerticallyMethod != null)
+				try {
+					Object o = canScrollVerticallyMethod.invoke(this, direction);
+					return "true".equals(o.toString());
+				} catch(Exception e) {}
+			
+			return true;
+		}
+		
 		public void getPageSource() {// to get page source, part 3
 			loadUrl("javascript:window.JSinterface.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
 		}
@@ -2281,7 +2296,10 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View v) {
 				if (!showUrl) setUrlHeight(showUrl);
 				if (!showControlBar) setBarHeight(showControlBar);
-				serverWebs.get(webIndex).pageUp(false);
+				//serverWebs.get(webIndex).pageUp(false);
+				if (serverWebs.get(webIndex).myCanScrollVertically(-1))
+					serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
+				
 			}
 		});
 		upButton.setOnLongClickListener(new OnLongClickListener() {
@@ -2301,7 +2319,9 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View v) {
 				if (!showUrl) setUrlHeight(showUrl);
 				if (!showControlBar) setBarHeight(showControlBar);
-				serverWebs.get(webIndex).pageDown(false);
+				//serverWebs.get(webIndex).pageDown(false);
+				if (serverWebs.get(webIndex).myCanScrollVertically(1))
+					serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
 			}
 		});
 		downButton.setOnLongClickListener(new OnLongClickListener() {

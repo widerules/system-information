@@ -2310,7 +2310,7 @@ public class SimpleBrowser extends Activity {
 							x - temp[0] - 40, 
 							y - temp[1] - (int)(120*dm.density), 
 							x + upAndDown.getWidth() - temp[0] - 40, 
-							y - temp[1] + upAndDown.getHeight() - (int)(120*dm.density)
+							y - temp[1]
 						);
 					upAndDown.postInvalidate();
 					break;

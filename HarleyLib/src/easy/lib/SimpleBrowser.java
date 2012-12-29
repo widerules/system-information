@@ -1830,7 +1830,11 @@ public class SimpleBrowser extends Activity {
 			scrollState = 1;
 		}
 		else {
-			if (((urlLine.getLayoutParams().height == 0) == showUrl) || ((webTools.getLayoutParams().height == 0) == showControlBar)) {//restore bars and show menu 
+			if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {// show bars if hided 
+				if (!showUrl) setUrlHeight(true);
+				if (!showControlBar) setBarHeight(true);
+			}
+			else {//restore bars and show menu
 				setUrlHeight(showUrl);
 				setBarHeight(showControlBar);
 				
@@ -1840,10 +1844,6 @@ public class SimpleBrowser extends Activity {
 				if (menuGrid.getChildCount() == 0) initMenuDialog();
 				menuGrid.getLayoutParams().width = menuWidth;
 				menuGrid.requestLayout();
-			}
-			else {// show bars if hided
-				if (!showUrl) setUrlHeight(true);
-				if (!showControlBar) setBarHeight(true);
 			}
 		}
 
@@ -2307,11 +2307,12 @@ public class SimpleBrowser extends Activity {
 				case MotionEvent.ACTION_MOVE: // touch drag with the ball
 					upAndDown.layout(
 							x - temp[0] - 40, 
-							y - temp[1] - 80, 
+							y - temp[1] - (int)(80*dm.density), 
 							x + upAndDown.getWidth() - temp[0] - 40, 
-							y - temp[1] + upAndDown.getHeight() - 80
+							y - temp[1] + upAndDown.getHeight() - (int)(80*dm.density)
 						);
 					upAndDown.postInvalidate();
+					//upAndDown.
 					break;
 
 				case MotionEvent.ACTION_UP:
@@ -2328,8 +2329,7 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View v) {
 				if (!showUrl) setUrlHeight(showUrl);
 				if (!showControlBar) setBarHeight(showControlBar);
-				//serverWebs.get(webIndex).pageUp(false);
-				if (serverWebs.get(webIndex).myCanScrollVertically(-1))
+				if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
 					serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
 				
 			}
@@ -2351,7 +2351,6 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View v) {
 				if (!showUrl) setUrlHeight(showUrl);
 				if (!showControlBar) setBarHeight(showControlBar);
-				//serverWebs.get(webIndex).pageDown(false);
 				if (serverWebs.get(webIndex).myCanScrollVertically(1))
 					serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
 			}

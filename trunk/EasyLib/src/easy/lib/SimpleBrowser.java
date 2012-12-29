@@ -76,6 +76,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -161,6 +162,7 @@ public class SimpleBrowser extends Activity {
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
+	boolean updownButton = false;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
@@ -206,6 +208,10 @@ public class SimpleBrowser extends Activity {
 	View menuView;
 	int historyIndex = -1;
 	AlertDialog downloadsDialog = null;
+
+	// page up and down button
+	RelativeLayout upAndDown;
+	ImageView upButton, downButton;
 
 	// browser related
 	AutoCompleteTextView webAddress;
@@ -309,6 +315,7 @@ public class SimpleBrowser extends Activity {
 	static Method setDatabasePath = null;
 	static Method setDisplayZoomControls = null;
 	static Method setScrollbarFadingEnabled = null;
+	static Method canScrollVerticallyMethod = null;
 	static {
 		try {//API 7
 			freeMemoryMethod  = WebView.class.getMethod("freeMemory");
@@ -327,6 +334,10 @@ public class SimpleBrowser extends Activity {
 
 		try {//API 11
 			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
+		} catch (Exception e) {}
+		
+		try {//API 14
+			canScrollVerticallyMethod = WebView.class.getMethod("canScrollVertically", new Class[] { int.class });
 		} catch (Exception e) {}
 
 	}
@@ -414,6 +425,16 @@ public class SimpleBrowser extends Activity {
 		boolean isForeground = true;
 		boolean closeToBefore = true;
 
+		public boolean myCanScrollVertically(int direction) {
+			if (canScrollVerticallyMethod != null)
+				try {
+					Object o = canScrollVerticallyMethod.invoke(this, direction);
+					return "true".equals(o.toString());
+				} catch(Exception e) {}
+			
+			return true;
+		}
+		
 		public void getPageSource() {// to get page source, part 3
 			loadUrl("javascript:window.JSinterface.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
 		}
@@ -1163,6 +1184,10 @@ public class SimpleBrowser extends Activity {
 
 			incognitoMode = sp.getBoolean("incognito", false);
 			
+			updownButton = sp.getBoolean("up_down", false);
+			if (updownButton) upAndDown.setVisibility(View.VISIBLE);
+			else upAndDown.setVisibility(View.INVISIBLE);
+			
 			shareMode = sp.getInt("share_mode", 2);
 			
 			searchEngine = sp.getInt("search_engine", 3);
@@ -1283,44 +1308,34 @@ public class SimpleBrowser extends Activity {
 	public void setWebpagesLayout() {
 		setUrlHeight(showUrl);
 		setBarHeight(showControlBar);
-		
+
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		
 		if (showUrl) 
 			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
 		else 
 			lp.addRule(RelativeLayout.BELOW, R.id.adContainer);
-		
 		if (showControlBar) 
 			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
 		else 
 			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		
 		webpages.setLayoutParams(lp);
 		webpages.requestLayout();
 	}
 	
 	void setUrlHeight(boolean showUrlNow) {
 		LayoutParams lpUrl = urlLine.getLayoutParams();
-		if (showUrlNow) {
-			urlLine.bringToFront();
+		if (showUrlNow) 
 			lpUrl.height = LayoutParams.WRAP_CONTENT;
-		}
-		else {
-			lpUrl.height = 0;
-		}
+		else lpUrl.height = 0;
 		urlLine.requestLayout();		
 	}
 	
 	void setBarHeight(boolean showBarNow) {
 		LayoutParams lpBar = webTools.getLayoutParams();
-		if (showBarNow) {
-			webTools.bringToFront();
+		if (showBarNow) 
 			lpBar.height = LayoutParams.WRAP_CONTENT;
-		}
-		else {
-			lpBar.height = 0;
-		}
+		else lpBar.height = 0;
 		webTools.requestLayout();		
 	}
 
@@ -1948,6 +1963,7 @@ public class SimpleBrowser extends Activity {
 		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
 
 		incognitoMode = sp.getBoolean("incognito", false);
+		updownButton = sp.getBoolean("up_down", false);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
 		showUrl = sp.getBoolean("show_url", true);
@@ -2231,6 +2247,63 @@ public class SimpleBrowser extends Activity {
 		});
 	}
 	
+	public void initUpDown() {
+		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
+		if (updownButton) upAndDown.setVisibility(View.VISIBLE);
+		else upAndDown.setVisibility(View.INVISIBLE);
+		/*upAndDown.setOnDragListener(new OnDragListener() {
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+				return false;
+			}
+		});*/
+		
+		upButton = (ImageView) findViewById(R.id.page_up);
+		upButton.setAlpha(40);
+		upButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
+				//serverWebs.get(webIndex).pageUp(false);
+				if (serverWebs.get(webIndex).myCanScrollVertically(-1))
+					serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
+				
+			}
+		});
+		upButton.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
+				serverWebs.get(webIndex).pageUp(true);
+				return true;
+			}
+		});
+		
+		downButton = (ImageView) findViewById(R.id.page_down);
+		downButton.setAlpha(40);
+		downButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
+				//serverWebs.get(webIndex).pageDown(false);
+				if (serverWebs.get(webIndex).myCanScrollVertically(1))
+					serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
+			}
+		});
+		downButton.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				if (!showUrl) setUrlHeight(showUrl);
+				if (!showControlBar) setBarHeight(showControlBar);
+				serverWebs.get(webIndex).pageDown(true);
+				return true;
+			}
+		});
+	}
+
 	public void initSearchBar() {		
 		imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		imgSearchPrev.setOnClickListener(new OnClickListener() {
@@ -2601,6 +2674,10 @@ public class SimpleBrowser extends Activity {
 		adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		setLayout();
 		setWebpagesLayout();
+		initUpDown();
+
+		urlLine.bringToFront();// decide the z-order
+		webTools.bringToFront();
 
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
@@ -2610,10 +2687,8 @@ public class SimpleBrowser extends Activity {
 				else if ((m_homepage != null) && !"".equals(m_homepage)) serverWebs.get(webIndex).loadUrl(m_homepage);
 				else loadPage();// load about:blank if no url saved or homepage specified
 			}
-			else
-				serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
-		} catch (Exception e) {
-		}
+			else serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
+		} catch (Exception e) {}
 
 		// for package added
 		IntentFilter filter = new IntentFilter();

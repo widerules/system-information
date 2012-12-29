@@ -42,7 +42,7 @@ public class AboutBrowser extends Activity {
 	CheckBox cbEnableProxy, cbBlockPopup, cbBlockJs, cbCacheToSD,
 			cbZoomControl, cbHtml5, cbBlockImg, cbCachePrefer,
 			cbOverview, cbSnapSize, cbIncognito,
-			cbUrl, cbControlBar, cbStatusBar;
+			cbUrl, cbControlBar, cbStatusBar, cbUpDown;
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
 			searchEngine, shareMode, rotateMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
@@ -229,6 +229,7 @@ public class AboutBrowser extends Activity {
 
 		rotateMode = (RadioGroup) findViewById(R.id.rotate_mode);
 		cbIncognito = (CheckBox) findViewById(R.id.incognito_mode);
+		cbUpDown = (CheckBox) findViewById(R.id.page_updown);
 		cbZoomControl = (CheckBox) findViewById(R.id.show_zoom);
 		cbBlockImg = (CheckBox) findViewById(R.id.block_image);
 		cbCachePrefer = (CheckBox) findViewById(R.id.cache_prefer);
@@ -413,6 +414,7 @@ public class AboutBrowser extends Activity {
 		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		cbIncognito.setChecked(perferences.getBoolean("incognito", false));
+		cbUpDown.setChecked(perferences.getBoolean("up_down", false));
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		cbCachePrefer.setChecked(perferences.getBoolean("cache_prefer", false));
@@ -468,6 +470,7 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("show_statusBar", true);
 			editor.putInt("rotate_mode", 1);
 			editor.putBoolean("incognito", false);
+			editor.putBoolean("up_down", false);
 			editor.putBoolean("show_zoom", false);
 			editor.putBoolean("block_image", false);
 			editor.putBoolean("cache_prefer", false);
@@ -515,6 +518,7 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("show_statusBar", cbStatusBar.isChecked());
 			editor.putInt("rotate_mode", rotateMode.indexOfChild(findViewById(rotateMode.getCheckedRadioButtonId())));
 			editor.putBoolean("incognito", cbIncognito.isChecked());
+			editor.putBoolean("up_down", cbUpDown.isChecked());
 			editor.putBoolean("show_zoom", cbZoomControl.isChecked());
 			editor.putBoolean("block_image", cbBlockImg.isChecked());
 			editor.putBoolean("cache_prefer", cbCachePrefer.isChecked());

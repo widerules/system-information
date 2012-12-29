@@ -2251,12 +2251,40 @@ public class SimpleBrowser extends Activity {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
 		if (updownButton) upAndDown.setVisibility(View.VISIBLE);
 		else upAndDown.setVisibility(View.INVISIBLE);
-		/*upAndDown.setOnDragListener(new OnDragListener() {
+		
+		ImageView dragButton = (ImageView) findViewById(R.id.page_drag);
+		dragButton.setOnTouchListener(new OnTouchListener() {
 			@Override
-			public boolean onDrag(View v, DragEvent event) {
-				return false;
+			public boolean onTouch(View v, MotionEvent event) {
+				int[] temp = new int[] { 0, 0 };
+				int eventAction = event.getAction();
+				int x = (int) event.getRawX();
+				int y = (int) event.getRawY();
+				switch (eventAction) {
+				case MotionEvent.ACTION_DOWN: // touch down so check if the
+					temp[0] = (int) event.getX();
+					temp[1] = y - v.getTop();
+					break;
+
+				case MotionEvent.ACTION_MOVE: // touch drag with the ball
+					upAndDown.layout(
+							x - temp[0] - 40, 
+							y - temp[1] - (int)(120*dm.density), 
+							x + upAndDown.getWidth() - temp[0] - 40, 
+							y - temp[1]
+						);
+					upAndDown.postInvalidate();
+					break;
+
+				case MotionEvent.ACTION_UP:
+					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
+					lp.setMargins(0, 0, dm.widthPixels-upAndDown.getRight(), dm.heightPixels-upAndDown.getBottom()-(int)(110*dm.density));
+					upAndDown.setLayoutParams(lp);
+					break;
+				}
+				return true;
 			}
-		});*/
+		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setAlpha(40);
@@ -2265,8 +2293,7 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View v) {
 				if (!showUrl) setUrlHeight(showUrl);
 				if (!showControlBar) setBarHeight(showControlBar);
-				//serverWebs.get(webIndex).pageUp(false);
-				if (serverWebs.get(webIndex).myCanScrollVertically(-1))
+				if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
 					serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
 				
 			}

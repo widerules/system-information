@@ -413,7 +413,7 @@ public class SimpleBrowser extends Activity {
 		 * catch(Exception e) {} }
 		 */
 	}
-	
+
 	class MyWebview extends WebView {
 		public String pageSource = "", m_url = "";
 
@@ -2289,12 +2289,37 @@ public class SimpleBrowser extends Activity {
 		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
 		if (updownButton) upAndDown.setVisibility(View.VISIBLE);
 		else upAndDown.setVisibility(View.INVISIBLE);
-		/*upAndDown.setOnDragListener(new OnDragListener() {
+		
+		ImageView dragButton = (ImageView) findViewById(R.id.page_drag);
+		dragButton.setOnTouchListener(new OnTouchListener() {
 			@Override
-			public boolean onDrag(View v, DragEvent event) {
-				return false;
+			public boolean onTouch(View v, MotionEvent event) {
+				int[] temp = new int[] { 0, 0 };
+				int eventAction = event.getAction();
+				int x = (int) event.getRawX();
+				int y = (int) event.getRawY();
+				switch (eventAction) {
+				case MotionEvent.ACTION_DOWN: // touch down so check if the
+					temp[0] = (int) event.getX();
+					temp[1] = y - upAndDown.getTop();
+					break;
+
+				case MotionEvent.ACTION_MOVE: // touch drag with the ball
+					upAndDown.layout(
+							x - temp[0] - 40, 
+							y - temp[1] - 80, 
+							x + upAndDown.getWidth() - temp[0] - 40, 
+							y - temp[1] + upAndDown.getHeight() - 80
+						);
+					upAndDown.postInvalidate();
+					break;
+
+				case MotionEvent.ACTION_UP:
+					break;
+				}
+				return true;
 			}
-		});*/
+		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setAlpha(40);

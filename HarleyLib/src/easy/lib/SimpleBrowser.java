@@ -80,6 +80,7 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -2301,21 +2302,23 @@ public class SimpleBrowser extends Activity {
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN: // touch down so check if the
 					temp[0] = (int) event.getX();
-					temp[1] = y - upAndDown.getTop();
+					temp[1] = y - v.getTop();
 					break;
 
 				case MotionEvent.ACTION_MOVE: // touch drag with the ball
 					upAndDown.layout(
 							x - temp[0] - 40, 
-							y - temp[1] - (int)(80*dm.density), 
+							y - temp[1] - (int)(120*dm.density), 
 							x + upAndDown.getWidth() - temp[0] - 40, 
-							y - temp[1] + upAndDown.getHeight() - (int)(80*dm.density)
+							y - temp[1] + upAndDown.getHeight() - (int)(120*dm.density)
 						);
 					upAndDown.postInvalidate();
-					//upAndDown.
 					break;
 
 				case MotionEvent.ACTION_UP:
+					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
+					lp.setMargins(0, 0, dm.widthPixels-upAndDown.getRight(), dm.heightPixels-upAndDown.getBottom()-110);
+					upAndDown.setLayoutParams(lp);
 					break;
 				}
 				return true;

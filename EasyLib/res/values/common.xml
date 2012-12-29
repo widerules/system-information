@@ -126,5 +126,6 @@
     <string name="show_url">Show url</string>
     <string name="show_controlBar">Control Bar</string>
     <string name="show_statusBar">Status Bar</string>
+    <string name="page_updown">Scroll Button</string>
     
 </resources>

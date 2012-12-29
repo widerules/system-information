@@ -126,5 +126,6 @@
     <string name="show_url">地址栏"     "</string>
     <string name="show_controlBar">控制栏"    "</string>
     <string name="show_statusBar">状态栏</string>
+    <string name="page_updown">翻页按钮</string>
     
 </resources>

@@ -114,5 +114,6 @@
     <string name="edit_home">編集</string>
     <string name="show_controlBar">コントロールバー</string>
     <string name="show_statusBar">ステータスバー</string>
+    <string name="page_updown">スクロールボタン</string>
     
 </resources>

@@ -108,5 +108,6 @@
     <string name="incognito">Modo incógnito</string>
     <string name="edit_home">Editar</string>
     <string name="show_controlBar">Barra de control</string>
+    <string name="page_updown">Botón de desplazamiento</string>
     
 </resources>

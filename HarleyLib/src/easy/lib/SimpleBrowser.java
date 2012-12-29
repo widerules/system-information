@@ -2317,7 +2317,7 @@ public class SimpleBrowser extends Activity {
 
 				case MotionEvent.ACTION_UP:
 					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
-					lp.setMargins(0, 0, dm.widthPixels-upAndDown.getRight(), dm.heightPixels-upAndDown.getBottom()-110);
+					lp.setMargins(0, 0, dm.widthPixels-upAndDown.getRight(), dm.heightPixels-upAndDown.getBottom()-(int)(110*dm.density));
 					upAndDown.setLayoutParams(lp);
 					break;
 				}

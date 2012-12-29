@@ -209,7 +209,7 @@ public class SimpleBrowser extends Activity {
 	// page up and down button
 	RelativeLayout upAndDown;
 	ImageView upButton, downButton;
-	
+
 	// browser related
 	GridView menuGrid = null;
 	View bookmarkView;
@@ -2341,7 +2341,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 	}
-	
+
 	public void initSearchBar() {		
 		imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		imgSearchPrev.setOnClickListener(new OnClickListener() {

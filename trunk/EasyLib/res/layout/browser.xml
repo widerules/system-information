@@ -234,12 +234,19 @@
         
     </LinearLayout>
         
+    <RelativeLayout
+        android:id="@+id/webs"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/webtools"
+        android:layout_below="@id/urlline"
+        >
+        
     <easy.lib.MyViewFlipper
         android:id="@+id/webpages"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/webtools"
-        android:layout_below="@id/urlline" />
+        />
 
     <RelativeLayout
         android:id="@+id/up_down"
@@ -249,9 +256,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="30dip"
-        android:layout_marginBottom="80dip"
+        android:layout_marginBottom="40dip"
         android:background="#00000000"
-        android:visibility="invisible"
         >
         
         <ImageView
@@ -278,6 +284,7 @@
 	        android:src="@drawable/br_down_icon"
             />
         </RelativeLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/webcontrol"

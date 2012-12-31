@@ -161,7 +161,7 @@ public class SimpleBrowser extends Activity {
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
-	boolean updownButton = false;
+	boolean updownButton = true;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
@@ -233,7 +233,6 @@ public class SimpleBrowser extends Activity {
 	WebAdapter webAdapter;
 	LinearLayout webTools, webControl, urlLine;
 	RelativeLayout webs;
-	int dips = 5;
 	Button btnNewpage;
 	InputMethodManager imm;
 	ProgressBar loadProgress;
@@ -1232,7 +1231,7 @@ public class SimpleBrowser extends Activity {
 
 			incognitoMode = sp.getBoolean("incognito", false);
 			
-			updownButton = sp.getBoolean("up_down", false);
+			updownButton = sp.getBoolean("up_down", true);
 			if (updownButton) upAndDown.setVisibility(View.VISIBLE);
 			else upAndDown.setVisibility(View.INVISIBLE);
 			
@@ -1991,7 +1990,7 @@ public class SimpleBrowser extends Activity {
 		m_homepage = sp.getString("homepage", null);
 
 		incognitoMode = sp.getBoolean("incognito", false);
-		updownButton = sp.getBoolean("up_down", false);
+		updownButton = sp.getBoolean("up_down", true);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
 		showUrl = sp.getBoolean("show_url", true);

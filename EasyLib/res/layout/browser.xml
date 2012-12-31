@@ -250,7 +250,7 @@
 
     <RelativeLayout
         android:id="@+id/up_down"
-        android:layout_width="wrap_content"
+        android:layout_width="40dip"
         android:layout_height="120dip"
         android:orientation="vertical"
         android:layout_alignParentRight="true"

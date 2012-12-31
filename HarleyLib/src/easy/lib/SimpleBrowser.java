@@ -2310,14 +2310,14 @@ public class SimpleBrowser extends Activity {
 							x - temp[0] - 40, 
 							y - temp[1] - (int)(120*dm.density), 
 							x + upAndDown.getWidth() - temp[0] - 40, 
-							y - temp[1]
+							y - temp[1] 
 						);
 					upAndDown.postInvalidate();
 					break;
 
 				case MotionEvent.ACTION_UP:
 					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
-					lp.setMargins(0, 0, dm.widthPixels-upAndDown.getRight(), dm.heightPixels-upAndDown.getBottom()-(int)(110*dm.density));
+					lp.setMargins(0, 0, webs.getWidth()-upAndDown.getRight(), webs.getHeight()-upAndDown.getBottom());
 					upAndDown.setLayoutParams(lp);
 					break;
 				}
@@ -2721,18 +2721,6 @@ public class SimpleBrowser extends Activity {
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		/*imgNext = (ImageView) browserView.findViewById(R.id.next);
-		imgNext.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (serverWebs.get(webIndex).canGoForward()) {
-					WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-                    if (HOME_BLANK.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl()))
-                            loadPage();//goForward will show blank page at this time, so load the home page.
-                    else serverWebs.get(webIndex).goForward();
-				}
-			}
-		});*/
 		imgPrev = (ImageView) browserView.findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2743,6 +2731,18 @@ public class SimpleBrowser extends Activity {
                             loadPage();//goBack will show blank page at this time, so load the home page.
                     else serverWebs.get(webIndex).goBack();
 				}
+			}
+		});
+		imgPrev.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {//long click as next button
+				if (serverWebs.get(webIndex).canGoForward()) {
+					WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+                    if (HOME_BLANK.equals(wbfl.getItemAtIndex(wbfl.getCurrentIndex()+1).getUrl()))
+                            loadPage();//goForward will show blank page at this time, so load the home page.
+                    else serverWebs.get(webIndex).goForward();
+				}
+				return true;
 			}
 		});
 		imgRefresh = (ImageView) browserView.findViewById(R.id.refresh);

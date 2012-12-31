@@ -2302,15 +2302,15 @@ public class SimpleBrowser extends Activity {
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN: // touch down so check if the
 					temp[0] = (int) event.getX();
-					temp[1] = y - v.getTop();
+					temp[1] = y;
 					break;
 
 				case MotionEvent.ACTION_MOVE: // touch drag with the ball
 					upAndDown.layout(
-							x - temp[0] - 40, 
-							y - temp[1] - (int)(120*dm.density), 
-							x + upAndDown.getWidth() - temp[0] - 40, 
-							y - temp[1] 
+							x - temp[0], 
+							y - temp[1] - upAndDown.getHeight()*2/3, 
+							x - temp[0] + upAndDown.getWidth(), 
+							y - temp[1] + upAndDown.getHeight()/3
 						);
 					upAndDown.postInvalidate();
 					break;
@@ -2326,7 +2326,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(40);
+		upButton.setAlpha(60);
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -2348,7 +2348,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(40);
+		downButton.setAlpha(60);
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

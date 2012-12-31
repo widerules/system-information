@@ -124,8 +124,7 @@ import android.widget.ZoomButtonsController;
 class wrapValueCallback {
 	ValueCallback<Uri> mInstance;
 
-	wrapValueCallback() {
-	}
+	wrapValueCallback() {}
 
 	static {
 		try {
@@ -135,8 +134,7 @@ class wrapValueCallback {
 		}
 	}
 
-	public static void checkAvailable() {
-	}
+	public static void checkAvailable() {}
 
 	void onReceiveValue(Uri value) {
 		mInstance.onReceiveValue(value);
@@ -215,9 +213,13 @@ public class SimpleBrowser extends Activity {
 	GridView menuGrid = null;
 	View bookmarkView;
 	RelativeLayout browserView;
+	LinearLayout webControl;
+	int minWebControlWidth = 240;
 	int historyIndex = -1;
-	int scrollState = 1;
-	int bookmarkWidth = LayoutParams.WRAP_CONTENT, menuWidth = LayoutParams.WRAP_CONTENT;
+	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
+	int menuWidth = LayoutParams.WRAP_CONTENT;
+	boolean menuOpened = true;
+	boolean bookmarkOpened = true;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -231,7 +233,7 @@ public class SimpleBrowser extends Activity {
 	MyViewFlipper webpages;
 	ImageView imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark;//imgNext, 
 	WebAdapter webAdapter;
-	LinearLayout webTools, webControl, urlLine;
+	LinearLayout webTools, urlLine;
 	RelativeLayout webs;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -481,7 +483,7 @@ public class SimpleBrowser extends Activity {
 														// work. so put relate
 														// code here
 			if (ev.getAction() == 0) {// touch down
-				if (scrollState != 1) scrollToMain();
+				scrollToMain();
 				
 				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
 					webControl.setVisibility(View.INVISIBLE);
@@ -1384,6 +1386,18 @@ public class SimpleBrowser extends Activity {
 		else lpBar.height = 0;
 		webTools.requestLayout();		
 	}
+	
+	void hideMenu() {
+		menuGrid.getLayoutParams().width = 0;
+		menuGrid.requestLayout();
+		menuOpened = false;
+	}
+	
+	void hideBookmark() {
+		bookmarkView.getLayoutParams().width = 0;
+		bookmarkView.requestLayout();
+		bookmarkOpened = false;
+	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -1811,24 +1825,13 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void scrollToMain() {
-		if (scrollState == 0) {
-			bookmarkView.getLayoutParams().width = 0;
-			bookmarkView.requestLayout();
-		}
-		else if (scrollState == 2) { 
-			menuGrid.getLayoutParams().width = 0;
-			menuGrid.requestLayout();
-		}
-		scrollState = 1;
+		if (bookmarkOpened) hideBookmark();		
+		if (menuOpened) hideMenu(); 
 	}
 	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (scrollState == 2) {// hide menu if menu showed
-			menuGrid.getLayoutParams().width = 0;
-			menuGrid.requestLayout();
-			scrollState = 1;
-		}
+		if (menuOpened) hideMenu();
 		else {
 			if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {// show bars if hided 
 				if (!showUrl) setUrlHeight(true);
@@ -1838,15 +1841,13 @@ public class SimpleBrowser extends Activity {
 				setUrlHeight(showUrl);
 				setBarHeight(showControlBar);
 				
-				bookmarkView.getLayoutParams().width = 0;
-				bookmarkView.requestLayout();
-				scrollState = 2;
+				menuOpened = true;
 				if (menuGrid.getChildCount() == 0) initMenuDialog();
 				menuGrid.getLayoutParams().width = menuWidth;
 				menuGrid.requestLayout();
+				if (webControl.getWidth() < minWebControlWidth) hideBookmark();
 			}
 		}
-
 		return false;// show system menu if return true.
 	}
 
@@ -2751,7 +2752,6 @@ public class SimpleBrowser extends Activity {
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				//if (scrollState != 1) scrollToMain();
 				reloadPage();
 			}
 		});
@@ -2766,21 +2766,19 @@ public class SimpleBrowser extends Activity {
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (scrollState == 0) {// hide bookmark
-					bookmarkView.getLayoutParams().width = 0;
-					scrollState = 1;
-				}
+				if (bookmarkOpened) hideBookmark();
 				else {// show bookmark
 					if (!showUrl) setUrlHeight(showUrl);// hide url if it should not display
-					menuGrid.getLayoutParams().width = 0;
-					menuGrid.requestLayout();
 					bookmarkView.getLayoutParams().width = bookmarkWidth;
-					if (bookmarkWidth < 320) webControl.setVisibility(View.INVISIBLE);
-					scrollState = 0;
+					bookmarkView.requestLayout();
+					bookmarkOpened = true;
+					if (webControl.getWidth() < minWebControlWidth) {
+						webControl.setVisibility(View.INVISIBLE);
+						hideMenu();
+					}
 					if (bookmarkAdapter == null) initBookmarks();
 					if (adview != null) adview.loadAd();
 				}
-				bookmarkView.requestLayout();
 			}
 		});
 		imgNew = (ImageView) browserView.findViewById(R.id.newpage);
@@ -2791,7 +2789,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (webControl.getVisibility() == View.INVISIBLE) {
-					if ((scrollState == 0) && (bookmarkWidth < 320)) scrollToMain();// otherwise may not display weblist correctly
+					if (webControl.getWidth() < minWebControlWidth) scrollToMain();// otherwise may not display weblist correctly
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
 				} else webControl.setVisibility(View.INVISIBLE);
@@ -2800,13 +2798,15 @@ public class SimpleBrowser extends Activity {
 
 		dm = new DisplayMetrics();
 		setLayout();
+		hideMenu();
+		hideBookmark();
 		setWebpagesLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
 		initUpDown();
 		createAd();
 		
-		urlLine.bringToFront();// decide the z-order
+		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
 		try {// there are a null pointer error reported for the if line below,
@@ -3190,7 +3190,7 @@ public class SimpleBrowser extends Activity {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				// press Back key in webview will go backword.
-				if (scrollState != 1) scrollToMain();
+				if (menuOpened || bookmarkOpened) scrollToMain();
 				else if (webControl.getVisibility() == View.VISIBLE)
 					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
@@ -3405,22 +3405,18 @@ public class SimpleBrowser extends Activity {
 			menuGrid.setNumColumns(2);
 		}
 		
-		if (scrollState == 0) {
+		updateHistoryViewHeight();
+		if (bookmarkOpened) {
 			bookmarkView.getLayoutParams().width = bookmarkWidth;
 			bookmarkView.requestLayout();
-			updateHistoryViewHeight();
-			if (bookmarkWidth < 320) webControl.setVisibility(View.INVISIBLE);
 		}
-		else if (scrollState == 2) {
+		
+		if (menuOpened) {
 			menuGrid.getLayoutParams().width = menuWidth;
 			menuGrid.requestLayout();
 		}
-		else if (scrollState == 1) {
-			menuGrid.getLayoutParams().width = 0;
-			menuGrid.requestLayout();
-			bookmarkView.getLayoutParams().width = 0;
-			bookmarkView.requestLayout();			
-		}
+		
+		if (webControl.getWidth() < minWebControlWidth) scrollToMain();
 	}
 
 	void createAd() {
@@ -3569,9 +3565,11 @@ public class SimpleBrowser extends Activity {
 		int maxSize = height / 2 / 40;// 40 here is the height of each history. should display equal rows of history and bookmark
 		height = (int) (Math.min(maxSize, mHistory.size()) * 41 * dm.density);//select a value from maxSize and mHistory.size().
 		
-		LayoutParams lp = historyList.getLayoutParams();
-		lp.height = height;
-		historyList.requestLayout();
+		if (historyList != null) {
+			LayoutParams lp = historyList.getLayoutParams();
+			lp.height = height;
+			historyList.requestLayout();
+		}
 	}
 	
 	String homePage() {

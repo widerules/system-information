@@ -2290,6 +2290,7 @@ public class SimpleBrowser extends Activity {
 		else upAndDown.setVisibility(View.INVISIBLE);
 		
 		ImageView dragButton = (ImageView) findViewById(R.id.page_drag);
+		dragButton.setAlpha(80);
 		dragButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -2299,6 +2300,8 @@ public class SimpleBrowser extends Activity {
 				int y = (int) event.getRawY();
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN: // touch down so check if the
+					if (!showUrl) setUrlHeight(showUrl);
+					if (!showControlBar) setBarHeight(showControlBar);
 					temp[0] = (int) event.getX();
 					temp[1] = y;
 					break;
@@ -2324,9 +2327,9 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(60);
+		upButton.setAlpha(80);
 		Matrix matrix = new Matrix();
-		matrix.postRotate(180f, 16*dm.density, 16*dm.density);
+		matrix.postRotate(180f, 24*dm.density, 24*dm.density);
 		upButton.setImageMatrix(matrix);// rotate 180 degree
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2349,7 +2352,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(60);
+		downButton.setAlpha(80);
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

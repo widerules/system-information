@@ -249,7 +249,7 @@
 
     <RelativeLayout
         android:id="@+id/up_down"
-        android:layout_width="40dip"
+        android:layout_width="48dip"
         android:layout_height="120dip"
         android:orientation="vertical"
         android:layout_alignParentRight="true"
@@ -271,8 +271,8 @@
         
         <ImageView
             android:id="@+id/page_drag"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
 	        android:src="@drawable/arrow_expand"
             />

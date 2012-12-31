@@ -265,6 +265,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
 	        android:src="@drawable/br_up_icon"
             />
         
@@ -273,7 +274,7 @@
             android:layout_width="40dip"
             android:layout_height="40dip"
             android:layout_centerInParent="true"
-            android:background="#00111111"
+	        android:background="@drawable/circle"
             />
         
         <ImageView
@@ -281,6 +282,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
 	        android:src="@drawable/br_down_icon"
             />
         </RelativeLayout>

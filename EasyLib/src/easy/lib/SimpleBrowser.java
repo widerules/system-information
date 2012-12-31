@@ -80,6 +80,7 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -162,7 +163,7 @@ public class SimpleBrowser extends Activity {
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
-	boolean updownButton = false;
+	boolean updownButton = true;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
@@ -224,7 +225,7 @@ public class SimpleBrowser extends Activity {
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	LinearLayout webTools, webControl, urlLine;
-	int dips = 5;
+	RelativeLayout webs;
 	Button btnNewpage;
 	InputMethodManager imm;
 	ProgressBar loadProgress;
@@ -1184,7 +1185,7 @@ public class SimpleBrowser extends Activity {
 
 			incognitoMode = sp.getBoolean("incognito", false);
 			
-			updownButton = sp.getBoolean("up_down", false);
+			updownButton = sp.getBoolean("up_down", true);
 			if (updownButton) upAndDown.setVisibility(View.VISIBLE);
 			else upAndDown.setVisibility(View.INVISIBLE);
 			
@@ -1310,7 +1311,6 @@ public class SimpleBrowser extends Activity {
 		setBarHeight(showControlBar);
 
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-		
 		if (showUrl) 
 			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
 		else 
@@ -1319,8 +1319,8 @@ public class SimpleBrowser extends Activity {
 			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
 		else 
 			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		webpages.setLayoutParams(lp);
-		webpages.requestLayout();
+		webs.setLayoutParams(lp);
+		webs.requestLayout();
 	}
 	
 	void setUrlHeight(boolean showUrlNow) {
@@ -1963,7 +1963,7 @@ public class SimpleBrowser extends Activity {
 		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
 
 		incognitoMode = sp.getBoolean("incognito", false);
-		updownButton = sp.getBoolean("up_down", false);
+		updownButton = sp.getBoolean("up_down", true);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
 		showUrl = sp.getBoolean("show_url", true);
@@ -2263,22 +2263,22 @@ public class SimpleBrowser extends Activity {
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN: // touch down so check if the
 					temp[0] = (int) event.getX();
-					temp[1] = y - v.getTop();
+					temp[1] = y;
 					break;
 
 				case MotionEvent.ACTION_MOVE: // touch drag with the ball
 					upAndDown.layout(
-							x - temp[0] - 40, 
-							y - temp[1] - (int)(120*dm.density), 
-							x + upAndDown.getWidth() - temp[0] - 40, 
-							y - temp[1]
+							x - temp[0], 
+							y - temp[1] - upAndDown.getHeight()*2/3 - adContainer.getHeight(), 
+							x - temp[0] + upAndDown.getWidth(), 
+							y - temp[1] + upAndDown.getHeight()/3 - adContainer.getHeight()
 						);
 					upAndDown.postInvalidate();
 					break;
 
 				case MotionEvent.ACTION_UP:
 					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
-					lp.setMargins(0, 0, dm.widthPixels-upAndDown.getRight(), dm.heightPixels-upAndDown.getBottom()-(int)(110*dm.density));
+					lp.setMargins(0, 0, webs.getWidth()-upAndDown.getRight(), webs.getHeight()-upAndDown.getBottom());
 					upAndDown.setLayoutParams(lp);
 					break;
 				}
@@ -2287,7 +2287,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(40);
+		upButton.setAlpha(60);
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -2309,7 +2309,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(40);
+		downButton.setAlpha(60);
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -2468,8 +2468,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				String url = serverWebs.get(webIndex).m_url;
-				if (HOME_PAGE.equals(url))
-					return;// not add home page
+				if (HOME_BLANK.equals(url))	return;// not add home page
 
 				boolean foundBookmark = false;
 				for (int i = mBookMark.size() - 1; i >= 0; i--)
@@ -2634,6 +2633,7 @@ public class SimpleBrowser extends Activity {
 
 		webTools = (LinearLayout) findViewById(R.id.webtools);
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
+		webs = (RelativeLayout) findViewById(R.id.webs);
 		
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,

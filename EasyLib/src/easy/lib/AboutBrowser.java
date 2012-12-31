@@ -414,7 +414,7 @@ public class AboutBrowser extends Activity {
 		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		cbIncognito.setChecked(perferences.getBoolean("incognito", false));
-		cbUpDown.setChecked(perferences.getBoolean("up_down", false));
+		cbUpDown.setChecked(perferences.getBoolean("up_down", true));
 		cbZoomControl.setChecked(perferences.getBoolean("show_zoom", false));
 		cbBlockImg.setChecked(perferences.getBoolean("block_image", false));
 		cbCachePrefer.setChecked(perferences.getBoolean("cache_prefer", false));
@@ -470,7 +470,7 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("show_statusBar", true);
 			editor.putInt("rotate_mode", 1);
 			editor.putBoolean("incognito", false);
-			editor.putBoolean("up_down", false);
+			editor.putBoolean("up_down", true);
 			editor.putBoolean("show_zoom", false);
 			editor.putBoolean("block_image", false);
 			editor.putBoolean("cache_prefer", false);

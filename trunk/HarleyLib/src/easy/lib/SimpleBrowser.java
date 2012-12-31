@@ -214,7 +214,7 @@ public class SimpleBrowser extends Activity {
 	View bookmarkView;
 	RelativeLayout browserView;
 	LinearLayout webControl;
-	int minWebControlWidth = 240;
+	int minWebControlWidth = 200;
 	int historyIndex = -1;
 	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
 	int menuWidth = LayoutParams.WRAP_CONTENT;
@@ -1845,7 +1845,7 @@ public class SimpleBrowser extends Activity {
 				if (menuGrid.getChildCount() == 0) initMenuDialog();
 				menuGrid.getLayoutParams().width = menuWidth;
 				menuGrid.requestLayout();
-				if (webControl.getWidth() < minWebControlWidth) hideBookmark();
+				if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) hideBookmark();
 			}
 		}
 		return false;// show system menu if return true.
@@ -2449,7 +2449,7 @@ public class SimpleBrowser extends Activity {
 	public void initWebControl() {
 		// web control
 		webControl = (LinearLayout) browserView.findViewById(R.id.webcontrol);
-
+		
 		btnNewpage = (Button) browserView.findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2772,7 +2772,7 @@ public class SimpleBrowser extends Activity {
 					bookmarkView.getLayoutParams().width = bookmarkWidth;
 					bookmarkView.requestLayout();
 					bookmarkOpened = true;
-					if (webControl.getWidth() < minWebControlWidth) {
+					if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
 						webControl.setVisibility(View.INVISIBLE);
 						hideMenu();
 					}

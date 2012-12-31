@@ -540,8 +540,7 @@ public class SimpleBrowser extends Activity {
 			if (!webSettings.setDisplayZoomControls(false)) // hide zoom button
 															// by default on API
 															// 11 and above
-				setZoomControl(View.GONE);// default not show zoom control in
-											// new page
+				setZoomControl(View.GONE);// default not show zoom control in new page
 
 			// webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
@@ -1057,8 +1056,7 @@ public class SimpleBrowser extends Activity {
 			System.gc();
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
-					webAdapter.getCount(), 2, mContext));// show the changed
-			// page number
+					webAdapter.getCount(), 2, mContext));// show the changed page number
 			if ((position == webIndex) && !toBefore) {// change to the page after current page
 				if (webIndex == webAdapter.getCount()) webIndex -= 1;
 			}
@@ -2767,18 +2765,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (bookmarkOpened) hideBookmark();
-				else {// show bookmark
-					if (!showUrl) setUrlHeight(showUrl);// hide url if it should not display
-					bookmarkView.getLayoutParams().width = bookmarkWidth;
-					bookmarkView.requestLayout();
-					bookmarkOpened = true;
-					if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
-						webControl.setVisibility(View.INVISIBLE);
-						hideMenu();
-					}
-					if (bookmarkAdapter == null) initBookmarks();
-					if (adview != null) adview.loadAd();
-				}
+				else showBookmark(); 
 			}
 		});
 		imgNew = (ImageView) browserView.findViewById(R.id.newpage);
@@ -2830,6 +2817,19 @@ public class SimpleBrowser extends Activity {
 		registerReceiver(downloadReceiver, filter);
 	}
 
+	void showBookmark() {
+		if (!showUrl) setUrlHeight(showUrl);// hide url if it should not display
+		bookmarkView.getLayoutParams().width = bookmarkWidth;
+		bookmarkView.requestLayout();
+		bookmarkOpened = true;
+		if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
+			webControl.setVisibility(View.INVISIBLE);
+			hideMenu();
+		}
+		if (bookmarkAdapter == null) initBookmarks();
+		if (adview != null) adview.loadAd();
+	}
+	
 	void reloadPage() {
 		if (loadProgress.getVisibility() == View.VISIBLE) {
 			// webpage is loading then stop it
@@ -3190,7 +3190,8 @@ public class SimpleBrowser extends Activity {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				// press Back key in webview will go backword.
-				if (menuOpened || bookmarkOpened) scrollToMain();
+				if (menuOpened) hideMenu();
+				else if (bookmarkOpened) hideBookmark();
 				else if (webControl.getVisibility() == View.VISIBLE)
 					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
@@ -3597,7 +3598,7 @@ public class SimpleBrowser extends Activity {
 	
 	void loadPage() {// load home page
 		serverWebs.get(webIndex).loadDataWithBaseURL(HOME_BLANK, homePage(), "text/html", "utf-8", HOME_BLANK);
-		imgBookmark.performClick();// show bookmark if load new page
+		showBookmark();// show bookmark if load new page
 	}
 
 	class TitleUrl {

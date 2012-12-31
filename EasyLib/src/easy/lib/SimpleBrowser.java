@@ -102,6 +102,7 @@ import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView.ScaleType;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -2288,6 +2289,9 @@ public class SimpleBrowser extends Activity {
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setAlpha(60);
+		Matrix matrix = new Matrix();
+		matrix.postRotate(180f, 16*dm.density, 16*dm.density);
+		upButton.setImageMatrix(matrix);// rotate 180 degree
 		upButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

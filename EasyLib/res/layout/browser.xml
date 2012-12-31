@@ -266,7 +266,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-	        android:src="@drawable/br_up_icon"
+            android:scaleType="matrix"
+	        android:src="@drawable/br_down_icon"
             />
         
         <ImageView

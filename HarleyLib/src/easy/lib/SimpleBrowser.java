@@ -3549,7 +3549,7 @@ public class SimpleBrowser extends Activity {
 	void updateBookmark() {
 		if (bookmarkAdapter != null) {
 			bookmarkAdapter.notifyDataSetInvalidated();
-			//updateHistoryViewHeight();
+			updateHistoryViewHeight();
 		}
 		bookmarkChanged = true;
 	}
@@ -3567,18 +3567,17 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void updateHistoryViewHeight() {
+		if (historyList == null) return;
 		//reset height of history list so that it display not too many items
 		int height = (int) (dm.heightPixels / dm.density - 50);//50 is the height of ad banner
 		if (showUrl) height -= urlHeight;
 		if (showControlBar) height -= barHeight;
-		int maxSize = height / 2 / 40;// 40 here is the height of each history. should display equal rows of history and bookmark
+		int maxSize = Math.max(height/2/40, height/40-mBookMark.size());// 40 here is the height of each history. should display equal rows of history and bookmark
 		height = (int) (Math.min(maxSize, mHistory.size()) * 41 * dm.density);//select a value from maxSize and mHistory.size().
-		
-		if (historyList != null) {
-			LayoutParams lp = historyList.getLayoutParams();
-			lp.height = height;
-			historyList.requestLayout();
-		}
+
+		LayoutParams lp = historyList.getLayoutParams();
+		lp.height = height;
+		historyList.requestLayout();
 	}
 	
 	String homePage() {

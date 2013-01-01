@@ -294,7 +294,7 @@
         android:layout_alignParentRight="true"
 	    android:gravity="bottom"
 	    android:cacheColorHint="#00000000"
-	    android:background="#ee333333"
+	    android:background="#ee494949"
 	    android:stackFromBottom="true"
         android:numColumns="2"
         android:stretchMode="columnWidth" />
@@ -305,7 +305,7 @@
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
     android:gravity="bottom"
-    android:background="#ee333333"
+    android:background="#ee494949"
     android:orientation="vertical" >
 
     <ListView

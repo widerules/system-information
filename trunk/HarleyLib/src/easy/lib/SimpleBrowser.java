@@ -166,7 +166,7 @@ public class SimpleBrowser extends Activity {
 	boolean blockPopup = false;
 	boolean blockJs = false;
 	TextSize textSize = TextSize.NORMAL;
-	final int historyCount = 16;
+	final int historyCount = 30;
 	long sizeM = 1024 * 1024;
 	long html5cacheMaxSize = sizeM * 8;
 	int ua = 0;

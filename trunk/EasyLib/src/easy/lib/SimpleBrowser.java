@@ -2282,7 +2282,12 @@ public class SimpleBrowser extends Activity {
 
 				case MotionEvent.ACTION_UP:
 					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
-					lp.setMargins(0, 0, webs.getWidth()-upAndDown.getRight(), webs.getHeight()-upAndDown.getBottom());
+					lp.setMargins(
+							0, 
+							0, 
+							Math.min(Math.max(webs.getWidth()-upAndDown.getRight(), 0), webs.getWidth()-upAndDown.getWidth()), 
+							Math.min(Math.max(webs.getHeight()-upAndDown.getBottom(), 0), webs.getHeight()-upAndDown.getHeight())
+						);
 					upAndDown.setLayoutParams(lp);
 					break;
 				}
@@ -2291,7 +2296,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(80);
+		upButton.setAlpha(100);
 		Matrix matrix = new Matrix();
 		matrix.postRotate(180f, 24*dm.density, 24*dm.density);
 		upButton.setImageMatrix(matrix);// rotate 180 degree
@@ -2316,13 +2321,12 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(80);
+		downButton.setAlpha(100);
 		downButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (!showUrl) setUrlHeight(showUrl);
 				if (!showControlBar) setBarHeight(showControlBar);
-				//serverWebs.get(webIndex).pageDown(false);
 				if (serverWebs.get(webIndex).myCanScrollVertically(1))
 					serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
 			}

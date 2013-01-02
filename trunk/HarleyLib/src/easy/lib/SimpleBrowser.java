@@ -2339,11 +2339,17 @@ public class SimpleBrowser extends Activity {
 		upButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getHistorySize() == 1) {
-					if (!showUrl) setUrlHeight(showUrl);
-					if (!showControlBar) setBarHeight(showControlBar);
-					if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
-						serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
+				int eventAction = event.getAction();
+				switch (eventAction) {
+				case MotionEvent.ACTION_DOWN: // touch down so check if the
+					actioned = false;
+					break;
+				case MotionEvent.ACTION_MOVE:
+					if (event.getHistorySize() == 1) scrollUp();
+					break;
+				case MotionEvent.ACTION_UP:
+					if (!actioned) scrollUp();
+					break;
 				}
 				return true;
 			}
@@ -2354,17 +2360,39 @@ public class SimpleBrowser extends Activity {
 		downButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getHistorySize() == 1) {
-					if (!showUrl) setUrlHeight(showUrl);
-					if (!showControlBar) setBarHeight(showControlBar);
-					if (serverWebs.get(webIndex).myCanScrollVertically(1))
-						serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
+				int eventAction = event.getAction();
+				switch (eventAction) {
+				case MotionEvent.ACTION_DOWN: // touch down so check if the
+					actioned = false;
+					break;
+				case MotionEvent.ACTION_MOVE:
+					if (event.getHistorySize() == 1) scrollDown();
+					break;
+				case MotionEvent.ACTION_UP:
+					if (!actioned) scrollDown();
+					break;
 				}
 				return true;
 			}
 		});
 	}
-
+	
+	boolean actioned = false;
+	void scrollUp() {
+		actioned = true;
+		if (!showUrl) setUrlHeight(showUrl);
+		if (!showControlBar) setBarHeight(showControlBar);
+		if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
+			serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);		
+	}
+	void scrollDown() {
+		actioned = true;
+		if (!showUrl) setUrlHeight(showUrl);
+		if (!showControlBar) setBarHeight(showControlBar);
+		if (serverWebs.get(webIndex).myCanScrollVertically(1))
+			serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);		
+	}
+	
 	public void initSearchBar() {		
 		imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		imgSearchPrev.setOnClickListener(new OnClickListener() {

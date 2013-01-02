@@ -482,7 +482,7 @@ public class SimpleBrowser extends Activity {
 		public boolean onTouchEvent(MotionEvent ev) {// onTouchListener may not
 														// work. so put relate
 														// code here
-			if (ev.getAction() == 0) {// touch down
+			if (ev.getAction() == MotionEvent.ACTION_DOWN) {// touch down
 				scrollToMain();
 				
 				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
@@ -2332,14 +2332,14 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(100);
+		upButton.setAlpha(60);
 		Matrix matrix = new Matrix();
 		matrix.postRotate(180f, 24*dm.density, 24*dm.density);
 		upButton.setImageMatrix(matrix);// rotate 180 degree
 		upButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+				if (event.getHistorySize() == 1) {
 					if (!showUrl) setUrlHeight(showUrl);
 					if (!showControlBar) setBarHeight(showControlBar);
 					if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
@@ -2350,11 +2350,11 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(100);
+		downButton.setAlpha(60);
 		downButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_MOVE) {
+				if (event.getHistorySize() == 1) {
 					if (!showUrl) setUrlHeight(showUrl);
 					if (!showControlBar) setBarHeight(showControlBar);
 					if (serverWebs.get(webIndex).myCanScrollVertically(1))

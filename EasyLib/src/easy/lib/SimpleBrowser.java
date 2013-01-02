@@ -2296,47 +2296,34 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(100);
+		upButton.setAlpha(60);
 		Matrix matrix = new Matrix();
 		matrix.postRotate(180f, 24*dm.density, 24*dm.density);
 		upButton.setImageMatrix(matrix);// rotate 180 degree
-		upButton.setOnClickListener(new OnClickListener() {
+		upButton.setOnTouchListener(new OnTouchListener() {
 			@Override
-			public void onClick(View v) {
-				if (!showUrl) setUrlHeight(showUrl);
-				if (!showControlBar) setBarHeight(showControlBar);
-				if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
-					serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
-				
-			}
-		});
-		upButton.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				if (!showUrl) setUrlHeight(showUrl);
-				if (!showControlBar) setBarHeight(showControlBar);
-				serverWebs.get(webIndex).pageUp(true);
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getHistorySize() == 1) {
+					if (!showUrl) setUrlHeight(showUrl);
+					if (!showControlBar) setBarHeight(showControlBar);
+					if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
+						serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);
+				}
 				return true;
 			}
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(100);
-		downButton.setOnClickListener(new OnClickListener() {
+		downButton.setAlpha(60);
+		downButton.setOnTouchListener(new OnTouchListener() {
 			@Override
-			public void onClick(View v) {
-				if (!showUrl) setUrlHeight(showUrl);
-				if (!showControlBar) setBarHeight(showControlBar);
-				if (serverWebs.get(webIndex).myCanScrollVertically(1))
-					serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
-			}
-		});
-		downButton.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				if (!showUrl) setUrlHeight(showUrl);
-				if (!showControlBar) setBarHeight(showControlBar);
-				serverWebs.get(webIndex).pageDown(true);
+			public boolean onTouch(View v, MotionEvent event) {
+				if (event.getHistorySize() == 1) {
+					if (!showUrl) setUrlHeight(showUrl);
+					if (!showControlBar) setBarHeight(showControlBar);
+					if (serverWebs.get(webIndex).myCanScrollVertically(1))
+						serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);
+				}
 				return true;
 			}
 		});

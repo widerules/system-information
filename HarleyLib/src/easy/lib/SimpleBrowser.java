@@ -2346,7 +2346,7 @@ public class SimpleBrowser extends Activity {
 					lastTime = event.getEventTime();
 					break;
 				case MotionEvent.ACTION_MOVE:
-					if (event.getEventTime() - lastTime > 100) {
+					if (event.getEventTime() - lastTime > 50) {
 						lastTime = event.getEventTime();
 						scrollUp();
 					}
@@ -2371,7 +2371,7 @@ public class SimpleBrowser extends Activity {
 					lastTime = event.getEventTime();
 					break;
 				case MotionEvent.ACTION_MOVE:
-					if (event.getEventTime() - lastTime > 100) {
+					if (event.getEventTime() - lastTime > 50) {
 						lastTime = event.getEventTime();
 						scrollDown();
 					}

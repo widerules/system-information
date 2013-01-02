@@ -2307,9 +2307,13 @@ public class SimpleBrowser extends Activity {
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN: // touch down so check if the
 					actioned = false;
+					lastTime = event.getEventTime();
 					break;
 				case MotionEvent.ACTION_MOVE:
-					if (event.getHistorySize() == 1) scrollUp();
+					if (event.getEventTime() - lastTime > 100) {
+						lastTime = event.getEventTime();
+						scrollUp();
+					}
 					break;
 				case MotionEvent.ACTION_UP:
 					if (!actioned) scrollUp();
@@ -2328,9 +2332,13 @@ public class SimpleBrowser extends Activity {
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN: // touch down so check if the
 					actioned = false;
+					lastTime = event.getEventTime();
 					break;
 				case MotionEvent.ACTION_MOVE:
-					if (event.getHistorySize() == 1) scrollDown();
+					if (event.getEventTime() - lastTime > 100) {
+						lastTime = event.getEventTime();
+						scrollDown();
+					}
 					break;
 				case MotionEvent.ACTION_UP:
 					if (!actioned) scrollDown();
@@ -2341,6 +2349,7 @@ public class SimpleBrowser extends Activity {
 		});
 	}
 	
+	long lastTime;
 	boolean actioned = false;
 	void scrollUp() {
 		actioned = true;

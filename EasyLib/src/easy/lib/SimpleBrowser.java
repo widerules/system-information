@@ -2296,9 +2296,9 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		upButton = (ImageView) findViewById(R.id.page_up);
-		upButton.setAlpha(60);
+		upButton.setAlpha(40);
 		Matrix matrix = new Matrix();
-		matrix.postRotate(180f, 24*dm.density, 24*dm.density);
+		matrix.postRotate(180f, 21*dm.density, 10*dm.density);
 		upButton.setImageMatrix(matrix);// rotate 180 degree
 		upButton.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -2326,7 +2326,7 @@ public class SimpleBrowser extends Activity {
 		});
 		
 		downButton = (ImageView) findViewById(R.id.page_down);
-		downButton.setAlpha(60);
+		downButton.setAlpha(40);
 		downButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {

@@ -2263,14 +2263,14 @@ public class SimpleBrowser extends Activity {
 				int x = (int) event.getRawX();
 				int y = (int) event.getRawY();
 				switch (eventAction) {
-				case MotionEvent.ACTION_DOWN: // touch down so check if the
+				case MotionEvent.ACTION_DOWN:// prepare for drag
 					if (!showUrl) setUrlHeight(showUrl);
 					if (!showControlBar) setBarHeight(showControlBar);
 					temp[0] = (int) event.getX();
 					temp[1] = y;
 					break;
 
-				case MotionEvent.ACTION_MOVE: // touch drag with the ball
+				case MotionEvent.ACTION_MOVE:// drag the button
 					upAndDown.layout(
 							x - temp[0], 
 							y - temp[1] - upAndDown.getHeight()*2/3 - adContainer.getHeight(), 
@@ -2280,7 +2280,7 @@ public class SimpleBrowser extends Activity {
 					upAndDown.postInvalidate();
 					break;
 
-				case MotionEvent.ACTION_UP:
+				case MotionEvent.ACTION_UP:// reset the margin when stop drag
 					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
 					lp.setMargins(
 							0, 
@@ -2305,12 +2305,14 @@ public class SimpleBrowser extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				int eventAction = event.getAction();
 				switch (eventAction) {
-				case MotionEvent.ACTION_DOWN: // touch down so check if the
+				case MotionEvent.ACTION_DOWN:
 					actioned = false;
 					lastTime = event.getEventTime();
+					timeInterval = 100;
 					break;
 				case MotionEvent.ACTION_MOVE:
-					if (event.getEventTime() - lastTime > 70) {
+					if (event.getEventTime() - lastTime > timeInterval) {
+						timeInterval = 70;
 						lastTime = event.getEventTime();
 						scrollUp();
 					}
@@ -2330,12 +2332,14 @@ public class SimpleBrowser extends Activity {
 			public boolean onTouch(View v, MotionEvent event) {
 				int eventAction = event.getAction();
 				switch (eventAction) {
-				case MotionEvent.ACTION_DOWN: // touch down so check if the
+				case MotionEvent.ACTION_DOWN:
 					actioned = false;
 					lastTime = event.getEventTime();
+					timeInterval = 100;// the interval for first scroll is longer than the after, to avoid scroll twice
 					break;
 				case MotionEvent.ACTION_MOVE:
-					if (event.getEventTime() - lastTime > 70) {
+					if (event.getEventTime() - lastTime > timeInterval) {
+						timeInterval = 70;
 						lastTime = event.getEventTime();
 						scrollDown();
 					}
@@ -2349,7 +2353,8 @@ public class SimpleBrowser extends Activity {
 		});
 	}
 	
-	long lastTime;
+	long lastTime = 0;
+	long timeInterval = 100;
 	boolean actioned = false;
 	void scrollUp() {
 		actioned = true;

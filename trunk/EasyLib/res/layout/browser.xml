@@ -250,7 +250,7 @@
 
     <RelativeLayout
         android:id="@+id/up_down"
-        android:layout_width="wrap_content"
+        android:layout_width="48dip"
         android:layout_height="120dip"
         android:orientation="vertical"
         android:layout_alignParentRight="true"
@@ -263,7 +263,7 @@
         <ImageView
             android:id="@+id/page_up"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dip"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:scaleType="matrix"
@@ -283,7 +283,7 @@
         <ImageView
             android:id="@+id/page_down"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dip"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
 	        android:src="@drawable/br_down_icon"

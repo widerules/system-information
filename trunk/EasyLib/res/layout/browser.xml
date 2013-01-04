@@ -268,6 +268,7 @@
             android:layout_centerHorizontal="true"
             android:scaleType="matrix"
 	        android:src="@drawable/br_down_icon"
+            android:background="@drawable/imagebutton_layout"
             />
         
         <ImageView
@@ -276,6 +277,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
 	        android:src="@drawable/arrow_expand"
+            android:background="@drawable/imagebutton_layout"
             />
         
         <ImageView
@@ -285,6 +287,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
 	        android:src="@drawable/br_down_icon"
+            android:background="@drawable/imagebutton_layout"
             />
         </RelativeLayout>
     </RelativeLayout>

@@ -148,7 +148,7 @@
             android:layout_height="35dip"
             android:layout_weight="1"
             android:layout_marginTop="2dip"
-            android:scaleType="center"
+            android:scaleType="fitCenter"
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/menu" />
     </LinearLayout>

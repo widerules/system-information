@@ -832,20 +832,21 @@ public class SimpleBrowser extends Activity {
 						mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
 						updateHistory();
 						return;
-					} else if (mHistory.get(i).m_site.equals(site)) {
+					} 
+					/*else if (mHistory.get(i).m_site.equals(site)) {
 						mHistory.remove(i);// only keep the latest history of the same site. is that good user experience?
 						break;
-					}
+					}*///not keep only latest history of the same site for we change historyCount to 30?
 				}
 
 				if (siteArray.indexOf(site) < 0) {
-					urlAdapter.add(site);// update the auto-complete
-					// edittext without
-					// duplicate
-					siteArray.add(site);// the adapter will always
+					// update the auto-complete edittext without duplicate
+					urlAdapter.add(site);
+					// the adapter will always
 					// return 0 when get count
 					// or search, so we use an
 					// array to store the site.
+					siteArray.add(site);
 				}
 
 				try {// try to open the png, if can't open, then need save

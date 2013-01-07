@@ -830,7 +830,7 @@ public class SimpleBrowser extends Activity {
 		String title = view.getTitle();
 		if (title == null) title = url;
 
-		if (HOME_PAGE.equals(url)) updateHomePage();
+		if (HOME_PAGE.equals(url)) updateHomePage();// must update the page on loadpagefinished, other wise it will not update success
 		else {
 			if (browserName.equals(title)) ;
 				// if title and url not sync, then sync it
@@ -3548,7 +3548,6 @@ public class SimpleBrowser extends Activity {
 		}
 		
 		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
-		updateHomePage();
 	}
 
 	class TitleUrl {

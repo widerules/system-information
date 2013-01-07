@@ -2262,6 +2262,7 @@ public class SimpleBrowser extends Activity {
 				int eventAction = event.getAction();
 				int x = (int) event.getRawX();
 				int y = (int) event.getRawY();
+				int offset = (int) (40*dm.density) - urlLine.getHeight() - adContainer.getHeight();
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN:// prepare for drag
 					if (!showUrl) setUrlHeight(showUrl);
@@ -2273,9 +2274,9 @@ public class SimpleBrowser extends Activity {
 				case MotionEvent.ACTION_MOVE:// drag the button
 					upAndDown.layout(
 							x - temp[0], 
-							y - temp[1] - upAndDown.getHeight()*2/3 - adContainer.getHeight(), 
+							y - temp[1] - upAndDown.getHeight() + offset, 
 							x - temp[0] + upAndDown.getWidth(), 
-							y - temp[1] + upAndDown.getHeight()/3 - adContainer.getHeight()
+							y - temp[1] + offset
 						);
 					upAndDown.postInvalidate();
 					break;

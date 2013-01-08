@@ -656,8 +656,10 @@ public class SimpleBrowser extends Activity {
 					else mProgress = progress;
 					
 					if (HOME_PAGE.equals(view.getUrl())) {
-						if ((progress == 0) || (progress == 100)) updated = false;
-						else if ((progress >= 13) && !updated) {//must update the page on after some progress(like 13), other wise it will not update success
+						Log.d("============="+progress, updated+"");
+						// the progress is not continuous from 0, 1, 2... 100. it always looks like 10, 13, 15, 16, 100
+						if (progress < 16) updated = false;
+						else if (!updated) {//must update the page on after some progress(like 13), other wise it will not update success
 							updated = true;
 							updateHomePage();
 						}
@@ -2715,8 +2717,10 @@ public class SimpleBrowser extends Activity {
 				} else {// reload the webpage
 					String url = serverWebs.get(webIndex).getUrl();
 					String m_url = serverWebs.get(webIndex).m_url;
-					if (m_url.equals(url))
-						serverWebs.get(webIndex).reload();
+					if (m_url.equals(url)) {
+						if (HOME_BLANK.equals(m_url)) loadPage();
+						else serverWebs.get(webIndex).reload();
+					}
 					else 
 						serverWebs.get(webIndex).loadUrl(m_url);
 				}
@@ -3539,17 +3543,18 @@ public class SimpleBrowser extends Activity {
 		if (countDown > 0) countDown -= 1;
 	}
 	
-	void loadPage() {// load home page
-		if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) return;
-		
+	void loadPage() {// load home page		
 		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 		if (wbfl != null) {
 			int size = wbfl.getSize();
 			int current = wbfl.getCurrentIndex();
 			for (int i = 0; i < size; i++) {
 				if (HOME_PAGE.equals(wbfl.getItemAtIndex(i).getUrl())) {
-					serverWebs.get(webIndex).goBackOrForward(i - current);
-					return;
+					if (i-current != 0) {// webview will do nothing if equal to 0
+						serverWebs.get(webIndex).goBackOrForward(i - current);
+						return;
+					}
+					else break;
 				}
 			}
 		}

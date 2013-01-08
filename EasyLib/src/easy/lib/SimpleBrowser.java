@@ -648,11 +648,20 @@ public class SimpleBrowser extends Activity {
 			});
 
 			setWebChromeClient(new WebChromeClient() {
+				boolean updated = false;
+				
 				@Override
 				public void onProgressChanged(WebView view, int progress) {
-					if (progress == 100)
-						mProgress = 0;
+					if (progress == 100) mProgress = 0;
 					else mProgress = progress;
+					
+					if (HOME_PAGE.equals(view.getUrl())) {
+						if ((progress == 0) || (progress == 100)) updated = false;
+						else if ((progress >= 13) && !updated) {//must update the page on after some progress(like 13), other wise it will not update success
+							updated = true;
+							updateHomePage();
+						}
+					}
 
 					if (isForeground) {
 						loadProgress.setProgress(progress);
@@ -830,8 +839,6 @@ public class SimpleBrowser extends Activity {
 		String title = view.getTitle();
 		if (title == null) title = url;
 
-		if (HOME_PAGE.equals(url)) updateHomePage();// must update the page on loadpagefinished, other wise it will not update success
-		else {
 			if (browserName.equals(title)) ;
 				// if title and url not sync, then sync it
 				//webAddress.setText(HOME_BLANK);
@@ -910,7 +917,6 @@ public class SimpleBrowser extends Activity {
 					 //not delete icon here. it can be clear when clear all 
 					mHistory.remove(0);
 			}
-		}
 	}
 	
 	private class WebAdapter extends ArrayAdapter<MyWebview> {

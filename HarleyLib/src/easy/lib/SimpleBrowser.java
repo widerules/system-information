@@ -3549,7 +3549,7 @@ public class SimpleBrowser extends Activity {
 		
 		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 		
-		showBookmark();// show bookmark if load new page
+		//showBookmark();// show bookmark if load new page
 	}
 
 	class TitleUrl {

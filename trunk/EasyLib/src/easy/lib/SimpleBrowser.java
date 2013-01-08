@@ -841,6 +841,8 @@ public class SimpleBrowser extends Activity {
 		String title = view.getTitle();
 		if (title == null) title = url;
 
+		if (HOME_BLANK.equals(url)) ;// do nothing
+		else {
 			if (browserName.equals(title)) ;
 				// if title and url not sync, then sync it
 				//webAddress.setText(HOME_BLANK);
@@ -919,6 +921,7 @@ public class SimpleBrowser extends Activity {
 					 //not delete icon here. it can be clear when clear all 
 					mHistory.remove(0);
 			}
+		}
 	}
 	
 	private class WebAdapter extends ArrayAdapter<MyWebview> {
@@ -2692,18 +2695,16 @@ public class SimpleBrowser extends Activity {
 		imgNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (serverWebs.get(webIndex).canGoForward()) {
+				if (serverWebs.get(webIndex).canGoForward())
 					serverWebs.get(webIndex).goForward();
-				}
 			}
 		});
 		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (serverWebs.get(webIndex).canGoBack()) {
+				if (serverWebs.get(webIndex).canGoBack())
 					serverWebs.get(webIndex).goBack();
-				}
 			}
 		});
 		imgRefresh = (ImageView) findViewById(R.id.refresh);

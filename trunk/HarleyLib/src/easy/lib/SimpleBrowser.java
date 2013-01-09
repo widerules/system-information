@@ -2305,7 +2305,7 @@ public class SimpleBrowser extends Activity {
 				int eventAction = event.getAction();
 				int x = (int) event.getRawX();
 				int y = (int) event.getRawY();
-				int offset = (int) (40*dm.density) - urlLine.getHeight();
+				int offset = - urlLine.getHeight();
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN:// prepare for drag
 					if (!showUrl) setUrlHeight(showUrl);

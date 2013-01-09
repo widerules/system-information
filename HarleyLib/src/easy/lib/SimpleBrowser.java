@@ -262,7 +262,6 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
-	ArrayList<TitleUrl> mTopList = new ArrayList<TitleUrl>();
 	boolean historyChanged = false, bookmarkChanged = false;
 	ImageView imgAddFavo, imgGo;
 	boolean noSdcard = false, noHistoryOnSdcard = false;
@@ -2741,10 +2740,6 @@ public class SimpleBrowser extends Activity {
 			if (mSystemBookMark.size() > 0) 
 				for (int i = 0; i < mSystemBookMark.size(); i++)
 					mBookMark.add(mSystemBookMark.get(i));
-			else {//if no bookmark at first time to run, use top list instead. otherwise user will not know how to do.
-				getTopList();
-				mBookMark.addAll(mTopList);
-			}
 			Collections.sort(mBookMark, new myComparator());
 
 			historyChanged = true;
@@ -3472,34 +3467,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void getTopList() {
-		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
-			TitleUrl titleUrl = new TitleUrl("新浪微博", "http://weibo.com", "weibo.com");
-			mTopList.add(titleUrl);
-			titleUrl = new TitleUrl("好123", "http://m.hao123.com/?type=android&tn=easy.browser", "m.hao123.com");
-			mTopList.add(titleUrl);
-			titleUrl = new TitleUrl("百度", "http://www.baidu.com", "www.baidu.com");
-			mTopList.add(titleUrl);
-			titleUrl = new TitleUrl("书朋小说网", "http://easybrowser.shupeng.com", "easybrowser.shupeng.com");
-			mTopList.add(titleUrl);
-		} else {
-			TitleUrl titleUrl = new TitleUrl("Facebook", "http://www.facebook.com", "www.facebook.com");
-			mTopList.add(titleUrl);
-			titleUrl = new TitleUrl("Google", "http://www.google.com", "www.google.com");
-			mTopList.add(titleUrl);
-			titleUrl = new TitleUrl("Twitter", "http://twitter.com", "twitter.com");
-			mTopList.add(titleUrl);
-		}
-		// additional top list for some locale
-		if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {
-			TitleUrl titleUrl = new TitleUrl("Yahoo!JAPAN", "http://www.yahoo.co.jp", "www.yahoo.co.jp");
-			mTopList.add(titleUrl);
-		} else if ("ru_RU".equals(mLocale.toString())) {
-			TitleUrl titleUrl = new TitleUrl("Яндекс", "http://www.yandex.ru/?clid=1911433", "www.yandex.ru");
-			mTopList.add(titleUrl);
-		}
-	}
-	
 	void updateBookmark() {
 		if (bookmarkAdapter != null) {
 			bookmarkAdapter.notifyDataSetInvalidated();
@@ -3548,8 +3515,6 @@ public class SimpleBrowser extends Activity {
 		}
 		
 		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
-		
-		//showBookmark();// show bookmark if load new page
 	}
 
 	class TitleUrl {

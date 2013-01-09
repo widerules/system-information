@@ -426,6 +426,7 @@ public class SimpleBrowser extends Activity {
 		int mProgress = 0;
 		boolean isForeground = true;
 		boolean closeToBefore = true;
+		String m_ready = "";
 
 		public boolean myCanScrollVertically(int direction) {
 			if (canScrollVerticallyMethod != null)
@@ -440,6 +441,10 @@ public class SimpleBrowser extends Activity {
 		public void getPageSource() {// to get page source, part 3
 			loadUrl("javascript:window.JSinterface.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
 		}
+		
+		public void getPageReadyState() {// title1 will not be empty if ready
+			loadUrl("javascript:window.JSinterface.processReady(document.getElementById('title1').innerHTML);");
+		}
 
 		class MyJavaScriptInterface {
 			@SuppressWarnings("unused")
@@ -450,7 +455,12 @@ public class SimpleBrowser extends Activity {
 				//else
 					pageSource = html;// to get page source, part 1
 			}
-
+			
+			@SuppressWarnings("unused")
+			public void processReady(String ready) {
+				m_ready = ready;
+			}
+			
 			@SuppressWarnings("unused")
 			public void saveCollapseState(String item, boolean state) {
 				if ("1".equals(item))
@@ -478,6 +488,11 @@ public class SimpleBrowser extends Activity {
 					updateBookmark();
 					bookmarkChanged = true;
 				}
+			}
+			
+			@SuppressWarnings("unused")
+			public void updateHome() {
+				updateHomePage();
 			}
 		}
 
@@ -656,13 +671,12 @@ public class SimpleBrowser extends Activity {
 					else mProgress = progress;
 					
 					if (HOME_PAGE.equals(view.getUrl())) {
-						Log.d("============="+progress, updated+"");
+						getPageReadyState();
+						//Log.d("=================", progress+ m_ready);
 						// the progress is not continuous from 0, 1, 2... 100. it always looks like 10, 13, 15, 16, 100
-						if (progress < 16) updated = false;
-						else if (!updated) {//must update the page on after some progress(like 13), other wise it will not update success
-							updated = true;
+						if (progress < 13) ;// do nothing if progress too small
+						else if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
 							updateHomePage();
-						}
 					}
 
 					if (isForeground) {
@@ -2718,10 +2732,8 @@ public class SimpleBrowser extends Activity {
 				} else {// reload the webpage
 					String url = serverWebs.get(webIndex).getUrl();
 					String m_url = serverWebs.get(webIndex).m_url;
-					if (m_url.equals(url)) {
-						if (HOME_BLANK.equals(m_url)) loadPage();
-						else serverWebs.get(webIndex).reload();
-					}
+					if (m_url.equals(url)) 
+						serverWebs.get(webIndex).reload();
 					else 
 						serverWebs.get(webIndex).loadUrl(m_url);
 				}

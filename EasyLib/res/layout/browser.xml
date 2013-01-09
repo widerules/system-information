@@ -272,21 +272,21 @@
             />
         
         <ImageView
-            android:id="@+id/page_drag"
+            android:id="@+id/page_down"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-	        android:src="@drawable/arrow_expand"
+            android:layout_height="36dip"
+            android:layout_below="@id/page_up"
+            android:layout_centerHorizontal="true"
+	        android:src="@drawable/br_down_icon"
             android:background="@drawable/imagebutton_layout"
             />
         
         <ImageView
-            android:id="@+id/page_down"
+            android:id="@+id/page_drag"
             android:layout_width="wrap_content"
-            android:layout_height="36dip"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-	        android:src="@drawable/br_down_icon"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/page_down"
+	        android:src="@drawable/arrow_expand"
             android:background="@drawable/imagebutton_layout"
             />
         </RelativeLayout>

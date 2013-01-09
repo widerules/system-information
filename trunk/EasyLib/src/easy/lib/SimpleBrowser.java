@@ -2310,9 +2310,9 @@ public class SimpleBrowser extends Activity {
 					MarginLayoutParams lp = (MarginLayoutParams) upAndDown.getLayoutParams();
 					lp.setMargins(
 							0, 
-							0, 
+							upAndDown.getTop(), 
 							Math.min(Math.max(webs.getWidth()-upAndDown.getRight(), 0), webs.getWidth()-upAndDown.getWidth()), 
-							Math.min(Math.max(webs.getHeight()-upAndDown.getBottom(), 0), webs.getHeight()-upAndDown.getHeight())
+							webs.getHeight()-upAndDown.getBottom()
 						);
 					upAndDown.setLayoutParams(lp);
 					break;

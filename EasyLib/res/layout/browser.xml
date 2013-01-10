@@ -248,10 +248,10 @@
         android:layout_height="fill_parent"
         />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/up_down"
         android:layout_width="48dip"
-        android:layout_height="120dip"
+        android:layout_height="150dip"
         android:orientation="vertical"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
@@ -263,8 +263,8 @@
         <ImageView
             android:id="@+id/page_up"
             android:layout_width="wrap_content"
-            android:layout_height="36dip"
-            android:layout_alignParentTop="true"
+            android:layout_height="0dip"
+            android:layout_weight="1"
             android:layout_centerHorizontal="true"
             android:scaleType="matrix"
 	        android:src="@drawable/br_down_icon"
@@ -274,8 +274,8 @@
         <ImageView
             android:id="@+id/page_down"
             android:layout_width="wrap_content"
-            android:layout_height="36dip"
-            android:layout_below="@id/page_up"
+            android:layout_height="0dip"
+            android:layout_weight="1"
             android:layout_centerHorizontal="true"
 	        android:src="@drawable/br_down_icon"
             android:background="@drawable/imagebutton_layout"
@@ -284,12 +284,12 @@
         <ImageView
             android:id="@+id/page_drag"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/page_down"
+            android:layout_height="0dip"
+            android:layout_weight="1"
 	        android:src="@drawable/arrow_expand"
             android:background="@drawable/imagebutton_layout"
             />
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout

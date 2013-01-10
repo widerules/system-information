@@ -212,7 +212,7 @@ public class SimpleBrowser extends Activity {
 	AlertDialog downloadsDialog = null;
 
 	// page up and down button
-	RelativeLayout upAndDown;
+	LinearLayout upAndDown;
 	ImageView upButton, downButton;
 
 	// browser related
@@ -2274,7 +2274,7 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void initUpDown() {
-		upAndDown = (RelativeLayout) findViewById(R.id.up_down);
+		upAndDown = (LinearLayout) findViewById(R.id.up_down);
 		if (updownButton) upAndDown.setVisibility(View.VISIBLE);
 		else upAndDown.setVisibility(View.INVISIBLE);
 		

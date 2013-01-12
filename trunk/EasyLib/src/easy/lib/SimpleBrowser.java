@@ -957,7 +957,7 @@ public class SimpleBrowser extends Activity {
 						.inflate(R.layout.web_list, parent, false);
 			}
 			if (position == webIndex)
-				convertView.setBackgroundColor(0x60efefef);
+				convertView.setBackgroundColor(0x80ffffff);
 			else
 				convertView.setBackgroundColor(0);
 

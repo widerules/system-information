@@ -2344,7 +2344,7 @@ public class SimpleBrowser extends Activity {
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setAlpha(40);
 		Matrix matrix = new Matrix();
-		matrix.postRotate(180f, 21*dm.density, 10*dm.density);
+		matrix.postRotate(180f, 24*dm.density, 24*dm.density);
 		upButton.setImageMatrix(matrix);// rotate 180 degree
 		upButton.setOnTouchListener(new OnTouchListener() {
 			@Override

@@ -75,6 +75,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnDragListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
@@ -939,7 +940,6 @@ public class SimpleBrowser extends Activity {
 
 			ImageView btnStop = (ImageView) convertView
 					.findViewById(R.id.webclose);
-			btnStop.setVisibility(View.VISIBLE);
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -981,6 +981,7 @@ public class SimpleBrowser extends Activity {
 			else btnIcon.setVisibility(View.INVISIBLE);
 
 			final ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
+			btnStop.setVisibility(View.INVISIBLE);
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {

@@ -36,7 +36,6 @@
             android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
             android:src="@drawable/stop"
-            android:visibility="invisible"
             />
 
 </RelativeLayout>

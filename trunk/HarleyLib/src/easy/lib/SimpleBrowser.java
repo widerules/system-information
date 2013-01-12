@@ -939,6 +939,7 @@ public class SimpleBrowser extends Activity {
 
 			ImageView btnStop = (ImageView) convertView
 					.findViewById(R.id.webclose);
+			btnStop.setVisibility(View.VISIBLE);
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -980,7 +981,6 @@ public class SimpleBrowser extends Activity {
 			else btnIcon.setVisibility(View.INVISIBLE);
 
 			final ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
-			btnStop.setVisibility(View.INVISIBLE);//hide at beginning
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -992,6 +992,7 @@ public class SimpleBrowser extends Activity {
 						mHistory.remove(mHistory.size() - 1 - position);
 						updateHistory();
 					}
+					btnStop.setVisibility(View.INVISIBLE);
 				}
 			});
 
@@ -3469,7 +3470,7 @@ public class SimpleBrowser extends Activity {
 
 	void updateBookmark() {
 		if (bookmarkAdapter != null) {
-			bookmarkAdapter.notifyDataSetInvalidated();
+			bookmarkAdapter.notifyDataSetChanged();
 			updateHistoryViewHeight();
 		}
 		bookmarkChanged = true;
@@ -3482,7 +3483,7 @@ public class SimpleBrowser extends Activity {
 			mHistoryForAdapter.clear();
 			for (int i = mHistory.size()-1; i >= 0; i--)
 				mHistoryForAdapter.add(mHistory.get(i));
-			historyAdapter.notifyDataSetInvalidated();
+			historyAdapter.notifyDataSetChanged();
 		}
 		historyChanged = true;
 	}

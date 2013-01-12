@@ -4,19 +4,29 @@
     android:layout_width="fill_parent"
     android:layout_height="40dip"
     android:orientation="horizontal"
-    android:paddingLeft="5dip"
-    android:paddingRight="5dip" >
+    >
 
         <ImageView
             android:id="@+id/webicon"
             android:layout_width="16dip"
             android:layout_height="16dip"
-            android:layout_marginRight="10dip"
             android:layout_marginLeft="10dip"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:gravity="center"
             android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/webname"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="36dip"
+            android:paddingRight="36dip"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+		    android:background="@drawable/webname_layout"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14dip" />
 
         <ImageView
             android:id="@+id/webclose"
@@ -27,16 +37,5 @@
             android:layout_alignParentRight="true"
             android:scaleType="centerCrop"
             android:src="@drawable/stop" />
-
-        <TextView
-            android:id="@+id/webname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/webicon"
-            android:layout_toLeftOf="@id/webclose"
-            android:layout_centerVertical="true"
-            android:singleLine="true"
-            android:textColor="#FFFFFFFF"
-            android:textSize="14dip" />
 
 </RelativeLayout>

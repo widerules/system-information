@@ -835,10 +835,10 @@ public class SimpleBrowser extends Activity {
 						updateHistory();
 						return;
 					} 
-					/*else if (mHistory.get(i).m_site.equals(site)) {
-						mHistory.remove(i);// only keep the latest history of the same site. is that good user experience?
+					else if (mHistory.get(i).m_title.equals(title)) {
+						mHistory.remove(i);// only keep the latest history of the same title. display multi item with same title is not useful to user
 						break;
-					}*///not keep only latest history of the same site for we change historyCount to 30?
+					}
 				}
 
 				if (siteArray.indexOf(site) < 0) {
@@ -2298,7 +2298,7 @@ public class SimpleBrowser extends Activity {
 		else upAndDown.setVisibility(View.INVISIBLE);
 		
 		ImageView dragButton = (ImageView) findViewById(R.id.page_drag);
-		dragButton.setAlpha(80);
+		dragButton.setAlpha(40);
 		dragButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {

@@ -125,8 +125,7 @@ import android.widget.ZoomButtonsController;
 class wrapValueCallback {
 	ValueCallback<Uri> mInstance;
 
-	wrapValueCallback() {
-	}
+	wrapValueCallback() {}
 
 	static {
 		try {
@@ -136,8 +135,7 @@ class wrapValueCallback {
 		}
 	}
 
-	public static void checkAvailable() {
-	}
+	public static void checkAvailable() {}
 
 	void onReceiveValue(Uri value) {
 		mInstance.onReceiveValue(value);
@@ -883,8 +881,9 @@ public class SimpleBrowser extends Activity {
 						}
 						mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
 						return;
-					} else if (mHistory.get(i).m_site.equals(site)) {
-						mHistory.remove(i);// only keep the latest history of the same site. is that good user experience?
+					} 
+					else if (mHistory.get(i).m_title.equals(title)) {
+						mHistory.remove(i);// only keep the latest history of the same title. display multi item with same title is not useful to user
 						break;
 					}
 				}

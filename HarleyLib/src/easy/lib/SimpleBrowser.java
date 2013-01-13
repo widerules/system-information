@@ -51,9 +51,11 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Picture;
+import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -2516,6 +2518,12 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void initBookmarks() {
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noise);  
+		BitmapDrawable drawable = new BitmapDrawable(bitmap);  
+		drawable.setTileModeXY(TileMode.REPEAT , TileMode.REPEAT );
+		drawable.setDither(true);  
+		bookmarkView.setBackgroundDrawable(drawable); 
+		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
 		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);
 		bookmarkList.inflate(mContext, R.layout.web_list, null);

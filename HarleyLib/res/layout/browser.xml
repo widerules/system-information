@@ -300,7 +300,8 @@
 	    android:background="#ee494949"
 	    android:stackFromBottom="true"
         android:numColumns="2"
-        android:stretchMode="columnWidth" />
+        android:stretchMode="columnWidth" 
+        />
     
 <LinearLayout 
     android:id="@+id/bookmarkView"

@@ -970,9 +970,11 @@ public class SimpleBrowser extends Activity {
 			if (convertView == null) {
 				final LayoutInflater inflater = getLayoutInflater();
 				convertView = inflater.inflate(R.layout.web_list, parent, false);
+				
+				//if (position % 2 == 1) 
+				convertView.setBackgroundResource(R.drawable.webname_layout);
+				//else convertView.setBackgroundResource(R.drawable.webname2_layout);
 			}
-			if (position % 2 == 1) convertView.setBackgroundResource(R.drawable.webname_layout);
-			else convertView.setBackgroundResource(R.drawable.webname2_layout);
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
 			String filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
@@ -2518,11 +2520,11 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void initBookmarks() {
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noise);  
+		/*Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noise);  
 		BitmapDrawable drawable = new BitmapDrawable(bitmap);  
 		drawable.setTileModeXY(TileMode.REPEAT , TileMode.REPEAT );
 		drawable.setDither(true);  
-		bookmarkView.setBackgroundDrawable(drawable); 
+		bookmarkView.setBackgroundDrawable(drawable);*/ 
 		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
 		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);

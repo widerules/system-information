@@ -309,7 +309,7 @@
     android:layout_height="fill_parent"
     android:layout_alignParentLeft="true"
     android:gravity="bottom"
-    android:background="#ff494949"
+    android:background="#ee494949"
     android:orientation="vertical" >
 
     <ListView

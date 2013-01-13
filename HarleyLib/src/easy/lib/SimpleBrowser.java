@@ -969,6 +969,8 @@ public class SimpleBrowser extends Activity {
 				final LayoutInflater inflater = getLayoutInflater();
 				convertView = inflater.inflate(R.layout.web_list, parent, false);
 			}
+			if (position % 2 == 1) convertView.setBackgroundResource(R.drawable.webname_layout);
+			else convertView.setBackgroundResource(R.drawable.webname2_layout);
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
 			String filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
@@ -999,6 +1001,7 @@ public class SimpleBrowser extends Activity {
 
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
 			webname.setText(wv.m_title);
+			if (!isBookmark) webname.setTextColor(0xffddddff);
 
 			webname.setOnClickListener(new OnClickListener() {
 				@Override

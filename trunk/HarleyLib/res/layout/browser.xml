@@ -315,7 +315,7 @@
         android:id="@+id/history"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:stretchMode="columnWidth" />
+        />
     
     <FrameLayout
         android:id="@+id/adContainer"
@@ -336,7 +336,7 @@
         android:id="@+id/bookmark"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:stretchMode="columnWidth" />
+        />
 </LinearLayout>
 
     <LinearLayout

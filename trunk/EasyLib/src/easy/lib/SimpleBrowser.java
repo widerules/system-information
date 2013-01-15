@@ -779,6 +779,13 @@ public class SimpleBrowser extends Activity {
 					pageSource = "";// prevent get incomplete page source during page loading
 					m_url = url;// must sync the url for it may change after pagestarted.
 					mProgress = 0;
+					
+					if (HOME_BLANK.equals(url)) {
+						getPageReadyState();
+						if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
+							updateHomePage();
+					}
+
 					pageFinishAction(view, url, isForeground);
 				}
 
@@ -1915,7 +1922,7 @@ public class SimpleBrowser extends Activity {
 		util.startActivity(shareIntent, false, mContext);
 	}
 
-	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
+	/*public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
 		List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
 		int size = resolveInfoList.size();
 		ComponentName[] arrayOfComponentName = new ComponentName[size];
@@ -1952,7 +1959,7 @@ public class SimpleBrowser extends Activity {
 		Uri uri = Uri.parse("http://");
 		intent.setDataAndType(uri, null);
 		setDefault(pm, intent, filter);		
-	}
+	}*/
 	
 	public void readPreference() {
 		// paid = sp.getBoolean("paid", false);
@@ -2505,7 +2512,7 @@ public class SimpleBrowser extends Activity {
 		sEdit = sp.edit();
 		readPreference();
 
-		setAsDefaultApp();
+		//setAsDefaultApp();// not allowed by latest adt
 		
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();

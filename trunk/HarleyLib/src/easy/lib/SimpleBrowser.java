@@ -103,6 +103,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.TextSize;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
@@ -470,7 +471,7 @@ public class SimpleBrowser extends Activity {
 															// 11 and above
 				setZoomControl(View.GONE);// default not show zoom control in new page
 
-			// webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
+			localSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
 			localSettings.setDomStorageEnabled(true);// API7, key to enable gmail
 
@@ -534,27 +535,31 @@ public class SimpleBrowser extends Activity {
 				}
 
 				@Override
-				public void onShowCustomView(View view,	CustomViewCallback callback) {
+				public void onShowCustomView(View view,	final CustomViewCallback callback) {
 					super.onShowCustomView(view, callback);
 					if (view instanceof FrameLayout) {
 						FrameLayout frame = (FrameLayout) view;
 						if (frame.getFocusedChild() instanceof VideoView) {
-							VideoView video = (VideoView) frame.getFocusedChild();
+							final VideoView video = (VideoView) frame.getFocusedChild();
 							video.setOnErrorListener(new OnErrorListener() {
 								@Override
 								public boolean onError(MediaPlayer mp, int what, int extra) {
+									//call these 2 line when stop or change to other url
+									video.stopPlayback();
+									callback.onCustomViewHidden();
 									return false;
 								}
 							});
 							video.setOnCompletionListener(new OnCompletionListener() {
 								@Override
 								public void onCompletion(MediaPlayer mp) {
+									//call these 2 line when stop or change to other url
+									video.stopPlayback();
+									callback.onCustomViewHidden();
 								}
 							});
 							
 							video.start();
-							video.stopPlayback();//call these 2 line when stop or change to other url
-							callback.onCustomViewHidden();
 						}
 					}
 				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify

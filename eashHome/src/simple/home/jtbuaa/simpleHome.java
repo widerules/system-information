@@ -895,7 +895,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		
 		int current = mainlayout.getCurrentItem();
 		radioGroup.clearCheck();
-		if (current < radioGroup.getChildCount()) ((RadioButton) radioGroup.getChildAt(current)).setChecked(true);
+		if (current < radioGroup.getChildCount()) ((RadioButton) radioGroup.getChildAt(current)).setChecked(true);// crash once for ClassCastException.
 		if (current == sysAlphaList.index) 
 			radioText.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
 		else if (current == userAlphaList.index) 

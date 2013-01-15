@@ -327,11 +327,11 @@
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#ffc5c5c5" />
+            	android:background="@color/darkEdge" />
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#fff5f5f5" />
+            	android:background="@color/whiteEdge" />
         
             <CheckBox
                 android:id="@+id/cache_tosd"
@@ -354,11 +354,11 @@
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#ffc5c5c5" />
+            	android:background="@color/darkEdge" />
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#fff5f5f5" />
+            	android:background="@color/whiteEdge" />
         
             <CheckBox
                 android:id="@+id/overview_page"
@@ -381,11 +381,11 @@
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#ffc5c5c5" />
+            	android:background="@color/darkEdge" />
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#fff5f5f5" />
+            	android:background="@color/whiteEdge" />
         
             <CheckBox
                 android:id="@+id/html5"
@@ -431,11 +431,11 @@
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#ffc5c5c5" />
+            	android:background="@color/darkEdge" />
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#fff5f5f5" />
+            	android:background="@color/whiteEdge" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -503,11 +503,11 @@
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#ffc5c5c5" />
+            	android:background="@color/darkEdge" />
 	        <View
     	        android:layout_width="match_parent"
         	    android:layout_height="1px"
-            	android:background="#fff5f5f5" />
+            	android:background="@color/whiteEdge" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

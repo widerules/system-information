@@ -68,7 +68,7 @@ public class CrashControl extends Activity {
 
 		final String errorMsg = intent.getStringExtra("errorMsg");
 		
-		tv.setText(getString(R.string.browser_name) + " " + getString(R.string.crashed) + "\n\n" + errorMsg);
+		tv.setText(getPackageName() + " " + getString(R.string.crashed) + "\n\n" + errorMsg);
 
 		btnCancel.setText(getString(R.string.cancel));
 		btnCancel.setOnClickListener(new OnClickListener() {

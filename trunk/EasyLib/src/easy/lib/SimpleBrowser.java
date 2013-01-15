@@ -783,13 +783,14 @@ public class SimpleBrowser extends Activity {
 					m_url = url;// must sync the url for it may change after pagestarted.
 					mProgress = 0;
 					
+					if (HOME_PAGE.equals(url)) getPageReadyState();
+
+					pageFinishAction(view, url, isForeground);
+					
 					if (HOME_PAGE.equals(url)) {
-						getPageReadyState();
 						if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
 							updateHomePage();
 					}
-
-					pageFinishAction(view, url, isForeground);
 				}
 
 				@Override

@@ -783,7 +783,7 @@ public class SimpleBrowser extends Activity {
 					m_url = url;// must sync the url for it may change after pagestarted.
 					mProgress = 0;
 					
-					if (HOME_BLANK.equals(url)) {
+					if (HOME_PAGE.equals(url)) {
 						getPageReadyState();
 						if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
 							updateHomePage();
@@ -794,7 +794,7 @@ public class SimpleBrowser extends Activity {
 
 				@Override
 				public boolean shouldOverrideUrlLoading(WebView view, String url) {
-					if ("about:blank".equals(url)) {// some site such as weibo and
+					if (HOME_BLANK.equals(url)) {// some site such as weibo and
 						// mysilkbaby will send
 						// BLANK_PAGE when login.
 						return true;// we should do nothing but return true,
@@ -863,7 +863,7 @@ public class SimpleBrowser extends Activity {
 		String title = view.getTitle();
 		if (title == null) title = url;
 
-		if (HOME_BLANK.equals(url)) ;// do nothing
+		if (HOME_PAGE.equals(url)) ;// do nothing
 		else {
 			if (browserName.equals(title)) ;
 				// if title and url not sync, then sync it

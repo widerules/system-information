@@ -752,7 +752,7 @@ public class SimpleBrowser extends Activity {
 		String title = view.getTitle();
 		if (title == null) title = url;
 
-		if (HOME_BLANK.equals(url)) ;// do nothing
+		if (HOME_PAGE.equals(url)) ;// do nothing
 		else {
 			if (browserName.equals(title)) ;
 				// if title and url not sync, then sync it

@@ -473,8 +473,11 @@ public class SimpleBrowser extends Activity {
 			public void deleteItems(String bookmarks, String historys) {
 				if (!"".equals(historys) && !",,,,".equals(historys)) {
 					String[] tmp1 = historys.split(",,,,");
-					for (int i = 0; i < tmp1.length; i++) // the display of history is in revert order, so delete in revert order
-						mHistory.remove(mHistory.size() - 1 + i - (Integer.valueOf(tmp1[i]) - mBookMark.size()));
+					for (int i = 0; i < tmp1.length; i++) {// the display of history is in revert order, so delete in revert order
+						int index = mHistory.size() - 1 + i - (Integer.valueOf(tmp1[i]) - mBookMark.size());
+						if ((index >= 0) && (index < mHistory.size()))// sometime the index is -1? 
+							mHistory.remove(index);
+					}
 					updateHistory();
 					historyChanged = true;
 				}

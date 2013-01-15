@@ -57,6 +57,9 @@ import android.graphics.Matrix;
 import android.graphics.Picture;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnErrorListener;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -122,6 +125,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
+import android.widget.VideoView;
 import android.widget.ZoomButtonsController;
 
 //for get webpage source on cupcake
@@ -313,24 +317,9 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	static Method freeMemoryMethod = null;
-	static Method setLoadWithOverviewMode = null;
-	static Method setAppCacheEnabled = null;
-	static Method setAppCachePath = null;
-	static Method setAppCacheMaxSize = null;
-	static Method setDomStorageEnabled = null;
 	static Method setDisplayZoomControls = null;
 	static Method canScrollVerticallyMethod = null;
 	static {
-		try {//API 7
-			freeMemoryMethod  = WebView.class.getMethod("freeMemory");
-			setLoadWithOverviewMode = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] { boolean.class });
-			setAppCacheEnabled = WebSettings.class.getMethod("setAppCacheEnabled", new Class[] { boolean.class });
-			setAppCachePath = WebSettings.class.getMethod("setAppCachePath", new Class[] { String.class });
-			setAppCacheMaxSize = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] { long.class });
-			setDomStorageEnabled = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] { boolean.class });
-		} catch (Exception e) {}
-
 		try {//API 11
 			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
 		} catch (Exception e) {}
@@ -341,41 +330,11 @@ public class SimpleBrowser extends Activity {
 
 	}
 	
-	public void freeMemory(MyWebview webview) {
-		if (freeMemoryMethod != null)
-			try {freeMemoryMethod.invoke(webview);} catch (Exception e) {}
-	}
-
 	class wrapWebSettings {
 		WebSettings mInstance;
 
 		wrapWebSettings(WebSettings settings) {
 			mInstance = settings;
-		}
-
-		synchronized void setLoadWithOverviewMode(boolean overview) {// API 7
-			if (setLoadWithOverviewMode != null)
-				try {setLoadWithOverviewMode.invoke(mInstance, overview);} catch (Exception e) {}
-		}
-
-		synchronized void setAppCacheEnabled(boolean flag) {// API 7
-			if (setAppCacheEnabled != null)
-				try {setAppCacheEnabled.invoke(mInstance, flag);} catch (Exception e) {}
-		}
-
-		synchronized void setAppCachePath(String databasePath) {// API 7
-			if (setAppCachePath != null)
-				try {setAppCachePath.invoke(mInstance, databasePath);} catch (Exception e) {}
-		}
-
-		synchronized void setAppCacheMaxSize(long max) {// API 7
-			if (setAppCacheMaxSize != null)
-				try {setAppCacheMaxSize.invoke(mInstance, max);} catch (Exception e) {}
-		}
-
-		synchronized void setDomStorageEnabled(boolean flag) {// API 7
-			if (setDomStorageEnabled != null)
-				try {setDomStorageEnabled.invoke(mInstance, flag);} catch (Exception e) {}
 		}
 
 		synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
@@ -509,11 +468,11 @@ public class SimpleBrowser extends Activity {
 
 			// webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
-			webSettings.setDomStorageEnabled(true);// API7, key to enable gmail
+			localSettings.setDomStorageEnabled(true);// API7, key to enable gmail
 
 			// loads the WebView completely zoomed out. fit for hao123, but not
 			// fit for homepage. from API7
-			webSettings.setLoadWithOverviewMode(overviewPage);
+			localSettings.setLoadWithOverviewMode(overviewPage);
 
 			registerForContextMenu(this);
 
@@ -570,16 +529,31 @@ public class SimpleBrowser extends Activity {
 					callback.invoke(origin, true, false);
 				}
 
-				  /*@Override 
-				  public void onShowCustomView(View view,
-				  CustomViewCallback callback) { super.onShowCustomView(view,
-				  callback); if (view instanceof FrameLayout){ FrameLayout
-				  frame = (FrameLayout) view; if (frame.getFocusedChild()
-				  instanceof VideoView){ VideoView video = (VideoView)
-				  frame.getFocusedChild(); //video.setOnErrorListener(this);
-				  //video.setOnCompletionListener(this); video.start();
-				  //video.stopPlayback();//call these 2 line when stop or
-				  change to other url //callback.onCustomViewHidden(); } } }API 7*/
+				@Override
+				public void onShowCustomView(View view,	CustomViewCallback callback) {
+					super.onShowCustomView(view, callback);
+					if (view instanceof FrameLayout) {
+						FrameLayout frame = (FrameLayout) view;
+						if (frame.getFocusedChild() instanceof VideoView) {
+							VideoView video = (VideoView) frame.getFocusedChild();
+							video.setOnErrorListener(new OnErrorListener() {
+								@Override
+								public boolean onError(MediaPlayer mp, int what, int extra) {
+									return false;
+								}
+							});
+							video.setOnCompletionListener(new OnCompletionListener() {
+								@Override
+								public void onCompletion(MediaPlayer mp) {
+								}
+							});
+							
+							video.start();
+							video.stopPlayback();//call these 2 line when stop or change to other url
+							callback.onCustomViewHidden();
+						}
+					}
+				}// API 7
 
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,
@@ -1259,7 +1233,7 @@ public class SimpleBrowser extends Activity {
 
 			wrapWebSettings webSettings = new wrapWebSettings(localSettings);
 			overviewPage = sp.getBoolean("overview_page", false);
-			webSettings.setLoadWithOverviewMode(overviewPage);
+			localSettings.setLoadWithOverviewMode(overviewPage);
 
 			boolean showZoom = sp.getBoolean("show_zoom", false);
 			if (webSettings.setDisplayZoomControls(showZoom)) {// hide zoom
@@ -1282,13 +1256,13 @@ public class SimpleBrowser extends Activity {
 
 			boolean html5 = sp.getBoolean("html5", false);
 			serverWebs.get(webIndex).html5 = html5;
-			webSettings.setAppCacheEnabled(html5);// API7
+			localSettings.setAppCacheEnabled(html5);// API7
 			localSettings.setDatabaseEnabled(html5);// API5
 			localSettings.setGeolocationEnabled(html5);//API5
 			if (html5) {
-				webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());// API7
+				localSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());// API7
 				// it will cause crash on OPhone if not set the max size
-				webSettings.setAppCacheMaxSize(html5cacheMaxSize);
+				localSettings.setAppCacheMaxSize(html5cacheMaxSize);
 				localSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
 						.getPath());// API5. how slow will it be if set path to sdcard?
 				localSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
@@ -2959,7 +2933,7 @@ public class SimpleBrowser extends Activity {
 			webpages.showNext();
 		for (int i = 0; i < serverWebs.size(); i++) {
 			serverWebs.get(i).isForeground = false;
-			freeMemory(serverWebs.get(i));
+			serverWebs.get(i).freeMemory();
 		}
 		serverWebs.get(position).isForeground = true;
 		webIndex = position;
@@ -2984,8 +2958,7 @@ public class SimpleBrowser extends Activity {
 		localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
 		// localSettings.setSupportMultipleWindows(true);
 		localSettings.setJavaScriptEnabled(!blockJs);
-		new wrapWebSettings(localSettings)
-				.setLoadWithOverviewMode(overviewPage);
+		localSettings.setLoadWithOverviewMode(overviewPage);
 
 		if (serverWebs.get(position).mProgress > 0) {
 			imgRefresh.setImageResource(R.drawable.stop);

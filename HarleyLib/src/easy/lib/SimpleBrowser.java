@@ -445,6 +445,10 @@ public class SimpleBrowser extends Activity {
 			// otherwise can't scroll horizontal in some webpage, such as qiupu.
 			localSettings.setUseWideViewPort(true);
 
+			// open Geolocation by default
+			localSettings.setGeolocationEnabled(true);//API5
+			//localSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. no use for get location in baidu map?
+
 			localSettings.setPluginsEnabled(true);
 			// localSettings.setPluginState(WebSettings.PluginState.ON);
 			// setInitialScale(1);
@@ -524,9 +528,9 @@ public class SimpleBrowser extends Activity {
 				
 				//I don't know how to reflect a Interface, so it will crash on cupcake
 				@Override
-				public void onGeolocationPermissionsShowPrompt(String origin,
-						GeolocationPermissions.Callback callback) {
-					callback.invoke(origin, true, false);
+				public void onGeolocationPermissionsShowPrompt(final String origin,
+						final GeolocationPermissions.Callback callback) {
+					callback.invoke(origin, true, false);//use maps.google.com or map.baidu.com to verify
 				}
 
 				@Override
@@ -553,7 +557,7 @@ public class SimpleBrowser extends Activity {
 							callback.onCustomViewHidden();
 						}
 					}
-				}// API 7
+				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify
 
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,
@@ -1258,14 +1262,12 @@ public class SimpleBrowser extends Activity {
 			serverWebs.get(webIndex).html5 = html5;
 			localSettings.setAppCacheEnabled(html5);// API7
 			localSettings.setDatabaseEnabled(html5);// API5
-			localSettings.setGeolocationEnabled(html5);//API5
 			if (html5) {
 				localSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());// API7
 				// it will cause crash on OPhone if not set the max size
 				localSettings.setAppCacheMaxSize(html5cacheMaxSize);
 				localSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
 						.getPath());// API5. how slow will it be if set path to sdcard?
-				localSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 			}
 
 			String tmpEncoding = getEncoding(sp.getInt("encoding", 0));

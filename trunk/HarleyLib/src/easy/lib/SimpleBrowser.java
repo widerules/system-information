@@ -2548,7 +2548,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				String url = serverWebs.get(webIndex).m_url;
-				if (HOME_BLANK.equals(url))	return;// not add home page
+				if (HOME_PAGE.equals(url)) return;// not add home page
 
 				boolean foundBookmark = false;
 				for (int i = mBookMark.size() - 1; i >= 0; i--)

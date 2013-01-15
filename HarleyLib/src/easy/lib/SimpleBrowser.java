@@ -91,6 +91,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.DownloadListener;
+import android.webkit.GeolocationPermissions;
 import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
@@ -318,10 +319,7 @@ public class SimpleBrowser extends Activity {
 	static Method setAppCachePath = null;
 	static Method setAppCacheMaxSize = null;
 	static Method setDomStorageEnabled = null;
-	static Method setDatabaseEnabled = null;
-	static Method setDatabasePath = null;
 	static Method setDisplayZoomControls = null;
-	static Method setScrollbarFadingEnabled = null;
 	static Method canScrollVerticallyMethod = null;
 	static {
 		try {//API 7
@@ -331,12 +329,6 @@ public class SimpleBrowser extends Activity {
 			setAppCachePath = WebSettings.class.getMethod("setAppCachePath", new Class[] { String.class });
 			setAppCacheMaxSize = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] { long.class });
 			setDomStorageEnabled = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] { boolean.class });
-		} catch (Exception e) {}
-
-		try {//API 5
-			setDatabaseEnabled = WebSettings.class.getMethod("setDatabaseEnabled", new Class[] { boolean.class });
-			setDatabasePath = WebSettings.class.getMethod("setDatabasePath", new Class[] { String.class });
-			setScrollbarFadingEnabled = WebView.class.getMethod("setScrollbarFadingEnabled", new Class[] { boolean.class });
 		} catch (Exception e) {}
 
 		try {//API 11
@@ -386,16 +378,6 @@ public class SimpleBrowser extends Activity {
 				try {setDomStorageEnabled.invoke(mInstance, flag);} catch (Exception e) {}
 		}
 
-		synchronized void setDatabaseEnabled(boolean flag) {// API 5
-			if (setDatabaseEnabled != null)
-				try {setDatabaseEnabled.invoke(mInstance, flag);} catch (Exception e) {}
-		}
-
-		synchronized void setDatabasePath(String databasePath) {// API 5
-			if (setDatabasePath != null)
-				try {setDatabasePath.invoke(mInstance, databasePath);} catch (Exception e) {}
-		}
-
 		synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
 			if (setDisplayZoomControls != null)
 				try {
@@ -404,19 +386,6 @@ public class SimpleBrowser extends Activity {
 				} catch (Exception e) {}
 			return false;
 		}
-
-		/*
-		 * synchronized void setGeolocationEnabled(boolean flag) {//API 5 try {
-		 * Method method = WebSettings.class.getMethod("setGeolocationEnabled", new
-		 * Class[] {boolean.class}); method.invoke(mInstance, flag); }
-		 * catch(Exception e) {} }
-		 * 
-		 * synchronized void setGeolocationDatabasePath(String databasePath) {//API
-		 * 5 try { Method method =
-		 * WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[]
-		 * {String.class}); method.invoke(mInstance, databasePath); }
-		 * catch(Exception e) {} }
-		 */
 	}
 
 	class MyWebview extends WebView {
@@ -449,11 +418,7 @@ public class SimpleBrowser extends Activity {
 		class MyJavaScriptInterface {
 			@SuppressWarnings("unused")
 			public void processHTML(String html) {
-				//if (html.contains("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
-					// don't show source of home
-					//pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
-				//else
-					pageSource = html;// to get page source, part 1
+				pageSource = html;// to get page source, part 1
 			}
 		}
 
@@ -510,10 +475,7 @@ public class SimpleBrowser extends Activity {
 
 			setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);// no white blank on the right of webview
 			
-			try {
-				// hide scroll bar when not scroll. from API5, not work on cupcake.
-				setScrollbarFadingEnabled.invoke(this, true);
-			} catch (Exception e) {}
+			setScrollbarFadingEnabled(true);// hide scroll bar when not scroll. from API5, not work on cupcake.
 
 			WebSettings localSettings = getSettings();
 			localSettings.setSaveFormData(true);
@@ -600,26 +562,24 @@ public class SimpleBrowser extends Activity {
 					openFileChooser(uploadMsg, "");
 				}
 
-				/*
-				 * @Override public void
-				 * onGeolocationPermissionsShowPrompt(String origin,
-				 * GeolocationPermissions.Callback callback) {
-				 * callback.invoke(origin, true, false); }//I don't know how to
-				 * reflect a Interface, so it will crash on cupcake
-				 */
+				
+				//I don't know how to reflect a Interface, so it will crash on cupcake
+				@Override
+				public void onGeolocationPermissionsShowPrompt(String origin,
+						GeolocationPermissions.Callback callback) {
+					callback.invoke(origin, true, false);
+				}
 
-				/*
-				 * @Override public void onShowCustomView(View view,
-				 * CustomViewCallback callback) { super.onShowCustomView(view,
-				 * callback); if (view instanceof FrameLayout){ FrameLayout
-				 * frame = (FrameLayout) view; if (frame.getFocusedChild()
-				 * instanceof VideoView){ VideoView video = (VideoView)
-				 * frame.getFocusedChild(); //video.setOnErrorListener(this);
-				 * //video.setOnCompletionListener(this); video.start();
-				 * //video.stopPlayback();//call these 2 line when stop or
-				 * change to other url //callback.onCustomViewHidden(); } } }API
-				 * 7
-				 */
+				  /*@Override 
+				  public void onShowCustomView(View view,
+				  CustomViewCallback callback) { super.onShowCustomView(view,
+				  callback); if (view instanceof FrameLayout){ FrameLayout
+				  frame = (FrameLayout) view; if (frame.getFocusedChild()
+				  instanceof VideoView){ VideoView video = (VideoView)
+				  frame.getFocusedChild(); //video.setOnErrorListener(this);
+				  //video.setOnCompletionListener(this); video.start();
+				  //video.stopPlayback();//call these 2 line when stop or
+				  change to other url //callback.onCustomViewHidden(); } } }API 7*/
 
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,
@@ -1323,18 +1283,15 @@ public class SimpleBrowser extends Activity {
 			boolean html5 = sp.getBoolean("html5", false);
 			serverWebs.get(webIndex).html5 = html5;
 			webSettings.setAppCacheEnabled(html5);// API7
-			webSettings.setDatabaseEnabled(html5);// API5
-			// webSettings.setGeolocationEnabled(html5);//API5
+			localSettings.setDatabaseEnabled(html5);// API5
+			localSettings.setGeolocationEnabled(html5);//API5
 			if (html5) {
-				webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE)
-						.getPath());// API7
+				webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());// API7
 				// it will cause crash on OPhone if not set the max size
 				webSettings.setAppCacheMaxSize(html5cacheMaxSize);
-				webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
-						.getPath());// API5. how slow will it be if set path to
-				// sdcard?
-				// webSettings.setGeolocationDatabasePath(getDir("databases",
-				// MODE_PRIVATE).getPath());//API5
+				localSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
+						.getPath());// API5. how slow will it be if set path to sdcard?
+				localSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 			}
 
 			String tmpEncoding = getEncoding(sp.getInt("encoding", 0));
@@ -1931,7 +1888,7 @@ public class SimpleBrowser extends Activity {
 		util.startActivity(shareIntent, false, mContext);
 	}
 
-	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
+	/*public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
 		List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
 		int size = resolveInfoList.size();
 		ComponentName[] arrayOfComponentName = new ComponentName[size];
@@ -1968,7 +1925,7 @@ public class SimpleBrowser extends Activity {
 		Uri uri = Uri.parse("http://");
 		intent.setDataAndType(uri, null);
 		setDefault(pm, intent, filter);		
-	}
+	}*/
 	
 	public void readPreference() {
 		// paid = sp.getBoolean("paid", false);
@@ -2581,7 +2538,7 @@ public class SimpleBrowser extends Activity {
 		sEdit = sp.edit();
 		readPreference();
 
-		setAsDefaultApp();
+		//setAsDefaultApp();
 		
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();

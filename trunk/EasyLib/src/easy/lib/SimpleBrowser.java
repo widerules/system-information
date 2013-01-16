@@ -3434,7 +3434,7 @@ public class SimpleBrowser extends Activity {
 			// sb.append(fileDir);
 			// sb.append("www.taobao.com.png)'><a href='http://www.taobao.com'>淘宝</a></li>");
 			sb.append(fileDir);
-			sb.append("i5.easou.com.png)'><a href='http://i5.easou.com/kw.m?tp=7&p=1&cid=bip1065_10713_001&esid=2GsaHSnARzA&si=a91fc744144b561694707ad18923b4f9&wver=t'>宜搜</a></li>");
+			sb.append("wap.easou.com.png)'><a href='http://i5.easou.com/kw.m?tp=7&p=1&cid=bip1065_10713_001&esid=2GsaHSnARzA&si=a91fc744144b561694707ad18923b4f9&wver=t'>宜搜</a></li>");
 			sb.append(splitter);
 			//sb.append("<li><a href='http://www.9yu.co/index.html?c=2'>美图</a></li>");// no favicon
 			// sb.append(fileDir);

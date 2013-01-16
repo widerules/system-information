@@ -62,6 +62,8 @@ public class AboutBrowser extends Activity {
 	String marketUrl = "http://bpc.borqs.com/market.html?id=";
 	String appUrl;
 	
+	Locale mLocale;
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -82,7 +84,7 @@ public class AboutBrowser extends Activity {
 		Uri data = null;
 		
 		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext) + "...\n\n";
-		boolean chineseLocale = Locale.CHINA.equals(getBaseContext().getResources().getConfiguration().locale) || "easy.browser".equals(getPackageName());
+		boolean chineseLocale = Locale.CHINA.equals(mLocale) || "easy.browser".equals(getPackageName());
 
 		switch (shareMode.indexOfChild(findViewById(shareMode.getCheckedRadioButtonId()))) {
 		case 2:
@@ -431,13 +433,21 @@ public class AboutBrowser extends Activity {
 		etPort.setFocusable(cbEnableProxy.isChecked());
 		etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 
+		mLocale = getBaseContext().getResources().getConfiguration().locale;
+		int engineId = 3;// google
+		if ("ru_RU".equals(mLocale.toString()))
+			engineId = perferences.getInt("search_engine", 4); // yandex
+		else if (Locale.CHINA.equals(mLocale)) 
+			engineId = perferences.getInt("search_engine", 2); // easou
+		else
+			engineId = perferences.getInt("search_engine", 3); // google
+
 		try {
 		((RadioButton) shareMode.getChildAt(perferences.getInt(
 				"share_mode", 2))).setChecked(true);
 		((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2)))
 				.setChecked(true);// normal
-		((RadioButton) searchEngine.getChildAt(perferences.getInt(
-				"search_engine", 3))).setChecked(true);
+		((RadioButton) searchEngine.getChildAt(engineId)).setChecked(true);
 		((RadioButton) encodingType.getChildAt(perferences
 				.getInt("encoding", 0))).setChecked(true);
 		((RadioButton) changeUA.getChildAt(perferences.getInt("ua", 0)))
@@ -480,17 +490,14 @@ public class AboutBrowser extends Activity {
 			editor.putInt("search_engine", 3);
 			
 			editor.putInt("share_mode", 2);
+			
 			// the default value of searchEngine relies on locale.
-			Locale locale = getBaseContext().getResources().getConfiguration().locale;
-			if ("ru_RU".equals(locale.toString())) {
+			if ("ru_RU".equals(mLocale.toString())) 
 				editor.putInt("search_engine", 4);
-			}
-			else if (Locale.CHINA.equals(locale)) {
+			else if (Locale.CHINA.equals(mLocale)) 
 				editor.putInt("search_engine", 2);
-			}
-			else {
+			else 
 				editor.putInt("search_engine", 3);
-			}
 
 
 			editor.putBoolean("block_popup", false);

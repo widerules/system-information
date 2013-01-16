@@ -1925,7 +1925,7 @@ public class SimpleBrowser extends Activity {
 		if ("ru_RU".equals(mLocale.toString()))
 			searchEngine = sp.getInt("search_engine", 4); // yandex
 		else if (Locale.CHINA.equals(mLocale)) {
-			searchEngine = sp.getInt("search_engine", 2); // baidu
+			searchEngine = sp.getInt("search_engine", 2); // easou
 			HOME_PAGE = "file:///android_asset/home-ch.html";
 		}
 		else
@@ -2918,12 +2918,11 @@ public class SimpleBrowser extends Activity {
 			case 1:// bing
 				url = "http://www.bing.com/search?q=" + url;
 				break;
-			case 2:// baidu
-				url = "http://www.baidu.com/s?wd=" + url;
+			case 2:// easou
+				url = "http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001&key=" + url;
 				break;
 			case 4:// yandex
-				url = "http://yandex.ru/yandsearch?clid=1911433&text="
-						+ url;
+				url = "http://yandex.ru/yandsearch?clid=1911433&text=" + url;
 				break;
 			case 3:// google
 			default:

@@ -2746,7 +2746,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if ((m_homepage != null) && (!"".equals(m_homepage))) serverWebs.get(webIndex).loadUrl(m_homepage);
-				else loadPage();
+				else if (!HOME_PAGE.equals(serverWebs.get(webIndex).m_url)) loadPage();
 			}
 		});
 		imgNew = (ImageView) findViewById(R.id.newpage);

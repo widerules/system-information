@@ -3425,25 +3425,16 @@ public class SimpleBrowser extends Activity {
 		StringBuilder sb = new StringBuilder("");	
 		if (Locale.CHINA.equals(mLocale) || Locale.TAIWAN.equals(mLocale)) {
 			sb.append(fileDir);
-			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>");
+			sb.append("easybrowser.shupeng.com.png)'><a href='http://easybrowser.shupeng.com'>书朋小说网</a></li>");
+			//sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>");
 			sb.append(splitter);
-			// sb.append(fileDir);
-			// sb.append("3g.gfan.com.png)'><a href='http://3g.gfan.com'>机锋市场</a></li>");
-			// sb.append(fileDir);
-			// sb.append("www.appchina.com.png)'><a href='http://www.appchina.com'>应用汇</a></li>");
 			sb.append(fileDir);
-			sb.append("m.hao123.com.png)'><a href='http://m.hao123.com/?type=android&tn=easy.browser'>好123</a></li>");
+			sb.append("weibo.com.png)'><a href='http://weibo.com'>新浪微博</a></li>");
 			sb.append(splitter);
 			// sb.append(fileDir);
 			// sb.append("www.taobao.com.png)'><a href='http://www.taobao.com'>淘宝</a></li>");
 			sb.append(fileDir);
-			sb.append("wap.easou.com.png)'><a href='http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001'>宜搜</a></li>");
-			sb.append(splitter);
-			//sb.append(fileDir);
-			//sb.append("www.baidu.com.png)'><a href='http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF'>美图</a></li>");
-			sb.append(fileDir);
-			sb.append("easybrowser.shupeng.com.png)'><a href='http://easybrowser.shupeng.com'>书朋小说网</a></li>");
-			//sb.append("tiantian.m.the9.com.png)'><a href='http://tiantian.m.the9.com'>热门游戏</a></li>");
+			sb.append("i5.easou.com.png)'><a href='http://i5.easou.com/kw.m?tp=7&p=1&cid=bip1065_10713_001&esid=2GsaHSnARzA&si=a91fc744144b561694707ad18923b4f9&wver=t'>宜搜</a></li>");
 			sb.append(splitter);
 			//sb.append("<li><a href='http://www.9yu.co/index.html?c=2'>美图</a></li>");// no favicon
 			// sb.append(fileDir);

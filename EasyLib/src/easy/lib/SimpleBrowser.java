@@ -673,10 +673,9 @@ public class SimpleBrowser extends Activity {
 					
 					if (HOME_PAGE.equals(view.getUrl())) {
 						getPageReadyState();
-						//Log.d("=================", progress+ m_ready);
 						// the progress is not continuous from 0, 1, 2... 100. it always looks like 10, 13, 15, 16, 100
-						if (progress < 13) ;// do nothing if progress too small
-						else if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
+						if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
+							Log.d("=================", progress+"");
 							updateHomePage();
 					}
 
@@ -783,14 +782,7 @@ public class SimpleBrowser extends Activity {
 					m_url = url;// must sync the url for it may change after pagestarted.
 					mProgress = 0;
 					
-					if (HOME_PAGE.equals(url)) getPageReadyState();
-
 					pageFinishAction(view, url, isForeground);
-					
-					if (HOME_PAGE.equals(url)) {
-						if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
-							updateHomePage();
-					}
 				}
 
 				@Override
@@ -1985,7 +1977,7 @@ public class SimpleBrowser extends Activity {
 		if ("ru_RU".equals(mLocale.toString()))
 			searchEngine = sp.getInt("search_engine", 4); // yandex
 		else if (Locale.CHINA.equals(mLocale)) 
-			searchEngine = sp.getInt("search_engine", 2); // baidu
+			searchEngine = sp.getInt("search_engine", 2); // easou
 		else
 			searchEngine = sp.getInt("search_engine", 3); // google
 		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
@@ -2896,12 +2888,11 @@ public class SimpleBrowser extends Activity {
 			case 1:// bing
 				url = "http://www.bing.com/search?q=" + url;
 				break;
-			case 2:// baidu
-				url = "http://www.baidu.com/s?wd=" + url;
+			case 2:// easou
+				url = "http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001&key=" + url;
 				break;
 			case 4:// yandex
-				url = "http://yandex.ru/yandsearch?clid=1911433&text="
-						+ url;
+				url = "http://yandex.ru/yandsearch?clid=1911433&text=" + url;
 				break;
 			case 3:// google
 			default:
@@ -3446,7 +3437,7 @@ public class SimpleBrowser extends Activity {
 			// sb.append(fileDir);
 			// sb.append("www.taobao.com.png)'><a href='http://www.taobao.com'>淘宝</a></li>");
 			sb.append(fileDir);
-			sb.append("www.baidu.com.png)'><a href='http://www.baidu.com'>百度</a></li>");
+			sb.append("wap.easou.com.png)'><a href='http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001'>宜搜</a></li>");
 			sb.append(splitter);
 			//sb.append(fileDir);
 			//sb.append("www.baidu.com.png)'><a href='http://image.baidu.com/i?tn=baiduimage&ct=201326592&lm=-1&cl=2&fr=ala0&word=%BA%DA%CB%BF'>美图</a></li>");

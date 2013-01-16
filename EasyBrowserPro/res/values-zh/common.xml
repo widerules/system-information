@@ -93,7 +93,7 @@
     <string name="search_engine">搜索引擎</string>
     <string name="google">谷歌</string>
     <string name="bing">必应"        "</string>
-    <string name="baidu">百度"        "</string>
+    <string name="baidu">宜搜"        "</string>
     <string name="block_popup">禁止弹窗</string>
     <string name="block_js">禁止JS, Flash</string>
     <string name="reset">恢复默认设置</string>

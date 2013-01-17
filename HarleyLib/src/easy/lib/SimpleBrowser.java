@@ -2458,6 +2458,7 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void initBookmarks() {
+		// set background tile of bookmark view. not use now
 		/*Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noise);  
 		BitmapDrawable drawable = new BitmapDrawable(bitmap);  
 		drawable.setTileModeXY(TileMode.REPEAT , TileMode.REPEAT );
@@ -3123,8 +3124,7 @@ public class SimpleBrowser extends Activity {
 		}
 
 		if (url != null) {
-			if ("".equals(url))
-				loadPage();
+			if ("".equals(url)) loadPage();
 			// else if (url.endsWith(".pdf"))//can't open local pdf by google
 			// doc
 			// serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url="
@@ -3465,6 +3465,7 @@ public class SimpleBrowser extends Activity {
 			}
 		}
 		
+		showBookmark();// show bookmark for load home page too slow
 		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 	}
 

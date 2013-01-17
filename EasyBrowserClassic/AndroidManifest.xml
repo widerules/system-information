@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="easy.browser.classic"
-    android:versionCode="44"
+    android:versionCode="45"
     android:versionName="1.2.5" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,6 +14,14 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     
     
+    <!-- for baidu tongji -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+		
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+
     <uses-sdk android:minSdkVersion="3" />
 
     <supports-screens
@@ -28,9 +36,14 @@
         android:name="easy.lib.MyApp"
         android:debuggable="false"
         android:hardwareAccelerated="true"
+        android:description="@string/about_message"
         android:icon="@drawable/explorer"
         android:label="@string/browser_name" >
         
+		<!-- for baidu tongji -->
+		<meta-data android:name="BaiduMobAd_CHANNEL" android:value="MoboMarket" />
+		<meta-data android:name="BaiduMobAd_STAT_ID" android:value="428da1b5ed" />
+		
         <activity
             android:name="easy.lib.SimpleBrowser"
             android:hardwareAccelerated="true"

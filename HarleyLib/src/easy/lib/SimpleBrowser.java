@@ -2277,7 +2277,7 @@ public class SimpleBrowser extends Activity {
 							0, 
 							Math.min(upAndDown.getTop(), 0), 
 							Math.min(Math.max(webs.getWidth()-upAndDown.getRight(), 0), webs.getWidth()-upAndDown.getWidth()), 
-							Math.max(webs.getHeight()-upAndDown.getBottom(), 0)
+							Math.min(Math.max(webs.getHeight()-upAndDown.getBottom(), 0), webs.getHeight()-20)
 						);
 					upAndDown.setLayoutParams(lp);
 					break;

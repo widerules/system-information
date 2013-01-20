@@ -497,6 +497,7 @@ public class SimpleBrowser extends Activity {
 			setWebChromeClient(new WebChromeClient() {
 				private VideoView mVideoView;
 				private WebChromeClient.CustomViewCallback mCustomViewCallback;
+				private FrameLayout mCustomViewContainer;
 
 				@Override
 				public void onProgressChanged(WebView view, int progress) {
@@ -542,56 +543,40 @@ public class SimpleBrowser extends Activity {
 				public void onShowCustomView(View view,	final CustomViewCallback callback) {
 					super.onShowCustomView(view, callback);
 					if (view instanceof FrameLayout) {
-						FrameLayout frame = (FrameLayout) view;
-						if (frame.getFocusedChild() instanceof VideoView) {
-							mVideoView = (VideoView) frame.getFocusedChild();
-							FrameLayout.LayoutParams par = new FrameLayout.LayoutParams(
-		                            LayoutParams.MATCH_PARENT,
-		                            LayoutParams.MATCH_PARENT);
-		                    par.gravity = Gravity.CENTER_HORIZONTAL;
-		                    mVideoView.setLayoutParams(par);
-		                    frame.removeView(mVideoView);
-							browserView.addView(mVideoView);
-							Log.d("================", "add video");
+						mCustomViewContainer = (FrameLayout) view;
+						if (mCustomViewContainer.getFocusedChild() instanceof VideoView) {
+							mVideoView = (VideoView) mCustomViewContainer.getFocusedChild();
+		                    setContentView(mCustomViewContainer);
 							mCustomViewCallback = callback;
 							mVideoView.setOnCompletionListener(new OnCompletionListener() {
 								@Override
 								public void onCompletion(MediaPlayer mp) {
-									Log.d("================", "complete video");
 									mp.stop();
 									onHideCustomView();
-									browserView.removeView(mVideoView);
 								}
 							});
 							mVideoView.setOnErrorListener(new OnErrorListener() {
 								@Override
 								public boolean onError(MediaPlayer mp, int what, int extra) {
-									Log.d("================" + what, "error video" + extra);
-									browserView.removeView(mVideoView);
+									setContentView(browserView);
 									return true;
 								}
 							});
+							mVideoView.requestFocus();
 							mVideoView.start();
 						}
 					}
 				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify
 
 				public void onHideCustomView() {
-					Log.d("DEBUG", "onHCView");
-					
-					if (mVideoView == null){
-						return;
-					}else{
-						// Hide the custom view.
-						mVideoView.setVisibility(View.GONE);
+					if (mVideoView == null) return;
+					else {
 						// Remove the custom view from its container.
-						browserView.removeView(mVideoView);
-						//mCustomViewContainer.removeView(mVideoView);
+						mCustomViewContainer.removeView(mVideoView);
 						mVideoView = null;
-						//mCustomViewContainer.setVisibility(View.GONE);
 						mCustomViewCallback.onCustomViewHidden();
-						// Show the content view.
-						//mContentView.setVisibility(View.VISIBLE);
+						// Show the browser view.
+						setContentView(browserView);
 					}
 				}
 

@@ -1519,7 +1519,7 @@ public class SimpleBrowser extends Activity {
 			else apkName += ".html";// if no ext, set as html file. maybe need consider contentDisposition.
 		}
 
-		if (downloadPath.startsWith(getFilesDir().getPath()))
+		if (noSdcard)
 			Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
 
 		Iterator iter = appstate.downloadState.entrySet().iterator();
@@ -2587,7 +2587,7 @@ public class SimpleBrowser extends Activity {
 		downloadPath = util.preparePath(mContext);
 		if (downloadPath == null)
 			downloadPath = "/data/data/" + getPackageName() + "/";// fix null pointer close for 4 users
-		if (downloadPath.startsWith(getFilesDir().getPath())) noSdcard = true;
+		if (downloadPath.startsWith(getFilesDir().getPath()+"")) noSdcard = true;
 
 		// should read in below sequence: 1, sdcard. 2, data/data. 3, native browser
 		try {

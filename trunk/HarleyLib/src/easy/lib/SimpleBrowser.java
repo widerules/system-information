@@ -72,6 +72,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -494,6 +495,9 @@ public class SimpleBrowser extends Activity {
 			});
 
 			setWebChromeClient(new WebChromeClient() {
+				private VideoView mVideoView;
+				private WebChromeClient.CustomViewCallback mCustomViewCallback;
+
 				@Override
 				public void onProgressChanged(WebView view, int progress) {
 					if (progress == 100)
@@ -540,29 +544,57 @@ public class SimpleBrowser extends Activity {
 					if (view instanceof FrameLayout) {
 						FrameLayout frame = (FrameLayout) view;
 						if (frame.getFocusedChild() instanceof VideoView) {
-							final VideoView video = (VideoView) frame.getFocusedChild();
-							video.setOnErrorListener(new OnErrorListener() {
-								@Override
-								public boolean onError(MediaPlayer mp, int what, int extra) {
-									//call these 2 line when stop or change to other url
-									video.stopPlayback();
-									callback.onCustomViewHidden();
-									return false;
-								}
-							});
-							video.setOnCompletionListener(new OnCompletionListener() {
+							mVideoView = (VideoView) frame.getFocusedChild();
+							FrameLayout.LayoutParams par = new FrameLayout.LayoutParams(
+		                            LayoutParams.MATCH_PARENT,
+		                            LayoutParams.MATCH_PARENT);
+		                    par.gravity = Gravity.CENTER_HORIZONTAL;
+		                    mVideoView.setLayoutParams(par);
+		                    frame.removeView(mVideoView);
+							browserView.addView(mVideoView);
+							Log.d("================", "add video");
+							mCustomViewCallback = callback;
+							mVideoView.setOnCompletionListener(new OnCompletionListener() {
 								@Override
 								public void onCompletion(MediaPlayer mp) {
-									//call these 2 line when stop or change to other url
-									video.stopPlayback();
-									callback.onCustomViewHidden();
+									Log.d("================", "complete video");
+									mp.stop();
+									onHideCustomView();
+									browserView.removeView(mVideoView);
 								}
 							});
-							
-							video.start();
+							mVideoView.setOnErrorListener(new OnErrorListener() {
+								@Override
+								public boolean onError(MediaPlayer mp, int what, int extra) {
+									Log.d("================" + what, "error video" + extra);
+									browserView.removeView(mVideoView);
+									return true;
+								}
+							});
+							mVideoView.start();
 						}
 					}
 				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify
+
+				public void onHideCustomView() {
+					Log.d("DEBUG", "onHCView");
+					
+					if (mVideoView == null){
+						return;
+					}else{
+						// Hide the custom view.
+						mVideoView.setVisibility(View.GONE);
+						// Remove the custom view from its container.
+						browserView.removeView(mVideoView);
+						//mCustomViewContainer.removeView(mVideoView);
+						mVideoView = null;
+						//mCustomViewContainer.setVisibility(View.GONE);
+						mCustomViewCallback.onCustomViewHidden();
+						// Show the content view.
+						//mContentView.setVisibility(View.VISIBLE);
+					}
+				}
+
 
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,
@@ -1456,7 +1488,7 @@ public class SimpleBrowser extends Activity {
 			else apkName += ".html";// if no ext, set as html file. maybe need consider contentDisposition.
 		}
 
-		if (downloadPath.startsWith(getFilesDir().getPath()))
+		if (noSdcard)
 			Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
 
 		Iterator iter = appstate.downloadState.entrySet().iterator();
@@ -2601,7 +2633,7 @@ public class SimpleBrowser extends Activity {
 		downloadPath = util.preparePath(mContext);
 		if (downloadPath == null)
 			downloadPath = "/data/data/" + getPackageName() + "/";// fix null pointer close for 4 users
-		if (downloadPath.startsWith(getFilesDir().getPath())) noSdcard = true;
+		if (downloadPath.startsWith(getFilesDir().getPath()+"")) noSdcard = true;
 
 		// should read in below sequence: 1, sdcard. 2, data/data. 3, native browser
 		try {

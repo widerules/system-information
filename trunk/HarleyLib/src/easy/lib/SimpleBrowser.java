@@ -540,6 +540,14 @@ public class SimpleBrowser extends Activity {
 				}
 
 				@Override
+				public View getVideoLoadingProgressView() {
+					TextView view = new TextView(mContext);
+					view.setText(R.string.wait);
+					view.setTextSize(20);
+					return view;
+				}
+				
+				@Override
 				public void onShowCustomView(View view,	final CustomViewCallback callback) {
 					super.onShowCustomView(view, callback);
 					if (view instanceof FrameLayout) {
@@ -557,12 +565,14 @@ public class SimpleBrowser extends Activity {
 							mVideoView.setOnErrorListener(new OnErrorListener() {
 								@Override
 								public boolean onError(MediaPlayer mp, int what, int extra) {
+									mp.stop();
 									onHideCustomView();
 									return true;
 								}
 							});
 							mVideoView.requestFocus();
 							mVideoView.start();
+							browserView.setVisibility(View.GONE);
 		                    setContentView(mCustomViewContainer);
 						}
 					}
@@ -576,6 +586,7 @@ public class SimpleBrowser extends Activity {
 						mVideoView = null;
 						mCustomViewCallback.onCustomViewHidden();
 						// Show the browser view.
+						browserView.setVisibility(View.VISIBLE);
 						setContentView(browserView);
 					}
 				}
@@ -3187,8 +3198,8 @@ public class SimpleBrowser extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				// press Back key in webview will go backword.
-				if (menuOpened) hideMenu();
+				if (browserView.getVisibility() == View.GONE) ;// playing video. need wait it over?
+				else if (menuOpened) hideMenu();
 				else if (bookmarkOpened) hideBookmark();
 				else if (webControl.getVisibility() == View.VISIBLE)
 					webControl.setVisibility(View.INVISIBLE);// hide web control
@@ -3207,7 +3218,7 @@ public class SimpleBrowser extends Activity {
 					if (serverWebs.size() == 1)
 						moveTaskToBack(true);
 					else closePage(webIndex, false); // close blank page if more than one page
-				} else if (serverWebs.get(webIndex).canGoBack())
+				} else if (serverWebs.get(webIndex).canGoBack())// press Back key in webview will go backword.
 					imgPrev.performClick();
 				else
 					closePage(webIndex, false);// close current page if can't go back

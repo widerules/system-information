@@ -569,13 +569,7 @@ public class SimpleBrowser extends Activity {
 							mVideoView.requestFocus();
 							mVideoView.start();
 						}
-						else {//it is android.webkit.HTML5VideoFullScreen$VideoSurfaceView instead of VideoView
-							FrameLayout.LayoutParams par = new FrameLayout.LayoutParams(
-									LayoutParams.MATCH_PARENT,
-									LayoutParams.MATCH_PARENT,
-									Gravity.BOTTOM);
-							mCustomViewContainer.getFocusedChild().setLayoutParams(par);
-						}
+						else ;//it is android.webkit.HTML5VideoFullScreen$VideoSurfaceView instead of VideoView
 						
 						browserView.setVisibility(View.GONE);
 	                    setContentView(mCustomViewContainer);
@@ -3391,6 +3385,10 @@ public class SimpleBrowser extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		if (browserView.getVisibility() == View.GONE) {
+			if (mVideoView != null) mVideoView.resume(); 
+		}
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);

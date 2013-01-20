@@ -546,7 +546,6 @@ public class SimpleBrowser extends Activity {
 						mCustomViewContainer = (FrameLayout) view;
 						if (mCustomViewContainer.getFocusedChild() instanceof VideoView) {
 							mVideoView = (VideoView) mCustomViewContainer.getFocusedChild();
-		                    setContentView(mCustomViewContainer);
 							mCustomViewCallback = callback;
 							mVideoView.setOnCompletionListener(new OnCompletionListener() {
 								@Override
@@ -558,12 +557,13 @@ public class SimpleBrowser extends Activity {
 							mVideoView.setOnErrorListener(new OnErrorListener() {
 								@Override
 								public boolean onError(MediaPlayer mp, int what, int extra) {
-									setContentView(browserView);
+									onHideCustomView();
 									return true;
 								}
 							});
 							mVideoView.requestFocus();
 							mVideoView.start();
+		                    setContentView(mCustomViewContainer);
 						}
 					}
 				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify

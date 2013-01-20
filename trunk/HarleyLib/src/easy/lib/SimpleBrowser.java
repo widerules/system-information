@@ -569,7 +569,13 @@ public class SimpleBrowser extends Activity {
 							mVideoView.requestFocus();
 							mVideoView.start();
 						}
-						else ;//it is android.webkit.HTML5VideoFullScreen$VideoSurfaceView instead of VideoView
+						else {//it is android.webkit.HTML5VideoFullScreen$VideoSurfaceView instead of VideoView
+							FrameLayout.LayoutParams par = new FrameLayout.LayoutParams(
+									LayoutParams.MATCH_PARENT,
+									LayoutParams.MATCH_PARENT,
+									Gravity.BOTTOM);
+							mCustomViewContainer.getFocusedChild().setLayoutParams(par);
+						}
 						
 						browserView.setVisibility(View.GONE);
 	                    setContentView(mCustomViewContainer);
@@ -3366,6 +3372,11 @@ public class SimpleBrowser extends Activity {
 			wtask.execute("bookmark");
 		}
 
+		if (browserView.getVisibility() == View.GONE) {
+			if (mVideoView == null) hideCustomView();//hide VideoSurfaceView otherwise it will force close onResume
+			else mVideoView.pause();
+		}
+			
 		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);
 		sEdit.putBoolean("html5", serverWebs.get(webIndex).html5);
 		sEdit.commit();

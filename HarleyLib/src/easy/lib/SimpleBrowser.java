@@ -548,9 +548,9 @@ public class SimpleBrowser extends Activity {
 					super.onShowCustomView(view, callback);
 					if (view instanceof FrameLayout) {
 						mCustomViewContainer = (FrameLayout) view;
+						mCustomViewCallback = callback;
 						if (mCustomViewContainer.getFocusedChild() instanceof VideoView) {
 							mVideoView = (VideoView) mCustomViewContainer.getFocusedChild();
-							mCustomViewCallback = callback;
 							mVideoView.setOnCompletionListener(new OnCompletionListener() {
 								@Override
 								public void onCompletion(MediaPlayer mp) {
@@ -568,9 +568,11 @@ public class SimpleBrowser extends Activity {
 							});
 							mVideoView.requestFocus();
 							mVideoView.start();
-							browserView.setVisibility(View.GONE);
-		                    setContentView(mCustomViewContainer);
 						}
+						else ;//it is android.webkit.HTML5VideoFullScreen$VideoSurfaceView instead of VideoView
+						
+						browserView.setVisibility(View.GONE);
+	                    setContentView(mCustomViewContainer);
 					}
 				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify
 
@@ -654,16 +656,15 @@ public class SimpleBrowser extends Activity {
 	private WebChromeClient.CustomViewCallback mCustomViewCallback;
 	private FrameLayout mCustomViewContainer;
 	void hideCustomView() {
-		if (mVideoView == null) return;
-		else {
+		if (mVideoView != null) {
 			// Remove the custom view from its container.
 			mCustomViewContainer.removeView(mVideoView);
 			mVideoView = null;
-			mCustomViewCallback.onCustomViewHidden();
-			// Show the browser view.
-			browserView.setVisibility(View.VISIBLE);
-			setContentView(browserView);
 		}
+		mCustomViewCallback.onCustomViewHidden();
+		// Show the browser view.
+		browserView.setVisibility(View.VISIBLE);
+		setContentView(browserView);
 	}
 	
 	void downloadAction(final String url, final String contentDisposition, String mimetype) {

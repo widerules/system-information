@@ -3387,7 +3387,7 @@ public class SimpleBrowser extends Activity {
 		super.onResume();
 
 		if (browserView.getVisibility() == View.GONE) {
-			if (mVideoView != null) mVideoView.resume(); 
+			if (mVideoView != null) mVideoView.start(); 
 		}
 
 		try {

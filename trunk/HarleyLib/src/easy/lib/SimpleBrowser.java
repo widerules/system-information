@@ -495,10 +495,6 @@ public class SimpleBrowser extends Activity {
 			});
 
 			setWebChromeClient(new WebChromeClient() {
-				private VideoView mVideoView;
-				private WebChromeClient.CustomViewCallback mCustomViewCallback;
-				private FrameLayout mCustomViewContainer;
-
 				@Override
 				public void onProgressChanged(WebView view, int progress) {
 					if (progress == 100)
@@ -544,7 +540,7 @@ public class SimpleBrowser extends Activity {
 					TextView view = new TextView(mContext);
 					view.setText(R.string.wait);
 					view.setTextSize(20);
-					return view;
+					return view;// this if for hint when load video
 				}
 				
 				@Override
@@ -579,16 +575,7 @@ public class SimpleBrowser extends Activity {
 				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify
 
 				public void onHideCustomView() {
-					if (mVideoView == null) return;
-					else {
-						// Remove the custom view from its container.
-						mCustomViewContainer.removeView(mVideoView);
-						mVideoView = null;
-						mCustomViewCallback.onCustomViewHidden();
-						// Show the browser view.
-						browserView.setVisibility(View.VISIBLE);
-						setContentView(browserView);
-					}
+					hideCustomView();
 				}
 
 
@@ -663,6 +650,22 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	private VideoView mVideoView;
+	private WebChromeClient.CustomViewCallback mCustomViewCallback;
+	private FrameLayout mCustomViewContainer;
+	void hideCustomView() {
+		if (mVideoView == null) return;
+		else {
+			// Remove the custom view from its container.
+			mCustomViewContainer.removeView(mVideoView);
+			mVideoView = null;
+			mCustomViewCallback.onCustomViewHidden();
+			// Show the browser view.
+			browserView.setVisibility(View.VISIBLE);
+			setContentView(browserView);
+		}
+	}
+	
 	void downloadAction(final String url, final String contentDisposition, String mimetype) {
 		// need to know it is httpget, post or direct connect.
 		// for example, I don't know how to handle this
@@ -3198,7 +3201,7 @@ public class SimpleBrowser extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				if (browserView.getVisibility() == View.GONE) ;// playing video. need wait it over?
+				if (browserView.getVisibility() == View.GONE) hideCustomView();// playing video. need wait it over?
 				else if (menuOpened) hideMenu();
 				else if (bookmarkOpened) hideBookmark();
 				else if (webControl.getVisibility() == View.VISIBLE)

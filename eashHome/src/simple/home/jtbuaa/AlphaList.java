@@ -267,7 +267,7 @@ public abstract class AlphaList<T> {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						long pressTime = event.getEventTime() - event.getDownTime();//use this to avoid long click
-						if ((pressTime > 0) && (pressTime < ViewConfiguration.getLongPressTimeout()) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
+						if ((pressTime < ViewConfiguration.getLongPressTimeout()) && (event.getAction() == MotionEvent.ACTION_UP)) {//start app when click
 	    					if (start(info))//start success
 	    						textView1.setTextColor(redColor);//red for running apk
 							return true;

@@ -51,11 +51,9 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Picture;
-import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -69,10 +67,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.DragEvent;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,8 +75,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnDragListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
@@ -1901,7 +1894,7 @@ public class SimpleBrowser extends Activity {
 		util.startActivity(shareIntent, false, mContext);
 	}
 
-	/*public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
+	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
 		List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
 		int size = resolveInfoList.size();
 		ComponentName[] arrayOfComponentName = new ComponentName[size];
@@ -1910,7 +1903,7 @@ public class SimpleBrowser extends Activity {
 			String packageName = activityInfo.packageName;
 			String className = activityInfo.name;
 			//clear default browser
-			pm.clearPackagePreferredActivities(packageName);
+			try{pm.clearPackagePreferredActivities(packageName);} catch(Exception e) {}
 			ComponentName componentName = new ComponentName(packageName, className);
 			arrayOfComponentName[i] = componentName;
 		}
@@ -1938,7 +1931,7 @@ public class SimpleBrowser extends Activity {
 		Uri uri = Uri.parse("http://");
 		intent.setDataAndType(uri, null);
 		setDefault(pm, intent, filter);		
-	}*/
+	}
 	
 	public void readPreference() {
 		// paid = sp.getBoolean("paid", false);
@@ -2552,7 +2545,7 @@ public class SimpleBrowser extends Activity {
 		sEdit = sp.edit();
 		readPreference();
 
-		//setAsDefaultApp();
+		setAsDefaultApp();
 		
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();

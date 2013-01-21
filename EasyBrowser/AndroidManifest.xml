@@ -10,7 +10,7 @@
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" not allowed by latest adt/-->
+    <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     
     

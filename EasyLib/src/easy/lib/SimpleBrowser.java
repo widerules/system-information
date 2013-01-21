@@ -1917,7 +1917,7 @@ public class SimpleBrowser extends Activity {
 		util.startActivity(shareIntent, false, mContext);
 	}
 
-	/*public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
+	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
 		List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
 		int size = resolveInfoList.size();
 		ComponentName[] arrayOfComponentName = new ComponentName[size];
@@ -1926,7 +1926,7 @@ public class SimpleBrowser extends Activity {
 			String packageName = activityInfo.packageName;
 			String className = activityInfo.name;
 			//clear default browser
-			pm.clearPackagePreferredActivities(packageName);
+			try{pm.clearPackagePreferredActivities(packageName);} catch(Exception e) {}
 			ComponentName componentName = new ComponentName(packageName, className);
 			arrayOfComponentName[i] = componentName;
 		}
@@ -1954,7 +1954,7 @@ public class SimpleBrowser extends Activity {
 		Uri uri = Uri.parse("http://");
 		intent.setDataAndType(uri, null);
 		setDefault(pm, intent, filter);		
-	}*/
+	}
 	
 	public void readPreference() {
 		// paid = sp.getBoolean("paid", false);
@@ -2507,7 +2507,7 @@ public class SimpleBrowser extends Activity {
 		sEdit = sp.edit();
 		readPreference();
 
-		//setAsDefaultApp();// not allowed by latest adt
+		setAsDefaultApp();// not allowed by latest adt
 		
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();

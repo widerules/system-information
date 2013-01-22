@@ -19,7 +19,6 @@ import easy.lib.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -64,7 +63,6 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -87,6 +85,47 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+class wrapWallpaperManager {
+	Object mInstance;
+
+	public static void checkAvailable() {}
+	
+	static Method getWallpaperManagerMethod = null;
+	static Method setWallpaperOffsetsMethod = null;
+	static Method setBitmapMethod = null; 
+	static Method suggestDesiredDimensionsMethod = null;
+	static {
+		try {
+			Class c = Class.forName("android.app.WallpaperManager");
+			getWallpaperManagerMethod = c.getMethod("getInstance", new Class[] { Context.class });// api 5
+			setWallpaperOffsetsMethod = c.getMethod("setWallpaperOffsets", new Class[] { IBinder.class, float.class, float.class });// api 5
+			setBitmapMethod = c.getMethod("setBitmap", new Class[] { Bitmap.class });//api 5
+			suggestDesiredDimensionsMethod = c.getMethod("suggestDesiredDimensions", new Class[] { int.class, int.class });//api 5
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}				
+	}
+	
+	void getInstance(Context context) {
+		if (getWallpaperManagerMethod != null)
+			try {mInstance = getWallpaperManagerMethod.invoke(context, context);}
+		catch (Exception e) {mInstance = null;}
+	}
+	void setWallpaperOffsets(IBinder token, float x, float y) {
+		if (setWallpaperOffsetsMethod != null)
+			try {setWallpaperOffsetsMethod.invoke(mInstance, token, x, y);} catch (Exception e) {}
+	}
+	void setBitmap(Bitmap bitmap) {
+		if (setBitmapMethod != null)
+			try {setBitmapMethod.invoke(mInstance, bitmap);} catch (Exception e) {}
+	}
+	void suggestDesiredDimensions(int x, int y) {
+		if (suggestDesiredDimensionsMethod != null)
+			try {suggestDesiredDimensionsMethod.invoke(mInstance, x, y);} catch (Exception e) {}
+	}
+}
+
+
 public class simpleHome extends Activity implements SensorEventListener, sizedRelativeLayout.OnResizeChangeListener {
 
 	int homeTab = 1;
@@ -106,7 +145,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	boolean shakeWallpaper = false;
 	boolean busy;
 	SharedPreferences perferences;
-	WallpaperManager mWallpaperManager;
 	String wallpaperFile = "";
 	
 
@@ -160,7 +198,32 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    getITelephonyMethod.setAccessible(true);//私有化函数也能使用 
 	    return (com.android.internal.telephony.ITelephony)getITelephonyMethod.invoke(telMgr); 
 	} 
-	 
+	
+	wrapWallpaperManager mWallpaperManager;
+	static boolean wallpaperManagerAvaiable;
+	static {
+		try {
+			wrapWallpaperManager.checkAvailable();
+			wallpaperManagerAvaiable = true;
+		} catch (Throwable t) {
+			wallpaperManagerAvaiable = false;
+		}
+	}
+	
+    Context mContext;
+	static Method overridePendingTransitionMethod = null;
+
+	static {
+		try {//API 5
+			overridePendingTransitionMethod = Activity.class.getMethod("overridePendingTransition", new Class[] { int.class, int.class });//api 5			
+		} catch (Exception e) {}
+	}
+	
+	void invokeOverridePendingTransition() {
+		if (overridePendingTransitionMethod != null)
+			try {overridePendingTransitionMethod.invoke(mContext, 0, 0);} catch (Exception e) {}
+	}
+	
 	class MyPagerAdapter extends PagerAdapter{
 	    @Override
 	    public void destroyItem(View collection, int arg1, Object view) {
@@ -579,7 +642,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         radioGroup = (RadioGroup) findViewById(R.id.radio_hint);
         if (!paid) radioGroup.removeViewAt(0);
         
-        mWallpaperManager = WallpaperManager.getInstance(this);
+        if (wallpaperManagerAvaiable) {
+			mWallpaperManager = new wrapWallpaperManager();
+			mWallpaperManager.getInstance(mContext);
+        }
         
         mainlayout = (ViewPager)findViewById(R.id.mainFrame);
         mainlayout.setLongClickable(true);
@@ -597,7 +663,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 				if (!shakeWallpaper) {//don't move wallpaper if change wallpaper by shake
 					if (token == null) token = mainlayout.getWindowToken();//any token from a component is ok
-		            mWallpaperManager.setWallpaperOffsets(token, 
+					mWallpaperManager.setWallpaperOffsets(token, 
 				            //when slide from home to systems or from systems to home, the "position" is 0,
 				            //when slide from home to users or from users to home, it is 1.
 				            //positionOffset is from 0 to 1. sometime it will jump from 1 to 0, we just omit it if it is 0.
@@ -701,6 +767,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		InitTask initTask = new InitTask();
         initTask.execute("");
         
+        Context mContext = this;
 		restartDialog = new AlertDialog.Builder(this).
 				setTitle(R.string.app_name).
 				setIcon(R.drawable.icon).
@@ -720,10 +787,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			    		
 			    		//restart the activity. note if set singleinstance or singletask of activity, below will not work on some device.
 						Intent intent = getIntent();
-						overridePendingTransition(0, 0);
+						invokeOverridePendingTransition();
 						intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 						finish();
-						overridePendingTransition(0, 0);
+						invokeOverridePendingTransition();
 						startActivity(intent);
 					}
 				}).
@@ -1414,8 +1481,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				        double factor = 1.0 * bd.getIntrinsicWidth() / bd.getIntrinsicHeight();
 				        if (factor >= 1.2) {//if too wide, we want use setWallpaperOffsets to move it, so we need set it to wallpaper
 				        	int tmpWidth = (int) (dm.heightPixels * factor);
-					    	mWallpaperManager.setBitmap(Bitmap.createScaledBitmap(bd.getBitmap(), tmpWidth, dm.heightPixels, false));
-					    	mWallpaperManager.suggestDesiredDimensions(tmpWidth, dm.heightPixels);
+				        	mWallpaperManager.setBitmap(Bitmap.createScaledBitmap(bd.getBitmap(), tmpWidth, dm.heightPixels, false));
+				        	mWallpaperManager.suggestDesiredDimensions(tmpWidth, dm.heightPixels);
 					    	
 							sensorMgr.unregisterListener(this);
 			        		SharedPreferences.Editor editor = perferences.edit();

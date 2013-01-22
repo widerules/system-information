@@ -78,16 +78,13 @@
         >
 
     	<View
+    	    android:id="@+id/showhide_webtools"
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/darkEdge" />
-        
-        <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/whiteEdge" />
+        android:layout_height="2px"
+        android:background="@drawable/divider2" />
 
 	    <RelativeLayout
+	        android:id="@+id/webtoolnad"
         	android:layout_width="fill_parent"
 	        android:layout_height="50dip"
 	        android:background="#00000000"

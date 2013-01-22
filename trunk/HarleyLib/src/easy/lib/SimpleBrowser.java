@@ -2812,19 +2812,32 @@ public class SimpleBrowser extends Activity {
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
+		final RelativeLayout toolNad = (RelativeLayout) findViewById(R.id.webtoolnad);
+		toolNad.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams((int)(320*dm.density), (int)(50*dm.density));
+				lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+				imageBtnList.setLayoutParams(lp1);
+				
+				RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams((int)(320*dm.density), (int)(50*dm.density));
+				lp2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+				adContainer2.setLayoutParams(lp2);
+			}
+		});
+		
 		View showhideWebtools = findViewById(R.id.showhide_webtools);
 		showhideWebtools.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				RelativeLayout toolNad = (RelativeLayout) findViewById(R.id.webtoolnad);
-				LayoutParams lpBar = toolNad.getLayoutParams();
+				LayoutParams lp = toolNad.getLayoutParams();
 				if (toolNad.getLayoutParams().height == 0) 
-					lpBar.height = (int) (50 * dm.density);
-				else lpBar.height = 0;
+					lp.height = (int) (50 * dm.density);
+				else lp.height = 0;
 				toolNad.requestLayout();		
 			}
 		});
-		
+
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.

@@ -2815,14 +2815,12 @@ public class SimpleBrowser extends Activity {
 		final RelativeLayout toolNad = (RelativeLayout) findViewById(R.id.webtoolnad);
 		toolNad.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams((int)(320*dm.density), (int)(50*dm.density));
-				lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-				imageBtnList.setLayoutParams(lp1);
+			public void onClick(View v) {//reverse the position of webtoolbutton and ad
+				RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams)imageBtnList.getLayoutParams(); 
+				RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams)adContainer2.getLayoutParams();
 				
-				RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams((int)(320*dm.density), (int)(50*dm.density));
-				lp2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-				adContainer2.setLayoutParams(lp2);
+				imageBtnList.setLayoutParams(lp2);
+				adContainer2.setLayoutParams(lp1);
 			}
 		});
 		

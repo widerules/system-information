@@ -315,14 +315,10 @@ public class SimpleBrowser extends Activity {
 	static Method setDisplayZoomControls = null;
 	static Method canScrollVerticallyMethod = null;
 	static {
-		try {//API 11
-			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
+		try {
+			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });//API 11
+			canScrollVerticallyMethod = WebView.class.getMethod("canScrollVertically", new Class[] { int.class });//API 14
 		} catch (Exception e) {}
-		
-		try {//API 14
-			canScrollVerticallyMethod = WebView.class.getMethod("canScrollVertically", new Class[] { int.class });
-		} catch (Exception e) {}
-
 	}
 	
 	class wrapWebSettings {

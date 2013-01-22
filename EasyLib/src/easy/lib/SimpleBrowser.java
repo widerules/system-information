@@ -317,29 +317,26 @@ public class SimpleBrowser extends Activity {
 	static Method setScrollbarFadingEnabled = null;
 	static Method canScrollVerticallyMethod = null;
 	static {
-		try {//API 7
+		try {
+			//API 5
+			setDatabaseEnabled = WebSettings.class.getMethod("setDatabaseEnabled", new Class[] { boolean.class });
+			setDatabasePath = WebSettings.class.getMethod("setDatabasePath", new Class[] { String.class });
+			setScrollbarFadingEnabled = WebView.class.getMethod("setScrollbarFadingEnabled", new Class[] { boolean.class });
+			
+			//API 7
 			freeMemoryMethod  = WebView.class.getMethod("freeMemory");
 			setLoadWithOverviewMode = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] { boolean.class });
 			setAppCacheEnabled = WebSettings.class.getMethod("setAppCacheEnabled", new Class[] { boolean.class });
 			setAppCachePath = WebSettings.class.getMethod("setAppCachePath", new Class[] { String.class });
 			setAppCacheMaxSize = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] { long.class });
 			setDomStorageEnabled = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] { boolean.class });
-		} catch (Exception e) {}
-
-		try {//API 5
-			setDatabaseEnabled = WebSettings.class.getMethod("setDatabaseEnabled", new Class[] { boolean.class });
-			setDatabasePath = WebSettings.class.getMethod("setDatabasePath", new Class[] { String.class });
-			setScrollbarFadingEnabled = WebView.class.getMethod("setScrollbarFadingEnabled", new Class[] { boolean.class });
-		} catch (Exception e) {}
-
-		try {//API 11
+			
+			//API 11
 			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
-		} catch (Exception e) {}
-		
-		try {//API 14
+			
+			//API 14
 			canScrollVerticallyMethod = WebView.class.getMethod("canScrollVertically", new Class[] { int.class });
 		} catch (Exception e) {}
-
 	}
 	
 	public void freeMemory(MyWebview webview) {

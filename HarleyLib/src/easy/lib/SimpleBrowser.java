@@ -218,6 +218,8 @@ public class SimpleBrowser extends Activity {
 	View bookmarkView;
 	RelativeLayout browserView;
 	LinearLayout webControl;
+	LinearLayout imageBtnList;
+	RelativeLayout adContainer2;
 	int minWebControlWidth = 200;
 	int historyIndex = -1;
 	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
@@ -292,7 +294,7 @@ public class SimpleBrowser extends Activity {
 			mAdAvailable = false;
 		}
 	}
-	wrapAdView adview = null;
+	wrapAdView adview = null, adview2 = null;
 
 	// download related
 	String downloadPath = "";
@@ -2736,6 +2738,10 @@ public class SimpleBrowser extends Activity {
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
+		adContainer2 = (RelativeLayout) findViewById(R.id.adContainer2);
+		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
+		imageBtnList.bringToFront();
+		
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -2794,6 +2800,7 @@ public class SimpleBrowser extends Activity {
 		});
 
 		dm = new DisplayMetrics();
+		createAd();
 		setLayout();
 		hideMenu();
 		hideBookmark();
@@ -2801,7 +2808,6 @@ public class SimpleBrowser extends Activity {
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball
 		//initBookmarks();
 		initUpDown();
-		createAd();
 		
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
@@ -2880,8 +2886,8 @@ public class SimpleBrowser extends Activity {
 		unregisterReceiver(downloadReceiver);
 		unregisterReceiver(packageReceiver);
 
-		if (adview != null)
-			adview.destroy();
+		if (adview != null) adview.destroy();
+		if (adview2 != null) adview2.destroy();
 
 		super.onDestroy();
 	}
@@ -3375,13 +3381,10 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		if (browserView.getVisibility() == View.GONE) {
+		if (browserView.getVisibility() == View.GONE) 
 			if (mVideoView != null) mVideoView.start(); 
-		}
 
-		try {
-			if (baiduResume != null) baiduResume.invoke(this, this);
-		} catch (Exception e) {}
+		try {if (baiduResume != null) baiduResume.invoke(this, this);} catch (Exception e) {}
 	}
 
 	@Override
@@ -3429,6 +3432,16 @@ public class SimpleBrowser extends Activity {
 		}
 		
 		if ((webControl.getVisibility() == View.VISIBLE) && (webControl.getWidth() < minWebControlWidth)) scrollToMain();
+		
+		if (dm.widthPixels < 320) {
+			imageBtnList.getLayoutParams().width = dm.widthPixels;
+			adContainer2.setVisibility(View.GONE);
+		}
+		else {
+			imageBtnList.getLayoutParams().width = (int) (320 * dm.density);
+			if (adview2 != null) adview2.loadAd();
+			adContainer2.setVisibility(View.VISIBLE);
+		}
 	}
 
 	void createAd() {
@@ -3445,6 +3458,10 @@ public class SimpleBrowser extends Activity {
 				adContainer.addView(adview.getInstance());
 				adContainer.bringChildToFront(adview.getInstance());
 			}
+			
+			adview2 = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
+			if ((adview2 != null) && (adview2.getInstance() != null)) 
+				adContainer2.addView(adview2.getInstance());
 		}
 	}
 

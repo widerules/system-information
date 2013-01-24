@@ -2816,8 +2816,8 @@ public class SimpleBrowser extends Activity {
 		toolNad.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
-				RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams)imageBtnList.getLayoutParams();
-				RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams)adContainer2.getLayoutParams();
+				LayoutParams lp1 = imageBtnList.getLayoutParams();
+				LayoutParams lp2 = adContainer2.getLayoutParams();
 				
 				lp1.height = (int) (50 * dm.density);// keep correct height
 				lp2.height = (int) (40 * dm.density);

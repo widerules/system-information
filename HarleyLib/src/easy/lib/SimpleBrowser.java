@@ -219,7 +219,7 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout browserView;
 	LinearLayout webControl;
 	LinearLayout imageBtnList;
-	RelativeLayout adContainer2;
+	LinearLayout adContainer2;
 	int minWebControlWidth = 200;
 	int historyIndex = -1;
 	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
@@ -2738,7 +2738,7 @@ public class SimpleBrowser extends Activity {
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
-		adContainer2 = (RelativeLayout) findViewById(R.id.adContainer2);
+		adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
 		
@@ -2812,15 +2812,18 @@ public class SimpleBrowser extends Activity {
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
-		final RelativeLayout toolNad = (RelativeLayout) findViewById(R.id.webtoolnad);
+		final FrameLayout toolNad = (FrameLayout) findViewById(R.id.webtoolnad);
 		toolNad.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
-				RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams)imageBtnList.getLayoutParams(); 
+				RelativeLayout.LayoutParams lp1 = (RelativeLayout.LayoutParams)imageBtnList.getLayoutParams();
 				RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams)adContainer2.getLayoutParams();
 				
-				imageBtnList.setLayoutParams(lp2);
+				lp1.height = (int) (50 * dm.density);// keep correct height
+				lp2.height = (int) (40 * dm.density);
+				
 				adContainer2.setLayoutParams(lp1);
+				imageBtnList.setLayoutParams(lp2);
 			}
 		});
 		
@@ -2830,7 +2833,7 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View arg0) {
 				LayoutParams lp = toolNad.getLayoutParams();
 				if (toolNad.getLayoutParams().height == 0) 
-					lp.height = (int) (50 * dm.density);
+					lp.height = (int) (40 * dm.density);
 				else lp.height = 0;
 				toolNad.requestLayout();		
 			}

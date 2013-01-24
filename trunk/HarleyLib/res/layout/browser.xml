@@ -104,6 +104,7 @@
         android:layout_width="320dip"
         android:layout_height="40dip"
         android:orientation="horizontal"
+        android:background="@drawable/round_corner"
         android:layout_alignParentLeft="true" 
         >
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="easy.browser"
-    android:versionCode="42"
-    android:versionName="1.2.2" >
+    android:versionCode="43"
+    android:versionName="1.2.3" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -41,7 +41,7 @@
         android:label="@string/browser_name" >
         
 		<!-- for baidu tongji -->
-		<meta-data android:name="BaiduMobAd_CHANNEL" android:value="wow" />
+		<meta-data android:name="BaiduMobAd_CHANNEL" android:value="gfan" />
 		<meta-data android:name="BaiduMobAd_STAT_ID" android:value="428da1b5ed" />
 		
         <activity

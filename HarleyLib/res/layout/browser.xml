@@ -340,7 +340,7 @@
     <HorizontalScrollView
         android:id="@+id/adContainer"
         android:layout_width="320dip"
-        android:layout_height="wrap_content"
+        android:layout_height="50dip"
         android:layout_gravity="right"
         android:orientation="vertical" >
         

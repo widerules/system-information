@@ -110,6 +110,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -219,7 +220,7 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout browserView;
 	LinearLayout webControl;
 	LinearLayout imageBtnList;
-	LinearLayout adContainer2;
+	HorizontalScrollView adContainer, adContainer2;
 	int minWebControlWidth = 200;
 	int historyIndex = -1;
 	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
@@ -2738,7 +2739,7 @@ public class SimpleBrowser extends Activity {
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
-		adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
+		adContainer2 = (HorizontalScrollView) findViewById(R.id.adContainer2);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
 		
@@ -2819,8 +2820,10 @@ public class SimpleBrowser extends Activity {
 				LayoutParams lp1 = imageBtnList.getLayoutParams();
 				LayoutParams lp2 = adContainer2.getLayoutParams();
 				
-				lp1.height = (int) (50 * dm.density);// keep correct height
+				lp1.height = (int) (50 * dm.density);// keep correct height and width
+				lp1.width = LayoutParams.WRAP_CONTENT;
 				lp2.height = (int) (40 * dm.density);
+				lp2.width = (int) (320 * dm.density);
 				
 				adContainer2.setLayoutParams(lp1);
 				imageBtnList.setLayoutParams(lp2);
@@ -3433,6 +3436,7 @@ public class SimpleBrowser extends Activity {
         bookmarkWidth = dm.widthPixels * 3 / 4;
         int minWidth = (int) (320 * dm.density);
         if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
+        adContainer.getLayoutParams().width = bookmarkWidth;
         
 		int height = (int) (dm.heightPixels / dm.density);
 		if (showUrl) height -= urlHeight;
@@ -3481,7 +3485,8 @@ public class SimpleBrowser extends Activity {
 		if (mAdAvailable) {
 			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
-				FrameLayout adContainer = (FrameLayout) bookmarkView.findViewById(R.id.adContainer);
+				adContainer = (HorizontalScrollView) bookmarkView.findViewById(R.id.adContainer);
+				adContainer.removeAllViews();
 				adContainer.addView(adview.getInstance());
 				adContainer.bringChildToFront(adview.getInstance());
 			}

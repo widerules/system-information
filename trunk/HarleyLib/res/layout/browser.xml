@@ -90,14 +90,14 @@
     	    android:orientation="horizontal" 
     	    >
         
-		    <LinearLayout
+		    <HorizontalScrollView
     		    android:id="@+id/adContainer2"
-        		android:layout_width="320dip"
+        		android:layout_width="wrap_content"
 	        	android:layout_height="50dip"
 	    	    android:layout_gravity="right"
 	    	    android:layout_alignParentRight="true"
     		    android:orientation="vertical" >
-	    	</LinearLayout>
+	    	</HorizontalScrollView>
 
         <LinearLayout
             android:id="@+id/imagebtn_list"
@@ -337,20 +337,19 @@
         android:dividerHeight="2px"
         />
     
-    <FrameLayout
+    <HorizontalScrollView
         android:id="@+id/adContainer"
         android:layout_width="320dip"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:foregroundGravity="center"
         android:orientation="vertical" >
         
         <View
-	        android:layout_width="wrap_content"
+	        android:layout_width="fill_parent"
     	    android:layout_height="20dip"
         	android:background="@drawable/button_layout"
             />
-    </FrameLayout>
+    </HorizontalScrollView>
 
     <ListView
         android:id="@+id/bookmark"

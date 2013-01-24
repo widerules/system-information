@@ -47,7 +47,7 @@
         <activity
             android:name="easy.lib.SimpleBrowser"
             android:hardwareAccelerated="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:icon="@drawable/explorer"
             android:label="@string/browser_name"
             android:launchMode="singleTask" >
@@ -111,7 +111,7 @@
         </activity>
         <activity
             android:name="easy.lib.downloadControl"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"
             android:launchMode="singleInstance"
@@ -125,7 +125,7 @@
         
         <activity
             android:name="easy.lib.CrashControl"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"
             android:launchMode="singleInstance"
@@ -139,7 +139,7 @@
         
         <activity
             android:name="easy.lib.AboutBrowser"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" >
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale" >
             <intent-filter>
                 <action android:name="easy.lib.about" />
 
@@ -148,7 +148,7 @@
         </activity>
         <activity
             android:name="com.google.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:label="@string/browser_name" />
     </application>
 

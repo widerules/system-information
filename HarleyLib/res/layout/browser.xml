@@ -337,17 +337,22 @@
         />
     
     <HorizontalScrollView
-        android:id="@+id/adContainer"
-        android:layout_width="320dip"
-        android:layout_height="50dip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:orientation="vertical" >
         
-        <View
-	        android:layout_width="fill_parent"
-    	    android:layout_height="20dip"
-        	android:background="@drawable/button_layout"
-            />
+        <FrameLayout
+            android:id="@+id/adContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+	        <View
+		        android:layout_width="320dip"
+    		    android:layout_height="20dip"
+        		android:background="@drawable/button_layout"
+            	/>
+        </FrameLayout>
     </HorizontalScrollView>
 
     <ListView

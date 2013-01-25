@@ -90,14 +90,14 @@
     	    android:orientation="horizontal" 
     	    >
         
-		    <HorizontalScrollView
+		    <LinearLayout
     		    android:id="@+id/adContainer2"
-        		android:layout_width="wrap_content"
+        		android:layout_width="320dip"
 	        	android:layout_height="50dip"
 	    	    android:layout_gravity="right"
 	    	    android:layout_alignParentRight="true"
     		    android:orientation="vertical" >
-	    	</HorizontalScrollView>
+	    	</LinearLayout>
 
         <LinearLayout
             android:id="@+id/imagebtn_list"

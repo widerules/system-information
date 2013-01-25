@@ -2829,18 +2829,6 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 		
-		View showhideWebtools = findViewById(R.id.showhide_webtools);
-		showhideWebtools.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				LayoutParams lp = toolNad.getLayoutParams();
-				if (toolNad.getLayoutParams().height == 0) 
-					lp.height = (int) (40 * dm.density);
-				else lp.height = 0;
-				toolNad.requestLayout();		
-			}
-		});
-
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.

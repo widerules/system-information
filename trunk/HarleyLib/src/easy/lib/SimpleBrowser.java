@@ -221,7 +221,6 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout browserView;
 	LinearLayout webControl;
 	LinearLayout imageBtnList;
-	HorizontalScrollView adContainer;
 	LinearLayout adContainer2;
 	int minWebControlWidth = 200;
 	int historyIndex = -1;
@@ -3436,7 +3435,6 @@ public class SimpleBrowser extends Activity {
         bookmarkWidth = dm.widthPixels * 3 / 4;
         int minWidth = (int) (320 * dm.density);
         if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
-        adContainer.getLayoutParams().width = bookmarkWidth;
         
 		int height = (int) (dm.heightPixels / dm.density);
 		if (showUrl) height -= urlHeight;
@@ -3489,10 +3487,8 @@ public class SimpleBrowser extends Activity {
 		if (mAdAvailable) {
 			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
-				adContainer = (HorizontalScrollView) bookmarkView.findViewById(R.id.adContainer);
-				adContainer.removeAllViews();
+				FrameLayout adContainer = (FrameLayout) bookmarkView.findViewById(R.id.adContainer);
 				adContainer.addView(adview.getInstance());
-				adContainer.bringChildToFront(adview.getInstance());
 			}
 			
 			adview2 = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50

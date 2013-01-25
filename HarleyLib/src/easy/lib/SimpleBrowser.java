@@ -220,8 +220,8 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout browserView;
 	LinearLayout webControl;
 	LinearLayout imageBtnList;
-	HorizontalScrollView adContainer, adContainer2;
-	int adview2Width = 320;
+	HorizontalScrollView adContainer;
+	LinearLayout adContainer2;
 	int minWebControlWidth = 200;
 	int historyIndex = -1;
 	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
@@ -2740,7 +2740,7 @@ public class SimpleBrowser extends Activity {
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
-		adContainer2 = (HorizontalScrollView) findViewById(R.id.adContainer2);
+		adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
 		
@@ -2822,9 +2822,7 @@ public class SimpleBrowser extends Activity {
 				LayoutParams lp2 = adContainer2.getLayoutParams();
 				
 				lp1.height = (int) (50 * dm.density);// keep correct height and width
-				lp1.width = adview2Width;
 				lp2.height = (int) (40 * dm.density);
-				lp2.width = (int) (320 * dm.density);
 				
 				adContainer2.setLayoutParams(lp1);
 				imageBtnList.setLayoutParams(lp2);
@@ -3469,11 +3467,13 @@ public class SimpleBrowser extends Activity {
 			imageBtnList.getLayoutParams().width = dm.widthPixels;
 			adContainer2.setVisibility(View.GONE);
 		}
+		else if (dm.widthPixels <= 640*dm.density) {
+			imageBtnList.getLayoutParams().width = (int) (320 * dm.density);
+			adContainer2.setVisibility(View.GONE);			
+		}
 		else {
 			imageBtnList.getLayoutParams().width = (int) (320 * dm.density);
 			if (adview2 != null) adview2.loadAd();
-			adview2Width = (int) Math.min(320*dm.density, dm.widthPixels-320*dm.density);
-			adContainer2.getLayoutParams().width = adview2Width;
 			adContainer2.setVisibility(View.VISIBLE);
 		}
 	}

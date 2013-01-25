@@ -82,7 +82,7 @@
         android:layout_height="2px"
         android:background="@drawable/divider2" />
     	
-	    <FrameLayout
+	    <RelativeLayout
 	        android:id="@+id/webtoolnad"
         	android:layout_width="fill_parent"
 	        android:layout_height="40dip"
@@ -90,21 +90,20 @@
     	    android:orientation="horizontal" 
     	    >
         
-		    <LinearLayout
+		    <ScrollView
     		    android:id="@+id/adContainer2"
         		android:layout_width="320dip"
-	        	android:layout_height="50dip"
+	        	android:layout_height="match_parent"
 	    	    android:layout_gravity="right"
 	    	    android:layout_alignParentRight="true"
     		    android:orientation="vertical" >
-	    	</LinearLayout>
+	    	</ScrollView>
 
         <LinearLayout
             android:id="@+id/imagebtn_list"
         android:layout_width="320dip"
-        android:layout_height="40dip"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:background="@drawable/round_corner"
         android:layout_alignParentLeft="true" 
         >
 
@@ -168,7 +167,7 @@
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/menu" />
     	</LinearLayout>    	
-    </FrameLayout>
+    </RelativeLayout>
 </LinearLayout>
 
     <LinearLayout

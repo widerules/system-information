@@ -117,6 +117,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
+import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -221,7 +222,7 @@ public class SimpleBrowser extends Activity {
 	LinearLayout webControl;
 	LinearLayout imageBtnList;
 	HorizontalScrollView adContainer;
-	LinearLayout adContainer2;
+	ScrollView adContainer2;
 	int minWebControlWidth = 200;
 	int historyIndex = -1;
 	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
@@ -2740,7 +2741,7 @@ public class SimpleBrowser extends Activity {
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
-		adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
+		adContainer2 = (ScrollView) findViewById(R.id.adContainer2);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
 		
@@ -2814,15 +2815,12 @@ public class SimpleBrowser extends Activity {
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
-		final FrameLayout toolNad = (FrameLayout) findViewById(R.id.webtoolnad);
+		final RelativeLayout toolNad = (RelativeLayout) findViewById(R.id.webtoolnad);
 		toolNad.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
 				LayoutParams lp1 = imageBtnList.getLayoutParams();
 				LayoutParams lp2 = adContainer2.getLayoutParams();
-				
-				lp1.height = (int) (50 * dm.density);// keep correct height and width
-				lp2.height = (int) (40 * dm.density);
 				
 				adContainer2.setLayoutParams(lp1);
 				imageBtnList.setLayoutParams(lp2);

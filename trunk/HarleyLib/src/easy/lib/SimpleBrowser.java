@@ -1211,7 +1211,7 @@ public class SimpleBrowser extends Activity {
 
 			incognitoMode = sp.getBoolean("incognito", false);
 			
-			updownButton = sp.getBoolean("up_down", true);
+			updownButton = sp.getBoolean("up_down", false);
 			if (updownButton) upAndDown.setVisibility(View.VISIBLE);
 			else upAndDown.setVisibility(View.INVISIBLE);
 			
@@ -1966,7 +1966,7 @@ public class SimpleBrowser extends Activity {
 		m_homepage = sp.getString("homepage", null);
 
 		incognitoMode = sp.getBoolean("incognito", false);
-		updownButton = sp.getBoolean("up_down", true);
+		updownButton = sp.getBoolean("up_down", false);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
 		showUrl = sp.getBoolean("show_url", true);

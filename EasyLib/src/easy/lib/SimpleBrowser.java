@@ -395,19 +395,6 @@ public class SimpleBrowser extends Activity {
 				} catch (Exception e) {}
 			return false;
 		}
-
-		/*
-		 * synchronized void setGeolocationEnabled(boolean flag) {//API 5 try {
-		 * Method method = WebSettings.class.getMethod("setGeolocationEnabled", new
-		 * Class[] {boolean.class}); method.invoke(mInstance, flag); }
-		 * catch(Exception e) {} }
-		 * 
-		 * synchronized void setGeolocationDatabasePath(String databasePath) {//API
-		 * 5 try { Method method =
-		 * WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[]
-		 * {String.class}); method.invoke(mInstance, databasePath); }
-		 * catch(Exception e) {} }
-		 */
 	}
 	
 	class MyWebview extends WebView {
@@ -445,11 +432,7 @@ public class SimpleBrowser extends Activity {
 		class MyJavaScriptInterface {
 			@SuppressWarnings("unused")
 			public void processHTML(String html) {
-				//if (html.contains("<link rel=\"stylesheet\" href=\"file:///android_asset/easybrowser.css\">"))
-					// don't show source of home
-					//pageSource = "<head><title>Easy Browser</title></head><body>welcome!</body>";
-				//else
-					pageSource = html;// to get page source, part 1
+				pageSource = html;// to get page source, part 1
 			}
 			
 			@SuppressWarnings("unused")
@@ -702,27 +685,6 @@ public class SimpleBrowser extends Activity {
 				public void openFileChooser(ValueCallback<Uri> uploadMsg) {
 					openFileChooser(uploadMsg, "");
 				}
-
-				/*
-				 * @Override public void
-				 * onGeolocationPermissionsShowPrompt(String origin,
-				 * GeolocationPermissions.Callback callback) {
-				 * callback.invoke(origin, true, false); }//I don't know how to
-				 * reflect a Interface, so it will crash on cupcake
-				 */
-
-				/*
-				 * @Override public void onShowCustomView(View view,
-				 * CustomViewCallback callback) { super.onShowCustomView(view,
-				 * callback); if (view instanceof FrameLayout){ FrameLayout
-				 * frame = (FrameLayout) view; if (frame.getFocusedChild()
-				 * instanceof VideoView){ VideoView video = (VideoView)
-				 * frame.getFocusedChild(); //video.setOnErrorListener(this);
-				 * //video.setOnCompletionListener(this); video.start();
-				 * //video.stopPlayback();//call these 2 line when stop or
-				 * change to other url //callback.onCustomViewHidden(); } } }API
-				 * 7
-				 */
 
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,

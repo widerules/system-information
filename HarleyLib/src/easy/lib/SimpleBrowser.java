@@ -67,6 +67,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -539,7 +540,9 @@ public class SimpleBrowser extends Activity {
 				
 				@Override
 				public void onShowCustomView(View view,	final CustomViewCallback callback) {
+					Log.d("=============", view.toString());
 					super.onShowCustomView(view, callback);
+
 					if (view instanceof FrameLayout) {
 						mCustomViewContainer = (FrameLayout) view;
 						mCustomViewCallback = callback;
@@ -646,10 +649,12 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	private VideoView mVideoView;
-	private WebChromeClient.CustomViewCallback mCustomViewCallback;
-	private FrameLayout mCustomViewContainer;
+	private VideoView mVideoView = null;
+	private WebChromeClient.CustomViewCallback mCustomViewCallback = null;
+	private FrameLayout mCustomViewContainer = null;
 	void hideCustomView() {
+		if (mCustomViewContainer == null) return;
+		
 		if (mVideoView != null) {
 			// Remove the custom view from its container.
 			mCustomViewContainer.removeView(mVideoView);

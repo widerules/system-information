@@ -126,28 +126,28 @@ public class util {
 				myFilePath.mkdir();// create folder
 
 			File path = new File(downloadPath + "snap/");
-			if (path.isDirectory())
-				;// folder exist
-			else
-				path.mkdir();// create folder
+			if (path.isDirectory()) ;// folder exist
+			else path.mkdir();// create folder
+
+			path = new File(downloadPath + "source/");
+			if (path.isDirectory()) ;// folder exist
+			else path.mkdir();// create folder
+
+			path = new File(downloadPath + "cookie/");
+			if (path.isDirectory()) ;// folder exist
+			else path.mkdir();// create folder
 
 			path = new File(downloadPath + "apk/");
-			if (path.isDirectory())
-				;// folder exist
-			else
-				path.mkdir();// create folder
+			if (path.isDirectory()) ;// folder exist
+			else path.mkdir();// create folder
 
 			path = new File(downloadPath + "cache/");
-			if (path.isDirectory())
-				;// folder exist
-			else
-				path.mkdir();// create folder
+			if (path.isDirectory()) ;// folder exist
+			else path.mkdir();// create folder
 
 			path = new File(downloadPath + "bookmark/");
-			if (path.isDirectory())
-				;// folder exist
-			else
-				path.mkdir();// create folder
+			if (path.isDirectory()) ;// folder exist
+			else path.mkdir();// create folder
 		} catch (Exception e) {
 			downloadPath = defaultPath + "/";
 		}

@@ -1,9 +1,6 @@
 package easy.lib;
 
-import java.io.File;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -16,8 +13,6 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdRequest.ErrorCode;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
-
-import easy.lib.SimpleBrowser.ClearFolderTask;
 
 public class wrapAdView {
 	AdView mInstance;
@@ -60,7 +55,7 @@ public class wrapAdView {
 
 		@Override
 		public void onLeaveApplication(Ad arg0) {
-			//Log.d("=============Ads onleave", "");
+			Log.d("=============Ads onleave", "");
 			if (mHandler != null) {
 				Message dismiss = mHandler.obtainMessage();
 				dismiss.what = 1;

@@ -224,6 +224,8 @@ public class SimpleBrowser extends Activity {
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	LinearLayout webTools, webControl, urlLine;
+	LinearLayout imageBtnList;
+	LinearLayout adContainer2;	
 	RelativeLayout webs;
 	Button btnNewpage;
 	InputMethodManager imm;
@@ -277,7 +279,7 @@ public class SimpleBrowser extends Activity {
 			mAdAvailable = false;
 		}
 	}
-	wrapAdView adview = null;
+	wrapAdView adview = null, adview2 = null;
 	DisplayMetrics dm;
 	FrameLayout adContainer;
 	AppHandler mAppHandler = new AppHandler();
@@ -285,7 +287,6 @@ public class SimpleBrowser extends Activity {
 	boolean gotoSettings = false;// will set to true if open settings activity,
 									// and set to false again after exit
 									// settings. not remove ad is goto settings
-	float width_density;
 
 	// download related
 	String downloadPath = "";
@@ -2707,6 +2708,10 @@ public class SimpleBrowser extends Activity {
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
+		adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
+		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
+		imageBtnList.bringToFront();
+		
 		if (!showStatusBar) 
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -2769,6 +2774,7 @@ public class SimpleBrowser extends Activity {
 		});
 
 		adContainer = (FrameLayout) findViewById(R.id.adContainer);
+		createAd();
 		setLayout();
 		setWebpagesLayout();
 		initUpDown();
@@ -2776,6 +2782,21 @@ public class SimpleBrowser extends Activity {
 		urlLine.bringToFront();// decide the z-order
 		webTools.bringToFront();
 
+		final FrameLayout toolNad = (FrameLayout) findViewById(R.id.webtoolnad);
+		toolNad.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {//reverse the position of webtoolbutton and ad
+				LayoutParams lp1 = imageBtnList.getLayoutParams();
+				LayoutParams lp2 = adContainer2.getLayoutParams();
+				
+				lp1.height = (int)(50 * dm.density);
+				lp2.height = (int)(40 * dm.density);
+				
+				adContainer2.setLayoutParams(lp1);
+				imageBtnList.setLayoutParams(lp2);
+			}
+		});
+		
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
@@ -3335,8 +3356,8 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		if (gotoSettings) gotoSettings = false;
-		else if (!clicked) createAd();
+		//if (gotoSettings) gotoSettings = false;
+		//else if (!clicked) createAd();
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
@@ -3347,8 +3368,8 @@ public class SimpleBrowser extends Activity {
 	public void onStop() {
 		super.onStop();
 
-		if (!gotoSettings) // will force close if removeAd in onResume. if transfer from activity A to activity B, then A.onPause()->B.onResume()->A.onStop()
-			removeAd();// ad will occupy cpu and data quota even in background
+		//if (!gotoSettings) // will force close if removeAd in onResume. if transfer from activity A to activity B, then A.onPause()->B.onResume()->A.onStop()
+			//removeAd();// ad will occupy cpu and data quota even in background
 	}
 
 	@Override
@@ -3367,9 +3388,19 @@ public class SimpleBrowser extends Activity {
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-		width_density = dm.widthPixels / dm.density;
-
-		if (!clicked) createAd();
+		if (dm.widthPixels < 320*dm.density) {
+			imageBtnList.getLayoutParams().width = dm.widthPixels;
+			adContainer2.setVisibility(View.GONE);
+		}
+		else if (dm.widthPixels <= 640*dm.density) {
+			imageBtnList.getLayoutParams().width = (int) (320 * dm.density);
+			adContainer2.setVisibility(View.GONE);			
+		}
+		else {
+			imageBtnList.getLayoutParams().width = (int) (320 * dm.density);
+			if (adview2 != null) adview2.loadAd();
+			adContainer2.setVisibility(View.VISIBLE);
+		}		
 	}
 
 	void removeAd() {
@@ -3381,35 +3412,21 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void createAd() {
-		// AdView adView = new AdView(this, "6148");//adview of tapit
-		// adView.setLayoutParams(new
-		// ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
-		// adContainer.addView(adView);
-
 		if (mAdAvailable) {
-			removeAd();
+			//removeAd();
 
-			if ((cm == null) || (cm.getActiveNetworkInfo() == null)
-					|| !cm.getActiveNetworkInfo().isConnected())
-				return;// not create ad if network error
+			//if ((cm == null) || (cm.getActiveNetworkInfo() == null)
+			//		|| !cm.getActiveNetworkInfo().isConnected())
+			//	return;// not create ad if network error
 
-			if (width_density < 320)
-				;// do nothing for it is too narrow.
-			// but it will cause force close if not create adview?
-			if (width_density < 468)// AdSize.BANNER require 320*50
-				adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);
-			else if (width_density < 728)
-				adview = new wrapAdView(this, 1, "a14f3f6bc126143", mAppHandler);
-			// AdSize.IAB_BANNER require 468*60 but return 702*90 on
-			// BKB(1024*600) and S1.
-			// return width = request width * density.
-			else
-				// AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
-				adview = new wrapAdView(this, 2, "a14f3f6bc126143", mAppHandler);
-
+			adview = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());
 			}
+
+			adview2 = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
+			if ((adview2 != null) && (adview2.getInstance() != null)) 
+				adContainer2.addView(adview2.getInstance());
 		}
 	}
 

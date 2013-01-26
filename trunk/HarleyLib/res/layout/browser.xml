@@ -171,7 +171,7 @@
             android:background="@drawable/imagebutton_layout"
             android:visibility="gone"
             android:src="@drawable/menu" />
-    	</LinearLayout>    	
+    	</LinearLayout>
     </FrameLayout>
 </LinearLayout>
 

@@ -83,25 +83,44 @@
         android:id="@+id/webtools"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_corner"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         >
 
-    	<View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/darkEdge" />
-        
         <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/whiteEdge" />
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/darkEdge" />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/whiteEdge" />
+        
+	    <FrameLayout
+	        android:id="@+id/webtoolnad"
+        	android:layout_width="fill_parent"
+	        android:layout_height="40dip"
+	        android:background="@drawable/round_corner"
+    	    android:orientation="horizontal" 
+    	    >
+        
+		    <LinearLayout
+    		    android:id="@+id/adContainer2"
+        		android:layout_width="320dip"
+	        	android:layout_height="50dip"
+	    	    android:layout_gravity="right"
+	    	    android:layout_alignParentRight="true"
+    		    android:orientation="vertical" >
+	    	</LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imagebtn_list"
+        android:layout_width="320dip"
         android:layout_height="40dip"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_alignParentLeft="true" 
+        >
 
         <ImageView
             android:id="@+id/refresh"
@@ -152,8 +171,9 @@
             android:scaleType="fitCenter"
             android:background="@drawable/imagebutton_layout"
             android:src="@drawable/home" />
-    </LinearLayout>
-    </LinearLayout>
+    	</LinearLayout>
+    </FrameLayout>
+</LinearLayout>
 
     <LinearLayout
         android:id="@+id/urlline"

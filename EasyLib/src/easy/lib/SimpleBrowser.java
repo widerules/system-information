@@ -3391,15 +3391,18 @@ public class SimpleBrowser extends Activity {
 		if (dm.widthPixels < 320*dm.density) {
 			imageBtnList.getLayoutParams().width = dm.widthPixels;
 			adContainer2.setVisibility(View.GONE);
+			adContainer.setVisibility(View.VISIBLE);
 		}
 		else if (dm.widthPixels <= 640*dm.density) {
 			imageBtnList.getLayoutParams().width = (int) (320 * dm.density);
 			adContainer2.setVisibility(View.GONE);			
+			adContainer.setVisibility(View.VISIBLE);
 		}
 		else {
 			imageBtnList.getLayoutParams().width = (int) (320 * dm.density);
 			if (adview2 != null) adview2.loadAd();
 			adContainer2.setVisibility(View.VISIBLE);
+			adContainer.setVisibility(View.GONE);
 		}		
 	}
 
@@ -3420,9 +3423,8 @@ public class SimpleBrowser extends Activity {
 			//	return;// not create ad if network error
 
 			adview = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
-			if ((adview != null) && (adview.getInstance() != null)) {
+			if ((adview != null) && (adview.getInstance() != null))
 				adContainer.addView(adview.getInstance());
-			}
 
 			adview2 = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 

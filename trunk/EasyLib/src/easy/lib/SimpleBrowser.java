@@ -2006,73 +2006,81 @@ public class SimpleBrowser extends Activity {
 		snapDialog = new AlertDialog.Builder(this)
 				.setView(snapView)
 				.setTitle(R.string.browser_name)
-				.setPositiveButton(R.string.share,
-						new DialogInterface.OnClickListener() {// share
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								try {
-									String snap = downloadPath
-											+ "snap/snap.png";
-									FileOutputStream fos = new FileOutputStream(
-											snap);
+				.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							FileOutputStream fos = new FileOutputStream(snap);
 
-									bmp.compress(Bitmap.CompressFormat.PNG, 90,
-											fos);
-									fos.close();
+							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+							fos.close();
 
-									Intent intent = new Intent(
-											Intent.ACTION_SEND);
-									intent.setType("image/*");
-									intent.putExtra(Intent.EXTRA_SUBJECT,
-											R.string.share);
-									intent.putExtra(Intent.EXTRA_STREAM,
-											Uri.fromFile(new File(snap)));
-									util.startActivity(Intent.createChooser(
-											intent,
-											getString(R.string.sharemode)),
-											true, mContext);
-								} catch (Exception e) {
-									Toast.makeText(getBaseContext(),
-											e.toString(), Toast.LENGTH_LONG)
-											.show();
-								}
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {// cancel
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						}).create();
+							Intent intent = new Intent(Intent.ACTION_SEND);
+							intent.setType("image/*");
+							intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+							intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
+							util.startActivity(Intent.createChooser(
+									intent,
+									getString(R.string.sharemode)),
+									true, mContext);
+						} catch (Exception e) {
+							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+						}
+					}
+				})
+				.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							FileOutputStream fos = new FileOutputStream(snap);
+							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+							fos.close();
+							Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+						} catch (Exception e) {
+							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+						}
+					}
+				})
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// cancel
+					@Override
+					public void onClick(DialogInterface dialog, int which) {}
+				}).create();
 	}
 
 	public void initSourceDialog() {		
 		m_sourceDialog = new AlertDialog.Builder(this)
 		.setTitle(R.string.browser_name)
-		.setPositiveButton(R.string.share,
-				new DialogInterface.OnClickListener() {// share
-					@Override
-					public void onClick(DialogInterface dialog,	int which) {
-						Intent intent = new Intent(Intent.ACTION_SENDTO);
-						intent.setData(Uri
-								.fromParts("mailto", "", null));
-						intent.putExtra(Intent.EXTRA_TEXT,
-								serverWebs.get(webIndex).pageSource);
-						intent.putExtra(Intent.EXTRA_SUBJECT,
-								serverWebs.get(webIndex).getTitle());
-						if (!util.startActivity(intent, true, getBaseContext())) {
-							shareUrl("", serverWebs.get(webIndex).pageSource);
-						}
-					}
-				})
-		.setNegativeButton(R.string.cancel,
-				new DialogInterface.OnClickListener() {// cancel
-					@Override
-					public void onClick(DialogInterface dialog,	int which) {
-					}
-				}).create();
+		.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
+			@Override
+			public void onClick(DialogInterface dialog,	int which) {
+				Intent intent = new Intent(Intent.ACTION_SENDTO);
+				intent.setData(Uri.fromParts("mailto", "", null));
+				intent.putExtra(Intent.EXTRA_TEXT, serverWebs.get(webIndex).pageSource);
+				intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
+				if (!util.startActivity(intent, false, getBaseContext())) 
+					shareUrl("", serverWebs.get(webIndex).pageSource);
+			}
+		})
+		.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				try {
+					String snap = downloadPath + "source/" + serverWebs.get(webIndex).getTitle() + ".txt";
+					FileOutputStream fos = new FileOutputStream(snap);
+					fos.write(serverWebs.get(webIndex).pageSource.getBytes());
+					fos.close();
+					Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+				} catch (Exception e) {
+					Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+				}
+			}
+		})
+		.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// cancel
+			@Override
+			public void onClick(DialogInterface dialog,	int which) {}
+		}).create();
 	}
 	
 	public void initMenuDialog() {		

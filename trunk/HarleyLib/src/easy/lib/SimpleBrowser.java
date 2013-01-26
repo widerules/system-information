@@ -210,6 +210,7 @@ public class SimpleBrowser extends Activity {
 	// source dialog
 	AlertDialog m_sourceDialog = null;
 	String sourceOrCookie = "";
+	String subFolder = "source/";
 	
 	// page up and down button
 	LinearLayout upAndDown;
@@ -1985,69 +1986,81 @@ public class SimpleBrowser extends Activity {
 		snapDialog = new AlertDialog.Builder(this)
 				.setView(snapView)
 				.setTitle(R.string.browser_name)
-				.setPositiveButton(R.string.share,
-						new DialogInterface.OnClickListener() {// share
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								try {
-									String snap = downloadPath
-											+ "snap/snap.png";
-									FileOutputStream fos = new FileOutputStream(
-											snap);
+				.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							FileOutputStream fos = new FileOutputStream(snap);
 
-									bmp.compress(Bitmap.CompressFormat.PNG, 90,
-											fos);
-									fos.close();
+							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+							fos.close();
 
-									Intent intent = new Intent(
-											Intent.ACTION_SEND);
-									intent.setType("image/*");
-									intent.putExtra(Intent.EXTRA_SUBJECT,
-											R.string.share);
-									intent.putExtra(Intent.EXTRA_STREAM,
-											Uri.fromFile(new File(snap)));
-									util.startActivity(Intent.createChooser(
-											intent,
-											getString(R.string.sharemode)),
-											true, mContext);
-								} catch (Exception e) {
-									Toast.makeText(getBaseContext(),
-											e.toString(), Toast.LENGTH_LONG)
-											.show();
-								}
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {// cancel
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						}).create();
+							Intent intent = new Intent(Intent.ACTION_SEND);
+							intent.setType("image/*");
+							intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+							intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
+							util.startActivity(Intent.createChooser(
+									intent,
+									getString(R.string.sharemode)),
+									true, mContext);
+						} catch (Exception e) {
+							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+						}
+					}
+				})
+				.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							FileOutputStream fos = new FileOutputStream(snap);
+							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+							fos.close();
+							Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+						} catch (Exception e) {
+							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+						}
+					}
+				})
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// cancel
+					@Override
+					public void onClick(DialogInterface dialog, int which) {}
+				}).create();
 	}
 
 	public void initSourceDialog() {		
 		m_sourceDialog = new AlertDialog.Builder(this)
 		.setTitle(R.string.browser_name)
-		.setPositiveButton(R.string.share,
-				new DialogInterface.OnClickListener() {// share
-					@Override
-					public void onClick(DialogInterface dialog,	int which) {
-						Intent intent = new Intent(Intent.ACTION_SENDTO);
-						intent.setData(Uri.fromParts("mailto", "", null));
-						intent.putExtra(Intent.EXTRA_TEXT, sourceOrCookie);
-						intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
-						if (!util.startActivity(intent, false, getBaseContext())) 
-							shareUrl("", sourceOrCookie);
-					}
-				})
-		.setNegativeButton(R.string.cancel,
-				new DialogInterface.OnClickListener() {// cancel
-					@Override
-					public void onClick(DialogInterface dialog,	int which) {
-					}
-				}).create();
+		.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
+			@Override
+			public void onClick(DialogInterface dialog,	int which) {
+				Intent intent = new Intent(Intent.ACTION_SENDTO);
+				intent.setData(Uri.fromParts("mailto", "", null));
+				intent.putExtra(Intent.EXTRA_TEXT, sourceOrCookie);
+				intent.putExtra(Intent.EXTRA_SUBJECT, serverWebs.get(webIndex).getTitle());
+				if (!util.startActivity(intent, false, getBaseContext())) 
+					shareUrl("", sourceOrCookie);
+			}
+		})
+		.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				try {
+					String snap = downloadPath + subFolder + serverWebs.get(webIndex).getTitle() + ".txt";
+					FileOutputStream fos = new FileOutputStream(snap);
+					fos.write(sourceOrCookie.getBytes());
+					fos.close();
+					Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+				} catch (Exception e) {
+					Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+				}
+			}
+		})
+		.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// cancel
+			@Override
+			public void onClick(DialogInterface dialog,	int which) {}
+		}).create();
 	}
 	
 	public void initMenuDialog() {
@@ -2224,14 +2237,8 @@ public class SimpleBrowser extends Activity {
 						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
 					else sourceOrCookie = "No cookie on this page.";
 					
-					if (m_sourceDialog == null) initSourceDialog();
-					m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
-					if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
-						m_sourceDialog.setIcon(R.drawable.explorer);
-					else
-						m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
-					m_sourceDialog.setMessage(sourceOrCookie);
-					m_sourceDialog.show();
+					subFolder = "cookie/";
+					showSourceDialog();
 					break;
 				case 10:// view page source
 					try {
@@ -2240,15 +2247,9 @@ public class SimpleBrowser extends Activity {
 							serverWebs.get(webIndex).getPageSource();
 						}
 
-						if (m_sourceDialog == null) initSourceDialog();
-						m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
-						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
-							m_sourceDialog.setIcon(R.drawable.explorer);
-						else
-							m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
 						sourceOrCookie = serverWebs.get(webIndex).pageSource;
-						m_sourceDialog.setMessage(sourceOrCookie);
-						m_sourceDialog.show();
+						subFolder = "source/";
+						showSourceDialog();
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}
@@ -2261,6 +2262,17 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 		});
+	}
+	
+	void showSourceDialog() {
+		if (m_sourceDialog == null) initSourceDialog();
+		m_sourceDialog.setTitle(serverWebs.get(webIndex).getTitle());
+		if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
+			m_sourceDialog.setIcon(R.drawable.explorer);
+		else
+			m_sourceDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+		m_sourceDialog.setMessage(sourceOrCookie);
+		m_sourceDialog.show();
 	}
 	
 	public void initUpDown() {

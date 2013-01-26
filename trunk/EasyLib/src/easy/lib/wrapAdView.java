@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 
 import com.google.ads.Ad;
@@ -41,7 +40,7 @@ public class wrapAdView {
 		public void onDismissScreen(Ad arg0) {// Called when an ad is clicked
 												// and about to return to the
 												// application.
-			//Log.d("=============", "Ads ondismiss");
+			//Log.d("=============Ads ondismiss", "");
 		}
 
 		@Override
@@ -55,7 +54,7 @@ public class wrapAdView {
 
 		@Override
 		public void onLeaveApplication(Ad arg0) {
-			//Log.d("=============", "Ads onleave");
+			//Log.d("=============Ads onleave", "");
 			if (mHandler != null) {
 				Message dismiss = mHandler.obtainMessage();
 				dismiss.what = 1;
@@ -66,7 +65,7 @@ public class wrapAdView {
 		@Override
 		public void onPresentScreen(Ad arg0) {// Called when an Activity is
 												// created in front of the app
-			//Log.d("=============", "Ads onpresent");
+			//Log.d("=============Ads onpresent", "");
 		}
 
 		@Override

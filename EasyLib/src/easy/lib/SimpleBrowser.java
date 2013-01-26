@@ -3422,11 +3422,11 @@ public class SimpleBrowser extends Activity {
 			//		|| !cm.getActiveNetworkInfo().isConnected())
 			//	return;// not create ad if network error
 
-			adview = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
+			adview = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null))
 				adContainer.addView(adview.getInstance());
 
-			adview2 = new wrapAdView(this, 0, "a14f3f6bc126143", null);// AdSize.BANNER require 320*50
+			adview2 = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
 		}

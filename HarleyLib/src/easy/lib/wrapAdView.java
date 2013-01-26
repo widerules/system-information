@@ -1,13 +1,9 @@
 package easy.lib;
 
-import java.io.File;
-
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 
 import com.google.ads.Ad;
@@ -16,8 +12,6 @@ import com.google.ads.AdRequest;
 import com.google.ads.AdRequest.ErrorCode;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
-
-import easy.lib.SimpleBrowser.ClearFolderTask;
 
 public class wrapAdView {
 	AdView mInstance;

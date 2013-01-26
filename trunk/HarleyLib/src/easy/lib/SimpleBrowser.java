@@ -410,7 +410,7 @@ public class SimpleBrowser extends Activity {
 				scrollToMain();
 				
 				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
-					webControl.setVisibility(View.INVISIBLE);
+					webControl.setVisibility(View.GONE);
 								
 				if (!showUrl) setUrlHeight(false);
 				if (!showControlBar) setBarHeight(false);
@@ -499,7 +499,7 @@ public class SimpleBrowser extends Activity {
 					if (isForeground) {
 						loadProgress.setProgress(progress);
 						if (progress == 100)
-							loadProgress.setVisibility(View.INVISIBLE);
+							loadProgress.setVisibility(View.GONE);
 					}
 				}
 
@@ -540,7 +540,6 @@ public class SimpleBrowser extends Activity {
 				
 				@Override
 				public void onShowCustomView(View view,	final CustomViewCallback callback) {
-					Log.d("=============", view.toString());
 					super.onShowCustomView(view, callback);
 
 					if (view instanceof FrameLayout) {
@@ -771,9 +770,9 @@ public class SimpleBrowser extends Activity {
 	void pageFinishAction(WebView view, String url, boolean isForeground) {
 		if (isForeground) {
 			// hide progressbar anyway
-			loadProgress.setVisibility(View.INVISIBLE);
+			loadProgress.setVisibility(View.GONE);
 			imgRefresh.setImageResource(R.drawable.refresh);
-			webControl.setVisibility(View.INVISIBLE);
+			webControl.setVisibility(View.GONE);
 			if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 			else webAddress.setText(url);						
 		}
@@ -909,7 +908,7 @@ public class SimpleBrowser extends Activity {
 			webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					webControl.setVisibility(View.INVISIBLE);
+					webControl.setVisibility(View.GONE);
 					changePage(position);
 				}
 			});
@@ -958,10 +957,10 @@ public class SimpleBrowser extends Activity {
 					btnIcon.setImageURI(Uri.parse(filename));
 					btnIcon.setVisibility(View.VISIBLE);
 				} catch (Exception e) {}// catch an null pointer exception on 1.6
-			else btnIcon.setVisibility(View.INVISIBLE);
+			else btnIcon.setVisibility(View.GONE);
 
 			final ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
-			btnStop.setVisibility(View.INVISIBLE);
+			btnStop.setVisibility(View.GONE);
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
@@ -973,7 +972,7 @@ public class SimpleBrowser extends Activity {
 						mHistory.remove(mHistory.size() - 1 - position);
 						updateHistory();
 					}
-					btnStop.setVisibility(View.INVISIBLE);
+					btnStop.setVisibility(View.GONE);
 				}
 			});
 
@@ -991,9 +990,9 @@ public class SimpleBrowser extends Activity {
 			webname.setOnLongClickListener(new OnLongClickListener() {
 				@Override
 				public boolean onLongClick(View v) {
-					if (btnStop.getVisibility() == View.INVISIBLE) 
+					if (btnStop.getVisibility() == View.GONE) 
 						btnStop.setVisibility(View.VISIBLE);
-					else btnStop.setVisibility(View.INVISIBLE);
+					else btnStop.setVisibility(View.GONE);
 					return true;
 				}
 			});
@@ -1048,7 +1047,7 @@ public class SimpleBrowser extends Activity {
 			}
 			else if ((webIndex >= position) && (webIndex > 0)) webIndex -= 1;// change to previous page by default
 		} else {// return to home page if only one page when click close button
-			webControl.setVisibility(View.INVISIBLE);
+			webControl.setVisibility(View.GONE);
 			loadPage();
 			webIndex = 0;
 			//serverWebs.get(webIndex).clearHistory();// is that necessary to clear history?
@@ -1219,7 +1218,7 @@ public class SimpleBrowser extends Activity {
 			
 			updownButton = sp.getBoolean("up_down", false);
 			if (updownButton) upAndDown.setVisibility(View.VISIBLE);
-			else upAndDown.setVisibility(View.INVISIBLE);
+			else upAndDown.setVisibility(View.GONE);
 			
 			shareMode = sp.getInt("share_mode", 2);
 			
@@ -2169,7 +2168,7 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 5:// copy
 					scrollToMain();
-					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
+					webControl.setVisibility(View.GONE);// hide webControl when copy
 					try {
 						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
 							Toast.makeText(mContext,
@@ -2189,7 +2188,7 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 7:// search
 					scrollToMain();
-					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
+					webControl.setVisibility(View.GONE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
 					if (searchBar == null) initSearchBar();
 					searchBar.bringToFront();
@@ -2283,7 +2282,7 @@ public class SimpleBrowser extends Activity {
 	public void initUpDown() {
 		upAndDown = (LinearLayout) findViewById(R.id.up_down);
 		if (updownButton) upAndDown.setVisibility(View.VISIBLE);
-		else upAndDown.setVisibility(View.INVISIBLE);
+		else upAndDown.setVisibility(View.GONE);
 		
 		ImageView dragButton = (ImageView) findViewById(R.id.page_drag);
 		dragButton.setAlpha(40);
@@ -2810,11 +2809,11 @@ public class SimpleBrowser extends Activity {
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (webControl.getVisibility() == View.INVISIBLE) {
+				if (webControl.getVisibility() == View.GONE) {
 					if (webControl.getWidth() < minWebControlWidth) scrollToMain();// otherwise may not display weblist correctly
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
-				} else webControl.setVisibility(View.INVISIBLE);
+				} else webControl.setVisibility(View.GONE);
 			}
 		});
 
@@ -2873,7 +2872,7 @@ public class SimpleBrowser extends Activity {
 		bookmarkView.requestLayout();
 		bookmarkOpened = true;
 		if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
-			webControl.setVisibility(View.INVISIBLE);
+			webControl.setVisibility(View.GONE);
 			hideMenu();
 		}
 		if (bookmarkAdapter == null) initBookmarks();
@@ -2884,7 +2883,7 @@ public class SimpleBrowser extends Activity {
 		if (loadProgress.getVisibility() == View.VISIBLE) {
 			// webpage is loading then stop it
 			serverWebs.get(webIndex).stopLoading();
-			loadProgress.setVisibility(View.INVISIBLE);
+			loadProgress.setVisibility(View.GONE);
 		} else {// reload the webpage
 			String url = serverWebs.get(webIndex).getUrl();
 			String m_url = serverWebs.get(webIndex).m_url;
@@ -3034,7 +3033,7 @@ public class SimpleBrowser extends Activity {
 			loadProgress.setProgress(serverWebs.get(position).mProgress);
 		} else {
 			imgRefresh.setImageResource(R.drawable.refresh);
-			loadProgress.setVisibility(View.INVISIBLE);
+			loadProgress.setVisibility(View.GONE);
 		}
 	}
 
@@ -3201,7 +3200,7 @@ public class SimpleBrowser extends Activity {
 
 	void hideSearchBox() {
 		imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-		searchBar.setVisibility(View.INVISIBLE);
+		searchBar.setVisibility(View.GONE);
 		matchCount = 0;
 		// remove the match by an impossible search
 		serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");
@@ -3235,7 +3234,7 @@ public class SimpleBrowser extends Activity {
 				else if (menuOpened) hideMenu();
 				else if (bookmarkOpened) hideBookmark();
 				else if (webControl.getVisibility() == View.VISIBLE)
-					webControl.setVisibility(View.INVISIBLE);// hide web control
+					webControl.setVisibility(View.GONE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
 				else if ((urlLine.getLayoutParams().height == 0) == showUrl) setUrlHeight(showUrl); 

@@ -239,7 +239,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
 	MyViewFlipper webpages;
-	ImageView imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark;//imgNext, 
+	ImageView imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark, imgNext;
 	WebAdapter webAdapter;
 	LinearLayout webTools, urlLine;
 	RelativeLayout webs;
@@ -2756,12 +2756,12 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).goBack();
 			}
 		});
-		imgPrev.setOnLongClickListener(new OnLongClickListener() {
+		imgNext = (ImageView) browserView.findViewById(R.id.next);
+		imgNext.setOnClickListener(new OnClickListener() {
 			@Override
-			public boolean onLongClick(View v) {//long click as next button
+			public void onClick(View v) {//long click as next button
 				if (serverWebs.get(webIndex).canGoForward())
 					serverWebs.get(webIndex).goForward();
-				return true;
 			}
 		});
 		imgRefresh = (ImageView) browserView.findViewById(R.id.refresh);

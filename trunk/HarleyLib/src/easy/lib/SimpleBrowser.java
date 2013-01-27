@@ -944,9 +944,7 @@ public class SimpleBrowser extends Activity {
 				final LayoutInflater inflater = getLayoutInflater();
 				convertView = inflater.inflate(R.layout.web_list, parent, false);
 				
-				//if (position % 2 == 1) 
 				convertView.setBackgroundResource(R.drawable.webname_layout);
-				//else convertView.setBackgroundResource(R.drawable.webname2_layout);
 			}
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
@@ -964,13 +962,17 @@ public class SimpleBrowser extends Activity {
 			btnDelete.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if (type == 1) {//history
+					if (type == 0) {// bookmark
+						mBookMark.remove(position);
+						updateBookmark();
+					}
+					else if (type == 1) {// history
 						mHistory.remove(mHistory.size() - 1 - position);
 						updateHistory();
 					}
-					else {
-						mBookMark.remove(position);
-						updateBookmark();
+					else {// downloads
+						mDownloads.remove(position);
+						updateDownloads();
 					}
 					btnDelete.setVisibility(View.INVISIBLE);
 				}
@@ -984,13 +986,13 @@ public class SimpleBrowser extends Activity {
 			webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if (type < 2) {
+					if (type < 2) {// bookmark and history
 						serverWebs.get(webIndex).loadUrl(wv.m_url);
 						imgBookmark.performClick();
 					}
 					else {// open downloads file
 						Intent intent = new Intent("android.intent.action.VIEW");
-						intent.setData(Uri.parse(wv.m_site + wv.m_title));
+						intent.setData(Uri.parse("file://" + wv.m_site + wv.m_title));
 						util.startActivity(intent, true, mContext);
 					}
 				}
@@ -2497,8 +2499,10 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-					ListView lv = (ListView) v;
-					serverWebs.get(webIndex).loadUrl(mDownloads.get(lv.getSelectedItemPosition()).m_url);
+					TitleUrl tu = mDownloads.get(((ListView) v).getSelectedItemPosition());
+					Intent intent = new Intent("android.intent.action.VIEW");
+					intent.setData(Uri.parse("file://" + tu.m_site + tu.m_title));
+					util.startActivity(intent, true, mContext);
 				}
 				return false;
 			}

@@ -928,7 +928,7 @@ public class SimpleBrowser extends Activity {
 
 	private class MyListAdapter extends ArrayAdapter<TitleUrl> {
 		ArrayList localList;
-		boolean isHistory = false;
+		int type = 0;// 0:bookmark, 1:history, 2:downloads
 
 		public MyListAdapter(Context context, List<TitleUrl> titles) {
 			super(context, 0, titles);
@@ -964,7 +964,7 @@ public class SimpleBrowser extends Activity {
 			btnDelete.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if (isHistory) {
+					if (type == 1) {//history
 						mHistory.remove(mHistory.size() - 1 - position);
 						updateHistory();
 					}
@@ -978,13 +978,21 @@ public class SimpleBrowser extends Activity {
 
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
 			webname.setText(wv.m_title);
-			if (isHistory) webname.setTextColor(0xffddddff);
+			if (type == 1) webname.setTextColor(0xffddddff);
+			else if (type == 2) webname.setTextColor(0xffffdd8b);
 
 			webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					serverWebs.get(webIndex).loadUrl(wv.m_url);
-					imgBookmark.performClick();
+					if (type < 2) {
+						serverWebs.get(webIndex).loadUrl(wv.m_url);
+						imgBookmark.performClick();
+					}
+					else {// open downloads file
+						Intent intent = new Intent("android.intent.action.VIEW");
+						intent.setData(Uri.parse(wv.m_site + wv.m_title));
+						util.startActivity(intent, true, mContext);
+					}
 				}
 			});
 			webname.setOnLongClickListener(new OnLongClickListener() {
@@ -2137,7 +2145,7 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 4:// downloads
 					if (mDownloads.size() == 0) {
-						Toast.makeText(mContext, "no downloads found", Toast.LENGTH_LONG).show();
+						Toast.makeText(mContext, "no downloads recorded", Toast.LENGTH_LONG).show();
 						break;
 					}
 					
@@ -2481,6 +2489,7 @@ public class SimpleBrowser extends Activity {
 	
 	void initDownloads() {
 		downloadsAdapter = new MyListAdapter(mContext, mDownloads);
+		downloadsAdapter.type = 2;
 		downloadsList = (ListView) findViewById(R.id.downloads);
 		downloadsList.inflate(mContext, R.layout.web_list, null);
 		downloadsList.setAdapter(downloadsAdapter);
@@ -2505,6 +2514,7 @@ public class SimpleBrowser extends Activity {
 		bookmarkView.setBackgroundDrawable(drawable);*/ 
 		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
+		bookmarkAdapter.type = 0;
 		ListView bookmarkList = (ListView) findViewById(R.id.bookmark);
 		bookmarkList.inflate(mContext, R.layout.web_list, null);
 		bookmarkList.setAdapter(bookmarkAdapter);
@@ -2521,7 +2531,7 @@ public class SimpleBrowser extends Activity {
 		});
 
 		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
-		historyAdapter.isHistory = true;
+		historyAdapter.type = 1;
 		historyList = (ListView) findViewById(R.id.history);
 		historyList.inflate(mContext, R.layout.web_list, null);
 		historyList.setAdapter(historyAdapter);
@@ -3400,6 +3410,10 @@ public class SimpleBrowser extends Activity {
 		if (bookmarkChanged) {
 			WriteTask wtask = new WriteTask();
 			wtask.execute("bookmark");
+		}
+		if (downloadsChanged) {
+			WriteTask wtask = new WriteTask();
+			wtask.execute("downloads");
 		}
 
 		if (browserView.getVisibility() == View.GONE) {

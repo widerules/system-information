@@ -325,7 +325,7 @@
                 android:layout_height="fill_parent"
                 android:divider="@drawable/divider"
                 android:dividerHeight="2px"
-                android:gravity="bottom"
+                android:stackFromBottom="true"
                 android:fadingEdgeLength="0dip"
                 android:scrollingCache="false" />
 

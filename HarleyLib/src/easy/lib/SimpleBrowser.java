@@ -540,7 +540,6 @@ public class SimpleBrowser extends Activity {
 				
 				@Override
 				public void onShowCustomView(View view,	final CustomViewCallback callback) {
-					Log.d("=============", view.toString());
 					super.onShowCustomView(view, callback);
 
 					if (view instanceof FrameLayout) {
@@ -653,6 +652,7 @@ public class SimpleBrowser extends Activity {
 	private WebChromeClient.CustomViewCallback mCustomViewCallback = null;
 	private FrameLayout mCustomViewContainer = null;
 	void hideCustomView() {
+		browserView.setVisibility(View.VISIBLE);
 		if (mCustomViewContainer == null) return;
 		
 		if (mVideoView != null) {
@@ -662,7 +662,6 @@ public class SimpleBrowser extends Activity {
 		}
 		mCustomViewCallback.onCustomViewHidden();
 		// Show the browser view.
-		browserView.setVisibility(View.VISIBLE);
 		setContentView(browserView);
 	}
 	

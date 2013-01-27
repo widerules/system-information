@@ -989,7 +989,14 @@ public class SimpleBrowser extends Activity {
 					}
 					else {// open downloads file
 						Intent intent = new Intent("android.intent.action.VIEW");
+						intent.addCategory("android.intent.category.DEFAULT");
 						intent.setData(Uri.parse(wv.m_url));
+						
+						String ext = wv.m_title.substring(wv.m_title.lastIndexOf(".")+1, wv.m_title.length());
+						MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+						String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
+						if (mimeType != null) intent.setType(mimeType);// why boat browser can open it without this line, but we can't?
+						
 						util.startActivity(intent, true, mContext);
 					}
 				}
@@ -2038,7 +2045,7 @@ public class SimpleBrowser extends Activity {
 						try {
 							String title = serverWebs.get(webIndex).getTitle();
 							if (title == null) title = getSite(serverWebs.get(webIndex).m_url);
-							title += ".png";
+							title += "(snap).png";
 							String site = downloadPath + "snap/";
 							String snap = site + title;
 							FileOutputStream fos = new FileOutputStream(snap);
@@ -2077,7 +2084,7 @@ public class SimpleBrowser extends Activity {
 				try {
 					String title = serverWebs.get(webIndex).getTitle();
 					if (title == null) title = getSite(serverWebs.get(webIndex).m_url);
-					title += ".txt";
+					title += "(" + subFolder.split("/")[0] + ").txt";
 					String site = downloadPath + subFolder;
 					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);

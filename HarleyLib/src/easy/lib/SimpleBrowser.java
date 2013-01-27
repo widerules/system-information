@@ -2810,6 +2810,8 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (webControl.getVisibility() == View.INVISIBLE) {
+					if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
+					
 					if (webControl.getWidth() < minWebControlWidth) scrollToMain();// otherwise may not display weblist correctly
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);

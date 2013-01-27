@@ -2727,6 +2727,8 @@ public class SimpleBrowser extends Activity {
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
+				
 				if (webControl.getVisibility() == View.INVISIBLE) {
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);

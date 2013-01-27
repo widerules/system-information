@@ -788,15 +788,9 @@ public class SimpleBrowser extends Activity {
 				// if title and url not sync, then sync it
 				//webAddress.setText(HOME_BLANK);
 			else if (!incognitoMode) {// handle the bookmark/history after load new page
-				String site = "";
-				String[] tmp = url.split("/");
-				if (tmp.length > 2)	site = tmp[2];
-				// if url is http://m.baidu.com,
-				// then url.split("/")[2] is m.baidu.com
-				else site = tmp[0];
-				
 				if ((mHistory.size() > 0) && (mHistory.get(mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
-				
+
+				String site = getSite(url);
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 				mHistory.add(titleUrl);// always add it to history if visit any page.
 
@@ -950,14 +944,8 @@ public class SimpleBrowser extends Activity {
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
 			String filename;
 			if (type != 2) filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
-			else {// get site
-				String site = "";
-				String[] tmp = wv.m_site.split("/");
-				if (tmp.length > 2)	site = tmp[2];
-				else site = tmp[0];
-				Log.d("==============", site);
-				filename = getFilesDir().getAbsolutePath() + "/" + site + ".png";
-			}
+			else filename = getFilesDir().getAbsolutePath() + "/" + getSite(wv.m_site) + ".png";
+			
 			File f = new File(filename);
 			if (f.exists())
 				try {
@@ -2005,6 +1993,16 @@ public class SimpleBrowser extends Activity {
 		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 	
+	String getSite(String url) {
+		String site = "";
+		String[] tmp = url.split("/");
+		// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+		if (tmp.length > 2)	site = tmp[2];
+		else site = tmp[0];
+		
+		return site;
+	}
+	
 	public void initSnapDialog() {		
 		snapView = (ImageView) getLayoutInflater().inflate(
 				R.layout.snap_browser, null);
@@ -2038,7 +2036,9 @@ public class SimpleBrowser extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						try {
-							String title = serverWebs.get(webIndex).getTitle() + ".png";
+							String title = serverWebs.get(webIndex).getTitle();
+							if (title == null) title = getSite(serverWebs.get(webIndex).m_url);
+							title += ".png";
 							String site = downloadPath + "snap/";
 							String snap = site + title;
 							FileOutputStream fos = new FileOutputStream(snap);
@@ -2075,7 +2075,9 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				try {
-					String title = serverWebs.get(webIndex).getTitle() + ".txt";
+					String title = serverWebs.get(webIndex).getTitle();
+					if (title == null) title = getSite(serverWebs.get(webIndex).m_url);
+					title += ".txt";
 					String site = downloadPath + subFolder;
 					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);
@@ -3161,12 +3163,7 @@ public class SimpleBrowser extends Activity {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								String site = "";
-								String[] tmp = url.split("/");
-								// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-								if (tmp.length >= 2) site = tmp[2];
-								else site = tmp[0];
-
+								String site = getSite(url);
 								String title = titleText.getText().toString();
 								// add a blank character to occupy the space
 								if ("".equals(title)) title += (char) 0xa0;
@@ -3691,14 +3688,7 @@ public class SimpleBrowser extends Activity {
 
 				while (!cursor.isAfterLast()) {
 					String url = cursor.getString(columnUrl).trim();
-					String site = "";
-					String[] tmp = url.split("/");
-					if (tmp.length > 2)
-						site = tmp[2];// if url is http://m.baidu.com, then
-										// url.split("/")[2] is m.baidu.com
-					else
-						site = tmp[0];
-
+					String site = getSite(url);
 					TitleUrl titleUrl = new TitleUrl(
 							cursor.getString(columnTitle), url, site);
 					if (cursor.getInt(columnBookmark) >= 1)

@@ -240,7 +240,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
 	MyViewFlipper webpages;
-	ImageView imgPrev, imgMenu, imgRefresh, imgNew, imgBookmark, imgNext;
+	ImageView imgPrev, imgRefresh, imgNew, imgBookmark, imgNext;//imgMenu
 	WebAdapter webAdapter;
 	LinearLayout webTools, urlLine;
 	RelativeLayout webs;
@@ -992,7 +992,7 @@ public class SimpleBrowser extends Activity {
 					}
 					else {// open downloads file
 						Intent intent = new Intent("android.intent.action.VIEW");
-						intent.setData(Uri.parse("file://" + wv.m_site + wv.m_title));
+						intent.setData(Uri.parse(wv.m_url));
 						util.startActivity(intent, true, mContext);
 					}
 				}
@@ -1519,7 +1519,7 @@ public class SimpleBrowser extends Activity {
 		dltask.NOTIFICATION_ID = id;
 		appstate.downloadState.put(id, dltask);
 		dltask.execute(url, apkName, contentDisposition);
-		addDownloads(new TitleUrl(apkName, url, downloadPath));
+		addDownloads(new TitleUrl(apkName, "file://" + downloadPath + apkName , url));
 		return true;
 	}
 
@@ -2036,7 +2036,7 @@ public class SimpleBrowser extends Activity {
 							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
 							fos.close();
 							Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
-							addDownloads(new TitleUrl(title, serverWebs.get(webIndex).m_url, site));
+							addDownloads(new TitleUrl(title, "file://" + snap, serverWebs.get(webIndex).m_url));
 						} catch (Exception e) {
 							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 						}
@@ -2073,7 +2073,7 @@ public class SimpleBrowser extends Activity {
 					fos.write(sourceOrCookie.getBytes());
 					fos.close();
 					Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
-					addDownloads(new TitleUrl(title, serverWebs.get(webIndex).m_url, site));
+					addDownloads(new TitleUrl(title, "file://" + snap, serverWebs.get(webIndex).m_url));
 				} catch (Exception e) {
 					Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 				}
@@ -2501,7 +2501,7 @@ public class SimpleBrowser extends Activity {
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
 					TitleUrl tu = mDownloads.get(((ListView) v).getSelectedItemPosition());
 					Intent intent = new Intent("android.intent.action.VIEW");
-					intent.setData(Uri.parse("file://" + tu.m_site + tu.m_title));
+					intent.setData(Uri.parse(tu.m_url));
 					util.startActivity(intent, true, mContext);
 				}
 				return false;
@@ -2798,13 +2798,13 @@ public class SimpleBrowser extends Activity {
 				reloadPage();
 			}
 		});
-		imgMenu = (ImageView) browserView.findViewById(R.id.menu);
+		/*imgMenu = (ImageView) browserView.findViewById(R.id.menu);
 		imgMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				onMenuOpened(0, null);
 			}
-		});
+		});*/
 		imgBookmark = (ImageView) browserView.findViewById(R.id.bookmark_icon);
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override

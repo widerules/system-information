@@ -205,9 +205,6 @@ public class SimpleBrowser extends Activity {
 	// favo dialog
 	EditText titleText;
 
-	// download dialog
-	AlertDialog downloadsDialog = null;
-
 	// source dialog
 	AlertDialog m_sourceDialog = null;
 	String sourceOrCookie = "";
@@ -219,7 +216,9 @@ public class SimpleBrowser extends Activity {
 
 	// browser related
 	GridView menuGrid = null;
-	View bookmarkView;
+	View bookmarkDownloads;
+	LinearLayout bookmarkView;
+	ListView downloadsList;
 	RelativeLayout browserView;
 	LinearLayout webControl;
 	LinearLayout imageBtnList;
@@ -235,7 +234,7 @@ public class SimpleBrowser extends Activity {
 	ArrayAdapter<String> urlAdapter;
 	ArrayList<String> siteArray;
 
-	MyListAdapter bookmarkAdapter, historyAdapter;
+	MyListAdapter bookmarkAdapter, historyAdapter, downloadsAdapter;
 	ListView historyList;
 	
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
@@ -271,7 +270,8 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
 	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
-	boolean historyChanged = false, bookmarkChanged = false;
+	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
+	boolean historyChanged = false, bookmarkChanged = false, downloadsChanged = false;
 	ImageView imgAddFavo, imgGo;
 	boolean noSdcard = false, noHistoryOnSdcard = false;
 
@@ -928,7 +928,7 @@ public class SimpleBrowser extends Activity {
 
 	private class MyListAdapter extends ArrayAdapter<TitleUrl> {
 		ArrayList localList;
-		boolean isBookmark = true;
+		boolean isHistory = false;
 
 		public MyListAdapter(Context context, List<TitleUrl> titles) {
 			super(context, 0, titles);
@@ -959,26 +959,26 @@ public class SimpleBrowser extends Activity {
 				} catch (Exception e) {}// catch an null pointer exception on 1.6
 			else btnIcon.setVisibility(View.INVISIBLE);
 
-			final ImageView btnStop = (ImageView) convertView.findViewById(R.id.webclose);
-			btnStop.setVisibility(View.INVISIBLE);
-			btnStop.setOnClickListener(new OnClickListener() {
+			final ImageView btnDelete = (ImageView) convertView.findViewById(R.id.webclose);
+			btnDelete.setVisibility(View.INVISIBLE);
+			btnDelete.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if (isBookmark) {
-						mBookMark.remove(position);
-						updateBookmark();
-					}
-					else {
+					if (isHistory) {
 						mHistory.remove(mHistory.size() - 1 - position);
 						updateHistory();
 					}
-					btnStop.setVisibility(View.INVISIBLE);
+					else {
+						mBookMark.remove(position);
+						updateBookmark();
+					}
+					btnDelete.setVisibility(View.INVISIBLE);
 				}
 			});
 
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
 			webname.setText(wv.m_title);
-			if (!isBookmark) webname.setTextColor(0xffddddff);
+			if (isHistory) webname.setTextColor(0xffddddff);
 
 			webname.setOnClickListener(new OnClickListener() {
 				@Override
@@ -990,9 +990,9 @@ public class SimpleBrowser extends Activity {
 			webname.setOnLongClickListener(new OnLongClickListener() {
 				@Override
 				public boolean onLongClick(View v) {
-					if (btnStop.getVisibility() == View.INVISIBLE) 
-						btnStop.setVisibility(View.VISIBLE);
-					else btnStop.setVisibility(View.INVISIBLE);
+					if (btnDelete.getVisibility() == View.INVISIBLE) 
+						btnDelete.setVisibility(View.VISIBLE);
+					else btnDelete.setVisibility(View.INVISIBLE);
 					return true;
 				}
 			});
@@ -1080,8 +1080,6 @@ public class SimpleBrowser extends Activity {
 				mUploadMessage.onReceiveValue(result);
 			mUploadMessage.mInstance = null;
 		} else if (requestCode == SETTING_RESULTCODE) {
-			boolean shouldReload = false;
-
 			boolean clearData = sp.getBoolean("clear_data", false);
 			if (clearData) {
 				sEdit.putBoolean("clear_data", false);
@@ -1115,9 +1113,7 @@ public class SimpleBrowser extends Activity {
 				if (clearIcon) {
 					ClearFolderTask cltask = new ClearFolderTask();
 					// clear cache on sdcard and in data folder
-					cltask.execute("/data/data/" + mContext.getPackageName()
-									+ "/files/", "png");
-					if (HOME_BLANK.equals(webAddress.getText().toString())) shouldReload = true;
+					cltask.execute("/data/data/" + mContext.getPackageName() + "/files/", "png");
 				}
 				
 				boolean clearHome = sp.getBoolean("clear_home", false);
@@ -1141,22 +1137,26 @@ public class SimpleBrowser extends Activity {
 				if (clearHistory) {
 					mHistory.clear();
 					updateHistory();
-					writeBookmark("history", mHistory);
+					WriteTask wtask = new WriteTask();
+					wtask.execute("history");
 					clearFile("searchwords");
 					siteArray.clear();
 					urlAdapter.clear();
-					historyChanged = false;
-					if (HOME_BLANK.equals(webAddress.getText().toString()))
-						shouldReload = true;
 				}
 
 				if (clearBookmark) {
 					mBookMark.clear();
 					updateBookmark();
-					writeBookmark("bookmark", mBookMark);
-					bookmarkChanged = false;
-					if (HOME_BLANK.equals(webAddress.getText().toString()))
-						shouldReload = true;
+					WriteTask wtask = new WriteTask();
+					wtask.execute("bookmark");
+				}
+
+				boolean clearDownloads = sp.getBoolean("clear_downloads", false);
+				if (clearDownloads) {
+					mDownloads.clear();
+					updateDownloads();
+					WriteTask wtask = new WriteTask();
+					wtask.execute("downloads");
 				}
 
 				String message = "";
@@ -1312,11 +1312,10 @@ public class SimpleBrowser extends Activity {
 					localSettings.setDefaultTextEncodingName(tmpEncoding);
 					// set default encoding to autoselect
 					sEdit.putInt("encoding", 0);
-					shouldReload = true;
+					reloadPage();
 				}
 			}
 
-			if (shouldReload) reloadPage();
 			sEdit.commit();
 		}
 	}
@@ -1372,8 +1371,10 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void hideBookmark() {
-		bookmarkView.getLayoutParams().width = 0;
-		bookmarkView.requestLayout();
+		bookmarkDownloads.getLayoutParams().width = 0;
+		bookmarkDownloads.requestLayout();
+		bookmarkView.setVisibility(View.VISIBLE);
+		if (downloadsList != null) downloadsList.setVisibility(View.GONE);
 		bookmarkOpened = false;
 	}
 
@@ -1508,6 +1509,7 @@ public class SimpleBrowser extends Activity {
 		dltask.NOTIFICATION_ID = id;
 		appstate.downloadState.put(id, dltask);
 		dltask.execute(url, apkName, contentDisposition);
+		addDownloads(new TitleUrl(apkName, url, downloadPath));
 		return true;
 	}
 
@@ -2017,11 +2019,14 @@ public class SimpleBrowser extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						try {
-							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							String title = serverWebs.get(webIndex).getTitle() + ".png";
+							String site = downloadPath + "snap/";
+							String snap = site + title;
 							FileOutputStream fos = new FileOutputStream(snap);
 							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
 							fos.close();
 							Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+							addDownloads(new TitleUrl(title, serverWebs.get(webIndex).m_url, site));
 						} catch (Exception e) {
 							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 						}
@@ -2051,11 +2056,14 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				try {
-					String snap = downloadPath + subFolder + serverWebs.get(webIndex).getTitle() + ".txt";
+					String title = serverWebs.get(webIndex).getTitle() + ".txt";
+					String site = downloadPath + subFolder;
+					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);
 					fos.write(sourceOrCookie.getBytes());
 					fos.close();
 					Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+					addDownloads(new TitleUrl(title, serverWebs.get(webIndex).m_url, site));
 				} catch (Exception e) {
 					Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 				}
@@ -2128,43 +2136,16 @@ public class SimpleBrowser extends Activity {
 					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
 					break;
 				case 4:// downloads
-					Intent intent = new Intent(
-							"com.estrongs.action.PICK_DIRECTORY");
-					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
-					if (!util.startActivity(intent, false, mContext)) {
-						if (downloadsDialog == null)
-							downloadsDialog = new AlertDialog.Builder(
-									localContext)
-									.setMessage(
-											getString(R.string.downloads_to)
-													+ downloadPath
-													+ getString(R.string.downloads_open))
-									.setPositiveButton(
-											R.string.ok,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-													Intent intent = new Intent(
-															Intent.ACTION_VIEW,
-															Uri.parse("market://details?id=com.estrongs.android.pop"));
-													util.startActivity(intent,
-															true,
-															getBaseContext());
-												}
-											})
-									.setNegativeButton(
-											R.string.cancel,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-												}
-											}).create();
-						downloadsDialog.show();
+					if (mDownloads.size() == 0) {
+						Toast.makeText(mContext, "no downloads found", Toast.LENGTH_LONG).show();
+						break;
 					}
+					
+					if (downloadsList == null) initDownloads();
+					
+					bookmarkView.setVisibility(View.GONE);
+					downloadsList.setVisibility(View.VISIBLE);
+					showBookmark();
 					break;
 				case 5:// copy
 					scrollToMain();
@@ -2259,7 +2240,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 11:// settings
-					intent = new Intent("easy.lib.about");
+					Intent intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
 					startActivityForResult(intent, SETTING_RESULTCODE);
 					break;
@@ -2498,6 +2479,23 @@ public class SimpleBrowser extends Activity {
 		webList.setAdapter(webAdapter);
 	}
 	
+	void initDownloads() {
+		downloadsAdapter = new MyListAdapter(mContext, mDownloads);
+		downloadsList = (ListView) findViewById(R.id.downloads);
+		downloadsList.inflate(mContext, R.layout.web_list, null);
+		downloadsList.setAdapter(downloadsAdapter);
+		downloadsList.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+					ListView lv = (ListView) v;
+					serverWebs.get(webIndex).loadUrl(mDownloads.get(lv.getSelectedItemPosition()).m_url);
+				}
+				return false;
+			}
+		});		
+	}
+	
 	public void initBookmarks() {
 		// set background tile of bookmark view. not use now
 		/*Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.noise);  
@@ -2507,10 +2505,8 @@ public class SimpleBrowser extends Activity {
 		bookmarkView.setBackgroundDrawable(drawable);*/ 
 		
 		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
-		ListView bookmarkList = (ListView) bookmarkView.findViewById(R.id.bookmark);
+		ListView bookmarkList = (ListView) findViewById(R.id.bookmark);
 		bookmarkList.inflate(mContext, R.layout.web_list, null);
-		bookmarkList.setFadingEdgeLength(0);// no shadow when scroll
-		bookmarkList.setScrollingCacheEnabled(false);
 		bookmarkList.setAdapter(bookmarkAdapter);
 		bookmarkList.setOnKeyListener(new OnKeyListener() {
 			@Override
@@ -2525,11 +2521,9 @@ public class SimpleBrowser extends Activity {
 		});
 
 		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
-		historyAdapter.isBookmark = false;
-		historyList = (ListView) bookmarkView.findViewById(R.id.history);
+		historyAdapter.isHistory = true;
+		historyList = (ListView) findViewById(R.id.history);
 		historyList.inflate(mContext, R.layout.web_list, null);
-		historyList.setFadingEdgeLength(0);// no shadow when scroll
-		historyList.setScrollingCacheEnabled(false);
 		historyList.setAdapter(historyAdapter);
 		historyList.setOnKeyListener(new OnKeyListener() {
 			@Override
@@ -2578,7 +2572,8 @@ public class SimpleBrowser extends Activity {
         
         browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
         setContentView(browserView);
-        bookmarkView = browserView.findViewById(R.id.bookmarkView);
+        bookmarkDownloads = browserView.findViewById(R.id.bookmarkDownloads);
+        bookmarkView = (LinearLayout) browserView.findViewById(R.id.bookmarkView);
 		menuGrid = (GridView) browserView.findViewById(R.id.grid_menu);
 
 		initWebControl();
@@ -2689,6 +2684,8 @@ public class SimpleBrowser extends Activity {
 		if (!firstRun) {
 			mHistory = readBookmark("history");
 			mBookMark = readBookmark("bookmark");
+			mDownloads = readBookmark("downloads");
+			
 			Collections.sort(mBookMark, new myComparator());
 
 			for (int i = 0; i < mHistory.size(); i++) {
@@ -2870,8 +2867,8 @@ public class SimpleBrowser extends Activity {
 
 	void showBookmark() {
 		if (!showUrl) setUrlHeight(showUrl);// hide url if it should not display
-		bookmarkView.getLayoutParams().width = bookmarkWidth;
-		bookmarkView.requestLayout();
+		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
+		bookmarkDownloads.requestLayout();
 		bookmarkOpened = true;
 		if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
 			webControl.setVisibility(View.INVISIBLE);
@@ -3154,7 +3151,6 @@ public class SimpleBrowser extends Activity {
 								mBookMark.add(titleUrl);
 								// sort by name
 								Collections.sort(mBookMark, new myComparator());
-								//loadPage(false);
 								updateBookmark();
 							}
 						})
@@ -3167,6 +3163,16 @@ public class SimpleBrowser extends Activity {
 						}).show();
 	}
 
+	void addDownloads(TitleUrl tu) {
+		for (int i = 0; i < mDownloads.size(); i++)
+			if (mDownloads.get(i).m_url.equals(tu.m_url))
+				return;
+		
+		mDownloads.add(tu);
+		Collections.sort(mDownloads, new myComparator());// sort by name
+		updateDownloads();
+	}
+	
 	private boolean openNewPage(String url, int newIndex, boolean changeToNewPage) {
 		boolean result = true;
 
@@ -3457,8 +3463,8 @@ public class SimpleBrowser extends Activity {
 		
 		updateHistoryViewHeight();
 		if (bookmarkOpened) {
-			bookmarkView.getLayoutParams().width = bookmarkWidth;
-			bookmarkView.requestLayout();
+			bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
+			bookmarkDownloads.requestLayout();
 		}
 		
 		if (menuOpened) {
@@ -3493,7 +3499,7 @@ public class SimpleBrowser extends Activity {
 		if (mAdAvailable) {
 			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
-				FrameLayout adContainer = (FrameLayout) bookmarkView.findViewById(R.id.adContainer);
+				FrameLayout adContainer = (FrameLayout) findViewById(R.id.adContainer);
 				adContainer.addView(adview.getInstance());
 			}
 			
@@ -3503,6 +3509,13 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	void updateDownloads() {
+		if (downloadsAdapter != null) {
+			downloadsAdapter.notifyDataSetChanged();
+		}
+		downloadsChanged = true;
+	}
+	
 	void updateBookmark() {
 		if (bookmarkAdapter != null) {
 			bookmarkAdapter.notifyDataSetChanged();
@@ -3576,9 +3589,12 @@ public class SimpleBrowser extends Activity {
 			if ("history".equals(params[0])) {
 				writeBookmark("history", mHistory);
 				historyChanged = false;
-			} else {
+			} else if ("bookmark".equals(params[0])) {
 				writeBookmark("bookmark", mBookMark);
 				bookmarkChanged = false;
+			} else {
+				writeBookmark("downloads", mDownloads);
+				downloadsChanged = false;
 			}
 
 			return null;

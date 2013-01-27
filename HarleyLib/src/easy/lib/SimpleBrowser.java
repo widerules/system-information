@@ -948,7 +948,16 @@ public class SimpleBrowser extends Activity {
 			}
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
-			String filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
+			String filename;
+			if (type != 2) filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
+			else {// get site
+				String site = "";
+				String[] tmp = wv.m_site.split("/");
+				if (tmp.length > 2)	site = tmp[2];
+				else site = tmp[0];
+				Log.d("==============", site);
+				filename = getFilesDir().getAbsolutePath() + "/" + site + ".png";
+			}
 			File f = new File(filename);
 			if (f.exists())
 				try {
@@ -986,7 +995,7 @@ public class SimpleBrowser extends Activity {
 			webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					if (type < 2) {// bookmark and history
+					if (type != 2) {// bookmark and history
 						serverWebs.get(webIndex).loadUrl(wv.m_url);
 						imgBookmark.performClick();
 					}
@@ -2092,13 +2101,13 @@ public class SimpleBrowser extends Activity {
 				R.drawable.recycle,
 				R.drawable.set_home,
 				R.drawable.pin,
-				R.drawable.downloads,
-				R.drawable.copy,
-				R.drawable.share,
 				R.drawable.search, 
+				R.drawable.copy,
+				R.drawable.downloads,
+				R.drawable.html_w,
 				R.drawable.capture,
 				R.drawable.link,
-				R.drawable.html_w,
+				R.drawable.share,
 				R.drawable.about
 			};
 		// menu text
@@ -2107,13 +2116,13 @@ public class SimpleBrowser extends Activity {
 				"PDF",
 				getString(R.string.set_homepage),
 				getString(R.string.add_shortcut),
-				getString(R.string.downloads),
-				getString(R.string.copy),
-				getString(R.string.shareurl),
 				getString(R.string.search),
+				getString(R.string.copy),
+				getString(R.string.downloads),
+				getString(R.string.source),
 				getString(R.string.snap),
 				"cookie",
-				getString(R.string.source),
+				getString(R.string.shareurl),
 				getString(R.string.settings)
 			};
 
@@ -2145,17 +2154,16 @@ public class SimpleBrowser extends Activity {
 					createShortcut(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
 					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
 					break;
-				case 4:// downloads
-					if (mDownloads.size() == 0) {
-						Toast.makeText(mContext, "no downloads recorded", Toast.LENGTH_LONG).show();
-						break;
-					}
-					
-					if (downloadsList == null) initDownloads();
-					
-					bookmarkView.setVisibility(View.GONE);
-					downloadsList.setVisibility(View.VISIBLE);
-					showBookmark();
+				case 4:// search
+					scrollToMain();
+					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
+						// serverWebs.get(webIndex).showFindDialog("e", false);
+					if (searchBar == null) initSearchBar();
+					searchBar.bringToFront();
+					searchBar.setVisibility(View.VISIBLE);
+					etSearch.requestFocus();
+					toSearch = "";
+					imm.toggleSoftInput(0, 0);
 					break;
 				case 5:// copy
 					scrollToMain();
@@ -2174,19 +2182,31 @@ public class SimpleBrowser extends Activity {
 						shiftPressEvent.dispatch(serverWebs.get(webIndex));
 					} catch (Exception e) {}
 					break;
-				case 6:// share url
-					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
+				case 6:// downloads
+					if (mDownloads.size() == 0) {
+						Toast.makeText(mContext, "no downloads recorded", Toast.LENGTH_LONG).show();
+						break;
+					}
+					
+					if (downloadsList == null) initDownloads();
+					
+					bookmarkView.setVisibility(View.GONE);
+					downloadsList.setVisibility(View.VISIBLE);
+					showBookmark();
 					break;
-				case 7:// search
-					scrollToMain();
-					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
-						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (searchBar == null) initSearchBar();
-					searchBar.bringToFront();
-					searchBar.setVisibility(View.VISIBLE);
-					etSearch.requestFocus();
-					toSearch = "";
-					imm.toggleSoftInput(0, 0);
+				case 7:// view page source
+					try {
+						if ("".equals(serverWebs.get(webIndex).pageSource)) {
+							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
+							serverWebs.get(webIndex).getPageSource();
+						}
+
+						sourceOrCookie = serverWebs.get(webIndex).pageSource;
+						subFolder = "source/";
+						showSourceDialog();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+					}
 					break;
 				case 8:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
@@ -2235,19 +2255,8 @@ public class SimpleBrowser extends Activity {
 					subFolder = "cookie/";
 					showSourceDialog();
 					break;
-				case 10:// view page source
-					try {
-						if ("".equals(serverWebs.get(webIndex).pageSource)) {
-							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
-							serverWebs.get(webIndex).getPageSource();
-						}
-
-						sourceOrCookie = serverWebs.get(webIndex).pageSource;
-						subFolder = "source/";
-						showSourceDialog();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
-					}
+				case 10:// share url
+					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
 				case 11:// settings
 					Intent intent = new Intent("easy.lib.about");

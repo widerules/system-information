@@ -46,7 +46,7 @@ public class AboutBrowser extends Activity {
 	RadioGroup fontSize, historyCount, encodingType, changeUA,
 			searchEngine, shareMode, rotateMode;
 	CheckBox clrHistory, clrBookmark, clrCookie, clrFormdata, clrPassword,
-			clrCache, clrIcon, clrHome;
+			clrCache, clrIcon, clrHome, clrDownloads;
 	LinearLayout advanceSettings, basicSettings;
 	Button btnAdvance, btnReset;
 	EditText etPort;
@@ -199,6 +199,8 @@ public class AboutBrowser extends Activity {
 					message += getString(R.string.icon) + ", ";
 				if (clrHome.isChecked())
 					message += getString(R.string.homepage) + ", ";
+				if (clrDownloads.isChecked())
+					message += getString(R.string.downloads) + ", ";
 				message = message.trim();
 				if ("".equals(message))
 					return;// return if no data selected.
@@ -353,6 +355,7 @@ public class AboutBrowser extends Activity {
 						clrFormdata = (CheckBox) findViewById(R.id.clear_formdata);
 						clrIcon = (CheckBox) findViewById(R.id.clear_icon);
 						clrHome = (CheckBox) findViewById(R.id.clear_home);
+						clrDownloads = (CheckBox) findViewById(R.id.clear_downloads);
 
 						btnReset = (Button) findViewById(R.id.reset);
 						btnReset.setOnClickListener(new OnClickListener() {
@@ -407,6 +410,7 @@ public class AboutBrowser extends Activity {
 						clrPassword.setChecked(perferences.getBoolean("clear_password", false));
 						clrIcon.setChecked(perferences.getBoolean("clear_icon", false));
 						clrHome.setChecked(perferences.getBoolean("clear_home", false));
+						clrDownloads.setChecked(perferences.getBoolean("clear_downloads", false));
 					}
 				} else {
 					lp.height = 0;
@@ -525,6 +529,7 @@ public class AboutBrowser extends Activity {
 			editor.putBoolean("clear_formdata", false);
 			editor.putBoolean("clear_icon", false);
 			editor.putBoolean("clear_home", false);
+			editor.putBoolean("clear_downloads", false);
 			
 			advancedOpened = false;
 		} else {
@@ -568,6 +573,7 @@ public class AboutBrowser extends Activity {
 				editor.putBoolean("clear_password", clrPassword.isChecked());
 				editor.putBoolean("clear_icon", clrIcon.isChecked());
 				editor.putBoolean("clear_home", clrHome.isChecked());
+				editor.putBoolean("clear_downloads", clrDownloads.isChecked());
 			}
 		}
 		editor.commit();

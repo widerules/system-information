@@ -208,7 +208,7 @@ public class SimpleBrowser extends Activity {
 	// source dialog
 	AlertDialog m_sourceDialog = null;
 	String sourceOrCookie = "";
-	String subFolder = "source/";
+	String subFolder = "source";
 	
 	// page up and down button
 	LinearLayout upAndDown;
@@ -2084,8 +2084,8 @@ public class SimpleBrowser extends Activity {
 				try {
 					String title = serverWebs.get(webIndex).getTitle();
 					if (title == null) title = getSite(serverWebs.get(webIndex).m_url);
-					title += "(" + subFolder.split("/")[0] + ").txt";
-					String site = downloadPath + subFolder;
+					title += "(" + subFolder + ").txt";
+					String site = downloadPath + subFolder + "/";
 					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);
 					fos.write(sourceOrCookie.getBytes());
@@ -2211,7 +2211,7 @@ public class SimpleBrowser extends Activity {
 						}
 
 						sourceOrCookie = serverWebs.get(webIndex).pageSource;
-						subFolder = "source/";
+						subFolder = "source";
 						showSourceDialog();
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
@@ -2261,7 +2261,7 @@ public class SimpleBrowser extends Activity {
 						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
 					else sourceOrCookie = "No cookie on this page.";
 					
-					subFolder = "cookie/";
+					subFolder = "cookie";
 					showSourceDialog();
 					break;
 				case 10:// share url

@@ -991,6 +991,8 @@ public class SimpleBrowser extends Activity {
 						Intent intent = new Intent("android.intent.action.VIEW");
 						intent.addCategory("android.intent.category.DEFAULT");
 						intent.setData(Uri.parse(wv.m_url));
+						//intent.setData(Uri.fromFile(new File(wv.m_url)));
+						Log.d("===============", wv.m_url);
 						
 						String ext = wv.m_title.substring(wv.m_title.lastIndexOf(".")+1, wv.m_title.length());
 						MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
@@ -2084,7 +2086,7 @@ public class SimpleBrowser extends Activity {
 				try {
 					String title = serverWebs.get(webIndex).getTitle();
 					if (title == null) title = getSite(serverWebs.get(webIndex).m_url);
-					title += "(" + subFolder + ").txt";
+					title += "_" + subFolder + ".txt";
 					String site = downloadPath + subFolder + "/";
 					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);
@@ -2827,7 +2829,13 @@ public class SimpleBrowser extends Activity {
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (bookmarkOpened) hideBookmark();
+				if (bookmarkOpened) {
+					if (downloadsList.getVisibility() == View.VISIBLE) {
+						bookmarkView.setVisibility(View.VISIBLE);
+						downloadsList.setVisibility(View.GONE);
+					}
+					else hideBookmark();
+				}
 				else showBookmark(); 
 			}
 		});
@@ -3272,8 +3280,6 @@ public class SimpleBrowser extends Activity {
 					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if ((urlLine.getLayoutParams().height == 0) == showUrl) setUrlHeight(showUrl); 
-				else if ((webTools.getLayoutParams().height == 0) == showControlBar) setBarHeight(showControlBar);
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

@@ -3145,8 +3145,8 @@ public class SimpleBrowser extends Activity {
 					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				else if ((urlLine.getLayoutParams().height == 0) == showUrl) setUrlHeight(showUrl); 
-				else if ((webTools.getLayoutParams().height == 0) == showControlBar) setBarHeight(showControlBar);
+				//else if ((urlLine.getLayoutParams().height == 0) == showUrl) setUrlHeight(showUrl); 
+				//else if ((webTools.getLayoutParams().height == 0) == showControlBar) setBarHeight(showControlBar);
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return

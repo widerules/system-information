@@ -2830,7 +2830,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (bookmarkOpened) {
-					if (downloadsList.getVisibility() == View.VISIBLE) {
+					if ((downloadsList != null) && (downloadsList.getVisibility() == View.VISIBLE)) {
 						bookmarkView.setVisibility(View.VISIBLE);
 						downloadsList.setVisibility(View.GONE);
 					}

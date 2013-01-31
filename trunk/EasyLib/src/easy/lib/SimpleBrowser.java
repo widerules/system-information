@@ -961,7 +961,7 @@ public class SimpleBrowser extends Activity {
 		try {// write opened url to /data/data/easy.browser/files/pages
 			FileOutputStream fo = openFileOutput("pages", 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);
-			for (int i = 0; i < serverWebs.size(); i++) {
+			for (int i = serverWebs.size()-1; i >= 0; i--) {
 				if (!HOME_PAGE.equals(serverWebs.get(i).m_url)) {
 					oos.writeObject(serverWebs.get(i).m_url);
 				}

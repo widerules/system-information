@@ -932,7 +932,7 @@ public class SimpleBrowser extends Activity {
 		@Override
 		public View getView(final int position, View convertView,
 				ViewGroup parent) {
-			final TitleUrl wv = (TitleUrl) localList.get(position);
+			final TitleUrl tu = (TitleUrl) localList.get(position);
 
 			if (convertView == null) {
 				final LayoutInflater inflater = getLayoutInflater();
@@ -943,8 +943,8 @@ public class SimpleBrowser extends Activity {
 
 			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
 			String filename;
-			if (type != 2) filename = getFilesDir().getAbsolutePath() + "/" + wv.m_site + ".png";
-			else filename = getFilesDir().getAbsolutePath() + "/" + getSite(wv.m_site) + ".png";
+			if (type != 2) filename = getFilesDir().getAbsolutePath() + "/" + tu.m_site + ".png";
+			else filename = getFilesDir().getAbsolutePath() + "/" + getSite(tu.m_site) + ".png";
 			
 			File f = new File(filename);
 			if (f.exists())
@@ -976,7 +976,7 @@ public class SimpleBrowser extends Activity {
 			});
 
 			TextView webname = (TextView) convertView.findViewById(R.id.webname);
-			webname.setText(wv.m_title);
+			webname.setText(tu.m_title);
 			if (type == 1) webname.setTextColor(0xffddddff);
 			else if (type == 2) webname.setTextColor(0xffffdd8b);
 
@@ -984,22 +984,11 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public void onClick(View arg0) {
 					if (type != 2) {// bookmark and history
-						serverWebs.get(webIndex).loadUrl(wv.m_url);
+						serverWebs.get(webIndex).loadUrl(tu.m_url);
 						imgBookmark.performClick();
 					}
-					else {// open downloads file
-						Intent intent = new Intent("android.intent.action.VIEW");
-						
-						String ext = wv.m_title.substring(wv.m_title.lastIndexOf(".")+1, wv.m_title.length());
-						MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-						String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
-						if (mimeType != null) intent.setDataAndType(Uri.fromFile(new File(wv.m_url)), mimeType);// why boat browser can open it without this line, but we can't?
-						else 
-							intent.setData(Uri.fromFile(new File(wv.m_url)));
-						//intent.setData(Uri.parse(wv.m_url));
-						
-						util.startActivity(intent, true, mContext);
-					}
+					else // open downloads file
+						startDownload(tu);
 				}
 			});
 			webname.setOnLongClickListener(new OnLongClickListener() {
@@ -2517,15 +2506,23 @@ public class SimpleBrowser extends Activity {
 		downloadsList.setOnKeyListener(new OnKeyListener() {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-					TitleUrl tu = mDownloads.get(((ListView) v).getSelectedItemPosition());
-					Intent intent = new Intent("android.intent.action.VIEW");
-					intent.setData(Uri.parse(tu.m_url));
-					util.startActivity(intent, true, mContext);
-				}
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
+					startDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()));
 				return false;
 			}
 		});		
+	}
+	
+	void startDownload(TitleUrl tu) {
+		Intent intent = new Intent("android.intent.action.VIEW");
+		
+		String ext = tu.m_title.substring(tu.m_title.lastIndexOf(".")+1, tu.m_title.length());
+		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+		String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
+		if (mimeType != null) intent.setDataAndType(Uri.parse(tu.m_url), mimeType);
+		else intent.setData(Uri.parse(tu.m_url));// why boat browser can open it for this branch, but we can't?
+		
+		util.startActivity(intent, true, mContext);		
 	}
 	
 	public void initBookmarks() {

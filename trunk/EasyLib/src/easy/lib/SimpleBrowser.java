@@ -1607,26 +1607,18 @@ public class SimpleBrowser extends Activity {
 				}
 
 				download_file = new File(downloadPath + apkName);
-				boolean found = false;
 				// apkName.split(".")[1] will get java.lang.ArrayIndexOutOfBoundsException if apkName contain chinese character
 				// MimeTypeMap.getFileExtensionFromUrl(apkName) will get null
 				String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
 				
+				intent.setAction(Intent.ACTION_VIEW);
 				MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 				String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
 				if (mimeType == null) mimeType = "";// must set a value to mimeType otherwise it will error when download finished
-				if (!"".equals(mimeType)) {
-					intent.setAction(Intent.ACTION_VIEW);
+				if (!"".equals(mimeType)) 
 					intent.setDataAndType(Uri.fromFile(download_file), mimeType);
-					List<ResolveInfo> list = getPackageManager()
-							.queryIntentActivities(intent, 0);
-					if ((list != null) && !list.isEmpty())
-						found = true;
-				}
-				if (!found) {
-					intent.setAction("com.estrongs.action.PICK_FILE");
-					intent.setData(Uri.fromFile(new File(downloadPath)));
-				}
+				else
+					intent.setData(Uri.fromFile(download_file));
 
 				if (download_file.length() == apk_length) {
 					// found local file with same name and length,
@@ -3699,10 +3691,8 @@ public class SimpleBrowser extends Activity {
 			try {
 				ois.close();
 				fi.close();
-			} catch (Exception e1) {
-			}
-		} catch (Exception e) {
-		}
+			} catch (Exception e1) {}
+		} catch (Exception e) {}
 
 		return bookmark;
 	}

@@ -988,7 +988,7 @@ public class SimpleBrowser extends Activity {
 						imgBookmark.performClick();
 					}
 					else // open downloads file
-						startDownload(tu);
+						openDownload(tu);
 				}
 			});
 			webname.setOnLongClickListener(new OnLongClickListener() {
@@ -2507,22 +2507,22 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
-					startDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()));
+					openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()));
 				return false;
 			}
 		});		
 	}
 	
-	void startDownload(TitleUrl tu) {
+	void openDownload(TitleUrl tu) {
 		Intent intent = new Intent("android.intent.action.VIEW");
 		
 		String ext = tu.m_title.substring(tu.m_title.lastIndexOf(".")+1, tu.m_title.length());
 		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 		String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
 		if (mimeType != null) intent.setDataAndType(Uri.parse(tu.m_url), mimeType);
-		else intent.setData(Uri.parse(tu.m_url));// why boat browser can open it for this branch, but we can't?
+		else intent.setData(Uri.parse(tu.m_url));// we can open it now
 		
-		util.startActivity(intent, true, mContext);		
+		util.startActivity(intent, true, mContext);
 	}
 	
 	public void initBookmarks() {

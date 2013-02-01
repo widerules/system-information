@@ -584,64 +584,7 @@ public class SimpleBrowser extends Activity {
 				public void onDownloadStart(final String url, String ua,
 						final String contentDisposition, String mimetype,
 						long contentLength) {
-					// need to know it is httpget, post or direct connect.
-					// for example, I don't know how to handle this
-					// http://yunfile.com/file/murongmr/5a0574ad/. firefox think
-					// it is post.
-					// url:
-					// http://dl33.yunfile.com/file/downfile/murongmr/876b15e4/c7c3002a
-					// ua: Mozilla/5.0 (Linux; U; Android 2.3.3; en-us; sdk
-					// Build/GRI34) AppleWebKit/533.1 (KHTML, like Gecko)
-					// Version/4.0 Mobile Safari/533.1
-					// contentDisposition: attachment;
-					// filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
-					// mimetype: application/octet-stream
-					// contentLength: 463624
-					boolean canOpen = false;
-					String apkName = getName(url);
-					if ((mimetype == null) || ("".equals(mimetype))) {
-						MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-						String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
-						mimetype = mimeTypeMap.getMimeTypeFromExtension(ext);
-					}
-					final Intent intent = new Intent(Intent.ACTION_VIEW);
-					if ((mimetype != null) && (!mimetype.equals("")) && (!mimetype.equals("application/vnd.android.package-archive")) && (!mimetype.equals("audio/mpeg"))) {
-						//show chooser if it can open, otherwise download it.
-						//download apk and mp3 directly without confirm. 
-						intent.setDataAndType(Uri.parse(url), mimetype);
-						List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
-						if ((list != null) && !list.isEmpty()) canOpen = true;
-					}
-
-					if (canOpen) {
-						new AlertDialog.Builder(mContext)
-						.setTitle(getString(R.string.choose))
-						.setMessage(apkName)
-						.setPositiveButton(getString(R.string.open),
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										if (!util.startActivity(intent, false, mContext))
-											startDownload(url, contentDisposition);//download if open fail
-									}
-								})
-						.setNeutralButton(getString(R.string.download),
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										startDownload(url, contentDisposition);
-									}
-								})
-						.setNegativeButton(getString(R.string.cancel),
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-									}
-								}).show();
-					} else startDownload(url, contentDisposition);
+					downloadAction(url, contentDisposition, mimetype);
 				}
 			});
 
@@ -750,46 +693,8 @@ public class SimpleBrowser extends Activity {
 						// BLANK_PAGE when login.
 						return true;// we should do nothing but return true,
 									// otherwise may not login.
-					} else if (!url.startsWith("http")
-							&& !url.startsWith("file")) {
-						Uri uri = Uri.parse(url);
-						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-						intent.addCategory(Intent.CATEGORY_BROWSABLE);
-						String data = intent.getDataString();
-						if (!"".equals(data) && (data.startsWith("vnd.youtube"))) {
-							if (!util.startActivity(intent, false, mContext)) {
-								new AlertDialog.Builder(mContext)
-								.setMessage("You need install plugin or client to play video.")
-								.setPositiveButton("Youtube",
-										new DialogInterface.OnClickListener() {
-											@Override
-											public void onClick(DialogInterface dialog,
-													int which) {
-												Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-														.parse("market://details?id=com.google.android.youtube"));
-												util.startActivity(intent, false, mContext);
-											}
-										})
-								.setNeutralButton("Adobe flash",
-										new DialogInterface.OnClickListener() {
-											@Override
-											public void onClick(DialogInterface dialog,
-													int which) {
-												Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-														.parse("market://details?id=com.adobe.flashplayer"));
-												util.startActivity(intent, false, mContext);
-											}
-										})
-								.setNegativeButton(R.string.cancel,
-										new DialogInterface.OnClickListener() {
-											@Override
-											public void onClick(DialogInterface dialog,
-													int which) {
-											}
-										}).show();
-							}
-						}
-						else util.startActivity(intent, true, mContext);
+					} else if (!url.startsWith("http") && !url.startsWith("file")) {
+						overloadAction(url);
 						return true; // not allow webpage to proceed
 					} else
 						return false;
@@ -798,6 +703,108 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	void downloadAction(final String url, final String contentDisposition, String mimetype) {
+		// need to know it is httpget, post or direct connect.
+		// for example, I don't know how to handle this
+		// http://yunfile.com/file/murongmr/5a0574ad/. firefox think
+		// it is post.
+		// url:
+		// http://dl33.yunfile.com/file/downfile/murongmr/876b15e4/c7c3002a
+		// ua: Mozilla/5.0 (Linux; U; Android 2.3.3; en-us; sdk
+		// Build/GRI34) AppleWebKit/533.1 (KHTML, like Gecko)
+		// Version/4.0 Mobile Safari/533.1
+		// contentDisposition: attachment;
+		// filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
+		// mimetype: application/octet-stream
+		// contentLength: 463624
+		boolean canOpen = false;
+		String apkName = getName(url);
+		if ((mimetype == null) || ("".equals(mimetype))) {
+			MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+			String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
+			mimetype = mimeTypeMap.getMimeTypeFromExtension(ext);
+		}
+		final Intent intent = new Intent(Intent.ACTION_VIEW);
+		if ((mimetype != null) && (!mimetype.equals("")) && (!mimetype.equals("application/vnd.android.package-archive")) && (!mimetype.equals("audio/mpeg"))) {
+			//show chooser if it can open, otherwise download it.
+			//download apk and mp3 directly without confirm. 
+			intent.setDataAndType(Uri.parse(url), mimetype);
+			List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
+			if ((list != null) && !list.isEmpty()) canOpen = true;
+		}
+
+		if (canOpen) {
+			new AlertDialog.Builder(mContext)
+			.setTitle(getString(R.string.choose))
+			.setMessage(apkName)
+			.setPositiveButton(getString(R.string.open),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							if (!util.startActivity(intent, false, mContext))
+								startDownload(url, contentDisposition);//download if open fail
+						}
+					})
+			.setNeutralButton(getString(R.string.download),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							startDownload(url, contentDisposition);
+						}
+					})
+			.setNegativeButton(getString(R.string.cancel),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+						}
+					}).show();
+		} else startDownload(url, contentDisposition);
+	}
+	
+	void overloadAction(String url) {
+		Uri uri = Uri.parse(url);
+		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+		intent.addCategory(Intent.CATEGORY_BROWSABLE);
+		String data = intent.getDataString();
+		if (!"".equals(data) && (data.startsWith("vnd.youtube"))) {
+			if (!util.startActivity(intent, false, mContext)) {
+				new AlertDialog.Builder(mContext)
+				.setMessage("You need install plugin or client to play video.")
+				.setPositiveButton("Youtube",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+										.parse("market://details?id=com.google.android.youtube"));
+								util.startActivity(intent, false, mContext);
+							}
+						})
+				.setNeutralButton("Adobe flash",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+										.parse("market://details?id=com.adobe.flashplayer"));
+								util.startActivity(intent, false, mContext);
+							}
+						})
+				.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						}).show();
+			}
+		}
+		else util.startActivity(intent, true, mContext);
+	}
+	
 	void pageFinishAction(WebView view, String url, boolean isForeground) {
 		if (isForeground) {
 			// hide progressbar anyway

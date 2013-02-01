@@ -290,6 +290,7 @@ public class SimpleBrowser extends Activity {
 
 	// download related
 	String downloadPath = "";
+	String dataPath = "";
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
@@ -396,7 +397,7 @@ public class SimpleBrowser extends Activity {
 			return false;
 		}
 	}
-	
+
 	class MyWebview extends WebView {
 		public String pageSource = "", m_url = "";
 
@@ -728,8 +729,7 @@ public class SimpleBrowser extends Activity {
 						if (!showControlBar) setBarHeight(true);
 					}
 
-					try {
-						if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
+					try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
 					} catch (Exception e) {}
 					
 					if (!incognitoMode) recordPages();
@@ -740,7 +740,6 @@ public class SimpleBrowser extends Activity {
 					pageSource = "";// prevent get incomplete page source during page loading
 					m_url = url;// must sync the url for it may change after pagestarted.
 					mProgress = 0;
-					
 					pageFinishAction(view, url, isForeground);
 				}
 
@@ -805,7 +804,6 @@ public class SimpleBrowser extends Activity {
 			loadProgress.setVisibility(View.INVISIBLE);
 			imgRefresh.setImageResource(R.drawable.refresh);
 			webControl.setVisibility(View.INVISIBLE);
-			
 			if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 			else webAddress.setText(url);						
 		}
@@ -821,15 +819,9 @@ public class SimpleBrowser extends Activity {
 				// if title and url not sync, then sync it
 				//webAddress.setText(HOME_BLANK);
 			else if (!incognitoMode) {// handle the bookmark/history after load new page
-				String site = "";
-				String[] tmp = url.split("/");
-				if (tmp.length > 2)	site = tmp[2];
-				// if url is http://m.baidu.com,
-				// then url.split("/")[2] is m.baidu.com
-				else site = tmp[0];
-				
 				if ((mHistory.size() > 0) && (mHistory.get(mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
-				
+
+				String site = getSite(url);
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 				mHistory.add(titleUrl);// always add it to history if visit any page.
 				historyChanged = true;
@@ -851,19 +843,19 @@ public class SimpleBrowser extends Activity {
 				}
 
 				if (siteArray.indexOf(site) < 0) {
-					urlAdapter.add(site);// update the auto-complete
-					// edittext without
-					// duplicate
-					siteArray.add(site);// the adapter will always
+					// update the auto-complete edittext without duplicate
+					urlAdapter.add(site);
+					// the adapter will always
 					// return 0 when get count
 					// or search, so we use an
 					// array to store the site.
+					siteArray.add(site);
 				}
 
 				try {// try to open the png, if can't open, then need save
 					FileInputStream fis = openFileInput(site + ".png");
 					try {fis.close();} catch (IOException e) {}
-				} catch (FileNotFoundException e1) {
+				} catch (Exception e1) {
 					try {// save the Favicon
 						if (view.getFavicon() != null) {
 							Bitmap favicon = view.getFavicon();
@@ -887,8 +879,7 @@ public class SimpleBrowser extends Activity {
 							favicon.compress(Bitmap.CompressFormat.PNG, 90,	fos);
 							fos.close();
 						}
-					} catch (Exception e) {
-					}
+					} catch (Exception e) {}
 				}
 
 				while (mHistory.size() > historyCount) 
@@ -997,8 +988,7 @@ public class SimpleBrowser extends Activity {
 			System.gc();
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
-					webAdapter.getCount(), 2, mContext));// show the changed
-			// page number
+					webAdapter.getCount(), 2, mContext));// show the changed page number
 			if ((position == webIndex) && !toBefore) {// change to the page after current page
 				if (webIndex == webAdapter.getCount()) webIndex -= 1;
 			}
@@ -1020,9 +1010,7 @@ public class SimpleBrowser extends Activity {
 		// disk IO crash
 		ClearFolderTask cltask = new ClearFolderTask();
 		// clear cache on sdcard and in data folder
-		cltask.execute(downloadPath + "cache/webviewCache/",
-				"/data/data/" + mContext.getPackageName()
-						+ "/cache/webviewCache/");		
+		cltask.execute(downloadPath + "cache/webviewCache/", dataPath + "cache/webviewCache/");		
 	}
 	
 	@Override
@@ -1072,8 +1060,7 @@ public class SimpleBrowser extends Activity {
 				if (clearIcon) {
 					ClearFolderTask cltask = new ClearFolderTask();
 					// clear cache on sdcard and in data folder
-					cltask.execute("/data/data/" + mContext.getPackageName()
-									+ "/files/", "png");
+					cltask.execute(dataPath + "files/", "png");
 					if (HOME_BLANK.equals(webAddress.getText().toString())) shouldReload = true;
 				}
 				
@@ -1097,7 +1084,8 @@ public class SimpleBrowser extends Activity {
 
 				if (clearHistory) {
 					mHistory.clear();
-					writeBookmark("history", mHistory);
+					WriteTask wtask = new WriteTask();
+					wtask.execute("history");
 					clearFile("searchwords");
 					siteArray.clear();
 					urlAdapter.clear();
@@ -1108,7 +1096,8 @@ public class SimpleBrowser extends Activity {
 
 				if (clearBookmark) {
 					mBookMark.clear();
-					writeBookmark("bookmark", mBookMark);
+					WriteTask wtask = new WriteTask();
+					wtask.execute("bookmark");
 					bookmarkChanged = false;
 					if (HOME_BLANK.equals(webAddress.getText().toString()))
 						shouldReload = true;
@@ -1706,13 +1695,19 @@ public class SimpleBrowser extends Activity {
 			} catch (Exception e) {
 				downloadFailed = true;
 				notification.icon = android.R.drawable.stat_notify_error;
+				
 				intent.putExtra("errorMsg", e.toString());
 				// request_code will help to diff different thread
-				contentIntent = PendingIntent.getActivity(mContext,
-						NOTIFICATION_ID, intent,
+				contentIntent = PendingIntent.getActivity(
+						mContext,
+						NOTIFICATION_ID, 
+						intent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
-				notification.setLatestEventInfo(mContext, apkName,
-						e.toString(), contentIntent);
+				notification.setLatestEventInfo(
+						mContext, 
+						apkName,
+						e.toString(), 
+						contentIntent);
 				nManager.notify(NOTIFICATION_ID, notification);
 
 				// below line will cause error simetime, reported by emilio. so
@@ -1953,6 +1948,16 @@ public class SimpleBrowser extends Activity {
 		if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 		else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
+	
+	String getSite(String url) {
+		String site = "";
+		String[] tmp = url.split("/");
+		// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+		if (tmp.length > 2)	site = tmp[2];
+		else site = tmp[0];
+		
+		return site;
 	}
 	
 	public void initSnapDialog() {		
@@ -2467,7 +2472,7 @@ public class SimpleBrowser extends Activity {
 		sEdit = sp.edit();
 		readPreference();
 
-		setAsDefaultApp();// not allowed by latest adt
+		setAsDefaultApp();
 		
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();
@@ -2544,10 +2549,10 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
+		dataPath = "/data/data/" + getPackageName() + "/";
 		downloadPath = util.preparePath(mContext);
-		if (downloadPath == null)
-			downloadPath = "/data/data/" + getPackageName() + "/";// fix null pointer close for 4 users
-		if (downloadPath.startsWith(getFilesDir().getPath()+"")) noSdcard = true;
+		if (downloadPath == null) downloadPath = dataPath;
+		if (downloadPath.startsWith(dataPath)) noSdcard = true;
 
 		// should read in below sequence: 1, sdcard. 2, data/data. 3, native browser
 		try {
@@ -2719,9 +2724,9 @@ public class SimpleBrowser extends Activity {
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
-				
 				if (webControl.getVisibility() == View.INVISIBLE) {
+					if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
+				
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
 					webControl.bringToFront();
@@ -2735,7 +2740,7 @@ public class SimpleBrowser extends Activity {
 		setWebpagesLayout();
 		initUpDown();
 
-		urlLine.bringToFront();// decide the z-order
+		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
 		final FrameLayout toolNad = (FrameLayout) findViewById(R.id.webtoolnad);
@@ -2803,8 +2808,7 @@ public class SimpleBrowser extends Activity {
 		unregisterReceiver(downloadReceiver);
 		unregisterReceiver(packageReceiver);
 
-		if (adview != null)
-			adview.destroy();
+		if (adview != null) adview.destroy();
 
 		super.onDestroy();
 	}
@@ -3085,8 +3089,7 @@ public class SimpleBrowser extends Activity {
 		}
 
 		if (url != null) {
-			if ("".equals(url))
-				loadPage();
+			if ("".equals(url)) loadPage();
 			// else if (url.endsWith(".pdf"))//can't open local pdf by google
 			// doc
 			// serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url="
@@ -3137,8 +3140,6 @@ public class SimpleBrowser extends Activity {
 					webControl.setVisibility(View.INVISIBLE);// hide web control
 				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 					hideSearchBox();
-				//else if ((urlLine.getLayoutParams().height == 0) == showUrl) setUrlHeight(showUrl); 
-				//else if ((webTools.getLayoutParams().height == 0) == showControlBar) setBarHeight(showControlBar);
 				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 					// hide browser when click back key on homepage.
 					// this is a singleTask activity, so if return
@@ -3336,8 +3337,8 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig); 
-		// not restart activity each time screen orientation changes
+		super.onConfigurationChanged(newConfig);
+		
 		setLayout();
 	}
 
@@ -3644,14 +3645,7 @@ public class SimpleBrowser extends Activity {
 
 				while (!cursor.isAfterLast()) {
 					String url = cursor.getString(columnUrl).trim();
-					String site = "";
-					String[] tmp = url.split("/");
-					if (tmp.length > 2)
-						site = tmp[2];// if url is http://m.baidu.com, then
-										// url.split("/")[2] is m.baidu.com
-					else
-						site = tmp[0];
-
+					String site = getSite(url);
 					TitleUrl titleUrl = new TitleUrl(
 							cursor.getString(columnTitle), url, site);
 					if (cursor.getInt(columnBookmark) >= 1)

@@ -266,9 +266,9 @@ public class SimpleBrowser extends Activity {
 
 	// bookmark and history
 	ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
+	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
-	ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean historyChanged = false, bookmarkChanged = false, downloadsChanged = false;
@@ -302,6 +302,7 @@ public class SimpleBrowser extends Activity {
 
 	// download related
 	String downloadPath = "";
+	String dataPath = "";
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
@@ -824,7 +825,7 @@ public class SimpleBrowser extends Activity {
 				try {// try to open the png, if can't open, then need save
 					FileInputStream fis = openFileInput(site + ".png");
 					try {fis.close();} catch (IOException e) {}
-				} catch (FileNotFoundException e1) {
+				} catch (Exception e1) {
 					try {// save the Favicon
 						if (view.getFavicon() != null) {
 							Bitmap favicon = view.getFavicon();
@@ -848,8 +849,7 @@ public class SimpleBrowser extends Activity {
 							favicon.compress(Bitmap.CompressFormat.PNG, 90,	fos);
 							fos.close();
 						}
-					} catch (Exception e) {
-					}
+					} catch (Exception e) {}
 				}
 
 				while (mHistory.size() > historyCount) 
@@ -960,6 +960,8 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public void onClick(View arg0) {
 					if (type == 0) {// bookmark
+						File favicon = new File(dataPath + "files/" + mBookMark.get(position).m_site + ".png");
+						favicon.delete();//delete favicon of the site
 						mBookMark.remove(position);
 						updateBookmark();
 					}
@@ -1067,9 +1069,7 @@ public class SimpleBrowser extends Activity {
 		// disk IO crash
 		ClearFolderTask cltask = new ClearFolderTask();
 		// clear cache on sdcard and in data folder
-		cltask.execute(downloadPath + "cache/webviewCache/",
-				"/data/data/" + mContext.getPackageName()
-						+ "/cache/webviewCache/");		
+		cltask.execute(downloadPath + "cache/webviewCache/", dataPath + "cache/webviewCache/");		
 	}
 	
 	@Override
@@ -1117,7 +1117,7 @@ public class SimpleBrowser extends Activity {
 				if (clearIcon) {
 					ClearFolderTask cltask = new ClearFolderTask();
 					// clear cache on sdcard and in data folder
-					cltask.execute("/data/data/" + mContext.getPackageName() + "/files/", "png");
+					cltask.execute(dataPath + "files/", "png");
 				}
 				
 				boolean clearHome = sp.getBoolean("clear_home", false);
@@ -2600,9 +2600,9 @@ public class SimpleBrowser extends Activity {
 
 		initWebControl();
 
-		loadProgress = (ProgressBar) browserView.findViewById(R.id.loadprogress);
+		loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
 
-		imgAddFavo = (ImageView) browserView.findViewById(R.id.addfavorite);
+		imgAddFavo = (ImageView) findViewById(R.id.addfavorite);
 		imgAddFavo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2621,7 +2621,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		imgGo = (ImageView) browserView.findViewById(R.id.go);
+		imgGo = (ImageView) findViewById(R.id.go);
 		imgGo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2629,7 +2629,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		webAddress = (AutoCompleteTextView) browserView.findViewById(R.id.url);
+		webAddress = (AutoCompleteTextView) findViewById(R.id.url);
 		webAddress.bringToFront();
 		webAddress.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -2656,10 +2656,10 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
+		dataPath = "/data/data/" + getPackageName() + "/";
 		downloadPath = util.preparePath(mContext);
-		if (downloadPath == null)
-			downloadPath = "/data/data/" + getPackageName() + "/";// fix null pointer close for 4 users
-		if (downloadPath.startsWith(getFilesDir().getPath()+"")) noSdcard = true;
+		if (downloadPath == null) downloadPath = dataPath;
+		if (downloadPath.startsWith(dataPath)) noSdcard = true;
 
 		// should read in below sequence: 1, sdcard. 2, data/data. 3, native browser
 		try {
@@ -2751,9 +2751,8 @@ public class SimpleBrowser extends Activity {
 				mHistory.add(mSystemHistory.get(i));
 			}
 
-			if (mSystemBookMark.size() > 0) 
-				for (int i = 0; i < mSystemBookMark.size(); i++)
-					mBookMark.add(mSystemBookMark.get(i));
+			for (int i = 0; i < mSystemBookMark.size(); i++)
+				mBookMark.add(mSystemBookMark.get(i));
 			Collections.sort(mBookMark, new myComparator());
 
 			historyChanged = true;
@@ -2783,7 +2782,15 @@ public class SimpleBrowser extends Activity {
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		imgPrev = (ImageView) browserView.findViewById(R.id.prev);
+		imgNext = (ImageView) findViewById(R.id.next);
+		imgNext.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (serverWebs.get(webIndex).canGoForward())
+					serverWebs.get(webIndex).goForward();
+			}
+		});
+		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2791,29 +2798,21 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).goBack();
 			}
 		});
-		imgNext = (ImageView) browserView.findViewById(R.id.next);
-		imgNext.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {//long click as next button
-				if (serverWebs.get(webIndex).canGoForward())
-					serverWebs.get(webIndex).goForward();
-			}
-		});
-		imgRefresh = (ImageView) browserView.findViewById(R.id.refresh);
+		imgRefresh = (ImageView) findViewById(R.id.refresh);
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				reloadPage();
 			}
 		});
-		/*imgMenu = (ImageView) browserView.findViewById(R.id.menu);
+		/*imgMenu = (ImageView) findViewById(R.id.menu);
 		imgMenu.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				onMenuOpened(0, null);
 			}
 		});*/
-		imgBookmark = (ImageView) browserView.findViewById(R.id.bookmark_icon);
+		imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2827,7 +2826,7 @@ public class SimpleBrowser extends Activity {
 				else showBookmark(); 
 			}
 		});
-		imgNew = (ImageView) browserView.findViewById(R.id.newpage);
+		imgNew = (ImageView) findViewById(R.id.newpage);
 		imgNew.setImageBitmap(util.generatorCountIcon(
 				util.getResIcon(getResources(), R.drawable.newpage), 1, 2,
 				mContext));
@@ -2836,7 +2835,7 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View arg0) {
 				if (webControl.getVisibility() == View.INVISIBLE) {
 					if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
-					
+				
 					if (webControl.getWidth() < minWebControlWidth) scrollToMain();// otherwise may not display weblist correctly
 					webAdapter.notifyDataSetInvalidated();
 					webControl.setVisibility(View.VISIBLE);
@@ -2853,7 +2852,7 @@ public class SimpleBrowser extends Activity {
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball?
 		//initBookmarks();
 		initUpDown();
-		
+
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
@@ -3279,7 +3278,7 @@ public class SimpleBrowser extends Activity {
 					if (serverWebs.size() == 1)
 						moveTaskToBack(true);
 					else closePage(webIndex, false); // close blank page if more than one page
-				} else if (serverWebs.get(webIndex).canGoBack())// press Back key in webview will go backword.
+				} else if (serverWebs.get(webIndex).canGoBack())
 					imgPrev.performClick();
 				else
 					closePage(webIndex, false);// close current page if can't go back

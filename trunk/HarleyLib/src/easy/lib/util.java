@@ -108,8 +108,7 @@ public class util {
 		String defaultPath = "/data/data/" + context.getPackageName();
 		try {
 			defaultPath = context.getFilesDir().getPath();
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 
 		String downloadPath = defaultPath + "/";
 

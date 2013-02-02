@@ -3643,8 +3643,8 @@ public class SimpleBrowser extends Activity {
 		}
 
 		if (!noSdcard)
-		try {// try to write to /sdcard/simpleHome/bookmark/
-			File file = new File(downloadPath + "bookmark/" + filename);
+		try {// try to write to /sdcard/simpleHome/
+			File file = new File(downloadPath + filename);
 			FileOutputStream fo = new FileOutputStream(file, false);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);
 			TitleUrl tu;
@@ -3712,7 +3712,7 @@ public class SimpleBrowser extends Activity {
 			if (noSdcard || noHistoryOnSdcard) 
 				fi = openFileInput(filename);
 			else {
-				File file = new File(downloadPath + "bookmark/" + filename);
+				File file = new File(downloadPath + filename);
 				fi = new FileInputStream(file);
 			}
 			ois = new ObjectInputStream(fi);

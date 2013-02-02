@@ -3587,7 +3587,7 @@ public class SimpleBrowser extends Activity {
 			}
 		}
 		
-		showBookmark();// show bookmark for load home page too slow
+		if ((mBookMark.size() > 0) || (mHistory.size() > 0)) showBookmark();// show bookmark for load home page too slow
 		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 	}
 

@@ -63,6 +63,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
@@ -222,6 +224,7 @@ public class SimpleBrowser extends Activity {
 	RelativeLayout browserView;
 	LinearLayout webControl;
 	LinearLayout imageBtnList;
+	FrameLayout adContainer;
 	LinearLayout adContainer2;
 	int minWebControlWidth = 200;
 	int historyIndex = -1;
@@ -2774,6 +2777,7 @@ public class SimpleBrowser extends Activity {
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
+		adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
@@ -3522,10 +3526,8 @@ public class SimpleBrowser extends Activity {
 		
 		if (mAdAvailable) {
 			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
-			if ((adview != null) && (adview.getInstance() != null)) {
-				FrameLayout adContainer = (FrameLayout) findViewById(R.id.adContainer);
+			if ((adview != null) && (adview.getInstance() != null)) 
 				adContainer.addView(adview.getInstance());
-			}
 			
 			adview2 = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
@@ -3563,11 +3565,11 @@ public class SimpleBrowser extends Activity {
 	void updateHistoryViewHeight() {
 		if (historyList == null) return;
 		//reset height of history list so that it display not too many items
-		int height = (int) (dm.heightPixels / dm.density - 50);//50 is the height of ad banner
-		if (showUrl) height -= urlHeight;
-		if (showControlBar) height -= barHeight;
-		int maxSize = Math.max(height/2/42, height/42-mBookMark.size());// 42 is the height of each history with divider. should display equal rows of history and bookmark
-		height = (int) (Math.min(maxSize, mHistory.size()) * 43 * dm.density);//select a value from maxSize and mHistory.size().
+		int height = (int) (dm.heightPixels - adContainer.getHeight());//50 is the height of ad banner
+		if (showUrl) height -= urlHeight*dm.density;
+		if (showControlBar) height -= barHeight*dm.density;
+		int maxSize = Math.max(height/2, height-mBookMark.size()*42);// 42 is the height of each history with divider. should display equal rows of history and bookmark
+		height = (int) (Math.min(maxSize, mHistory.size() * 43 * dm.density));//select a value from maxSize and mHistory.size().
 
 		LayoutParams lp = historyList.getLayoutParams();
 		lp.height = height;

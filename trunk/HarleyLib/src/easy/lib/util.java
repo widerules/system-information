@@ -114,8 +114,7 @@ public class util {
 
 		String status = Environment.getExternalStorageState();
 		if (status.equals(Environment.MEDIA_MOUNTED))
-			downloadPath = Environment.getExternalStorageDirectory()
-					+ "/simpleHome/";
+			downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/";
 
 		java.io.File myFilePath = new java.io.File(downloadPath);
 		try {
@@ -141,10 +140,6 @@ public class util {
 			else path.mkdir();// create folder
 
 			path = new File(downloadPath + "cache/");
-			if (path.isDirectory()) ;// folder exist
-			else path.mkdir();// create folder
-
-			path = new File(downloadPath + "bookmark/");
 			if (path.isDirectory()) ;// folder exist
 			else path.mkdir();// create folder
 		} catch (Exception e) {

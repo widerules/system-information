@@ -112,10 +112,12 @@ public class util {
 
 		String downloadPath = defaultPath + "/";
 
+		boolean hasSDcard = false;
 		String status = Environment.getExternalStorageState();
-		if (status.equals(Environment.MEDIA_MOUNTED))
-			downloadPath = Environment.getExternalStorageDirectory()
-					+ "/simpleHome/";
+		if (status.equals(Environment.MEDIA_MOUNTED)) {
+			downloadPath = Environment.getExternalStorageDirectory() + "/simpleHome/";
+			hasSDcard = true;
+		}
 
 		java.io.File myFilePath = new java.io.File(downloadPath);
 		try {
@@ -145,8 +147,11 @@ public class util {
 			else path.mkdir();// create folder
 
 			path = new File(downloadPath + "bookmark/");
-			if (path.isDirectory()) ;// folder exist
-			else path.mkdir();// create folder
+			if (hasSDcard) {// if create this folder without sdcard, it will lose bookmarks
+				if (path.isDirectory()) ;// folder exist
+				else path.mkdir();// create folder
+			}
+			else if (path.isDirectory()) path.delete();
 		} catch (Exception e) {
 			downloadPath = defaultPath + "/";
 		}

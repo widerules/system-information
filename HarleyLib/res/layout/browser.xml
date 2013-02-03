@@ -158,7 +158,8 @@
                     android:scaleType="center"
                     android:src="@drawable/refresh" />
 
-                <!-- ImageView
+                <!--
+                     ImageView
                     android:id="@+id/menu"
                     android:layout_width="0dip"
                     android:layout_height="35dip"
@@ -167,7 +168,8 @@
                     android:background="@drawable/imagebutton_layout"
                     android:scaleType="fitCenter"
                     android:src="@drawable/menu"
-                    android:visibility="gone" /-->
+                    android:visibility="gone" /
+                -->
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
@@ -299,113 +301,116 @@
                 android:background="@drawable/imagebutton_layout"
                 android:src="@drawable/arrow_expand" />
         </LinearLayout>
+    </RelativeLayout>
 
-        <GridView
-            android:id="@+id/grid_menu"
-            android:layout_width="120dip"
+    <GridView
+        android:id="@+id/grid_menu"
+        android:layout_width="120dip"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/webtools"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/urlline"
+        android:background="#ff494949"
+        android:cacheColorHint="#00000000"
+        android:gravity="bottom"
+        android:numColumns="2"
+        android:stackFromBottom="true"
+        android:stretchMode="columnWidth" />
+
+    <FrameLayout
+        android:id="@+id/bookmarkDownloads"
+        android:layout_width="120dip"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/webtools"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/urlline"
+        android:background="#ff494949" >
+
+        <ListView
+            android:id="@+id/downloads"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_alignParentRight="true"
-            android:background="#ff494949"
-            android:cacheColorHint="#00000000"
-            android:gravity="bottom"
-            android:numColumns="2"
-            android:stackFromBottom="true"
-            android:stretchMode="columnWidth" />
-
-        <FrameLayout
-            android:id="@+id/bookmarkDownloads"
-            android:layout_width="120dip"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true"
-            android:background="#ff494949" >
-
-            <ListView
-                android:id="@+id/downloads"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:divider="@drawable/divider"
-                android:dividerHeight="2px"
-                android:stackFromBottom="true"
-                android:fadingEdgeLength="0dip"
-                android:scrollingCache="false" />
-
-            <LinearLayout
-                android:id="@+id/bookmarkView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:gravity="bottom"
-                android:orientation="vertical" >
-
-                <ListView
-                    android:id="@+id/history"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:fadingEdgeLength="0dip"
-                    android:scrollingCache="false"
-                    android:divider="@drawable/divider"
-                    android:dividerHeight="2px" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:orientation="vertical" >
-
-                    <FrameLayout
-                        android:id="@+id/adContainer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
-
-                        <View
-                            android:layout_width="320dip"
-                            android:layout_height="20dip"
-                            android:background="@drawable/button_layout" />
-                    </FrameLayout>
-                </HorizontalScrollView>
-
-                <ListView
-                    android:id="@+id/bookmark"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:fadingEdgeLength="0dip"
-                    android:scrollingCache="false"
-                    android:divider="@drawable/divider"
-                    android:dividerHeight="2px" />
-            </LinearLayout>
-        </FrameLayout>
+            android:divider="@drawable/divider"
+            android:dividerHeight="2px"
+            android:fadingEdgeLength="0dip"
+            android:scrollingCache="false"
+            android:stackFromBottom="true" />
 
         <LinearLayout
-            android:id="@+id/webcontrol"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/webtools"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_toLeftOf="@id/grid_menu"
-            android:layout_toRightOf="@id/bookmarkDownloads"
-            android:background="@drawable/panel_background"
+            android:id="@+id/bookmarkView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:gravity="bottom"
-            android:orientation="vertical"
-            android:visibility="invisible" >
+            android:orientation="vertical" >
 
             <ListView
-                android:id="@+id/weblist"
+                android:id="@+id/history"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:divider="@drawable/divider"
-                android:dividerHeight="2px" />
+                android:dividerHeight="2px"
+                android:fadingEdgeLength="0dip"
+                android:scrollingCache="false" />
 
-            <Button
-                android:id="@+id/opennewpage"
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:orientation="vertical" >
+
+                <FrameLayout
+                    android:id="@+id/adContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <View
+                        android:layout_width="320dip"
+                        android:layout_height="20dip"
+                        android:background="@drawable/button_layout" />
+                </FrameLayout>
+            </HorizontalScrollView>
+
+            <ListView
+                android:id="@+id/bookmark"
                 android:layout_width="fill_parent"
-                android:layout_height="40dip"
-                android:background="@drawable/button_layout"
-                android:gravity="center"
-                android:text="@string/newpage"
-                android:textColor="#FF333333"
-                android:textSize="20dip"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content"
+                android:divider="@drawable/divider"
+                android:dividerHeight="2px"
+                android:fadingEdgeLength="0dip"
+                android:scrollingCache="false" />
         </LinearLayout>
-    </RelativeLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/webcontrol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/webtools"
+        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@id/grid_menu"
+        android:layout_toRightOf="@id/bookmarkDownloads"
+        android:background="@drawable/panel_background"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/weblist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider"
+            android:dividerHeight="2px" />
+
+        <Button
+            android:id="@+id/opennewpage"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:background="@drawable/button_layout"
+            android:gravity="center"
+            android:text="@string/newpage"
+            android:textColor="#FF333333"
+            android:textSize="20dip"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </RelativeLayout>

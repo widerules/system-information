@@ -103,7 +103,7 @@
     <string name="overview_page">Open Pages in Overview</string>
     <string name="share_to_friends">Share and follow</string>
     <string name="cache_prefer">Cache prefered to reduce bandwidth</string>
-    <string name="add_shortcut">Create shortcut on home screen</string>
+    <string name="add_shortcut">Shortcut</string>
     <string name="share_mode">Share2</string>
     <string name="native_apps">Apps"    "</string>
     <string name="facebook">Facebook" "</string>
@@ -114,7 +114,7 @@
     <string name="sendto">Feedback</string>
     <string name="click_for_detail">Click for details</string>
     <string name="crashed">crashed</string>
-    <string name="set_homepage">Set as homepage</string>
+    <string name="set_homepage">As home</string>
     <string name="icon">Icon</string>
     <string name="display_mode">display</string>
     <string name="rotate_mode">Rotate" "</string>

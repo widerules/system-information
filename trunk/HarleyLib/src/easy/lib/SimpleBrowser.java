@@ -1816,16 +1816,12 @@ public class SimpleBrowser extends Activity {
 				if (!showUrl) setUrlHeight(true);
 				if (!showControlBar) setBarHeight(true);
 			}
-			else {//restore bars and show menu
-				setUrlHeight(showUrl);
-				setBarHeight(showControlBar);
 				
-				menuOpened = true;
-				if (menuGrid.getChildCount() == 0) initMenuDialog();
-				menuGrid.getLayoutParams().width = menuWidth;
-				menuGrid.requestLayout();
-				if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) hideBookmark();
-			}
+			menuOpened = true;
+			if (menuGrid.getChildCount() == 0) initMenuDialog();
+			menuGrid.getLayoutParams().width = menuWidth;
+			menuGrid.requestLayout();
+			if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) hideBookmark();
 		}
 		return false;// show system menu if return true.
 	}
@@ -2897,7 +2893,6 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void showBookmark() {
-		if (!showUrl) setUrlHeight(showUrl);// hide url if it should not display
 		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
 		bookmarkDownloads.requestLayout();
 		bookmarkOpened = true;

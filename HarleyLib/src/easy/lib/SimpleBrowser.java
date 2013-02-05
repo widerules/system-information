@@ -3475,7 +3475,7 @@ public class SimpleBrowser extends Activity {
 		if (showUrl) height -= urlHeight;
 		if (showControlBar) height -= barHeight;
 		int size = height / 72;// 72 is the height of each menu item
-		if (size > 7) {
+		if (size > 9) {
 			menuWidth = (int) (80*dm.density);// 80 dip for single column
 			menuGrid.setNumColumns(1);
 		}

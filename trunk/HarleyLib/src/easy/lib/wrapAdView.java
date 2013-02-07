@@ -66,20 +66,10 @@ public class wrapAdView {
 		public void onPresentScreen(Ad arg0) {// Called when an Activity is
 												// created in front of the app
 			//Log.d("=============Ads onpresent", "");
-			if (mHandler != null) {
-				Message dismiss = mHandler.obtainMessage();
-				dismiss.what = 2;
-				mHandler.sendMessage(dismiss);
-			}
 		}
 
 		@Override
 		public void onReceiveAd(Ad arg0) {
-			if (mHandler != null) {
-				Message dismiss = mHandler.obtainMessage();
-				dismiss.what = 3;
-				mHandler.sendMessage(dismiss);
-			}
 		}
 	}
 

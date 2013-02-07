@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="harley.browser"
-    android:versionCode="44"
+    android:versionCode="45"
     android:versionName="1.2.4" >
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,7 +10,6 @@
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
     
     
@@ -39,7 +38,7 @@
         <activity
             android:name="easy.lib.SimpleBrowser"
             android:hardwareAccelerated="true"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:icon="@drawable/explorer"
             android:label="@string/browser_name"
             android:launchMode="singleTask" >
@@ -104,7 +103,7 @@
         </activity>
         <activity
             android:name="easy.lib.downloadControl"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"
             android:launchMode="singleInstance"
@@ -118,7 +117,7 @@
         
         <activity
             android:name="easy.lib.CrashControl"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"
             android:launchMode="singleInstance"
@@ -132,7 +131,7 @@
         
         <activity
             android:name="easy.lib.AboutBrowser"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" >
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale" >
             <intent-filter>
                 <action android:name="easy.lib.about" />
 
@@ -141,7 +140,7 @@
         </activity>
         <activity
             android:name="com.google.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:label="@string/browser_name" />
     </application>
 

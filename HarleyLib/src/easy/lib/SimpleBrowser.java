@@ -37,7 +37,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,7 +45,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -63,13 +61,10 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -113,14 +108,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
-import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -1896,45 +1889,6 @@ public class SimpleBrowser extends Activity {
 		util.startActivity(shareIntent, false, mContext);
 	}
 
-	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
-		List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
-		int size = resolveInfoList.size();
-		ComponentName[] arrayOfComponentName = new ComponentName[size];
-		for (int i = 0; i < size; i++) {
-			ActivityInfo activityInfo = resolveInfoList.get(i).activityInfo;
-			String packageName = activityInfo.packageName;
-			String className = activityInfo.name;
-			//clear default browser
-			try{pm.clearPackagePreferredActivities(packageName);} catch(Exception e) {}
-			ComponentName componentName = new ComponentName(packageName, className);
-			arrayOfComponentName[i] = componentName;
-		}
-		
-		ComponentName component = new ComponentName(mContext.getPackageName(), "easy.lib.SimpleBrowser");
-		pm.addPreferredActivity(filter,	IntentFilter.MATCH_CATEGORY_SCHEME, arrayOfComponentName, component);
-	}
-
-	public void setAsDefaultApp() {
-		PackageManager pm = getPackageManager();
-		
-		try {pm.addPackageToPreferred(getPackageName());} catch(Exception e) {} // for 1.5 platform
-		
-		// set default browser for 1.6-2.1 platform. not work for 2.2 and up platform
-		Intent intent = new Intent("android.intent.action.VIEW");
-		intent.addCategory("android.intent.category.BROWSABLE");
-		intent.addCategory("android.intent.category.DEFAULT");
-		
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.intent.action.VIEW");
-		filter.addCategory("android.intent.category.BROWSABLE");
-		filter.addCategory("android.intent.category.DEFAULT");
-		filter.addDataScheme("http");
-		
-		Uri uri = Uri.parse("http://");
-		intent.setDataAndType(uri, null);
-		setDefault(pm, intent, filter);		
-	}
-	
 	public void readPreference() {
 		// paid = sp.getBoolean("paid", false);
 		// debug = sp.getBoolean("debug", false);
@@ -2576,8 +2530,6 @@ public class SimpleBrowser extends Activity {
 		sEdit = sp.edit();
 		readPreference();
 
-		setAsDefaultApp();
-		
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();
 		appstate = ((MyApp) getApplicationContext());

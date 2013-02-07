@@ -279,17 +279,23 @@ public class AboutBrowser extends Activity {
 
 						imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 						cbEnableProxy = (CheckBox) findViewById(R.id.enable_proxy);
+						cbEnableProxy.setChecked(perferences.getBoolean("enable_proxy", false));
 						etPort = (EditText) findViewById(R.id.local_port);
+						if (!cbEnableProxy.isChecked()) {// close soft keyboard
+							imm.hideSoftInputFromWindow(etPort.getWindowToken(), 0);
+							etPort.setVisibility(View.GONE);
+						}
+						else etPort.setVisibility(View.VISIBLE);
 						cbEnableProxy.setOnClickListener(new OnClickListener() {
 							@Override
 							public void onClick(View v) {
 								boolean proxyEnabled = cbEnableProxy.isChecked();
-								etPort.setEnabled(proxyEnabled);
-								etPort.setFocusable(proxyEnabled);
-								etPort.setFocusableInTouchMode(proxyEnabled);
-								if (!proxyEnabled) // close soft keyboard
+								if (!proxyEnabled) {// close soft keyboard
 									imm.hideSoftInputFromWindow(etPort.getWindowToken(), 0);
+									etPort.setVisibility(View.GONE);
+								}
 								else { // detect GAE and Orbot
+									etPort.setVisibility(View.VISIBLE);
 									List<ApplicationInfo> li = getPackageManager().getInstalledApplications(0);
 									boolean found = false;
 									for (int i = 0; i < li.size(); i++) {
@@ -332,9 +338,7 @@ public class AboutBrowser extends Activity {
 													public void onClick(DialogInterface dialog,
 															int which) {
 														cbEnableProxy.setChecked(false);
-														etPort.setEnabled(false);
-														etPort.setFocusable(false);
-														etPort.setFocusableInTouchMode(false);
+														etPort.setVisibility(View.GONE);
 													}
 												}).show();
 									}
@@ -388,11 +392,7 @@ public class AboutBrowser extends Activity {
 						cbOverview.setChecked(perferences.getBoolean("overview_page", false));
 						cbSnapSize.setChecked(perferences.getBoolean("full_web", false));
 						cbHtml5.setChecked(perferences.getBoolean("html5", false));
-						cbEnableProxy.setChecked(perferences.getBoolean("enable_proxy", false));
 						etPort.setText(perferences.getInt("local_port", 1984) + "");
-						etPort.setEnabled(cbEnableProxy.isChecked());
-						etPort.setFocusable(cbEnableProxy.isChecked());
-						etPort.setFocusableInTouchMode(cbEnableProxy.isChecked());
 
 						try {
 							((RadioButton) encodingType.getChildAt(perferences.getInt("encoding", 0))).setChecked(true);

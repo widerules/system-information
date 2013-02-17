@@ -467,7 +467,7 @@ public class SimpleBrowser extends Activity {
 				if (!"".equals(bookmarks) && !",,,,".equals(bookmarks)) {
 					String[] tmp2 = bookmarks.split(",,,,");
 					for (int i = tmp2.length-1; i >= 0; i--) 
-						mBookMark.remove(Integer.valueOf(tmp2[i]) + 0);// it will not treat as integer if not add 0
+						try{mBookMark.remove(Integer.valueOf(tmp2[i]) + 0);} catch(Exception e) {}// it will not treat as integer if not add 0
 					updateBookmark();
 					bookmarkChanged = true;
 				}
@@ -959,7 +959,7 @@ public class SimpleBrowser extends Activity {
 		try {// write opened url to /data/data/easy.browser/files/pages
 			FileOutputStream fo = openFileOutput("pages", 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);
-			for (int i = serverWebs.size()-1; i >= 0; i--) {
+			for (int i = 0; i < serverWebs.size(); i++) {
 				if (!HOME_PAGE.equals(serverWebs.get(i).m_url)) {
 					oos.writeObject(serverWebs.get(i).m_url);
 				}
@@ -2769,7 +2769,10 @@ public class SimpleBrowser extends Activity {
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-				if (!incognitoMode && readPages("pages")) closePage(0, false);// the first page is no use if open saved url or homepage
+				if (!incognitoMode && readPages("pages")) {
+					closePage(0, false);// the first page is no use if open saved url or homepage
+					changePage(0);
+				}
 				else if ((m_homepage != null) && !"".equals(m_homepage)) serverWebs.get(webIndex).loadUrl(m_homepage);
 				else loadPage();// load about:blank if no url saved or homepage specified
 			}

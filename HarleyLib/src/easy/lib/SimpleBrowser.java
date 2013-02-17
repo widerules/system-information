@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -65,6 +66,7 @@ import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -1007,7 +1009,7 @@ public class SimpleBrowser extends Activity {
 		try {// write opened url to /data/data/easy.browser/files/pages
 			FileOutputStream fo = openFileOutput("pages", 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);
-			for (int i = serverWebs.size()-1; i >= 0; i--) {
+			for (int i = 0; i < serverWebs.size(); i++) {
 				if (!HOME_PAGE.equals(serverWebs.get(i).m_url)) {
 					oos.writeObject(serverWebs.get(i).m_url);
 				}
@@ -2827,7 +2829,10 @@ public class SimpleBrowser extends Activity {
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
-				if (!incognitoMode && readPages("pages")) closePage(0, false);// the first page is no use if open saved url or homepage
+				if (!incognitoMode && readPages("pages")) {
+					closePage(0, false);// the first page is no use if open saved url or homepage
+					changePage(0);
+				}
 				else if ((m_homepage != null) && !"".equals(m_homepage)) serverWebs.get(webIndex).loadUrl(m_homepage);
 				else loadPage();// load about:blank if no url saved or homepage specified
 			}
@@ -2886,7 +2891,8 @@ public class SimpleBrowser extends Activity {
 				ois.close();
 				fi.close();
 			} catch (Exception e1) {}
-		} catch (Exception e) {}
+		} 
+		catch (Exception e) {}
 
 		return ((url != null) && !"".equals(url));
 	}

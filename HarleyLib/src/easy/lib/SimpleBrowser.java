@@ -2831,7 +2831,6 @@ public class SimpleBrowser extends Activity {
 			if (Intent.ACTION_MAIN.equals(getIntent().getAction())) {
 				if (!incognitoMode && readPages("pages")) {
 					closePage(0, false);// the first page is no use if open saved url or homepage
-					changePage(0);
 				}
 				else if ((m_homepage != null) && !"".equals(m_homepage)) serverWebs.get(webIndex).loadUrl(m_homepage);
 				else loadPage();// load about:blank if no url saved or homepage specified

@@ -1201,7 +1201,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 			
-			showUrl = sp.getBoolean("show_url", true);
+			showUrl = sp.getBoolean("show_url", false);
 			showControlBar = sp.getBoolean("show_controlBar", true);
 			setWebpagesLayout();
 			
@@ -1927,7 +1927,7 @@ public class SimpleBrowser extends Activity {
 		updownButton = sp.getBoolean("up_down", false);
 		
 		showStatusBar = sp.getBoolean("show_statusBar", true);
-		showUrl = sp.getBoolean("show_url", true);
+		showUrl = sp.getBoolean("show_url", false);
 		showControlBar = sp.getBoolean("show_controlBar", true);
 		
 		

@@ -2744,12 +2744,18 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).goForward();
 			}
 		});
+		imgNext.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {// long click next key to show menu?
+				onMenuOpened(0, null);
+				return true;
+			}
+		});
 		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (serverWebs.get(webIndex).canGoBack())
-					serverWebs.get(webIndex).goBack();
+				actionBack();
 			}
 		});
 		imgRefresh = (ImageView) findViewById(R.id.refresh);
@@ -3212,33 +3218,37 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
+	void actionBack() {
+		if (browserView.getVisibility() == View.GONE) hideCustomView();// playing video. need wait it over?
+		else if (menuOpened) hideMenu();
+		else if (bookmarkOpened) hideBookmark();
+		else if (webControl.getVisibility() == View.VISIBLE)
+			webControl.setVisibility(View.INVISIBLE);// hide web control
+		else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
+			hideSearchBox();
+		else if (HOME_BLANK.equals(webAddress.getText().toString())) {
+			// hide browser when click back key on homepage.
+			// this is a singleTask activity, so if return
+			// super.onKeyDown(keyCode, event), app will exit.
+			// when use click browser icon again, it will call onCreate,
+			// user's page will not reopen.
+			// singleInstance will work here, but it will cause
+			// downloadControl not work? or select file not work?
+			if (serverWebs.size() == 1)
+				moveTaskToBack(true);
+			else closePage(webIndex, false); // close blank page if more than one page
+		} 
+		else if (serverWebs.get(webIndex).canGoBack())
+			serverWebs.get(webIndex).goBack();
+		else
+			closePage(webIndex, false);// close current page if can't go back		
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				if (browserView.getVisibility() == View.GONE) hideCustomView();// playing video. need wait it over?
-				else if (menuOpened) hideMenu();
-				else if (bookmarkOpened) hideBookmark();
-				else if (webControl.getVisibility() == View.VISIBLE)
-					webControl.setVisibility(View.INVISIBLE);// hide web control
-				else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
-					hideSearchBox();
-				else if (HOME_BLANK.equals(webAddress.getText().toString())) {
-					// hide browser when click back key on homepage.
-					// this is a singleTask activity, so if return
-					// super.onKeyDown(keyCode, event), app will exit.
-					// when use click browser icon again, it will call onCreate,
-					// user's page will not reopen.
-					// singleInstance will work here, but it will cause
-					// downloadControl not work? or select file not work?
-					if (serverWebs.size() == 1)
-						moveTaskToBack(true);
-					else closePage(webIndex, false); // close blank page if more than one page
-				} else if (serverWebs.get(webIndex).canGoBack())
-					imgPrev.performClick();
-				else
-					closePage(webIndex, false);// close current page if can't go back
-
+				actionBack();
 				return true;
 			}
 		}

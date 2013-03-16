@@ -2525,7 +2525,7 @@ public class SimpleBrowser extends Activity {
 		imgGo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				gotoUrl(webAddress.getText().toString());
+				gotoUrl(webAddress.getText().toString().toLowerCase());
 			}
 		});
 
@@ -2871,6 +2871,8 @@ public class SimpleBrowser extends Activity {
 
 	void gotoUrl(String url) {
 		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
+		else if (url.startsWith("file:")) ; // do nothing for file schema
+		else if (!url.contains("://")) url = "http://" + url;
 		else if (!url.contains(".")) {
 			if ((!incognitoMode) && (siteArray.indexOf(url) < 0)) {
 				siteArray.add(url);
@@ -2901,7 +2903,7 @@ public class SimpleBrowser extends Activity {
 				break;
 			}
 		} 
-		else if (!url.contains("://")) url = "http://" + url;
+
 		if (!url.equals(serverWebs.get(webIndex).getUrl())) serverWebs.get(webIndex).loadUrl(url);//only load page if input different url
 	}
 

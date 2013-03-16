@@ -382,6 +382,19 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/fakeWebcontrol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/webtools"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/grid_menu"
+        android:layout_toLeftOf="@id/bookmarkDownloads"
+        android:background="@drawable/panel_background"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:visibility="invisible" />
+
+    <LinearLayout
         android:id="@+id/webcontrol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

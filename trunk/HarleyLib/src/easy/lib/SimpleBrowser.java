@@ -217,7 +217,7 @@ public class SimpleBrowser extends Activity {
 	LinearLayout bookmarkView;
 	ListView downloadsList;
 	RelativeLayout browserView;
-	LinearLayout webControl;
+	LinearLayout webControl, fakeWebControl;
 	LinearLayout imageBtnList;
 	FrameLayout adContainer;
 	LinearLayout adContainer2;
@@ -2426,6 +2426,7 @@ public class SimpleBrowser extends Activity {
 	public void initWebControl() {
 		// web control
 		webControl = (LinearLayout) browserView.findViewById(R.id.webcontrol);
+		fakeWebControl = (LinearLayout) browserView.findViewById(R.id.fakeWebcontrol);
 		
 		btnNewpage = (Button) browserView.findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
@@ -2821,14 +2822,30 @@ public class SimpleBrowser extends Activity {
 		toolNad.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
+				//change position of ads and buttons
 				LayoutParams lp1 = imageBtnList.getLayoutParams();
 				LayoutParams lp2 = adContainer2.getLayoutParams();
 				
 				lp1.height = (int)(50 * dm.density);
 				lp2.height = (int)(40 * dm.density);
 				
-				adContainer2.setLayoutParams(lp1);
 				imageBtnList.setLayoutParams(lp2);
+				adContainer2.setLayoutParams(lp1);
+				
+				//change position of bookmark and menu
+				lp1 = bookmarkDownloads.getLayoutParams();
+				lp2 = menuGrid.getLayoutParams();
+				int tmp = lp1.width;
+				lp1.width = lp2.width;
+				lp2.width = tmp;
+				bookmarkDownloads.setLayoutParams(lp2);
+				menuGrid.setLayoutParams(lp1);
+				
+				//revert toLeft and toRight of webControl
+				lp1 = webControl.getLayoutParams();
+				lp2 = fakeWebControl.getLayoutParams();
+				webControl.setLayoutParams(lp2);
+				fakeWebControl.setLayoutParams(lp1);
 			}
 		});
 		

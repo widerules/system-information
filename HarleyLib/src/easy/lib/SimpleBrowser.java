@@ -2755,7 +2755,8 @@ public class SimpleBrowser extends Activity {
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				actionBack();
+				if (serverWebs.get(webIndex).canGoBack())
+					serverWebs.get(webIndex).goBack();
 			}
 		});
 		imgRefresh = (ImageView) findViewById(R.id.refresh);

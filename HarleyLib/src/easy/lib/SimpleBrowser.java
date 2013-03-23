@@ -152,6 +152,9 @@ public class SimpleBrowser extends Activity {
 	boolean firstRun = false;
 
 	ListView webList;
+	int revertCount = 0;
+	boolean needRevert = false;
+
 	Context mContext;
 	String browserName;
 
@@ -227,7 +230,6 @@ public class SimpleBrowser extends Activity {
 	int menuWidth = LayoutParams.WRAP_CONTENT;
 	boolean menuOpened = true;
 	boolean bookmarkOpened = true;
-	int revertCount = 0;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -875,11 +877,12 @@ public class SimpleBrowser extends Activity {
 				ViewGroup parent) {
 			final MyWebview wv = (MyWebview) localWeblist.get(position);
 
-			if (convertView == null) {
-				final LayoutInflater inflater = getLayoutInflater();
-				convertView = inflater
-						.inflate(R.layout.web_list, parent, false);
-			}
+			final LayoutInflater inflater = getLayoutInflater();
+			if (needRevert) 
+				convertView = inflater.inflate(R.layout.revert_web_list, parent, false);
+			else
+				convertView = inflater.inflate(R.layout.web_list, parent, false);
+			
 			if (position == webIndex)
 				convertView.setBackgroundColor(0x80ffffff);
 			else
@@ -916,22 +919,6 @@ public class SimpleBrowser extends Activity {
 				}
 			});
 
-			if (revertCount > 1) {
-				//change position of ads and buttons
-				LayoutParams lp1 = btnIcon.getLayoutParams();
-				LayoutParams lp2 = btnStop.getLayoutParams();
-				
-				lp1.height = (int)(40 * dm.density);
-				lp1.width = (int)(40 * dm.density);
-				lp2.height = (int)(16 * dm.density);
-				lp2.width = (int)(36 * dm.density);
-				
-				btnIcon.setLayoutParams(lp2);
-				btnIcon.setPadding(10, 0, 10, 0);
-				btnStop.setLayoutParams(lp1);
-				btnStop.setPadding(5, 5, 5, 5);
-			}
-			
 			return convertView;
 		}
 	}
@@ -2871,9 +2858,10 @@ public class SimpleBrowser extends Activity {
 				fakeWebControl.setLayoutParams(lp1);
 				
 				revertCount++;
-				if (revertCount > 1)
-					if (webControl.getVisibility() == View.VISIBLE)
-						webControl.setVisibility(View.INVISIBLE);// hide web control					
+				if ((revertCount > 1) && (revertCount % 2 == 0))
+					needRevert = true;
+				else needRevert = false;
+				webList.invalidateViews();
 			}
 		});
 		

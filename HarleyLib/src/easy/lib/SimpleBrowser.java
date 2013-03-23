@@ -2887,7 +2887,6 @@ public class SimpleBrowser extends Activity {
 			hideMenu();
 		}
 		if (bookmarkAdapter == null) initBookmarks();
-		if (adview != null) adview.loadAd();
 	}
 	
 	void reloadPage() {
@@ -3515,8 +3514,10 @@ public class SimpleBrowser extends Activity {
 		
 		if (mAdAvailable) {
 			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
-			if ((adview != null) && (adview.getInstance() != null)) 
+			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());
+				adview.loadAd();
+			}
 			
 			adview2 = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 

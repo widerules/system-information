@@ -8,9 +8,10 @@
 
         <ImageView
             android:id="@+id/webicon"
-            android:layout_width="16dip"
+            android:layout_width="36dip"
             android:layout_height="16dip"
-            android:layout_marginLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingLeft="10dip"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:scaleType="centerCrop" />
@@ -19,7 +20,7 @@
             android:id="@+id/webname"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingLeft="36dip"
+            android:paddingLeft="40dip"
             android:paddingRight="36dip"
             android:gravity="center_vertical"
             android:singleLine="true"
@@ -34,7 +35,8 @@
             android:layout_height="40dip"
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
-            android:paddingRight="10dip"
+            android:paddingRight="5dip"
+            android:paddingLeft="5dip"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:scaleType="centerCrop"

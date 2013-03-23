@@ -411,6 +411,7 @@ public class SimpleBrowser extends Activity {
 		boolean isForeground = true;
 		boolean closeToBefore = true;
 		String m_ready = "";
+		boolean shouldCloseIfCannotBack = false;
 
 		public boolean myCanScrollVertically(int direction) {
 			if (canScrollVerticallyMethod != null)
@@ -633,7 +634,7 @@ public class SimpleBrowser extends Activity {
 				@Override
 				public boolean onCreateWindow(WebView view, boolean isDialog,
 						boolean isUserGesture, android.os.Message resultMsg) {
-					if (openNewPage(null, webIndex+1, true)) {// open new page success
+					if (openNewPage(null, webIndex+1, true, true)) {// open new page success
 						((WebView.WebViewTransport) resultMsg.obj)
 								.setWebView(serverWebs.get(webIndex));
 						resultMsg.sendToTarget();
@@ -1348,7 +1349,7 @@ public class SimpleBrowser extends Activity {
 					shareUrl("", url);
 					break;
 				case 6:// open in background
-					openNewPage(url, webAdapter.getCount(), false);// use openNewPage(url, webIndex+1, true) for open in new tab 
+					openNewPage(url, webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true) for open in new tab 
 					break;
 				case 7:// add short cut
 					createShortcut(url, mBookMark.get(item.getOrder()).m_title);
@@ -2452,7 +2453,7 @@ public class SimpleBrowser extends Activity {
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
-				openNewPage("", webIndex+1, true);
+				openNewPage("", webIndex+1, true, false);
 			}
 		});
 		// web list
@@ -2703,6 +2704,8 @@ public class SimpleBrowser extends Activity {
 			public void onClick(View arg0) {
 				if (serverWebs.get(webIndex).canGoBack())
 					serverWebs.get(webIndex).goBack();
+				else if (serverWebs.get(webIndex).shouldCloseIfCannotBack)
+					closePage(webIndex, false);
 			}
 		});
 		imgRefresh = (ImageView) findViewById(R.id.refresh);
@@ -2806,7 +2809,7 @@ public class SimpleBrowser extends Activity {
 			fi = openFileInput(filename);
 			ois = new ObjectInputStream(fi);
 			while ((url = (String) ois.readObject()) != null) {
-				if (!"".equals(url)) openNewPage(url, webAdapter.getCount(), false);
+				if (!"".equals(url)) openNewPage(url, webAdapter.getCount(), false, false);
 			}
 		} catch (EOFException e) {// only when read eof need send out msg.
 			try {
@@ -2971,7 +2974,7 @@ public class SimpleBrowser extends Activity {
 
 			if (!found) {
 				if (blankIndex < 0)
-					openNewPage(uri, webIndex + 1, true);
+					openNewPage(uri, webIndex + 1, true, true);
 				else {
 					serverWebs.get(blankIndex).loadUrl(uri);
 					changePage(blankIndex);
@@ -3088,7 +3091,7 @@ public class SimpleBrowser extends Activity {
 						}).show();
 	}
 
-	private boolean openNewPage(String url, int newIndex, boolean changeToNewPage) {
+	private boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
 		boolean result = true;
 
 		if (webAdapter.getCount() == 9) {// max pages is 9
@@ -3104,6 +3107,7 @@ public class SimpleBrowser extends Activity {
 			if (changeToNewPage) changePage(newIndex);
 			else serverWebs.get(newIndex).isForeground = false;
 			serverWebs.get(newIndex).closeToBefore = changeToNewPage;
+			serverWebs.get(newIndex).shouldCloseIfCannotBack = closeIfCannotBack;
 		}
 
 		if (url != null) {

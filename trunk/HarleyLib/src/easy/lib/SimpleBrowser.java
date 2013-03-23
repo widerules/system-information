@@ -2821,10 +2821,13 @@ public class SimpleBrowser extends Activity {
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
-		final FrameLayout toolNad = (FrameLayout) findViewById(R.id.webtoolnad);
-		toolNad.setOnClickListener(new OnClickListener() {
+		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
+		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
+				if (adContainer2.getVisibility() == View.GONE) 
+					return; // no need to change position if not width enough
+				
 				//change position of ads and buttons
 				LayoutParams lp1 = imageBtnList.getLayoutParams();
 				LayoutParams lp2 = adContainer2.getLayoutParams();

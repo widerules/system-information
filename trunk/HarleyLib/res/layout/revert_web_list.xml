@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/web_list"
+    android:id="@+id/revert_web_list"
     android:layout_width="fill_parent"
     android:layout_height="40dip"
     android:orientation="horizontal"
@@ -13,7 +13,7 @@
             android:paddingRight="10dip"
             android:paddingLeft="10dip"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:scaleType="centerCrop" />
 
         <TextView
@@ -31,14 +31,14 @@
 
         <ImageView
             android:id="@+id/webclose"
-            android:layout_width="50dip"
+            android:layout_width="40dip"
             android:layout_height="40dip"
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
-            android:paddingRight="10dip"
-            android:paddingLeft="10dip"
+            android:paddingRight="5dip"
+            android:paddingLeft="5dip"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:scaleType="centerCrop"
             android:src="@drawable/stop"
             />

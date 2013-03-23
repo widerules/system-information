@@ -227,6 +227,7 @@ public class SimpleBrowser extends Activity {
 	int menuWidth = LayoutParams.WRAP_CONTENT;
 	boolean menuOpened = true;
 	boolean bookmarkOpened = true;
+	int revertCount = 0;
 	
 	AutoCompleteTextView webAddress;
 	ArrayAdapter<String> urlAdapter;
@@ -915,6 +916,22 @@ public class SimpleBrowser extends Activity {
 				}
 			});
 
+			if (revertCount > 1) {
+				//change position of ads and buttons
+				LayoutParams lp1 = btnIcon.getLayoutParams();
+				LayoutParams lp2 = btnStop.getLayoutParams();
+				
+				lp1.height = (int)(40 * dm.density);
+				lp1.width = (int)(40 * dm.density);
+				lp2.height = (int)(16 * dm.density);
+				lp2.width = (int)(36 * dm.density);
+				
+				btnIcon.setLayoutParams(lp2);
+				btnIcon.setPadding(10, 0, 10, 0);
+				btnStop.setLayoutParams(lp1);
+				btnStop.setPadding(5, 5, 5, 5);
+			}
+			
 			return convertView;
 		}
 	}
@@ -2825,9 +2842,6 @@ public class SimpleBrowser extends Activity {
 		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
-				if (adContainer2.getVisibility() == View.GONE) 
-					return; // no need to change position if not width enough
-				
 				//change position of ads and buttons
 				LayoutParams lp1 = imageBtnList.getLayoutParams();
 				LayoutParams lp2 = adContainer2.getLayoutParams();
@@ -2837,6 +2851,9 @@ public class SimpleBrowser extends Activity {
 				
 				imageBtnList.setLayoutParams(lp2);
 				adContainer2.setLayoutParams(lp1);
+				
+				if (adContainer2.getVisibility() == View.GONE) 
+					return; // no need to change position of bookmark if not width enough
 				
 				//change position of bookmark and menu
 				lp1 = bookmarkDownloads.getLayoutParams();
@@ -2852,6 +2869,11 @@ public class SimpleBrowser extends Activity {
 				lp2 = fakeWebControl.getLayoutParams();
 				webControl.setLayoutParams(lp2);
 				fakeWebControl.setLayoutParams(lp1);
+				
+				revertCount++;
+				if (revertCount > 1)
+					if (webControl.getVisibility() == View.VISIBLE)
+						webControl.setVisibility(View.INVISIBLE);// hide web control					
 			}
 		});
 		

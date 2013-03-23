@@ -151,6 +151,9 @@ public class SimpleBrowser extends Activity {
 	int countDown = 0;
 
 	ListView webList;
+	int revertCount = 0;
+	boolean needRevert = false;
+
 	Context mContext;
 	String browserName;
 
@@ -911,11 +914,12 @@ public class SimpleBrowser extends Activity {
 				ViewGroup parent) {
 			final MyWebview wv = (MyWebview) localWeblist.get(position);
 
-			if (convertView == null) {
-				final LayoutInflater inflater = getLayoutInflater();
-				convertView = inflater
-						.inflate(R.layout.web_list, parent, false);
-			}
+			final LayoutInflater inflater = getLayoutInflater();
+			if (needRevert) 
+				convertView = inflater.inflate(R.layout.revert_web_list, parent, false);
+			else
+				convertView = inflater.inflate(R.layout.web_list, parent, false);
+
 			if (position == webIndex)
 				convertView.setBackgroundColor(0x80ffffff);
 			else
@@ -2772,6 +2776,15 @@ public class SimpleBrowser extends Activity {
 				
 				adContainer2.setLayoutParams(lp1);
 				imageBtnList.setLayoutParams(lp2);
+				
+				if (adContainer2.getVisibility() == View.GONE) 
+					return; // no need to change position if not width enough
+
+				revertCount++;
+				if ((revertCount > 1) && (revertCount % 2 == 0))
+					needRevert = true;
+				else needRevert = false;
+				webList.invalidateViews();
 			}
 		});
 		

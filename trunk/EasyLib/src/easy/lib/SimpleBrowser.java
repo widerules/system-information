@@ -1793,13 +1793,9 @@ public class SimpleBrowser extends Activity {
 		if (menuDialog == null) initMenuDialog();
 		
 		if (menuDialog.isShowing()) menuDialog.dismiss();
-		else if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0) ) { 
-			if (!showUrl) setUrlHeight(true);
-			if (!showControlBar) setBarHeight(true);
-		}
 		else {
-			setUrlHeight(showUrl);
-			setBarHeight(showControlBar);
+			setUrlHeight(true);
+			setBarHeight(true);
 			
 			menuDialog.show();
 		}

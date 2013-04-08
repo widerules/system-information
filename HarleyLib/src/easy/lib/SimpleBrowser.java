@@ -185,6 +185,7 @@ public class SimpleBrowser extends Activity {
 	// boolean hideExit = true;
 	boolean overviewPage = false;
 	Locale mLocale;
+	int bookmarkIndex = -1;
 
 	SharedPreferences sp;
 	Editor sEdit;
@@ -225,7 +226,6 @@ public class SimpleBrowser extends Activity {
 	FrameLayout adContainer;
 	LinearLayout adContainer2;
 	int minWebControlWidth = 200;
-	int historyIndex = -1;
 	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
 	int menuWidth = LayoutParams.WRAP_CONTENT;
 	boolean menuOpened = true;
@@ -1403,6 +1403,9 @@ public class SimpleBrowser extends Activity {
 						ext = ".jpg";
 					startDownload(url, ext);
 					break;
+				case 3:// open in foreground
+					openNewPage(url, webIndex+1, true, true); 
+					break;
 				case 4:// copy url
 					ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 					ClipMan.setText(url);
@@ -1411,9 +1414,19 @@ public class SimpleBrowser extends Activity {
 					shareUrl("", url);
 					break;
 				case 6:// open in background
-					openNewPage(url, webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true) for open in new tab 
+					openNewPage(url, webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
 					break;
-				case 10:// add bookmark. not use now
+				case 9: // remove bookmark
+					removeFavo(bookmarkIndex);
+					break;
+				case 10:// add bookmark
+					int historyIndex = -1;
+					for (int i = 0; i < mHistory.size(); i++) {
+						if (mHistory.get(i).m_url.equals(url)) {
+							historyIndex = i;
+							break;
+						}
+					}
 					if (historyIndex > -1)
 						addFavo(url, mHistory.get(historyIndex).m_title);
 					else addFavo(url, url);
@@ -1426,13 +1439,26 @@ public class SimpleBrowser extends Activity {
 		// set the title to the url
 		menu.setHeaderTitle(result.getExtra());
 		if (url != null) {
-			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(
-					handler);
-			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(
-					handler);
-
-			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
+			if (dm.heightPixels > 480) // only show this menu item on large screen
+				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
 			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
+
+			if (dm.heightPixels > 480) {// only show this menu item on large screen
+				boolean foundBookmark = false;
+				for (int i = mBookMark.size() - 1; i >= 0; i--)
+					if (mBookMark.get(i).m_url.equals(url)) {
+						foundBookmark = true;
+						bookmarkIndex = i;
+						menu.add(0, 9, 0, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
+						break;
+					}
+				if (!foundBookmark)
+					menu.add(0, 10, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
+			}
+			
+			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
+			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
 		}
 	}
 

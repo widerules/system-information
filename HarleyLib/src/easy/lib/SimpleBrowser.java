@@ -1439,12 +1439,12 @@ public class SimpleBrowser extends Activity {
 		// set the title to the url
 		menu.setHeaderTitle(result.getExtra());
 		if (url != null) {
-			if (dm.heightPixels > 480) // only show this menu item on large screen
+			if (dm.heightPixels > dm.density*480) // only show this menu item on large screen
 				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
 			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
 			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
 
-			if (dm.heightPixels > 480) {// only show this menu item on large screen
+			if (dm.heightPixels > dm.density*480) {// only show this menu item on large screen
 				boolean foundBookmark = false;
 				for (int i = mBookMark.size() - 1; i >= 0; i--)
 					if (mBookMark.get(i).m_url.equals(url)) {

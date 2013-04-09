@@ -3008,38 +3008,39 @@ public class SimpleBrowser extends Activity {
 
 	void gotoUrl(String url) {
 		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
-		else if (url.startsWith("file:")) ; // do nothing for file schema
-		else if (!url.contains("://")) url = "http://" + url;
-		else if (!url.contains(".")) {
-			if ((!incognitoMode) && (siteArray.indexOf(url) < 0)) {
-				siteArray.add(url);
-				urlAdapter.add(url);
-				try {// write to /data/data/easy.browser/files/
-					FileOutputStream fo = openFileOutput("searchwords", MODE_APPEND);
-					ObjectOutputStream oos = new ObjectOutputStream(fo);
-					oos.writeObject(url);// record new search word
-					oos.flush();
-					oos.close();
-					fo.close();
-				} catch (Exception e) {}
+		else if (!url.contains("://")) {
+			if (!url.contains(".")) {
+				if ((!incognitoMode) && (siteArray.indexOf(url) < 0)) {
+					siteArray.add(url);
+					urlAdapter.add(url);
+					try {// write to /data/data/easy.browser/files/
+						FileOutputStream fo = openFileOutput("searchwords", MODE_APPEND);
+						ObjectOutputStream oos = new ObjectOutputStream(fo);
+						oos.writeObject(url);// record new search word
+						oos.flush();
+						oos.close();
+						fo.close();
+					} catch (Exception e) {}
+				}
+				
+				switch (searchEngine) {
+				case 1:// bing
+					url = "http://www.bing.com/search?q=" + url;
+					break;
+				case 2:// easou
+					url = "http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001&key=" + url;
+					break;
+				case 4:// yandex
+					url = "http://yandex.ru/yandsearch?clid=1911433&text=" + url;
+					break;
+				case 3:// google
+				default:
+					url = "http://www.google.com/search?q=" + url;
+					break;
+				}
 			}
-			
-			switch (searchEngine) {
-			case 1:// bing
-				url = "http://www.bing.com/search?q=" + url;
-				break;
-			case 2:// easou
-				url = "http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001&key=" + url;
-				break;
-			case 4:// yandex
-				url = "http://yandex.ru/yandsearch?clid=1911433&text=" + url;
-				break;
-			case 3:// google
-			default:
-				url = "http://www.google.com/search?q=" + url;
-				break;
-			}
-		} 
+			else url = "http://" + url;
+		}
 		
 		if (!url.equals(serverWebs.get(webIndex).getUrl())) serverWebs.get(webIndex).loadUrl(url);//only load page if input different url
 	}

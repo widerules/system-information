@@ -1,4 +1,26 @@
-void insert_sort(char* str, int len)
+void selection_sort(char* str, int len)
+{
+	int index = 0;
+	while (index < len)
+	{
+		int position = index;
+		char key = str[position];
+		int i;
+		for (i = index; i < len; i++)
+		{
+			if (key > str[i])
+			{
+				key = str[i];
+				position = i;
+			}
+		}
+		str[position] = str[index];
+		str[index] = key;
+		index++;
+	}
+}
+
+void insertion_sort(char* str, int len)
 {
 	int i;
 	for (i = 1; i < len; i++)
@@ -67,6 +89,11 @@ void main()
 
 	memset(s3, 0, 128);
 	strcpy(s3, "54321edcba");
-	insert_sort(s3, strlen(s3));
+	insertion_sort(s3, strlen(s3));
+	printf("s3 is %s\n", s3);
+
+	memset(s3, 0, 128);
+	strcpy(s3, "54321edcba");
+	selection_sort(s3, strlen(s3));
 	printf("s3 is %s\n", s3);
 }

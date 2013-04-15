@@ -20,23 +20,26 @@ void selection_sort(char* str, int len)
 	}
 }
 
+void insert(char* str, int len)
+{
+	int j = len - 1;
+	char key = str[len];
+	while (j >= 0 && (str[j] > key))
+	{
+		str[j+1] = str[j];
+		j--;
+	}
+	str[j+1] = key;
+}
+
 void insertion_sort_recurse(char* str, int len)
 {
-	if (len > 2)
+	if (len > 0)
 	{
 		insertion_sort_recurse(str, len-1);
+		insert(str, len-1);
 	}
-	else
-	{
-		int j = len - 1;
-		char key = str[len];
-		while (j >= 0 && (str[j] > key))
-		{
-			str[j+1] = str[j];
-			j--;
-		}
-		str[j+1] = key;
-	}
+	else return;
 }
 
 void insertion_sort(char* str, int len)

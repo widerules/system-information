@@ -1,3 +1,30 @@
+void swap_min(char* str, int len)
+{
+	int position = 0;
+	char key = str[position];
+	int i;
+	for (i = 1; i < len; i++)
+	{
+		if (key > str[i])
+		{
+			position = i;
+			key = str[position];
+		}
+	}
+	str[position] = str[0];
+	str[0] = key;
+}
+
+void selection_sort_recurse(char* str, int len)
+{
+	if (len > 1)
+	{
+		swap_min(str, len);
+		selection_sort_recurse(str+1, len-1);
+	}
+	else return;
+}
+
 void selection_sort(char* str, int len)
 {
 	int index = 0;
@@ -122,5 +149,10 @@ void main()
 	memset(s3, 0, 128);
 	strcpy(s3, "54321edcba");
 	selection_sort(s3, strlen(s3));
+	printf("s3 is %s\n", s3);
+
+	memset(s3, 0, 128);
+	strcpy(s3, "54321edcba");
+	selection_sort_recurse(s3, strlen(s3));
 	printf("s3 is %s\n", s3);
 }

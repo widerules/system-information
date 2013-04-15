@@ -3593,8 +3593,8 @@ public class SimpleBrowser extends Activity {
 		if (historyList == null) return;
 		//reset height of history list so that it display not too many items
 		int height = (int) (dm.heightPixels - adContainer.getHeight());//50 is the height of ad banner
-		if (showUrl) height -= urlHeight*dm.density;
-		if (showControlBar) height -= barHeight*dm.density;
+		height -= urlLine.getHeight()*dm.density;
+		height -= webTools.getHeight()*dm.density;
 		int maxSize = Math.max(height/2, height-mBookMark.size()*42);// 42 is the height of each history with divider. should display equal rows of history and bookmark
 		height = (int) (Math.min(maxSize, mHistory.size() * 43 * dm.density));//select a value from maxSize and mHistory.size().
 

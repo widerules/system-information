@@ -41,7 +41,7 @@
         android:label="@string/browser_name" >
         
 		<!-- for baidu tongji -->
-		<meta-data android:name="BaiduMobAd_CHANNEL" android:value="anzhi" />
+		<meta-data android:name="BaiduMobAd_CHANNEL" android:value="le" />
 		<meta-data android:name="BaiduMobAd_STAT_ID" android:value="428da1b5ed" />
 		
         <activity

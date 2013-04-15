@@ -1,3 +1,21 @@
+void bubble_sort(char* str, int len)
+{
+	int i;
+	for (i = 0; i < len; i++)
+	{
+		int j;
+		for (j = len-1; j > i; j--)
+		{
+			if (str[j] < str[j-1])
+			{
+				char tmp = str[j];
+				str[j] = str[j-1];
+				str[j-1] = tmp;
+			}
+		}
+	}
+}
+
 void swap_min(char* str, int len)
 {
 	int position = 0;
@@ -154,5 +172,10 @@ void main()
 	memset(s3, 0, 128);
 	strcpy(s3, "54321edcba");
 	selection_sort_recurse(s3, strlen(s3));
+	printf("s3 is %s\n", s3);
+
+	memset(s3, 0, 128);
+	strcpy(s3, "54321edcba");
+	bubble_sort(s3, strlen(s3));
 	printf("s3 is %s\n", s3);
 }

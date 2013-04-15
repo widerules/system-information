@@ -34,7 +34,7 @@ void insert(char* str, int len)
 
 void insertion_sort_recurse(char* str, int len)
 {
-	if (len > 0)
+	if (len > 1)
 	{
 		insertion_sort_recurse(str, len-1);
 		insert(str, len-1);

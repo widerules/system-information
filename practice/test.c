@@ -20,6 +20,25 @@ void selection_sort(char* str, int len)
 	}
 }
 
+void insertion_sort_recurse(char* str, int len)
+{
+	if (len > 2)
+	{
+		insertion_sort_recurse(str, len-1);
+	}
+	else
+	{
+		int j = len - 1;
+		char key = str[len];
+		while (j >= 0 && (str[j] > key))
+		{
+			str[j+1] = str[j];
+			j--;
+		}
+		str[j+1] = key;
+	}
+}
+
 void insertion_sort(char* str, int len)
 {
 	int i;
@@ -90,6 +109,11 @@ void main()
 	memset(s3, 0, 128);
 	strcpy(s3, "54321edcba");
 	insertion_sort(s3, strlen(s3));
+	printf("s3 is %s\n", s3);
+
+	memset(s3, 0, 128);
+	strcpy(s3, "54321edcba");
+	insertion_sort_recurse(s3, strlen(s3));
 	printf("s3 is %s\n", s3);
 
 	memset(s3, 0, 128);

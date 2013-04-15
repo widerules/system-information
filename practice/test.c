@@ -1,3 +1,27 @@
+void exange(char* str, int len)
+{
+	int i;
+	for (i = len-1; i > 0; i--)
+	{
+		if (str[i] < str[i-1])
+		{
+			char tmp = str[i];
+			str[i] = str[i-1];
+			str[i-1] = tmp;
+		}
+	}
+}
+
+void bubble_sort_recurse(char* str, int len)
+{
+	if (len > 1)
+	{
+		exange(str, len);
+		bubble_sort_recurse(str+1, len-1);
+	}
+	else return;
+}
+
 void bubble_sort(char* str, int len)
 {
 	int i;
@@ -177,5 +201,10 @@ void main()
 	memset(s3, 0, 128);
 	strcpy(s3, "54321edcba");
 	bubble_sort(s3, strlen(s3));
+	printf("s3 is %s\n", s3);
+
+	memset(s3, 0, 128);
+	strcpy(s3, "54321edcba");
+	bubble_sort_recurse(s3, strlen(s3));
 	printf("s3 is %s\n", s3);
 }

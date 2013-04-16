@@ -1361,6 +1361,7 @@ public class SimpleBrowser extends Activity {
 			lpUrl.height = LayoutParams.WRAP_CONTENT;
 		else lpUrl.height = 0;
 		urlLine.requestLayout();		
+		updateHistoryViewHeight();
 	}
 	
 	void setBarHeight(boolean showBarNow) {
@@ -1368,7 +1369,8 @@ public class SimpleBrowser extends Activity {
 		if (showBarNow) 
 			lpBar.height = LayoutParams.WRAP_CONTENT;
 		else lpBar.height = 0;
-		webTools.requestLayout();		
+		webTools.requestLayout();
+		updateHistoryViewHeight();
 	}
 	
 	void hideMenu() {
@@ -3595,8 +3597,8 @@ public class SimpleBrowser extends Activity {
 		int height = (int) (dm.heightPixels - adContainer.getHeight());//50 is the height of ad banner
 		height -= urlLine.getHeight()*dm.density;
 		height -= webTools.getHeight()*dm.density;
-		int maxSize = Math.max(height/2, height-mBookMark.size()*42);// 42 is the height of each history with divider. should display equal rows of history and bookmark
-		height = (int) (Math.min(maxSize, mHistory.size() * 43 * dm.density));//select a value from maxSize and mHistory.size().
+		int maxSize = (int) Math.max(height/2, height-mBookMark.size()*42*dm.density);// 42 is the height of each history with divider. should display equal rows of history and bookmark
+		height = (int) (Math.min(maxSize, mHistory.size()*43*dm.density));//select a value from maxSize and mHistory.size().
 
 		LayoutParams lp = historyList.getLayoutParams();
 		lp.height = height;

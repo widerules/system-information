@@ -162,7 +162,7 @@ public class SimpleBrowser extends Activity {
 	// settings
 	boolean showUrl = true;
 	boolean showControlBar = true;
-	final int urlHeight = 40, barHeight = 40;
+	final int urlHeight = 40, barHeight = 40, titleHeight = 25;// 25 is the titlebar height for MDPI
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
@@ -3594,13 +3594,17 @@ public class SimpleBrowser extends Activity {
 	void updateHistoryViewHeight() {
 		if (historyList == null) return;
 		//reset height of history list so that it display not too many items
-		int height = dm.heightPixels - adContainer.getHeight() - (int)(25*dm.density);// 25 is the titlebar height for MDPI
-		height -= urlLine.getHeight();
-		height -= webTools.getHeight();
+		int height = dm.heightPixels - (int)(titleHeight*dm.density) - adContainer.getHeight();//browserView.getHeight() may not correct when rotate. so use this way. but not applicable for 4.x platform
+		
+		LayoutParams lp = urlLine.getLayoutParams();// urlLine.getHeight() may not correct here, so use lp
+		if (lp.height != 0) height -= urlHeight * dm.density;
+		lp = webTools.getLayoutParams();
+		if (lp.height != 0) height -= barHeight * dm.density;
+		
 		int maxSize = (int) Math.max(height/2, height-mBookMark.size()*42*dm.density);// 42 is the height of each history with divider. should display equal rows of history and bookmark
 		height = (int) (Math.min(maxSize, mHistory.size()*43*dm.density));//select a value from maxSize and mHistory.size().
 
-		LayoutParams lp = historyList.getLayoutParams();
+		lp = historyList.getLayoutParams();
 		lp.height = height;
 		historyList.requestLayout();
 	}

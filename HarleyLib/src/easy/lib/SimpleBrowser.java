@@ -3504,8 +3504,8 @@ public class SimpleBrowser extends Activity {
         if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
         
 		int height = (int) (dm.heightPixels / dm.density);
-		height -= urlLine.getHeight()*dm.density;
-		height -= webTools.getHeight()*dm.density;
+		height -= urlLine.getHeight();
+		height -= webTools.getHeight();
 		int size = height / 72;// 72 is the height of each menu item
 		if (size > 9) {
 			menuWidth = (int) (80*dm.density);// 80 dip for single column

@@ -198,6 +198,10 @@
                     <RadioButton
                         android:text="@string/yandex"
                         android:textColor="#f0030f03" />
+                    
+                    <RadioButton
+                        android:text="@string/duckduckgo"
+                        android:textColor="#f0030f03" />
                 </RadioGroup>
             </HorizontalScrollView>
             

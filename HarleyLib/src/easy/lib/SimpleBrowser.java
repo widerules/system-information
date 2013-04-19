@@ -1945,7 +1945,7 @@ public class SimpleBrowser extends Activity {
 			HOME_PAGE = "file:///android_asset/home-ch.html";
 		}
 		else
-			searchEngine = sp.getInt("search_engine", 3); // google
+			searchEngine = sp.getInt("search_engine", 5); // duckduckgo
 		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
 		snapFullWeb = sp.getBoolean("full_web", false);
 		readTextSize(sp);// init the text size
@@ -3032,12 +3032,15 @@ public class SimpleBrowser extends Activity {
 				case 2:// easou
 					url = "http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001&key=" + url;
 					break;
+				case 3:// google
+					url = "http://www.google.com/search?q=" + url;
+					break;
 				case 4:// yandex
 					url = "http://yandex.ru/yandsearch?clid=1911433&text=" + url;
 					break;
-				case 3:// google
+				case 5:// DuckDuckGo
 				default:
-					url = "http://www.google.com/search?q=" + url;
+					url = "https://duckduckgo.com/?t=easybrowser&q=" + url;
 					break;
 				}
 			}

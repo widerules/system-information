@@ -1,3 +1,19 @@
+void fast_sort()
+{
+}
+
+void heap_sort()
+{
+}
+
+void merge_sort()
+{
+}
+
+void shell_sort()
+{
+}
+
 void exange(char* str, int len)
 {
 	int i;

@@ -459,7 +459,7 @@ public class AboutBrowser extends Activity {
 		else if (Locale.CHINA.equals(mLocale)) 
 			engineId = perferences.getInt("search_engine", 2); // easou
 		else
-			engineId = perferences.getInt("search_engine", 3); // google
+			engineId = perferences.getInt("search_engine", 5); // duckduckgo
 
 		try {
 			((RadioButton) shareMode.getChildAt(perferences.getInt(

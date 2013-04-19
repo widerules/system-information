@@ -22,5 +22,6 @@
     <string name="bb">BlackBerry</string>
     <string name="baidu">宜搜"          "</string>
     <string name="yandex">Яндекс</string>
+    <string name="duckduckgo">DuckDuckGo</string>
 
 </resources>

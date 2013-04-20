@@ -3465,10 +3465,10 @@ public class SimpleBrowser extends Activity {
 			// sb.append("<li><a href='http://www.1mobile.com/app/market/?cid=9'>1mobile</a></li>");// no favicon
 			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='http://bpc.borqs.com/market.html?id=easy.browser.pro'>Ad free version of Easy Browser</a></li>"); // suspended
 			sb.append(fileDir);
-			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
+			sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser'>DuckDuckGo</a></li>");
 			sb.append(splitter);
 			sb.append(fileDir);
-			sb.append("www.google.com.png)'><a href='http://www.google.com'>Google</a></li>");
+			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
 			sb.append(splitter);
 			sb.append(fileDir);
 			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");

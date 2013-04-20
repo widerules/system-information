@@ -437,7 +437,7 @@ public class AboutBrowser extends Activity {
 		else
 			getWindow().clearFlags(
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		cbUrl.setChecked(perferences.getBoolean("show_url", false));
+		cbUrl.setChecked(perferences.getBoolean("show_url", true));
 		cbControlBar.setChecked(perferences.getBoolean("show_controlBar", true));
 
 		int tmpMode = perferences.getInt("rotate_mode", 1);
@@ -482,7 +482,7 @@ public class AboutBrowser extends Activity {
 	@Override
 	protected void onPause() {
 		if (resetDefault) {
-			editor.putBoolean("show_url", false);
+			editor.putBoolean("show_url", true);
 			editor.putBoolean("show_controlBar", true);
 			editor.putBoolean("show_statusBar", true);
 			editor.putInt("rotate_mode", 1);

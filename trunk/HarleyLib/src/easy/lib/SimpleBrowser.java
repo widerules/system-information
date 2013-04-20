@@ -1521,6 +1521,13 @@ public class SimpleBrowser extends Activity {
 			}
 			else apkName += ".html";// if no ext, set as html file. maybe need consider contentDisposition.
 		}
+		else {// http://m.img.huxiu.com/portal/201304/18/171605dz0dp8yn0pu88zdy.jpg!278x80
+			int index = apkName.lastIndexOf(".");
+			String suffix = apkName.substring(index, apkName.length());
+			if (".jpg".equals(contentDisposition) && suffix.startsWith(".jpg")) {
+				apkName = apkName.replace(suffix, ".jpg");
+			}
+		}
 
 		if (noSdcard)
 			Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();

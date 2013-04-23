@@ -3480,7 +3480,7 @@ public class SimpleBrowser extends Activity {
 			// sb.append("<li><a href='http://www.1mobile.com/app/market/?cid=9'>1mobile</a></li>");// no favicon
 			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='http://bpc.borqs.com/market.html?id=easy.browser.pro'>Ad free version of Easy Browser</a></li>"); // suspended
 			sb.append(fileDir);
-			sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser'>DuckDuckGo</a></li>");
+			sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser&q=DuckDuckGo'>DuckDuckGo</a></li>");
 			sb.append(splitter);
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
@@ -3488,11 +3488,11 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
 			sb.append(splitter);
-			if (mAdAvailable) {
+			/*if (mAdAvailable) {
 				sb.append(fileDir);
 				sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket-The best Android App Market</a></li>");
 				sb.append(splitter);
-			}
+			}*/
 			// sb.append(fileDir);
 			// sb.append("en.wikipedia.org.png)'><a href='http://en.wikipedia.org/wiki/Main_Page'>Wikipedia</a></li>");
 			// sb.append(fileDir);

@@ -3488,11 +3488,11 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
 			sb.append(splitter);
-			/*if (mAdAvailable) {
+			if (mAdAvailable) {
 				sb.append(fileDir);
-				sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket-The best Android App Market</a></li>");
+				sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
 				sb.append(splitter);
-			}*/
+			}
 			// sb.append(fileDir);
 			// sb.append("en.wikipedia.org.png)'><a href='http://en.wikipedia.org/wiki/Main_Page'>Wikipedia</a></li>");
 			// sb.append(fileDir);

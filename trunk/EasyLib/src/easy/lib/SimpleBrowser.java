@@ -283,6 +283,7 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 	wrapAdView adview = null, adview2 = null;
+	wrapInterstitialAd interstitialAd = null;
 	DisplayMetrics dm;
 	FrameLayout adContainer;
 	AppHandler mAppHandler = new AppHandler();
@@ -480,6 +481,11 @@ public class SimpleBrowser extends Activity {
 			@SuppressWarnings("unused")
 			public void updateHome() {
 				updateHomePage();
+			}
+			
+			@SuppressWarnings("unused")
+			public void showInterstitialAd() {
+				interstitialAd.show();
 			}
 		}
 
@@ -3368,6 +3374,7 @@ public class SimpleBrowser extends Activity {
 
 		//if (gotoSettings) gotoSettings = false;
 		//else if (!clicked) createAd();
+		interstitialAd.loadAd();
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
@@ -3439,6 +3446,8 @@ public class SimpleBrowser extends Activity {
 			adview2 = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
+			
+			interstitialAd = new wrapInterstitialAd(this, "a14e79197567476");
 		}
 	}
 
@@ -3479,6 +3488,11 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.bing.com.png>)'<a href='http://www.bing.com'>Bing</a></li>");
 			// sb.append("<li><a href='http://www.1mobile.com/app/market/?cid=9'>1mobile</a></li>");// no favicon
 			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='http://bpc.borqs.com/market.html?id=easy.browser.pro'>Ad free version of Easy Browser</a></li>"); // suspended
+			if (mAdAvailable) {
+				sb.append(fileDir);
+				sb.append("www.admob.com.png)'><a onclick='javascript:window.JSinterface.showInterstitialAd()'>AdMob</a></li>");
+				sb.append(splitter);
+			}
 			sb.append(fileDir);
 			sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser&q=DuckDuckGo'>DuckDuckGo</a></li>");
 			sb.append(splitter);

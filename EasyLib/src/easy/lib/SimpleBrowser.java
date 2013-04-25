@@ -3490,7 +3490,7 @@ public class SimpleBrowser extends Activity {
 			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='http://bpc.borqs.com/market.html?id=easy.browser.pro'>Ad free version of Easy Browser</a></li>"); // suspended
 			if (mAdAvailable) {
 				sb.append(fileDir);
-				sb.append("www.admob.com.png)'><a onclick='javascript:window.JSinterface.showInterstitialAd()'>AdMob</a></li>");
+				sb.append("www.admob.com.png)'><a style='text-decoration: underline; color:#0000ff' onclick='javascript:window.JSinterface.showInterstitialAd()'>AdMob</a></li>");
 				sb.append(splitter);
 			}
 			sb.append(fileDir);
@@ -3499,14 +3499,14 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
 			sb.append(splitter);
-			sb.append(fileDir);
-			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
-			sb.append(splitter);
 			if (mAdAvailable) {
 				sb.append(fileDir);
 				sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
 				sb.append(splitter);
 			}
+			sb.append(fileDir);
+			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
+			sb.append(splitter);
 			// sb.append(fileDir);
 			// sb.append("en.wikipedia.org.png)'><a href='http://en.wikipedia.org/wiki/Main_Page'>Wikipedia</a></li>");
 			// sb.append(fileDir);

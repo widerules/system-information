@@ -485,7 +485,8 @@ public class SimpleBrowser extends Activity {
 			
 			@SuppressWarnings("unused")
 			public void showInterstitialAd() {
-				interstitialAd.show();
+				if (!interstitialAd.isReady()) interstitialAd.loadAd();
+				else interstitialAd.show();
 			}
 		}
 
@@ -3443,11 +3444,11 @@ public class SimpleBrowser extends Activity {
 			if ((adview != null) && (adview.getInstance() != null))
 				adContainer.addView(adview.getInstance());
 
-			adview2 = new wrapAdView(this, 0, "a14f3f6bc126143", mAppHandler);// AdSize.BANNER require 320*50
+			adview2 = new wrapAdView(this, 0, "a14be3f4ec2bb11", mAppHandler);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
 			
-			interstitialAd = new wrapInterstitialAd(this, "a14e79197567476");
+			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11");
 		}
 	}
 

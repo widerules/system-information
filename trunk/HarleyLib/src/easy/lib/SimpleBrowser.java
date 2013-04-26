@@ -62,6 +62,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.text.ClipboardManager;
@@ -300,6 +302,8 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 	wrapAdView adview = null, adview2 = null;
+	wrapInterstitialAd interstitialAd = null;
+	AppHandler mAppHandler = new AppHandler();
 
 	// download related
 	String downloadPath = "";
@@ -378,6 +382,17 @@ public class SimpleBrowser extends Activity {
 			@SuppressWarnings("unused")
 			public void processHTML(String html) {
 				pageSource = html;// to get page source, part 1
+			}
+
+			@SuppressWarnings("unused")
+			public void showInterstitialAd() {
+				if (interstitialAd.isReady()) interstitialAd.show();
+				else {
+					Toast.makeText(mContext, "Admob not ready", Toast.LENGTH_LONG).show();
+					Message fail = mAppHandler.obtainMessage();
+					fail.what = -3;
+					mAppHandler.sendMessage(fail);
+				}
 			}
 		}
 
@@ -3571,6 +3586,23 @@ public class SimpleBrowser extends Activity {
 			adview2 = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
+			
+			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
+		}
+	}
+
+	class AppHandler extends Handler {
+
+		public void handleMessage(Message msg) {
+			if (msg.what == -2) {
+				Bundle data = msg.getData();
+				String errorMsg = data.getString("msg");
+				if (errorMsg != null)
+					Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
+			}
+			else if (msg.what == -3) {
+				interstitialAd.loadAd();
+			}
 		}
 	}
 

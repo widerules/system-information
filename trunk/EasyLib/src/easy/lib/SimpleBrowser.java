@@ -486,7 +486,12 @@ public class SimpleBrowser extends Activity {
 			@SuppressWarnings("unused")
 			public void showInterstitialAd() {
 				if (interstitialAd.isReady()) interstitialAd.show();
-				else Toast.makeText(mContext, "Admob not ready", Toast.LENGTH_LONG).show();
+				else {
+					Toast.makeText(mContext, "Admob not ready", Toast.LENGTH_LONG).show();
+					Message fail = mAppHandler.obtainMessage();
+					fail.what = -3;
+					mAppHandler.sendMessage(fail);
+				}
 			}
 		}
 
@@ -3376,7 +3381,7 @@ public class SimpleBrowser extends Activity {
 
 		//if (gotoSettings) gotoSettings = false;
 		//else if (!clicked) createAd();
-		interstitialAd.loadAd();
+		if (!interstitialAd.isReady()) interstitialAd.loadAd();
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
@@ -3465,6 +3470,9 @@ public class SimpleBrowser extends Activity {
 				String errorMsg = data.getString("msg");
 				if (errorMsg != null)
 					Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
+			}
+			else if (msg.what == -3) {
+				interstitialAd.loadAd();
 			}
 		}
 	}

@@ -485,8 +485,8 @@ public class SimpleBrowser extends Activity {
 			
 			@SuppressWarnings("unused")
 			public void showInterstitialAd() {
-				if (!interstitialAd.isReady()) interstitialAd.loadAd();
-				else interstitialAd.show();
+				if (interstitialAd.isReady()) interstitialAd.show();
+				else Toast.makeText(mContext, "Admob not ready", Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -675,7 +675,8 @@ public class SimpleBrowser extends Activity {
 						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 						else webAddress.setText(url);
 						
-						if (adview != null) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
+						if (adview != null && !adview.isReady()) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
+						if (!interstitialAd.isReady()) interstitialAd.loadAd();
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 

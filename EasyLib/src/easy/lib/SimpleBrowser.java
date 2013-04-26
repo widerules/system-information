@@ -3617,7 +3617,7 @@ public class SimpleBrowser extends Activity {
 		if (countDown > 0) countDown -= 1;
 	}
 	
-	void loadPage() {// load home page		
+	void loadPage() {// load home page
 		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 		if (wbfl != null) {
 			int size = wbfl.getSize();

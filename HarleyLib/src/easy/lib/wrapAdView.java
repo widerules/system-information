@@ -112,4 +112,10 @@ public class wrapAdView {
 	public View getInstance() {
 		return mInstance;
 	}
+	
+	boolean isReady() {
+		if (mInstance != null)
+			return mInstance.isReady();
+		else return false;
+	}
 }

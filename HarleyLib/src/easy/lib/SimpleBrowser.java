@@ -53,6 +53,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Picture;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -164,7 +165,8 @@ public class SimpleBrowser extends Activity {
 	// settings
 	boolean showUrl = true;
 	boolean showControlBar = true;
-	final int urlHeight = 40, barHeight = 40, titleHeight = 25;// 25 is the titlebar height for MDPI
+	final int urlHeight = 40, barHeight = 40;
+	int statusBarHeight;
 	boolean showStatusBar = true;
 	int rotateMode = 1;
 	boolean incognitoMode = false;
@@ -897,7 +899,7 @@ public class SimpleBrowser extends Activity {
 				convertView = inflater.inflate(R.layout.revert_web_list, parent, false);
 			else
 				convertView = inflater.inflate(R.layout.web_list, parent, false);
-			
+
 			if (position == webIndex)
 				convertView.setBackgroundColor(0x80ffffff);
 			else
@@ -1211,6 +1213,7 @@ public class SimpleBrowser extends Activity {
 			boolean tmpShow = sp.getBoolean("show_statusBar", true);
 			if (tmpShow != showStatusBar) {
 				showStatusBar = tmpShow;
+				getTitleHeight();
 				if (!showStatusBar) {// full screen
 					getWindow().setFlags(
 							WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -2938,6 +2941,13 @@ public class SimpleBrowser extends Activity {
 		registerReceiver(downloadReceiver, filter);
 	}
 
+	void getTitleHeight() {
+		Rect rectgle= new Rect();
+		Window window= getWindow();
+		window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
+		statusBarHeight = (int) (rectgle.top*dm.density);
+	}
+	
 	void showBookmark() {
 		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
 		bookmarkDownloads.requestLayout();
@@ -3523,6 +3533,7 @@ public class SimpleBrowser extends Activity {
 
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		getTitleHeight();
 		
         bookmarkWidth = dm.widthPixels * 3 / 4;
         int minWidth = (int) (320 * dm.density);
@@ -3636,7 +3647,7 @@ public class SimpleBrowser extends Activity {
 	void updateHistoryViewHeight() {
 		if (historyList == null) return;
 		//reset height of history list so that it display not too many items
-		int height = dm.heightPixels - (int)(titleHeight*dm.density) - adContainer.getHeight();//browserView.getHeight() may not correct when rotate. so use this way. but not applicable for 4.x platform
+		int height = dm.heightPixels - statusBarHeight - adContainer.getHeight();//browserView.getHeight() may not correct when rotate. so use this way. but not applicable for 4.x platform
 		
 		LayoutParams lp = urlLine.getLayoutParams();// urlLine.getHeight() may not correct here, so use lp
 		if (lp.height != 0) height -= urlHeight * dm.density;

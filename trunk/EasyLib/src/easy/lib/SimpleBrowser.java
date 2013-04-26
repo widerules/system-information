@@ -3448,7 +3448,7 @@ public class SimpleBrowser extends Activity {
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
 			
-			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11");
+			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
 		}
 	}
 
@@ -3458,6 +3458,12 @@ public class SimpleBrowser extends Activity {
 			if (msg.what > 0) {
 				clicked = true;
 				removeAd();
+			}
+			else if (msg.what == -2) {
+				Bundle data = msg.getData();
+				String errorMsg = data.getString("msg");
+				if (errorMsg != null)
+					Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
 			}
 		}
 	}

@@ -3587,8 +3587,14 @@ public class SimpleBrowser extends Activity {
 		serverWebs.get(webIndex).loadUrl("javascript:setTitle(\"" + getString(R.string.browser_name) + "\");");
 		// top bar
 		String tmp = getString(R.string.top);
-		if (countDown > 0) tmp += getString(R.string.url_can_longclick);
-		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"1," + collapse1 + "," + tmp + "\");");
+		if (mAdAvailable) {
+			if (countDown > 0) tmp += getString(R.string.url_can_longclick);
+			serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"1," + collapse1 + "," + tmp + "\");");
+			serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + !collapse1 + "\");");
+			serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
+		}
+		else
+			serverWebs.get(webIndex).loadUrl("javascript:hideTop();");// hide toplist for pro version
 		
 		// bookmark bar
 		tmp = getString(R.string.bookmark);
@@ -3600,15 +3606,9 @@ public class SimpleBrowser extends Activity {
 		if (countDown > 0) tmp += getString(R.string.text_can_longclick);
 		serverWebs.get(webIndex).loadUrl("javascript:setTitleBar(\"3," + collapse3 + "," + tmp + "\");");
 
-		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"1," + !collapse1 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + !collapse2 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + !collapse3 + "\");");
 		
-		if (mAdAvailable)
-			serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
-		else
-			serverWebs.get(webIndex).loadUrl("javascript:hideTop();");// hide toplist
-
 		updateBookmark();
 		updateHistory();
 

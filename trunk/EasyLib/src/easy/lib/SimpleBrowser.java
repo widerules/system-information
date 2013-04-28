@@ -681,7 +681,7 @@ public class SimpleBrowser extends Activity {
 						else webAddress.setText(url);
 						
 						if (adview != null && !adview.isReady()) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
-						if (!interstitialAd.isReady()) interstitialAd.loadAd();
+						if (adview != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
@@ -3381,7 +3381,7 @@ public class SimpleBrowser extends Activity {
 
 		//if (gotoSettings) gotoSettings = false;
 		//else if (!clicked) createAd();
-		if (!interstitialAd.isReady()) interstitialAd.loadAd();
+		if (interstitialAd != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
@@ -3504,22 +3504,18 @@ public class SimpleBrowser extends Activity {
 			// sb.append("www.bing.com.png>)'<a href='http://www.bing.com'>Bing</a></li>");
 			// sb.append("<li><a href='http://www.1mobile.com/app/market/?cid=9'>1mobile</a></li>");// no favicon
 			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='http://bpc.borqs.com/market.html?id=easy.browser.pro'>Ad free version of Easy Browser</a></li>"); // suspended
-			if (mAdAvailable) {
-				sb.append(fileDir);
-				sb.append("m.admob.com.png)'><a style='text-decoration: underline; color:#0000ff' onclick='javascript:window.JSinterface.showInterstitialAd()'>AdMob</a></li>");
-				sb.append(splitter);
-			}
+			sb.append(fileDir);
+			sb.append("m.admob.com.png)'><a style='text-decoration: underline; color:#0000ff' onclick='javascript:window.JSinterface.showInterstitialAd()'>AdMob</a></li>");
+			sb.append(splitter);
 			sb.append(fileDir);
 			sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser&q=DuckDuckGo'>DuckDuckGo</a></li>");
 			sb.append(splitter);
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
 			sb.append(splitter);
-			if (mAdAvailable) {
-				sb.append(fileDir);
-				sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
-				sb.append(splitter);
-			}
+			sb.append(fileDir);
+			sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
+			sb.append(splitter);
 			sb.append(fileDir);
 			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
 			sb.append(splitter);
@@ -3608,7 +3604,11 @@ public class SimpleBrowser extends Activity {
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"2," + !collapse2 + "\");");
 		serverWebs.get(webIndex).loadUrl("javascript:collapse(\"3," + !collapse3 + "\");");
 		
-		serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
+		if (mAdAvailable)
+			serverWebs.get(webIndex).loadUrl("javascript:inject(\"1::::" + getTopList("....") + "\");");// call javascript to inject toplist
+		else
+			serverWebs.get(webIndex).loadUrl("javascript:hideTop();");// hide toplist
+
 		updateBookmark();
 		updateHistory();
 

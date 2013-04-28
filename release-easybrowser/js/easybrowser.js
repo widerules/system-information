@@ -1,3 +1,8 @@
+function hideTop() {
+	document.getElementById('title1').style.display = 'none';
+	document.getElementById('content1').style.display = 'none';
+}
+
 function collapse(para) {
 	var tmp = String(para).split(',');
 	var index = tmp[0];

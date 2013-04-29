@@ -3594,11 +3594,11 @@ public class SimpleBrowser extends Activity {
 				adview.loadAd();
 			}
 			
-			adview2 = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
+			adview2 = new wrapAdView(this, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
 			
-			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
+			interstitialAd = new wrapInterstitialAd(this, "a14a8e65a47d51f", mAppHandler);
 		}
 	}
 

@@ -487,7 +487,7 @@ public class SimpleBrowser extends Activity {
 			public void showInterstitialAd() {
 				if (interstitialAd.isReady()) interstitialAd.show();
 				else {
-					Toast.makeText(mContext, "Admob not ready", Toast.LENGTH_LONG).show();
+					Toast.makeText(mContext, "Admob is loading", Toast.LENGTH_LONG).show();
 					Message fail = mAppHandler.obtainMessage();
 					fail.what = -3;
 					mAppHandler.sendMessage(fail);
@@ -3469,7 +3469,7 @@ public class SimpleBrowser extends Activity {
 				Bundle data = msg.getData();
 				String errorMsg = data.getString("msg");
 				if (errorMsg != null)
-					Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
+					Toast.makeText(mContext, "Can't load AdMob. " + errorMsg, Toast.LENGTH_LONG).show();
 			}
 			else if (msg.what == -3) {
 				interstitialAd.loadAd();

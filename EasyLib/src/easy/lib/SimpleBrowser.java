@@ -3450,7 +3450,7 @@ public class SimpleBrowser extends Activity {
 			if ((adview != null) && (adview.getInstance() != null))
 				adContainer.addView(adview.getInstance());
 
-			adview2 = new wrapAdView(this, 0, "a14be3f4ec2bb11", mAppHandler);// AdSize.BANNER require 320*50
+			adview2 = new wrapAdView(this, 0, "a14d662bba1e443", mAppHandler);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
 			

@@ -3598,7 +3598,7 @@ public class SimpleBrowser extends Activity {
 			if ((adview2 != null) && (adview2.getInstance() != null)) 
 				adContainer2.addView(adview2.getInstance());
 			
-			interstitialAd = new wrapInterstitialAd(this, "a14a8e65a47d51f", mAppHandler);
+			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
 		}
 	}
 

@@ -224,27 +224,6 @@ public class About extends Activity{
 			}
         });
         
-        TextView tvDownload1 = (TextView) findViewById(R.id.download_wallpaper1);
-        tvDownload1.setText(Html.fromHtml("<u>" + getString(R.string.wallpaper_scene) + "</u>"));
-        tvDownload1.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/img?tn=bdidxiphone&ssid=0&from=844b&bd_page_type=1&uid=wiaui_1326248214_3176&pu=sz%401320_480&itj=41"));
-				intent.setClassName(mPackageName, "easy.lib.SimpleBrowser");
-				util.startActivity(intent, false, getBaseContext());
-			}
-		});
-        TextView tvDownload2 = (TextView) findViewById(R.id.download_wallpaper2);
-        tvDownload2.setText(Html.fromHtml("<u>" + getString(R.string.wallpaper_beauty) + "</u>"));
-        tvDownload2.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.baidu.com/img?tn=bdLISTIphone&word=%E9%BB%91%E4%B8%9D&st=103110&prest=11105i&pn=0&rn=10&vit=aladdin&from=844b&ssid=0&bd_page_type=1&ref=www_iphone&uid=wiaui_1325637338_1514"));
-				intent.setClassName(mPackageName, "easy.lib.SimpleBrowser");
-				util.startActivity(intent, false, getBaseContext());
-			}
-		});
-        
 		perferences = PreferenceManager.getDefaultSharedPreferences(this);
         cbShake = (CheckBox) findViewById(R.id.change_wallpaper);
         cbShake.setEnabled(perferences.getBoolean("shake_enabled", false));

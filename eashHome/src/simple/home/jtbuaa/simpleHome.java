@@ -63,6 +63,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.telephony.TelephonyManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -1182,7 +1183,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging Messages メッセージ 信息 消息 短信 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
-	    	String label_phone = "電話 Phone 电话 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
+	    	String label_phone = "電話 Phone 电话 电话和联系人 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
 	    	String label_contact = "聯絡人 联系人 Contacts People 連絡先 通讯录 전화번호부  Kontakty Kontakte Contactos Contatti Contacten Контакты 주소록";
 	    	int match = 0;
 	    	for (int i = 0; i < mAllApps.size(); i++) {

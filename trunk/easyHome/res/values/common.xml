@@ -9,8 +9,6 @@
     <string name="warning">Only root user can delete system app.\n\nDelete system app may cause phone can not boot.\n\nPlease think carefully！</string>
     <string name="menu_choose_home">Switch Home</string>
     <string name="select">Select Home</string>
-    <string name="wallpaper_scene">Baidu Pic</string>
-    <string name="wallpaper_beauty">Beauties</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="favoriteapps">Shortcut</string>
     <string name="systemapps">System</string>

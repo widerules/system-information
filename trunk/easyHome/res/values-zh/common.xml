@@ -12,8 +12,6 @@
     <string name="menu_choose_home">切换主屏</string>
     <string name="select">选择主屏</string>
     <string name="select_file">选择文件</string>
-    <string name="wallpaper_scene">百度图片</string>
-    <string name="wallpaper_beauty">美女壁纸</string>
     <string name="wallpaper">壁纸</string>
 
 </resources>

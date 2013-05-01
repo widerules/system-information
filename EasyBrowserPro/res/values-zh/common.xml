@@ -4,7 +4,6 @@
     <string name="about_message">这是一个小巧、方便，功能完备的浏览器，不但速度飞快，还可以查看网页源码，分享网址和截图给好友。\n\n如需删除收藏/历史请长按该链接。</string>
     <string name="feedback">(可选)有什么建议或反馈吗？比如怎么重现这次的问题？</string>
     <string name="about">关于...</string>
-    <string name="help">帮助</string>
     <string name="settings">设置</string>
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
@@ -13,7 +12,6 @@
     <string name="sharemode">分享方式</string>
     <string name="sharetext">我最喜欢的安卓浏览器,今天你用了吗?</string>
     <string name="vote">喜欢就给我打5星</string>
-    <string name="more">更多...</string>
     <string name="delete">删除</string>
     <string name="hideapp">隐藏</string>
     <string name="hidepage">隐藏当前页</string>

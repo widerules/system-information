@@ -55,9 +55,6 @@
     <string name="downloads_open">にあります。ESファイルエクスプローラまたは他のファ​​イルマネージャでフォルダをみることができます。 ESのファイルエクスプローラをダウンロードするには、[OK]をクリックしてください。</string>
     <string name="download_hint">ダウンロード</string>
     <string name="sorry">" "クラッシュしました。エラーログは" "</string>
-    <string name="grid_view">グリッドビュー</string>
-    <string name="list_view">リストビュー</string>
-    <string name="restart">ビューを変更するには、再起動する必要があります。 \n今すぐ再起動しますか？</string>
     <string name="snap">スナップショット</string>
     <string name="full_screen">全画面スクリーン</string>
     <string name="full_webpage">完全なWebページ用に撮影したスナップ</string>

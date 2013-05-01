@@ -54,9 +54,6 @@
     <string name="downloads_to">Los archivos descargados a" "</string>
     <string name="downloads_open">". "Se puede ver la carpeta con el archivo ES Explorer o otro administrador de archivos. Haga clic en Aceptar para descargar el Explorador de archivos ES.</string>
     <string name="sorry">" "Se estrelló, registro de errores es" "</string>
-    <string name="grid_view">Cuadricula</string>
-    <string name="list_view">Ver la lista de</string>
-    <string name="restart">Es necesario reiniciar para cambiar la vista. \n¿Reiniciar ahora?</string>
     <string name="snap">instantánea</string>
     <string name="full_webpage">Snap Shot para la página web completa</string>
     <string name="show_zoom">(Página actual) de control de zoom</string>

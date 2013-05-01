@@ -60,9 +60,6 @@
     <string name="downloads_to">Files downloaded to" "</string>
     <string name="downloads_open">". "You can view the folder with ES File Explorer or other file manager. Click OK to download ES File Explorer.</string>
     <string name="sorry">" "crashed, error log is" "</string>
-    <string name="grid_view">Grid View</string>
-    <string name="list_view">List View</string>
-    <string name="restart">It need restart to change the view. \nRestart now?</string>
     <string name="snap">Snap Shot</string>
     <string name="full_webpage">Snap shot for full web page</string>
     <string name="show_zoom">(current page)Zoom Control</string>

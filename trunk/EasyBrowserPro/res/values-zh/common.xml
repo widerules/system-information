@@ -56,9 +56,6 @@
     <string name="downloads_to">下载的文件位于</string>
     <string name="downloads_open">。您可以使用ES文件浏览器或其他文件管理器查看该目录。点确定下载ES文件管理器。</string>
     <string name="sorry">出现异常退出，出错日志为</string>
-    <string name="grid_view">图标视图</string>
-    <string name="list_view">列表视图</string>
-    <string name="restart">重启桌面后切换视图才会生效。\n现在重启吗？</string>
     <string name="snap">截屏</string>
     <string name="full_screen">全屏"        "</string>
     <string name="full_webpage">全网页截屏</string>

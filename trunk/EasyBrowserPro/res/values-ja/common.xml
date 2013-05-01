@@ -13,8 +13,6 @@
     <string name="sharetext">シンプルで使いやすい</string>
     <string name="vote">5つ星のための私を投票してください</string>
     <string name="delete">削除</string>
-    <string name="hideapp">隠す</string>
-    <string name="hidepage">現在のページを隠す</string>
     <string name="back">戻る</string>
     <string name="next">次へ</string>
     <string name="newpage">新しいページ</string>
@@ -88,7 +86,6 @@
     <string name="block_js">ブロックのJavaScript</string>
     <string name="reset">デフォルトのオプションについては、このボタンを押す</string>
     <string name="enable_proxy">プロキシを有効にする, ローカルポート:</string>
-    <!--string name="hide_exit">代わりに出口の非表示</string-->
     <string name="overview_page">概要でモードページを開く</string>
     <string name="share_to_friends">友人に共有</string>
     <string name="cache_prefer">キャッシュは、帯域幅を削減するために好ん</string>

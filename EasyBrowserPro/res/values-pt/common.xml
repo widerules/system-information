@@ -56,9 +56,6 @@
     <string name="downloads_to">Arquivos baixados para" "</string>
     <string name="downloads_open">". "Você pode ver a pasta com arquivos ES Explorer ou outro gerenciador de arquivos. Clique em OK para baixar ES File Explorer.</string>
     <string name="sorry">" "Caiu, log de erro é" "</string>
-    <string name="grid_view">Grid View</string>
-    <string name="list_view">Ver Lista</string>
-    <string name="restart">É necessário reiniciar para mudar a vista. \nReiniciar agora?</string>
     <string name="snap">instantâneo</string>
     <string name="full_screen">Tela cheia</string>
     <string name="full_webpage">Snap shot para a página web completa</string>

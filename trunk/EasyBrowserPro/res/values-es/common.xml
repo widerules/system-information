@@ -5,7 +5,6 @@
     <string name="feedback">¿tienes más comentarios a mí? (Opcional, por ejemplo, cómo reproducir este accidente?)</string>
     <string name="select_file">Archivo Selector</string>
     <string name="about">Acerca de...</string>
-    <string name="help">Ayuda</string>
     <string name="settings">Configuración</string>
     <string name="cancel">Anular</string>
     <string name="exit">Salir</string>
@@ -13,7 +12,6 @@
     <string name="sharemode">Compartir el modo de</string>
     <string name="sharetext">el navegador más rápido y ligero en Android! échale un vistazo</string>
     <string name="vote">Por favor vote para mí 5 estrellas</string>
-    <string name="more">Más información...</string>
     <string name="delete">Eliminar</string>
     <string name="back">espalda</string>
     <string name="next">Próximo</string>

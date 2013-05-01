@@ -6,7 +6,6 @@
     <string name="select">Selecione Home</string>
     <string name="select_file">Seletor de arquivos</string>
     <string name="about">Sobre ...</string>
-    <string name="help">Útil</string>
     <string name="settings">fixação</string>
     <string name="cancel">Cancelar</string>
     <string name="exit">Sair</string>
@@ -14,8 +13,6 @@
     <string name="sharemode">Modo Compartilhar</string>
     <string name="sharetext">o navegador mais rápido e leve em Android! confira</string>
     <string name="vote">Por favor, votem para me 5 estrelas</string>
-    <string name="to">para</string>
-    <string name="more">Leia mais...</string>
     <string name="delete">Excluir</string>
     <string name="hideapp">Ocultar</string>
     <string name="hidepage">Ocultar página atual</string>

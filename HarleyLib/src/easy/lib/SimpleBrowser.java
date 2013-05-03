@@ -623,6 +623,9 @@ public class SimpleBrowser extends Activity {
 					m_url = url;
 					pageSource = "";
 
+					if (HOME_PAGE.equals(url)) view.getSettings().setJavaScriptEnabled(true);// not block js on homepage
+					else view.getSettings().setJavaScriptEnabled(!blockJs);
+
 					if (isForeground) {
 						// close soft keyboard
 						imm.hideSoftInputFromWindow(getWindowToken(), 0);
@@ -1293,7 +1296,7 @@ public class SimpleBrowser extends Activity {
 			// localSettings.setSupportMultipleWindows(!blockPopup);
 
 			blockJs = sp.getBoolean("block_js", false);
-			localSettings.setJavaScriptEnabled(!blockJs);
+			//localSettings.setJavaScriptEnabled(!blockJs);
 
 			wrapWebSettings webSettings = new wrapWebSettings(localSettings);
 			overviewPage = sp.getBoolean("overview_page", false);
@@ -3663,6 +3666,8 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	void loadPage() {// load home page
+		serverWebs.get(webIndex).getSettings().setJavaScriptEnabled(true);
+		
 		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 		if (wbfl != null) {
 			int size = wbfl.getSize();

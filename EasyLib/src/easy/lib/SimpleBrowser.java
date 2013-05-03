@@ -2723,13 +2723,6 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).goForward();
 			}
 		});
-		imgNext.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View arg0) {// long click next key to show menu?
-				onMenuOpened(0, null);
-				return true;
-			}
-		});
 		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2792,8 +2785,8 @@ public class SimpleBrowser extends Activity {
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
 
-		final FrameLayout toolNad = (FrameLayout) findViewById(R.id.webtoolnad);
-		toolNad.setOnClickListener(new OnClickListener() {
+		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
+		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
 				LayoutParams lp1 = imageBtnList.getLayoutParams();
@@ -2813,6 +2806,15 @@ public class SimpleBrowser extends Activity {
 					needRevert = true;
 				else needRevert = false;
 				webList.invalidateViews();
+			}
+		});
+		toolAndAd.setOnLongClickListener(new OnLongClickListener() {// long click tool bar to open menu
+			@Override
+			public boolean onLongClick(View arg0) {
+				if (menuDialog == null) initMenuDialog();
+				menuDialog.show();
+				//onMenuOpened(0, null);
+				return true;
 			}
 		});
 		

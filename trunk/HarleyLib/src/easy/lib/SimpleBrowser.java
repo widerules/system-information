@@ -2806,13 +2806,6 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).goForward();
 			}
 		});
-		imgNext.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View arg0) {// long click next key to show menu?
-				onMenuOpened(0, null);
-				return true;
-			}
-		});
 		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2920,7 +2913,14 @@ public class SimpleBrowser extends Activity {
 				webList.invalidateViews();
 			}
 		});
-		
+		toolAndAd.setOnLongClickListener(new OnLongClickListener() {// long click tool bar to open menu
+			@Override
+			public boolean onLongClick(View arg0) {
+				onMenuOpened(0, null);
+				return true;
+			}
+		});
+
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.

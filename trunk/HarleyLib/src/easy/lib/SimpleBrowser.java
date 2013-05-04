@@ -2860,6 +2860,13 @@ public class SimpleBrowser extends Activity {
 				} else webControl.setVisibility(View.INVISIBLE);
 			}
 		});
+		imgNew.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				moveTaskToBack(true);
+				return true;
+			}
+		});
 
 		dm = new DisplayMetrics();
 		createAd();

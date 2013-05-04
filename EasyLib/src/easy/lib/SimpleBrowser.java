@@ -684,8 +684,8 @@ public class SimpleBrowser extends Activity {
 						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 						else webAddress.setText(url);
 						
-						if (adview != null && !adview.isReady()) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
-						if (adview != null && !interstitialAd.isReady()) interstitialAd.loadAd();
+						//if (adview != null && !adview.isReady()) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
+						//if (adview != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
@@ -3387,7 +3387,6 @@ public class SimpleBrowser extends Activity {
 
 		//if (gotoSettings) gotoSettings = false;
 		//else if (!clicked) createAd();
-		if (interstitialAd != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);

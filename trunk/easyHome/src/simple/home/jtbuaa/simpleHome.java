@@ -216,7 +216,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				String[] cmds = {
 						"rm " + apkToDel + ".bak",
 						"rm " + apkToDel.replace(".apk", ".odex")};
-				ShellInterface.doExec(cmds);
+				//ShellInterface.doExec(cmds);// not really delete.
 			}
 			else ShellInterface.doExec(new String[] {"mv " + apkToDel + ".bak " + apkToDel});
 			

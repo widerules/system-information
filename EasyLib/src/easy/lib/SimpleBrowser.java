@@ -2759,6 +2759,14 @@ public class SimpleBrowser extends Activity {
 				else if (!HOME_PAGE.equals(serverWebs.get(webIndex).m_url)) loadPage();
 			}
 		});
+		imgHome.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				moveTaskToBack(true);
+				return true;
+			}
+		});
+
 		imgNew = (ImageView) findViewById(R.id.newpage);
 		imgNew.setImageBitmap(util.generatorCountIcon(
 				util.getResIcon(getResources(), R.drawable.newpage), 1, 2,

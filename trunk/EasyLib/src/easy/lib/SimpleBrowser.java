@@ -685,7 +685,7 @@ public class SimpleBrowser extends Activity {
 						else webAddress.setText(url);
 						
 						//if (adview != null && !adview.isReady()) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
-						//if (adview != null && !interstitialAd.isReady()) interstitialAd.loadAd();
+						//if (interstitialAd != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 						
 						imgRefresh.setImageResource(R.drawable.stop);
 
@@ -3395,6 +3395,7 @@ public class SimpleBrowser extends Activity {
 
 		//if (gotoSettings) gotoSettings = false;
 		//else if (!clicked) createAd();
+		if (interstitialAd != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
@@ -3485,8 +3486,7 @@ public class SimpleBrowser extends Activity {
 			else if (msg.what == -2) {
 				Bundle data = msg.getData();
 				String errorMsg = data.getString("msg");
-				if (errorMsg != null)
-					Toast.makeText(mContext, "Can't load AdMob. " + errorMsg, Toast.LENGTH_LONG).show();
+				//if (errorMsg != null) Toast.makeText(mContext, "Can't load AdMob. " + errorMsg, Toast.LENGTH_LONG).show();
 			}
 			else if (msg.what == -3) {
 				interstitialAd.loadAd();

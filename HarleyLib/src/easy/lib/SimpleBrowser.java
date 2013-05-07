@@ -3521,6 +3521,8 @@ public class SimpleBrowser extends Activity {
 
 		if (browserView.getVisibility() == View.GONE) 
 			if (mVideoView != null) mVideoView.start(); 
+		
+		if (interstitialAd != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 
 		try {if (baiduResume != null) baiduResume.invoke(this, this);} catch (Exception e) {}
 	}
@@ -3617,8 +3619,7 @@ public class SimpleBrowser extends Activity {
 			if (msg.what == -2) {
 				Bundle data = msg.getData();
 				String errorMsg = data.getString("msg");
-				if (errorMsg != null)
-					Toast.makeText(mContext, "Can't load AdMob, " + errorMsg, Toast.LENGTH_LONG).show();
+				//if (errorMsg != null) Toast.makeText(mContext, "Can't load AdMob, " + errorMsg, Toast.LENGTH_LONG).show();
 			}
 			else if (msg.what == -3) {
 				interstitialAd.loadAd();

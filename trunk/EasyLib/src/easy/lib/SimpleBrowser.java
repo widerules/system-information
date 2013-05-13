@@ -755,6 +755,7 @@ public class SimpleBrowser extends Activity {
 		}
 
 		if (canOpen) {
+			try {
 			new AlertDialog.Builder(mContext)
 			.setTitle(getString(R.string.choose))
 			.setMessage(apkName)
@@ -781,7 +782,7 @@ public class SimpleBrowser extends Activity {
 						public void onClick(DialogInterface dialog,
 								int which) {
 						}
-					}).show();
+					}).show();} catch(Exception e) {}
 		} else startDownload(url, contentDisposition);
 	}
 	
@@ -792,6 +793,7 @@ public class SimpleBrowser extends Activity {
 		String data = intent.getDataString();
 		if (!"".equals(data) && (data.startsWith("vnd.youtube"))) {
 			if (!util.startActivity(intent, false, mContext)) {
+				try {
 				new AlertDialog.Builder(mContext)
 				.setMessage("You need install plugin or client to play video.")
 				.setPositiveButton("Youtube",
@@ -820,7 +822,7 @@ public class SimpleBrowser extends Activity {
 							public void onClick(DialogInterface dialog,
 									int which) {
 							}
-						}).show();
+						}).show();} catch(Exception e) {}
 			}
 		}
 		else util.startActivity(intent, true, mContext);

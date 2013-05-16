@@ -3592,10 +3592,6 @@ public class SimpleBrowser extends Activity {
 	}
 
 	void createAd() {
-		// AdView adView = new AdView(this, "6148");//adview of tapit
-		// adView.setLayoutParams(new
-		// ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.FILL_PARENT));
-		// adContainer.addView(adView);
 		if (adview != null) return;// only create ad for one time.
 		
 		if (mAdAvailable) {

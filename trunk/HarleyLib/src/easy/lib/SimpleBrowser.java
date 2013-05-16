@@ -294,7 +294,7 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	// ad
-	/*static boolean mAdAvailable;
+	static boolean mAdAvailable;
 	static {
 		try {
 			Class.forName("com.google.ads.AdView");
@@ -302,7 +302,7 @@ public class SimpleBrowser extends Activity {
 		} catch (Throwable t) {
 			mAdAvailable = false;
 		}
-	}*/
+	}
 	wrapAdView adview = null, adview2 = null;
 	wrapInterstitialAd interstitialAd = null;
 	AppHandler mAppHandler = new AppHandler();
@@ -3598,7 +3598,7 @@ public class SimpleBrowser extends Activity {
 		// adContainer.addView(adView);
 		if (adview != null) return;// only create ad for one time.
 		
-		//if (mAdAvailable) {
+		if (mAdAvailable) {
 			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());
@@ -3612,7 +3612,7 @@ public class SimpleBrowser extends Activity {
 			}
 			
 			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
-		//}
+		}
 	}
 
 	class AppHandler extends Handler {

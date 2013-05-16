@@ -2953,7 +2953,7 @@ public class SimpleBrowser extends Activity {
 					url = "http://www.google.com/search?q=" + url;
 					break;
 				case 4:// yandex
-					url = "http://yandex.ru/yandsearch?clid=1911433&text=" + url;
+					url = "http://yandex.ru/touchsearch?clid=1911434&text=" + url;
 					break;
 				case 5:// DuckDuckGo
 				default:

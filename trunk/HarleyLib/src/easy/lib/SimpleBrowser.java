@@ -2894,8 +2894,8 @@ public class SimpleBrowser extends Activity {
 				imageBtnList.setLayoutParams(lp2);
 				adContainer2.setLayoutParams(lp1);
 				
-				if (adContainer2.getVisibility() == View.GONE) 
-					return; // no need to change position of bookmark if not width enough
+				//if (adContainer2.getVisibility() == View.GONE) // but maybe should open for change priorty of left/right hand? 
+					//return; // no need to change position of bookmark if not width enough
 				
 				//change position of bookmark and menu
 				lp1 = bookmarkDownloads.getLayoutParams();

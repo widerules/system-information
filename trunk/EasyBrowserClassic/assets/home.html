@@ -10,7 +10,25 @@
 
 <body style='background-image:url(noise_bg.png)'>
 
-	<div style='margin:0px; padding:0px; height:1px'></div><!-- just for margin -->
+	<div style='margin:0px; padding:0px; height:5px'></div><!-- just for margin -->
+
+	<div style='float:none; margin:auto; text-align:center'>
+	search <input id='searchbox' type='text'> by
+	<br>
+	<a href="javascript:window.location='http://www.amazon.com/s/?field-keywords=' + document.getElementById('searchbox').value">amazon</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://www.merriam-webster.com/dictionary/' + document.getElementById('searchbox').value">dictionary</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://directnic.com/search/?query=' + document.getElementById('searchbox').value">domain</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='https://duckduckgo.com?t=easybrowser&q=' + document.getElementById('searchbox').value">duckduckgo</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://www.rottentomatoes.com/search/?search=' + document.getElementById('searchbox').value">film review</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://www.imdb.com/find?q=' + document.getElementById('searchbox').value">IMDb</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://news.search.yahoo.com/search/news?p=' + document.getElementById('searchbox').value">news</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://www.bing.com/images/search?q=' + document.getElementById('searchbox').value">pix</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://finance.yahoo.com/lookup?s=' + document.getElementById('searchbox').value">stock</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://www.youtube.com/results?search_query=' + document.getElementById('searchbox').value">vid</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://www.wunderground.com/cgi-bin/findweather/getForecast?query=' + document.getElementById('searchbox').value">weather</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://en.m.wikipedia.org/wiki/' + document.getElementById('searchbox').value">wikipedia</a>&nbsp;&nbsp;
+	<a href="javascript:window.location='http://www.yelp.com/search?find_desc=' + document.getElementById('searchbox').value">yelp</a>
+	</div>
 
 	<h4 id='title1' onClick='collapse(1)'></h4><!--top list-->
 	<dl id='content1' type='disc'></dl>

@@ -3517,10 +3517,6 @@ public class SimpleBrowser extends Activity {
 			// sb.append(fileDir);
 			// sb.append("bpc.borqs.com.png)'><a href='http://bpc.borqs.com'>梧桐</a></li>");
 		} else {
-			// sb.append(fileDir);
-			// sb.append("www.amazon.com.png)'><a href='http://www.amazon.com'>Amazon</a></li>");
-			// sb.append(fileDir);
-			// sb.append("www.bing.com.png>)'<a href='http://www.bing.com'>Bing</a></li>");
 			// sb.append("<li><a href='http://www.1mobile.com/app/market/?cid=9'>1mobile</a></li>");// no favicon
 			//if (mAdAvailable) sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='http://bpc.borqs.com/market.html?id=easy.browser.pro'>Ad free version of Easy Browser</a></li>"); // suspended
 			sb.append(fileDir);
@@ -3540,13 +3536,9 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
 			sb.append(splitter);
-			sb.append(fileDir);
-			sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
-			sb.append(splitter);
-			// sb.append(fileDir);
-			// sb.append("en.wikipedia.org.png)'><a href='http://en.wikipedia.org/wiki/Main_Page'>Wikipedia</a></li>");
-			// sb.append(fileDir);
-			// sb.append("bpc.borqs.com.png)'><a href='http://bpc.borqs.com'>Phoenix3</a></li>");
+			//sb.append(fileDir);
+			//sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
+			//sb.append(splitter);
 			
 			// additional top list for some locale
 			if (Locale.JAPAN.equals(mLocale) || Locale.JAPANESE.equals(mLocale)) {

@@ -3527,8 +3527,11 @@ public class SimpleBrowser extends Activity {
 			sb.append("m.admob.com.png)'><a style='text-decoration: underline; color:#0000ff' onclick='javascript:window.JSinterface.showInterstitialAd()'>AdMob</a></li>");
 			sb.append(splitter);
 			sb.append(fileDir);
-			sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser&q=DuckDuckGo'>DuckDuckGo</a></li>");
+			sb.append("<li><a href='https://play.google.com/store/apps/details?id=easy.browser.com'>Easy Browser Pro</a></li>");
 			sb.append(splitter);
+			//sb.append(fileDir);
+			//sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser&q=DuckDuckGo'>DuckDuckGo</a></li>");
+			//sb.append(splitter);
 			sb.append(fileDir);
 			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
 			sb.append(splitter);

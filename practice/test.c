@@ -182,6 +182,9 @@ void block_revert(char* str)
 
 void main()
 {
+	printf("size of char is %d\n", sizeof(char));
+	printf("size of int is %d\n", sizeof(int));
+
 	char* s1 = "this is a test ";
 	char* s2 = "this";
 	char s3[128];

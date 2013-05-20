@@ -6,6 +6,14 @@
 	<link rel='stylesheet' href='easybrowser.css'>
 	<title>homepage</title>
 	<script type='text/javascript' src='easybrowser.js'></script>
+	<script>
+		var U=["http://news.search.yahoo.com/search/news?p=","http://www.bing.com/images/search?q=","http://www.imdb.com/find?q=",
+"http://www.youtube.com/results?search_query=","http://en.wikipedia.org/wiki/Special:Search/","http://www.amazon.com/s/?field-keywords=",
+"http://www.merriam-webster.com/dictionary/","http://www.rottentomatoes.com/search/?search=","http://finance.yahoo.com/q/bc?l=off&q=b&s=",
+"http://directnic.com/search/?query=","https://duckduckgo.com?t=easybrowser&q=","http://www.wunderground.com/cgi-bin/findweather/getForecast?query=",
+"http://www.yelp.com/search?find_desc="];
+		function go(i){window.location=U[i]+encodeURIComponent(document.getElementById('searchbox').value)}
+	</script>
 </head>
 
 <body style='background-image:url(noise_bg.png)'>
@@ -15,19 +23,19 @@
 	<div style='float:none; margin:auto; text-align:center'>
 	search <input id='searchbox' type='text'> by
 	<br>
-	<a href="javascript:window.location='http://www.amazon.com/s/?field-keywords=' + document.getElementById('searchbox').value">amazon</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://www.merriam-webster.com/dictionary/' + document.getElementById('searchbox').value">dictionary</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://directnic.com/search/?query=' + document.getElementById('searchbox').value">domain</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='https://duckduckgo.com?t=easybrowser&q=' + document.getElementById('searchbox').value">duckduckgo</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://www.rottentomatoes.com/search/?search=' + document.getElementById('searchbox').value">film review</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://www.imdb.com/find?q=' + document.getElementById('searchbox').value">IMDb</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://news.search.yahoo.com/search/news?p=' + document.getElementById('searchbox').value">news</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://www.bing.com/images/search?q=' + document.getElementById('searchbox').value">pix</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://finance.yahoo.com/lookup?s=' + document.getElementById('searchbox').value">stock</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://www.youtube.com/results?search_query=' + document.getElementById('searchbox').value">vid</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://www.wunderground.com/cgi-bin/findweather/getForecast?query=' + document.getElementById('searchbox').value">weather</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://en.m.wikipedia.org/wiki/' + document.getElementById('searchbox').value">wikipedia</a>&nbsp;&nbsp;
-	<a href="javascript:window.location='http://www.yelp.com/search?find_desc=' + document.getElementById('searchbox').value">yelp</a>
+	<a href="javascript:go(5)">amazon</a>&bull;
+	<a href="javascript:go(6)">dictionary</a>&bull;
+	<a href="javascript:go(9)">domain</a>&bull;
+	<a href="javascript:go(10)">duckduckgo</a>&bull;
+	<a href="javascript:go(7)">film review</a>&bull;
+	<a href="javascript:go(2)">IMDb</a>&bull;
+	<a href="javascript:go(0)">news</a>&bull;
+	<a href="javascript:go(1)">pix</a>&bull;
+	<a href="javascript:go(8)">stock</a>&bull;
+	<a href="javascript:go(3)">vid</a>&bull;
+	<a href="javascript:go(11)">weather</a>&bull;
+	<a href="javascript:go(4)">wikipedia</a>&bull;
+	<a href="javascript:go(12)">yelp</a>
 	</div>
 
 	<h4 id='title1' onClick='collapse(1)'></h4><!--top list-->

@@ -3541,8 +3541,8 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
 			sb.append(splitter);
-			sb.append("<li><a href='file:///sdcard/'>SDcard</a></li>");
-			sb.append(splitter);
+			//sb.append("<li><a href='file:///sdcard/'>SDcard</a></li>");
+			//sb.append(splitter);
 			//sb.append(fileDir);
 			//sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");
 			//sb.append(splitter);

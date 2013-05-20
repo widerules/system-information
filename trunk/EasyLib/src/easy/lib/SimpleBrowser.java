@@ -717,6 +717,11 @@ public class SimpleBrowser extends Activity {
 					} else if (!url.startsWith("http") && !url.startsWith("file")) {
 						overloadAction(url);
 						return true; // not allow webpage to proceed
+					} else if ("file:///sdcard/".equals(url)) {
+						Intent intent = new Intent("android.intent.action.GET_CONTENT");
+						intent.setType("file/*");
+						util.startActivity(intent, true, mContext);
+						return true;
 					} else
 						return false;
 				}
@@ -3525,7 +3530,7 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("helpx.adobe.com.png)'><a href='http://tinyurl.com/4aflash'>Adobe Flash player install/update</a></li>");
 			sb.append(splitter);
-			sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='https://play.google.com/store/apps/details?id=easy.browser.com'>Easy Browser Pro</a></li>");
+			sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='market://details?id=easy.browser.com'>Easy Browser Pro</a></li>");
 			sb.append(splitter);
 			//sb.append(fileDir);
 			//sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser&q=DuckDuckGo'>DuckDuckGo</a></li>");
@@ -3535,6 +3540,8 @@ public class SimpleBrowser extends Activity {
 			//sb.append(splitter);
 			sb.append(fileDir);
 			sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
+			sb.append(splitter);
+			sb.append("<li><a href='file:///sdcard/'>SDcard</a></li>");
 			sb.append(splitter);
 			//sb.append(fileDir);
 			//sb.append("mobile.twitter.com.png)'><a href='http://twitter.com'>Twitter</a></li>");

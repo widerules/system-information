@@ -2568,6 +2568,27 @@ public class SimpleBrowser extends Activity {
 				gotoUrl(webAddress.getText().toString().toLowerCase());
 			}
 		});
+		imgGo.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				CharSequence engine[] = new CharSequence[] {getString(R.string.bing), getString(R.string.baidu), getString(R.string.google), getString(R.string.yandex), getString(R.string.duckduckgo)};
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle(getString(R.string.search_engine));
+				builder.setSingleChoiceItems(engine, searchEngine-1, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        // the user clicked on engine[which]
+				    	searchEngine = which + 1;
+				    	sEdit.putInt("search_engine", searchEngine);
+				    	sEdit.commit();
+				    	dialog.dismiss();
+						gotoUrl(webAddress.getText().toString().toLowerCase());
+				    }
+				});
+				builder.show();
+				return true;
+			}
+		});
 
 		webAddress = (AutoCompleteTextView) findViewById(R.id.url);
 		webAddress.bringToFront();

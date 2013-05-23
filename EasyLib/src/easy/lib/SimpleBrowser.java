@@ -2832,6 +2832,14 @@ public class SimpleBrowser extends Activity {
 				} else webControl.setVisibility(View.INVISIBLE);
 			}
 		});
+		imgNew.setOnLongClickListener(new OnLongClickListener() {// show menu when long click
+			@Override
+			public boolean onLongClick(View v) {
+				if (menuDialog == null) initMenuDialog();
+				menuDialog.show();
+				return true;
+			}
+		});
 
 		adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		createAd();

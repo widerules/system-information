@@ -2560,6 +2560,27 @@ public class SimpleBrowser extends Activity {
 					addFavo(url, serverWebs.get(webIndex).getTitle());
 			}
 		});
+		imgAddFavo.setOnLongClickListener(new OnLongClickListener() {// long click to show bookmark
+			@Override
+			public boolean onLongClick(View arg0) {
+				CharSequence bookmarks[] = new CharSequence[mBookMark.size()];
+				for (int i = 0; i < mBookMark.size(); i++)
+				{
+					bookmarks[i] = mBookMark.get(i).m_title;
+				}
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle(getString(R.string.bookmark));
+				builder.setItems(bookmarks, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        // the user clicked on engine[which]
+						serverWebs.get(webIndex).loadUrl(mBookMark.get(which).m_url);
+				    }
+				});
+				builder.show();
+				return true;
+			}
+		});
 
 		imgGo = (ImageView) findViewById(R.id.go);
 		imgGo.setOnClickListener(new OnClickListener() {
@@ -2568,7 +2589,7 @@ public class SimpleBrowser extends Activity {
 				gotoUrl(webAddress.getText().toString().toLowerCase());
 			}
 		});
-		imgGo.setOnLongClickListener(new OnLongClickListener() {
+		imgGo.setOnLongClickListener(new OnLongClickListener() {// long click to select search engine
 			@Override
 			public boolean onLongClick(View arg0) {
 				CharSequence engine[] = new CharSequence[] {getString(R.string.bing), getString(R.string.baidu), getString(R.string.google), getString(R.string.yandex), getString(R.string.duckduckgo)};

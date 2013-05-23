@@ -2832,11 +2832,24 @@ public class SimpleBrowser extends Activity {
 				} else webControl.setVisibility(View.INVISIBLE);
 			}
 		});
-		imgNew.setOnLongClickListener(new OnLongClickListener() {// show menu when long click
+		imgNew.setOnLongClickListener(new OnLongClickListener() {// long click to show history
 			@Override
 			public boolean onLongClick(View v) {
-				if (menuDialog == null) initMenuDialog();
-				menuDialog.show();
+				CharSequence historys[] = new CharSequence[mHistory.size()];
+				for (int i = 0; i < mHistory.size(); i++)
+				{
+					historys[i] = mHistory.get(i).m_title;
+				}
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle(getString(R.string.history));
+				builder.setItems(historys, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        // the user clicked on engine[which]
+						serverWebs.get(webIndex).loadUrl(mHistory.get(which).m_url);
+				    }
+				});
+				builder.show();
 				return true;
 			}
 		});

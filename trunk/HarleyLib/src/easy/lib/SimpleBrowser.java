@@ -2885,6 +2885,14 @@ public class SimpleBrowser extends Activity {
 				else showBookmark(); 
 			}
 		});
+		imgBookmark.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				moveTaskToBack(true);
+				return false;
+			}
+		});
+		
 		imgNew = (ImageView) findViewById(R.id.newpage);
 		imgNew.setImageBitmap(util.generatorCountIcon(
 				util.getResIcon(getResources(), R.drawable.newpage), 1, 2,
@@ -2904,7 +2912,21 @@ public class SimpleBrowser extends Activity {
 		imgNew.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
-				moveTaskToBack(true);
+				CharSequence historys[] = new CharSequence[mHistory.size()];
+				for (int i = 0; i < mHistory.size(); i++)
+				{
+					historys[i] = mHistory.get(i).m_title;
+				}
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle(getString(R.string.history));
+				builder.setItems(historys, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        // the user clicked on engine[which]
+						serverWebs.get(webIndex).loadUrl(mHistory.get(which).m_url);
+				    }
+				});
+				builder.show();
 				return true;
 			}
 		});

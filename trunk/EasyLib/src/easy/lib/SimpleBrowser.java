@@ -2772,6 +2772,19 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).goForward();
 			}
 		});
+		imgNext.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+				if (wbfl != null) {
+					int size = wbfl.getSize();
+					int current = wbfl.getCurrentIndex();
+					serverWebs.get(webIndex).goBackOrForward(size - current);
+				}
+				return true;
+			}
+		});
+
 		imgPrev = (ImageView) findViewById(R.id.prev);
 		imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2782,6 +2795,18 @@ public class SimpleBrowser extends Activity {
 					closePage(webIndex, false);
 			}
 		});
+		imgPrev.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+				if (wbfl != null) {
+					int current = wbfl.getCurrentIndex();
+					serverWebs.get(webIndex).goBackOrForward(-current);
+				}
+				return true;
+			}
+		});
+
 		imgRefresh = (ImageView) findViewById(R.id.refresh);
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override

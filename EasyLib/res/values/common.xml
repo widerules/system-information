@@ -34,7 +34,7 @@
     <string name="remove_history">Remove from History</string>
     <string name="save">Save for offline reading</string>
     <string name="open_new">Open in new page</string>
-    <string name="open_background">Open in background</string>
+    <string name="open_background">Open in background tab</string>
     <string name="copy_url">Copy Url</string>
     <string name="copy">Copy</string>
     <string name="copy_hint">Try to long click on the text you want to copy</string>
@@ -121,5 +121,7 @@
     <string name="show_controlBar">Control Bar</string>
     <string name="show_statusBar">Status Bar</string>
     <string name="page_updown">Scroll Button</string>
+    <string name="close">Close</string>
+    <string name="close_all">Close all</string>
     
 </resources>

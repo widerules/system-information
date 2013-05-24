@@ -29,7 +29,7 @@
     <string name="remove_history">删除历史</string>
     <string name="save">存为文件</string>
     <string name="open_new">在新窗口中打开</string>
-    <string name="open_background">从后台打开</string>
+    <string name="open_background">在后台标签页中打开</string>
     <string name="copy_url">复制链接</string>
     <string name="copy">复制</string>
     <string name="copy_hint">试试在要复制的文字上长按</string>
@@ -120,5 +120,7 @@
     <string name="show_controlBar">控制栏"    "</string>
     <string name="show_statusBar">状态栏</string>
     <string name="page_updown">翻页按钮</string>
+    <string name="close">关闭</string>
+    <string name="close_all">关闭所有页面</string>
     
 </resources>

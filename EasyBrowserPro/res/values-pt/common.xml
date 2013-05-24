@@ -29,7 +29,7 @@
     <string name="remove_history">Remover da História</string>
     <string name="save">Salvar para leitura offline</string>
     <string name="open_new">Abrir em nova página</string>
-    <string name="open_background">Abrir em fundo</string>
+    <string name="open_background">Abrir na aba fundo</string>
     <string name="copy_url">Url cópia</string>
     <string name="copy">Copiar</string>
     <string name="copy_hint">Tente longo clicar sobre o texto que deseja copiar</string>
@@ -106,5 +106,7 @@
     <string name="show_controlBar">Barra de controle</string>
     <string name="show_statusBar">Barra de status</string>
     <string name="page_updown">Botão de rolagem</string>
+    <string name="close">Fechar</string>
+    <string name="close_all">Feche todas as</string>
     
 </resources>

@@ -914,7 +914,7 @@ public class SimpleBrowser extends Activity {
 			} catch (Exception e) {
 			}// catch an null pointer exception on 1.6}
 
-			TextView webname = (TextView) convertView
+			final TextView webname = (TextView) convertView
 					.findViewById(R.id.webname);
 			if ((wv.getTitle() != null) && (!"".equals(wv.getTitle())))
 				webname.setText(wv.getTitle());
@@ -926,6 +926,89 @@ public class SimpleBrowser extends Activity {
 				public void onClick(View arg0) {
 					webControl.setVisibility(View.INVISIBLE);
 					changePage(position);
+				}
+			});
+			webname.setOnLongClickListener(new OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View arg0) {
+					CharSequence operations[];
+					if (mAdAvailable) operations = new CharSequence[8];
+					else operations = new CharSequence[10];
+
+					operations[0] = getString(R.string.open);
+					operations[1] = getString(R.string.shareurl); 
+					operations[2] = getString(R.string.save);
+					operations[3] = getString(R.string.copy_url); 
+					operations[4] = getString(R.string.bookmark); 
+					operations[5] = getString(R.string.remove_history);
+					if (mAdAvailable) {
+						operations[6] = getString(R.string.close);
+						operations[7] = getString(R.string.close_all);
+					}
+					else {
+						operations[6] = getString(R.string.set_homepage);
+						operations[7] = getString(R.string.add_shortcut);
+						operations[8] = getString(R.string.close);
+						operations[9] = getString(R.string.close_all);
+					}
+
+					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+					builder.setTitle(webname.getText());
+					builder.setItems(operations, new DialogInterface.OnClickListener() {
+					    @Override
+					    public void onClick(DialogInterface dialog, int which) {
+					    	switch(which) {
+					    	case 0:// open
+					    		webname.performClick();
+					    		break;
+					    	case 1:// share url
+					    		shareUrl("", wv.m_url);
+					    		break;
+					    	case 2:// save
+					    		startDownload(wv.m_url, "");
+					    		break;
+					    	case 3:// copy url
+								ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+								ClipMan.setText(wv.m_url);
+					    		break;
+					    	case 4:// bookmark
+					    		addRemoveFavo(wv.m_url, webname.getText().toString());
+					    		break;
+					    	case 5:// remove history
+					    		for (int i = mHistory.size() - 1; i >= 0; i--)
+					    			if (mHistory.get(i).m_url.equals(wv.m_url)) {
+					    				removeHistory(i);
+					    				break;
+					    			}
+					    		break;
+					    	case 6:// close or set homepage
+					    		if (mAdAvailable) closePage(position, false);
+					    		else {
+									m_homepage = wv.m_url;
+									sEdit.putString("homepage", wv.m_url);
+									sEdit.commit();
+					    		}
+					    		break;
+					    	case 7:// close all or add shortcut
+					    		if (mAdAvailable) {
+					    			while (serverWebs.size() > 1) closePage(0, false);
+					    			loadPage();
+					    		}
+					    		else 
+									createShortcut(wv.m_url, webname.getText().toString());
+					    		break;
+					    	case 8:// close
+					    		closePage(position, false);
+					    		break;
+					    	case 9:// close all
+					    		while (serverWebs.size() > 1) closePage(0, false);
+					    		loadPage();
+					    		break;
+					    	}
+					    }
+					});
+					builder.show();					
+					return true;
 				}
 			});
 
@@ -2623,15 +2706,7 @@ public class SimpleBrowser extends Activity {
 				String url = serverWebs.get(webIndex).m_url;
 				if (HOME_PAGE.equals(url)) return;// not add home page
 
-				boolean foundBookmark = false;
-				for (int i = mBookMark.size() - 1; i >= 0; i--)
-					if (mBookMark.get(i).m_url.equals(url)) {
-						foundBookmark = true;
-						removeFavo(i);
-						break;
-					}
-				if (!foundBookmark)
-					addFavo(url, serverWebs.get(webIndex).getTitle());
+				addRemoveFavo(url, serverWebs.get(webIndex).getTitle());
 			}
 		});
 		imgAddFavo.setOnLongClickListener(new OnLongClickListener() {// long click to show bookmark
@@ -3254,6 +3329,16 @@ public class SimpleBrowser extends Activity {
 		super.onNewIntent(intent);
 	}
 
+	void addRemoveFavo(String url, String title) {
+		for (int i = mBookMark.size() - 1; i >= 0; i--)
+			if (mBookMark.get(i).m_url.equals(url)) {
+				removeFavo(i);
+				return;
+			}
+
+		addFavo(url, title);// add favo if not found it
+	}
+	
 	void removeFavo(final int order) {
 		new AlertDialog.Builder(this)
 				.setTitle(R.string.remove_bookmark)

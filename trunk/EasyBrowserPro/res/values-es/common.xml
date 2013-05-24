@@ -29,7 +29,7 @@
     <string name="remove_history">Eliminar de la Historia</string>
     <string name="save">Ahorrar para la lectura fuera de línea</string>
     <string name="open_new">Abrir en una nueva página</string>
-    <string name="open_background">Abrir en segundo plano</string>
+    <string name="open_background">Abrirá una pestaña en segundo plano</string>
     <string name="copy_url">Url Copiar</string>
     <string name="copy">COPIA</string>
     <string name="copy_hint">Intente hacer clic en largo en el texto que desea copiar</string>
@@ -103,5 +103,6 @@
     <string name="edit_home">Editar</string>
     <string name="show_controlBar">Barra de control</string>
     <string name="page_updown">Botón de desplazamiento</string>
-    
+    <string name="close">Cerrar</string>
+    <string name="close_all">Cerrar todas las</string>
 </resources>

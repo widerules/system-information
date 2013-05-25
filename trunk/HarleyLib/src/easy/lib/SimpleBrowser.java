@@ -3038,7 +3038,7 @@ public class SimpleBrowser extends Activity {
 							break;
 						case 3:
 							overviewPage = selected;
-							localSettings.setUseWideViewPort(overviewPage);
+							//localSettings.setUseWideViewPort(overviewPage);
 							localSettings.setLoadWithOverviewMode(overviewPage);
 							sEdit.putBoolean("overview_page", overviewPage);
 							break;

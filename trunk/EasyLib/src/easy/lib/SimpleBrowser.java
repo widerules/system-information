@@ -2961,7 +2961,7 @@ public class SimpleBrowser extends Activity {
 							break;
 						case 3:
 							overviewPage = selected;
-							localSettings.setUseWideViewPort(overviewPage);
+							//localSettings.setUseWideViewPort(overviewPage);
 							webSettings.setLoadWithOverviewMode(overviewPage);
 							sEdit.putBoolean("overview_page", overviewPage);
 							break;
@@ -3789,7 +3789,7 @@ public class SimpleBrowser extends Activity {
 			sb.append(fileDir);
 			sb.append("helpx.adobe.com.png)'><a href='http://tinyurl.com/4aflash'>Adobe Flash player install/update</a></li>");
 			sb.append(splitter);
-			sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='market://details?id=easy.browser.com'>Easy Browser Pro</a></li>");
+			sb.append("<li style='background-image:url(file:///android_asset/favicon.ico)'><a href='market://details?id=easy.browser.com'>Easy Browser Pro, no Ads</a></li>");
 			sb.append(splitter);
 			//sb.append(fileDir);
 			//sb.append("duckduckgo.com.png)'><a href='https://duckduckgo.com?t=easybrowser&q=DuckDuckGo'>DuckDuckGo</a></li>");

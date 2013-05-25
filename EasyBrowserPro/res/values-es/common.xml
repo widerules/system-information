@@ -53,6 +53,7 @@
     <string name="downloads_open">". "Se puede ver la carpeta con el archivo ES Explorer o otro administrador de archivos. Haga clic en Aceptar para descargar el Explorador de archivos ES.</string>
     <string name="sorry">" "Se estrelló, registro de errores es" "</string>
     <string name="snap">instantánea</string>
+    <string name="full_screen">Pantalla completa</string>
     <string name="full_webpage">Snap Shot para la página web completa</string>
     <string name="show_zoom">(Página actual) de control de zoom</string>
     <string name="block_image">Bloquear imágenes para reducir el ancho de banda</string>
@@ -105,4 +106,5 @@
     <string name="page_updown">Botón de desplazamiento</string>
     <string name="close">Cerrar</string>
     <string name="close_all">Cerrar todas las</string>
+    <string name="hide">Ocultar</string>
 </resources>

@@ -58,6 +58,7 @@
     <string name="downloads_open">". "You can view the folder with ES File Explorer or other file manager. Click OK to download ES File Explorer.</string>
     <string name="sorry">" "crashed, error log is" "</string>
     <string name="snap">Snap Shot</string>
+    <string name="full_screen">Full screen</string>
     <string name="full_webpage">Snap shot for full web page</string>
     <string name="show_zoom">(current page)Zoom Control</string>
     <string name="block_image">Block images to reduce bandwidth</string>
@@ -123,5 +124,5 @@
     <string name="page_updown">Scroll Button</string>
     <string name="close">Close</string>
     <string name="close_all">Close all</string>
-    
+    <string name="hide">Hide</string>
 </resources>

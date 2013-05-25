@@ -110,5 +110,5 @@
     <string name="page_updown">スクロールボタン</string>
     <string name="close">閉じる</string>
     <string name="close_all">すべてを閉じる</string>
-    
+    <string name="hide">隠す</string>
 </resources>

@@ -972,7 +972,9 @@ public class SimpleBrowser extends Activity {
 								ClipMan.setText(wv.m_url);
 					    		break;
 					    	case 4:// bookmark
-					    		addRemoveFavo(wv.m_url, webname.getText().toString());
+								String url = wv.m_url;
+								if (HOME_PAGE.equals(url)) return;// not add home page
+					    		addRemoveFavo(url, webname.getText().toString());
 					    		break;
 					    	case 5:// remove history
 					    		for (int i = mHistory.size() - 1; i >= 0; i--)
@@ -2194,9 +2196,10 @@ public class SimpleBrowser extends Activity {
 				R.drawable.copy,
 				R.drawable.downloads,
 				R.drawable.save,
-				//R.drawable.link,
 				R.drawable.capture,
 				R.drawable.html_w,
+				R.drawable.favorite,
+				R.drawable.link,
 				R.drawable.share,
 				R.drawable.about
 			};
@@ -2210,9 +2213,10 @@ public class SimpleBrowser extends Activity {
 				getString(R.string.copy),
 				getString(R.string.downloads),
 				getString(R.string.save),
-				//"cookie",
 				getString(R.string.snap),
 				getString(R.string.source),
+				getString(R.string.bookmark),
+				"cookie",
 				getString(R.string.shareurl),
 				getString(R.string.settings)
 			};
@@ -2288,16 +2292,6 @@ public class SimpleBrowser extends Activity {
 				case 7:// save
 		    		startDownload(serverWebs.get(webIndex).m_url, "");
 					break;
-				/*case 7:// cookie
-					CookieManager cookieManager = CookieManager.getInstance(); 
-					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
-					if (cookie != null)
-						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
-					else sourceOrCookie = "No cookie on this page.";
-					
-					subFolder = "cookie";
-					showSourceDialog();
-					break;*/
 				case 8:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
 							// to use a recycled bitmap android.graphics.Bitmap
@@ -2349,10 +2343,25 @@ public class SimpleBrowser extends Activity {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 10:// share url
+				case 10:// bookmark
+					String url = serverWebs.get(webIndex).m_url;
+					if (HOME_PAGE.equals(url)) return;// not add home page
+					addRemoveFavo(url, serverWebs.get(webIndex).getTitle());
+					break;
+				case 11:// cookie
+					CookieManager cookieManager = CookieManager.getInstance(); 
+					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
+					if (cookie != null)
+						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
+					else sourceOrCookie = "No cookie on this page.";
+					
+					subFolder = "cookie";
+					showSourceDialog();
+					break;
+				case 12:// share url
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
-				case 11:// settings
+				case 13:// settings
 					Intent intent = new Intent("easy.lib.about");
 					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
 					startActivityForResult(intent, SETTING_RESULTCODE);
@@ -2969,13 +2978,6 @@ public class SimpleBrowser extends Activity {
 				reloadPage();
 			}
 		});
-		/*imgMenu = (ImageView) findViewById(R.id.menu);
-		imgMenu.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				onMenuOpened(0, null);
-			}
-		});*/
 		imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
@@ -3819,7 +3821,7 @@ public class SimpleBrowser extends Activity {
 		height -= urlLine.getHeight();
 		height -= webTools.getHeight();
 		int size = height / 72;// 72 is the height of each menu item
-		if (size > 9) {
+		if (size > 10) {
 			menuWidth = (int) (80*dm.density);// 80 dip for single column
 			menuGrid.setNumColumns(1);
 		}

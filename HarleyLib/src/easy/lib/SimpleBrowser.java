@@ -726,7 +726,7 @@ public class SimpleBrowser extends Activity {
 						public void onClick(DialogInterface dialog,
 								int which) {
 							if (!util.startActivity(intent, false, mContext))
-								startDownload(url, contentDisposition);//download if open fail
+								startDownload(url, contentDisposition, "yes");//download if open fail
 						}
 					})
 			.setNeutralButton(getString(R.string.download),
@@ -734,7 +734,7 @@ public class SimpleBrowser extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog,
 								int which) {
-							startDownload(url, contentDisposition);
+							startDownload(url, contentDisposition, "yes");
 						}
 					})
 			.setNegativeButton(getString(R.string.cancel),
@@ -744,7 +744,7 @@ public class SimpleBrowser extends Activity {
 								int which) {
 						}
 					}).show();} catch(Exception e) {}
-		} else startDownload(url, contentDisposition);
+		} else startDownload(url, contentDisposition, "yes");
 	}
 	
 	void overloadAction(String url) {
@@ -965,7 +965,7 @@ public class SimpleBrowser extends Activity {
 					    		shareUrl("", wv.m_url);
 					    		break;
 					    	case 2:// save
-					    		startDownload(wv.m_url, "");
+					    		startDownload(wv.m_url, "", "no");
 					    		break;
 					    	case 3:// copy url
 								ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -1508,7 +1508,7 @@ public class SimpleBrowser extends Activity {
 					if (result.getType() == HitTestResult.IMAGE_TYPE
 							|| result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
 						ext = ".jpg";
-					startDownload(url, ext);
+					startDownload(url, ext, "yes");
 					break;
 				case 3:// open in foreground
 					openNewPage(url, webIndex+1, true, true); 
@@ -1606,7 +1606,7 @@ public class SimpleBrowser extends Activity {
 		return apkName;
 	}
 	
-	boolean startDownload(String url, String contentDisposition) {
+	boolean startDownload(String url, String contentDisposition, String openAfterDone) {
 		int posQ = url.indexOf("src=");
 		if (posQ > 0) url = url.substring(posQ + 4);// get src part
 
@@ -1655,7 +1655,7 @@ public class SimpleBrowser extends Activity {
 		DownloadTask dltask = new DownloadTask();
 		dltask.NOTIFICATION_ID = id;
 		appstate.downloadState.put(id, dltask);
-		dltask.execute(url, apkName, contentDisposition);
+		dltask.execute(url, apkName, contentDisposition, openAfterDone);
 		addDownloads(new TitleUrl(apkName, "file://" + downloadPath + apkName , url));
 		return true;
 	}
@@ -1779,7 +1779,7 @@ public class SimpleBrowser extends Activity {
 				if (download_file.length() == apk_length) {
 					// found local file with same name and length,
 					// no need to download, just send intent to view it
-					downloadSuccessRoutine(notification, apk_length, intent, download_file, NOTIFICATION_ID, mimeType);
+					downloadSuccessRoutine(notification, apk_length, intent, download_file, NOTIFICATION_ID, mimeType, params[3]);
 					return downloadPath + apkName;
 				} else if (download_file.length() < apk_length) {
 					// local file size < need to download,
@@ -1856,7 +1856,7 @@ public class SimpleBrowser extends Activity {
 
 				if (!stopDownload) {// download success. change notification,
 									// start package manager to install package
-					downloadSuccessRoutine(notification, total_read, intent, download_file, NOTIFICATION_ID, mimeType);
+					downloadSuccessRoutine(notification, total_read, intent, download_file, NOTIFICATION_ID, mimeType, params[3]);
 				}
 
 			} catch (Exception e) {
@@ -1892,7 +1892,7 @@ public class SimpleBrowser extends Activity {
 
 	}
 
-	void downloadSuccessRoutine(Notification notification, long total_read, Intent intent, File download_file, int NOTIFICATION_ID, String mimeType) {
+	void downloadSuccessRoutine(Notification notification, long total_read, Intent intent, File download_file, int NOTIFICATION_ID, String mimeType, String openAfterDone) {
 		notification.icon = android.R.drawable.stat_sys_download_done;
 
 		DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
@@ -1940,7 +1940,7 @@ public class SimpleBrowser extends Activity {
 			// it will not return result code,
 			// so not use startActivityForResult();
 		}
-		util.startActivity(intent, false, mContext);// try to start some app to launch the download file
+		if ("yes".equals(openAfterDone)) util.startActivity(intent, false, mContext);// try to start some app to launch the download file
 	}
 	
 	void scrollToMain() {
@@ -2290,7 +2290,7 @@ public class SimpleBrowser extends Activity {
 					showBookmark();
 					break;
 				case 7:// save
-		    		startDownload(serverWebs.get(webIndex).m_url, "");
+		    		startDownload(serverWebs.get(webIndex).m_url, "", "no");
 					break;
 				case 8:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
@@ -3275,7 +3275,7 @@ public class SimpleBrowser extends Activity {
 	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent intent) {
-			startDownload(intent.getStringExtra("url"), null);
+			startDownload(intent.getStringExtra("url"), null, "yes");
 		}
 	};
 

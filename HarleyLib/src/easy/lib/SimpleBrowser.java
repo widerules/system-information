@@ -1644,8 +1644,7 @@ public class SimpleBrowser extends Activity {
 			if ((val != null) && val.apkName.equals(apkName)) {
 				if (val.pauseDownload)
 					val.pauseDownload = false;// resume download if it paused
-				return true;// the file is downloading, not start a new download
-				// task.
+				return true;// the file is downloading, not start a new download task.
 			}
 		}
 
@@ -1780,6 +1779,7 @@ public class SimpleBrowser extends Activity {
 					// found local file with same name and length,
 					// no need to download, just send intent to view it
 					downloadSuccessRoutine(notification, apk_length, intent, download_file, NOTIFICATION_ID, mimeType, params[3]);
+					appstate.downloadState.remove(NOTIFICATION_ID);
 					return downloadPath + apkName;
 				} else if (download_file.length() < apk_length) {
 					// local file size < need to download,

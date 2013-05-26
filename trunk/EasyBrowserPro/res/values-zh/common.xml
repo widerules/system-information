@@ -27,7 +27,7 @@
     <string name="add_bookmark">添加收藏</string>
     <string name="remove_bookmark">删除收藏</string>
     <string name="remove_history">删除历史</string>
-    <string name="save">存为文件</string>
+    <string name="save">保存</string>
     <string name="open_new">在新标签页中打开</string>
     <string name="open_background">在后台标签页打开</string>
     <string name="copy_url">复制链接</string>

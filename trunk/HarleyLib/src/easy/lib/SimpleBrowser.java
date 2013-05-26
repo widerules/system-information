@@ -2193,9 +2193,10 @@ public class SimpleBrowser extends Activity {
 				R.drawable.search, 
 				R.drawable.copy,
 				R.drawable.downloads,
-				R.drawable.html_w,
+				R.drawable.save,
+				//R.drawable.link,
 				R.drawable.capture,
-				R.drawable.link,
+				R.drawable.html_w,
 				R.drawable.share,
 				R.drawable.about
 			};
@@ -2208,9 +2209,10 @@ public class SimpleBrowser extends Activity {
 				getString(R.string.search),
 				getString(R.string.copy),
 				getString(R.string.downloads),
-				getString(R.string.source),
+				getString(R.string.save),
+				//"cookie",
 				getString(R.string.snap),
-				"cookie",
+				getString(R.string.source),
 				getString(R.string.shareurl),
 				getString(R.string.settings)
 			};
@@ -2283,20 +2285,19 @@ public class SimpleBrowser extends Activity {
 					downloadsList.setVisibility(View.VISIBLE);
 					showBookmark();
 					break;
-				case 7:// view page source
-					try {
-						if ("".equals(serverWebs.get(webIndex).pageSource)) {
-							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
-							serverWebs.get(webIndex).getPageSource();
-						}
-
-						sourceOrCookie = serverWebs.get(webIndex).pageSource;
-						subFolder = "source";
-						showSourceDialog();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
-					}
+				case 7:// save
+		    		startDownload(serverWebs.get(webIndex).m_url, "");
 					break;
+				/*case 7:// cookie
+					CookieManager cookieManager = CookieManager.getInstance(); 
+					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
+					if (cookie != null)
+						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
+					else sourceOrCookie = "No cookie on this page.";
+					
+					subFolder = "cookie";
+					showSourceDialog();
+					break;*/
 				case 8:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
 							// to use a recycled bitmap android.graphics.Bitmap
@@ -2334,15 +2335,19 @@ public class SimpleBrowser extends Activity {
 								Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 9:// cookie
-					CookieManager cookieManager = CookieManager.getInstance(); 
-					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
-					if (cookie != null)
-						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
-					else sourceOrCookie = "No cookie on this page.";
-					
-					subFolder = "cookie";
-					showSourceDialog();
+				case 9:// view page source
+					try {
+						if ("".equals(serverWebs.get(webIndex).pageSource)) {
+							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
+							serverWebs.get(webIndex).getPageSource();
+						}
+
+						sourceOrCookie = serverWebs.get(webIndex).pageSource;
+						subFolder = "source";
+						showSourceDialog();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+					}
 					break;
 				case 10:// share url
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);

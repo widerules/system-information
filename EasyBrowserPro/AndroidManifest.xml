@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="easy.browser.com"
-    android:versionCode="16"
+    android:versionCode="17"
     android:versionName="1.1.2">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -27,6 +27,7 @@
     <application
         android:name="easy.lib.MyApp"
         android:debuggable="false"
+        android:theme="@android:style/Theme"
         android:hardwareAccelerated="true"
         android:icon="@drawable/explorer"
         android:label="@string/browser_name" >

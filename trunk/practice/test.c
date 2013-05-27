@@ -1,3 +1,17 @@
+#include <stdlib.h>
+
+void shuffle(char* array, int len)
+{
+        int i;
+        for (i = len-1; i > 0; i--)
+        {
+                int j = random() % i;
+                int tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+        }
+}
+
 void fast_sort()
 {
 }
@@ -163,6 +177,7 @@ void block_revert(char* str)
 	int len = 0;
 	char* p = str;
 	int length = strlen(str);
+	revert(str, length);
 	int i;
 	for (i = 0; i < length; i++)
 	{
@@ -180,14 +195,39 @@ void block_revert(char* str)
 	revert(p, len);
 }
 
-void main()
+int main(int argc, char* argv[])
 {
+	if (argc > 1) 
+	{
+		printf("%s\n", argv[1]);
+		block_revert(argv[1]);
+		printf("%s\n", argv[1]);
+	}
+
+	int len = 52;
+	char* array = (char*) malloc(len+1);
+	int i;
+	for (i = 0; i < len; i++) array[i] = i+1;
+	array[len] = 0;
+	for (i = 0; i < len; i++) printf("%d, ", array[i]); 
+	printf("\n");
+	shuffle(array, strlen(array));
+	for (i = 0; i < len; i++) printf("%d, ", array[i]);
+	printf("\n");
+	bubble_sort(array, strlen(array));
+	for (i = 0; i < len; i++) printf("%d, ", array[i]);
+	printf("\n");
+	free(array);
+
 	printf("size of char is %d\n", sizeof(char));
 	printf("size of int is %d\n", sizeof(int));
 
-	char* s1 = "this is a test ";
+	char* s1 = "this is a test";
 	char* s2 = "this";
 	char s3[128];
+	char* s4 = "C++";
+	printf("size of C++ is %d\n", sizeof(s4));
+
 	memset(s3, 0, 128);
 	strcpy(s3, s2);
 	revert(s3, strlen(s3));
@@ -226,4 +266,6 @@ void main()
 	strcpy(s3, "54321edcba");
 	bubble_sort_recurse(s3, strlen(s3));
 	printf("s3 is %s\n", s3);
+
+	return 0;
 }

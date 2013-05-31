@@ -149,17 +149,6 @@
                     android:src="@drawable/next" />
 
                 <ImageView
-                    android:id="@+id/refresh"
-                    android:layout_width="0dip"
-                    android:layout_height="35dip"
-                    android:layout_marginTop="2dip"
-                    android:layout_weight="1"
-                    android:background="@drawable/imagebutton_layout"
-                    android:scaleType="center"
-                    android:src="@drawable/refresh" />
-
-                <!--
-                     ImageView
                     android:id="@+id/menu"
                     android:layout_width="0dip"
                     android:layout_height="35dip"
@@ -167,9 +156,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/imagebutton_layout"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/menu"
-                    android:visibility="gone" /
-                -->
+                    android:src="@drawable/menu" />
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
@@ -194,10 +181,20 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/imagebutton_layout"
-                android:scaleType="centerCrop"
+                android:scaleType="center"
                 android:src="@drawable/favorites_add" />
 
             <ImageView
+                android:id="@+id/refresh"
+                android:layout_width="32dip"
+                android:layout_height="32dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/imagebutton_layout"
+                android:scaleType="center"
+                android:src="@drawable/refresh" />
+            
+            <!-- ImageView
                 android:id="@+id/go"
                 android:layout_width="32dip"
                 android:layout_height="32dip"
@@ -205,7 +202,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/imagebutton_layout"
                 android:scaleType="center"
-                android:src="@drawable/go" />
+                android:src="@drawable/go" /-->
 
             <FrameLayout
                 android:layout_width="fill_parent"
@@ -224,7 +221,7 @@
                     android:imeOptions="actionGo|flagNoExtractUi"
                     android:inputType="textUri"
                     android:paddingLeft="2dip"
-                    android:paddingRight="0dip"
+                    android:paddingRight="3dip"
                     android:selectAllOnFocus="true"
                     android:singleLine="true" />
 

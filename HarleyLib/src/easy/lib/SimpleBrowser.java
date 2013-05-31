@@ -2752,27 +2752,6 @@ public class SimpleBrowser extends Activity {
 				gotoUrl(webAddress.getText().toString().toLowerCase());
 			}
 		});
-		imgGo.setOnLongClickListener(new OnLongClickListener() {// long click to select search engine
-			@Override
-			public boolean onLongClick(View arg0) {
-				CharSequence engine[] = new CharSequence[] {getString(R.string.bing), getString(R.string.baidu), getString(R.string.google), getString(R.string.yandex), getString(R.string.duckduckgo)};
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				builder.setTitle(getString(R.string.search_engine));
-				builder.setSingleChoiceItems(engine, searchEngine-1, new DialogInterface.OnClickListener() {
-				    @Override
-				    public void onClick(DialogInterface dialog, int which) {
-				        // the user clicked on engine[which]
-				    	searchEngine = which + 1;
-				    	sEdit.putInt("search_engine", searchEngine);
-				    	sEdit.commit();
-				    	dialog.dismiss();
-						gotoUrl(webAddress.getText().toString().toLowerCase());
-				    }
-				});
-				builder.show();
-				return true;
-			}
-		});
 		*/
 
 		webAddress = (AutoCompleteTextView) findViewById(R.id.url);
@@ -3015,6 +2994,13 @@ public class SimpleBrowser extends Activity {
 				else showBookmark(); 
 			}
 		});
+		imgBookmark.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				exchangePosition();
+				return true;
+			}
+		});
 		
 		imgMenu = (ImageView) findViewById(R.id.menu);
 		imgMenu.setOnClickListener(new OnClickListener() {
@@ -3171,49 +3157,10 @@ public class SimpleBrowser extends Activity {
 		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
 		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {//reverse the position of webtoolbutton and ad
-				//change position of ads and buttons
-				LayoutParams lp1 = imageBtnList.getLayoutParams();
-				LayoutParams lp2 = adContainer2.getLayoutParams();
-				
-				lp1.height = (int)(50 * dm.density);
-				lp2.height = (int)(40 * dm.density);
-				
-				imageBtnList.setLayoutParams(lp2);
-				adContainer2.setLayoutParams(lp1);
-				
-				//if (adContainer2.getVisibility() == View.GONE) // but maybe should open for change priorty of left/right hand? 
-					//return; // no need to change position of bookmark if not width enough
-				
-				//change position of bookmark and menu
-				lp1 = bookmarkDownloads.getLayoutParams();
-				lp2 = menuGrid.getLayoutParams();
-				int tmp = lp1.width;
-				lp1.width = lp2.width;
-				lp2.width = tmp;
-				bookmarkDownloads.setLayoutParams(lp2);
-				menuGrid.setLayoutParams(lp1);
-				
-				//revert toLeft and toRight of webControl
-				lp1 = webControl.getLayoutParams();
-				lp2 = fakeWebControl.getLayoutParams();
-				webControl.setLayoutParams(lp2);
-				fakeWebControl.setLayoutParams(lp1);
-				
-				revertCount++;
-				if ((revertCount > 1) && (revertCount % 2 == 0))
-					needRevert = true;
-				else needRevert = false;
-				webList.invalidateViews();
+			public void onClick(View v) {
+				exchangePosition();
 			}
 		});
-		/*toolAndAd.setOnLongClickListener(new OnLongClickListener() {// long click tool bar to open menu
-			@Override
-			public boolean onLongClick(View arg0) {
-				onMenuOpened(0, null);
-				return true;
-			}
-		});*/
 
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
@@ -3236,6 +3183,42 @@ public class SimpleBrowser extends Activity {
 
 		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
 		registerReceiver(downloadReceiver, filter);
+	}
+	
+	void exchangePosition() {
+		//reverse the position of buttons and ads
+		LayoutParams lp1 = imageBtnList.getLayoutParams();
+		LayoutParams lp2 = adContainer2.getLayoutParams();
+		
+		lp1.height = (int)(50 * dm.density);
+		lp2.height = (int)(40 * dm.density);
+		
+		imageBtnList.setLayoutParams(lp2);
+		adContainer2.setLayoutParams(lp1);
+		
+		//if (adContainer2.getVisibility() == View.GONE) // but maybe should open for change priorty of left/right hand? 
+			//return; // no need to change position of bookmark if not width enough
+		
+		//change position of bookmark and menu
+		lp1 = bookmarkDownloads.getLayoutParams();
+		lp2 = menuGrid.getLayoutParams();
+		int tmp = lp1.width;
+		lp1.width = lp2.width;
+		lp2.width = tmp;
+		bookmarkDownloads.setLayoutParams(lp2);
+		menuGrid.setLayoutParams(lp1);
+		
+		//revert toLeft and toRight of webControl
+		lp1 = webControl.getLayoutParams();
+		lp2 = fakeWebControl.getLayoutParams();
+		webControl.setLayoutParams(lp2);
+		fakeWebControl.setLayoutParams(lp1);
+		
+		revertCount++;
+		if ((revertCount > 1) && (revertCount % 2 == 0))
+			needRevert = true;
+		else needRevert = false;
+		webList.invalidateViews();
 	}
 
 	void getTitleHeight() {

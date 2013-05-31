@@ -245,7 +245,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<MyWebview> serverWebs = new ArrayList<MyWebview>();
 	int webIndex;
 	MyViewFlipper webpages;
-	ImageView imgPrev, imgRefresh, imgNew, imgBookmark, imgNext;//imgMenu
+	ImageView imgPrev, imgRefresh, imgNew, imgBookmark, imgNext, imgMenu;
 	WebAdapter webAdapter;
 	LinearLayout webTools, urlLine;
 	RelativeLayout webs;
@@ -2745,7 +2745,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		imgGo = (ImageView) findViewById(R.id.go);
+		/*imgGo = (ImageView) findViewById(R.id.go);
 		imgGo.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -2773,6 +2773,7 @@ public class SimpleBrowser extends Activity {
 				return true;
 			}
 		});
+		*/
 
 		webAddress = (AutoCompleteTextView) findViewById(R.id.url);
 		webAddress.bringToFront();
@@ -2978,6 +2979,28 @@ public class SimpleBrowser extends Activity {
 				reloadPage();
 			}
 		});
+		imgRefresh.setOnLongClickListener(new OnLongClickListener() {// long click to select search engine
+			@Override
+			public boolean onLongClick(View arg0) {
+				CharSequence engine[] = new CharSequence[] {getString(R.string.bing), getString(R.string.baidu), getString(R.string.google), getString(R.string.yandex), getString(R.string.duckduckgo)};
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setTitle(getString(R.string.search_engine));
+				builder.setSingleChoiceItems(engine, searchEngine-1, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        // the user clicked on engine[which]
+				    	searchEngine = which + 1;
+				    	sEdit.putInt("search_engine", searchEngine);
+				    	sEdit.commit();
+				    	dialog.dismiss();
+						gotoUrl(webAddress.getText().toString().toLowerCase());
+				    }
+				});
+				builder.show();
+				return true;
+			}
+		});
+		
 		imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
 		imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
@@ -2992,7 +3015,15 @@ public class SimpleBrowser extends Activity {
 				else showBookmark(); 
 			}
 		});
-		imgBookmark.setOnLongClickListener(new OnLongClickListener() {
+		
+		imgMenu = (ImageView) findViewById(R.id.menu);
+		imgMenu.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				onMenuOpened(0, null);
+			}
+		});
+		imgMenu.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
 				CharSequence operations[] = new CharSequence[] {
@@ -3176,13 +3207,13 @@ public class SimpleBrowser extends Activity {
 				webList.invalidateViews();
 			}
 		});
-		toolAndAd.setOnLongClickListener(new OnLongClickListener() {// long click tool bar to open menu
+		/*toolAndAd.setOnLongClickListener(new OnLongClickListener() {// long click tool bar to open menu
 			@Override
 			public boolean onLongClick(View arg0) {
 				onMenuOpened(0, null);
 				return true;
 			}
-		});
+		});*/
 
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test

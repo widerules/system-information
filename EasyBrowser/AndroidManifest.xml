@@ -34,6 +34,7 @@
     <application
         android:name="easy.lib.MyApp"
         android:debuggable="false"
+        android:theme="@android:style/Theme"
         android:hardwareAccelerated="true"
         android:description="@string/about_message"
         android:icon="@drawable/explorer"

@@ -2887,10 +2887,12 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View view) {
 				if (loadProgress.getVisibility() == View.VISIBLE) {
+					imgRefresh.setImageResource(R.drawable.refresh);
 					// webpage is loading then stop it
 					serverWebs.get(webIndex).stopLoading();
 					loadProgress.setVisibility(View.INVISIBLE);
 				} else {// reload the webpage
+					imgRefresh.setImageResource(R.drawable.stop);
 					loadProgress.setProgress(1);// to make it seems feedback more fast
 					String url = serverWebs.get(webIndex).getUrl();
 					String m_url = serverWebs.get(webIndex).m_url;

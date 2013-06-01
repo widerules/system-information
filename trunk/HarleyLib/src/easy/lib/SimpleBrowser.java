@@ -2997,6 +2997,7 @@ public class SimpleBrowser extends Activity {
 		imgBookmark.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
+				if (!bookmarkOpened) showBookmark();
 				exchangePosition();
 				return true;
 			}

@@ -2891,6 +2891,7 @@ public class SimpleBrowser extends Activity {
 					serverWebs.get(webIndex).stopLoading();
 					loadProgress.setVisibility(View.INVISIBLE);
 				} else {// reload the webpage
+					loadProgress.setProgress(1);// to make it seems feedback more fast
 					String url = serverWebs.get(webIndex).getUrl();
 					String m_url = serverWebs.get(webIndex).m_url;
 					if (m_url.equals(url)) 

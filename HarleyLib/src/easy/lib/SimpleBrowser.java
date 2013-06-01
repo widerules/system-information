@@ -246,6 +246,7 @@ public class SimpleBrowser extends Activity {
 	int webIndex;
 	MyViewFlipper webpages;
 	ImageView imgPrev, imgRefresh, imgNew, imgBookmark, imgNext, imgMenu;
+	boolean shouldGo = false;
 	WebAdapter webAdapter;
 	LinearLayout webTools, urlLine;
 	RelativeLayout webs;
@@ -277,7 +278,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean historyChanged = false, bookmarkChanged = false, downloadsChanged = false;
-	ImageView imgAddFavo, imgGo;
+	ImageView imgAddFavo;//, imgGo;
 	boolean noSdcard = false, noHistoryOnSdcard = false;
 
 	// baidu tongji
@@ -2745,15 +2746,6 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		/*imgGo = (ImageView) findViewById(R.id.go);
-		imgGo.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				gotoUrl(webAddress.getText().toString().toLowerCase());
-			}
-		});
-		*/
-
 		webAddress = (AutoCompleteTextView) findViewById(R.id.url);
 		webAddress.bringToFront();
 		webAddress.setOnItemClickListener(new OnItemClickListener() {
@@ -2768,7 +2760,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public boolean onEditorAction(TextView view, int actionId,
 					KeyEvent event) {
-				imgGo.performClick();
+				gotoUrl(webAddress.getText().toString().toLowerCase());
 				return false;
 			}
 		});
@@ -2777,6 +2769,14 @@ public class SimpleBrowser extends Activity {
 			public boolean onTouch(View view, MotionEvent event) {
 				view.setFocusableInTouchMode(true);
 				serverWebs.get(webIndex).setFocusable(false);
+				return false;
+			}
+		});
+		webAddress.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
+				imgRefresh.setImageResource(R.drawable.go);
+				shouldGo = true;
 				return false;
 			}
 		});
@@ -2955,7 +2955,11 @@ public class SimpleBrowser extends Activity {
 		imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				reloadPage();
+				if (shouldGo) {
+					shouldGo = false;
+					gotoUrl(webAddress.getText().toString().toLowerCase());
+				}
+				else reloadPage();
 			}
 		});
 		imgRefresh.setOnLongClickListener(new OnLongClickListener() {// long click to select search engine

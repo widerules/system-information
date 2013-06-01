@@ -3219,11 +3219,18 @@ public class SimpleBrowser extends Activity {
 		webControl.setLayoutParams(lp2);
 		fakeWebControl.setLayoutParams(lp1);
 		
+		// revert webList
 		revertCount++;
 		if ((revertCount > 1) && (revertCount % 2 == 0))
 			needRevert = true;
 		else needRevert = false;
 		webList.invalidateViews();
+		
+		// revert add bookmark and refresh button
+		lp1 = imgAddFavo.getLayoutParams();
+		lp2 = imgRefresh.getLayoutParams();
+		imgAddFavo.setLayoutParams(lp2);
+		imgRefresh.setLayoutParams(lp1);
 	}
 
 	void getTitleHeight() {

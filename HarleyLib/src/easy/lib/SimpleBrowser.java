@@ -494,6 +494,7 @@ public class SimpleBrowser extends Activity {
 
 			// loads the WebView completely zoomed out. fit for hao123, but not
 			// fit for homepage. from API7
+			localSettings.setUseWideViewPort(overviewPage);
 			localSettings.setLoadWithOverviewMode(overviewPage);
 
 			registerForContextMenu(this);
@@ -1385,6 +1386,7 @@ public class SimpleBrowser extends Activity {
 
 			wrapWebSettings webSettings = new wrapWebSettings(localSettings);
 			overviewPage = sp.getBoolean("overview_page", false);
+			localSettings.setUseWideViewPort(overviewPage);
 			localSettings.setLoadWithOverviewMode(overviewPage);
 
 			boolean showZoom = sp.getBoolean("show_zoom", false);
@@ -3067,7 +3069,7 @@ public class SimpleBrowser extends Activity {
 							break;
 						case 3:
 							overviewPage = selected;
-							//localSettings.setUseWideViewPort(overviewPage);
+							localSettings.setUseWideViewPort(overviewPage);
 							localSettings.setLoadWithOverviewMode(overviewPage);
 							sEdit.putBoolean("overview_page", overviewPage);
 							break;
@@ -3407,6 +3409,7 @@ public class SimpleBrowser extends Activity {
 		localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
 		// localSettings.setSupportMultipleWindows(true);
 		localSettings.setJavaScriptEnabled(!blockJs);
+		localSettings.setUseWideViewPort(overviewPage);
 		localSettings.setLoadWithOverviewMode(overviewPage);
 
 		if (serverWebs.get(position).mProgress > 0) {

@@ -55,8 +55,8 @@
     <string name="snap">截屏</string>
     <string name="full_screen">全屏"        "</string>
     <string name="full_webpage">全网页截屏</string>
-    <string name="show_zoom">(当前页)缩放按钮</string>
-    <string name="block_image">没有图片，更快更省流量</string>
+    <string name="show_zoom">当前页缩放按钮</string>
+    <string name="block_image">无图省流量</string>
     <string name="homepage_css">主页特效，会有点慢</string>
     <string name="max_history">历史记录</string>
     <string name="font_size">字体大小</string>
@@ -91,7 +91,7 @@
     <string name="block_js">禁止JS, Flash</string>
     <string name="reset">恢复默认设置</string>
     <string name="enable_proxy">使用代理，本地端口：</string>
-    <string name="overview_page">以概览模式打开网页</string>
+    <string name="overview_page">网页概览模式</string>
     <string name="share_to_friends">分享和关注</string>
     <string name="cache_prefer">缓存优先，节省流量</string>
     <string name="add_shortcut">创建桌面快捷方式</string>
@@ -114,7 +114,7 @@
     <string name="system">跟随系统</string>
     <string name="landscape">锁定横屏</string>
     <string name="portrait">锁定竖屏</string>
-    <string name="incognito">隐私浏览模式</string>
+    <string name="incognito">无痕浏览</string>
     <string name="edit_home">编辑</string>
     <string name="show_url">地址栏"     "</string>
     <string name="show_controlBar">控制栏"    "</string>

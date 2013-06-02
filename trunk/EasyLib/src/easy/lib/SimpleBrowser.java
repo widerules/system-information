@@ -2915,21 +2915,21 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public boolean onLongClick(View arg0) {
 				CharSequence operations[] = new CharSequence[] {
+						getString(R.string.full_screen),
 						getString(R.string.incognito),
 						getString(R.string.page_updown),
+						getString(R.string.block_image),
 						getString(R.string.show_zoom),
 						getString(R.string.overview_page),
-						getString(R.string.block_image),
-						getString(R.string.full_screen),
 						getString(R.string.hide)
 				};
 				boolean checkeditems[] = new boolean[] {
+						!(showUrl || showControlBar || showStatusBar),
 						incognitoMode, 
 						updownButton, 
+						blockImage, 
 						serverWebs.get(webIndex).zoomVisible, 
 						overviewPage, 
-						blockImage, 
-						!(showUrl || showControlBar || showStatusBar),
 						false
 				};
 				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -2940,40 +2940,6 @@ public class SimpleBrowser extends Activity {
 						wrapWebSettings webSettings = new wrapWebSettings(localSettings);
 						switch(which) {
 						case 0:
-							incognitoMode = selected;
-							sEdit.putBoolean("incognito", incognitoMode);
-							break;
-						case 1:
-							updownButton = selected;
-							if (updownButton) upAndDown.setVisibility(View.VISIBLE);
-							else upAndDown.setVisibility(View.INVISIBLE);
-							sEdit.putBoolean("up_down", updownButton);
-							break;
-						case 2:
-							boolean showZoom = selected;
-							if (webSettings.setDisplayZoomControls(showZoom)) {
-								localSettings.setBuiltInZoomControls(showZoom);
-								serverWebs.get(webIndex).zoomVisible = showZoom;
-							} else {
-								if (showZoom)
-									serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
-								else
-									serverWebs.get(webIndex).setZoomControl(View.GONE);
-							}
-							sEdit.putBoolean("show_zoom", showZoom);
-							break;
-						case 3:
-							overviewPage = selected;
-							//localSettings.setUseWideViewPort(overviewPage);
-							webSettings.setLoadWithOverviewMode(overviewPage);
-							sEdit.putBoolean("overview_page", overviewPage);
-							break;
-						case 4:
-							blockImage = selected;
-							localSettings.setBlockNetworkImage(blockImage);
-							sEdit.putBoolean("block_image", blockImage);
-							break;
-						case 5:
 							boolean fullScreen = selected;
 							showUrl = !fullScreen;
 							showControlBar = !fullScreen;
@@ -2991,6 +2957,40 @@ public class SimpleBrowser extends Activity {
 							sEdit.putBoolean("show_url", showUrl);
 							sEdit.putBoolean("show_controlBar", showControlBar);
 							sEdit.putBoolean("show_statusBar", showStatusBar);
+							break;
+						case 1:
+							incognitoMode = selected;
+							sEdit.putBoolean("incognito", incognitoMode);
+							break;
+						case 2:
+							updownButton = selected;
+							if (updownButton) upAndDown.setVisibility(View.VISIBLE);
+							else upAndDown.setVisibility(View.INVISIBLE);
+							sEdit.putBoolean("up_down", updownButton);
+							break;
+						case 3:
+							blockImage = selected;
+							localSettings.setBlockNetworkImage(blockImage);
+							sEdit.putBoolean("block_image", blockImage);
+							break;
+						case 4:
+							boolean showZoom = selected;
+							if (webSettings.setDisplayZoomControls(showZoom)) {
+								localSettings.setBuiltInZoomControls(showZoom);
+								serverWebs.get(webIndex).zoomVisible = showZoom;
+							} else {
+								if (showZoom)
+									serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
+								else
+									serverWebs.get(webIndex).setZoomControl(View.GONE);
+							}
+							sEdit.putBoolean("show_zoom", showZoom);
+							break;
+						case 5:
+							overviewPage = selected;
+							localSettings.setUseWideViewPort(overviewPage);
+							localSettings.setLoadWithOverviewMode(overviewPage);
+							sEdit.putBoolean("overview_page", overviewPage);
 							break;
 						case 6:
 							moveTaskToBack(true);

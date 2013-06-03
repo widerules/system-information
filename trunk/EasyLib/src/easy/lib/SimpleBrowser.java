@@ -2850,11 +2850,25 @@ public class SimpleBrowser extends Activity {
 		imgNext.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
-				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+				final WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 				if (wbfl != null) {
 					int size = wbfl.getSize();
-					int current = wbfl.getCurrentIndex();
-					serverWebs.get(webIndex).goBackOrForward(size - current);
+					final int current = wbfl.getCurrentIndex();
+					if (size > 0) {
+						CharSequence historys[] = new CharSequence[size];
+						for (int i = 0; i < size; i++)
+							historys[i] = wbfl.getItemAtIndex(i).getTitle();
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+						builder.setSingleChoiceItems(historys, current, new DialogInterface.OnClickListener() {
+						    @Override
+						    public void onClick(DialogInterface dialog, int which) {
+						    	serverWebs.get(webIndex).goBackOrForward(which - current);
+						    	dialog.dismiss();
+						    }
+						});
+						builder.show();
+					}
 				}
 				return true;
 			}
@@ -2873,12 +2887,7 @@ public class SimpleBrowser extends Activity {
 		imgPrev.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
-				WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-				if (wbfl != null) {
-					int current = wbfl.getCurrentIndex();
-					serverWebs.get(webIndex).goBackOrForward(-current);
-				}
-				return true;
+				return imgNext.performLongClick();
 			}
 		});
 

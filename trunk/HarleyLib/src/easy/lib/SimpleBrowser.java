@@ -1302,7 +1302,6 @@ public class SimpleBrowser extends Activity {
 			boolean tmpShow = sp.getBoolean("show_statusBar", true);
 			if (tmpShow != showStatusBar) {
 				showStatusBar = tmpShow;
-				getTitleHeight();
 				if (!showStatusBar) {// full screen
 					getWindow().setFlags(
 							WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -3248,7 +3247,7 @@ public class SimpleBrowser extends Activity {
 		Rect rectgle= new Rect();
 		Window window= getWindow();
 		window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
-		statusBarHeight = (int) (rectgle.top*dm.density);
+		statusBarHeight = rectgle.top;
 	}
 	
 	void showBookmark() {
@@ -3852,7 +3851,6 @@ public class SimpleBrowser extends Activity {
 
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		getTitleHeight();
 		
         bookmarkWidth = dm.widthPixels * 3 / 4;
         int minWidth = (int) (320 * dm.density);
@@ -3962,7 +3960,8 @@ public class SimpleBrowser extends Activity {
 	
 	void updateHistoryViewHeight() {
 		if (historyList == null) return;
-		//reset height of history list so that it display not too many items
+		//calculate height of history list so that it display not too many or too few items
+		getTitleHeight();
 		int height = dm.heightPixels - statusBarHeight - adContainer.getHeight();//browserView.getHeight() may not correct when rotate. so use this way. but not applicable for 4.x platform
 		
 		LayoutParams lp = urlLine.getLayoutParams();// urlLine.getHeight() may not correct here, so use lp

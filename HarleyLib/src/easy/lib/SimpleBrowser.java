@@ -2922,7 +2922,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public boolean onLongClick(View v) {
 				final WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-				if (wbfl != null) {
+				if ((wbfl != null) && !incognitoMode) {
 					int size = wbfl.getSize();
 					final int current = wbfl.getCurrentIndex();
 					if (size > 0) {

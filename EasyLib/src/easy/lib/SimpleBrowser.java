@@ -1107,7 +1107,10 @@ public class SimpleBrowser extends Activity {
 			System.gc();
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
-					webAdapter.getCount(), 2, mContext));// show the changed page number
+					webAdapter.getCount(), 
+					2,
+					dm.density,
+					mContext));// show the changed page number
 			if ((position == webIndex) && !toBefore) {// change to the page after current page
 				if (webIndex == webAdapter.getCount()) webIndex -= 1;
 			}
@@ -2595,6 +2598,9 @@ public class SimpleBrowser extends Activity {
 		// select locale in google translate
 		mContext = this;
 
+		dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+
 		browserName = getString(R.string.browser_name);
 		
 		// init settings
@@ -2614,9 +2620,6 @@ public class SimpleBrowser extends Activity {
 
 		// hide titlebar of application, must be before setting the layout
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		
 		setContentView(R.layout.browser);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -3016,7 +3019,10 @@ public class SimpleBrowser extends Activity {
 
 		imgNew = (ImageView) findViewById(R.id.newpage);
 		imgNew.setImageBitmap(util.generatorCountIcon(
-				util.getResIcon(getResources(), R.drawable.newpage), 1, 2,
+				util.getResIcon(getResources(), R.drawable.newpage), 
+				1, 
+				2,
+				dm.density,
 				mContext));
 		imgNew.setOnClickListener(new OnClickListener() {
 			@Override
@@ -3436,7 +3442,10 @@ public class SimpleBrowser extends Activity {
 			webpages.addView(webAdapter.getItem(newIndex), newIndex);
 			imgNew.setImageBitmap(util.generatorCountIcon(
 					util.getResIcon(getResources(), R.drawable.newpage),
-					webAdapter.getCount(), 2, mContext));
+					webAdapter.getCount(), 
+					2, 
+					dm.density,
+					mContext));
 			if (changeToNewPage) changePage(newIndex);
 			else serverWebs.get(newIndex).isForeground = false;
 			serverWebs.get(newIndex).closeToBefore = changeToNewPage;

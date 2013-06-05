@@ -2957,11 +2957,13 @@ public class SimpleBrowser extends Activity {
 							showControlBar = !fullScreen;
 							showStatusBar = !fullScreen;
 							if (fullScreen) {
+								adContainer.setVisibility(View.GONE);// hide ad when fullscreen
 								getWindow().setFlags(
 										WindowManager.LayoutParams.FLAG_FULLSCREEN,
 										WindowManager.LayoutParams.FLAG_FULLSCREEN);								
 							}
 							else {
+								adContainer.setVisibility(View.VISIBLE);
 								getWindow().clearFlags(
 										WindowManager.LayoutParams.FLAG_FULLSCREEN);
 							}

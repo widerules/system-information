@@ -109,4 +109,7 @@
     <string name="close">Fechar</string>
     <string name="close_all">Feche todas as</string>
     <string name="hide">Esconder</string>
+    <string name="scroll_top">Desloque-se para cima</string>
+    <string name="page_down">Página para baixo</string>
+    <string name="scroll_bottom">Role para baixo</string>
 </resources>

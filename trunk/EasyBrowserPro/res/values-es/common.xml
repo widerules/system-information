@@ -107,4 +107,7 @@
     <string name="close">Cerrar</string>
     <string name="close_all">Cerrar todas las</string>
     <string name="hide">Ocultar</string>
+    <string name="scroll_top">Desplácese hasta la parte superior</string>
+    <string name="page_down">Página abajo</string>
+    <string name="scroll_bottom">Desplácese hacia abajo</string>
 </resources>

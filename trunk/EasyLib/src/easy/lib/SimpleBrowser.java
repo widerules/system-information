@@ -2853,6 +2853,50 @@ public class SimpleBrowser extends Activity {
 		imgNext.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
+				CharSequence operations[] = new CharSequence[] {getString(R.string.scroll_top), getString(R.string.page_up), getString(R.string.page_down), getString(R.string.scroll_bottom)};
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setSingleChoiceItems(operations, -1, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				    	switch(which) {
+				    	case 0:
+				    		serverWebs.get(webIndex).pageUp(true);
+				    		break;
+				    	case 1:
+				    		serverWebs.get(webIndex).pageUp(false);
+				    		break;
+				    	case 2:
+				    		serverWebs.get(webIndex).pageDown(false);
+				    		break;
+				    	case 3:
+				    		serverWebs.get(webIndex).pageDown(true);
+				    		break;
+				    	}
+				    }
+				}).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+				    	dialog.dismiss();
+					}
+				});
+				builder.show();
+				return true;
+			}
+		});
+
+		imgPrev = (ImageView) findViewById(R.id.prev);
+		imgPrev.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (serverWebs.get(webIndex).canGoBack())
+					serverWebs.get(webIndex).goBack();
+				else if (serverWebs.get(webIndex).shouldCloseIfCannotBack)
+					closePage(webIndex, false);
+			}
+		});
+		imgPrev.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
 				final WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
 				if ((wbfl != null) && !incognitoMode) {
 					int size = wbfl.getSize();
@@ -2874,23 +2918,6 @@ public class SimpleBrowser extends Activity {
 					}
 				}
 				return true;
-			}
-		});
-
-		imgPrev = (ImageView) findViewById(R.id.prev);
-		imgPrev.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (serverWebs.get(webIndex).canGoBack())
-					serverWebs.get(webIndex).goBack();
-				else if (serverWebs.get(webIndex).shouldCloseIfCannotBack)
-					closePage(webIndex, false);
-			}
-		});
-		imgPrev.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				return imgNext.performLongClick();
 			}
 		});
 

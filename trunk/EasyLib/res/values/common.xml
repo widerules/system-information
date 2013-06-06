@@ -125,4 +125,8 @@
     <string name="close">Close</string>
     <string name="close_all">Close all</string>
     <string name="hide">Hide</string>
+    <string name="scroll_top">Scroll to top</string>
+    <string name="page_up">Page up</string>
+    <string name="page_down">Page down</string>
+    <string name="scroll_bottom">Scroll to bottom</string>
 </resources>

@@ -111,4 +111,8 @@
     <string name="close">閉じる</string>
     <string name="close_all">すべてを閉じる</string>
     <string name="hide">隠す</string>
+    <string name="scroll_top">一番上までスクロールする</string>
+    <string name="page_up">ページアップ</string>
+    <string name="page_down">ページを下に</string>
+    <string name="scroll_bottom">一番下までスクロール</string>
 </resources>

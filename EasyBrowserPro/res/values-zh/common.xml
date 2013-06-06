@@ -123,4 +123,8 @@
     <string name="close">关闭</string>
     <string name="close_all">关闭所有页面</string>
     <string name="hide">隐藏</string>
+    <string name="scroll_top">跳到开头</string>
+    <string name="page_up">向上翻页</string>
+    <string name="page_down">向下翻页</string>
+    <string name="scroll_bottom">跳到结尾</string>
 </resources>

@@ -91,8 +91,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 
 	int homeTab = 1;
 	
-	boolean paid;//paid or not
-	
 	AlertDialog restartDialog = null;
 	AlertDialog hintDialog = null;
 	
@@ -110,7 +108,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	
 
 	AppAlphaList sysAlphaList, userAlphaList;
-	PkgAlphaList packageAlphaList;
 	//alpha list related
     TextView radioText;
     RadioGroup radioGroup;
@@ -137,7 +134,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	RelativeLayout apps;
 	RelativeLayout shortcutBar_center;
     appHandler mAppHandler = new appHandler();
-	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SPLASH = 4, UPDATE_PACKAGE = 5; 
+	final static int UPDATE_RI_PHONE = 0, UPDATE_RI_SMS = 1, UPDATE_RI_CONTACT = 2, UPDATE_USER = 3, UPDATE_SPLASH = 4; 
 	ContextMenu mMenu;
 	
 	ricase selected_case;
@@ -295,15 +292,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 6, 0, getString(R.string.addtoShort));
 			mMenu = menu; 
 			break;
-		case 3://on package list
-			if (paid) {
-				if (packageAlphaList.mIsGrid)
-					menu.add(0, 8, 0, getString(R.string.list_view));
-				else
-					menu.add(0, 8, 0, getString(R.string.grid_view));
-			}
-			menu.add(0, 10, 0, getString(R.string.hidepage));
-			menu.add(0, 9, 0, getString(R.string.appdetail));
 		}
 	}
 	
@@ -398,8 +386,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				sysAlphaList.mApps.clear();
 			else if (mainlayout.getCurrentItem() == userAlphaList.index)
 				userAlphaList.mApps.clear();
-			else if (mainlayout.getCurrentItem() == packageAlphaList.index)
-				packageAlphaList.mApps.clear();
 			
 			refreshRadioButton();
 			
@@ -470,8 +456,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        paid = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("paid", false);
-        
         myPackageName = this.getPackageName();
     	pm = getPackageManager();
     	version = util.getVersion(this);
@@ -540,11 +524,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		isGrid = perferences.getBoolean("user", false);
     	userAlphaList = new AppAlphaList(this, pm, packagesSize, isGrid, dm.widthPixels > 480);
     	
-    	if (paid) {
-    		isGrid = perferences.getBoolean("package", true);
-    		packageAlphaList = new PkgAlphaList(this, pm, packagesSize, isGrid, dm.widthPixels > 480);//package tab
-    	}
-    	
     	
     	mListViews = new ArrayList<View>();
         mListViews.add(sysAlphaList.view);
@@ -552,14 +531,10 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         mListViews.add(home);
         mListViews.add(userAlphaList.view);
         userAlphaList.index = 2;
-        if (paid) {
-        	mListViews.add(packageAlphaList.view);
-        	packageAlphaList.index = 3;
-        }
 
         radioText = (TextView) findViewById(R.id.radio_text);
         radioGroup = (RadioGroup) findViewById(R.id.radio_hint);
-        if (!paid) radioGroup.removeViewAt(0);
+        radioGroup.removeViewAt(0);
         
 		mWallpaperManager = WallpaperManager.getInstance(this);
         
@@ -697,8 +672,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 				    		editor.putBoolean("system", !sysAlphaList.mIsGrid);
 						else if (mainlayout.getCurrentItem() == userAlphaList.index) 
 				    		editor.putBoolean("user", !userAlphaList.mIsGrid);
-						else if (mainlayout.getCurrentItem() == packageAlphaList.index) 
-				    		editor.putBoolean("package", !packageAlphaList.mIsGrid);
 			    		editor.commit();
 			    		
 			    		//restart the activity. note if set singleinstance or singletask of activity, below will not work on some device.
@@ -818,7 +791,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     			sysAlphaList.index = -1;
     			
     			if (userAlphaList.index > -1) userAlphaList.index -= 1;
-    			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index -= 1;
     		}
     	}
     	else if (sysAlphaList.index == -1) {//show it if it was hided.
@@ -826,7 +798,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     		mListViews.add(sysAlphaList.index, sysAlphaList.view);
 			
 			if (userAlphaList.index > -1) userAlphaList.index += 1;
-			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index += 1;
     	}
     	
     	count = userAlphaList.getCount();
@@ -834,34 +805,12 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     		if (userAlphaList.index > -1) {//should hide it if it is visiable
     			mListViews.remove(userAlphaList.index);
     			userAlphaList.index = -1;
-    			
-    			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index -= 1;
     		}
     	}
     	else if (userAlphaList.index == -1) {//show it if it was hided.
 			userAlphaList.index = 2+sysAlphaList.index;
     		mListViews.add(userAlphaList.index, userAlphaList.view);
-			
-			if ((paid) && (packageAlphaList.index > -1)) packageAlphaList.index += 1;
     	}
-    	
-    	if (paid) {
-        	count = packageAlphaList.getCount();
-        	if (count == 0) {
-        		if (packageAlphaList.index > -1) {//should hide it if it is visiable
-        			mListViews.remove(packageAlphaList.index);
-        			packageAlphaList.index = -1;
-        		}
-        	}
-        	else if (packageAlphaList.index == -1) {//show it if it was hided.
-        		int tmp = 0;
-        		if (userAlphaList.index < 0) tmp += userAlphaList.index;
-    			packageAlphaList.index = 3 + sysAlphaList.index + tmp;
-        		mListViews.add(packageAlphaList.index, packageAlphaList.view);
-        	}
-    	}
-    	
-		//myPagerAdapter.notifyDataSetChanged();//this will flash the screen?
     	
 		if (sysAlphaList.index > -1) 
 			homeTab = 1;
@@ -883,8 +832,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			radioText.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
 		else if (current == userAlphaList.index) 
 			radioText.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
-		else if ((paid) && (current == packageAlphaList.index)) 
-			radioText.setText("service/provider (" + packageAlphaList.getCount() + ")");
 		else radioText.setText("Home");
     }
     
@@ -1089,13 +1036,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
             readFile("short");
             boolean shortEmpty = mShortApps.isEmpty();
             
-            if (paid) {
-    	    	getHidePackages();
-            	Message msgPkg = mAppHandler.obtainMessage();
-            	msgPkg.what = UPDATE_PACKAGE;
-            	mAppHandler.sendMessage(msgPkg);//inform UI thread to update UI.
-            }
-            
 	    	//read all resolveinfo
 	    	String label_sms = "簡訊 Messaging Messages メッセージ 信息 消息 短信 메시지  Mensajes Messaggi Berichten SMS a MMS SMS/MMS"; //use label name to get short cut
 	    	String label_phone = "電話 Phone 电话 电话和联系人 拨号键盘 키패드  Telefon Teléfono Téléphone Telefono Telefoon Телефон 휴대전화  Dialer";
@@ -1186,59 +1126,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		}
 	}
 
-	void getHidePackages() {
-		List<PackageInfo> mPackages = pm.getInstalledPackages(0);
-
-		int i = 0;
-		while (i < mPackages.size()) {
-			boolean found = false;
-			for (int j = 0; j < mAllApps.size(); j++) {
-				if (mAllApps.get(j).activityInfo.packageName.equals(mPackages.get(i).packageName)) {
-					mPackages.remove(i);//remove duplicate package if already in app list
-					found = true;
-					break;
-				}
-			}
-			if (!found) i += 1;
-		}
-		
-		i = 0;
-		while (i < mPackages.size()) {
-			Intent intent = new Intent(); 
-			intent.setPackage(mPackages.get(i).packageName);
-			List<ResolveInfo> list = pm.queryIntentActivities(intent, 0);
-			if (list.size() > 0) {
-				//mAllApps.addAll(list);
-				mAllApps.add(list.get(list.size()-1));
-				mPackages.remove(i);
-			}
-			else i += 1;
-		}
-		
-		i = 0;
-		while (i < mPackages.size()) {
-			PackageInfo pi = mPackages.get(i);
-    		try {//get package size
-				getPackageSizeInfo.invoke(pm, pi.packageName, sizeObserver);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-    		
-			if (pi.applicationInfo != null) {
-	    	    CharSequence sa = pi.applicationInfo.loadLabel(pm);
-	    	    if (sa == null) sa = pi.packageName;
-				mPackages.get(i).sharedUserId = getToken(sa);//use sharedUserId to store alpha index
-			}
-			else
-				mPackages.get(i).sharedUserId = pi.packageName;
-			i += 1;
-		}
-    	Collections.sort(mPackages, new PackageComparator());//sort by name
-    	packageAlphaList.mApps.addAll(mPackages);
-    	packageAlphaList.sortAlpha();
-	}
-	
-    
 	class OnlyPic implements FilenameFilter { 
 	    public boolean accept(File dir, String s) {
 	    	 String name = s.toLowerCase();
@@ -1262,10 +1149,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		shortAdapter = new shortAppAdapter(getBaseContext(), mShortApps);
         		shortAppList.setAdapter(shortAdapter);
         		
-        		break;
-        	case UPDATE_PACKAGE:
-        		packageAlphaList.setAdapter();
-
         		break;
         	case UPDATE_RI_PHONE:
         		int missCallCount = callObserver.countUnread();

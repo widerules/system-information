@@ -1271,7 +1271,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		int missCallCount = callObserver.countUnread();
         		if (missCallCount > 0) {
         			Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.phone);
-        			shortcut_phone.setImageBitmap(util.generatorCountIcon(bm, missCallCount, 1, getBaseContext()));
+        			shortcut_phone.setImageBitmap(util.generatorCountIcon(bm, missCallCount, 1, 1, getBaseContext()));
         		}
         		else shortcut_phone.setImageResource(R.drawable.phone);
         		
@@ -1286,7 +1286,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
         		int unreadCount = smsObserver.countUnread();
         		if (unreadCount > 0) {
         			Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.sms);
-            		shortcut_sms.setImageBitmap(util.generatorCountIcon(bm, unreadCount, 1, getBaseContext()));
+            		shortcut_sms.setImageBitmap(util.generatorCountIcon(bm, unreadCount, 1, 1, getBaseContext()));
         		}
         		else shortcut_sms.setImageResource(R.drawable.sms);
         		

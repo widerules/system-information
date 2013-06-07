@@ -107,6 +107,7 @@ import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -2931,18 +2932,23 @@ public class SimpleBrowser extends Activity {
 				builder.setSingleChoiceItems(operations, -1, new DialogInterface.OnClickListener() {
 				    @Override
 				    public void onClick(DialogInterface dialog, int which) {
+			    		ListView lw = ((AlertDialog)dialog).getListView();
 				    	switch(which) {
 				    	case 0:
 				    		serverWebs.get(webIndex).pageUp(true);
+				    		dialog.dismiss();
 				    		break;
 				    	case 1:
 				    		serverWebs.get(webIndex).pageUp(false);
+				    		lw.clearChoices();
 				    		break;
 				    	case 2:
 				    		serverWebs.get(webIndex).pageDown(false);
+				    		lw.clearChoices();
 				    		break;
 				    	case 3:
 				    		serverWebs.get(webIndex).pageDown(true);
+				    		dialog.dismiss();
 				    		break;
 				    	}
 				    }

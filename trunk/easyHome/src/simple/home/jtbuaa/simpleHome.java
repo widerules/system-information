@@ -274,13 +274,13 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			menu.add(0, 1, 0, getString(R.string.removeFromShort));
 			break;
 		case 2://on app list
-			if (mainlayout.getCurrentItem() == sysAlphaList.index) {
+			if (mainlayout.getCurrentItem() == 0) {
 				if (sysAlphaList.mIsGrid)
 					menu.add(0, 8, 0, getString(R.string.list_view));
 				else
 					menu.add(0, 8, 0, getString(R.string.grid_view));
 			}
-			else if (mainlayout.getCurrentItem() == userAlphaList.index) {
+			else if (mainlayout.getCurrentItem() == 2) {
 				if (userAlphaList.mIsGrid)
 					menu.add(0, 8, 0, getString(R.string.list_view));
 				else
@@ -366,7 +366,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 			}
 			break;
 		case 7://hide the ri
-			if (mainlayout.getCurrentItem() == sysAlphaList.index) {
+			if (mainlayout.getCurrentItem() == 0) {
 				sysAlphaList.remove(info.activityInfo.packageName);
 			}
 			else {
@@ -380,15 +380,6 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 		case 9://get package detail info
 			PackageInfo pi = (PackageInfo) selected_case.mRi; 
 			showDetail(pi.applicationInfo.sourceDir, pi.packageName, pi.applicationInfo.loadLabel(pm), pi.applicationInfo.loadIcon(pm));
-			break;
-		case 10://hide current page
-			if (mainlayout.getCurrentItem() == sysAlphaList.index)
-				sysAlphaList.mApps.clear();
-			else if (mainlayout.getCurrentItem() == userAlphaList.index)
-				userAlphaList.mApps.clear();
-			
-			refreshRadioButton();
-			
 			break;
 		}
 		return false;
@@ -527,10 +518,8 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     	
     	mListViews = new ArrayList<View>();
         mListViews.add(sysAlphaList.view);
-        sysAlphaList.index = 0;
         mListViews.add(home);
         mListViews.add(userAlphaList.view);
-        userAlphaList.index = 2;
 
         radioText = (TextView) findViewById(R.id.radio_text);
         radioGroup = (RadioGroup) findViewById(R.id.radio_hint);
@@ -668,9 +657,9 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 					public void onClick(DialogInterface dialog, int which) {
 						//save the layout
 			    		SharedPreferences.Editor editor = perferences.edit();
-						if (mainlayout.getCurrentItem() == sysAlphaList.index) 
+						if (mainlayout.getCurrentItem() == 0) 
 				    		editor.putBoolean("system", !sysAlphaList.mIsGrid);
-						else if (mainlayout.getCurrentItem() == userAlphaList.index) 
+						else if (mainlayout.getCurrentItem() == 2) 
 				    		editor.putBoolean("user", !userAlphaList.mIsGrid);
 			    		editor.commit();
 			    		
@@ -784,59 +773,19 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
     };
 
     void refreshRadioButton() {
-    	int count = sysAlphaList.getCount();
-    	if (count == 0) {
-    		if (sysAlphaList.index > -1) {//should hide it if it is visiable
-    			mListViews.remove(sysAlphaList.index);
-    			sysAlphaList.index = -1;
-    			
-    			if (userAlphaList.index > -1) userAlphaList.index -= 1;
-    		}
-    	}
-    	else if (sysAlphaList.index == -1) {//show it if it was hided.
-			sysAlphaList.index = 0;
-    		mListViews.add(sysAlphaList.index, sysAlphaList.view);
-			
-			if (userAlphaList.index > -1) userAlphaList.index += 1;
-    	}
-    	
-    	count = userAlphaList.getCount();
-    	if (count == 0) {
-    		if (userAlphaList.index > -1) {//should hide it if it is visiable
-    			mListViews.remove(userAlphaList.index);
-    			userAlphaList.index = -1;
-    		}
-    	}
-    	else if (userAlphaList.index == -1) {//show it if it was hided.
-			userAlphaList.index = 2+sysAlphaList.index;
-    		mListViews.add(userAlphaList.index, userAlphaList.view);
-    	}
-    	
-		if (sysAlphaList.index > -1) 
-			homeTab = 1;
-		else homeTab = 0;
-
-		while (radioGroup.getChildCount() < myPagerAdapter.getCount()+1) {
-			RadioButton view = new RadioButton(getBaseContext());
-			view.setButtonDrawable(R.drawable.radio);
-			view.setChecked(false);
-			radioGroup.addView(view, 0);
-		}
-		while (radioGroup.getChildCount() > myPagerAdapter.getCount()+1)
-			radioGroup.removeViewAt(0);
-		
 		int current = mainlayout.getCurrentItem();
 		radioGroup.clearCheck();
-		if (current < radioGroup.getChildCount()) ((RadioButton) radioGroup.getChildAt(current)).setChecked(true);// crash once for ClassCastException.
-		if (current == sysAlphaList.index) 
+		if (current < radioGroup.getChildCount()) ((RadioButton) radioGroup.getChildAt(current)).setChecked(true);// crash once for C lassCastException.
+		
+		if (current == 0) 
 			radioText.setText(getString(R.string.systemapps) + "(" + sysAlphaList.getCount() + ")");
-		else if (current == userAlphaList.index) 
+		else if (current == 2) 
 			radioText.setText(getString(R.string.userapps) + "(" + userAlphaList.getCount() + ")");
 		else radioText.setText("Home");
     }
+
     
 	BroadcastReceiver packageReceiver = new BroadcastReceiver() {
-
 		@Override
 		public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();

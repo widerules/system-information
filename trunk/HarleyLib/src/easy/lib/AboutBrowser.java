@@ -461,7 +461,7 @@ public class AboutBrowser extends Activity {
 		if ("ru_RU".equals(mLocale.toString()))
 			engineId = perferences.getInt("search_engine", 4); // yandex
 		else if (Locale.CHINA.equals(mLocale)) 
-			engineId = perferences.getInt("search_engine", 2); // easou
+			engineId = perferences.getInt("search_engine", 2); // baidu
 		else
 			engineId = perferences.getInt("search_engine", 5); // duckduckgo
 

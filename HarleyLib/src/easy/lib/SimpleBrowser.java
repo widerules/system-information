@@ -3402,8 +3402,8 @@ public class SimpleBrowser extends Activity {
 				case 1:// bing
 					url = "http://www.bing.com/search?q=" + url;
 					break;
-				case 2:// easou
-					url = "http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001&key=" + url;
+				case 2:// baidu
+					url = "http://www.baidu.com/s?word=" + url;
 					break;
 				case 3:// google
 					url = "http://www.google.com/search?q=" + url;

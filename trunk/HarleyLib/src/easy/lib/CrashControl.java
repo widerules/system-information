@@ -79,7 +79,8 @@ public class CrashControl extends Activity {
 			}
 		});
 
-		retry = errorMsg.contains("WebViewDatabase");// should clear the database and retry if SQLite* exception
+		if (errorMsg == null) retry = true;
+		else retry = errorMsg.contains("WebViewDatabase");// should clear the database and retry if SQLite* exception
 		SharedPreferences perferences = PreferenceManager.getDefaultSharedPreferences(this);
 		final SharedPreferences.Editor editor = perferences.edit();
 		boolean retried = perferences.getBoolean("retried", false);

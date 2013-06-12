@@ -6,13 +6,8 @@
 	<link rel='stylesheet' href='easybrowser.css'>
 	<title>homepage</title>
 	<script type='text/javascript' src='easybrowser.js'></script>
-	<script>
-		var U=["http://news.search.yahoo.com/search/news?p=","http://www.bing.com/images/search?q=","http://www.imdb.com/find?q=",
-"http://www.youtube.com/results?search_query=","http://en.wikipedia.org/wiki/Special:Search/","http://www.amazon.com/s/?field-keywords=",
-"http://www.merriam-webster.com/dictionary/","http://www.rottentomatoes.com/search/?search=","http://finance.yahoo.com/q/bc?l=off&q=b&s=",
-"http://directnic.com/search/?query=","https://duckduckgo.com?t=easybrowser&q=","http://www.wunderground.com/cgi-bin/findweather/getForecast?query=",
-"http://www.yelp.com/search?find_desc="];
-		function go(i){window.location=U[i]+encodeURIComponent(document.getElementById('searchbox').value)}
+	<script>var url="http://www.searchmobileonline.com/?sourceid=14&pubid=106705247&prodid=2062245128&q=";
+		function go(){window.location=url+encodeURIComponent(document.getElementById('searchbox').value)}
 	</script>
 </head>
 
@@ -21,21 +16,8 @@
 	<div style='margin:0px; padding:0px; height:5px'></div><!-- just for margin -->
 
 	<div style='float:none; margin:auto; text-align:center'>
-	find<input id='searchbox' type='text'>by
+	<input id='searchbox' type='text'><a href="javascript:go()">Search</a>
 	<br>
-	<a href="javascript:go(5)">amazon</a>&bull;
-	<a href="javascript:go(6)">dictionary</a>&bull;
-	<a href="javascript:go(9)">domain</a>&bull;
-	<a href="javascript:go(10)">duckduckgo</a>&bull;
-	<a href="javascript:go(7)">film review</a>&bull;
-	<a href="javascript:go(2)">IMDb</a>&bull;
-	<a href="javascript:go(0)">news</a>&bull;
-	<a href="javascript:go(1)">pix</a>&bull;
-	<a href="javascript:go(8)">stock</a>&bull;
-	<a href="javascript:go(3)">vid</a>&bull;
-	<a href="javascript:go(11)">weather</a>&bull;
-	<a href="javascript:go(4)">wikipedia</a>&bull;
-	<a href="javascript:go(12)">yelp</a>
 	</div>
 
 	<h4 id='title1' onClick='collapse(1)'></h4><!--top list-->

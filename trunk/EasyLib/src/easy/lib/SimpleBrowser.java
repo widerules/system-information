@@ -684,7 +684,8 @@ public class SimpleBrowser extends Activity {
 						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
 						else webAddress.setText(url);
 						
-						if (adview != null && !adview.isReady()) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
+						if (adview != null) adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
+						//if (adview != null && !adview.isReady()) adview.loadAd();//load ad only when adview not ready. sames low ad requests?
 						if (interstitialAd != null && !interstitialAd.isReady()) interstitialAd.loadAd();
 						
 						imgRefresh.setImageResource(R.drawable.stop);

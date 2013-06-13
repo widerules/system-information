@@ -1832,14 +1832,10 @@ public class SimpleBrowser extends Activity {
 					}
 
 					int progress = (int) ((total_read + 0.0) / apk_length * 100);
-					if (oldProgress != progress) {// the device will get no
-						// response if update too
-						// often
+					if (oldProgress != progress) {// the device will get no response if update too often
 						oldProgress = progress;
 						notification.contentView.setProgressBar(
-								R.id.progress_bar, 100, progress, false);// update
-						// download
-						// progress
+								R.id.progress_bar, 100, progress, false);// update download progress
 						notification.contentView.setTextViewText(R.id.progress,
 								progress + "%");
 						nManager.notify(NOTIFICATION_ID, notification);

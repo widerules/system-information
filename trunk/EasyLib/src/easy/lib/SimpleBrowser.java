@@ -538,6 +538,7 @@ public class SimpleBrowser extends Activity {
 				}
 			}
 			
+			//requestDisallowInterceptTouchEvent(true);
 			return super.onTouchEvent(ev);
 		}
 
@@ -1408,18 +1409,6 @@ public class SimpleBrowser extends Activity {
 	public void setWebpagesLayout() {
 		setUrlHeight(showUrl);
 		setBarHeight(showControlBar);
-
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-		if (showUrl) 
-			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
-		else 
-			lp.addRule(RelativeLayout.BELOW, R.id.adContainer);
-		if (showControlBar) 
-			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
-		else 
-			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		webs.setLayoutParams(lp);
-		webs.requestLayout();
 	}
 	
 	void setUrlHeight(boolean showUrlNow) {
@@ -2038,8 +2027,6 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	public void readPreference() {
-		// paid = sp.getBoolean("paid", false);
-		// debug = sp.getBoolean("debug", false);
 		// css = sp.getBoolean("css", false);
 		// html5 = sp.getBoolean("html5", false);
 		blockImage = sp.getBoolean("block_image", false);
@@ -3035,7 +3022,7 @@ public class SimpleBrowser extends Activity {
 							break;
 						case 5:
 							overviewPage = selected;
-							localSettings.setUseWideViewPort(overviewPage);
+							//localSettings.setUseWideViewPort(overviewPage);
 							localSettings.setLoadWithOverviewMode(overviewPage);
 							sEdit.putBoolean("overview_page", overviewPage);
 							break;

@@ -8,15 +8,237 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:id="@+id/urlline"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#ffffffff"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/addfavorite"
+                android:layout_width="32dip"
+                android:layout_height="32dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/imagebutton_layout"
+                android:scaleType="centerCrop"
+                android:src="@drawable/favorites_add" />
+
+            <ImageView
+                android:id="@+id/go"
+                android:layout_width="32dip"
+                android:layout_height="32dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/imagebutton_layout"
+                android:scaleType="center"
+                android:src="@drawable/go" />
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="32dip"
+                android:layout_marginRight="24dip" >
+
+                <AutoCompleteTextView
+                    android:id="@+id/url"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dip"
+                    android:background="#00000000"
+                    android:completionThreshold="1"
+                    android:imeOptions="actionGo|flagNoExtractUi"
+                    android:inputType="textUri"
+                    android:paddingLeft="2dip"
+                    android:paddingRight="0dip"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true" />
+
+                <ProgressBar
+                    android:id="@+id/loadprogress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="21dip"
+                    android:layout_gravity="center_vertical"
+                    android:max="100"
+                    android:progress="0"
+                    android:visibility="invisible" />
+            </FrameLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/darkEdge" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/whiteEdge" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/webtools"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/darkEdge" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/whiteEdge" />
+
+        <FrameLayout
+            android:id="@+id/webtoolnad"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:background="@drawable/round_corner"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/adContainer2"
+                android:layout_width="320dip"
+                android:layout_height="50dip"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/imagebtn_list"
+                android:layout_width="320dip"
+                android:layout_height="40dip"
+                android:layout_alignParentLeft="true"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/refresh"
+                    android:layout_width="0dip"
+                    android:layout_height="35dip"
+                    android:layout_marginTop="2dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebutton_layout"
+                    android:scaleType="center"
+                    android:src="@drawable/refresh" />
+
+                <ImageView
+                    android:id="@+id/prev"
+                    android:layout_width="0dip"
+                    android:layout_height="35dip"
+                    android:layout_marginTop="2dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebutton_layout"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/prev" />
+
+                <ImageView
+                    android:id="@+id/newpage"
+                    android:layout_width="0dip"
+                    android:layout_height="35dip"
+                    android:layout_marginTop="2dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebutton_layout"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/newpage" />
+
+                <ImageView
+                    android:id="@+id/next"
+                    android:layout_width="0dip"
+                    android:layout_height="35dip"
+                    android:layout_marginTop="2dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebutton_layout"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/next" />
+
+                <ImageView
+                    android:id="@+id/home"
+                    android:layout_width="0dip"
+                    android:layout_height="35dip"
+                    android:layout_marginTop="2dip"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebutton_layout"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/home" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/adContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/urlline"
         android:layout_centerHorizontal="true"
         android:foregroundGravity="center"
         android:orientation="vertical" >
     </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/webs"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/webtools"
+        android:layout_below="@+id/adContainer" >
+
+        <easy.lib.MyViewFlipper
+            android:id="@+id/webpages"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <LinearLayout
+            android:id="@+id/up_down"
+            android:layout_width="48dip"
+            android:layout_height="150dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="40dip"
+            android:layout_marginRight="30dip"
+            android:background="#00000000"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/page_up"
+                android:layout_width="wrap_content"
+                android:layout_height="0dip"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:background="@drawable/imagebutton_layout"
+                android:scaleType="matrix"
+                android:src="@drawable/br_down_icon" />
+
+            <ImageView
+                android:id="@+id/page_down"
+                android:layout_width="wrap_content"
+                android:layout_height="0dip"
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:background="@drawable/imagebutton_layout"
+                android:src="@drawable/br_down_icon" />
+
+            <ImageView
+                android:id="@+id/page_drag"
+                android:layout_width="wrap_content"
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:background="@drawable/imagebutton_layout"
+                android:src="@drawable/arrow_expand" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/search_bar"
@@ -80,257 +302,23 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/webtools"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        >
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/darkEdge" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/whiteEdge" />
-        
-	    <FrameLayout
-	        android:id="@+id/webtoolnad"
-        	android:layout_width="fill_parent"
-	        android:layout_height="40dip"
-	        android:background="@drawable/round_corner"
-    	    android:orientation="horizontal" 
-    	    >
-        
-		    <LinearLayout
-    		    android:id="@+id/adContainer2"
-        		android:layout_width="320dip"
-	        	android:layout_height="50dip"
-	    	    android:layout_gravity="right"
-	    	    android:layout_alignParentRight="true"
-    		    android:orientation="vertical" >
-	    	</LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/imagebtn_list"
-        android:layout_width="320dip"
-        android:layout_height="40dip"
-        android:orientation="horizontal"
-        android:layout_alignParentLeft="true" 
-        >
-
-        <ImageView
-            android:id="@+id/refresh"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:scaleType="center"
-            android:background="@drawable/imagebutton_layout"
-            android:src="@drawable/refresh" />
-
-        <ImageView
-            android:id="@+id/prev"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:scaleType="fitCenter"
-            android:background="@drawable/imagebutton_layout"
-            android:src="@drawable/prev" />
-
-        <ImageView
-            android:id="@+id/newpage"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:scaleType="fitCenter"
-            android:background="@drawable/imagebutton_layout"
-            android:src="@drawable/newpage" />
-
-        <ImageView
-            android:id="@+id/next"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:scaleType="fitCenter"
-            android:background="@drawable/imagebutton_layout"
-            android:src="@drawable/next" />
-        
-        <ImageView
-            android:id="@+id/home"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_weight="1"
-            android:layout_marginTop="2dip"
-            android:scaleType="fitCenter"
-            android:background="@drawable/imagebutton_layout"
-            android:src="@drawable/home" />
-    	</LinearLayout>
-    </FrameLayout>
-</LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/urlline"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffffff" 
-        android:layout_below="@id/adContainer"
-        android:orientation="vertical"
-        >
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="40dip"
-            android:orientation="horizontal"
-            >
-
-            <ImageView
-                android:id="@+id/addfavorite"
-                android:layout_width="32dip"
-                android:layout_height="32dip"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:scaleType="centerCrop"
-                android:background="@drawable/imagebutton_layout"
-                android:src="@drawable/favorites_add" />
-
-            <ImageView
-                android:id="@+id/go"
-                android:layout_width="32dip"
-                android:layout_height="32dip"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:scaleType="center"
-                android:background="@drawable/imagebutton_layout"
-                android:src="@drawable/go" />
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="32dip"
-                android:layout_marginRight="24dip" >
-
-                <AutoCompleteTextView
-                    android:id="@+id/url"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="0dip"
-                    android:paddingLeft="2dip"
-                    android:paddingRight="0dip"
-                    android:background="#00000000"
-                    android:completionThreshold="1"
-                    android:imeOptions="actionGo|flagNoExtractUi"
-                    android:inputType="textUri"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true" />
-
-                <ProgressBar
-                    android:id="@+id/loadprogress"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="21dip"
-                    android:layout_gravity="center_vertical"
-                    android:max="100"
-                    android:progress="0"
-                    android:visibility="invisible" />
-            </FrameLayout>
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/darkEdge" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/whiteEdge" />
-        
-    </LinearLayout>
-        
-    <RelativeLayout
-        android:id="@+id/webs"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/webtools"
-        android:layout_below="@id/urlline"
-        >
-        
-    <easy.lib.MyViewFlipper
-        android:id="@+id/webpages"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        />
-
-    <LinearLayout
-        android:id="@+id/up_down"
-        android:layout_width="48dip"
-        android:layout_height="150dip"
-        android:orientation="vertical"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="30dip"
-        android:layout_marginBottom="40dip"
-        android:background="#00000000"
-        >
-        
-        <ImageView
-            android:id="@+id/page_up"
-            android:layout_width="wrap_content"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:layout_centerHorizontal="true"
-            android:scaleType="matrix"
-	        android:src="@drawable/br_down_icon"
-            android:background="@drawable/imagebutton_layout"
-            />
-        
-        <ImageView
-            android:id="@+id/page_down"
-            android:layout_width="wrap_content"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-            android:layout_centerHorizontal="true"
-	        android:src="@drawable/br_down_icon"
-            android:background="@drawable/imagebutton_layout"
-            />
-        
-        <ImageView
-            android:id="@+id/page_drag"
-            android:layout_width="wrap_content"
-            android:layout_height="0dip"
-            android:layout_weight="1"
-	        android:src="@drawable/arrow_expand"
-            android:background="@drawable/imagebutton_layout"
-            />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <LinearLayout
         android:id="@+id/webcontrol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/panel_background"
         android:layout_above="@id/webtools"
         android:layout_centerHorizontal="true"
-        android:orientation="vertical"
+        android:background="@drawable/panel_background"
         android:gravity="bottom"
+        android:orientation="vertical"
         android:visibility="invisible" >
 
         <ListView
             android:id="@+id/weblist"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-	        android:divider="@drawable/divider"
-    	    android:dividerHeight="2px"
-            />
-        
+            android:divider="@drawable/divider"
+            android:dividerHeight="2px" />
+
         <Button
             android:id="@+id/opennewpage"
             android:layout_width="fill_parent"
@@ -341,6 +329,6 @@
             android:textColor="#FF333333"
             android:textSize="20dip"
             android:textStyle="bold" />
-
     </LinearLayout>
+
 </RelativeLayout>

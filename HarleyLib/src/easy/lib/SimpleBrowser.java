@@ -485,7 +485,7 @@ public class SimpleBrowser extends Activity {
 	        	// if scrollbar can't go more to the left OR right 
 	        	// this allow to force the user to do another gesture when he reach a side
 	            if(!isScrolling) {
-	                if(event.getX() > oldX+100 && overScrollLeft) {
+	                if ((event.getX() > oldX+100) && overScrollLeft && (oldX < 100)) {
 	                    // left action
 	                	if (!reverted) {
 	                		if (!bookmarkOpened) showBookmark();
@@ -495,7 +495,7 @@ public class SimpleBrowser extends Activity {
 	                	}
 	                	dragEdge = true;
 	                }
-	                else if(event.getX() < oldX-100 && overScrollRight) {
+	                else if ((event.getX() < oldX-100) && overScrollRight && (oldX > dm.widthPixels-100)) {
 	                	// right action
 	                	if (!reverted) {
 	                		if (!menuOpened) onMenuOpened(0, null);

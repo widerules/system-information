@@ -158,6 +158,7 @@ public class SimpleBrowser extends Activity {
 	ListView webList;
 	int revertCount = 0;
 	boolean needRevert = false;
+	boolean reverted = false;
 
 	Context mContext;
 	String browserName;
@@ -424,28 +425,104 @@ public class SimpleBrowser extends Activity {
 			} catch (Exception e) {}
 		}
 
+		
+		private float oldX;
+		// indicate if horizontal scrollbar can't go more to the left
+		private boolean overScrollLeft = false;
+		// indicate if horizontal scrollbar can't go more to the right
+	    private boolean overScrollRight = false;
+	    // indicate if horizontal scrollbar can't go more to the left OR right
+	    private boolean isScrolling = false;
+	    private boolean dragEdge = false;
 		@Override
-		public boolean onTouchEvent(MotionEvent ev) {// onTouchListener may not
-														// work. so put relate
-														// code here
-			if (ev.getAction() == MotionEvent.ACTION_DOWN) {// touch down
-				scrollToMain();
-				
-				if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
-					webControl.setVisibility(View.INVISIBLE);
-								
-				if (!showUrl) setUrlHeight(false);
-				if (!showControlBar) setBarHeight(false);
+		public boolean onTouchEvent(MotionEvent event) {// onTouchListener may not work. so put relate code here
+			int scrollBarWidth = getVerticalScrollbarWidth();
+			// width of the view depending of you set in the layout
+			int viewWidth = computeHorizontalScrollExtent();
+			// width of the webpage depending of the zoom
+	        int innerWidth = computeHorizontalScrollRange();
+	        // position of the left side of the horizontal scrollbar
+	        int scrollBarLeftPos = computeHorizontalScrollOffset();
+	        // position of the right side of the horizontal scrollbar, the width of scroll is the width of view minus the width of vertical scrollbar
+	        int scrollBarRightPos = scrollBarLeftPos + viewWidth - scrollBarWidth;
 
+	        // if left pos of scroll bar is 0 left over scrolling is true
+	        if(scrollBarLeftPos == 0) {
+	            overScrollLeft = true;
+	        } else {
+	            overScrollLeft = false;
+	        }
+
+	        // if right pos of scroll bar is superior to webpage width: right over scrolling is true
+	        //Log.d("=============scrollBarRightPos", scrollBarRightPos+"");
+	        //Log.d("=============innerWidth", innerWidth+"");
+	        if(scrollBarRightPos >= innerWidth-6) {
+	            overScrollRight = true;
+	        } else {
+	            overScrollRight = false;
+	        }
+
+	        switch (event.getAction()) {
+	        case MotionEvent.ACTION_DOWN: // when user touch the screen
+	        	dragEdge = false;
+	        	
+	        	// if scrollbar is the most left or right
+	            if(overScrollLeft || overScrollRight) {
+	                isScrolling = false;
+	            } else {
+	                isScrolling = true;
+	            }
+	            oldX = event.getX();
+	            
 				if (!this.isFocused()) {
 					this.setFocusableInTouchMode(true);
 					this.requestFocus();
 					webAddress.setFocusableInTouchMode(false);
 					webAddress.clearFocus();
 				}
-			}
-			
-			return super.onTouchEvent(ev);
+	            break;
+	        case MotionEvent.ACTION_MOVE: // when user stop to touch the screen
+	        	// if scrollbar can't go more to the left OR right 
+	        	// this allow to force the user to do another gesture when he reach a side
+	            if(!isScrolling) {
+	                if(event.getX() > oldX+100 && overScrollLeft) {
+	                    // left action
+	                	if (!reverted) {
+	                		if (!bookmarkOpened) showBookmark();
+	                	}
+	                	else {
+		                	if (!menuOpened) onMenuOpened(0, null);
+	                	}
+	                	dragEdge = true;
+	                }
+	                else if(event.getX() < oldX-100 && overScrollRight) {
+	                	// right action
+	                	if (!reverted) {
+	                		if (!menuOpened) onMenuOpened(0, null);
+	                	}
+	                	else {
+	                		if (!bookmarkOpened) showBookmark();
+	                	}
+	                	dragEdge = true;
+	                }
+	            }
+	            break;
+	        case MotionEvent.ACTION_UP:
+	            if (!dragEdge) {
+	            	scrollToMain();
+
+	            	if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
+						webControl.setVisibility(View.INVISIBLE);
+									
+					if (!showUrl) setUrlHeight(false);
+					if (!showControlBar) setBarHeight(false);
+	            }
+	            break;
+	        default:
+	            break;
+	        }
+			        
+			return super.onTouchEvent(event);
 		}
 
 		public MyWebview(Context context) {
@@ -3267,6 +3344,9 @@ public class SimpleBrowser extends Activity {
 			needRevert = true;
 		else needRevert = false;
 		webList.invalidateViews();
+		
+		if (revertCount % 2 == 0) reverted = false;
+		else reverted = true;
 		
 		// revert add bookmark and refresh button
 		lp1 = imgAddFavo.getLayoutParams();

@@ -426,7 +426,7 @@ public class SimpleBrowser extends Activity {
 		}
 
 		
-		private float oldX;
+		private float oldX, oldY;
 		// indicate if horizontal scrollbar can't go more to the left
 		private boolean overScrollLeft = false;
 		// indicate if horizontal scrollbar can't go more to the right
@@ -473,6 +473,7 @@ public class SimpleBrowser extends Activity {
 	                isScrolling = true;
 	            }
 	            oldX = event.getX();
+	            oldY = event.getY();
 	            
 				if (!this.isFocused()) {
 					this.setFocusableInTouchMode(true);
@@ -484,7 +485,7 @@ public class SimpleBrowser extends Activity {
 	        case MotionEvent.ACTION_MOVE: // when user stop to touch the screen
 	        	// if scrollbar can't go more to the left OR right 
 	        	// this allow to force the user to do another gesture when he reach a side
-	            if(!isScrolling) {
+	            if (!isScrolling && (Math.abs(oldY - event.getY()) < 50)) {
 	                if ((event.getX() > oldX+100) && overScrollLeft && (oldX < 100)) {
 	                    // left action
 	                	if (!reverted) {

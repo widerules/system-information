@@ -25,17 +25,17 @@ public class wrapInterstitialAd {
 		mHandler = handler;
 	}
 
-	boolean isReady() {
+	public boolean isReady() {
 		if (mInstance != null)
 			return mInstance.isReady();
 		else return false;
 	}
 	
-	void show() {
+	public void show() {
 		if (mInstance != null) mInstance.show();
 	}
 	
-	void loadAd() {
+	public void loadAd() {
 		if ((mInstance != null) && (adRequest != null))
 			mInstance.loadAd(adRequest);
 	}

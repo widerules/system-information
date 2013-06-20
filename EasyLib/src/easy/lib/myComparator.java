@@ -3,6 +3,8 @@ package easy.lib;
 import java.text.Collator;
 import java.util.Comparator;
 
+import base.lib.HanziToPinyin;
+
 import easy.lib.SimpleBrowser.TitleUrl;
 
 import android.content.pm.ResolveInfo;

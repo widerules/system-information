@@ -104,7 +104,7 @@ public class wrapAdView {
 			mInstance.loadAd(adRequest);
 	}
 
-	void destroy() {//do nothing on destroy which may cause FLAG_ACTIVITY_NEW_TASK error?
+	public void destroy() {//do nothing on destroy which may cause FLAG_ACTIVITY_NEW_TASK error?
 		//DestroyTask dtask = new DestroyTask();
 		//dtask.execute();
 	}

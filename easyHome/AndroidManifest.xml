@@ -33,7 +33,7 @@
 
     <application android:icon="@drawable/icon"
     	android:debuggable="false"
-    	android:name="base.lib.MyApp" 
+    	android:name="base.lib.BaseApp" 
        	android:theme="@style/Theme"
        	android:hardwareAccelerated="true"
        	android:largeHeap="true"

@@ -34,7 +34,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
-import easy.lib.*;
+import base.lib.*;
 
 public abstract class AlphaList<T> {
 

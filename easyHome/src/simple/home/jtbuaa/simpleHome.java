@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import easy.lib.util;
+import base.lib.HanziToPinyin;
+import base.lib.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -952,7 +953,7 @@ public class simpleHome extends Activity implements SensorEventListener, sizedRe
 	    String sa2 = sa1;
 	    if (sa1.length() > 0) {
     	    try {//this is to fix a bug report by market
-    	    	sa2 = easy.lib.HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target.trim();
+    	    	sa2 = HanziToPinyin.getInstance().getToken(sa1.charAt(0)).target.trim();
     	    	if (sa2.length() > 1) sa2 = sa2.substring(0, 1);
     	    } catch(Exception e) {
     	    	e.printStackTrace();

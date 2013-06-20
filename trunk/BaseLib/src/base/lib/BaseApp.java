@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
-public class MyApp extends Application {
+public class BaseApp extends Application {
 
 	@Override
 	public void onCreate() {

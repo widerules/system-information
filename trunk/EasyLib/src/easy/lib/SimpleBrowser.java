@@ -31,6 +31,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import easy.lib.MyApp;
+import base.lib.stringComparator;
+import base.lib.util;
+import base.lib.wrapAdView;
+import base.lib.wrapInterstitialAd;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;

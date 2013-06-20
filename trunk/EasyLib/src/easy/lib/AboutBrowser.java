@@ -35,7 +35,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
-import easy.lib.util;
+import base.lib.util;
 
 public class AboutBrowser extends Activity {
 

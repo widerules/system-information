@@ -2355,9 +2355,8 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 7:// settings
 					gotoSettings = true;
-					intent = new Intent("easy.lib.about");
-					intent.setClassName(getPackageName(),
-							"easy.lib.AboutBrowser");
+					intent = new Intent(getPackageName() + "about");
+					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
 					startActivityForResult(intent, SETTING_RESULTCODE);
 					break;
 				}

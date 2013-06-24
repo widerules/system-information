@@ -2447,7 +2447,7 @@ public class SimpleBrowser extends Activity {
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
 					break;
 				case 13:// settings
-					Intent intent = new Intent("easy.lib.about");
+					Intent intent = new Intent(getPackageName() + "about");
 					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
 					startActivityForResult(intent, SETTING_RESULTCODE);
 					break;

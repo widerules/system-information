@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="easy.browser.com"
     android:versionCode="17"
-    android:versionName="1.1.2">
+    android:versionName="1.1.2" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,11 +10,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    
-    
-    <uses-sdk android:minSdkVersion="3"/>
+
+    <uses-sdk android:minSdkVersion="3" />
 
     <supports-screens
         android:anyDensity="true"
@@ -27,15 +26,14 @@
     <application
         android:name="easy.lib.MyApp"
         android:debuggable="false"
-        android:theme="@android:style/Theme"
         android:hardwareAccelerated="true"
         android:icon="@drawable/explorer"
-        android:label="@string/browser_name" >
-        
+        android:label="@string/browser_name"
+        android:theme="@android:style/Theme" >
         <activity
             android:name="easy.lib.SimpleBrowser"
-            android:hardwareAccelerated="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:hardwareAccelerated="true"
             android:icon="@drawable/explorer"
             android:label="@string/browser_name"
             android:launchMode="singleTask" >
@@ -111,7 +109,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="easy.lib.CrashControl"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -125,12 +122,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="easy.lib.AboutBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" >
             <intent-filter>
-                <action android:name="easy.lib.about" />
+                <action android:name="easy.browser.com.about" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

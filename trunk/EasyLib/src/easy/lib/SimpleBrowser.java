@@ -328,6 +328,7 @@ public class SimpleBrowser extends Activity {
 	static Method setDisplayZoomControls = null;
 	static Method setScrollbarFadingEnabled = null;
 	static Method canScrollVerticallyMethod = null;
+	static Method setForceUserScalable = null;
 	static {
 		try {
 			//API 5
@@ -348,6 +349,7 @@ public class SimpleBrowser extends Activity {
 			
 			//API 14
 			canScrollVerticallyMethod = WebView.class.getMethod("canScrollVertically", new Class[] { int.class });
+			setForceUserScalable = WebSettings.class.getMethod("setForceUserScalable", new Class[] { boolean.class });
 		} catch (Exception e) {}
 	}
 	
@@ -406,6 +408,11 @@ public class SimpleBrowser extends Activity {
 				} catch (Exception e) {}
 			return false;
 		}
+		
+		synchronized void setForceUserScalable(boolean flag) {// API 14
+			if (setForceUserScalable != null)
+				try {setForceUserScalable.invoke(mInstance, flag);} catch (Exception e) {}
+		}
 	}
 
 	class MyWebview extends WebView {
@@ -423,7 +430,7 @@ public class SimpleBrowser extends Activity {
 		String m_ready = "";
 		boolean shouldCloseIfCannotBack = false;
 
-		public boolean myCanScrollVertically(int direction) {
+		public boolean myCanScrollVertically(int direction) {// API 14
 			if (canScrollVerticallyMethod != null)
 				try {
 					Object o = canScrollVerticallyMethod.invoke(this, direction);
@@ -596,6 +603,7 @@ public class SimpleBrowser extends Activity {
 			// loads the WebView completely zoomed out. fit for hao123, but not
 			// fit for homepage. from API7
 			webSettings.setLoadWithOverviewMode(overviewPage);
+			webSettings.setForceUserScalable(true);
 
 			registerForContextMenu(this);
 

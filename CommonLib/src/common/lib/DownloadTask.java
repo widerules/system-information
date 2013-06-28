@@ -38,6 +38,9 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 	public String downloadPath;
 	public MyApp appstate;
 	public ArrayList<packageIDpair> downloadAppID;
+	public int NOTIFICATION_ID;
+	public String apkName = ""; // file name to download
+	public boolean pauseDownload = false;// true to pause download
 	
 	private String URL_str; // source url
 	private File download_file;
@@ -47,12 +50,9 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 	private long skip_length = 0;// if found local file not download
 	private long sizeM = 1024 * 1024;
 	// finished last time, need continue to download
-	private String apkName = ""; // file name to download
-	private int NOTIFICATION_ID;
 	private Notification notification;
 	private int oldProgress;
 	boolean stopDownload = false;// true to stop download
-	boolean pauseDownload = false;// true to pause download
 	boolean downloadFailed = false;
 
 	@Override

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import base.lib.BaseApp;
 
 public class MyApp extends BaseApp {
-	HashMap<Integer, DownloadTask> downloadState;
+	public HashMap<Integer, DownloadTask> downloadState;
 
 	@Override
 	public void onCreate() {

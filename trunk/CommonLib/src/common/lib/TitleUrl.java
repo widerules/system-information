@@ -1,11 +1,11 @@
 package common.lib;
 
 public class TitleUrl {
-	String m_title;
-	String m_url;
-	String m_site;
+	public String m_title;
+	public String m_url;
+	public String m_site;
 
-	TitleUrl(String title, String url, String site) {
+	public TitleUrl(String title, String url, String site) {
 		if (title != null)
 			m_title = title;
 		else

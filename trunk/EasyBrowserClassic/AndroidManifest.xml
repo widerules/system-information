@@ -24,7 +24,7 @@
         android:xlargeScreens="true" />
 
     <application
-        android:name="easy.lib.MyApp"
+        android:name="common.lib.MyApp"
         android:debuggable="false"
         android:description="@string/about_message"
         android:hardwareAccelerated="true"
@@ -98,7 +98,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="easy.lib.downloadControl"
+            android:name="common.lib.downloadControl"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"
@@ -111,7 +111,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="easy.lib.CrashControl"
+            android:name="base.lib.CrashControl"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"

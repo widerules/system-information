@@ -59,6 +59,7 @@ public class downloadControl extends Activity {
 		tv = (TextView) findViewById(R.id.download_name);
 		btnPause = (Button) findViewById(R.id.pause);
 		btnStop = (Button) findViewById(R.id.stop);
+		btnStop.setText(getString(R.string.stop));
 		
 		id = intent.getIntExtra("id", 0);
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

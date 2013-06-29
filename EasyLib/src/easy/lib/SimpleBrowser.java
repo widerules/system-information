@@ -1576,15 +1576,10 @@ public class SimpleBrowser extends Activity {
 		if (noSdcard)
 			Toast.makeText(mContext, R.string.sdcard_needed, Toast.LENGTH_LONG).show();
 
-		Iterator iter = appstate.downloadState.entrySet().iterator();
-		while (iter.hasNext()) {
-			Entry entry = (Entry) iter.next();
-			DownloadTask val = (DownloadTask) entry.getValue();
-			if ((val != null) && val.apkName.equals(apkName)) {
-				if (val.pauseDownload)
-					val.pauseDownload = false;// resume download if it paused
-				return true;// the file is downloading, not start a new download task.
-			}
+		DownloadTask dl = appstate.downloadState.get(url);
+		if (dl != null) {
+			if (dl.pauseDownload) dl.pauseDownload = false;// resume download if it paused
+			return true;// the file is downloading, not start a new download task.
 		}
 
 		Random random = new Random();
@@ -1593,7 +1588,7 @@ public class SimpleBrowser extends Activity {
 		DownloadTask dltask = new DownloadTask();
 		dltask.appstate = appstate;
 		dltask.NOTIFICATION_ID = id;
-		appstate.downloadState.put(id, dltask);
+		appstate.downloadState.put(url, dltask);
 		dltask.execute(url, apkName, contentDisposition, openAfterDone);
 		return true;
 	}

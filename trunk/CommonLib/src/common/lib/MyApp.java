@@ -1,10 +1,18 @@
 package common.lib;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import base.lib.BaseApp;
 
 public class MyApp extends BaseApp {
+	// download related
+	public Context mContext;
+	public String downloadPath;
+	public NotificationManager nManager;
+	public ArrayList<packageIDpair> downloadAppID;
 	public HashMap<Integer, DownloadTask> downloadState;
 
 	@Override

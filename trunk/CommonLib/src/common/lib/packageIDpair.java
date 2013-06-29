@@ -7,7 +7,7 @@ public class packageIDpair {
 	File downloadedfile;
 	public int notificationID;
 
-	packageIDpair(String name, int id, File file) {
+	public packageIDpair(String name, int id, File file) {
 		packageName = name;
 		notificationID = id;
 		downloadedfile = file;

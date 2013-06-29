@@ -12,12 +12,12 @@ public class MyApp extends BaseApp {
 	public String downloadPath;
 	public NotificationManager nManager;
 	public HashMap<String, Integer> downloadAppID;
-	public HashMap<Integer, DownloadTask> downloadState;
+	public HashMap<String, DownloadTask> downloadState;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		downloadAppID = new HashMap<String, Integer>();
-		downloadState = new HashMap<Integer, DownloadTask>();
+		downloadState = new HashMap<String, DownloadTask>();
 	}
 }

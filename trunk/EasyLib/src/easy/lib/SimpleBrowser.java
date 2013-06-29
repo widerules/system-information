@@ -26,7 +26,6 @@ import common.lib.MyViewFlipper;
 import common.lib.ProxySettings;
 import common.lib.TitleUrl;
 import common.lib.myComparator;
-import common.lib.packageIDpair;
 import base.lib.stringComparator;
 import base.lib.util;
 import base.lib.wrapAdView;
@@ -2303,7 +2302,6 @@ public class SimpleBrowser extends Activity {
 		
 		appstate = ((MyApp) getApplicationContext());
 		appstate.nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		appstate.downloadAppID = new ArrayList();
 		appstate.mContext = mContext;
 
 
@@ -2905,21 +2903,16 @@ public class SimpleBrowser extends Activity {
 			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
 				// it always in the format of package:x.y.z
 				String packageName = intent.getDataString().split(":")[1];
-				for (int i = 0; i < appstate.downloadAppID.size(); i++) {
+				Object id = appstate.downloadAppID.get(packageName);
+				if (id != null) {
 					// cancel download notification if install succeed
-					if (appstate.downloadAppID.get(i).packageName.equals(packageName)) {
-						// only remove the notification internal id, not delete
-						// file.
-						// otherwise when user click the ad again, it will
-						// download again.
-						// traffic is important than storage.
-						// user can download it manually when click downloads
-						appstate.nManager.cancel(appstate.downloadAppID.get(i).notificationID);
-						appstate.downloadAppID.remove(i);
-						break;
-					}
+					// only remove the notification internal id, not delete file.
+					// otherwise when user click the ad again, it will download again.
+					// traffic is important than storage.
+					// user can download it manually when click downloads
+					appstate.nManager.cancel((Integer) id);
+					appstate.downloadAppID.remove(packageName);
 				}
-
 			}
 		}
 	};

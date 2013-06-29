@@ -33,11 +33,7 @@ import base.lib.util;
 
 @TargetApi(3)
 public class DownloadTask extends AsyncTask<String, Integer, String> {
-	public Context mContext;
-	public NotificationManager nManager;
-	public String downloadPath;
 	public MyApp appstate;
-	public ArrayList<packageIDpair> downloadAppID;
 	public int NOTIFICATION_ID;
 	public String apkName = ""; // file name to download
 	public boolean pauseDownload = false;// true to pause download
@@ -67,25 +63,25 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
 		notification = new Notification(
 				android.R.drawable.stat_sys_download,
-				mContext.getString(R.string.start_download),
+				appstate.mContext.getString(R.string.start_download),
 				System.currentTimeMillis());
 
 		Intent intent = new Intent();
-		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
-		notification.setLatestEventInfo(mContext, apkName,
-				mContext.getString(R.string.start_download), contentIntent);
-		nManager.notify(NOTIFICATION_ID, notification);
+		PendingIntent contentIntent = PendingIntent.getActivity(appstate.mContext, 0, intent, 0);
+		notification.setLatestEventInfo(appstate.mContext, apkName,
+				appstate.mContext.getString(R.string.start_download), contentIntent);
+		appstate.nManager.notify(NOTIFICATION_ID, notification);
 
 		// this intent is to pause/stop download
-		intent.setAction(mContext.getPackageName() + ".downloadControl");
+		intent.setAction(appstate.mContext.getPackageName() + ".downloadControl");
 		intent.putExtra("id", NOTIFICATION_ID);
 		intent.putExtra("name", apkName);
 		intent.putExtra("url", URL_str);
 		// request_code will help to diff different thread
-		contentIntent = PendingIntent.getActivity(mContext,
+		contentIntent = PendingIntent.getActivity(appstate.mContext,
 				NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		notification.setLatestEventInfo(mContext, apkName,
-				mContext.getString(R.string.downloading), contentIntent);
+		notification.setLatestEventInfo(appstate.mContext, apkName,
+				appstate.mContext.getString(R.string.downloading), contentIntent);
 
 		FileOutputStream fos = null;
 		InputStream is = null;
@@ -127,8 +123,8 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 							apkName = apkName.split("'")[apkName.split("'").length - 1];// utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar
 						if (apkName.contains("?"))
 							apkName = apkName.replace("?", "1");// ???????.doc
-						notification.setLatestEventInfo(mContext, apkName,
-								mContext.getString(R.string.downloading),
+						notification.setLatestEventInfo(appstate.mContext, apkName,
+								appstate.mContext.getString(R.string.downloading),
 								contentIntent);
 					}
 				}
@@ -140,7 +136,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 				is = httpConnection.getInputStream();
 			}
 
-			download_file = new File(downloadPath + apkName);
+			download_file = new File(appstate.downloadPath + apkName);
 			// apkName.split(".")[1] will get java.lang.ArrayIndexOutOfBoundsException if apkName contain chinese character
 			// MimeTypeMap.getFileExtensionFromUrl(apkName) will get null
 			String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
@@ -159,7 +155,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 				// no need to download, just send intent to view it
 				downloadSuccessRoutine(notification, apk_length, intent, download_file, NOTIFICATION_ID, mimeType, params[3]);
 				appstate.downloadState.remove(NOTIFICATION_ID);
-				return downloadPath + apkName;
+				return appstate.downloadPath + apkName;
 			} else if (download_file.length() < apk_length) {
 				// local file size < need to download,
 				// need continue to download
@@ -169,12 +165,12 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 				// need overwrite
 				fos = new FileOutputStream(download_file, false);
 
-			notification.contentView = new RemoteViews(mContext.getPackageName(), R.layout.notification_dialog);
+			notification.contentView = new RemoteViews(appstate.mContext.getPackageName(), R.layout.notification_dialog);
 			notification.contentView.setProgressBar(R.id.progress_bar, 100,
 					0, false);
 			notification.contentView.setTextViewText(R.id.progress, "0%");
 			notification.contentView.setTextViewText(R.id.title, apkName);
-			nManager.notify(NOTIFICATION_ID, notification);
+			appstate.nManager.notify(NOTIFICATION_ID, notification);
 
 			total_read = 0; // init the downloaded size to 0
 
@@ -209,12 +205,12 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 							R.id.progress_bar, 100, progress, false);// update download progress
 					notification.contentView.setTextViewText(R.id.progress,
 							progress + "%");
-					nManager.notify(NOTIFICATION_ID, notification);
+					appstate.nManager.notify(NOTIFICATION_ID, notification);
 				}
 			}
 			// stop download by user. clear notification here for the
 			// close() and shutdown() may be very slow
-			if (stopDownload) nManager.cancel(NOTIFICATION_ID);
+			if (stopDownload) appstate.nManager.cancel(NOTIFICATION_ID);
 
 			try { fos.close();
 			} catch (IOException e1) {}
@@ -239,16 +235,16 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			intent.putExtra("errorMsg", e.toString());
 			// request_code will help to diff different thread
 			contentIntent = PendingIntent.getActivity(
-					mContext,
+					appstate.mContext,
 					NOTIFICATION_ID, 
 					intent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 			notification.setLatestEventInfo(
-					mContext, 
+					appstate.mContext, 
 					apkName,
 					e.toString(), 
 					contentIntent);
-			nManager.notify(NOTIFICATION_ID, notification);
+			appstate.nManager.notify(NOTIFICATION_ID, notification);
 
 			// below line will cause error simetime, reported by emilio. so
 			// commented it. may not a big issue to keep zero file.
@@ -274,14 +270,14 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 		else if (total_read > 1024)
 			ssize = df.format(total_read * 1.0 / 1024) + "K ";
 		
-		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(appstate.mContext, 0, intent, 0);
 		notification.contentView.setOnClickPendingIntent(
 				R.id.notification_dialog, contentIntent);
-		notification.setLatestEventInfo(mContext, download_file.getPath(), ssize
-				+ mContext.getString(R.string.download_finish),
+		notification.setLatestEventInfo(appstate.mContext, download_file.getPath(), ssize
+				+ appstate.mContext.getString(R.string.download_finish),
 				contentIntent);// click listener for download
 								// progress bar
-		nManager.notify(NOTIFICATION_ID, notification);
+		appstate.nManager.notify(NOTIFICATION_ID, notification);
 
 		// change file property, for on some device the property is wrong
 		try {
@@ -297,13 +293,13 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			intentAddPic.putExtra("picFile", download_file.getName());
 			// add to picture list and enable change background by
 			// shake
-			mContext.sendBroadcast(intentAddPic);
+			appstate.mContext.sendBroadcast(intentAddPic);
 		} 
 		else if (mimeType.startsWith("application/vnd.android.package-archive")) {
 			try {
-				PackageInfo pi = mContext.getPackageManager()
-						.getPackageArchiveInfo(downloadPath + download_file.getName(), 0);
-				downloadAppID.add(new packageIDpair(pi.packageName,
+				PackageInfo pi = appstate.mContext.getPackageManager()
+						.getPackageArchiveInfo(appstate.downloadPath + download_file.getName(), 0);
+				appstate.downloadAppID.add(new packageIDpair(pi.packageName,
 						NOTIFICATION_ID, download_file));
 			} catch (Exception e) {}
 
@@ -311,7 +307,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			// it will not return result code,
 			// so not use startActivityForResult();
 		}
-		if ("yes".equals(openAfterDone)) util.startActivity(intent, false, mContext);// try to start some app to launch the download file
+		if ("yes".equals(openAfterDone)) util.startActivity(intent, false, appstate.mContext);// try to start some app to launch the download file
 	}
 
 }

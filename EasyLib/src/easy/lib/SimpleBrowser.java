@@ -286,12 +286,8 @@ public class SimpleBrowser extends Activity {
 	boolean gotoSettings = false;// will set to true if open settings activity,
 									// and set to false again after exit
 									// settings. not remove ad is goto settings
-
-	// download related
-	String downloadPath = "";
+	
 	String dataPath = "";
-	NotificationManager nManager;
-	ArrayList<packageIDpair> downloadAppID;
 	MyApp appstate;
 
 	static Method freeMemoryMethod = null;
@@ -1125,7 +1121,7 @@ public class SimpleBrowser extends Activity {
 		// disk IO crash
 		ClearFolderTask cltask = new ClearFolderTask();
 		// clear cache on sdcard and in data folder
-		cltask.execute(downloadPath + "cache/webviewCache/", dataPath + "cache/webviewCache/");		
+		cltask.execute(appstate.downloadPath + "cache/webviewCache/", dataPath + "cache/webviewCache/");		
 	}
 	
 	@Override
@@ -1596,11 +1592,7 @@ public class SimpleBrowser extends Activity {
 		int id = random.nextInt() + 1000;
 
 		DownloadTask dltask = new DownloadTask();
-		dltask.mContext = mContext;
-		dltask.nManager = nManager;
-		dltask.downloadPath = downloadPath;
 		dltask.appstate = appstate;
-		dltask.downloadAppID = downloadAppID;
 		dltask.NOTIFICATION_ID = id;
 		appstate.downloadState.put(id, dltask);
 		dltask.execute(url, apkName, contentDisposition, openAfterDone);
@@ -1803,7 +1795,7 @@ public class SimpleBrowser extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						try {
-							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							String snap = appstate.downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
 							FileOutputStream fos = new FileOutputStream(snap);
 
 							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
@@ -1826,7 +1818,7 @@ public class SimpleBrowser extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						try {
-							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							String snap = appstate.downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
 							FileOutputStream fos = new FileOutputStream(snap);
 							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
 							fos.close();
@@ -1860,7 +1852,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				try {
-					String snap = downloadPath + "source/" + serverWebs.get(webIndex).getTitle() + ".txt";
+					String snap = appstate.downloadPath + "source/" + serverWebs.get(webIndex).getTitle() + ".txt";
 					FileOutputStream fos = new FileOutputStream(snap);
 					fos.write(serverWebs.get(webIndex).pageSource.getBytes());
 					fos.close();
@@ -2017,7 +2009,7 @@ public class SimpleBrowser extends Activity {
 									localContext)
 									.setMessage(
 											getString(R.string.downloads_to)
-													+ downloadPath
+													+ appstate.downloadPath
 													+ getString(R.string.downloads_open))
 									.setPositiveButton(
 											R.string.ok,
@@ -2309,9 +2301,11 @@ public class SimpleBrowser extends Activity {
 
 		setAsDefaultApp();
 		
-		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		downloadAppID = new ArrayList();
 		appstate = ((MyApp) getApplicationContext());
+		appstate.nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		appstate.downloadAppID = new ArrayList();
+		appstate.mContext = mContext;
+
 
 		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(
@@ -2416,9 +2410,9 @@ public class SimpleBrowser extends Activity {
 		});
 
 		dataPath = "/data/data/" + getPackageName() + "/";
-		downloadPath = util.preparePath(mContext);
-		if (downloadPath == null) downloadPath = dataPath;
-		if (downloadPath.startsWith(dataPath)) noSdcard = true;
+		appstate.downloadPath = util.preparePath(mContext);
+		if (appstate.downloadPath == null) appstate.downloadPath = dataPath;
+		if (appstate.downloadPath.startsWith(dataPath)) noSdcard = true;
 
 		// should read in below sequence: 1, sdcard. 2, data/data. 3, native browser
 		try {
@@ -2426,7 +2420,7 @@ public class SimpleBrowser extends Activity {
 			if (noSdcard) fi = openFileInput("history");
 			else {
 				try {// try to open history on sdcard at first
-					File file = new File(downloadPath + "bookmark/history");
+					File file = new File(appstate.downloadPath + "bookmark/history");
 					fi = new FileInputStream(file);
 				} catch (FileNotFoundException e) {// read from /data/data if fail
 					noHistoryOnSdcard = true;
@@ -2911,17 +2905,17 @@ public class SimpleBrowser extends Activity {
 			if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
 				// it always in the format of package:x.y.z
 				String packageName = intent.getDataString().split(":")[1];
-				for (int i = 0; i < downloadAppID.size(); i++) {
+				for (int i = 0; i < appstate.downloadAppID.size(); i++) {
 					// cancel download notification if install succeed
-					if (downloadAppID.get(i).packageName.equals(packageName)) {
+					if (appstate.downloadAppID.get(i).packageName.equals(packageName)) {
 						// only remove the notification internal id, not delete
 						// file.
 						// otherwise when user click the ad again, it will
 						// download again.
 						// traffic is important than storage.
 						// user can download it manually when click downloads
-						nManager.cancel(downloadAppID.get(i).notificationID);
-						downloadAppID.remove(i);
+						appstate.nManager.cancel(appstate.downloadAppID.get(i).notificationID);
+						appstate.downloadAppID.remove(i);
 						break;
 					}
 				}
@@ -3708,7 +3702,7 @@ public class SimpleBrowser extends Activity {
 
 		if (!noSdcard)
 		try {// try to write to /sdcard/simpleHome/bookmark/
-			File file = new File(downloadPath + "bookmark/" + filename);
+			File file = new File(appstate.downloadPath + "bookmark/" + filename);
 			FileOutputStream fo = new FileOutputStream(file, false);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);
 			TitleUrl tu;
@@ -3776,7 +3770,7 @@ public class SimpleBrowser extends Activity {
 			if (noSdcard || noHistoryOnSdcard) 
 				fi = openFileInput(filename);
 			else {
-				File file = new File(downloadPath + "bookmark/" + filename);
+				File file = new File(appstate.downloadPath + "bookmark/" + filename);
 				fi = new FileInputStream(file);
 			}
 			ois = new ObjectInputStream(fi);

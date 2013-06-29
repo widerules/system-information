@@ -1,6 +1,5 @@
 package common.lib;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.NotificationManager;
@@ -12,12 +11,13 @@ public class MyApp extends BaseApp {
 	public Context mContext;
 	public String downloadPath;
 	public NotificationManager nManager;
-	public ArrayList<packageIDpair> downloadAppID;
+	public HashMap<String, Integer> downloadAppID;
 	public HashMap<Integer, DownloadTask> downloadState;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		downloadAppID = new HashMap<String, Integer>();
 		downloadState = new HashMap<Integer, DownloadTask>();
 	}
 }

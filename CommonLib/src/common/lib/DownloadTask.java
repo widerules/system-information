@@ -9,8 +9,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -19,9 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
@@ -299,8 +295,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			try {
 				PackageInfo pi = appstate.mContext.getPackageManager()
 						.getPackageArchiveInfo(appstate.downloadPath + download_file.getName(), 0);
-				appstate.downloadAppID.add(new packageIDpair(pi.packageName,
-						NOTIFICATION_ID, download_file));
+				appstate.downloadAppID.put(pi.packageName, NOTIFICATION_ID);
 			} catch (Exception e) {}
 
 			// call system package manager to install app.

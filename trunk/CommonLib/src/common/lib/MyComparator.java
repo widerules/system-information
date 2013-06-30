@@ -7,8 +7,8 @@ import base.lib.HanziToPinyin;
 
 import android.content.pm.ResolveInfo;
 
-public class myComparator implements Comparator<TitleUrl> {
-	public myComparator() {
+public class MyComparator implements Comparator<TitleUrl> {
+	public MyComparator() {
 	}
 
 	@Override

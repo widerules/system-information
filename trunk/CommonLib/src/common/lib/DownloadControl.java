@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class downloadControl extends Activity {
+public class DownloadControl extends Activity {
 	static boolean mAdAvailable;
 	static {
 		try {

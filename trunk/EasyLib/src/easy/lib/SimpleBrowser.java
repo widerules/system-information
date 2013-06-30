@@ -14,18 +14,15 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
-import java.util.Map.Entry;
-
 import common.lib.DownloadTask;
 import common.lib.MyApp;
+import common.lib.MyComparator;
 import common.lib.MyViewFlipper;
 import common.lib.ProxySettings;
 import common.lib.TitleUrl;
-import common.lib.myComparator;
 import base.lib.stringComparator;
 import base.lib.util;
 import base.lib.wrapAdView;
@@ -2452,7 +2449,7 @@ public class SimpleBrowser extends Activity {
 		if (!firstRun) {
 			mHistory = readBookmark("history");
 			mBookMark = readBookmark("bookmark");
-			Collections.sort(mBookMark, new myComparator());
+			Collections.sort(mBookMark, new MyComparator());
 
 			for (int i = 0; i < mHistory.size(); i++) {
 				site = mHistory.get(i).m_site;
@@ -2497,7 +2494,7 @@ public class SimpleBrowser extends Activity {
 
 			for (int i = 0; i < mSystemBookMark.size(); i++)
 				mBookMark.add(mSystemBookMark.get(i));
-			Collections.sort(mBookMark, new myComparator());
+			Collections.sort(mBookMark, new MyComparator());
 
 			historyChanged = true;
 			bookmarkChanged = true;
@@ -3130,7 +3127,7 @@ public class SimpleBrowser extends Activity {
 										site);
 								mBookMark.add(titleUrl);
 								// sort by name
-								Collections.sort(mBookMark, new myComparator());
+								Collections.sort(mBookMark, new MyComparator());
 								//loadPage(false);
 
 								bookmarkChanged = true;

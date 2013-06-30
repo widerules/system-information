@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -24,7 +23,7 @@
         android:xlargeScreens="true" />
 
     <application
-        android:name="easy.lib.MyApp"
+        android:name="common.lib.MyApp"
         android:debuggable="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/explorer"
@@ -97,7 +96,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="easy.lib.downloadControl"
+            android:name="common.lib.DownloadControl"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"
@@ -110,7 +109,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="easy.lib.CrashControl"
+            android:name="base.lib.CrashControl"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"

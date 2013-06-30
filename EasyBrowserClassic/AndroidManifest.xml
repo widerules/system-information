@@ -98,7 +98,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="common.lib.downloadControl"
+            android:name="common.lib.DownloadControl"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"

@@ -8,4 +8,29 @@
     <string name="downloading">downloading...</string>
     <string name="download_finish">download finished, click to check</string>
     <string name="download_fail">download fail.</string>
+    
+    <string name="sdcard_needed">Downloaded file may not be opened without SDcard.</string>
+    
+    <string name="select_file">File Chooser</string>
+    <string name="choose">Please choose your option</string>
+    <string name="open">Open</string>
+    <string name="download">Download</string>
+    
+    <string name="nomore_pages">too many pages opened.</string>
+
+    <string name="shareurl">Share Url</string>
+    <string name="save">Save for offline reading</string>
+    <string name="copy_url">Copy Url</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="add_bookmark">Add to Bookmark</string>
+    <string name="remove_bookmark">Remove from Bookmark</string>
+    <string name="remove_history">Remove from History</string>
+    <string name="close">Close</string>
+    <string name="close_all">Close all</string>
+    <string name="set_homepage">As home</string>
+    <string name="add_shortcut">Pin to Desktop</string>
+    
+    <string name="share">Share</string>
+    <string name="sharemode">Share Mode</string>
+    
 </resources>

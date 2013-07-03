@@ -45,8 +45,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import base.lib.BaseApp;
 import base.lib.util;
-import base.lib.wrapAdView;
-import base.lib.wrapInterstitialAd;
+import base.lib.WrapAdView;
+import base.lib.WrapInterstitialAd;
 
 public class MyApp extends BaseApp {
 	final String HOME_PAGE = "file:///android_asset/home.html";
@@ -55,8 +55,8 @@ public class MyApp extends BaseApp {
 	String m_homepage = null;
 
 	// Ads
-	wrapAdView adview = null, adview2 = null;
-	wrapInterstitialAd interstitialAd = null;
+	WrapAdView adview = null, adview2 = null;
+	WrapInterstitialAd interstitialAd = null;
 	boolean clicked = false;
 	// ad
 	static boolean mAdAvailable;
@@ -104,7 +104,6 @@ public class MyApp extends BaseApp {
 	boolean cachePrefer = false;
 	boolean blockPopup = false;
 	boolean blockJs = false;
-	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
 	TextSize textSize = TextSize.NORMAL;
 	final int historyCount = 16;
 	long html5cacheMaxSize = 1024 * 1024 * 8;
@@ -118,8 +117,8 @@ public class MyApp extends BaseApp {
 	Locale mLocale;
 
 	// bookmark and history
-	boolean historyChanged = false, bookmarkChanged = false;
-	boolean noSdcard = false;
+	public boolean historyChanged = false, bookmarkChanged = false, downloadsChanged = false;
+	public boolean noSdcard = false;
 
 	Activity mActivity;// the main activity
 	// download related
@@ -130,12 +129,13 @@ public class MyApp extends BaseApp {
 	public HashMap<String, DownloadTask> downloadState = new HashMap<String, DownloadTask>();
 
 	// browser related
-	ArrayList<MyWebView> serverWebs = new ArrayList<MyWebView>();
-	int webIndex;
+	public ArrayList<MyWebView> serverWebs = new ArrayList<MyWebView>();
+	public int webIndex;
 	public ArrayList<TitleUrl> mHistory = new ArrayList<TitleUrl>();
 	public ArrayList<TitleUrl> mBookMark = new ArrayList<TitleUrl>();
 	public ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
 	public ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
+	public ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	ArrayList<String> siteArray = new ArrayList<String>();
 	ArrayAdapter<String> urlAdapter;
 	AutoCompleteTextView webAddress;
@@ -303,9 +303,9 @@ public class MyApp extends BaseApp {
 		super.onCreate();
 	}
 	
-	void updateBookmark(){}
-	void updateHistory() {}
-	void updateHomePage() {}
+	public void updateBookmark(){}
+	public void updateHistory() {}
+	public void updateHomePage() {}
 	
 	void loadPage() {// load home page
 		serverWebs.get(webIndex).getSettings().setJavaScriptEnabled(true);
@@ -436,7 +436,7 @@ public class MyApp extends BaseApp {
 		}
 	}
 
-	String getSite(String url) {//identical
+	public String getSite(String url) {//identical
 		String site = "";
 		String[] tmp = url.split("/");
 		// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com

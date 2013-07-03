@@ -103,12 +103,12 @@ class MyWebView extends WebView {
 		
 		@SuppressWarnings("unused")
 		public void saveCollapseState(String item, boolean state) {
-			/*if ("1".equals(item))
+			if ("1".equals(item))
 				collapse1 = state;
 			if ("2".equals(item))
 				collapse2 = state;
 			if ("3".equals(item))
-				collapse3 = state;*/
+				collapse3 = state;
 		}
 		
 		@SuppressWarnings("unused")

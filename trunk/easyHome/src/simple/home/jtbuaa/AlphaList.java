@@ -168,7 +168,7 @@ public abstract class AlphaList<T> {
     		String tmp = getAlpha(ri);
     		if (!alphaList.contains(tmp)) {
     			alphaAdapter.add(tmp);
-    	    	Collections.sort(alphaAdapter.localList, new stringComparator());
+    	    	Collections.sort(alphaAdapter.localList, new StringComparator());
     	    	setColumns();
     		}
     	}

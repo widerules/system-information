@@ -86,7 +86,7 @@ public class MyApp extends BaseApp {
 		}
 	}
 	AppHandler mAppHandler = new AppHandler();
-	DisplayMetrics dm;
+	public DisplayMetrics dm;
 
 	// settings
 	SharedPreferences sp;

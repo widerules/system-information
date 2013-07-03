@@ -55,10 +55,11 @@ public class MyApp extends BaseApp {
 	String m_homepage = null;
 
 	// Ads
-	WrapAdView adview = null, adview2 = null;
+	public FrameLayout adContainer;
+	public LinearLayout adContainer2;	
+	public WrapAdView adview = null, adview2 = null;
 	WrapInterstitialAd interstitialAd = null;
 	boolean clicked = false;
-	// ad
 	static boolean mAdAvailable;
 	static {
 		try {
@@ -89,8 +90,8 @@ public class MyApp extends BaseApp {
 	public DisplayMetrics dm;
 
 	// settings
-	SharedPreferences sp;
-	Editor sEdit;
+	public SharedPreferences sp;
+	public Editor sEdit;
 
 	public boolean showUrl = true;
 	boolean showControlBar = true;
@@ -140,8 +141,6 @@ public class MyApp extends BaseApp {
 	ArrayAdapter<String> urlAdapter;
 	AutoCompleteTextView webAddress;
 	ProgressBar loadProgress;
-	FrameLayout adContainer;
-	LinearLayout adContainer2;	
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
 	LinearLayout webTools, webControl, urlLine;
@@ -470,6 +469,40 @@ public class MyApp extends BaseApp {
 		return "";
 	}
 	
+	String getEncoding(int iEncoding) {//identical
+		String tmpEncoding = "AUTOSELECT";
+		switch (iEncoding) {
+		case 1:
+			tmpEncoding = "gbk";
+			break;
+		case 2:
+			tmpEncoding = "big5";
+			break;
+		case 3:
+			tmpEncoding = "gb2312";
+			break;
+		case 4:
+			tmpEncoding = "utf-8";
+			break;
+		case 5:
+			tmpEncoding = "iso-8859-1";
+			break;
+		case 6:
+			tmpEncoding = "ISO-2022-JP";
+			break;
+		case 7:
+			tmpEncoding = "SHIFT_JIS";
+			break;
+		case 8:
+			tmpEncoding = "EUC-JP";
+			break;
+		case 9:
+			tmpEncoding = "EUC-KR";
+			break;
+		}
+		return tmpEncoding;
+	}
+
 	String getName(String url) {//identical
 		String readableUrl = url;
 		try {

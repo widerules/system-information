@@ -11,14 +11,14 @@ import com.google.ads.AdRequest;
 import com.google.ads.InterstitialAd;
 import com.google.ads.AdRequest.ErrorCode;
 
-import base.lib.wrapAdView.Listener;
+import base.lib.WrapAdView.Listener;
 
-public class wrapInterstitialAd {
+public class WrapInterstitialAd {
 	InterstitialAd mInstance;
 	AdRequest adRequest;
 	Handler mHandler;
 
-	public wrapInterstitialAd(Activity activity, String publisherID, Handler handler) {
+	public WrapInterstitialAd(Activity activity, String publisherID, Handler handler) {
 		mInstance = new InterstitialAd(activity, publisherID);
 		mInstance.setAdListener(new Listener());
 		adRequest = new AdRequest();

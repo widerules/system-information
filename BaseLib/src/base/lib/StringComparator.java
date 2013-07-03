@@ -5,8 +5,8 @@ import java.util.Comparator;
 
 import android.content.pm.ResolveInfo;
 
-public class stringComparator implements Comparator<String> {
-	public stringComparator() {
+public class StringComparator implements Comparator<String> {
+	public StringComparator() {
 	}
 
 	public final int compare(String a, String b) {

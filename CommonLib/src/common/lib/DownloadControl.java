@@ -1,6 +1,6 @@
 package common.lib;
 
-import base.lib.wrapAdView;
+import base.lib.WrapAdView;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -21,7 +21,7 @@ public class DownloadControl extends Activity {
 			mAdAvailable = false;
 		}
 	}
-	wrapAdView adview;
+	WrapAdView adview;
 	LinearLayout adContainer;
 
 	Button btnPause, btnStop;
@@ -46,7 +46,7 @@ public class DownloadControl extends Activity {
 		this.setContentView(R.layout.pause);
 
 		if (mAdAvailable) {
-			adview = new wrapAdView(this, 3, "a1502880ce4208b", null);
+			adview = new WrapAdView(this, 3, "a1502880ce4208b", null);
 			adContainer = (LinearLayout) findViewById(R.id.adContainer);
 			adContainer.addView(adview.getInstance());
 			adview.loadAd();

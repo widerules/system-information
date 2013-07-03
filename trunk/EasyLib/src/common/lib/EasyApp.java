@@ -9,7 +9,9 @@ import common.lib.MyApp;
 import easy.lib.R;
 
 public class EasyApp extends MyApp {
-	boolean collapse1 = false, collapse2 = false, collapse3 = true;// default open top list and bookmark
+	public boolean collapse1 = false;// default open top list and bookmark
+	public boolean collapse2 = false;
+	public boolean collapse3 = true;
 	int countDown = 0;
 
 	void createAd() {

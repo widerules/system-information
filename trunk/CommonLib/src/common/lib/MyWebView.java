@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +16,6 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,12 +27,10 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 import android.widget.ZoomButtonsController;
 import base.lib.util;
 
-
-class MyWebView extends WebView {
+public class MyWebView extends WebView {
 	Context mContext;
 	MyApp mAppstate;
 	
@@ -43,8 +39,8 @@ class MyWebView extends WebView {
 	WrapWebSettings webSettings;
 
 	ZoomButtonsController mZoomButtonsController;
-	boolean zoomVisible = false;
-	boolean html5 = false;
+	public boolean zoomVisible = false;
+	public boolean html5 = false;
 
 	int mProgress = 0;
 	boolean isForeground = true;

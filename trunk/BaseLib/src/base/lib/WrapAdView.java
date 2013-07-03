@@ -13,7 +13,7 @@ import com.google.ads.AdRequest.ErrorCode;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
 
-public class wrapAdView {
+public class WrapAdView {
 	AdView mInstance;
 	AdRequest adRequest;
 	Handler mHandler;
@@ -73,7 +73,7 @@ public class wrapAdView {
 		}
 	}
 
-	public wrapAdView(Activity activity, int size, String publisherID,
+	public WrapAdView(Activity activity, int size, String publisherID,
 			Handler handler) {
 		mHandler = handler;
 

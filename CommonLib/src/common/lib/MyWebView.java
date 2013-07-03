@@ -28,6 +28,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ZoomButtonsController;
+import base.lib.WebUtil;
 import base.lib.util;
 
 public class MyWebView extends WebView {
@@ -165,7 +166,7 @@ public class MyWebView extends WebView {
 		if (mAppstate.ua <= 1)
 			localSettings.setUserAgent(mAppstate.ua);
 		else
-			localSettings.setUserAgentString(mAppstate.selectUA(mAppstate.ua));
+			localSettings.setUserAgentString(WebUtil.selectUA(mAppstate.ua));
 
 		webSettings = new WrapWebSettings(localSettings);
 		if (!webSettings.setDisplayZoomControls(false)) // hide zoom button
@@ -335,7 +336,7 @@ public class MyWebView extends WebView {
 		// mimetype: application/octet-stream
 		// contentLength: 463624
 		boolean canOpen = false;
-		String apkName = mAppstate.getName(url);
+		String apkName = WebUtil.getName(url);
 		if ((mimetype == null) || ("".equals(mimetype))) {
 			MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 			String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());

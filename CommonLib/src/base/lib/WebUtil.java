@@ -7,6 +7,16 @@ import android.webkit.WebSettings.TextSize;
 
 public class WebUtil extends util {
 	
+	static public String getSite(String url) {//identical
+		String site = "";
+		String[] tmp = url.split("/");
+		// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
+		if (tmp.length > 2)	site = tmp[2];
+		else site = tmp[0];
+		
+		return site;
+	}
+	
 	static public TextSize readTextSize(SharedPreferences sp) {//identical
 		TextSize textSize = TextSize.NORMAL;
 		int iTextSize = sp.getInt("textsize", 2);

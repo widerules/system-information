@@ -51,7 +51,7 @@ import base.lib.WrapInterstitialAd;
 
 public class MyApp extends BaseApp {
 	final String HOME_PAGE = "file:///android_asset/home.html";
-	final String HOME_BLANK = "about:blank";
+	public final String HOME_BLANK = "about:blank";
 	String browserName;
 	String m_homepage = null;
 
@@ -140,11 +140,11 @@ public class MyApp extends BaseApp {
 	public ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	ArrayList<String> siteArray = new ArrayList<String>();
 	ArrayAdapter<String> urlAdapter;
-	AutoCompleteTextView webAddress;
+	public AutoCompleteTextView webAddress;
 	ProgressBar loadProgress;
 	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
 	WebAdapter webAdapter;
-	LinearLayout webTools, webControl, urlLine;
+	public LinearLayout webTools, webControl, urlLine;
 	MyViewFlipper webpages;
 
 	WrapValueCallback mUploadMessage;
@@ -368,7 +368,7 @@ public class MyApp extends BaseApp {
 		}
 	}
 
-	void closePage(int position, boolean clearData) {//identical
+	public void closePage(int position, boolean clearData) {//identical
 		if (position == webIndex) {
 			// remove current page, so stop loading at first
 			serverWebs.get(webIndex).stopLoading();
@@ -430,23 +430,12 @@ public class MyApp extends BaseApp {
 
 	void removeAd() {
 		if (adview != null) {
-			//adContainer.removeViewAt(0);
+			adContainer.removeViewAt(0);
 			adview.destroy();
 			adview = null;
 		}
 	}
 
-	public String getSite(String url) {//identical
-		String site = "";
-		String[] tmp = url.split("/");
-		// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-		if (tmp.length > 2)	site = tmp[2];
-		else site = tmp[0];
-		
-		return site;
-	}
-	
-	
 	boolean startDownload(String url, String contentDisposition, String openAfterDone) {
 		int posQ = url.indexOf("src=");
 		if (posQ > 0) url = url.substring(posQ + 4);// get src part
@@ -629,7 +618,7 @@ public class MyApp extends BaseApp {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								String site = getSite(url);
+								String site = WebUtil.getSite(url);
 								String title = titleText.getText().toString();
 								// add a blank character to occupy the space
 								if ("".equals(title)) title += (char) 0xa0;

@@ -179,12 +179,11 @@ public class MyWebView extends WebView {
 
 		webSettings.setDomStorageEnabled(true);// API7, key to enable gmail
 
-		// loads the WebView completely zoomed out. fit for hao123, but not
-		// fit for homepage. from API7
+		// loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
 		webSettings.setLoadWithOverviewMode(mAppstate.overviewPage);
 		webSettings.setForceUserScalable(true);
 
-		//registerForContextMenu(this);// =========================================================compile error here
+		mAppstate.mActivity.registerForContextMenu(this);
 
 		// to get page source, part 2
 		addJavascriptInterface(new MyJavaScriptInterface(this, mAppstate), "JSinterface");
@@ -448,7 +447,7 @@ public class MyWebView extends WebView {
 			else if (!mAppstate.incognitoMode) {// handle the bookmark/history after load new page
 				if ((mAppstate.mHistory.size() > 0) && (mAppstate.mHistory.get(mAppstate.mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
 
-				String site = mAppstate.getSite(url);
+				String site = WebUtil.getSite(url);
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
 				mAppstate.mHistory.add(titleUrl);// always add it to history if visit any page.
 				mAppstate.historyChanged = true;

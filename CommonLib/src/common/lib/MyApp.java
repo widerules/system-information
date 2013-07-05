@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -109,12 +110,11 @@ public class MyApp extends BaseApp {
 	public TextView searchHint;
 	public RelativeLayout searchBar;
 	public ImageView imgSearchNext, imgSearchPrev, imgSearchClose;
-	String toSearch = "";
+	public String toSearch = "";
 	int matchCount = 0, matchIndex = 0;
 
 	// page up and down button
-	LinearLayout upAndDown;
-	ImageView upButton, downButton;
+	public LinearLayout upAndDown;
 
 	// settings
 	public SharedPreferences sp;
@@ -126,8 +126,8 @@ public class MyApp extends BaseApp {
 	final int urlHeight = 40, barHeight = 40;
 	int rotateMode = 1;
 	public boolean incognitoMode = false;
-	boolean updownButton = true;
-	boolean snapFullWeb = false;
+	public boolean updownButton = true;
+	public boolean snapFullWeb = false;
 	boolean blockImage = false;
 	boolean cachePrefer = false;
 	boolean blockPopup = false;
@@ -138,7 +138,7 @@ public class MyApp extends BaseApp {
 	int ua = 0;
 	int searchEngine = 3;
 	int shareMode = 2;
-	private int SETTING_RESULTCODE = 1002;
+	public int SETTING_RESULTCODE = 1002;
 	boolean enableProxy = false;
 	int localPort;
 	boolean overviewPage = false;
@@ -335,6 +335,62 @@ public class MyApp extends BaseApp {
 	public void updateHistory() {}
 	public void updateHomePage() {}
 	
+	public void readPreference() {
+		blockImage = sp.getBoolean("block_image", false);
+		cachePrefer = sp.getBoolean("cache_prefer", false);
+		blockPopup = sp.getBoolean("block_popup", false);
+		blockJs = sp.getBoolean("block_js", false);
+		// hideExit = sp.getBoolean("hide_exit", true);
+		overviewPage = sp.getBoolean("overview_page", false);
+		ua = sp.getInt("ua", 0);
+		//showZoom = sp.getBoolean("show_zoom", false);
+		mLocale = getBaseContext().getResources().getConfiguration().locale;
+		if ("ru_RU".equals(mLocale.toString()))
+			searchEngine = sp.getInt("search_engine", 4); // yandex
+		else if (Locale.CHINA.equals(mLocale)) 
+			searchEngine = sp.getInt("search_engine", 2); // easou
+		else
+			searchEngine = sp.getInt("search_engine", 5); // duckduckgo
+		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
+		snapFullWeb = sp.getBoolean("full_web", false);
+		WebUtil.readTextSize(sp);// init the text size
+		enableProxy = sp.getBoolean("enable_proxy", false);
+		if (enableProxy) {
+			localPort = sp.getInt("local_port", 1984);
+			ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
+		}
+		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
+
+		incognitoMode = sp.getBoolean("incognito", false);
+		updownButton = sp.getBoolean("up_down", false);
+		
+		showStatusBar = sp.getBoolean("show_statusBar", true);
+		showUrl = sp.getBoolean("show_url", true);
+		showControlBar = sp.getBoolean("show_controlBar", true);
+		
+		
+		rotateMode = sp.getInt("rotate_mode", 1);
+		if (rotateMode == 1) mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+		else if (rotateMode == 2) mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		else mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
+	
+	public boolean actioned = false;
+	public void scrollUp() {
+		actioned = true;
+		if (!showUrl) setUrlHeight(showUrl);
+		if (!showControlBar) setBarHeight(showControlBar);
+		if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
+			serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);		
+	}
+	public void scrollDown() {
+		actioned = true;
+		if (!showUrl) setUrlHeight(showUrl);
+		if (!showControlBar) setBarHeight(showControlBar);
+		if (serverWebs.get(webIndex).myCanScrollVertically(1))
+			serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);		
+	}
+
 	public void selectEngine(CharSequence engine[]) {// identical
 		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 		builder.setTitle(getString(R.string.search_engine));
@@ -766,7 +822,46 @@ public class MyApp extends BaseApp {
 		}
 	}
 
-	void setUrlHeight(boolean showUrlNow) {
+	public void searchPrevAction() {// identical
+		if (!toSearch.equals(etSearch.getText().toString()))
+			findMatchCount();
+		else if (matchCount > 0) {
+			serverWebs.get(webIndex).findNext(false);
+			matchIndex -= 1;
+			if (matchIndex < 0) {
+				while (matchIndex < matchCount - 1) {
+					serverWebs.get(webIndex).findNext(true);
+					matchIndex += 1;
+				}
+			}
+		}
+
+		if (matchCount > 0)
+			searchHint.setText((matchIndex + 1) + " of " + matchCount);
+		else
+			searchHint.setText("0 of 0");
+	}
+	
+	public void searchNextAction() {// identical
+		if (!toSearch.equals(etSearch.getText().toString()))
+			findMatchCount();
+		else if (matchCount > 0) {
+			serverWebs.get(webIndex).findNext(true);
+			matchIndex += 1;
+			if (matchIndex >= matchCount)
+				while (matchIndex > 0) {
+					serverWebs.get(webIndex).findNext(false);
+					matchIndex -= 1;
+				}
+		}
+
+		if (matchCount > 0)
+			searchHint.setText((matchIndex + 1) + " of " + matchCount);
+		else
+			searchHint.setText("0 of 0");
+	}
+	
+	public void setUrlHeight(boolean showUrlNow) {
 		LayoutParams lpUrl = urlLine.getLayoutParams();
 		if (showUrlNow) 
 			lpUrl.height = LayoutParams.WRAP_CONTENT;
@@ -774,7 +869,7 @@ public class MyApp extends BaseApp {
 		urlLine.requestLayout();		
 	}
 	
-	void setBarHeight(boolean showBarNow) {
+	public void setBarHeight(boolean showBarNow) {
 		LayoutParams lpBar = webTools.getLayoutParams();
 		if (showBarNow) 
 			lpBar.height = LayoutParams.WRAP_CONTENT;
@@ -1045,7 +1140,7 @@ public class MyApp extends BaseApp {
 	    sendBroadcast(shortcutIntent);
 	}
 	
-	private void shareUrl(String title, String url) {//identical
+	public void shareUrl(String title, String url) {//identical
 		if (title == null) title = "";
 		if (url == null) url = "";
 		

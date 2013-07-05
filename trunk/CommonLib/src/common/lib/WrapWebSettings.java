@@ -5,10 +5,10 @@ import java.lang.reflect.Method;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-class WrapWebSettings {
+public class WrapWebSettings {
 	WebSettings mInstance;
 
-	WrapWebSettings(WebSettings settings) {
+	public WrapWebSettings(WebSettings settings) {
 		mInstance = settings;
 	}
 
@@ -42,42 +42,42 @@ class WrapWebSettings {
 		} catch (Exception e) {}
 	}
 
-	synchronized void setLoadWithOverviewMode(boolean overview) {// API 7
+	public synchronized void setLoadWithOverviewMode(boolean overview) {// API 7
 		if (setLoadWithOverviewMode != null)
 			try {setLoadWithOverviewMode.invoke(mInstance, overview);} catch (Exception e) {}
 	}
 
-	synchronized void setAppCacheEnabled(boolean flag) {// API 7
+	public synchronized void setAppCacheEnabled(boolean flag) {// API 7
 		if (setAppCacheEnabled != null)
 			try {setAppCacheEnabled.invoke(mInstance, flag);} catch (Exception e) {}
 	}
 
-	synchronized void setAppCachePath(String databasePath) {// API 7
+	public synchronized void setAppCachePath(String databasePath) {// API 7
 		if (setAppCachePath != null)
 			try {setAppCachePath.invoke(mInstance, databasePath);} catch (Exception e) {}
 	}
 
-	synchronized void setAppCacheMaxSize(long max) {// API 7
+	public synchronized void setAppCacheMaxSize(long max) {// API 7
 		if (setAppCacheMaxSize != null)
 			try {setAppCacheMaxSize.invoke(mInstance, max);} catch (Exception e) {}
 	}
 
-	synchronized void setDomStorageEnabled(boolean flag) {// API 7
+	public synchronized void setDomStorageEnabled(boolean flag) {// API 7
 		if (setDomStorageEnabled != null)
 			try {setDomStorageEnabled.invoke(mInstance, flag);} catch (Exception e) {}
 	}
 
-	synchronized void setDatabaseEnabled(boolean flag) {// API 5
+	public synchronized void setDatabaseEnabled(boolean flag) {// API 5
 		if (setDatabaseEnabled != null)
 			try {setDatabaseEnabled.invoke(mInstance, flag);} catch (Exception e) {}
 	}
 
-	synchronized void setDatabasePath(String databasePath) {// API 5
+	public synchronized void setDatabasePath(String databasePath) {// API 5
 		if (setDatabasePath != null)
 			try {setDatabasePath.invoke(mInstance, databasePath);} catch (Exception e) {}
 	}
 
-	synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
+	public synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
 		if (setDisplayZoomControls != null)
 			try {
 				setDisplayZoomControls.invoke(mInstance, enabled);
@@ -86,7 +86,7 @@ class WrapWebSettings {
 		return false;
 	}
 	
-	synchronized void setForceUserScalable(boolean flag) {// API 14
+	public synchronized void setForceUserScalable(boolean flag) {// API 14
 		if (setForceUserScalable != null)
 			try {setForceUserScalable.invoke(mInstance, flag);} catch (Exception e) {}
 	}

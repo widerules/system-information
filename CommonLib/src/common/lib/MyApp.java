@@ -1,7 +1,11 @@
 package common.lib;
 
+import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,12 +31,14 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.webkit.WebSettings.TextSize;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -41,6 +47,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import base.lib.BaseApp;
@@ -50,10 +57,10 @@ import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 
 public class MyApp extends BaseApp {
-	final String HOME_PAGE = "file:///android_asset/home.html";
+	public final String HOME_PAGE = "file:///android_asset/home.html";
 	public final String HOME_BLANK = "about:blank";
 	String browserName;
-	String m_homepage = null;
+	public String m_homepage = null;
 
 	// Ads
 	public FrameLayout adContainer;
@@ -89,6 +96,18 @@ public class MyApp extends BaseApp {
 	}
 	AppHandler mAppHandler = new AppHandler();
 	public DisplayMetrics dm;
+
+	// search
+	public EditText etSearch;
+	public TextView searchHint;
+	public RelativeLayout searchBar;
+	public ImageView imgSearchNext, imgSearchPrev, imgSearchClose;
+	String toSearch = "";
+	int matchCount = 0, matchIndex = 0;
+
+	// page up and down button
+	LinearLayout upAndDown;
+	ImageView upButton, downButton;
 
 	// settings
 	public SharedPreferences sp;
@@ -152,8 +171,8 @@ public class MyApp extends BaseApp {
 
 	InputMethodManager imm;
 
-	int revertCount = 0;
-	boolean needRevert = false;
+	public int revertCount = 0;
+	public boolean needRevert = false;
 	class WebAdapter extends ArrayAdapter<MyWebView> {
 		ArrayList localWeblist;
 
@@ -307,7 +326,127 @@ public class MyApp extends BaseApp {
 	public void updateHistory() {}
 	public void updateHomePage() {}
 	
-	void loadPage() {// load home page
+	public void globalSetting() {// identical
+		CharSequence operations[] = new CharSequence[] {
+				getString(R.string.full_screen),
+				getString(R.string.incognito),
+				getString(R.string.page_updown),
+				getString(R.string.block_image),
+				getString(R.string.show_zoom),
+				getString(R.string.overview_page),
+				getString(R.string.hide)
+		};
+		boolean checkeditems[] = new boolean[] {
+				!(showUrl || showControlBar || showStatusBar),
+				incognitoMode, 
+				updownButton, 
+				blockImage, 
+				serverWebs.get(webIndex).zoomVisible, 
+				overviewPage, 
+				false
+		};
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setMultiChoiceItems(operations, checkeditems, new DialogInterface.OnMultiChoiceClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which, boolean selected) {
+				WebSettings localSettings = serverWebs.get(webIndex).getSettings();
+				WrapWebSettings webSettings = new WrapWebSettings(localSettings);
+				switch(which) {
+				case 0:
+					boolean fullScreen = selected;
+					showUrl = !fullScreen;
+					showControlBar = !fullScreen;
+					showStatusBar = !fullScreen;
+					if (fullScreen) {
+						adContainer.setVisibility(View.GONE);// hide ad when fullscreen
+						mActivity.getWindow().setFlags(
+								WindowManager.LayoutParams.FLAG_FULLSCREEN,
+								WindowManager.LayoutParams.FLAG_FULLSCREEN);								
+					}
+					else {
+						adContainer.setVisibility(View.VISIBLE);
+						mActivity.getWindow().clearFlags(
+								WindowManager.LayoutParams.FLAG_FULLSCREEN);
+					}
+					//setWebpagesLayout(); ////////////////////////////////////////////////////not identical. need more research///////////////////////
+					sEdit.putBoolean("show_url", showUrl);
+					sEdit.putBoolean("show_controlBar", showControlBar);
+					sEdit.putBoolean("show_statusBar", showStatusBar);
+					break;
+				case 1:
+					incognitoMode = selected;
+					sEdit.putBoolean("incognito", incognitoMode);
+					break;
+				case 2:
+					updownButton = selected;
+					if (updownButton) upAndDown.setVisibility(View.VISIBLE);
+					else upAndDown.setVisibility(View.INVISIBLE);
+					sEdit.putBoolean("up_down", updownButton);
+					break;
+				case 3:
+					blockImage = selected;
+					localSettings.setBlockNetworkImage(blockImage);
+					sEdit.putBoolean("block_image", blockImage);
+					break;
+				case 4:
+					boolean showZoom = selected;
+					if (webSettings.setDisplayZoomControls(showZoom)) {
+						localSettings.setBuiltInZoomControls(showZoom);
+						serverWebs.get(webIndex).zoomVisible = showZoom;
+					} else {
+						if (showZoom)
+							serverWebs.get(webIndex).setZoomControl(View.VISIBLE);
+						else
+							serverWebs.get(webIndex).setZoomControl(View.GONE);
+					}
+					sEdit.putBoolean("show_zoom", showZoom);
+					break;
+				case 5:
+					overviewPage = selected;
+					//localSettings.setUseWideViewPort(overviewPage);
+					localSettings.setLoadWithOverviewMode(overviewPage);
+					sEdit.putBoolean("overview_page", overviewPage);
+					break;
+				case 6:
+					mActivity.moveTaskToBack(true);
+					break;
+				}
+				sEdit.commit();
+				dialog.dismiss();
+			}
+		});
+		builder.show();
+	}
+	
+	public void imgNewClick() {
+		if (webControl.getVisibility() == View.INVISIBLE) {
+			if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
+		
+			webAdapter.notifyDataSetInvalidated();
+			webControl.setVisibility(View.VISIBLE);
+			webControl.bringToFront();
+		} else webControl.setVisibility(View.INVISIBLE);	
+	}
+	
+	public void listHistory() {// identical
+		CharSequence historys[] = new CharSequence[mHistory.size()];
+		for (int i = 0; i < mHistory.size(); i++)
+		{
+			historys[i] = mHistory.get(i).m_title;
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setTitle(getString(R.string.history));
+		builder.setItems(historys, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        // the user clicked on engine[which]
+				serverWebs.get(webIndex).loadUrl(mHistory.get(which).m_url);
+		    }
+		});
+		builder.show();
+	}
+	
+	public void loadPage() {// load home page // not identical. need inherit
 		serverWebs.get(webIndex).getSettings().setJavaScriptEnabled(true);
 
 		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
@@ -412,6 +551,106 @@ public class MyApp extends BaseApp {
 		recordPages();
 	}
 
+	void gotoUrl(String url) {// identical
+		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
+		else if (!url.contains("://")) {
+			if (!url.contains(".")) {
+				if ((!incognitoMode) && (siteArray.indexOf(url) < 0)) {
+					siteArray.add(url);
+					urlAdapter.add(url);
+					try {// write to /data/data/easy.browser/files/
+						FileOutputStream fo = openFileOutput("searchwords", MODE_APPEND);
+						ObjectOutputStream oos = new ObjectOutputStream(fo);
+						oos.writeObject(url);// record new search word
+						oos.flush();
+						oos.close();
+						fo.close();
+					} catch (Exception e) {}
+				}
+				
+				switch (searchEngine) {
+				case 1:// bing
+					url = "http://www.bing.com/search?q=" + url;
+					break;
+				case 2:
+					//url = "http://ad2.easou.com:8080/j10ad/ea2.jsp?channel=11&wver=t&cid=bip1065_10713_001&key=" + url;// easou
+					url = "http://www.baidu.com/s?word=" + url; // baidu
+					break;
+				case 3:// google
+					url = "http://www.google.com/search?q=" + url;
+					break;
+				case 4:// yandex
+					url = "http://yandex.ru/touchsearch?clid=1911434&text=" + url;
+					break;
+				case 5:// DuckDuckGo
+				default:
+					url = "https://duckduckgo.com/?t=easybrowser&q=" + url;
+					break;
+				}
+			}
+			else url = "http://" + url;
+		}
+		
+		if (!url.equals(serverWebs.get(webIndex).getUrl())) serverWebs.get(webIndex).loadUrl(url);//only load page if input different url
+	}
+
+	public void newIntentAction(Intent intent) {
+		if (!Intent.ACTION_MAIN.equals(intent.getAction())) {
+			String uri = intent.getDataString();
+			if (uri == null)
+				return;
+
+			boolean found = false;
+			int blankIndex = -1;
+			for (int i = 0; i < serverWebs.size(); i++) {
+				String url = serverWebs.get(i).m_url;
+				if ((uri + "/").equals(url) || uri.equals(url)) {
+					changePage(i); // show correct page
+					found = true;
+					break;
+				} else if (HOME_PAGE.equals(url))
+					blankIndex = i;
+			}
+
+			if (!found) {
+				if (blankIndex < 0)
+					openNewPage(uri, webIndex + 1, true, true);
+				else {
+					serverWebs.get(blankIndex).loadUrl(uri);
+					changePage(blankIndex);
+				}
+			}
+		}
+	}
+	
+	public void hideSearchBox() {// identical
+		imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+		searchBar.setVisibility(View.INVISIBLE);
+		matchCount = 0;
+		// remove the match by an impossible search
+		serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");
+		searchHint.setText("");
+	}
+
+	public void findMatchCount() {// identical
+		toSearch = etSearch.getText().toString();
+		matchCount = serverWebs.get(webIndex).findAll(toSearch);
+		if (matchCount > 0) {
+			try {
+				Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+				m.invoke(serverWebs.get(webIndex), true);
+			} catch (Throwable ignored) {
+			}
+
+			matchIndex = matchCount;
+			while (matchIndex > 0) {
+				serverWebs.get(webIndex).findNext(false);
+				// move to select the first match
+				matchIndex -= 1;
+			}
+		}
+	}
+
 	void setUrlHeight(boolean showUrlNow) {
 		LayoutParams lpUrl = urlLine.getLayoutParams();
 		if (showUrlNow) 
@@ -436,7 +675,7 @@ public class MyApp extends BaseApp {
 		}
 	}
 
-	boolean startDownload(String url, String contentDisposition, String openAfterDone) {
+	public boolean startDownload(String url, String contentDisposition, String openAfterDone) {
 		int posQ = url.indexOf("src=");
 		if (posQ > 0) url = url.substring(posQ + 4);// get src part
 
@@ -521,7 +760,27 @@ public class MyApp extends BaseApp {
 		return result;
 	}
 	
-	void recordPages() {//identical
+	public boolean readPages(String filename) {// identical
+		ObjectInputStream ois = null;
+		FileInputStream fi = null;
+		String url = null;
+		try {
+			fi = openFileInput(filename);
+			ois = new ObjectInputStream(fi);
+			while ((url = (String) ois.readObject()) != null) {
+				if (!"".equals(url)) openNewPage(url, webAdapter.getCount(), false, false);
+			}
+		} catch (EOFException e) {// only when read eof need send out msg.
+			try {
+				ois.close();
+				fi.close();
+			} catch (Exception e1) {}
+		} catch (Exception e) {}
+
+		return ((url != null) && !"".equals(url));
+	}
+	
+	public void recordPages() {//identical
 		try {// write opened url to /data/data/easy.browser/files/pages
 			FileOutputStream fo = openFileOutput("pages", 0);
 			ObjectOutputStream oos = new ObjectOutputStream(fo);

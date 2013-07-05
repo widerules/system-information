@@ -2,6 +2,7 @@ package common.lib;
 
 import java.util.Locale;
 
+import android.view.View;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 
@@ -38,6 +39,29 @@ public class EasyApp extends MyApp {
 		}
 	}
 
+	public void actionBack() {
+		// press Back key in webview will go backword.
+		if (webControl.getVisibility() == View.VISIBLE)
+			webControl.setVisibility(View.INVISIBLE);// hide web control
+		else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
+			hideSearchBox();
+		else if (HOME_BLANK.equals(webAddress.getText().toString())) {
+			// hide browser when click back key on homepage.
+			// this is a singleTask activity, so if return
+			// super.onKeyDown(keyCode, event), app will exit.
+			// when use click browser icon again, it will call onCreate,
+			// user's page will not reopen.
+			// singleInstance will work here, but it will cause
+			// downloadControl not work? or select file not work?
+			if (serverWebs.size() == 1)
+				mActivity.moveTaskToBack(true);
+			else closePage(webIndex, false); // close blank page if more than one page
+		} else if (serverWebs.get(webIndex).canGoBack())
+			serverWebs.get(webIndex).goBack();
+		else
+			closePage(webIndex, false);// close current page if can't go back
+	}
+	
 	public void updateBookmark() {
 		serverWebs.get(webIndex).loadUrl("javascript:inject(\"2::::" + getBookmark("....") + "\");");// call javascript to inject bookmark
 	}

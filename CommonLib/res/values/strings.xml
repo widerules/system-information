@@ -33,4 +33,14 @@
     <string name="share">Share</string>
     <string name="sharemode">Share Mode</string>
     
+    <string name="history">History</string>
+    
+    <string name="full_screen">Full screen</string>
+    <string name="incognito">Incognito mode</string>
+    <string name="page_updown">Scroll Button</string>
+    <string name="block_image">Block images to reduce bandwidth</string>
+    <string name="show_zoom">(current page)Zoom Control</string>
+    <string name="overview_page">Open Pages in Overview</string>
+    <string name="hide">Hide</string>
+    
 </resources>

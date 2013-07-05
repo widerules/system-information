@@ -76,7 +76,7 @@ public class MyApp extends BaseApp {
 	public WrapAdView adview = null, adview2 = null;
 	WrapInterstitialAd interstitialAd = null;
 	boolean clicked = false;
-	static boolean mAdAvailable;
+	public static boolean mAdAvailable;
 	static {
 		try {
 			Class.forName("com.google.ads.AdView");
@@ -124,24 +124,24 @@ public class MyApp extends BaseApp {
 	public boolean showControlBar = true;
 	public boolean showStatusBar = true;
 	final int urlHeight = 40, barHeight = 40;
-	int rotateMode = 1;
+	public int rotateMode = 1;
 	public boolean incognitoMode = false;
 	public boolean updownButton = true;
 	public boolean snapFullWeb = false;
-	boolean blockImage = false;
-	boolean cachePrefer = false;
-	boolean blockPopup = false;
-	boolean blockJs = false;
-	TextSize textSize = TextSize.NORMAL;
+	public boolean blockImage = false;
+	public boolean cachePrefer = false;
+	public boolean blockPopup = false;
+	public boolean blockJs = false;
+	public TextSize textSize = TextSize.NORMAL;
 	final int historyCount = 16;
-	long html5cacheMaxSize = 1024 * 1024 * 8;
-	int ua = 0;
-	int searchEngine = 3;
-	int shareMode = 2;
+	public long html5cacheMaxSize = 1024 * 1024 * 8;
+	public int ua = 0;
+	public int searchEngine = 3;
+	public int shareMode = 2;
 	public int SETTING_RESULTCODE = 1002;
-	boolean enableProxy = false;
-	int localPort;
-	boolean overviewPage = false;
+	public boolean enableProxy = false;
+	public int localPort;
+	public boolean overviewPage = false;
 	Locale mLocale;
 
 	// bookmark and history
@@ -166,7 +166,7 @@ public class MyApp extends BaseApp {
 	public ArrayList<TitleUrl> mSystemHistory = new ArrayList<TitleUrl>();
 	public ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	public ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
-	ArrayList<String> siteArray = new ArrayList<String>();
+	public ArrayList<String> siteArray = new ArrayList<String>();
 	public ArrayAdapter<String> urlAdapter;
 	public AutoCompleteTextView webAddress;
 	public ProgressBar loadProgress;
@@ -175,8 +175,8 @@ public class MyApp extends BaseApp {
 	public LinearLayout webTools, webControl, fakeWebControl, urlLine;
 	public MyViewFlipper webpages;
 
-	WrapValueCallback mUploadMessage;
-	final public int FILECHOOSER_RESULTCODE = 1001;
+	public WrapValueCallback mUploadMessage;
+	public final int FILECHOOSER_RESULTCODE = 1001;
 
 	public InputMethodManager imm;
 
@@ -1033,7 +1033,7 @@ public class MyApp extends BaseApp {
 		addFavo(url, title);// add favo if not found it
 	}
 	
-	void removeFavo(final int order) {//identical
+	public void removeFavo(final int order) {//identical
 		new AlertDialog.Builder(this)
 				.setTitle(R.string.remove_bookmark)
 				.setMessage(mBookMark.get(order).m_title)
@@ -1057,7 +1057,7 @@ public class MyApp extends BaseApp {
 						}).show();
 	}
 
-	void removeHistory(final int order) {//identical
+	public void removeHistory(final int order) {//identical
 		new AlertDialog.Builder(this)
 				.setTitle(R.string.remove_history)
 				.setMessage(mHistory.get(order).m_title)
@@ -1083,7 +1083,7 @@ public class MyApp extends BaseApp {
 
 	// favo dialog
 	EditText titleText;
-	private void addFavo(final String url, final String title) {//identical
+	public void addFavo(final String url, final String title) {//identical
 		if (url == null) {
 			Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
 			return;
@@ -1125,7 +1125,7 @@ public class MyApp extends BaseApp {
 						}).show();
 	}
 	
-	void createShortcut(String url, String title) {//identical
+	public void createShortcut(String url, String title) {//identical
 		Intent i = new Intent(this, mActivity.getClass());
 		i.setData(Uri.parse(url));
 	    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1189,7 +1189,7 @@ public class MyApp extends BaseApp {
 		util.startActivity(shareIntent, false, mContext);
 	}
 	
-	class WriteTask extends AsyncTask<String, Integer, String> {//identical
+	public class WriteTask extends AsyncTask<String, Integer, String> {//identical
 
 		@Override
 		protected String doInBackground(String... params) {

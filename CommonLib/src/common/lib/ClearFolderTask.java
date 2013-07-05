@@ -4,7 +4,7 @@ import java.io.File;
 
 import android.os.AsyncTask;
 
-class ClearFolderTask extends AsyncTask<String, Integer, String> {//identical
+public class ClearFolderTask extends AsyncTask<String, Integer, String> {//identical
 
 	@Override
 	protected String doInBackground(String... params) {// ugly to handle png file in this way

@@ -3,8 +3,8 @@ package common.lib;
 import android.net.Uri;
 import android.webkit.ValueCallback;
 
-class WrapValueCallback {
-	ValueCallback<Uri> mInstance;
+public class WrapValueCallback {
+	public ValueCallback<Uri> mInstance;
 
 	WrapValueCallback() {}
 
@@ -18,7 +18,7 @@ class WrapValueCallback {
 
 	public static void checkAvailable() {}
 
-	void onReceiveValue(Uri value) {
+	public void onReceiveValue(Uri value) {
 		mInstance.onReceiveValue(value);
 	}
 }

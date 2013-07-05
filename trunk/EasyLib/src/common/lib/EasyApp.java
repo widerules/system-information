@@ -15,6 +15,14 @@ public class EasyApp extends MyApp {
 	public boolean collapse3 = true;
 	int countDown = 0;
 
+	public void readPreference() {
+		super.readPreference();
+		
+		collapse1 = sp.getBoolean("collapse1", false);
+		collapse2 = sp.getBoolean("collapse2", true);
+		collapse3 = sp.getBoolean("collapse3", true);
+	}
+	
 	public void createAd() {
 		if (mAdAvailable) {
 			//removeAd();

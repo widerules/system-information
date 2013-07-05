@@ -1,6 +1,7 @@
 package common.lib;
 
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -22,10 +23,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -42,15 +46,18 @@ import android.webkit.WebView;
 import android.webkit.WebSettings.TextSize;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import base.lib.BaseApp;
+import base.lib.StringComparator;
 import base.lib.WebUtil;
 import base.lib.util;
 import base.lib.WrapAdView;
@@ -59,7 +66,7 @@ import base.lib.WrapInterstitialAd;
 public class MyApp extends BaseApp {
 	public final String HOME_PAGE = "file:///android_asset/home.html";
 	public final String HOME_BLANK = "about:blank";
-	String browserName;
+	public String browserName;
 	public String m_homepage = null;
 
 	// Ads
@@ -114,11 +121,11 @@ public class MyApp extends BaseApp {
 	public Editor sEdit;
 
 	public boolean showUrl = true;
-	boolean showControlBar = true;
+	public boolean showControlBar = true;
+	public boolean showStatusBar = true;
 	final int urlHeight = 40, barHeight = 40;
-	boolean showStatusBar = true;
 	int rotateMode = 1;
-	boolean incognitoMode = false;
+	public boolean incognitoMode = false;
 	boolean updownButton = true;
 	boolean snapFullWeb = false;
 	boolean blockImage = false;
@@ -140,6 +147,8 @@ public class MyApp extends BaseApp {
 	// bookmark and history
 	public boolean historyChanged = false, bookmarkChanged = false, downloadsChanged = false;
 	public boolean noSdcard = false;
+	public boolean noHistoryOnSdcard = false;
+	public boolean firstRun = false;
 
 	Activity mActivity;// the main activity
 	// download related
@@ -158,22 +167,22 @@ public class MyApp extends BaseApp {
 	public ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	public ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	ArrayList<String> siteArray = new ArrayList<String>();
-	ArrayAdapter<String> urlAdapter;
+	public ArrayAdapter<String> urlAdapter;
 	public AutoCompleteTextView webAddress;
-	ProgressBar loadProgress;
-	ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
-	WebAdapter webAdapter;
-	public LinearLayout webTools, webControl, urlLine;
-	MyViewFlipper webpages;
+	public ProgressBar loadProgress;
+	public ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
+	public WebAdapter webAdapter;
+	public LinearLayout webTools, webControl, fakeWebControl, urlLine;
+	public MyViewFlipper webpages;
 
 	WrapValueCallback mUploadMessage;
 	final public int FILECHOOSER_RESULTCODE = 1001;
 
-	InputMethodManager imm;
+	public InputMethodManager imm;
 
 	public int revertCount = 0;
 	public boolean needRevert = false;
-	class WebAdapter extends ArrayAdapter<MyWebView> {
+	public class WebAdapter extends ArrayAdapter<MyWebView> {
 		ArrayList localWeblist;
 
 		public WebAdapter(Context context, List<MyWebView> webs) {
@@ -326,6 +335,23 @@ public class MyApp extends BaseApp {
 	public void updateHistory() {}
 	public void updateHomePage() {}
 	
+	public void selectEngine(CharSequence engine[]) {// identical
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setTitle(getString(R.string.search_engine));
+		builder.setSingleChoiceItems(engine, searchEngine-1, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        // the user clicked on engine[which]
+		    	searchEngine = which + 1;
+		    	sEdit.putInt("search_engine", searchEngine);
+		    	sEdit.commit();
+		    	dialog.dismiss();
+				gotoUrl(webAddress.getText().toString().toLowerCase());
+		    }
+		});
+		builder.show();
+	}
+	
 	public void globalSetting() {// identical
 		CharSequence operations[] = new CharSequence[] {
 				getString(R.string.full_screen),
@@ -418,14 +444,103 @@ public class MyApp extends BaseApp {
 		builder.show();
 	}
 	
+	public void updownAction() {// identical
+		CharSequence operations[] = new CharSequence[] {
+				getString(R.string.scroll_top), 
+				getString(R.string.page_up), 
+				getString(R.string.page_down), 
+				getString(R.string.scroll_bottom)
+		};
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setSingleChoiceItems(operations, -1, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+	    		ListView lw = ((AlertDialog)dialog).getListView();
+		    	switch(which) {
+		    	case 0:
+		    		serverWebs.get(webIndex).pageUp(true);
+		    		dialog.dismiss();
+		    		break;
+		    	case 1:
+		    		serverWebs.get(webIndex).pageUp(false);
+		    		lw.clearChoices();
+		    		break;
+		    	case 2:
+		    		serverWebs.get(webIndex).pageDown(false);
+		    		lw.clearChoices();
+		    		break;
+		    	case 3:
+		    		serverWebs.get(webIndex).pageDown(true);
+		    		dialog.dismiss();
+		    		break;
+		    	}
+		    }
+		}).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+		    	dialog.dismiss();
+			}
+		});
+		builder.show();
+	}
+	
+	public void imgPrevClick() {// identical
+		if (serverWebs.get(webIndex).canGoBack())
+			serverWebs.get(webIndex).goBack();
+		else if (serverWebs.get(webIndex).shouldCloseIfCannotBack)
+			closePage(webIndex, false);
+	}
+	
 	public void imgNewClick() {
 		if (webControl.getVisibility() == View.INVISIBLE) {
 			if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
 		
+			//if (webControl.getWidth() < minWebControlWidth) scrollToMain();/////////////////////////////////not identical////////////////////////////
 			webAdapter.notifyDataSetInvalidated();
 			webControl.setVisibility(View.VISIBLE);
 			webControl.bringToFront();
 		} else webControl.setVisibility(View.INVISIBLE);	
+	}
+	
+	public void listPageHistory() {// identical
+		final WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
+		if ((wbfl != null) && !incognitoMode) {
+			int size = wbfl.getSize();
+			final int current = wbfl.getCurrentIndex();
+			if (size > 0) {
+				CharSequence historys[] = new CharSequence[size];
+				for (int i = 0; i < size; i++)
+					historys[i] = wbfl.getItemAtIndex(i).getTitle();
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+				builder.setSingleChoiceItems(historys, current, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				    	serverWebs.get(webIndex).goBackOrForward(which - current);
+				    	dialog.dismiss();
+				    }
+				});
+				builder.show();
+			}
+		}
+	}
+	
+	public void listBookmark() {// identical
+		CharSequence bookmarks[] = new CharSequence[mBookMark.size()];
+		for (int i = 0; i < mBookMark.size(); i++)
+		{
+			bookmarks[i] = mBookMark.get(i).m_title;
+		}
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setTitle(getString(R.string.bookmark));
+		builder.setItems(bookmarks, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        // the user clicked on engine[which]
+				serverWebs.get(webIndex).loadUrl(mBookMark.get(which).m_url);
+		    }
+		});
+		builder.show();
 	}
 	
 	public void listHistory() {// identical
@@ -551,7 +666,7 @@ public class MyApp extends BaseApp {
 		recordPages();
 	}
 
-	void gotoUrl(String url) {// identical
+	public void gotoUrl(String url) {// identical
 		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
 		else if (!url.contains("://")) {
 			if (!url.contains(".")) {
@@ -723,7 +838,7 @@ public class MyApp extends BaseApp {
 		return true;
 	}
 	
-	boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {//identical
+	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {//identical
 		boolean result = true;
 
 		if (webAdapter.getCount() == 9) {// max pages is 9
@@ -758,6 +873,24 @@ public class MyApp extends BaseApp {
 		}
 
 		return result;
+	}
+	
+	public void reloadPage() {// identical
+		if (loadProgress.getVisibility() == View.VISIBLE) {
+			imgRefresh.setImageResource(R.drawable.refresh);
+			// webpage is loading then stop it
+			serverWebs.get(webIndex).stopLoading();
+			loadProgress.setVisibility(View.INVISIBLE);
+		} else {// reload the webpage
+			imgRefresh.setImageResource(R.drawable.stop);
+			loadProgress.setProgress(1);// to make it seems feedback more fast
+			String url = serverWebs.get(webIndex).getUrl();
+			String m_url = serverWebs.get(webIndex).m_url;
+			if (m_url.equals(url))
+                serverWebs.get(webIndex).reload();
+			else 
+				serverWebs.get(webIndex).loadUrl(m_url);
+		}		
 	}
 	
 	public boolean readPages(String filename) {// identical
@@ -795,7 +928,7 @@ public class MyApp extends BaseApp {
 		} catch (Exception e) {}
 	}
 	
-	void addRemoveFavo(String url, String title) {//identical
+	public void addRemoveFavo(String url, String title) {//identical
 		for (int i = mBookMark.size() - 1; i >= 0; i--)
 			if (mBookMark.get(i).m_url.equals(url)) {
 				removeFavo(i);
@@ -959,5 +1092,230 @@ public class MyApp extends BaseApp {
 		
 		shareIntent.setData(data);
 		util.startActivity(shareIntent, false, mContext);
+	}
+	
+	class WriteTask extends AsyncTask<String, Integer, String> {//identical
+
+		@Override
+		protected String doInBackground(String... params) {
+			if ("history".equals(params[0])) {
+				writeBookmark("history", mHistory);
+				historyChanged = false;
+			} else if ("bookmark".equals(params[0])) {
+				writeBookmark("bookmark", mBookMark);
+				bookmarkChanged = false;
+			} else {
+				writeBookmark("downloads", mDownloads);
+				downloadsChanged = false;
+			}
+
+			return null;
+		}
+	}
+
+	void writeBookmark(String filename, ArrayList<TitleUrl> bookmark) {//identical
+		try {// write to /data/data/easy.browser/files/
+			FileOutputStream fo = openFileOutput(filename, 0);
+			ObjectOutputStream oos = new ObjectOutputStream(fo);
+			TitleUrl tu;
+			for (int i = 0; i < bookmark.size(); i++) {
+				tu = bookmark.get(i);
+				oos.writeObject(tu.m_title);
+				oos.writeObject(tu.m_url);
+				oos.writeObject(tu.m_site);
+			}
+			oos.flush();
+			oos.close();
+			fo.close();
+		} catch (Exception e) {
+		}
+
+		if (!noSdcard)
+		try {// try to write to /sdcard/simpleHome/bookmark/
+			File file = new File(downloadPath + "bookmark/" + filename);
+			FileOutputStream fo = new FileOutputStream(file, false);
+			ObjectOutputStream oos = new ObjectOutputStream(fo);
+			TitleUrl tu;
+			for (int i = 0; i < bookmark.size(); i++) {
+				tu = bookmark.get(i);
+				oos.writeObject(tu.m_title);
+				oos.writeObject(tu.m_url);
+				oos.writeObject(tu.m_site);
+			}
+			oos.flush();
+			oos.close();
+			fo.close();
+		} catch (Exception e) {
+		}
+	}
+
+	public void initSiteArray() {// identical
+		getSystemHistory();
+		String site;
+		for (int i = 0; i < mSystemHistory.size(); i++) {
+			site = mSystemHistory.get(i).m_site;
+			if (siteArray.indexOf(site) < 0) {
+				siteArray.add(site);
+				urlAdapter.add(site);
+			}
+		}
+		for (int i = 0; i < mSystemBookMark.size(); i++) {
+			site = mSystemBookMark.get(i).m_site;
+			if (siteArray.indexOf(site) < 0) {
+				siteArray.add(site);
+				urlAdapter.add(site);
+			}
+		}
+		
+		if (!firstRun) {
+			mHistory = readBookmark("history");
+			mBookMark = readBookmark("bookmark");
+			mDownloads = readBookmark("downloads");
+
+			Collections.sort(mBookMark, new MyComparator());
+
+			for (int i = 0; i < mHistory.size(); i++) {
+				site = mHistory.get(i).m_site;
+				if (siteArray.indexOf(site) < 0) {
+					siteArray.add(site);
+					urlAdapter.add(site);
+				}
+			}
+			for (int i = 0; i < mBookMark.size(); i++) {
+				site = mBookMark.get(i).m_site;
+				if (siteArray.indexOf(site) < 0) {
+					siteArray.add(site);
+					urlAdapter.add(site);
+				}
+			}
+
+			// read search words
+			ObjectInputStream ois = null;
+			FileInputStream fi = null;
+			String word = null;
+			try {
+				fi = openFileInput("searchwords");
+				ois = new ObjectInputStream(fi);
+				while ((word = (String) ois.readObject()) != null) {
+					if (siteArray.indexOf(word) < 0) {
+						siteArray.add(word);
+						urlAdapter.add(word);
+					}
+				}
+			} catch (EOFException e) {// only when read eof need send out msg.
+				try {
+					ois.close();
+					fi.close();
+				} catch (Exception e1) {}
+			} catch (Exception e) {}
+		}
+		else {// copy from system bookmark if first run
+			for (int i = 0; i < mSystemHistory.size(); i++) {
+				if (i > historyCount) break;
+				mHistory.add(mSystemHistory.get(i));
+			}
+
+			for (int i = 0; i < mSystemBookMark.size(); i++)
+				mBookMark.add(mSystemBookMark.get(i));
+			Collections.sort(mBookMark, new MyComparator());
+
+			historyChanged = true;
+			bookmarkChanged = true;
+		}
+
+		urlAdapter.sort(new StringComparator());
+		webAddress.setAdapter(urlAdapter);		
+	}
+	
+	void getSystemHistory() {// read history and bookmark from native browser //identical
+		String[] sHistoryBookmarksProjection = new String[] {
+				Browser.BookmarkColumns._ID, Browser.BookmarkColumns.TITLE,
+				Browser.BookmarkColumns.URL, Browser.BookmarkColumns.VISITS,
+				Browser.BookmarkColumns.DATE, Browser.BookmarkColumns.CREATED,
+				Browser.BookmarkColumns.BOOKMARK,
+				Browser.BookmarkColumns.FAVICON };
+
+		String orderClause = Browser.BookmarkColumns.DATE + " DESC";
+		Cursor cursor = null;
+		try {
+			cursor = getContentResolver().query(Browser.BOOKMARKS_URI,
+					sHistoryBookmarksProjection, null, null, orderClause);
+		} catch (Exception e) {
+		}
+
+		if (cursor != null) {
+			try {if (cursor.moveToFirst()) {
+				int columnTitle = cursor
+						.getColumnIndex(Browser.BookmarkColumns.TITLE);
+				int columnUrl = cursor
+						.getColumnIndex(Browser.BookmarkColumns.URL);
+				int columnBookmark = cursor
+						.getColumnIndex(Browser.BookmarkColumns.BOOKMARK);
+
+				while (!cursor.isAfterLast()) {
+					String url = cursor.getString(columnUrl).trim();
+					String site = WebUtil.getSite(url);
+					TitleUrl titleUrl = new TitleUrl(
+							cursor.getString(columnTitle), url, site);
+					if (cursor.getInt(columnBookmark) >= 1)
+						mSystemBookMark.add(titleUrl);
+					else
+						mSystemHistory.add(titleUrl);
+
+					cursor.moveToNext();
+				}
+			}} catch (Exception e) {}
+			cursor.close();
+		}
+	}
+
+	ArrayList<TitleUrl> readBookmark(String filename) {//identical
+		ArrayList<TitleUrl> bookmark = new ArrayList<TitleUrl>();
+		ObjectInputStream ois = null;
+		FileInputStream fi = null;
+		try {// read favorite or shortcut data from sdcard at first. if fail
+			 // then read from /data/data
+			if (noSdcard || noHistoryOnSdcard) 
+				fi = openFileInput(filename);
+			else {
+				File file = new File(downloadPath + "bookmark/" + filename);
+				fi = new FileInputStream(file);
+			}
+			ois = new ObjectInputStream(fi);
+			TitleUrl tu;
+			String title, url, site;
+			while ((title = (String) ois.readObject()) != null) {
+				url = (String) ois.readObject();
+				site = (String) ois.readObject();
+				tu = new TitleUrl(title, url, site);
+				bookmark.add(tu);
+			}
+		} catch (EOFException e) {// only when read eof need send out msg.
+			try {
+				ois.close();
+				fi.close();
+			} catch (Exception e1) {}
+		} catch (Exception e) {}
+
+		return bookmark;
+	}
+	
+	public void pauseAction() {
+		if (historyChanged) {
+			WriteTask wtask = new WriteTask();
+			wtask.execute("history");
+		}
+		if (bookmarkChanged) {
+			WriteTask wtask = new WriteTask();
+			wtask.execute("bookmark");
+		}
+		if (downloadsChanged) {
+			WriteTask wtask = new WriteTask();
+			wtask.execute("downloads");
+		}
+
+		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);
+		sEdit.putBoolean("html5", serverWebs.get(webIndex).html5);
+		sEdit.commit();
 	}
 }

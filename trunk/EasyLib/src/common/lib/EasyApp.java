@@ -15,7 +15,7 @@ public class EasyApp extends MyApp {
 	public boolean collapse3 = true;
 	int countDown = 0;
 
-	void createAd() {
+	public void createAd() {
 		if (mAdAvailable) {
 			//removeAd();
 
@@ -199,5 +199,13 @@ public class EasyApp extends MyApp {
 		}
 		
 		return sb.toString();
+	}
+	
+	public void pauseAction() {
+		super.pauseAction();
+		
+		sEdit.putBoolean("collapse1", collapse1);
+		sEdit.putBoolean("collapse2", collapse2);
+		sEdit.putBoolean("collapse3", collapse3);
 	}
 }

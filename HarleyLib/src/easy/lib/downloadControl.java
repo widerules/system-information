@@ -1,7 +1,7 @@
 package easy.lib;
 
 import easy.lib.MyApp;
-import base.lib.wrapAdView;
+import base.lib.WrapAdView;
 import easy.lib.SimpleBrowser.DownloadTask;
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -23,7 +23,7 @@ public class downloadControl extends Activity {
 			mAdAvailable = false;
 		}
 	}
-	wrapAdView adview;
+	WrapAdView adview;
 	LinearLayout adContainer;
 
 	Button btnPause, btnStop;
@@ -48,7 +48,7 @@ public class downloadControl extends Activity {
 		this.setContentView(R.layout.pause);
 
 		if (mAdAvailable) {
-			adview = new wrapAdView(this, 3, "a1502880ce4208b", null);
+			adview = new WrapAdView(this, 3, "a1502880ce4208b", null);
 			adContainer = (LinearLayout) findViewById(R.id.adContainer);
 			adContainer.addView(adview.getInstance());
 			adview.loadAd();

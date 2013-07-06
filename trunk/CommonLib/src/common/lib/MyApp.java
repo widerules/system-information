@@ -1033,7 +1033,7 @@ public class MyApp extends BaseApp {
 	}
 	
 	public void removeFavo(final int order) {//identical
-		new AlertDialog.Builder(this)
+		new AlertDialog.Builder(mActivity)
 				.setTitle(R.string.remove_bookmark)
 				.setMessage(mBookMark.get(order).m_title)
 				.setPositiveButton(R.string.ok,
@@ -1057,7 +1057,7 @@ public class MyApp extends BaseApp {
 	}
 
 	public void removeHistory(final int order) {//identical
-		new AlertDialog.Builder(this)
+		new AlertDialog.Builder(mActivity)
 				.setTitle(R.string.remove_history)
 				.setMessage(mHistory.get(order).m_title)
 				.setPositiveButton(R.string.ok,
@@ -1095,7 +1095,7 @@ public class MyApp extends BaseApp {
 		titleText.setSelection(titleText.getText().length());
 
 		// need user's confirm to add to bookmark
-		new AlertDialog.Builder(this)
+		new AlertDialog.Builder(mActivity)
 				.setView(favoView)
 				.setMessage(url)
 				.setTitle(R.string.add_bookmark)

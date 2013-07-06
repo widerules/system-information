@@ -171,7 +171,7 @@ public class MyApp extends BaseApp {
 	public AutoCompleteTextView webAddress;
 	public ProgressBar loadProgress;
 	public ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
-	public WebAdapter webAdapter;
+	public WebAdapter webAdapter = new WebAdapter(mContext, serverWebs);
 	public LinearLayout webTools, webControl, fakeWebControl, urlLine;
 	public MyViewFlipper webpages;
 
@@ -1189,6 +1189,7 @@ public class MyApp extends BaseApp {
 		util.startActivity(shareIntent, false, mContext);
 	}
 	
+	public WriteTask wtask = new WriteTask();
 	public class WriteTask extends AsyncTask<String, Integer, String> {//identical
 
 		@Override

@@ -3,7 +3,7 @@ package common.lib;
 import common.lib.MyJavaScriptInterface;
 
 public class EasyJavaScriptInterface extends MyJavaScriptInterface {
-	EasyJavaScriptInterface(MyWebView webview, MyApp appstate) {
+	EasyJavaScriptInterface(EasyWebView webview, EasyApp appstate) {
 		super(webview, appstate);
 	}
 

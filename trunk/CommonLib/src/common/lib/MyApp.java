@@ -47,7 +47,6 @@ import android.webkit.WebView;
 import android.webkit.WebSettings.TextSize;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -150,7 +149,7 @@ public class MyApp extends BaseApp {
 	public boolean noHistoryOnSdcard = false;
 	public boolean firstRun = false;
 
-	Activity mActivity;// the main activity
+	public Activity mActivity;// the main activity
 	// download related
 	public Context mContext;
 	public String downloadPath;
@@ -171,7 +170,7 @@ public class MyApp extends BaseApp {
 	public AutoCompleteTextView webAddress;
 	public ProgressBar loadProgress;
 	public ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
-	public WebAdapter webAdapter = new WebAdapter(mContext, serverWebs);
+	public WebAdapter webAdapter;
 	public LinearLayout webTools, webControl, fakeWebControl, urlLine;
 	public MyViewFlipper webpages;
 

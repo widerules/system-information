@@ -1,42 +1,24 @@
 package easy.lib;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-
 import common.lib.ClearFolderTask;
-import common.lib.DownloadTask;
 import common.lib.EasyApp;
 import common.lib.EasyWebView;
-import common.lib.MyApp;
-import common.lib.MyApp.WriteTask;
-import common.lib.MyComparator;
 import common.lib.MyViewFlipper;
 import common.lib.ProxySettings;
-import common.lib.TitleUrl;
-import common.lib.MyApp.WebAdapter;
 import common.lib.WrapValueCallback;
 import common.lib.WrapWebSettings;
-import base.lib.StringComparator;
+import common.lib.MyApp.WebAdapter;
 import base.lib.WebUtil;
 import base.lib.util;
-import base.lib.WrapAdView;
-import base.lib.WrapInterstitialAd;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -46,13 +28,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -60,16 +39,10 @@ import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.net.http.SslError;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
-import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -81,7 +54,6 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
@@ -90,18 +62,10 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import android.webkit.DownloadListener;
-import android.webkit.MimeTypeMap;
-import android.webkit.SslErrorHandler;
-import android.webkit.ValueCallback;
-import android.webkit.WebBackForwardList;
-import android.webkit.WebChromeClient;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.TextSize;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
-import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -120,7 +84,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import android.widget.ZoomButtonsController;
 
 //for get webpage source on cupcake
 public class SimpleBrowser extends Activity {
@@ -1107,6 +1070,10 @@ public class SimpleBrowser extends Activity {
 		// mContext = getApplicationContext();//this will cause force close when
 		// select locale in google translate
 		mContext = this;
+		appstate = ((EasyApp) getApplicationContext());
+		appstate.mContext = mContext;
+		appstate.mActivity = this;
+		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
 
 		appstate.dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(appstate.dm);
@@ -1120,7 +1087,6 @@ public class SimpleBrowser extends Activity {
 
 		setAsDefaultApp();
 		
-		appstate = ((EasyApp) getApplicationContext());
 		appstate.nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		appstate.mContext = mContext;
 
@@ -1135,6 +1101,7 @@ public class SimpleBrowser extends Activity {
 		setContentView(R.layout.browser);
         LayoutInflater inflater = LayoutInflater.from(this);
         
+        browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
 		initWebControl();
 
 		appstate.loadProgress = (ProgressBar) findViewById(R.id.loadprogress);

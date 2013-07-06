@@ -26,16 +26,19 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Map.Entry;
 
+//import net.simonvt.menudrawer.MenuDrawer;
+//import net.simonvt.menudrawer.Position;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import base.lib.stringComparator;
+import base.lib.StringComparator;
+import base.lib.WrapInterstitialAd;
 import base.lib.util;
-import base.lib.wrapAdView;
-import base.lib.wrapInterstitialAd;
+import base.lib.WrapAdView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -311,8 +314,8 @@ public class SimpleBrowser extends Activity {
 			mAdAvailable = false;
 		}
 	}
-	wrapAdView adview = null, adview2 = null;
-	wrapInterstitialAd interstitialAd = null;
+	WrapAdView adview = null, adview2 = null;
+	WrapInterstitialAd interstitialAd = null;
 	AppHandler mAppHandler = new AppHandler();
 
 	// download related
@@ -2122,10 +2125,6 @@ public class SimpleBrowser extends Activity {
 	}
 
 	public void readPreference() {
-		// paid = sp.getBoolean("paid", false);
-		// debug = sp.getBoolean("debug", false);
-		// css = sp.getBoolean("css", false);
-		// html5 = sp.getBoolean("html5", false);
 		blockImage = sp.getBoolean("block_image", false);
 		cachePrefer = sp.getBoolean("cache_prefer", false);
 		blockPopup = sp.getBoolean("block_popup", false);
@@ -2681,7 +2680,7 @@ public class SimpleBrowser extends Activity {
 		// web list
 		webAdapter = new WebAdapter(mContext, serverWebs);
 		webList = (ListView) browserView.findViewById(R.id.weblist);
-		webList.inflate(mContext, R.layout.web_list, null);
+		//webList.inflate(mContext, R.layout.web_list, null);
 		webList.setFadingEdgeLength(0);// no shadow when scroll
 		webList.setScrollingCacheEnabled(false);
 		webList.setAdapter(webAdapter);
@@ -2971,7 +2970,7 @@ public class SimpleBrowser extends Activity {
 			bookmarkChanged = true;
 		}
 
-		urlAdapter.sort(new stringComparator());
+		urlAdapter.sort(new StringComparator());
 		webAddress.setAdapter(urlAdapter);
 
 		cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -3283,7 +3282,7 @@ public class SimpleBrowser extends Activity {
 
 		urlLine.bringToFront();// set the z-order
 		webTools.bringToFront();
-
+		
 		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
 		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
@@ -3313,7 +3312,16 @@ public class SimpleBrowser extends Activity {
 
 		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
 		registerReceiver(downloadReceiver, filter);
-	}
+
+		//MenuDrawer mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_CONTENT, Position.LEFT);
+        //mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
+        //mMenuDrawer.setDropShadowEnabled(false);
+		/*MenuDrawer mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT, MenuDrawer.MENU_DRAG_WINDOW);
+        mMenuDrawer.setContentView(browserView);
+        browserView.removeView(bookmarkDownloads);
+        bookmarkDownloads.setVisibility(View.VISIBLE);
+        mMenuDrawer.setMenuView(bookmarkDownloads);*/
+}
 	
 	void exchangePosition() {
 		//reverse the position of buttons and ads
@@ -3412,8 +3420,7 @@ public class SimpleBrowser extends Activity {
 				ois.close();
 				fi.close();
 			} catch (Exception e1) {}
-		} 
-		catch (Exception e) {}
+		} catch (Exception e) {}
 
 		return ((url != null) && !"".equals(url));
 	}
@@ -4022,19 +4029,19 @@ public class SimpleBrowser extends Activity {
 		if (adview != null) return;// only create ad for one time.
 		
 		if (mAdAvailable) {
-			adview = new wrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
+			adview = new WrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());
 				adview.loadAd();
 			}
 			
-			adview2 = new wrapAdView(this, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
+			adview2 = new WrapAdView(this, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) {
 				adContainer2.addView(adview2.getInstance());
 				adview2.loadAd();
 			}
 			
-			interstitialAd = new wrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
+			interstitialAd = new WrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
 		}
 	}
 

@@ -16,7 +16,6 @@ import common.lib.MyViewFlipper;
 import common.lib.ProxySettings;
 import common.lib.WrapValueCallback;
 import common.lib.WrapWebSettings;
-import common.lib.MyApp.WebAdapter;
 import base.lib.WebUtil;
 import base.lib.util;
 import android.app.Activity;
@@ -45,7 +44,6 @@ import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -91,7 +89,6 @@ public class SimpleBrowser extends Activity {
 
 
 	Context mContext;
-	RelativeLayout browserView;
 	Button btnNewpage;
 	ListView webList;
 
@@ -1044,10 +1041,10 @@ public class SimpleBrowser extends Activity {
 	
 	public void initWebControl() {// identical
 		// web control
-		appstate.webControl = (LinearLayout) browserView.findViewById(R.id.webcontrol);
+		appstate.webControl = (LinearLayout) findViewById(R.id.webcontrol);
 		//appstate.fakeWebControl = (LinearLayout) browserView.findViewById(R.id.fakeWebcontrol);///////////////////////////////build error////////////
 		
-		btnNewpage = (Button) browserView.findViewById(R.id.opennewpage);
+		btnNewpage = (Button) findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
@@ -1056,8 +1053,8 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 		// web list
-		webList = (ListView) browserView.findViewById(R.id.weblist);
-		webList.inflate(mContext, R.layout.web_list, null);
+		webList = (ListView) findViewById(R.id.weblist);
+		//webList.inflate(mContext, R.layout.web_list, null);
 		webList.setFadingEdgeLength(0);// no shadow when scroll
 		webList.setScrollingCacheEnabled(false);
 		webList.setAdapter(appstate.webAdapter);
@@ -1099,9 +1096,7 @@ public class SimpleBrowser extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.browser);
-        LayoutInflater inflater = LayoutInflater.from(this);
         
-        browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
 		initWebControl();
 
 		appstate.loadProgress = (ProgressBar) findViewById(R.id.loadprogress);

@@ -427,6 +427,21 @@ public class SimpleBrowser extends Activity {
 	public void setWebpagesLayout() {
 		appstate.setUrlHeight(appstate.showUrl);
 		appstate.setBarHeight(appstate.showControlBar);
+
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		if (appstate.showUrl) 
+			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
+		else 
+			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		appstate.adContainer.setLayoutParams(lp);
+		
+		lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		if (appstate.showControlBar)
+			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
+		else 
+			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		webs.setLayoutParams(lp);
+		webs.requestLayout();
 	}
 	
 	@Override

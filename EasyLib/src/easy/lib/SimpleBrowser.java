@@ -428,14 +428,16 @@ public class SimpleBrowser extends Activity {
 		appstate.setUrlHeight(appstate.showUrl);
 		appstate.setBarHeight(appstate.showControlBar);
 
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		if (appstate.showUrl) 
 			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
 		else 
 			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		appstate.adContainer.setLayoutParams(lp);
+		appstate.adContainer.requestLayout();
 		
-		lp = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+		lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		lp.addRule(RelativeLayout.BELOW, R.id.adContainer);
 		if (appstate.showControlBar)
 			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
 		else 

@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -837,7 +838,7 @@ public class SimpleBrowser extends Activity {
 				case 3:// exit
 					clearFile("pages");
 					ClearCache(); // clear cache when exit
-					finish();
+					System.exit(0);// finish() will cause crash when start again. 
 					break;
 				case 4:// downloads
 					Intent intent = new Intent(
@@ -1071,7 +1072,6 @@ public class SimpleBrowser extends Activity {
 		});
 		// web list
 		webList = (ListView) findViewById(R.id.weblist);
-		//webList.inflate(mContext, R.layout.web_list, null);
 		webList.setFadingEdgeLength(0);// no shadow when scroll
 		webList.setScrollingCacheEnabled(false);
 		webList.setAdapter(appstate.webAdapter);

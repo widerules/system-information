@@ -1,7 +1,6 @@
 package base.lib;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
@@ -10,8 +9,6 @@ import com.google.ads.AdListener;
 import com.google.ads.AdRequest;
 import com.google.ads.InterstitialAd;
 import com.google.ads.AdRequest.ErrorCode;
-
-import base.lib.WrapAdView.Listener;
 
 public class WrapInterstitialAd {
 	InterstitialAd mInstance;

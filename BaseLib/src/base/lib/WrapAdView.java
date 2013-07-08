@@ -35,49 +35,6 @@ public class WrapAdView {
 		}
 	}
 
-	class Listener implements AdListener {
-		@Override
-		public void onDismissScreen(Ad arg0) {// Called when an ad is clicked
-												// and about to return to the
-												// application.
-			//Log.d("=============Ads ondismiss", "");
-		}
-
-		@Override
-		public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
-			if (mHandler != null) {
-				Message fail = mHandler.obtainMessage();
-				fail.what = -1;
-				mHandler.sendMessage(fail);
-			}
-		}
-
-		@Override
-		public void onLeaveApplication(Ad arg0) {
-			//Log.d("=============Ads onleave", "");
-			if (mHandler != null) {
-				Message dismiss = mHandler.obtainMessage();
-				dismiss.what = 1;
-				mHandler.sendMessage(dismiss);
-			}
-		}
-
-		@Override
-		public void onPresentScreen(Ad arg0) {// Called when an Activity is
-												// created in front of the app
-			//Log.d("=============Ads onpresent", "");
-		}
-
-		@Override
-		public void onReceiveAd(Ad arg0) {
-			if (mHandler != null) {
-				Message dismiss = mHandler.obtainMessage();
-				dismiss.what = 0;
-				mHandler.sendMessage(dismiss);
-			}
-		}
-	}
-
 	public WrapAdView(Activity activity, int size, String publisherID,
 			Handler handler) {
 		mHandler = handler;
@@ -104,6 +61,12 @@ public class WrapAdView {
 		}
 	}
 
+	boolean isReady() {
+		if (mInstance != null)
+			return mInstance.isReady();
+		else return false;
+	}
+	
 	public void loadAd() {
 		if ((mInstance != null) && (adRequest != null))
 			mInstance.loadAd(adRequest);
@@ -118,9 +81,46 @@ public class WrapAdView {
 		return mInstance;
 	}
 	
-	boolean isReady() {
-		if (mInstance != null)
-			return mInstance.isReady();
-		else return false;
+	class Listener implements AdListener {
+		@Override
+		public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
+			if (mHandler != null) {
+				Message fail = mHandler.obtainMessage();
+				fail.what = -1;
+				mHandler.sendMessage(fail);
+			}
+		}
+
+		@Override
+		public void onReceiveAd(Ad arg0) {
+			if (mHandler != null) {
+				Message dismiss = mHandler.obtainMessage();
+				dismiss.what = 0;
+				mHandler.sendMessage(dismiss);
+			}
+		}
+
+		@Override
+		public void onDismissScreen(Ad arg0) {// Called when an ad is clicked
+												// and about to return to the
+												// application.
+			//Log.d("=============Ads ondismiss", "");
+		}
+
+		@Override
+		public void onLeaveApplication(Ad arg0) {
+			//Log.d("=============Ads onleave", "");
+			if (mHandler != null) {
+				Message dismiss = mHandler.obtainMessage();
+				dismiss.what = 1;
+				mHandler.sendMessage(dismiss);
+			}
+		}
+
+		@Override
+		public void onPresentScreen(Ad arg0) {// Called when an Activity is
+												// created in front of the app
+			//Log.d("=============Ads onpresent", "");
+		}
 	}
 }

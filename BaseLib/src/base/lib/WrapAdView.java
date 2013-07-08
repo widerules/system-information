@@ -70,6 +70,11 @@ public class WrapAdView {
 
 		@Override
 		public void onReceiveAd(Ad arg0) {
+			if (mHandler != null) {
+				Message dismiss = mHandler.obtainMessage();
+				dismiss.what = 0;
+				mHandler.sendMessage(dismiss);
+			}
 		}
 	}
 

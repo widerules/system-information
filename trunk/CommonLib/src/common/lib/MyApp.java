@@ -879,6 +879,7 @@ public class MyApp extends BaseApp {
 	void removeAd() {
 		if (adview != null) {
 			adContainer.removeViewAt(0);
+			adContainer.setVisibility(View.GONE);
 			adview.destroy();
 			adview = null;
 		}

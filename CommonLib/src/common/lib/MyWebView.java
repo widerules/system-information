@@ -275,7 +275,7 @@ public class MyWebView extends WebView {
 					if (mAppstate.HOME_PAGE.equals(url)) mAppstate.webAddress.setText(mAppstate.HOME_BLANK);
 					else mAppstate.webAddress.setText(url);
 					
-					if ((mAppstate.adview != null) && (mAppstate.adContainer.getVisibility() != View.GONE)) mAppstate.adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
+					if ((mAppstate.adview != null) && !mAppstate.clicked) mAppstate.adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
 					else if ((mAppstate.adview2 != null) && (mAppstate.adContainer2.getVisibility() != View.GONE)) mAppstate.adview2.loadAd();
 					if (mAppstate.interstitialAd != null && !mAppstate.interstitialAd.isReady()) mAppstate.interstitialAd.loadAd();
 					

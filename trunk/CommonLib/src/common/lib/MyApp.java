@@ -87,17 +87,15 @@ public class MyApp extends BaseApp {
 
 	class AppHandler extends Handler {
 		public void handleMessage(Message msg) {
-			if (msg.what > 0) {
+			if (msg.what == 0) {// show ad when get ad
+				adContainer.setVisibility(View.VISIBLE);
+			}
+			else if (msg.what == -1) {// hide ad when can't get ad
+				adContainer.setVisibility(View.GONE);
+			}
+			else if (msg.what == 1) {// remove ad when click ad
 				clicked = true;
 				removeAd();
-			}
-			else if (msg.what == -2) {
-				Bundle data = msg.getData();
-				String errorMsg = data.getString("msg");
-				if (errorMsg != null) Toast.makeText(mContext, "Can't load AdMob. " + errorMsg, Toast.LENGTH_LONG).show();
-			}
-			else if (msg.what == -3) {
-				interstitialAd.loadAd();
 			}
 		}
 	}
@@ -878,7 +876,6 @@ public class MyApp extends BaseApp {
 
 	void removeAd() {
 		if (adview != null) {
-			adContainer.removeViewAt(0);
 			adContainer.setVisibility(View.GONE);
 			adview.destroy();
 			adview = null;

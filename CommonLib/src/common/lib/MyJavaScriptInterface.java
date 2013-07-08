@@ -21,9 +21,12 @@ public class MyJavaScriptInterface {
 		if (mAppstate.interstitialAd.isReady()) mAppstate.interstitialAd.show();
 		else {
 			Toast.makeText(mAppstate.mContext, "Admob is loading", Toast.LENGTH_LONG).show();
-			Message fail = mAppstate.mAppHandler.obtainMessage();
-			fail.what = -3;
-			mAppstate.mAppHandler.sendMessage(fail);
+			mAppstate.interstitialAdClicked = true;
 		}
+		
+		// try to load interstitialAd
+		Message fail = mAppstate.mAppHandler.obtainMessage();
+		fail.what = -3;
+		mAppstate.mAppHandler.sendMessage(fail);
 	}
 }

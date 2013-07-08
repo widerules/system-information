@@ -74,6 +74,7 @@ public class MyApp extends BaseApp {
 	public LinearLayout adContainer2;	
 	public WrapAdView adview = null, adview2 = null;
 	WrapInterstitialAd interstitialAd = null;
+	public boolean interstitialAdClicked = false;
 	boolean clicked = false;
 	public static boolean mAdAvailable;
 	static {
@@ -96,6 +97,20 @@ public class MyApp extends BaseApp {
 			else if (msg.what == 1) {// remove ad when click ad
 				clicked = true;
 				removeAd();
+			}
+			else if (msg.what == -2) {// fail to get InterstitialAd
+				Bundle data = msg.getData();
+				String errorMsg = data.getString("msg");
+				//if (errorMsg != null) Toast.makeText(mContext, "Can't load AdMob. " + errorMsg, Toast.LENGTH_LONG).show();
+			}
+			else if (msg.what == -3) {// try to load InterstitialAd when click link on homepage
+				interstitialAd.loadAd();
+			}
+			else if (msg.what == -4) {// show InterstitialAd if it is ready
+				if (interstitialAdClicked) {
+					interstitialAd.show();
+					interstitialAdClicked = false;
+				}
 			}
 		}
 	}

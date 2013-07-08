@@ -20,6 +20,7 @@ public class WrapInterstitialAd {
 
 	public WrapInterstitialAd(Activity activity, String publisherID, Handler handler) {
 		mInstance = new InterstitialAd(activity, publisherID);
+		mInstance.setAdListener(new Listener());
 		adRequest = new AdRequest();
 		mHandler = handler;
 	}
@@ -37,5 +38,43 @@ public class WrapInterstitialAd {
 	public void loadAd() {
 		if ((mInstance != null) && (adRequest != null))
 			mInstance.loadAd(adRequest);
+	}
+	
+	class Listener implements AdListener {
+		@Override
+		public void onFailedToReceiveAd(Ad arg0, ErrorCode arg1) {
+			if (mHandler != null) {
+				Message fail = mHandler.obtainMessage();
+				fail.what = -2;
+				mHandler.sendMessage(fail);
+			}
+		}
+
+		@Override
+		public void onReceiveAd(Ad arg0) {
+			if (mHandler != null) {
+				Message dismiss = mHandler.obtainMessage();
+				dismiss.what = -4;
+				mHandler.sendMessage(dismiss);
+			}
+		}
+
+		@Override
+		public void onDismissScreen(Ad arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onLeaveApplication(Ad arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onPresentScreen(Ad arg0) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

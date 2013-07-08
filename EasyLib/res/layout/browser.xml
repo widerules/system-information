@@ -181,11 +181,17 @@
     <FrameLayout
         android:id="@+id/adContainer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dip"
         android:layout_below="@id/urlline"
         android:layout_centerHorizontal="true"
         android:foregroundGravity="center"
         android:orientation="vertical" >
+            <LinearLayout
+                android:id="@+id/realAdContainer"
+                android:layout_width="320dip"
+                android:layout_height="50dip"
+                android:orientation="vertical" >
+            </LinearLayout>
     </FrameLayout>
 
     <RelativeLayout

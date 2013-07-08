@@ -3,6 +3,8 @@ package common.lib;
 import java.util.Locale;
 
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 
@@ -14,6 +16,8 @@ public class EasyApp extends MyApp {
 	public boolean collapse2 = false;
 	public boolean collapse3 = true;
 	int countDown = 0;
+	
+	public LinearLayout adRealContainer;
 
 	public void readPreference() {
 		super.readPreference();
@@ -33,7 +37,7 @@ public class EasyApp extends MyApp {
 
 			adview = new WrapAdView(mActivity, 0, "a14f3f6bc126143", mAppHandler);// AdSize.BANNER require 320*50
 			if ((adview != null) && (adview.getInstance() != null)) {
-				adContainer.addView(adview.getInstance());
+				adRealContainer.addView(adview.getInstance());
 				adview.loadAd();
 			}
 

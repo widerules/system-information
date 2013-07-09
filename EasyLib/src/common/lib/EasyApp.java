@@ -50,7 +50,7 @@ public class EasyApp extends MyApp {
 				adview.loadAd();
 			}
 
-			adview2 = new WrapAdView(mActivity, 0, "a14d662bba1e443", mAppHandler);// AdSize.BANNER require 320*50
+			adview2 = new WrapAdView(mActivity, 0, "a14d662bba1e443", null);// AdSize.BANNER require 320*50
 			if ((adview2 != null) && (adview2.getInstance() != null)) { 
 				adContainer2.addView(adview2.getInstance());
 				adview2.loadAd();

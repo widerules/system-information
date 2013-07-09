@@ -1302,7 +1302,7 @@ public class SimpleBrowser extends Activity {
 
 		appstate.adContainer = (FrameLayout) findViewById(R.id.adContainer);
 		appstate.adRealContainer = (LinearLayout) findViewById(R.id.realAdContainer);
-		appstate.createAd();
+		appstate.createAd(appstate.dm.widthPixels / appstate.dm.density);
 		setLayout();
 		setWebpagesLayout();
 		initUpDown();

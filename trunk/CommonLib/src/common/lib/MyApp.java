@@ -33,6 +33,7 @@ import android.os.Message;
 import android.provider.Browser;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,7 @@ public class MyApp extends BaseApp {
 			}
 			else if (msg.what == 1) {// remove ad when click ad
 				clicked = true;
-				removeAd();
+				//removeAd();
 			}
 			else if (msg.what == -2) {// fail to get InterstitialAd
 				Bundle data = msg.getData();
@@ -930,8 +931,13 @@ public class MyApp extends BaseApp {
 
 		DownloadTask dl = downloadState.get(url);
 		if (dl != null) {
-			if (dl.pauseDownload) dl.pauseDownload = false;// resume download if it paused
-			return true;// the file is downloading, not start a new download task.
+			// the file is downloading. show download control then.
+			Intent intent = new Intent("downloadControl");
+			intent.setClassName(mContext.getPackageName(), DownloadControl.class.getName());
+			intent.putExtra("name", apkName);
+			intent.putExtra("url", url);
+			util.startActivity(intent, false, mContext);
+			return true;
 		}
 
 		Random random = new Random();

@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;
@@ -205,7 +206,10 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			}
 			// stop download by user. clear notification here for the
 			// close() and shutdown() may be very slow
-			if (stopDownload) appstate.nManager.cancel(NOTIFICATION_ID);
+			if (stopDownload) {
+				appstate.nManager.cancel(NOTIFICATION_ID);
+				appstate.downloadState.remove(URL_str);
+			}
 
 			try { fos.close();
 			} catch (IOException e1) {}

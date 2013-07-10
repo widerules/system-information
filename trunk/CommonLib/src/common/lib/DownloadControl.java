@@ -28,7 +28,7 @@ public class DownloadControl extends Activity {
 	boolean pause = false, stop = false, failed = false;
 	TextView tv;
 	MyApp appstate;
-	int id;
+	String url;
 	DownloadTask dlt;
 	
 	NotificationManager nManager;
@@ -61,13 +61,13 @@ public class DownloadControl extends Activity {
 		btnStop = (Button) findViewById(R.id.stop);
 		btnStop.setText(getString(R.string.stop));
 		
-		id = intent.getIntExtra("id", 0);
+		url = intent.getStringExtra("url");
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
 		String errorMsg = intent.getStringExtra("errorMsg");
 		
 		appstate = (MyApp) getApplicationContext();
-		dlt = appstate.downloadState.get(id);
+		if (url != null) dlt = appstate.downloadState.get(url);
 
 		if (dlt != null) {
 			pause = dlt.pauseDownload;
@@ -95,12 +95,11 @@ public class DownloadControl extends Activity {
 			btnPause.setText(getString(R.string.pause));
 
 		if (failed) {
-			final String url = intent.getStringExtra("url");
 			btnPause.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View arg0) {// start new task to download
-					nManager.cancel(id);
-					try {appstate.downloadState.remove(id);} catch(Exception e) {}
+				public void onClick(View arg0) {// start new task to download. why?
+					nManager.cancel(dlt.NOTIFICATION_ID);
+					try {appstate.downloadState.remove(url);} catch(Exception e) {}
 					
 					Intent intent = new Intent(
 							"simpleHome.action.START_DOWNLOAD");
@@ -113,8 +112,8 @@ public class DownloadControl extends Activity {
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {// remove notification
-					nManager.cancel(id);
-					try {appstate.downloadState.remove(id);} catch(Exception e) {}
+					nManager.cancel(dlt.NOTIFICATION_ID);
+					try {appstate.downloadState.remove(url);} catch(Exception e) {}
 					
 					finish();
 				}

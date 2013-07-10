@@ -93,8 +93,9 @@ public class CrashControl extends Activity {
 					editor.putBoolean("retried", true);
 					editor.commit();
 					
-					Intent intent = new Intent("android.intent.action.MAIN");
-					intent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					Uri data = Uri.parse("https://play.google.com/store/apps/details?id=easy.browser.classic");
+					intent.setData(data);
 					util.startActivity(intent, false, CrashControl.this);
 					nManager.cancel(id);// remove notification
 					finish();
@@ -130,7 +131,6 @@ public class CrashControl extends Activity {
 					if (!util.startActivity(intent, false, CrashControl.this)) {// send mail by webpage if fail to send through mail client
 						Uri data = Uri.parse("https://mail.google.com/mail/?ui=2&view=cm&fs=1&tf=1&su=" + getString(R.string.sorry) + "&to=" + getString(R.string.browser_author) + "&body=" + getString(R.string.feedback) + "\n\n\n\n\n====================\n" + sb.toString());
 						intent = new Intent(Intent.ACTION_VIEW);
-						intent.setClassName(getPackageName(), "easy.lib.SimpleBrowser");
 						intent.setData(data);
 						util.startActivity(intent, true, CrashControl.this);
 					}

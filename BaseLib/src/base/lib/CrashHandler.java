@@ -86,7 +86,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
 		
 		Intent intent = new Intent();
-		intent.setAction(mContext.getPackageName() + ".crashControl");
+		intent.setAction("crashControl");
 		
 		intent.putExtra("errorMsg", writer.toString());
 		intent.putExtra("id", ID);

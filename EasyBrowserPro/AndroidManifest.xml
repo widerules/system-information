@@ -103,7 +103,7 @@
             android:launchMode="singleInstance"
             android:noHistory="true" >
             <intent-filter>
-                <action android:name="easy.browser.com.downloadControl" />
+                <action android:name="downloadControl" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -116,7 +116,7 @@
             android:launchMode="singleInstance"
             android:noHistory="true" >
             <intent-filter>
-                <action android:name="easy.browser.com.crashControl" />
+                <action android:name="crashControl" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -125,7 +125,7 @@
             android:name="easy.lib.AboutBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" >
             <intent-filter>
-                <action android:name="easy.browser.com.about" />
+                <action android:name="about" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

@@ -69,7 +69,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 		appstate.nManager.notify(NOTIFICATION_ID, notification);
 
 		// this intent is to pause/stop download
-		intent.setAction(appstate.mContext.getPackageName() + ".downloadControl");
+		intent.setAction("downloadControl");
 		intent.putExtra("id", NOTIFICATION_ID);
 		intent.putExtra("name", apkName);
 		intent.putExtra("url", URL_str);

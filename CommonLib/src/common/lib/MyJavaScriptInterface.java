@@ -20,7 +20,7 @@ public class MyJavaScriptInterface {
 	public void showInterstitialAd() {
 		if (mAppstate.interstitialAd.isReady()) mAppstate.interstitialAd.show();
 		else {
-			Toast.makeText(mAppstate.mContext, "Admob is loading", Toast.LENGTH_LONG).show();
+			Toast.makeText(mAppstate.mContext, "Admob is loading", Toast.LENGTH_SHORT).show();
 			mAppstate.interstitialAdClicked = true;
 		}
 		

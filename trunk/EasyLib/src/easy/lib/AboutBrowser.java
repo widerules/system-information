@@ -81,7 +81,7 @@ public class AboutBrowser extends Activity {
 
 	void share() {
 		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
-		shareIntent.setClassName(packageName, "easy.lib.SimpleBrowser");
+		shareIntent.setClassName(packageName, SimpleBrowser.class.getName());
 		Uri data = null;
 		
 		String shareText = getString(R.string.browser_name) + ", " + getString(R.string.sharetext) + "...\n\n";
@@ -170,8 +170,7 @@ public class AboutBrowser extends Activity {
 					intent.setAction(Intent.ACTION_VIEW);
 					intent.setData(Uri
 							.parse("https://play.google.com/store/apps/details?id=" + packageName));
-					intent.setClassName(packageName,
-							"easy.lib.SimpleBrowser");
+					intent.setClassName(packageName, SimpleBrowser.class.getName());
 					util.startActivity(intent, true, getBaseContext());
 				}
 			}
@@ -326,8 +325,7 @@ public class AboutBrowser extends Activity {
 														if (!util.startActivity(intent, false, getBaseContext())) {
 															intent.setData(Uri
 																	.parse("https://play.google.com/store/apps/details?id=org.gaeproxy"));
-															intent.setClassName(packageName,
-																	"easy.lib.SimpleBrowser");
+															intent.setClassName(packageName, SimpleBrowser.class.getName());
 															util.startActivity(intent, true, getBaseContext());
 														}
 													}

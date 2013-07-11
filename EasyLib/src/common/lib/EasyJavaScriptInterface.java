@@ -31,7 +31,7 @@ public class EasyJavaScriptInterface extends MyJavaScriptInterface {
 				if ((index >= 0) && (index < mAppstate.mHistory.size()))// sometime the index is -1? 
 					mAppstate.mHistory.remove(index);
 			}
-			mAppstate.updateHistory();
+			((EasyApp)mAppstate).updateHistory();
 			mAppstate.historyChanged = true;
 		}
 		
@@ -39,13 +39,13 @@ public class EasyJavaScriptInterface extends MyJavaScriptInterface {
 			String[] tmp2 = bookmarks.split(",,,,");
 			for (int i = tmp2.length-1; i >= 0; i--) 
 				try{mAppstate.mBookMark.remove(Integer.valueOf(tmp2[i]) + 0);} catch(Exception e) {}// it will not treat as integer if not add 0
-			mAppstate.updateBookmark();
+			((EasyApp)mAppstate).updateBookmark();
 			mAppstate.bookmarkChanged = true;
 		}
 	}
 	
 	@SuppressWarnings("unused")
 	public void updateHome() {
-		mAppstate.updateHomePage();
+		((EasyApp)mAppstate).updateHomePage();
 	}
 }

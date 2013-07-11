@@ -1,12 +1,15 @@
 package common.lib;
 
+import java.net.URLDecoder;
 import java.util.Locale;
 
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
+import base.lib.util;
 
 import common.lib.MyApp;
 import easy.lib.R;
@@ -228,5 +231,42 @@ public class EasyApp extends MyApp {
 		sEdit.putBoolean("collapse1", collapse1);
 		sEdit.putBoolean("collapse2", collapse2);
 		sEdit.putBoolean("collapse3", collapse3);
+	}
+	
+	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {//identical
+		boolean result = true;
+
+		if (webAdapter.getCount() == 9) {// max pages is 9
+			Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
+			return false; // not open new page if got max pages
+		} else {
+			webAdapter.insert(new EasyWebView(mContext, this), newIndex);
+			webAdapter.notifyDataSetInvalidated();
+			webpages.addView(webAdapter.getItem(newIndex), newIndex);
+			imgNew.setImageBitmap(util.generatorCountIcon(
+					util.getResIcon(getResources(), R.drawable.newpage),
+					webAdapter.getCount(), 
+					2, 
+					dm.density,
+					mContext));
+			if (changeToNewPage) changePage(newIndex);
+			else serverWebs.get(newIndex).isForeground = false;
+			serverWebs.get(newIndex).closeToBefore = changeToNewPage;
+			serverWebs.get(newIndex).shouldCloseIfCannotBack = closeIfCannotBack;
+		}
+
+		if (url != null) {
+			if ("".equals(url)) loadPage();
+			// else if (url.endsWith(".pdf"))//can't open local pdf by google
+			// doc
+			// serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url="
+			// + url);
+			else {
+				try {url = URLDecoder.decode(url);} catch (Exception e) {}
+				serverWebs.get(newIndex).loadUrl(url);
+			}
+		}
+
+		return result;
 	}
 }

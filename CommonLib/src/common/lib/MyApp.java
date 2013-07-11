@@ -97,7 +97,7 @@ public class MyApp extends BaseApp {
 			}
 			else if (msg.what == 1) {// remove ad when click ad
 				clicked = true;
-				//removeAd();
+				removeAd();
 			}
 			else if (msg.what == -2) {// fail to get InterstitialAd
 				Bundle data = msg.getData();

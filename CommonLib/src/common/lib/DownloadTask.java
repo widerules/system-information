@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;

@@ -951,41 +951,8 @@ public class MyApp extends BaseApp {
 		return true;
 	}
 	
-	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {//identical
-		boolean result = true;
-
-		if (webAdapter.getCount() == 9) {// max pages is 9
-			Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
-			return false; // not open new page if got max pages
-		} else {
-			webAdapter.insert(new MyWebView(mContext, this), newIndex);
-			webAdapter.notifyDataSetInvalidated();
-			webpages.addView(webAdapter.getItem(newIndex), newIndex);
-			imgNew.setImageBitmap(util.generatorCountIcon(
-					util.getResIcon(getResources(), R.drawable.newpage),
-					webAdapter.getCount(), 
-					2, 
-					dm.density,
-					mContext));
-			if (changeToNewPage) changePage(newIndex);
-			else serverWebs.get(newIndex).isForeground = false;
-			serverWebs.get(newIndex).closeToBefore = changeToNewPage;
-			serverWebs.get(newIndex).shouldCloseIfCannotBack = closeIfCannotBack;
-		}
-
-		if (url != null) {
-			if ("".equals(url)) loadPage();
-			// else if (url.endsWith(".pdf"))//can't open local pdf by google
-			// doc
-			// serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url="
-			// + url);
-			else {
-				try {url = URLDecoder.decode(url);} catch (Exception e) {}
-				serverWebs.get(newIndex).loadUrl(url);
-			}
-		}
-
-		return result;
+	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
+		return true;// the real logic is put to child class, to solve issue of can't open history/bookmark on second page
 	}
 	
 	public void reloadPage() {// identical

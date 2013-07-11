@@ -81,7 +81,7 @@ function hideCheckbox() {
 	document.getElementById('delete_selected').style.display='none';
 	document.getElementById('cancel_edit').style.display='none';
 	var inputs = document.getElementsByTagName('input');
-	for (var i = 0; i < inputs.length; i++) inputs[i].style.display='none';
+	for (var i = 1; i < inputs.length; i++) inputs[i].style.display='none';
 }
 
 function deleteSelected() {

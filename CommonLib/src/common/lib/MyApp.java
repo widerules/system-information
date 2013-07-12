@@ -709,7 +709,7 @@ public class MyApp extends BaseApp {
 			webAdapter.remove(tmp);
 			webAdapter.notifyDataSetInvalidated();
 			try {
-				webpages.removeViewAt(position);
+				webpages.removeView(tmp);
 			} catch (Exception e) {
 			}// null pointer reported by 3 user. really strange.
 			tmp.destroy();

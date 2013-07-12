@@ -13,6 +13,7 @@ import common.lib.ClearFolderTask;
 import common.lib.EasyApp;
 import common.lib.EasyWebView;
 import common.lib.MyViewFlipper;
+import common.lib.MyWebView;
 import common.lib.ProxySettings;
 import common.lib.WrapValueCallback;
 import common.lib.WrapWebSettings;
@@ -839,7 +840,8 @@ public class SimpleBrowser extends Activity {
 				case 3:// exit
 					clearFile("pages");
 					ClearCache(); // clear cache when exit
-					System.exit(0);// finish() will cause crash when start again. 
+					if (appstate.interstitialAd != null && appstate.interstitialAd.isReady()) appstate.interstitialAd.show();
+					finish();
 					break;
 				case 4:// downloads
 					Intent intent = new Intent(
@@ -1206,13 +1208,27 @@ public class SimpleBrowser extends Activity {
 			appstate.firstRun = true;
 		}
 		
-		appstate.urlAdapter = new ArrayAdapter<String>(mContext,	android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+		appstate.urlAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
 		appstate.initSiteArray();
 		
 		cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
 		WebIconDatabase.getInstance().open(
 				getDir("databases", MODE_PRIVATE).getPath());
 		appstate.webIndex = 0;
+		if (appstate.serverWebs.size() > 0) {
+			while (appstate.serverWebs.size() > 0) {
+				EasyWebView tmp = (EasyWebView) appstate.webpages.getChildAt(0);
+				if (tmp == null) break;//sometime it is null if close page very quick
+				appstate.webAdapter.remove(tmp);
+				appstate.webAdapter.notifyDataSetInvalidated();
+				try {
+					appstate.webpages.removeView(tmp);
+				} catch (Exception e) {
+				}// null pointer reported by 3 user. really strange.
+				tmp.destroy();
+				System.gc();
+			}
+		}
 		appstate.serverWebs.add(new EasyWebView(mContext, appstate));
 		appstate.webpages = (MyViewFlipper) findViewById(R.id.webpages);
 		appstate.webpages.addView(appstate.serverWebs.get(appstate.webIndex));

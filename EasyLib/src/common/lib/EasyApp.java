@@ -233,8 +233,9 @@ public class EasyApp extends MyApp {
 		sEdit.putBoolean("collapse3", collapse3);
 	}
 	
-	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {//identical
-		boolean result = true;
+	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
+		boolean weblink = super.openNewPage(url, newIndex, changeToNewPage, closeIfCannotBack);
+		if (!weblink) return false;
 
 		if (webAdapter.getCount() == 9) {// max pages is 9
 			Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
@@ -267,6 +268,6 @@ public class EasyApp extends MyApp {
 			}
 		}
 
-		return result;
+		return true;
 	}
 }

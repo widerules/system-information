@@ -952,7 +952,15 @@ public class MyApp extends BaseApp {
 	}
 	
 	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
-		return true;// the real logic is put to child class, to solve issue of can't open history/bookmark on second page
+		if (url == null) return true;
+		else if ("".equals(url)) return true;
+		else if (!url.startsWith("http")) {
+			Uri uri = Uri.parse(url);
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			util.startActivity(intent, true, mContext);
+			return false;
+		}
+		else return true;// the real logic is put to child class, to solve issue of can't open history/bookmark on second page
 	}
 	
 	public void reloadPage() {// identical

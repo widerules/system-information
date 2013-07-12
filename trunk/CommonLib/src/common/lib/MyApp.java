@@ -74,7 +74,7 @@ public class MyApp extends BaseApp {
 	public FrameLayout adContainer;
 	public LinearLayout adContainer2;	
 	public WrapAdView adview = null, adview2 = null;
-	WrapInterstitialAd interstitialAd = null;
+	public WrapInterstitialAd interstitialAd = null;
 	public boolean interstitialAdClicked = false;
 	boolean clicked = false;
 	public static boolean mAdAvailable;

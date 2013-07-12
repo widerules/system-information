@@ -75,6 +75,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
 		Intent intent = new Intent();
 		intent.setAction("crashControl");
+		intent.setClassName(mContext.getPackageName(), CrashControl.class.getName());
 		intent.putExtra("errorMsg", writer.toString());
 		intent.putExtra("id", id);
 		// request_code will help to diff different thread

@@ -1212,23 +1212,22 @@ public class SimpleBrowser extends Activity {
 		appstate.initSiteArray();
 		
 		cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-		WebIconDatabase.getInstance().open(
-				getDir("databases", MODE_PRIVATE).getPath());
-		appstate.webIndex = 0;
-		if (appstate.serverWebs.size() > 0) {
-			while (appstate.serverWebs.size() > 0) {
-				EasyWebView tmp = (EasyWebView) appstate.webpages.getChildAt(0);
-				if (tmp == null) break;//sometime it is null if close page very quick
-				appstate.webAdapter.remove(tmp);
-				appstate.webAdapter.notifyDataSetInvalidated();
-				try {
-					appstate.webpages.removeView(tmp);
-				} catch (Exception e) {
-				}// null pointer reported by 3 user. really strange.
-				tmp.destroy();
-				System.gc();
-			}
+		WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
+
+		while (appstate.serverWebs.size() > 0) {
+			EasyWebView tmp = (EasyWebView) appstate.webpages.getChildAt(0);
+			if (tmp == null) break;//sometime it is null if close page very quick
+			appstate.webAdapter.remove(tmp);
+			appstate.webAdapter.notifyDataSetInvalidated();
+			try {
+				appstate.webpages.removeView(tmp);
+			} catch (Exception e) {
+			}// null pointer reported by 3 user. really strange.
+			tmp.destroy();
+			System.gc();
 		}
+
+		appstate.webIndex = 0;
 		appstate.serverWebs.add(new EasyWebView(mContext, appstate));
 		appstate.webpages = (MyViewFlipper) findViewById(R.id.webpages);
 		appstate.webpages.addView(appstate.serverWebs.get(appstate.webIndex));

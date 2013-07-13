@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+	
+	<string name="browser_name">เบราว์เซอร์ได้ง่าย</string>
+
+    <string name="source">แหล่ง</string>
+    <string name="snap">ตะครุบ</string>
+    <string name="copy">คัดลอก</string>
+    <string name="exit">ทางออก</string>
+    <string name="downloads">ดาวน์โหลด</string>
+    <string name="shareurl">URL หุ้น</string>
+    <string name="search">ค้นหา</string>
+    <string name="settings">การตั้งค่า</string>
+</resources>

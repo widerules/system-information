@@ -308,7 +308,7 @@ public class SimpleBrowser extends Activity {
 			
 			appstate.updownButton = appstate.sp.getBoolean("up_down", false);
 			if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
-			else appstate.upAndDown.setVisibility(View.INVISIBLE);
+			else appstate.upAndDown.setVisibility(View.GONE);
 			
 			appstate.shareMode = appstate.sp.getInt("share_mode", 1);
 			
@@ -815,7 +815,7 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 2:// copy
-					appstate.webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
+					appstate.webControl.setVisibility(View.GONE);// hide webControl when copy
 					try {
 						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
 							Toast.makeText(mContext,
@@ -881,7 +881,7 @@ public class SimpleBrowser extends Activity {
 					appstate.shareUrl(appstate.serverWebs.get(appstate.webIndex).getTitle(), appstate.serverWebs.get(appstate.webIndex).m_url);
 					break;
 				case 6:// search
-					appstate.webControl.setVisibility(View.INVISIBLE);// hide webControl when search
+					appstate.webControl.setVisibility(View.GONE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
 					if (appstate.searchBar == null) initSearchBar();
 					appstate.searchBar.bringToFront();
@@ -905,7 +905,7 @@ public class SimpleBrowser extends Activity {
 	public void initUpDown() {
 		appstate.upAndDown = (LinearLayout) findViewById(R.id.up_down);
 		if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
-		else appstate.upAndDown.setVisibility(View.INVISIBLE);
+		else appstate.upAndDown.setVisibility(View.GONE);
 		
 		ImageView dragButton = (ImageView) findViewById(R.id.page_drag);
 		dragButton.setAlpha(80);

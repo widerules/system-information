@@ -61,7 +61,7 @@ public class EasyApp extends MyApp {
 	public void actionBack() {
 		// press Back key in webview will go backword.
 		if (webControl.getVisibility() == View.VISIBLE)
-			webControl.setVisibility(View.INVISIBLE);// hide web control
+			webControl.setVisibility(View.GONE);// hide web control
 		else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
 			hideSearchBox();
 		else if (HOME_BLANK.equals(webAddress.getText().toString())) {

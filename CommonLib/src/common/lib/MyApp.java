@@ -55,6 +55,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import base.lib.BaseApp;
@@ -71,7 +72,7 @@ public class MyApp extends BaseApp {
 	public String m_homepage = null;
 
 	// Ads
-	public FrameLayout adContainer;
+	public ScrollView adContainer;
 	public LinearLayout adContainer2;	
 	public WrapAdView adview = null, adview2 = null;
 	public WrapInterstitialAd interstitialAd = null;

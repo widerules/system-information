@@ -148,7 +148,7 @@ public class MyApp extends BaseApp {
 	final int historyCount = 16;
 	public long html5cacheMaxSize = 1024 * 1024 * 8;
 	public int ua = 0;
-	public int searchEngine = 3;
+	public int searchEngine = 5;
 	public int shareMode = 2;
 	public int SETTING_RESULTCODE = 1002;
 	public boolean enableProxy = false;

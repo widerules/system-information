@@ -1318,7 +1318,6 @@ public class SimpleBrowser extends Activity {
 
 		appstate.adContainer = (ScrollView) findViewById(R.id.adContainer);
 		appstate.adRealContainer = (LinearLayout) findViewById(R.id.realAdContainer);
-		appstate.createAd(appstate.dm.widthPixels / appstate.dm.density);
 		setLayout();
 		setWebpagesLayout();
 		initUpDown();
@@ -1502,6 +1501,7 @@ public class SimpleBrowser extends Activity {
 
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(appstate.dm);
+		appstate.createAd(appstate.dm.widthPixels / appstate.dm.density);
 
 		if (appstate.dm.widthPixels < 320*appstate.dm.density) {
 			imageBtnList.getLayoutParams().width = appstate.dm.widthPixels;

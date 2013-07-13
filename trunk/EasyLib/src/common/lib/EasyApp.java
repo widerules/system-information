@@ -32,6 +32,7 @@ public class EasyApp extends MyApp {
 	
 	public void createAd(float width) {
 		if (mAdAvailable) {
+			removeAd();
 			if (width < 320) ;//do nothing for it is too narrow. 
             // but it will cause force close if not create adview?
             if (width < 468)// AdSize.BANNER require 320*50
@@ -47,13 +48,15 @@ public class EasyApp extends MyApp {
 				adview.loadAd();
 			}
 
-			adview2 = new WrapAdView(mActivity, 0, "a14d662bba1e443", null);// AdSize.BANNER require 320*50
-			if ((adview2 != null) && (adview2.getInstance() != null)) { 
-				adContainer2.addView(adview2.getInstance());
-				adview2.loadAd();
-			}
+ 			if (adview2 == null) {
+ 				adview2 = new WrapAdView(mActivity, 0, "a14d662bba1e443", null);// AdSize.BANNER require 320*50
+ 				if ((adview2 != null) && (adview2.getInstance() != null)) { 
+ 					adContainer2.addView(adview2.getInstance());
+ 					adview2.loadAd();
+ 				}
+ 			}
 			
-			interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
+ 			if (interstitialAd == null) interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
 		}
 	}
 

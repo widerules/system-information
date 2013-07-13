@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;
+import base.lib.CrashControl;
 import base.lib.util;
 
 @TargetApi(3)
@@ -70,6 +71,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
 		// this intent is to pause/stop download
 		intent.setAction("downloadControl");
+		intent.setClassName(appstate.mContext.getPackageName(), DownloadControl.class.getName());
 		intent.putExtra("name", apkName);
 		intent.putExtra("url", URL_str);
 		// request_code will help to diff different thread
@@ -136,7 +138,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			// MimeTypeMap.getFileExtensionFromUrl(apkName) will get null
 			String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
 			
-			intent.setAction(Intent.ACTION_VIEW);
+			intent = new Intent(Intent.ACTION_VIEW);
 			MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 			String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
 			if (mimeType == null) mimeType = "";// must set a value to mimeType otherwise it will error when download finished

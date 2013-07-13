@@ -118,6 +118,9 @@ public class MyWebView extends WebView {
 			if (mAppstate.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
 				mAppstate.webControl.setVisibility(View.GONE);
 			
+			if (mAppstate.adContainer.getVisibility() == View.VISIBLE)
+				mAppstate.adContainer.setVisibility(View.GONE);
+
 			if (!mAppstate.showUrl) mAppstate.setUrlHeight(false);
 			if (!mAppstate.showControlBar) mAppstate.setBarHeight(false);
 
@@ -129,8 +132,6 @@ public class MyWebView extends WebView {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
-			if (mAppstate.adContainer.getVisibility() == View.VISIBLE)
-				mAppstate.adContainer.setVisibility(View.GONE);
 			break;
 		}
 		

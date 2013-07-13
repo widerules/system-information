@@ -72,8 +72,10 @@ public class EasyApp extends MyApp {
 			// user's page will not reopen.
 			// singleInstance will work here, but it will cause
 			// downloadControl not work? or select file not work?
-			if (serverWebs.size() == 1)
+			if (serverWebs.size() == 1) {
+				if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
 				mActivity.moveTaskToBack(true);
+			}
 			else closePage(webIndex, false); // close blank page if more than one page
 		} else if (serverWebs.get(webIndex).canGoBack())
 			serverWebs.get(webIndex).goBack();

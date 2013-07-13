@@ -23,7 +23,7 @@
         android:xlargeScreens="true" />
 
     <application
-        android:name="common.lib.MyApp"
+        android:name="common.lib.EasyApp"
         android:debuggable="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/explorer"

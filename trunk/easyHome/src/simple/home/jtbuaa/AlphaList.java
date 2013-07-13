@@ -105,7 +105,7 @@ public abstract class AlphaList<T> {
     	AppList.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				if ((mApps.size() > 0) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
+				if ((mApps.size() > firstVisibleItem) && (!DuringSelection)) {//revert the focus of alpha list when scroll app list
 					String alpha = getAlpha(mApps.get(firstVisibleItem));
 					int pos = alphaAdapter.getPosition(alpha);
 					if (pos != mSelected) {

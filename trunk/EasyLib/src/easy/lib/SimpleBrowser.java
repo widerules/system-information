@@ -80,6 +80,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -1315,7 +1316,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		appstate.adContainer = (FrameLayout) findViewById(R.id.adContainer);
+		appstate.adContainer = (ScrollView) findViewById(R.id.adContainer);
 		appstate.adRealContainer = (LinearLayout) findViewById(R.id.realAdContainer);
 		appstate.createAd(appstate.dm.widthPixels / appstate.dm.density);
 		setLayout();

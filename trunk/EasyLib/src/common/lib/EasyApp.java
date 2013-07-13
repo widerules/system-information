@@ -32,23 +32,17 @@ public class EasyApp extends MyApp {
 	
 	public void createAd(float width) {
 		if (mAdAvailable) {
-			//removeAd();
-
-			//if ((cm == null) || (cm.getActiveNetworkInfo() == null)
-			//		|| !cm.getActiveNetworkInfo().isConnected())
-			//	return;// not create ad if network error
-
-			 if (width < 320) ;//do nothing for it is too narrow. 
-             // but it will cause force close if not create adview?
-             if (width < 468)// AdSize.BANNER require 320*50
-                     adview = new WrapAdView(mActivity, 0, "a14f3f6bc126143", mAppHandler);
-             else if (width < 728)
-                     adview = new WrapAdView(mActivity, 1, "a14f3f6bc126143", mAppHandler);
-                     // AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1.
-                     // return width = request width * density.
-             else    // AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
-                     adview = new WrapAdView(mActivity, 2, "a14f3f6bc126143", mAppHandler);
-			if ((adview != null) && (adview.getInstance() != null)) {
+			if (width < 320) ;//do nothing for it is too narrow. 
+            // but it will cause force close if not create adview?
+            if (width < 468)// AdSize.BANNER require 320*50
+            	adview = new WrapAdView(mActivity, 0, "a14f3f6bc126143", mAppHandler);
+            else if (width < 728)
+                 adview = new WrapAdView(mActivity, 1, "a14f3f6bc126143", mAppHandler);
+                 // AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1.
+                 // return width = request width * density.
+            else    // AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
+                 adview = new WrapAdView(mActivity, 2, "a14f3f6bc126143", mAppHandler);
+ 			if ((adview != null) && (adview.getInstance() != null)) {
 				adRealContainer.addView(adview.getInstance());
 				adview.loadAd();
 			}

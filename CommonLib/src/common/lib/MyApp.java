@@ -93,7 +93,7 @@ public class MyApp extends BaseApp {
 				adContainer.setVisibility(View.VISIBLE);
 			}
 			else if (msg.what == -1) {// hide ad when can't get ad
-				adContainer.setVisibility(View.GONE);
+				//adContainer.setVisibility(View.GONE);
 			}
 			else if (msg.what == 1) {// remove ad when click ad // disabled
 				//removeAd();
@@ -892,6 +892,7 @@ public class MyApp extends BaseApp {
 	void removeAd() {
 		if (adview != null) {
 			adContainer.setVisibility(View.GONE);
+			adContainer.removeAllViews();
 			adview.destroy();
 			adview = null;
 		}

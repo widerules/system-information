@@ -547,6 +547,7 @@ public class SimpleBrowser extends Activity {
 		else {
 			appstate.setUrlHeight(true);
 			appstate.setBarHeight(true);
+			appstate.adContainer.setVisibility(View.VISIBLE);
 			
 			menuDialog.show();
 		}

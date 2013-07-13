@@ -461,7 +461,7 @@ public class AboutBrowser extends Activity {
 
 		try {
 			((RadioButton) shareMode.getChildAt(perferences.getInt(
-					"share_mode", 2))).setChecked(true);
+					"share_mode", 1))).setChecked(true);
 			((RadioButton) fontSize.getChildAt(perferences.getInt("textsize", 2)))
 					.setChecked(true);// normal
 			((RadioButton) searchEngine.getChildAt(engineId)).setChecked(true);

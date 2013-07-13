@@ -310,9 +310,9 @@ public class SimpleBrowser extends Activity {
 			if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
 			else appstate.upAndDown.setVisibility(View.INVISIBLE);
 			
-			appstate.shareMode = appstate.sp.getInt("share_mode", 2);
+			appstate.shareMode = appstate.sp.getInt("share_mode", 1);
 			
-			appstate.searchEngine = appstate.sp.getInt("search_engine", 3);
+			appstate.searchEngine = appstate.sp.getInt("search_engine", 5);
 
 			boolean tmpEnableProxy = appstate.sp.getBoolean("enable_proxy", false);
 			int tmpLocalPort = appstate.sp.getInt("local_port", 1984);

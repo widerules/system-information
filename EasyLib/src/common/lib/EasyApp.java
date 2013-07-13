@@ -20,8 +20,6 @@ public class EasyApp extends MyApp {
 	public boolean collapse3 = true;
 	int countDown = 0;
 	
-	public LinearLayout adRealContainer;
-
 	public void readPreference() {
 		super.readPreference();
 		
@@ -44,7 +42,7 @@ public class EasyApp extends MyApp {
             else    // AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
                  adview = new WrapAdView(mActivity, 2, "a14f3f6bc126143", mAppHandler);
  			if ((adview != null) && (adview.getInstance() != null)) {
-				adRealContainer.addView(adview.getInstance());
+				adContainer.addView(adview.getInstance());
 				adview.loadAd();
 			}
 

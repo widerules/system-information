@@ -72,12 +72,11 @@ public class MyApp extends BaseApp {
 	public String m_homepage = null;
 
 	// Ads
-	public ScrollView adContainer;
+	public LinearLayout adContainer;
 	public LinearLayout adContainer2;	
 	public WrapAdView adview = null, adview2 = null;
 	public WrapInterstitialAd interstitialAd = null;
 	public boolean interstitialAdClicked = false;
-	boolean clicked = false;
 	public static boolean mAdAvailable;
 	static {
 		try {
@@ -96,9 +95,8 @@ public class MyApp extends BaseApp {
 			else if (msg.what == -1) {// hide ad when can't get ad
 				adContainer.setVisibility(View.GONE);
 			}
-			else if (msg.what == 1) {// remove ad when click ad
-				clicked = true;
-				removeAd();
+			else if (msg.what == 1) {// remove ad when click ad // disabled
+				//removeAd();
 			}
 			else if (msg.what == -2) {// fail to get InterstitialAd
 				Bundle data = msg.getData();

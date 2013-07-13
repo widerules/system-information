@@ -431,17 +431,8 @@ public class SimpleBrowser extends Activity {
 		appstate.setUrlHeight(appstate.showUrl);
 		appstate.setBarHeight(appstate.showControlBar);
 
-		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, (int)(40*appstate.dm.density));
-		if (appstate.showUrl) 
-			lp.addRule(RelativeLayout.BELOW, R.id.urlline);
-		else 
-			lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		appstate.adContainer.setLayoutParams(lp);
-		appstate.adContainer.requestLayout();
-		
-		lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		lp.addRule(RelativeLayout.BELOW, R.id.adContainer);
+		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		lp.addRule(RelativeLayout.BELOW, R.id.urlline);
 		if (appstate.showControlBar)
 			lp.addRule(RelativeLayout.ABOVE, R.id.webtools);
 		else 
@@ -1316,8 +1307,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		appstate.adContainer = (ScrollView) findViewById(R.id.adContainer);
-		appstate.adRealContainer = (LinearLayout) findViewById(R.id.realAdContainer);
+		appstate.adContainer = (LinearLayout) findViewById(R.id.adContainer);
 		setLayout();
 		setWebpagesLayout();
 		initUpDown();

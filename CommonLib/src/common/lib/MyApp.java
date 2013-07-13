@@ -235,7 +235,7 @@ public class MyApp extends BaseApp {
 			webname.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					webControl.setVisibility(View.INVISIBLE);
+					webControl.setVisibility(View.GONE);
 					changePage(position);
 				}
 			});
@@ -474,7 +474,7 @@ public class MyApp extends BaseApp {
 				case 2:
 					updownButton = selected;
 					if (updownButton) upAndDown.setVisibility(View.VISIBLE);
-					else upAndDown.setVisibility(View.INVISIBLE);
+					else upAndDown.setVisibility(View.GONE);
 					sEdit.putBoolean("up_down", updownButton);
 					break;
 				case 3:
@@ -560,14 +560,15 @@ public class MyApp extends BaseApp {
 	}
 	
 	public void imgNewClick() {
-		if (webControl.getVisibility() == View.INVISIBLE) {
+		if (webControl.getVisibility() == View.GONE) {
 			if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
+			adContainer.setVisibility(View.VISIBLE);
 		
 			//if (webControl.getWidth() < minWebControlWidth) scrollToMain();/////////////////////////////////not identical////////////////////////////
 			webAdapter.notifyDataSetInvalidated();
 			webControl.setVisibility(View.VISIBLE);
 			webControl.bringToFront();
-		} else webControl.setVisibility(View.INVISIBLE);	
+		} else webControl.setVisibility(View.GONE);	
 	}
 	
 	public void listPageHistory() {// identical
@@ -686,7 +687,7 @@ public class MyApp extends BaseApp {
 			loadProgress.setProgress(serverWebs.get(position).mProgress);
 		} else {
 			imgRefresh.setImageResource(R.drawable.refresh);
-			loadProgress.setVisibility(View.INVISIBLE);
+			loadProgress.setVisibility(View.GONE);
 		}
 	}
 
@@ -724,7 +725,7 @@ public class MyApp extends BaseApp {
 			}
 			else if ((webIndex >= position) && (webIndex > 0)) webIndex -= 1;// change to previous page by default
 		} else {// return to home page if only one page when click close button
-			webControl.setVisibility(View.INVISIBLE);
+			webControl.setVisibility(View.GONE);
 			loadPage();
 			webIndex = 0;
 			//serverWebs.get(webIndex).clearHistory();// is that necessary to clear history?
@@ -808,7 +809,7 @@ public class MyApp extends BaseApp {
 	
 	public void hideSearchBox() {// identical
 		imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-		searchBar.setVisibility(View.INVISIBLE);
+		searchBar.setVisibility(View.GONE);
 		matchCount = 0;
 		// remove the match by an impossible search
 		serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");
@@ -968,7 +969,7 @@ public class MyApp extends BaseApp {
 			imgRefresh.setImageResource(R.drawable.refresh);
 			// webpage is loading then stop it
 			serverWebs.get(webIndex).stopLoading();
-			loadProgress.setVisibility(View.INVISIBLE);
+			loadProgress.setVisibility(View.GONE);
 		} else {// reload the webpage
 			imgRefresh.setImageResource(R.drawable.stop);
 			loadProgress.setProgress(1);// to make it seems feedback more fast

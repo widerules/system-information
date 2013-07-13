@@ -224,7 +224,7 @@ public class MyWebView extends WebView {
 				if (isForeground) {
 					mAppstate.loadProgress.setProgress(progress);
 					if (progress == 100)
-						mAppstate.loadProgress.setVisibility(View.INVISIBLE);
+						mAppstate.loadProgress.setVisibility(View.GONE);
 				}
 			}
 
@@ -435,9 +435,9 @@ public class MyWebView extends WebView {
 	void pageFinishAction(WebView view, String url, boolean isForeground) {
 		if (isForeground) {
 			// hide progressbar anyway
-			mAppstate.loadProgress.setVisibility(View.INVISIBLE);
+			mAppstate.loadProgress.setVisibility(View.GONE);
 			mAppstate.imgRefresh.setImageResource(R.drawable.refresh);
-			mAppstate.webControl.setVisibility(View.INVISIBLE);
+			mAppstate.webControl.setVisibility(View.GONE);
 			if (mAppstate.HOME_PAGE.equals(url)) mAppstate.webAddress.setText(mAppstate.HOME_BLANK);
 			else mAppstate.webAddress.setText(url);
 		}

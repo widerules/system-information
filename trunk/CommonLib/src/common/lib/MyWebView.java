@@ -114,7 +114,10 @@ public class MyWebView extends WebView {
 													// code here
 		if (ev.getAction() == 0) {// touch down
 			if (mAppstate.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
-				mAppstate.webControl.setVisibility(View.INVISIBLE);
+				mAppstate.webControl.setVisibility(View.GONE);
+			
+			if (mAppstate.adContainer.getVisibility() == View.VISIBLE)
+				mAppstate.adContainer.setVisibility(View.GONE);
 							
 			if (!mAppstate.showUrl) mAppstate.setUrlHeight(false);
 			if (!mAppstate.showControlBar) mAppstate.setBarHeight(false);
@@ -275,9 +278,8 @@ public class MyWebView extends WebView {
 					if (mAppstate.HOME_PAGE.equals(url)) mAppstate.webAddress.setText(mAppstate.HOME_BLANK);
 					else mAppstate.webAddress.setText(url);
 					
-					if ((mAppstate.adview != null) && !mAppstate.clicked)
-						mAppstate.adview.loadAd();// the refresh rate set by server side may not work. so we refresh by ourself
-					else if ((mAppstate.adview2 != null) && (mAppstate.adContainer2.getVisibility() != View.GONE)) mAppstate.adview2.loadAd();
+					if ((mAppstate.adview != null) && (mAppstate.adview.isReady())) mAppstate.adContainer.setVisibility(View.VISIBLE);
+					if ((mAppstate.adview2 != null) && (mAppstate.adContainer2.getVisibility() != View.GONE)) mAppstate.adview2.loadAd();
 					if (mAppstate.interstitialAd != null && !mAppstate.interstitialAd.isReady()) mAppstate.interstitialAd.loadAd();
 					
 					mAppstate.imgRefresh.setImageResource(R.drawable.stop);

@@ -178,28 +178,12 @@
         </FrameLayout>
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/adContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="40dip"
-        android:layout_below="@id/urlline"
-        android:fadingEdge="none"
-        android:visibility="gone"
-        android:orientation="vertical" >
-            <LinearLayout
-                android:id="@+id/realAdContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-            </LinearLayout>
-    </ScrollView>
-
     <RelativeLayout
         android:id="@+id/webs"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/webtools"
-        android:layout_below="@+id/adContainer" >
+        android:layout_below="@+id/urlline" >
 
         <common.lib.MyViewFlipper
             android:id="@+id/webpages"
@@ -245,6 +229,16 @@
                 android:src="@drawable/arrow_expand" />
         </LinearLayout>
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/adContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/urlline"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:orientation="vertical" >
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/search_bar"

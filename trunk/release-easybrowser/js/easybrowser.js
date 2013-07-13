@@ -68,12 +68,13 @@ function setButton(para) {
 	document.getElementById('cancel_edit').innerHTML = data[2];
 }
 
+var begining = 1;//need omit the first input which is a search box
 function showCheckbox() {
 	document.getElementById('edit_home').style.display='none';
 	document.getElementById('delete_selected').style.display='';
 	document.getElementById('cancel_edit').style.display='';
 	var inputs = document.getElementsByTagName('input');
-	for (var i = 0; i < inputs.length; i++) inputs[i].style.display='';
+	for (var i = begining; i < inputs.length; i++) inputs[i].style.display='';
 }
 
 function hideCheckbox() {
@@ -81,17 +82,18 @@ function hideCheckbox() {
 	document.getElementById('delete_selected').style.display='none';
 	document.getElementById('cancel_edit').style.display='none';
 	var inputs = document.getElementsByTagName('input');
-	for (var i = 1; i < inputs.length; i++) inputs[i].style.display='none';
+	for (var i = begining; i < inputs.length; i++) inputs[i].style.display='none';
 }
 
 function deleteSelected() {
 	var bookmarks = '';
 	var historys = '';
 	var inputs = document.getElementsByTagName('input');
-	for (var i = 0; i < inputs.length; i++) {
+	for (var i = begining; i < inputs.length; i++) {
 		if (inputs[i].checked) {
-			if (inputs[i].attributes['class'].nodeValue == 'bookmark') bookmarks += i + ',,,,';
-			else historys += i + ',,,,';
+			var index = i - begining;
+			if (inputs[i].attributes['class'].nodeValue == 'bookmark') bookmarks += index + ',,,,';
+			else historys += index + ',,,,';
 		}
 	}
 	window.JSinterface.deleteItems(bookmarks, historys);

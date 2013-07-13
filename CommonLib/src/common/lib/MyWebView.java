@@ -109,16 +109,15 @@ public class MyWebView extends WebView {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent ev) {// onTouchListener may not
+	public boolean onTouchEvent(MotionEvent event) {// onTouchListener may not
 													// work. so put relate
 													// code here
-		if (ev.getAction() == 0) {// touch down
+		int eventAction = event.getAction();
+		switch (eventAction) {
+		case MotionEvent.ACTION_DOWN:
 			if (mAppstate.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
 				mAppstate.webControl.setVisibility(View.GONE);
 			
-			if (mAppstate.adContainer.getVisibility() == View.VISIBLE)
-				mAppstate.adContainer.setVisibility(View.GONE);
-							
 			if (!mAppstate.showUrl) mAppstate.setUrlHeight(false);
 			if (!mAppstate.showControlBar) mAppstate.setBarHeight(false);
 
@@ -128,10 +127,15 @@ public class MyWebView extends WebView {
 				mAppstate.webAddress.setFocusableInTouchMode(false);
 				mAppstate.webAddress.clearFocus();
 			}
+			break;
+		case MotionEvent.ACTION_UP:
+			if (mAppstate.adContainer.getVisibility() == View.VISIBLE)
+				mAppstate.adContainer.setVisibility(View.GONE);
+			break;
 		}
 		
 		//requestDisallowInterceptTouchEvent(true);
-		return super.onTouchEvent(ev);
+		return super.onTouchEvent(event);
 	}
 
 	public MyWebView(Context context, MyApp appstate) {

@@ -243,7 +243,7 @@
     <RelativeLayout
         android:id="@+id/search_bar"
         android:layout_width="fill_parent"
-        android:layout_height="36dip"
+        android:layout_height="40dip"
         android:layout_alignParentBottom="true"
         android:background="@drawable/round_corner"
         android:orientation="horizontal"
@@ -285,15 +285,15 @@
             android:layout_toLeftOf="@id/search_prev"
             android:gravity="center"
             android:textColor="#000000"
-            android:textSize="16dip" />
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/search"
             android:layout_width="match_parent"
-            android:layout_height="35dip"
+            android:layout_height="38dip"
             android:layout_marginLeft="5dip"
             android:layout_marginRight="5dip"
-            android:layout_marginTop="1dip"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/search_hint"
             android:layout_toRightOf="@id/close_search"
             android:imeOptions="actionSearch|flagNoExtractUi"
@@ -327,7 +327,7 @@
             android:gravity="center"
             android:text="@string/newpage"
             android:textColor="#FF333333"
-            android:textSize="20dip"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
 

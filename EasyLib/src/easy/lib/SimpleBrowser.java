@@ -12,6 +12,7 @@ import java.util.List;
 import common.lib.ClearFolderTask;
 import common.lib.EasyApp;
 import common.lib.EasyWebView;
+import common.lib.MyApp.WriteTask;
 import common.lib.MyViewFlipper;
 import common.lib.MyWebView;
 import common.lib.ProxySettings;
@@ -231,7 +232,8 @@ public class SimpleBrowser extends Activity {
 
 				if (clearHistory) {
 					appstate.mHistory.clear();
-					appstate.wtask.execute("history");
+					WriteTask wtask = appstate.new WriteTask();
+					wtask.execute("history");
 					clearFile("searchwords");
 					appstate.siteArray.clear();
 					appstate.urlAdapter.clear();
@@ -242,7 +244,8 @@ public class SimpleBrowser extends Activity {
 
 				if (clearBookmark) {
 					appstate.mBookMark.clear();
-					appstate.wtask.execute("bookmark");
+					WriteTask wtask = appstate.new WriteTask();
+					wtask.execute("bookmark");
 					appstate.bookmarkChanged = false;
 					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
 						shouldReload = true;

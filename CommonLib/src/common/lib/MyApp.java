@@ -1183,7 +1183,6 @@ public class MyApp extends BaseApp {
 		util.startActivity(shareIntent, false, mContext);
 	}
 	
-	public WriteTask wtask = new WriteTask();
 	public class WriteTask extends AsyncTask<String, Integer, String> {//identical
 
 		@Override

@@ -35,7 +35,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import common.lib.EasyApp;
+import common.lib.HarleyApp;
 import common.lib.MyApp;
+import common.lib.MyComparator;
+import common.lib.TitleUrl;
 
 import base.lib.StringComparator;
 import base.lib.WrapInterstitialAd;
@@ -323,7 +327,6 @@ public class SimpleBrowser extends Activity {
 	String dataPath = "";
 	NotificationManager nManager;
 	ArrayList<packageIDpair> downloadAppID;
-	MyApp appstate;
 
 	class packageIDpair {
 		String packageName;
@@ -389,24 +392,6 @@ public class SimpleBrowser extends Activity {
 		
 		public void getPageSource() {// to get page source, part 3
 			loadUrl("javascript:window.JSinterface.processHTML(document.getElementsByTagName('html')[0].innerHTML);");
-		}
-
-		class MyJavaScriptInterface {
-			@SuppressWarnings("unused")
-			public void processHTML(String html) {
-				pageSource = html;// to get page source, part 1
-			}
-
-			@SuppressWarnings("unused")
-			public void showInterstitialAd() {
-				if (interstitialAd.isReady()) interstitialAd.show();
-				else {
-					Toast.makeText(mContext, "Admob is loading", Toast.LENGTH_LONG).show();
-					Message fail = mAppHandler.obtainMessage();
-					fail.what = -3;
-					mAppHandler.sendMessage(fail);
-				}
-			}
 		}
 
 		public void setZoomControl(int visibility) {
@@ -533,228 +518,6 @@ public class SimpleBrowser extends Activity {
 			        
 			return super.onTouchEvent(event);
 		}
-
-		public MyWebview(Context context) {
-			super(context);
-
-			setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);// no white blank on the right of webview
-			
-			setScrollbarFadingEnabled(true);// hide scroll bar when not scroll. from API5, not work on cupcake.
-
-			WebSettings localSettings = getSettings();
-			localSettings.setSaveFormData(true);
-			localSettings.setTextSize(textSize);
-			localSettings.setSupportZoom(true);
-			localSettings.setBuiltInZoomControls(true);
-
-			// otherwise can't scroll horizontal in some webpage, such as qiupu.
-			//localSettings.setUseWideViewPort(true);// but it will cause font too small?
-
-			// open Geolocation by default
-			localSettings.setGeolocationEnabled(true);//API5
-			//localSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. no use for get location in baidu map?
-
-			localSettings.setPluginsEnabled(true);
-			// localSettings.setPluginState(WebSettings.PluginState.ON);
-			// setInitialScale(1);
-			localSettings.setSupportMultipleWindows(true);
-			localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
-			localSettings.setBlockNetworkImage(blockImage);
-			if (cachePrefer)
-				localSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-			localSettings.setJavaScriptEnabled(!blockJs);
-
-			if (ua <= 1)
-				localSettings.setUserAgent(ua);
-			else
-				localSettings.setUserAgentString(selectUA(ua));
-
-			webSettings = new wrapWebSettings(localSettings);
-			if (!webSettings.setDisplayZoomControls(false)) // hide zoom button
-															// by default on API
-															// 11 and above
-				setZoomControl(View.GONE);// default not show zoom control in new page
-
-			localSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
-
-			localSettings.setDomStorageEnabled(true);// API7, key to enable gmail
-
-			// loads the WebView completely zoomed out. fit for hao123, but not
-			// fit for homepage. from API7
-			//localSettings.setUseWideViewPort(overviewPage);
-			localSettings.setLoadWithOverviewMode(overviewPage);
-
-			registerForContextMenu(this);
-
-			// to get page source, part 2
-			addJavascriptInterface(new MyJavaScriptInterface(), "JSinterface");
-
-			setDownloadListener(new DownloadListener() {
-				@Override
-				public void onDownloadStart(final String url, String ua,
-						final String contentDisposition, String mimetype,
-						long contentLength) {
-					downloadAction(url, contentDisposition, mimetype);
-				}
-			});
-
-			setWebChromeClient(new WebChromeClient() {
-				@Override
-				public void onProgressChanged(WebView view, int progress) {
-					if (progress == 100)
-						mProgress = 0;
-					else mProgress = progress;
-
-					if (isForeground) {
-						loadProgress.setProgress(progress);
-						if (progress == 100)
-							loadProgress.setVisibility(View.INVISIBLE);
-					}
-				}
-
-				// For Android 3.0+
-				public void openFileChooser(ValueCallback<Uri> uploadMsg,
-						String acceptType) {
-					if (null == mUploadMessage)
-						mUploadMessage = new wrapValueCallback();
-					mUploadMessage.mInstance = uploadMsg;
-					Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-					i.addCategory(Intent.CATEGORY_OPENABLE);
-					i.setType("*/*");
-					startActivityForResult(Intent.createChooser(i,
-							getString(R.string.select_file)),
-							FILECHOOSER_RESULTCODE);
-				}
-
-				// For Android < 3.0
-				public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-					openFileChooser(uploadMsg, "");
-				}
-
-				
-				//I don't know how to reflect a Interface, so it will crash on cupcake
-				@Override
-				public void onGeolocationPermissionsShowPrompt(final String origin,
-						final GeolocationPermissions.Callback callback) {
-					callback.invoke(origin, true, false);//use maps.google.com or map.baidu.com to verify
-				}
-
-				@Override
-				public View getVideoLoadingProgressView() {
-					TextView view = new TextView(mContext);
-					view.setText(R.string.wait);
-					view.setTextSize(20);
-					return view;// this if for hint when load video
-				}
-				
-				@Override
-				public void onShowCustomView(View view,	final CustomViewCallback callback) {
-					super.onShowCustomView(view, callback);
-
-					if (view instanceof FrameLayout) {
-						mCustomViewContainer = (FrameLayout) view;
-						mCustomViewCallback = callback;
-						if (mCustomViewContainer.getFocusedChild() instanceof VideoView) {
-							mVideoView = (VideoView) mCustomViewContainer.getFocusedChild();
-							mVideoView.setOnCompletionListener(new OnCompletionListener() {
-								@Override
-								public void onCompletion(MediaPlayer mp) {
-									mp.stop();
-									onHideCustomView();
-								}
-							});
-							mVideoView.setOnErrorListener(new OnErrorListener() {
-								@Override
-								public boolean onError(MediaPlayer mp, int what, int extra) {
-									mp.stop();
-									onHideCustomView();
-									return true;
-								}
-							});
-							mVideoView.requestFocus();
-							mVideoView.start();
-						}
-						else ;//it is android.webkit.HTML5VideoFullScreen$VideoSurfaceView instead of VideoView
-						
-						browserView.setVisibility(View.GONE);
-	                    setContentView(mCustomViewContainer);
-					}
-				}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify
-
-				public void onHideCustomView() {
-					hideCustomView();
-				}
-
-
-				@Override
-				public boolean onCreateWindow(WebView view, boolean isDialog,
-						boolean isUserGesture, android.os.Message resultMsg) {
-					if (openNewPage(null, webIndex+1, true, true)) {// open new page success
-						((WebView.WebViewTransport) resultMsg.obj)
-								.setWebView(serverWebs.get(webIndex));
-						resultMsg.sendToTarget();
-						return true;
-					} else return false;
-				}
-			});
-
-			setWebViewClient(new WebViewClient() {
-				@Override
-				public void onReceivedSslError(WebView view,
-						SslErrorHandler handler, SslError error) {
-					// accept ssl certification whenever needed.
-					if (handler != null) handler.proceed();
-				}
-
-				@Override
-				public void onPageStarted(WebView view, String url, Bitmap favicon) {
-					super.onPageStarted(view, url, favicon);
-					m_url = url;
-					pageSource = "";
-
-					if (isForeground) {
-						// close soft keyboard
-						imm.hideSoftInputFromWindow(getWindowToken(), 0);
-						loadProgress.setVisibility(View.VISIBLE);
-						
-						if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
-						else webAddress.setText(url);
-						
-						imgRefresh.setImageResource(R.drawable.stop);
-
-						if (!showUrl) setUrlHeight(true);
-						if (!showControlBar) setBarHeight(true);
-					}
-
-					//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
-					//} catch (Exception e) {}
-					
-					if (!incognitoMode) recordPages();
-				}
-
-				@Override
-				public void onPageFinished(WebView view, String url) {
-					pageSource = "";// prevent get incomplete page source during page loading
-					m_url = url;// must sync the url for it may change after pagestarted.
-					mProgress = 0;
-					pageFinishAction(view, url, isForeground);
-				}
-
-				@Override
-				public boolean shouldOverrideUrlLoading(WebView view, String url) {
-					if (HOME_BLANK.equals(url)) {// some site such as weibo and
-						// mysilkbaby will send
-						// BLANK_PAGE when login.
-						return true;// we should do nothing but return true,
-									// otherwise may not login.
-					} else if (!url.startsWith("http") && !url.startsWith("file")) {
-						overloadAction(url);
-						return true; // not allow webpage to proceed
-					} else
-						return false;
-				}
-			});
-		}
 	}
 
 	private VideoView mVideoView = null;
@@ -772,204 +535,6 @@ public class SimpleBrowser extends Activity {
 		mCustomViewCallback.onCustomViewHidden();
 		// Show the browser view.
 		setContentView(browserView);
-	}
-	
-	void downloadAction(final String url, final String contentDisposition, String mimetype) {
-		// need to know it is httpget, post or direct connect.
-		// for example, I don't know how to handle this
-		// http://yunfile.com/file/murongmr/5a0574ad/. firefox think
-		// it is post.
-		// url:
-		// http://dl33.yunfile.com/file/downfile/murongmr/876b15e4/c7c3002a
-		// ua: Mozilla/5.0 (Linux; U; Android 2.3.3; en-us; sdk
-		// Build/GRI34) AppleWebKit/533.1 (KHTML, like Gecko)
-		// Version/4.0 Mobile Safari/533.1
-		// contentDisposition: attachment;
-		// filename*="utf-8''CHUN%E5%85%89%E8%BC%9D%E8%8D%92%E9%87%8E.rar"
-		// mimetype: application/octet-stream
-		// contentLength: 463624
-		boolean canOpen = false;
-		String apkName = getName(url);
-		if ((mimetype == null) || ("".equals(mimetype))) {
-			MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-			String ext = apkName.substring(apkName.lastIndexOf(".")+1, apkName.length());
-			mimetype = mimeTypeMap.getMimeTypeFromExtension(ext);
-		}
-		final Intent intent = new Intent(Intent.ACTION_VIEW);
-		if ((mimetype != null) && (!mimetype.equals("")) && (!mimetype.equals("application/vnd.android.package-archive")) && (!mimetype.equals("audio/mpeg"))) {
-			//show chooser if it can open, otherwise download it.
-			//download apk and mp3 directly without confirm. 
-			intent.setDataAndType(Uri.parse(url), mimetype);
-			List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
-			if ((list != null) && !list.isEmpty()) canOpen = true;
-		}
-
-		if (canOpen) {
-			try {
-			new AlertDialog.Builder(mContext)
-			.setTitle(getString(R.string.choose))
-			.setMessage(apkName)
-			.setPositiveButton(getString(R.string.open),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
-							if (!util.startActivity(intent, false, mContext))
-								startDownload(url, contentDisposition, "yes");//download if open fail
-						}
-					})
-			.setNeutralButton(getString(R.string.download),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
-							startDownload(url, contentDisposition, "yes");
-						}
-					})
-			.setNegativeButton(getString(R.string.cancel),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
-						}
-					}).show();} catch(Exception e) {}
-		} else startDownload(url, contentDisposition, "yes");
-	}
-	
-	void overloadAction(String url) {
-		Uri uri = Uri.parse(url);
-		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-		intent.addCategory(Intent.CATEGORY_BROWSABLE);
-		String data = intent.getDataString();
-		if (!"".equals(data) && (data.startsWith("vnd.youtube"))) {
-			if (!util.startActivity(intent, false, mContext)) {
-				try {
-				new AlertDialog.Builder(mContext)
-				.setMessage("You need install plugin or client to play video.")
-				.setPositiveButton("Youtube",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-										.parse("market://details?id=com.google.android.youtube"));
-								util.startActivity(intent, false, mContext);
-							}
-						})
-				.setNeutralButton("Adobe flash",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-										.parse("market://details?id=com.adobe.flashplayer"));
-								util.startActivity(intent, false, mContext);
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						}).show();} catch(Exception e) {}
-			}
-		}
-		else util.startActivity(intent, true, mContext);
-	}
-	
-	void pageFinishAction(WebView view, String url, boolean isForeground) {
-		if (isForeground) {
-			// hide progressbar anyway
-			loadProgress.setVisibility(View.INVISIBLE);
-			imgRefresh.setImageResource(R.drawable.refresh);
-			webControl.setVisibility(View.INVISIBLE);
-			if (HOME_PAGE.equals(url)) webAddress.setText(HOME_BLANK);
-			else webAddress.setText(url);						
-		}
-		// update the page title in webList
-		webAdapter.notifyDataSetChanged();
-
-		String title = view.getTitle();
-		if (title == null) title = url;
-
-		if (HOME_PAGE.equals(url)) ;// do nothing
-		else {
-			if (browserName.equals(title)) ;
-				// if title and url not sync, then sync it
-				//webAddress.setText(HOME_BLANK);
-			else if (!incognitoMode) {// handle the bookmark/history after load new page
-				if ((mHistory.size() > 0) && (mHistory.get(mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
-
-				String site = getSite(url);
-				TitleUrl titleUrl = new TitleUrl(title, url, site);
-				mHistory.add(titleUrl);// always add it to history if visit any page.
-
-				for (int i = mHistory.size() - 2; i >= 0; i--) {
-					if (mHistory.get(i).m_url.equals(url)) {
-						if (title.equals(url)) {// use meaningful title to replace title with url content
-							String meaningfulTitle = mHistory.get(i).m_title;
-							if (!meaningfulTitle.equals(url)) 
-								mHistory.set(mHistory.size()-1, mHistory.get(i));
-						}
-						mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
-						updateHistory();
-						return;
-					} 
-					else if (title.equals(mHistory.get(i).m_title)) {
-						mHistory.remove(i);// only keep the latest history of the same title. display multi item with same title is not useful to user
-						break;
-					}
-				}
-
-				if (siteArray.indexOf(site) < 0) {
-					// update the auto-complete edittext without duplicate
-					urlAdapter.add(site);
-					// the adapter will always
-					// return 0 when get count
-					// or search, so we use an
-					// array to store the site.
-					siteArray.add(site);
-				}
-
-				try {// try to open the png, if can't open, then need save
-					FileInputStream fis = openFileInput(site + ".png");
-					try {fis.close();} catch (IOException e) {}
-				} catch (Exception e1) {
-					try {// save the Favicon
-						if (view.getFavicon() != null) {
-							Bitmap favicon = view.getFavicon();
-							int width = favicon.getWidth();
-						    int height = favicon.getHeight();
-							if ((width > 16) || (height > 16)) {// scale the favicon if it is not 16*16
-							    // calculate the scale
-							    float scaleWidth = ((float) 16) / width;
-							    float scaleHeight = ((float) 16) / height;
-
-							    // create matrix for the manipulation
-							    Matrix matrix = new Matrix();
-							    // resize the bit map
-							    matrix.postScale(scaleWidth, scaleHeight);
-
-							    // recreate the new Bitmap
-							    favicon = Bitmap.createBitmap(favicon, 0, 0, 
-							                      width, height, matrix, true); 
-							}
-							FileOutputStream fos = openFileOutput(site + ".png", 0);
-							favicon.compress(Bitmap.CompressFormat.PNG, 90,	fos);
-							fos.close();
-						}
-					} catch (Exception e) {}
-				}
-
-				while (mHistory.size() > historyCount) 
-					// delete from the first history until the list is not larger than historyCount;
-					 //not delete icon here. it can be clear when clear all 
-					mHistory.remove(0);
-				
-				updateHistory();
-			}
-		}
 	}
 	
 	private class MyListAdapter extends ArrayAdapter<TitleUrl> {
@@ -1058,16 +623,9 @@ public class SimpleBrowser extends Activity {
 			return convertView;
 		}
 	}
-	
-	public void ClearCache() {
-		serverWebs.get(webIndex).clearCache(true);
-		// mContext.deleteDatabase("webviewCache.db");//this may get
-		// disk IO crash
-		ClearFolderTask cltask = new ClearFolderTask();
-		// clear cache on sdcard and in data folder
-		cltask.execute(downloadPath + "cache/webviewCache/", dataPath + "cache/webviewCache/");		
-	}
-	
+
+	HarleyApp appstate;
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
@@ -1321,17 +879,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void clearFile(String filename) {
-		try {// clear the pages file
-			FileOutputStream fo = openFileOutput(filename, 0);
-			ObjectOutputStream oos = new ObjectOutputStream(fo);
-			oos.writeObject("");
-			oos.flush();
-			oos.close();
-			fo.close();
-		} catch (Exception e) {}
-	}
-	
 	public void setWebpagesLayout() {
 		setUrlHeight(showUrl);
 		setBarHeight(showControlBar);
@@ -1458,22 +1005,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void createShortcut(String url, String title) {
-		Intent i = new Intent(this, SimpleBrowser.class);
-		i.setData(Uri.parse(url));
-	    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-		Intent shortcutIntent = new Intent();
-	    shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, i);
-	    shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
-	    shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(mContext, R.drawable.explorer));
-	    shortcutIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-	    shortcutIntent.putExtra("duplicate", false); // Just create once
-	    sendBroadcast(shortcutIntent);
-	}
-	
-
 	void scrollToMain() {
 		if (bookmarkOpened) hideBookmark();		
 		if (menuOpened) hideMenu(); 
@@ -1518,107 +1049,6 @@ public class SimpleBrowser extends Activity {
 		return simperAdapter;
 	}
 
-	private void shareUrl(String title, String url) {
-		if (title == null) title = "";
-		if (url == null) url = "";
-		
-		Intent shareIntent = new Intent(Intent.ACTION_VIEW);
-		shareIntent.setClassName(getPackageName(), SimpleBrowser.class.getName());
-		Uri data = null;
-		String from = "\n(from ";
-		boolean chineseLocale = Locale.CHINA.equals(mLocale) || "easy.browser".equals(getPackageName());//easy.browser only release in China
-				
-		if (shareMode != 1) scrollToMain();
-		switch (shareMode) {
-		case 2:// facebook or weibo
-			if (chineseLocale)// weibo for chinese locale
-				data = Uri.parse("http://v.t.sina.com.cn/share/share.php?url=" + url + "&title=" + title + "&appkey=3792856654&ralateUid=1877224203&source=bookmark");
-			else // facebook for none chinese locale
-				data = Uri.parse("http://www.facebook.com/sharer.php?u=" + url + "&t=" + title + from + browserName + ")");
-			break;
-		case 3:
-			if (chineseLocale) {// qzone for chinese locale 
-				if ("".equals(title)) title = url;
-				data = Uri.parse("http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=" + url + "&desc=" + title + "&title" + title + "&site=" + browserName);
-			}
-			else // twitter for none chinese locale
-				data = Uri.parse("http://twitter.com/intent/tweet?url=" + url + "&text=" + title + from + browserName + ")");
-			break;
-		case 4:
-			if (chineseLocale) // tencent weibo for chinese localse
-				data = Uri.parse("http://share.v.t.qq.com/index.php?c=share&a=index&url=" + url + "&title=" + title + url + from + browserName + ")");
-			else // google+ for none chinese locale
-				data = Uri.parse("https://plusone.google.com/_/+1/confirm?hl=en&url=" + url);
-			break;
-		case 1:
-		default:
-			if (!"".equals(title)) title = title + "\n";
-			Intent intent = new Intent(Intent.ACTION_SEND);
-			intent.setType("text/plain");
-			intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-			intent.putExtra(Intent.EXTRA_TEXT, title + url + from + browserName + ")");
-			util.startActivity(
-					Intent.createChooser(intent, getString(R.string.sharemode)),
-					true, mContext);
-			return;
-		}
-		
-		shareIntent.setData(data);
-		util.startActivity(shareIntent, false, mContext);
-	}
-
-	public void readPreference() {
-		blockImage = sp.getBoolean("block_image", false);
-		cachePrefer = sp.getBoolean("cache_prefer", false);
-		blockPopup = sp.getBoolean("block_popup", false);
-		blockJs = sp.getBoolean("block_js", false);
-		// hideExit = sp.getBoolean("hide_exit", true);
-		overviewPage = sp.getBoolean("overview_page", false);
-		ua = sp.getInt("ua", 0);
-		//showZoom = sp.getBoolean("show_zoom", false);
-		mLocale = getBaseContext().getResources().getConfiguration().locale;
-		if ("ru_RU".equals(mLocale.toString()))
-			searchEngine = sp.getInt("search_engine", 4); // yandex
-		else if (Locale.CHINA.equals(mLocale)) {
-			searchEngine = sp.getInt("search_engine", 2); // easou
-			HOME_PAGE = "file:///android_asset/home-ch.html";
-		}
-		else
-			searchEngine = sp.getInt("search_engine", 5); // duckduckgo
-		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
-		snapFullWeb = sp.getBoolean("full_web", false);
-		readTextSize(sp);// init the text size
-		enableProxy = sp.getBoolean("enable_proxy", false);
-		if (enableProxy) {
-			localPort = sp.getInt("local_port", 1984);
-			ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
-		}
-		m_homepage = sp.getString("homepage", null);
-
-		incognitoMode = sp.getBoolean("incognito", false);
-		updownButton = sp.getBoolean("up_down", false);
-		
-		showStatusBar = sp.getBoolean("show_statusBar", true);
-		showUrl = sp.getBoolean("show_url", true);
-		showControlBar = sp.getBoolean("show_controlBar", true);
-		
-		
-		rotateMode = sp.getInt("rotate_mode", 1);
-		if (rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-		else if (rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	}
-	
-	String getSite(String url) {
-		String site = "";
-		String[] tmp = url.split("/");
-		// if url is http://m.baidu.com, then url.split("/")[2] is m.baidu.com
-		if (tmp.length > 2)	site = tmp[2];
-		else site = tmp[0];
-		
-		return site;
-	}
-	
 	public void initSnapDialog() {		
 		snapView = (ImageView) getLayoutInflater().inflate(
 				R.layout.snap_browser, null);
@@ -2017,66 +1447,20 @@ public class SimpleBrowser extends Activity {
 	
 	long lastTime = 0;
 	long timeInterval = 100;
-	boolean actioned = false;
-	void scrollUp() {
-		actioned = true;
-		if (!showUrl) setUrlHeight(showUrl);
-		if (!showControlBar) setBarHeight(showControlBar);
-		if (serverWebs.get(webIndex).myCanScrollVertically(-1))// pageUp/pageDown have animation which is slow
-			serverWebs.get(webIndex).scrollBy(0, -serverWebs.get(webIndex).getHeight()+10);		
-	}
-	void scrollDown() {
-		actioned = true;
-		if (!showUrl) setUrlHeight(showUrl);
-		if (!showControlBar) setBarHeight(showControlBar);
-		if (serverWebs.get(webIndex).myCanScrollVertically(1))
-			serverWebs.get(webIndex).scrollBy(0, serverWebs.get(webIndex).getHeight()-10);		
-	}
 	
 	public void initSearchBar() {		
 		imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		imgSearchPrev.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (!toSearch.equals(etSearch.getText().toString()))
-					findMatchCount();
-				else if (matchCount > 0) {
-					serverWebs.get(webIndex).findNext(false);
-					matchIndex -= 1;
-					if (matchIndex < 0) {
-						while (matchIndex < matchCount - 1) {
-							serverWebs.get(webIndex).findNext(true);
-							matchIndex += 1;
-						}
-					}
-				}
-
-				if (matchCount > 0)
-					searchHint.setText((matchIndex + 1) + " of " + matchCount);
-				else
-					searchHint.setText("0 of 0");
+				appstate.searchPrevAction();
 			}
 		});
 		imgSearchNext = (ImageView) findViewById(R.id.search_next);
 		imgSearchNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (!toSearch.equals(etSearch.getText().toString()))
-					findMatchCount();
-				else if (matchCount > 0) {
-					serverWebs.get(webIndex).findNext(true);
-					matchIndex += 1;
-					if (matchIndex >= matchCount)
-						while (matchIndex > 0) {
-							serverWebs.get(webIndex).findNext(false);
-							matchIndex -= 1;
-						}
-				}
-
-				if (matchCount > 0)
-					searchHint.setText((matchIndex + 1) + " of " + matchCount);
-				else
-					searchHint.setText("0 of 0");
+				appstate.searchNextAction();
 			}
 		});
 
@@ -2084,7 +1468,7 @@ public class SimpleBrowser extends Activity {
 		imgSearchClose.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				hideSearchBox();
+				appstate.hideSearchBox();
 			}
 		});
 
@@ -2222,7 +1606,7 @@ public class SimpleBrowser extends Activity {
 
 		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		downloadAppID = new ArrayList();
-		appstate = ((MyApp) getApplicationContext());
+		appstate = ((HarleyApp) getApplicationContext());
 
 		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(
@@ -2714,7 +2098,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		createAd();
+		appstate.createAd();
 		setLayout();
 		hideMenu();
 		hideBookmark();
@@ -2824,48 +2208,10 @@ public class SimpleBrowser extends Activity {
 		bookmarkDownloads.requestLayout();
 		bookmarkOpened = true;
 		if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
-			webControl.setVisibility(View.INVISIBLE);
+			webControl.setVisibility(View.GONE);
 			hideMenu();
 		}
 		if (bookmarkAdapter == null) initBookmarks();
-	}
-	
-	void reloadPage() {
-		if (loadProgress.getVisibility() == View.VISIBLE) {
-			imgRefresh.setImageResource(R.drawable.refresh);
-			// webpage is loading then stop it
-			serverWebs.get(webIndex).stopLoading();
-			loadProgress.setVisibility(View.INVISIBLE);
-		} else {// reload the webpage
-			imgRefresh.setImageResource(R.drawable.stop);
-			loadProgress.setProgress(1);// to make it seems feedback more fast
-			String url = serverWebs.get(webIndex).getUrl();
-			String m_url = serverWebs.get(webIndex).m_url;
-			if (m_url.equals(url))
-                serverWebs.get(webIndex).reload();
-			else 
-				serverWebs.get(webIndex).loadUrl(m_url);
-		}		
-	}
-	
-	boolean readPages(String filename) {
-		ObjectInputStream ois = null;
-		FileInputStream fi = null;
-		String url = null;
-		try {
-			fi = openFileInput(filename);
-			ois = new ObjectInputStream(fi);
-			while ((url = (String) ois.readObject()) != null) {
-				if (!"".equals(url)) openNewPage(url, webAdapter.getCount(), false, false);
-			}
-		} catch (EOFException e) {// only when read eof need send out msg.
-			try {
-				ois.close();
-				fi.close();
-			} catch (Exception e1) {}
-		} catch (Exception e) {}
-
-		return ((url != null) && !"".equals(url));
 	}
 	
 	@Override
@@ -2882,7 +2228,7 @@ public class SimpleBrowser extends Activity {
 	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context arg0, Intent intent) {
-			startDownload(intent.getStringExtra("url"), null, "yes");
+			appstate.startDownload(intent.getStringExtra("url"), null, "yes");
 		}
 	};
 
@@ -2913,221 +2259,11 @@ public class SimpleBrowser extends Activity {
 		}
 	};
 
-	void gotoUrl(String url) {
-		if (HOME_BLANK.equals(url)) url = HOME_PAGE;
-		else if (!url.contains("://")) {
-			if (!url.contains(".")) {
-				if ((!incognitoMode) && (siteArray.indexOf(url) < 0)) {
-					siteArray.add(url);
-					urlAdapter.add(url);
-					try {// write to /data/data/easy.browser/files/
-						FileOutputStream fo = openFileOutput("searchwords", MODE_APPEND);
-						ObjectOutputStream oos = new ObjectOutputStream(fo);
-						oos.writeObject(url);// record new search word
-						oos.flush();
-						oos.close();
-						fo.close();
-					} catch (Exception e) {}
-				}
-				
-				switch (searchEngine) {
-				case 1:// bing
-					url = "http://www.bing.com/search?q=" + url;
-					break;
-				case 2:// baidu
-					url = "http://www.baidu.com/s?word=" + url;
-					break;
-				case 3:// google
-					url = "http://www.google.com/search?q=" + url;
-					break;
-				case 4:// yandex
-					url = "http://yandex.ru/touchsearch?clid=1911434&text=" + url;
-					break;
-				case 5:// DuckDuckGo
-				default:
-					url = "https://duckduckgo.com/?t=easybrowser&q=" + url;
-					break;
-				}
-			}
-			else url = "http://" + url;
-		}
-		
-		if (!url.equals(serverWebs.get(webIndex).getUrl())) serverWebs.get(webIndex).loadUrl(url);//only load page if input different url
-	}
-
-	void changePage(int position) {
-		while (webpages.getDisplayedChild() != position)
-			webpages.showNext();
-		for (int i = 0; i < serverWebs.size(); i++) {
-			serverWebs.get(i).isForeground = false;
-			serverWebs.get(i).freeMemory();
-		}
-		serverWebs.get(position).isForeground = true;
-		webIndex = position;
-		String url = serverWebs.get(webIndex).m_url;
-		if (url == null) url = "";
-		else if (HOME_PAGE.equals(url)) url = HOME_BLANK;
-		webAddress.setText(url);// refresh the display url
-
-		// global settings
-		WebSettings localSettings = serverWebs.get(webIndex).getSettings();
-		// localSettings.setBuiltInZoomControls(showZoom);
-		if (ua <= 1)
-			localSettings.setUserAgent(ua);
-		else
-			localSettings.setUserAgentString(selectUA(ua));
-		localSettings.setTextSize(textSize);
-		localSettings.setBlockNetworkImage(blockImage);
-		if (cachePrefer)
-			localSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-		else
-			localSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-		localSettings.setJavaScriptCanOpenWindowsAutomatically(blockPopup);
-		// localSettings.setSupportMultipleWindows(true);
-		localSettings.setJavaScriptEnabled(!blockJs);
-		//localSettings.setUseWideViewPort(overviewPage);
-		localSettings.setLoadWithOverviewMode(overviewPage);
-
-		if (serverWebs.get(position).mProgress > 0) {
-			imgRefresh.setImageResource(R.drawable.stop);
-			loadProgress.setVisibility(View.VISIBLE);
-			loadProgress.setProgress(serverWebs.get(position).mProgress);
-		} else {
-			imgRefresh.setImageResource(R.drawable.refresh);
-			loadProgress.setVisibility(View.INVISIBLE);
-		}
-	}
-
 	@Override
 	protected void onNewIntent(Intent intent) {// open file from sdcard
-		if (!Intent.ACTION_MAIN.equals(intent.getAction())) {
-			String uri = intent.getDataString();
-			if (uri == null)
-				return;
-
-			boolean found = false;
-			int blankIndex = -1;
-			for (int i = 0; i < serverWebs.size(); i++) {
-				String url = serverWebs.get(i).m_url;
-				if ((uri + "/").equals(url) || uri.equals(url)) {
-					changePage(i); // show correct page
-					found = true;
-					break;
-				} else if (HOME_PAGE.equals(url))
-					blankIndex = i;
-			}
-
-			if (!found) {
-				if (blankIndex < 0)
-					openNewPage(uri, webIndex + 1, true, true);
-				else {
-					serverWebs.get(blankIndex).loadUrl(uri);
-					changePage(blankIndex);
-				}
-			}
-		}
+		appstate.newIntentAction(intent);
 
 		super.onNewIntent(intent);
-	}
-
-	void addRemoveFavo(String url, String title) {
-		for (int i = mBookMark.size() - 1; i >= 0; i--)
-			if (mBookMark.get(i).m_url.equals(url)) {
-				removeFavo(i);
-				return;
-			}
-
-		addFavo(url, title);// add favo if not found it
-	}
-	
-	void removeFavo(final int order) {
-		new AlertDialog.Builder(this)
-				.setTitle(R.string.remove_bookmark)
-				.setMessage(mBookMark.get(order).m_title)
-				.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								try {//index out of bound error reported by a few user
-									mBookMark.remove(order);
-									updateBookmark();
-								} catch (Exception e) {}
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						}).show();
-	}
-
-	void removeHistory(final int order) {
-		new AlertDialog.Builder(this)
-				.setTitle(R.string.remove_history)
-				.setMessage(mHistory.get(order).m_title)
-				.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								try {//index out of bound error reported by a few user
-									mHistory.remove(order);
-									updateHistory();
-								} catch (Exception e) {}
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						}).show();
-	}
-
-	private void addFavo(final String url, final String title) {
-		if (url == null) {
-			Toast.makeText(mContext, "null url", Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		LinearLayout favoView = (LinearLayout) getLayoutInflater().inflate(
-				R.layout.addfavo_browser, null);
-		titleText = (EditText) favoView.findViewById(R.id.edit_favo);
-		titleText.setText(title);
-		titleText.setSelection(titleText.getText().length());
-
-		// need user's confirm to add to bookmark
-		new AlertDialog.Builder(this)
-				.setView(favoView)
-				.setMessage(url)
-				.setTitle(R.string.add_bookmark)
-				.setPositiveButton(R.string.ok,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								String site = getSite(url);
-								String title = titleText.getText().toString();
-								// add a blank character to occupy the space
-								if ("".equals(title)) title += (char) 0xa0;
-								TitleUrl titleUrl = new TitleUrl(title, url, site);
-								mBookMark.add(titleUrl);
-								// sort by name
-								Collections.sort(mBookMark, new myComparator());
-								updateBookmark();
-							}
-						})
-				.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						}).show();
 	}
 
 	void addDownloads(TitleUrl tu) {
@@ -3136,75 +2272,10 @@ public class SimpleBrowser extends Activity {
 				return;
 		
 		mDownloads.add(tu);
-		Collections.sort(mDownloads, new myComparator());// sort by name
-		updateDownloads();
+		Collections.sort(mDownloads, new MyComparator());// sort by name
+		appstate.updateDownloads();
 	}
 	
-	private boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
-		boolean result = true;
-
-		if (webAdapter.getCount() == 9) {// max pages is 9
-			Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
-			return false; // not open new page if got max pages
-		} else {
-			webAdapter.insert(new MyWebview(mContext), newIndex);
-			webAdapter.notifyDataSetInvalidated();
-			webpages.addView(webAdapter.getItem(newIndex), newIndex);
-			imgNew.setImageBitmap(util.generatorCountIcon(
-					util.getResIcon(getResources(), R.drawable.newpage),
-					webAdapter.getCount(), 
-					2,
-					dm.density,
-					mContext));
-			if (changeToNewPage) changePage(newIndex);
-			else serverWebs.get(newIndex).isForeground = false;
-			serverWebs.get(newIndex).closeToBefore = changeToNewPage;
-			serverWebs.get(newIndex).shouldCloseIfCannotBack = closeIfCannotBack;
-		}
-
-		if (url != null) {
-			if ("".equals(url)) loadPage();
-			// else if (url.endsWith(".pdf"))//can't open local pdf by google
-			// doc
-			// serverWebs.get(webIndex).loadUrl("http://docs.google.com/gview?embedded=true&url="
-			// + url);
-			else {
-				try {url = URLDecoder.decode(url);} catch (Exception e) {}
-				serverWebs.get(newIndex).loadUrl(url);
-			}
-		}
-
-		return result;
-	}
-
-	void hideSearchBox() {
-		imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-		searchBar.setVisibility(View.INVISIBLE);
-		matchCount = 0;
-		// remove the match by an impossible search
-		serverWebs.get(webIndex).findAll("jingtao10175jtbuaa@gmail.com");
-		searchHint.setText("");
-	}
-
-	void findMatchCount() {
-		toSearch = etSearch.getText().toString();
-		matchCount = serverWebs.get(webIndex).findAll(toSearch);
-		if (matchCount > 0) {
-			try {
-				Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
-				m.invoke(serverWebs.get(webIndex), true);
-			} catch (Throwable ignored) {
-			}
-
-			matchIndex = matchCount;
-			while (matchIndex > 0) {
-				serverWebs.get(webIndex).findNext(false);
-				// move to select the first match
-				matchIndex -= 1;
-			}
-		}
-	}
-
 	void actionBack() {
 		if (browserView.getVisibility() == View.GONE) hideCustomView();// playing video. need wait it over?
 		else if (menuOpened) hideMenu();
@@ -3212,7 +2283,7 @@ public class SimpleBrowser extends Activity {
 		else if (webControl.getVisibility() == View.VISIBLE)
 			webControl.setVisibility(View.INVISIBLE);// hide web control
 		else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
-			hideSearchBox();
+			appstate.hideSearchBox();
 		else if (HOME_BLANK.equals(webAddress.getText().toString())) {
 			// hide browser when click back key on homepage.
 			// this is a singleTask activity, so if return
@@ -3223,12 +2294,12 @@ public class SimpleBrowser extends Activity {
 			// downloadControl not work? or select file not work?
 			if (serverWebs.size() == 1)
 				moveTaskToBack(true);
-			else closePage(webIndex, false); // close blank page if more than one page
+			else appstate.closePage(webIndex, false); // close blank page if more than one page
 		} 
 		else if (serverWebs.get(webIndex).canGoBack())
 			serverWebs.get(webIndex).goBack();
 		else
-			closePage(webIndex, false);// close current page if can't go back		
+			appstate.closePage(webIndex, false);// close current page if can't go back		
 	}
 	
 	@Override
@@ -3242,27 +2313,6 @@ public class SimpleBrowser extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	void readTextSize(SharedPreferences sp) {
-		int iTextSize = sp.getInt("textsize", 2);
-		switch (iTextSize) {
-		case 1:
-			textSize = TextSize.LARGER;
-			break;
-		case 2:
-			textSize = TextSize.NORMAL;
-			break;
-		case 3:
-			textSize = TextSize.SMALLER;
-			break;
-		case 4:
-			textSize = TextSize.SMALLEST;
-			break;
-		case 5:
-			textSize = TextSize.LARGEST;
-			break;
-		}
-	}
-
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		// No call for super(). Bug on API Level > 11. refer to
@@ -3272,15 +2322,15 @@ public class SimpleBrowser extends Activity {
 	@Override
 	protected void onPause() {
 		if (historyChanged) {
-			WriteTask wtask = new WriteTask();
+			appstate.WriteTask wtask = appstate.new WriteTask();
 			wtask.execute("history");
 		}
 		if (bookmarkChanged) {
-			WriteTask wtask = new WriteTask();
+			appstate.WriteTask wtask = appstate.new WriteTask();
 			wtask.execute("bookmark");
 		}
 		if (downloadsChanged) {
-			WriteTask wtask = new WriteTask();
+			appstate.WriteTask wtask = appstate.new WriteTask();
 			wtask.execute("downloads");
 		}
 
@@ -3373,67 +2423,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void createAd() {
-		if (adview != null) return;// only create ad for one time.
-		
-		if (mAdAvailable) {
-			adview = new WrapAdView(this, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
-			if ((adview != null) && (adview.getInstance() != null)) {
-				adContainer.addView(adview.getInstance());
-				adview.loadAd();
-			}
-			
-			adview2 = new WrapAdView(this, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
-			if ((adview2 != null) && (adview2.getInstance() != null)) {
-				adContainer2.addView(adview2.getInstance());
-				adview2.loadAd();
-			}
-			
-			interstitialAd = new WrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
-		}
-	}
-
-	class AppHandler extends Handler {
-
-		public void handleMessage(Message msg) {
-			if (msg.what == -2) {
-				Bundle data = msg.getData();
-				String errorMsg = data.getString("msg");
-				//if (errorMsg != null) Toast.makeText(mContext, "Can't load AdMob, " + errorMsg, Toast.LENGTH_LONG).show();
-			}
-			else if (msg.what == -3) {
-				interstitialAd.loadAd();
-			}
-		}
-	}
-
-	void updateDownloads() {
-		if (downloadsAdapter != null) {
-			downloadsAdapter.notifyDataSetChanged();
-		}
-		downloadsChanged = true;
-	}
-	
-	void updateBookmark() {
-		if (bookmarkAdapter != null) {
-			bookmarkAdapter.notifyDataSetChanged();
-			updateHistoryViewHeight();
-		}
-		bookmarkChanged = true;
-	}
-	
-	void updateHistory() {
-		if (historyAdapter != null) {
-			updateHistoryViewHeight();
-			
-			mHistoryForAdapter.clear();
-			for (int i = mHistory.size()-1; i >= 0; i--)
-				mHistoryForAdapter.add(mHistory.get(i));
-			historyAdapter.notifyDataSetChanged();
-		}
-		historyChanged = true;
-	}
-	
 	void updateHistoryViewHeight() {
 		if (historyList == null) return;
 		//calculate height of history list so that it display not too many or too few items
@@ -3451,24 +2440,5 @@ public class SimpleBrowser extends Activity {
 		lp = historyList.getLayoutParams();
 		lp.height = height;
 		historyList.requestLayout();
-	}
-	
-	void loadPage() {// load home page
-		serverWebs.get(webIndex).getSettings().setJavaScriptEnabled(true);
-		
-		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
-		if (wbfl != null) {
-			int size = wbfl.getSize();
-			int current = wbfl.getCurrentIndex();
-			for (int i = 0; i < size; i++) {
-				if (HOME_PAGE.equals(wbfl.getItemAtIndex(i).getUrl())) {
-					serverWebs.get(webIndex).goBackOrForward(i - current);
-					return;
-				}
-			}
-		}
-		
-		if ((mBookMark.size() > 0) || (mHistory.size() > 0)) showBookmark();// show bookmark for load home page too slow
-		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 	}
 }

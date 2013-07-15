@@ -89,9 +89,6 @@ import android.widget.Toast;
 
 //for get webpage source on cupcake
 public class SimpleBrowser extends Activity {
-
-
-
 	Context mContext;
 	Button btnNewpage;
 	ListView webList;
@@ -148,19 +145,8 @@ public class SimpleBrowser extends Activity {
 									// and set to false again after exit
 									// settings. not remove ad is goto settings
 	
-	String dataPath = "";
 	EasyApp appstate;
 
-
-	public void ClearCache() {
-		appstate.serverWebs.get(appstate.webIndex).clearCache(true);
-		// mContext.deleteDatabase("webviewCache.db");//this may get
-		// disk IO crash
-		ClearFolderTask cltask = new ClearFolderTask();
-		// clear cache on sdcard and in data folder
-		cltask.execute(appstate.downloadPath + "cache/webviewCache/", dataPath + "cache/webviewCache/");		
-	}
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
@@ -183,7 +169,7 @@ public class SimpleBrowser extends Activity {
 					appstate.serverWebs.get(i).stopLoading();// stop loading while clear
 
 				boolean clearCache = appstate.sp.getBoolean("clear_cache", false);
-				if (clearCache) ClearCache();
+				if (clearCache) appstate.ClearCache();
 
 				boolean clearCookie = appstate.sp.getBoolean("clear_cookie", false);
 				if (clearCookie) {
@@ -208,7 +194,7 @@ public class SimpleBrowser extends Activity {
 				if (clearIcon) {
 					ClearFolderTask cltask = new ClearFolderTask();
 					// clear cache on sdcard and in data folder
-					cltask.execute(dataPath + "files/", "png");
+					cltask.execute(appstate.dataPath + "files/", "png");
 					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString())) shouldReload = true;
 				}
 				
@@ -234,7 +220,7 @@ public class SimpleBrowser extends Activity {
 					appstate.mHistory.clear();
 					WriteTask wtask = appstate.new WriteTask();
 					wtask.execute("history");
-					clearFile("searchwords");
+					appstate.clearFile("searchwords");
 					appstate.siteArray.clear();
 					appstate.urlAdapter.clear();
 					appstate.historyChanged = false;
@@ -419,17 +405,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void clearFile(String filename) {
-		try {// clear the pages file
-			FileOutputStream fo = openFileOutput(filename, 0);
-			ObjectOutputStream oos = new ObjectOutputStream(fo);
-			oos.writeObject("");
-			oos.flush();
-			oos.close();
-			fo.close();
-		} catch (Exception e) {}
-	}
-	
 	public void setWebpagesLayout() {
 		appstate.setUrlHeight(appstate.showUrl);
 		appstate.setBarHeight(appstate.showControlBar);
@@ -837,8 +812,8 @@ public class SimpleBrowser extends Activity {
 					}
 					break;
 				case 3:// exit
-					clearFile("pages");
-					ClearCache(); // clear cache when exit
+					appstate.clearFile("pages");
+					appstate.ClearCache(); // clear cache when exit
 					if (appstate.interstitialAd != null && appstate.interstitialAd.isReady()) appstate.interstitialAd.show();
 					finish();
 					break;
@@ -1181,10 +1156,10 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		dataPath = "/data/data/" + getPackageName() + "/";
 		appstate.downloadPath = util.preparePath(mContext);
-		if (appstate.downloadPath == null) appstate.downloadPath = dataPath;
-		if (appstate.downloadPath.startsWith(dataPath)) appstate.noSdcard = true;
+		appstate.dataPath = "/data/data/" + getPackageName() + "/";
+		if (appstate.downloadPath == null) appstate.downloadPath = appstate.dataPath;
+		if (appstate.downloadPath.startsWith(appstate.dataPath)) appstate.noSdcard = true;
 
 		// should read in below sequence: 1, sdcard. 2, data/data. 3, native browser
 		try {

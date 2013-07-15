@@ -66,7 +66,7 @@ import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 
 public class MyApp extends BaseApp {
-	public final String HOME_PAGE = "file:///android_asset/home.html";
+	public String HOME_PAGE = "file:///android_asset/home.html";
 	public final String HOME_BLANK = "about:blank";
 	public String browserName;
 	public String m_homepage = null;
@@ -165,7 +165,7 @@ public class MyApp extends BaseApp {
 	public Activity mActivity;// the main activity
 	// download related
 	public Context mContext;
-	public String downloadPath;
+	public String downloadPath, dataPath;
 	public NotificationManager nManager;
 	public HashMap<String, Integer> downloadAppID = new HashMap<String, Integer>();
 	public HashMap<String, DownloadTask> downloadState = new HashMap<String, DownloadTask>();
@@ -371,7 +371,6 @@ public class MyApp extends BaseApp {
 			localPort = sp.getInt("local_port", 1984);
 			ProxySettings.setProxy(mContext, "127.0.0.1", localPort);
 		}
-		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
 
 		incognitoMode = sp.getBoolean("incognito", false);
 		updownButton = sp.getBoolean("up_down", false);
@@ -630,7 +629,7 @@ public class MyApp extends BaseApp {
 		builder.show();
 	}
 	
-	public void loadPage() {// load home page // not identical. need inherit
+	public void loadPage() {// load home page
 		serverWebs.get(webIndex).getSettings().setJavaScriptEnabled(true);
 
 		WebBackForwardList wbfl = serverWebs.get(webIndex).copyBackForwardList();
@@ -1119,6 +1118,26 @@ public class MyApp extends BaseApp {
 						}).show();
 	}
 	
+	public void ClearCache() {
+		serverWebs.get(webIndex).clearCache(true);
+		// mContext.deleteDatabase("webviewCache.db");//this may get
+		// disk IO crash
+		ClearFolderTask cltask = new ClearFolderTask();
+		// clear cache on sdcard and in data folder
+		cltask.execute(downloadPath + "cache/webviewCache/", dataPath + "cache/webviewCache/");		
+	}
+	
+	public void clearFile(String filename) {
+		try {// clear the pages file
+			FileOutputStream fo = openFileOutput(filename, 0);
+			ObjectOutputStream oos = new ObjectOutputStream(fo);
+			oos.writeObject("");
+			oos.flush();
+			oos.close();
+			fo.close();
+		} catch (Exception e) {}
+	}
+
 	public void createShortcut(String url, String title) {//identical
 		Intent i = new Intent(this, mActivity.getClass());
 		i.setData(Uri.parse(url));

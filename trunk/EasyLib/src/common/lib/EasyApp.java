@@ -26,6 +26,8 @@ public class EasyApp extends MyApp {
 		collapse1 = sp.getBoolean("collapse1", false);
 		collapse2 = sp.getBoolean("collapse2", true);
 		collapse3 = sp.getBoolean("collapse3", true);
+
+		if (!mAdAvailable) m_homepage = sp.getString("homepage", null);
 	}
 	
 	public void createAd(float width) {

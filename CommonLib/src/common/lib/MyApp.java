@@ -498,7 +498,7 @@ public class MyApp extends BaseApp {
 				case 5:
 					overviewPage = selected;
 					//localSettings.setUseWideViewPort(overviewPage);
-					localSettings.setLoadWithOverviewMode(overviewPage);
+					webSettings.setLoadWithOverviewMode(overviewPage);
 					sEdit.putBoolean("overview_page", overviewPage);
 					break;
 				case 6:

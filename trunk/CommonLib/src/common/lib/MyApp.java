@@ -365,7 +365,7 @@ public class MyApp extends BaseApp {
 			searchEngine = sp.getInt("search_engine", 5); // duckduckgo
 		shareMode = sp.getInt("share_mode", 2); // share by facebook/weibo by default
 		snapFullWeb = sp.getBoolean("full_web", false);
-		WebUtil.readTextSize(sp);// init the text size
+		textSize = WebUtil.readTextSize(sp);// init the text size
 		enableProxy = sp.getBoolean("enable_proxy", false);
 		if (enableProxy) {
 			localPort = sp.getInt("local_port", 1984);

@@ -3,6 +3,7 @@ package common.lib;
 import java.lang.reflect.Method;
 
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 
 public class WrapWebSettings {
@@ -12,13 +13,14 @@ public class WrapWebSettings {
 		mInstance = settings;
 	}
 
+	static Method setDatabaseEnabled = null;
+	static Method setDatabasePath = null;
 	static Method setLoadWithOverviewMode = null;
 	static Method setAppCacheEnabled = null;
 	static Method setAppCachePath = null;
 	static Method setAppCacheMaxSize = null;
 	static Method setDomStorageEnabled = null;
-	static Method setDatabaseEnabled = null;
-	static Method setDatabasePath = null;
+	static Method setDefaultZoom = null;
 	static Method setDisplayZoomControls = null;
 	static Method setForceUserScalable = null;
 	static {
@@ -33,6 +35,7 @@ public class WrapWebSettings {
 			setAppCachePath = WebSettings.class.getMethod("setAppCachePath", new Class[] { String.class });
 			setAppCacheMaxSize = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] { long.class });
 			setDomStorageEnabled = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] { boolean.class });
+			setDefaultZoom = WebSettings.class.getMethod("setDefaultZoom", new Class[] { ZoomDensity.class });
 			
 			//API 11
 			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
@@ -40,6 +43,16 @@ public class WrapWebSettings {
 			//API 14
 			setForceUserScalable = WebSettings.class.getMethod("setForceUserScalable", new Class[] { boolean.class });
 		} catch (Exception e) {}
+	}
+
+	public synchronized void setDatabaseEnabled(boolean flag) {// API 5
+		if (setDatabaseEnabled != null)
+			try {setDatabaseEnabled.invoke(mInstance, flag);} catch (Exception e) {}
+	}
+
+	public synchronized void setDatabasePath(String databasePath) {// API 5
+		if (setDatabasePath != null)
+			try {setDatabasePath.invoke(mInstance, databasePath);} catch (Exception e) {}
 	}
 
 	public synchronized void setLoadWithOverviewMode(boolean overview) {// API 7
@@ -67,14 +80,9 @@ public class WrapWebSettings {
 			try {setDomStorageEnabled.invoke(mInstance, flag);} catch (Exception e) {}
 	}
 
-	public synchronized void setDatabaseEnabled(boolean flag) {// API 5
-		if (setDatabaseEnabled != null)
-			try {setDatabaseEnabled.invoke(mInstance, flag);} catch (Exception e) {}
-	}
-
-	public synchronized void setDatabasePath(String databasePath) {// API 5
-		if (setDatabasePath != null)
-			try {setDatabasePath.invoke(mInstance, databasePath);} catch (Exception e) {}
+	public synchronized void setDefaultZoom(ZoomDensity zoom) {// API 7
+		if (setDefaultZoom != null)
+			try {setDefaultZoom.invoke(mInstance, zoom);} catch (Exception e) {}
 	}
 
 	public synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11

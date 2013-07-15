@@ -340,7 +340,7 @@ public class SimpleBrowser extends Activity {
 
 			// hideExit = sp.getBoolean("hide_exit", true);
 
-			WebUtil.readTextSize(appstate.sp); // no need to reload page if fontSize changed
+			appstate.textSize = WebUtil.readTextSize(appstate.sp); // no need to reload page if fontSize changed
 			localSettings.setTextSize(appstate.textSize);
 
 			appstate.blockImage = appstate.sp.getBoolean("block_image", false);

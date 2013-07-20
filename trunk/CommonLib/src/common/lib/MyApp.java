@@ -135,7 +135,7 @@ public class MyApp extends BaseApp {
 	public boolean showUrl = true;
 	public boolean showControlBar = true;
 	public boolean showStatusBar = true;
-	final int urlHeight = 40, barHeight = 40;
+	public final int urlHeight = 40, barHeight = 40;
 	public int rotateMode = 1;
 	public boolean incognitoMode = false;
 	public boolean updownButton = true;
@@ -182,7 +182,7 @@ public class MyApp extends BaseApp {
 	public ArrayAdapter<String> urlAdapter;
 	public AutoCompleteTextView webAddress;
 	public ProgressBar loadProgress;
-	public ImageView imgNext, imgPrev, imgHome, imgRefresh, imgNew;
+	public ImageView imgNext, imgPrev, imgRefresh, imgNew;
 	public WebAdapter webAdapter;
 	public LinearLayout webTools, webControl, fakeWebControl, urlLine;
 	public MyViewFlipper webpages;

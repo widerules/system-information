@@ -9,7 +9,7 @@ public class EasyJavaScriptInterface extends MyJavaScriptInterface {
 
 	@SuppressWarnings("unused")
 	public void processReady(String ready) {
-		mWebView.m_ready = ready;
+		((EasyWebView)mWebView).m_ready = ready;
 	}
 	
 	@SuppressWarnings("unused")

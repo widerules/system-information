@@ -46,7 +46,6 @@ public class MyWebView extends WebView {
 	int mProgress = 0;
 	boolean isForeground = true;
 	boolean closeToBefore = true;
-	String m_ready = "";
 	boolean shouldCloseIfCannotBack = false;
 
 	static Method setScrollbarFadingEnabled = null;

@@ -13,6 +13,7 @@ import android.webkit.WebSettings.ZoomDensity;
 
 public class EasyWebView extends MyWebView {
 
+	public String m_ready = "";
 	public EasyWebView(Context context, EasyApp appstate) {
 		super(context, appstate);
 

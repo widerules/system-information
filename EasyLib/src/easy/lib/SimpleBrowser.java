@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +13,6 @@ import common.lib.EasyApp;
 import common.lib.EasyWebView;
 import common.lib.MyApp.WriteTask;
 import common.lib.MyViewFlipper;
-import common.lib.MyWebView;
 import common.lib.ProxySettings;
 import common.lib.WrapValueCallback;
 import common.lib.WrapWebSettings;
@@ -44,7 +42,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -81,7 +78,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -126,7 +122,7 @@ public class SimpleBrowser extends Activity {
 
 	// bookmark and history
 	AlertDialog m_sourceDialog = null;
-	ImageView imgAddFavo, imgGo;
+	ImageView imgAddFavo, imgGo, imgHome;
 
 	// baidu tongji
 	static Method baiduResume = null;
@@ -1037,7 +1033,7 @@ public class SimpleBrowser extends Activity {
 	public void initWebControl() {// identical
 		// web control
 		appstate.webControl = (LinearLayout) findViewById(R.id.webcontrol);
-		//appstate.fakeWebControl = (LinearLayout) browserView.findViewById(R.id.fakeWebcontrol);///////////////////////////////build error////////////
+		//appstate.fakeWebControl = (LinearLayout) findViewById(R.id.fakeWebcontrol);///////////////////////////////build error////////////
 		
 		btnNewpage = (Button) findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
@@ -1257,15 +1253,15 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 		
-		appstate.imgHome = (ImageView) findViewById(R.id.home);
-		appstate.imgHome.setOnClickListener(new OnClickListener() {
+		imgHome = (ImageView) findViewById(R.id.home);
+		imgHome.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if ((appstate.m_homepage != null) && (!"".equals(appstate.m_homepage))) appstate.serverWebs.get(appstate.webIndex).loadUrl(appstate.m_homepage);
 				else if (!appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).m_url)) appstate.loadPage();
 			}
 		});
-		appstate.imgHome.setOnLongClickListener(new OnLongClickListener() {
+		imgHome.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
 				appstate.globalSetting();

@@ -3,6 +3,7 @@ package common.lib;
 import android.net.Uri;
 import android.webkit.ValueCallback;
 
+//for get webpage source on cupcake
 public class WrapValueCallback {
 	public ValueCallback<Uri> mInstance;
 

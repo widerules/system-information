@@ -24,7 +24,6 @@ import common.lib.ProxySettings;
 import common.lib.TitleUrl;
 import common.lib.WrapValueCallback;
 import common.lib.WrapWebSettings;
-
 import base.lib.WebUtil;
 import base.lib.util;
 import android.app.Activity;
@@ -96,11 +95,12 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 public class SimpleBrowser extends Activity {
+	Context mContext;
 
 	ListView webList;
+
 	boolean reverted = false;
 
-	Context mContext;
 
 	//boolean flashInstalled = false;
 	// settings
@@ -162,18 +162,18 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean downloadsChanged = false;
-	ImageView imgAddFavo;//, imgGo;
+	ImageView imgAddFavo;
 
 	// baidu tongji
 	static Method baiduResume = null;
 	static Method baiduPause = null;
-	//static Method baiduEvent = null;
+	static Method baiduEvent = null;
 	static {
 		try {
 			Class c = Class.forName("com.baidu.mobstat.StatService");
 			baiduResume = c.getMethod("onResume", new Class[] { Context.class });
 			baiduPause = c.getMethod("onPause", new Class[] { Context.class });
-			//baiduEvent = c.getMethod("onEvent", new Class[] { Context.class, String.class, String.class });
+			baiduEvent = c.getMethod("onEvent", new Class[] { Context.class, String.class, String.class });
 		} catch (Exception e) {}
 	}
 	
@@ -416,11 +416,11 @@ public class SimpleBrowser extends Activity {
 			
 			appstate.updownButton = appstate.sp.getBoolean("up_down", false);
 			if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
-			else appstate.upAndDown.setVisibility(View.INVISIBLE);
+			else appstate.upAndDown.setVisibility(View.GONE);
 			
-			appstate.shareMode = appstate.sp.getInt("share_mode", 2);
+			appstate.shareMode = appstate.sp.getInt("share_mode", 1);
 			
-			appstate.searchEngine = appstate.sp.getInt("search_engine", 3);
+			appstate.searchEngine = appstate.sp.getInt("search_engine", 5);
 
 			boolean tmpEnableProxy = appstate.sp.getBoolean("enable_proxy", false);
 			int tmpLocalPort = appstate.sp.getInt("local_port", 1984);

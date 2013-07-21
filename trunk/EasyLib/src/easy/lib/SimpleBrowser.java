@@ -86,7 +86,7 @@ import android.widget.Toast;
 //for get webpage source on cupcake
 public class SimpleBrowser extends Activity {
 	Context mContext;
-	Button btnNewpage;
+
 	ListView webList;
 
 
@@ -106,6 +106,7 @@ public class SimpleBrowser extends Activity {
 
 	LinearLayout imageBtnList;
 	RelativeLayout webs;
+	Button btnNewpage;
 
 	ConnectivityManager cm;
 

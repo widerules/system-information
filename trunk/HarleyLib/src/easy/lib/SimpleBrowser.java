@@ -278,6 +278,8 @@ public class SimpleBrowser extends Activity {
 				appstate.mUploadMessage.onReceiveValue(result);
 			appstate.mUploadMessage.mInstance = null;
 		} else if (requestCode == appstate.SETTING_RESULTCODE) {
+			boolean shouldReload = false;
+
 			boolean clearData = appstate.sp.getBoolean("clear_data", false);
 			if (clearData) {
 				appstate.sEdit.putBoolean("clear_data", false);
@@ -312,6 +314,7 @@ public class SimpleBrowser extends Activity {
 					ClearFolderTask cltask = new ClearFolderTask();
 					// clear cache on sdcard and in data folder
 					cltask.execute(appstate.dataPath + "files/", "png");
+					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString())) shouldReload = true;
 				}
 				
 				boolean clearHome = appstate.sp.getBoolean("clear_home", false);
@@ -511,10 +514,11 @@ public class SimpleBrowser extends Activity {
 					localSettings.setDefaultTextEncodingName(tmpEncoding);
 					// set default encoding to autoselect
 					appstate.sEdit.putInt("encoding", 0);
-					appstate.reloadPage();
+					shouldReload = true;
 				}
 			}
 
+			if (shouldReload) appstate.serverWebs.get(appstate.webIndex).reload();
 			appstate.sEdit.commit();
 		}
 	}

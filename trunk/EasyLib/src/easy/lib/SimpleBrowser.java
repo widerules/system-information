@@ -284,7 +284,6 @@ public class SimpleBrowser extends Activity {
 				if (appstate.rotateMode == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 				else if (appstate.rotateMode == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 				else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-				setLayout();
 			}
 
 			// default to full screen now

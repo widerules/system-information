@@ -170,9 +170,9 @@ public class EasyApp extends MyApp {
 			sb.append("m.facebook.com.png)'><a href='http://www.facebook.com'>Facebook</a></li>");
 			sb.append(splitter);
 			
-			//sb.append(fileDir);
-			//sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
-			//sb.append(splitter);
+			sb.append(fileDir);
+			sb.append("www.moborobo.com.png)'><a href='http://www.moborobo.com/app/mobomarket.html'>MoboMarket</a></li>");
+			sb.append(splitter);
 			
 			//sb.append("<li><a href='file:///sdcard/'>SDcard</a></li>");
 			//sb.append(splitter);

@@ -20,7 +20,7 @@ public class WrapValueCallback {
 	public static void checkAvailable() {}
 
 	public void onReceiveValue(Uri value) {
-		mInstance.onReceiveValue(value);
+		//mInstance.onReceiveValue(value);
 	}
 }
 

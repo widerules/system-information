@@ -7,10 +7,16 @@ import easy.lib.R;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebBackForwardList;
 import android.widget.Toast;
 
 public class HarleyApp extends MyApp {
+	public View bookmarkDownloads;
+	public int bookmarkWidth = LayoutParams.WRAP_CONTENT;
+	public int menuWidth = LayoutParams.WRAP_CONTENT;
+
 	public void loadPage() {// load home page
 		super.loadPage();
 		if ((mBookMark.size() > 0) || (mHistory.size() > 0)) showBookmark();// show bookmark for load home page too slow
@@ -20,6 +26,22 @@ public class HarleyApp extends MyApp {
 		super.shareUrl(title, url);
 
 		if (shareMode != 1) scrollToMain();
+	}
+	
+	void showBookmark() {
+		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
+		bookmarkDownloads.requestLayout();
+		bookmarkOpened = true;
+		if (appstate.dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
+			appstate.webControl.setVisibility(View.GONE);
+			hideMenu();
+		}
+		if (bookmarkAdapter == null) initBookmarks();
+	}
+	
+	public void scrollToMain() {
+		if (bookmarkOpened) hideBookmark();		
+		if (menuOpened) hideMenu(); 
 	}
 	
 	public void readPreference() {

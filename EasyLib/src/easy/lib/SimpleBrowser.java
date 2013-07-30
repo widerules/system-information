@@ -1180,7 +1180,7 @@ public class SimpleBrowser extends Activity {
 		
 		appstate.urlAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
 		appstate.initSiteArray();
-		
+
 		cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
 		WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
 
@@ -1400,9 +1400,9 @@ public class SimpleBrowser extends Activity {
 	};
 
 	@Override
-	protected void onNewIntent(Intent intent) {// open file from sdcard // identical
+	protected void onNewIntent(Intent intent) {// open file from sdcard
 		appstate.newIntentAction(intent);
-		
+
 		super.onNewIntent(intent);
 	}
 
@@ -1418,7 +1418,7 @@ public class SimpleBrowser extends Activity {
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {//identical
+	protected void onSaveInstanceState(Bundle outState) {
 		// Not call for super(). Bug on API Level > 11. refer to
 		// http://stackoverflow.com/questions/7469082
 	}

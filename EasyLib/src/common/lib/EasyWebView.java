@@ -9,7 +9,6 @@ import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebSettings.ZoomDensity;
 
 public class EasyWebView extends MyWebView {
 
@@ -24,7 +23,7 @@ public class EasyWebView extends MyWebView {
 
 		webSettings.setDomStorageEnabled(true);// API7, key to enable gmail
 
-		webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
+		//webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
 
 		// loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
 		webSettings.setLoadWithOverviewMode(mAppstate.overviewPage);

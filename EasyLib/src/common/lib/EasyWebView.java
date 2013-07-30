@@ -23,7 +23,7 @@ public class EasyWebView extends MyWebView {
 
 		webSettings.setDomStorageEnabled(true);// API7, key to enable gmail
 
-		//webSettings.setDefaultZoom(ZoomDensity.MEDIUM);//start from API7
+		webSettings.setDefaultZoom(WrapWebSettings.ZoomDensity.MEDIUM);//start from API7
 
 		// loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
 		webSettings.setLoadWithOverviewMode(mAppstate.overviewPage);

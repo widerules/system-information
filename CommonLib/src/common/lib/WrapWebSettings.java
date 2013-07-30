@@ -3,12 +3,21 @@ package common.lib;
 import java.lang.reflect.Method;
 
 import android.webkit.WebSettings;
-//import android.webkit.WebSettings.ZoomDensity;
 
 public class WrapWebSettings {
 	WebSettings mInstance;
 
-	public WrapWebSettings(WebSettings settings) {
+    public enum ZoomDensity {
+        FAR(150),      // 240dpi
+        MEDIUM(100),    // 160dpi
+        CLOSE(75);     // 120dpi
+        ZoomDensity(int size) {
+            value = size;
+        }
+        int value;
+    }
+
+    public WrapWebSettings(WebSettings settings) {
 		mInstance = settings;
 	}
 
@@ -34,7 +43,7 @@ public class WrapWebSettings {
 			setAppCachePath = WebSettings.class.getMethod("setAppCachePath", new Class[] { String.class });
 			setAppCacheMaxSize = WebSettings.class.getMethod("setAppCacheMaxSize", new Class[] { long.class });
 			setDomStorageEnabled = WebSettings.class.getMethod("setDomStorageEnabled", new Class[] { boolean.class });
-			//setDefaultZoom = WebSettings.class.getMethod("setDefaultZoom", new Class[] { ZoomDensity.class });
+			setDefaultZoom = WebSettings.class.getMethod("setDefaultZoom", new Class[] { ZoomDensity.class });
 			
 			//API 11
 			setDisplayZoomControls = WebSettings.class.getMethod("setDisplayZoomControls", new Class[] { boolean.class });
@@ -79,10 +88,10 @@ public class WrapWebSettings {
 			try {setDomStorageEnabled.invoke(mInstance, flag);} catch (Exception e) {}
 	}
 
-	//public synchronized void setDefaultZoom(ZoomDensity zoom) {// API 7
-	//	if (setDefaultZoom != null)
-	//		try {setDefaultZoom.invoke(mInstance, zoom);} catch (Exception e) {}
-	//}
+	public synchronized void setDefaultZoom(ZoomDensity zoom) {// API 7
+		if (setDefaultZoom != null)
+			try {setDefaultZoom.invoke(mInstance, zoom);} catch (Exception e) {}
+	}
 
 	public synchronized boolean setDisplayZoomControls(boolean enabled) {// API 11
 		if (setDisplayZoomControls != null)

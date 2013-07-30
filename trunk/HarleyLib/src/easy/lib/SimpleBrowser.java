@@ -126,14 +126,11 @@ public class SimpleBrowser extends Activity {
 
 	// browser related
 	GridView menuGrid = null;
-	View bookmarkDownloads;
 	LinearLayout bookmarkView;
 	ListView downloadsList;
 	RelativeLayout browserView;
 	LinearLayout imageBtnList;
 	int minWebControlWidth = 200;
-	int bookmarkWidth = LayoutParams.WRAP_CONTENT;
-	int menuWidth = LayoutParams.WRAP_CONTENT;
 	boolean menuOpened = true;
 	boolean bookmarkOpened = true;
 	
@@ -649,11 +646,6 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void scrollToMain() {
-		if (bookmarkOpened) hideBookmark();		
-		if (menuOpened) hideMenu(); 
-	}
-	
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		if (menuOpened) hideMenu();
@@ -986,10 +978,10 @@ public class SimpleBrowser extends Activity {
 	public void initUpDown() {
 		appstate.upAndDown = (LinearLayout) findViewById(R.id.up_down);
 		if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
-		else appstate.upAndDown.setVisibility(View.INVISIBLE);
+		else appstate.upAndDown.setVisibility(View.GONE);
 		
 		ImageView dragButton = (ImageView) findViewById(R.id.page_drag);
-		dragButton.setAlpha(40);
+		dragButton.setAlpha(80);
 		dragButton.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -1137,19 +1129,19 @@ public class SimpleBrowser extends Activity {
 	
 	public void initWebControl() {
 		// web control
-		appstate.webControl = (LinearLayout) browserView.findViewById(R.id.webcontrol);
-		appstate.fakeWebControl = (LinearLayout) browserView.findViewById(R.id.fakeWebcontrol);
+		appstate.webControl = (LinearLayout) findViewById(R.id.webcontrol);
+		appstate.fakeWebControl = (LinearLayout) findViewById(R.id.fakeWebcontrol);
 		
-		btnNewpage = (Button) browserView.findViewById(R.id.opennewpage);
+		btnNewpage = (Button) findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {// add a new page
-				if (appstate.m_homepage != null) appstate.openNewPage(appstate.m_homepage,appstate. webIndex+1, true, false);
+				if (appstate.m_homepage != null) appstate.openNewPage(appstate.m_homepage, appstate.webIndex+1, true, false);
 				else appstate.openNewPage("", appstate.webIndex+1, true, false);
 			}
 		});
 		// web list
-		webList = (ListView) browserView.findViewById(R.id.weblist);
+		webList = (ListView) findViewById(R.id.weblist);
 		webList.setFadingEdgeLength(0);// no shadow when scroll
 		webList.setScrollingCacheEnabled(false);
 		webList.setAdapter(appstate.webAdapter);
@@ -1345,7 +1337,7 @@ public class SimpleBrowser extends Activity {
 
 		cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
 		WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
-		
+
 		while (appstate.serverWebs.size() > 0) {
 			HarleyWebView tmp = (HarleyWebView) appstate.webpages.getChildAt(0);
 			if (tmp == null) break;//sometime it is null if close page very quick
@@ -1392,7 +1384,7 @@ public class SimpleBrowser extends Activity {
 				return true;
 			}
 		});
-		
+
 		appstate.imgPrev = (ImageView) findViewById(R.id.prev);
 		appstate.imgPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1407,7 +1399,7 @@ public class SimpleBrowser extends Activity {
 				return true;
 			}
 		});
-		
+
 		appstate.imgRefresh = (ImageView) findViewById(R.id.refresh);
 		appstate.imgRefresh.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1465,7 +1457,7 @@ public class SimpleBrowser extends Activity {
 				return true;
 			}
 		});
-		
+
 		appstate.imgNew = (ImageView) findViewById(R.id.newpage);
 		appstate.imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), 1, 2, appstate.dm.density, mContext));
 		appstate.imgNew.setOnClickListener(new OnClickListener() {
@@ -1607,19 +1599,9 @@ public class SimpleBrowser extends Activity {
 		statusBarHeight = rectgle.top;
 	}
 	
-	void showBookmark() {
-		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
-		bookmarkDownloads.requestLayout();
-		bookmarkOpened = true;
-		if (appstate.dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
-			appstate.webControl.setVisibility(View.GONE);
-			hideMenu();
-		}
-		if (bookmarkAdapter == null) initBookmarks();
-	}
-	
 	@Override
 	protected void onDestroy() {
+		unregisterReceiver(screenLockReceiver);
 		unregisterReceiver(downloadReceiver);
 		unregisterReceiver(packageReceiver);
 
@@ -1628,6 +1610,12 @@ public class SimpleBrowser extends Activity {
 
 		super.onDestroy();
 	}
+
+	BroadcastReceiver screenLockReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context arg0, Intent intent) {
+		}
+	};
 
 	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		@Override
@@ -1714,7 +1702,7 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		// No call for super(). Bug on API Level > 11. refer to
+		// Not call for super(). Bug on API Level > 11. refer to
 		// http://stackoverflow.com/questions/7469082
 	}
 

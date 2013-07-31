@@ -237,11 +237,11 @@ public class EasyApp extends MyApp {
 	}
 	
 	public void pauseAction() {
-		super.pauseAction();
-		
 		sEdit.putBoolean("collapse1", collapse1);
 		sEdit.putBoolean("collapse2", collapse2);
 		sEdit.putBoolean("collapse3", collapse3);
+
+		super.pauseAction();
 	}
 	
 	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {

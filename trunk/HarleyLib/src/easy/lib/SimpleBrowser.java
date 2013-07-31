@@ -125,16 +125,9 @@ public class SimpleBrowser extends Activity {
 	ImageView upButton, downButton;
 
 	// browser related
-	GridView menuGrid = null;
-	LinearLayout bookmarkView;
-	ListView downloadsList;
 	RelativeLayout browserView;
 	LinearLayout imageBtnList;
-	int minWebControlWidth = 200;
-	boolean menuOpened = true;
-	boolean bookmarkOpened = true;
 	
-	MyListAdapter bookmarkAdapter, historyAdapter, downloadsAdapter;
 	ListView historyList;
 	
 	ImageView imgBookmark, imgMenu;
@@ -174,93 +167,6 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {}
 	}
 	
-	private class MyListAdapter extends ArrayAdapter<TitleUrl> {
-		ArrayList localList;
-		int type = 0;// 0:bookmark, 1:history, 2:downloads
-
-		public MyListAdapter(Context context, List<TitleUrl> titles) {
-			super(context, 0, titles);
-			localList = (ArrayList) titles;
-		}
-
-		@Override
-		public View getView(final int position, View convertView,
-				ViewGroup parent) {
-			final TitleUrl tu = (TitleUrl) localList.get(position);
-
-			if (convertView == null) {
-				final LayoutInflater inflater = getLayoutInflater();
-				convertView = inflater.inflate(R.layout.web_list, parent, false);
-				
-				convertView.setBackgroundResource(R.drawable.webname_layout);
-			}
-
-			final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
-			String filename;
-			if (type != 2) filename = getFilesDir().getAbsolutePath() + "/" + tu.m_site + ".png";
-			else filename = getFilesDir().getAbsolutePath() + "/" + WebUtil.getSite(tu.m_site) + ".png";
-			
-			File f = new File(filename);
-			if (f.exists())
-				try {
-					btnIcon.setImageURI(Uri.parse(filename));
-					btnIcon.setVisibility(View.VISIBLE);
-				} catch (Exception e) {}// catch an null pointer exception on 1.6
-			else btnIcon.setVisibility(View.INVISIBLE);
-
-			final ImageView btnDelete = (ImageView) convertView.findViewById(R.id.webclose);
-			btnDelete.setVisibility(View.INVISIBLE);
-			btnDelete.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					if (type == 0) {// bookmark
-						File favicon = new File(appstate.dataPath + "files/" + appstate.mBookMark.get(position).m_site + ".png");
-						favicon.delete();//delete favicon of the site
-						appstate.mBookMark.remove(position);
-						appstate.updateBookmark();
-					}
-					else if (type == 1) {// history
-						appstate.mHistory.remove(appstate.mHistory.size() - 1 - position);
-						appstate.updateHistory();
-					}
-					else {// downloads
-						appstate.mDownloads.remove(position);
-						appstate.updateDownloads();
-					}
-					btnDelete.setVisibility(View.INVISIBLE);
-				}
-			});
-
-			TextView webname = (TextView) convertView.findViewById(R.id.webname);
-			webname.setText(tu.m_title);
-			if (type == 1) webname.setTextColor(0xffddddff);
-			else if (type == 2) webname.setTextColor(0xffffdd8b);
-
-			webname.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					if (type != 2) {// bookmark and history
-						appstate.serverWebs.get(appstate.webIndex).loadUrl(tu.m_url);
-						imgBookmark.performClick();
-					}
-					else // open downloads file
-						openDownload(tu);
-				}
-			});
-			webname.setOnLongClickListener(new OnLongClickListener() {
-				@Override
-				public boolean onLongClick(View v) {
-					if (btnDelete.getVisibility() == View.INVISIBLE) 
-						btnDelete.setVisibility(View.VISIBLE);
-					else btnDelete.setVisibility(View.INVISIBLE);
-					return true;
-				}
-			});
-
-			return convertView;
-		}
-	}
-
 	HarleyApp appstate;
 
 	@Override
@@ -555,20 +461,6 @@ public class SimpleBrowser extends Activity {
 		updateHistoryViewHeight();
 	}
 	
-	void hideMenu() {
-		menuGrid.getLayoutParams().width = 0;
-		menuGrid.requestLayout();
-		menuOpened = false;
-	}
-	
-	void hideBookmark() {
-		bookmarkDownloads.getLayoutParams().width = 0;
-		bookmarkDownloads.requestLayout();
-		bookmarkView.setVisibility(View.VISIBLE);
-		if (downloadsList != null) downloadsList.setVisibility(View.GONE);
-		bookmarkOpened = false;
-	}
-
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -1173,44 +1065,6 @@ public class SimpleBrowser extends Activity {
 		else intent.setData(Uri.parse(tu.m_url));// we can open it now
 		
 		util.startActivity(intent, true, mContext);
-	}
-	
-	public void initBookmarks() {
-		bookmarkAdapter = new MyListAdapter(mContext, appstate.mBookMark);
-		bookmarkAdapter.type = 0;
-		ListView bookmarkList = (ListView) findViewById(R.id.bookmark);
-		bookmarkList.inflate(mContext, R.layout.web_list, null);
-		bookmarkList.setAdapter(bookmarkAdapter);
-		bookmarkList.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-					ListView lv = (ListView) v;
-					appstate.serverWebs.get(appstate.webIndex).loadUrl(appstate.mBookMark.get(lv.getSelectedItemPosition()).m_url);
-					imgBookmark.performClick();
-				}
-				return false;
-			}
-		});
-
-		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
-		historyAdapter.type = 1;
-		historyList = (ListView) findViewById(R.id.history);
-		historyList.inflate(mContext, R.layout.web_list, null);
-		historyList.setAdapter(historyAdapter);
-		historyList.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-					ListView lv = (ListView) v;
-					appstate.serverWebs.get(appstate.webIndex).loadUrl(appstate.mHistory.get(appstate.mHistory.size() - 1 - lv.getSelectedItemPosition()).m_url);
-					imgBookmark.performClick();
-				}
-				return false;
-			}
-		});
-		
-		appstate.updateHistory();
 	}
 	
 	@Override

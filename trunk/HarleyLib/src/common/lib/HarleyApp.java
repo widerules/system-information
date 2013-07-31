@@ -3,19 +3,33 @@ package common.lib;
 import java.net.URLDecoder;
 import java.util.Locale;
 
+import easy.lib.MyListAdapter;
 import easy.lib.R;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebBackForwardList;
+import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 public class HarleyApp extends MyApp {
 	public View bookmarkDownloads;
 	public int bookmarkWidth = LayoutParams.WRAP_CONTENT;
 	public int menuWidth = LayoutParams.WRAP_CONTENT;
+	public boolean menuOpened = true;
+	public boolean bookmarkOpened = true;
+	
+	public GridView menuGrid = null;
+	public LinearLayout bookmarkView;
+	public ListView downloadsList;
+	MyListAdapter bookmarkAdapter, historyAdapter, downloadsAdapter;
+	int minWebControlWidth = 200;
 
 	public void loadPage() {// load home page
 		super.loadPage();
@@ -28,12 +42,26 @@ public class HarleyApp extends MyApp {
 		if (shareMode != 1) scrollToMain();
 	}
 	
+	void hideMenu() {
+		menuGrid.getLayoutParams().width = 0;
+		menuGrid.requestLayout();
+		menuOpened = false;
+	}
+	
+	void hideBookmark() {
+		bookmarkDownloads.getLayoutParams().width = 0;
+		bookmarkDownloads.requestLayout();
+		bookmarkView.setVisibility(View.VISIBLE);
+		if (downloadsList != null) downloadsList.setVisibility(View.GONE);
+		bookmarkOpened = false;
+	}
+
 	void showBookmark() {
 		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
 		bookmarkDownloads.requestLayout();
 		bookmarkOpened = true;
-		if (appstate.dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
-			appstate.webControl.setVisibility(View.GONE);
+		if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) {
+			webControl.setVisibility(View.GONE);
 			hideMenu();
 		}
 		if (bookmarkAdapter == null) initBookmarks();
@@ -42,6 +70,44 @@ public class HarleyApp extends MyApp {
 	public void scrollToMain() {
 		if (bookmarkOpened) hideBookmark();		
 		if (menuOpened) hideMenu(); 
+	}
+	
+	public void initBookmarks() {
+		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
+		bookmarkAdapter.type = 0;
+		ListView bookmarkList = (ListView) findViewById(R.id.bookmark);
+		bookmarkList.inflate(mContext, R.layout.web_list, null);
+		bookmarkList.setAdapter(bookmarkAdapter);
+		bookmarkList.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+					ListView lv = (ListView) v;
+					serverWebs.get(webIndex).loadUrl(mBookMark.get(lv.getSelectedItemPosition()).m_url);
+					imgBookmark.performClick();
+				}
+				return false;
+			}
+		});
+
+		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
+		historyAdapter.type = 1;
+		historyList = (ListView) findViewById(R.id.history);
+		historyList.inflate(mContext, R.layout.web_list, null);
+		historyList.setAdapter(historyAdapter);
+		historyList.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+					ListView lv = (ListView) v;
+					serverWebs.get(webIndex).loadUrl(mHistory.get(mHistory.size() - 1 - lv.getSelectedItemPosition()).m_url);
+					imgBookmark.performClick();
+				}
+				return false;
+			}
+		});
+		
+		updateHistory();
 	}
 	
 	public void readPreference() {

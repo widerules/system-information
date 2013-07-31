@@ -1038,6 +1038,7 @@ public class MyApp extends BaseApp {
 								try {//index out of bound error reported by a few user
 									mBookMark.remove(order);
 									updateBookmark();
+									bookmarkChanged = true;
 								} catch (Exception e) {}
 							}
 						})
@@ -1062,6 +1063,7 @@ public class MyApp extends BaseApp {
 								try {//index out of bound error reported by a few user
 									mHistory.remove(order);
 									updateHistory();
+									historyChanged = true;
 								} catch (Exception e) {}
 							}
 						})
@@ -1107,6 +1109,7 @@ public class MyApp extends BaseApp {
 								// sort by name
 								Collections.sort(mBookMark, new MyComparator());
 								updateBookmark();
+								bookmarkChanged = true;
 							}
 						})
 				.setNegativeButton(R.string.cancel,

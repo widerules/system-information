@@ -96,7 +96,7 @@ public class MyApp extends BaseApp {
 				//adContainer.setVisibility(View.GONE);
 			}
 			else if (msg.what == 1) {// remove ad when click ad // disabled
-				//removeAd();
+				removeAd();
 			}
 			else if (msg.what == -2) {// fail to get InterstitialAd
 				Bundle data = msg.getData();

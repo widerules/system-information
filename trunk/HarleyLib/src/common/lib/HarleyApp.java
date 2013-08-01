@@ -1,22 +1,45 @@
 package common.lib;
 
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
+import easy.lib.AboutBrowser;
 import easy.lib.MyListAdapter;
 import easy.lib.R;
+import easy.lib.SimpleBrowser;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Picture;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
+import android.webkit.CookieManager;
+import android.webkit.MimeTypeMap;
 import android.webkit.WebBackForwardList;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class HarleyApp extends MyApp {
 	public View bookmarkDownloads;
@@ -28,8 +51,16 @@ public class HarleyApp extends MyApp {
 	public GridView menuGrid = null;
 	public LinearLayout bookmarkView;
 	public ListView downloadsList;
-	MyListAdapter bookmarkAdapter, historyAdapter, downloadsAdapter;
-	int minWebControlWidth = 200;
+	public MyListAdapter bookmarkAdapter, historyAdapter, downloadsAdapter;
+	public int minWebControlWidth = 200;
+	public ImageView imgBookmark;
+	int statusBarHeight;
+
+	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
+	ListView historyList;
+	public boolean reverted = false;
+
+	SimpleBrowser mHarleyActivity = (SimpleBrowser) mActivity;
 
 	public void loadPage() {// load home page
 		super.loadPage();
@@ -42,13 +73,29 @@ public class HarleyApp extends MyApp {
 		if (shareMode != 1) scrollToMain();
 	}
 	
-	void hideMenu() {
+	public void menuOpenAction() {
+		if (menuOpened) hideMenu();
+		else {
+			if ((urlLine.getLayoutParams().height == 0) || (webTools.getLayoutParams().height == 0)) {// show bars if hided 
+				if (!showUrl) setUrlHeight(true);
+				if (!showControlBar) setBarHeight(true);
+			}
+				
+			menuOpened = true;
+			if (menuGrid.getChildCount() == 0) initMenuDialog();
+			menuGrid.getLayoutParams().width = menuWidth;
+			menuGrid.requestLayout();
+			if (dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) hideBookmark();
+		}
+	}
+	
+	public void hideMenu() {
 		menuGrid.getLayoutParams().width = 0;
 		menuGrid.requestLayout();
 		menuOpened = false;
 	}
 	
-	void hideBookmark() {
+	public void hideBookmark() {
 		bookmarkDownloads.getLayoutParams().width = 0;
 		bookmarkDownloads.requestLayout();
 		bookmarkView.setVisibility(View.VISIBLE);
@@ -56,7 +103,7 @@ public class HarleyApp extends MyApp {
 		bookmarkOpened = false;
 	}
 
-	void showBookmark() {
+	public void showBookmark() {
 		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
 		bookmarkDownloads.requestLayout();
 		bookmarkOpened = true;
@@ -73,9 +120,9 @@ public class HarleyApp extends MyApp {
 	}
 	
 	public void initBookmarks() {
-		bookmarkAdapter = new MyListAdapter(mContext, mBookMark);
+		bookmarkAdapter = new MyListAdapter(mContext, mBookMark, this);
 		bookmarkAdapter.type = 0;
-		ListView bookmarkList = (ListView) findViewById(R.id.bookmark);
+		ListView bookmarkList = (ListView) mActivity.findViewById(R.id.bookmark);
 		bookmarkList.inflate(mContext, R.layout.web_list, null);
 		bookmarkList.setAdapter(bookmarkAdapter);
 		bookmarkList.setOnKeyListener(new OnKeyListener() {
@@ -90,9 +137,9 @@ public class HarleyApp extends MyApp {
 			}
 		});
 
-		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter);
+		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter, this);
 		historyAdapter.type = 1;
-		historyList = (ListView) findViewById(R.id.history);
+		historyList = (ListView) mActivity.findViewById(R.id.history);
 		historyList.inflate(mContext, R.layout.web_list, null);
 		historyList.setAdapter(historyAdapter);
 		historyList.setOnKeyListener(new OnKeyListener() {
@@ -139,6 +186,18 @@ public class HarleyApp extends MyApp {
 		}
 	}
 	
+	public void openDownload(TitleUrl tu) {
+		Intent intent = new Intent("android.intent.action.VIEW");
+		
+		String ext = tu.m_title.substring(tu.m_title.lastIndexOf(".")+1, tu.m_title.length());
+		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+		String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
+		if (mimeType != null) intent.setDataAndType(Uri.parse(tu.m_url), mimeType);
+		else intent.setData(Uri.parse(tu.m_url));// we can open it now
+		
+		util.startActivity(intent, true, mContext);
+	}
+	
 	public void updateDownloads() {
 		if (downloadsAdapter != null) {
 			downloadsAdapter.notifyDataSetChanged();
@@ -164,6 +223,32 @@ public class HarleyApp extends MyApp {
 			historyAdapter.notifyDataSetChanged();
 		}
 		historyChanged = true;
+	}
+	
+	public void updateHistoryViewHeight() {
+		if (historyList == null) return;
+		//calculate height of history list so that it display not too many or too few items
+		getTitleHeight();
+		int height = dm.heightPixels - statusBarHeight - adContainer.getHeight();//browserView.getHeight() may not correct when rotate. so use this way. but not applicable for 4.x platform
+		
+		LayoutParams lp = urlLine.getLayoutParams();// urlLine.getHeight() may not correct here, so use lp
+		if (lp.height != 0) height -= urlHeight * dm.density;
+		lp = webTools.getLayoutParams();
+		if (lp.height != 0) height -= barHeight * dm.density;
+		
+		int maxSize = (int) Math.max(height/2, height- mBookMark.size()*42*dm.density);// 42 is the height of each history with divider. should display equal rows of history and bookmark
+		height = (int) (Math.min(maxSize, mHistory.size()*43*dm.density));//select a value from maxSize and mHistory.size().
+
+		lp = historyList.getLayoutParams();
+		lp.height = height;
+		historyList.requestLayout();
+	}
+
+	void getTitleHeight() {
+		Rect rectgle= new Rect();
+		Window window= mActivity.getWindow();
+		window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
+		statusBarHeight = rectgle.top;
 	}
 	
 	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
@@ -203,4 +288,248 @@ public class HarleyApp extends MyApp {
 
 		return true;
 	}
+
+	private SimpleAdapter getMenuAdapter(String[] menuNameArray,
+			int[] imageResourceArray) {
+		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
+		for (int i = 0; i < menuNameArray.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("itemImage", imageResourceArray[i]);
+			map.put("itemText", menuNameArray[i]);
+			data.add(map);
+		}
+		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
+				R.layout.icon_list, new String[] { "itemImage", "itemText" },
+				new int[] { R.id.appicon, R.id.appname });
+		return simperAdapter;
+	}
+
+	public void initMenuDialog() {
+		// menu icon
+		int[] menu_image_array = {
+				R.drawable.exit,
+				R.drawable.recycle,
+				R.drawable.set_home,
+				R.drawable.pin,
+				R.drawable.search, 
+				R.drawable.copy,
+				R.drawable.downloads,
+				R.drawable.save,
+				R.drawable.capture,
+				R.drawable.html_w,
+				R.drawable.favorite,
+				R.drawable.link,
+				R.drawable.share,
+				R.drawable.about
+			};
+		// menu text
+		String[] menu_name_array = {
+				getString(R.string.exit),
+				"PDF",
+				getString(R.string.set_homepage),
+				getString(R.string.add_shortcut),
+				getString(R.string.search),
+				getString(R.string.copy),
+				getString(R.string.downloads),
+				getString(R.string.save),
+				getString(R.string.snap),
+				getString(R.string.source),
+				getString(R.string.bookmark),
+				"cookie",
+				getString(R.string.shareurl),
+				getString(R.string.settings)
+			};
+
+		final Context localContext = this;
+		menuGrid.setFadingEdgeLength(0);
+		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
+		menuGrid.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				switch (arg2) {
+				case 0:// exit
+					clearFile("pages");
+					ClearCache(); // clear cache when exit
+					mActivity.finish();
+					break;
+				case 1:// pdf
+					scrollToMain();
+					serverWebs.get(webIndex).loadUrl("http://www.web2pdfconvert.com/engine?curl=" + serverWebs.get(webIndex).m_url);
+					break;
+				case 2:// set homepage
+					m_homepage = serverWebs.get(webIndex).getUrl();
+					if (!HOME_PAGE.equals(m_homepage)) {// not set asset/home.html as home page
+						sEdit.putString("homepage", m_homepage);
+						sEdit.commit();
+					}
+					Toast.makeText(mContext, serverWebs.get(webIndex).getTitle() + " " + getString(R.string.set_homepage), Toast.LENGTH_LONG).show();
+					break;
+				case 3:// add short cut
+					createShortcut(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
+					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
+					break;
+				case 4:// search
+					scrollToMain();
+					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
+						// serverWebs.get(webIndex).showFindDialog("e", false);
+					if (searchBar == null) initSearchBar();
+					searchBar.bringToFront();
+					searchBar.setVisibility(View.VISIBLE);
+					etSearch.requestFocus();
+					toSearch = "";
+					imm.toggleSoftInput(0, 0);
+					break;
+				case 5:// copy
+					scrollToMain();
+					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
+					try {
+						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
+							Toast.makeText(mContext,
+									getString(R.string.copy_hint),
+									Toast.LENGTH_LONG).show();
+					} catch (Exception e) {}
+
+					try {
+						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
+								KeyEvent.ACTION_DOWN,
+								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+						shiftPressEvent.dispatch(serverWebs.get(webIndex));
+					} catch (Exception e) {}
+					break;
+				case 6:// downloads
+					if (mDownloads.size() == 0) {
+						Toast.makeText(mContext, "no downloads recorded", Toast.LENGTH_LONG).show();
+						break;
+					}
+					
+					if (downloadsList == null) mHarleyActivity.initDownloads();
+					
+					bookmarkView.setVisibility(View.GONE);
+					downloadsList.setVisibility(View.VISIBLE);
+					showBookmark();
+					break;
+				case 7:// save
+					startDownload(serverWebs.get(webIndex).m_url, "", "no");
+					break;
+				case 8:// view snap
+					try {// still got java.lang.RuntimeException: Canvas: trying
+							// to use a recycled bitmap android.graphics.Bitmap
+							// from one user. so catch it.
+						if (!snapFullWeb) {
+							// the snap will not refresh if not destroy cache
+							webpages.destroyDrawingCache();
+							webpages.setDrawingCacheEnabled(true);
+							mHarleyActivity.bmp = webpages.getDrawingCache();
+						} else {
+							Picture pic = serverWebs.get(webIndex)
+									.capturePicture();
+
+							// bmp = Bitmap.createScaledBitmap(???,
+							// pic.getWidth(), pic.getHeight(), false);//check
+							// here http://stackoverflow.com/questions/477572
+							mHarleyActivity.bmp = Bitmap.createBitmap(pic.getWidth(),
+									pic.getHeight(), Bitmap.Config.ARGB_4444);
+							// the size of the web page may be very large.
+
+							Canvas canvas = new Canvas(mHarleyActivity.bmp);
+							pic.draw(canvas);
+						}
+						
+						if (mHarleyActivity.snapDialog == null) mHarleyActivity.initSnapDialog();
+						mHarleyActivity.snapView.setImageBitmap(mHarleyActivity.bmp);
+						mHarleyActivity.snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
+						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
+							mHarleyActivity.snapDialog.setIcon(R.drawable.explorer);
+						else
+							mHarleyActivity.snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+						mHarleyActivity.snapDialog.show();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(),
+								Toast.LENGTH_LONG).show();
+					}
+					break;
+				case 9:// view page source
+					try {
+						if ("".equals(serverWebs.get(webIndex).pageSource)) {
+							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
+							serverWebs.get(webIndex).getPageSource();
+						}
+
+						mHarleyActivity.sourceOrCookie = serverWebs.get(webIndex).pageSource;
+						mHarleyActivity.subFolder = "source";
+						mHarleyActivity.showSourceDialog();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+					}
+					break;
+				case 10:// bookmark
+					String url = serverWebs.get(webIndex).m_url;
+					if (HOME_PAGE.equals(url)) return;// not add home page
+					addRemoveFavo(url, serverWebs.get(webIndex).getTitle());
+					break;
+				case 11:// cookie
+					CookieManager cookieManager = CookieManager.getInstance(); 
+					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
+					if (cookie != null)
+						mHarleyActivity.sourceOrCookie = cookie.replaceAll("; ", "\n\n");
+					else mHarleyActivity.sourceOrCookie = "No cookie on this page.";
+					
+					mHarleyActivity.subFolder = "cookie";
+					mHarleyActivity.showSourceDialog();
+					break;
+				case 12:// share url
+					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
+					break;
+				case 13:// settings
+					Intent intent = new Intent(getPackageName() + "about");
+					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
+					mActivity.startActivityForResult(intent, SETTING_RESULTCODE);
+					break;
+				}
+			}
+		});
+	}
+	
+	public void initSearchBar() {		
+		imgSearchPrev = (ImageView) mActivity.findViewById(R.id.search_prev);
+		imgSearchPrev.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				searchPrevAction();
+			}
+		});
+		imgSearchNext = (ImageView) mActivity.findViewById(R.id.search_next);
+		imgSearchNext.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				searchNextAction();
+			}
+		});
+
+		imgSearchClose = (ImageView) mActivity.findViewById(R.id.close_search);
+		imgSearchClose.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				hideSearchBox();
+			}
+		});
+
+		searchBar = (RelativeLayout) mActivity.findViewById(R.id.search_bar);
+		searchHint = (TextView) mActivity.findViewById(R.id.search_hint);
+		etSearch = (EditText) mActivity.findViewById(R.id.search);
+		etSearch.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (event.getAction() == KeyEvent.ACTION_UP)
+					switch (keyCode) {
+					case KeyEvent.KEYCODE_SEARCH:
+					case KeyEvent.KEYCODE_ENTER:
+					case KeyEvent.KEYCODE_DPAD_CENTER:
+						imgSearchNext.performClick();
+						break;
+					}
+				return false;
+			}
+		});		
+	}	
 }

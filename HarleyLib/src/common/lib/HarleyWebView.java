@@ -1,6 +1,7 @@
 package common.lib;
 
 import easy.lib.R;
+import easy.lib.SimpleBrowser;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.webkit.GeolocationPermissions;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebSettings.ZoomDensity;
@@ -20,11 +22,17 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 public class HarleyWebView extends MyWebView {
+	SimpleBrowser mHarleyActivity;
+	HarleyApp mHarleyAppState;
 	public HarleyWebView(Context context, HarleyApp appstate) {
 		super(context, appstate);
 		
+		mHarleyActivity = (SimpleBrowser) appstate.mActivity;
+		mHarleyAppState = appstate;
+		
 		setScrollbarFadingEnabled(true);// hide scroll bar when not scroll. from API5, not work on cupcake.
 
+		WebSettings localSettings = getSettings();
 		// open Geolocation by default
 		localSettings.setGeolocationEnabled(true);//API5
 		//localSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5. no use for get location in baidu map?
@@ -35,7 +43,7 @@ public class HarleyWebView extends MyWebView {
 
 		// loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
 		//localSettings.setUseWideViewPort(overviewPage);
-		localSettings.setLoadWithOverviewMode(overviewPage);
+		localSettings.setLoadWithOverviewMode(mAppstate.overviewPage);
 		
 		setWebChromeClient(new WebChromeClient() {
 			@Override
@@ -45,24 +53,24 @@ public class HarleyWebView extends MyWebView {
 				else mProgress = progress;
 
 				if (isForeground) {
-					loadProgress.setProgress(progress);
+					mAppstate.loadProgress.setProgress(progress);
 					if (progress == 100)
-						loadProgress.setVisibility(View.INVISIBLE);
+						mAppstate.loadProgress.setVisibility(View.INVISIBLE);
 				}
 			}
 
 			// For Android 3.0+
 			public void openFileChooser(ValueCallback<Uri> uploadMsg,
 					String acceptType) {
-				if (null == mUploadMessage)
-					mUploadMessage = new wrapValueCallback();
-				mUploadMessage.mInstance = uploadMsg;
+				if (null == mAppstate.mUploadMessage)
+					mAppstate.mUploadMessage = new WrapValueCallback();
+				mAppstate.mUploadMessage.mInstance = uploadMsg;
 				Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 				i.addCategory(Intent.CATEGORY_OPENABLE);
 				i.setType("*/*");
-				startActivityForResult(Intent.createChooser(i,
-						getString(R.string.select_file)),
-						FILECHOOSER_RESULTCODE);
+				mHarleyActivity.startActivityForResult(Intent.createChooser(i,
+						mContext.getString(R.string.select_file)),
+						mAppstate.FILECHOOSER_RESULTCODE);
 			}
 
 			// For Android < 3.0
@@ -91,18 +99,18 @@ public class HarleyWebView extends MyWebView {
 				super.onShowCustomView(view, callback);
 
 				if (view instanceof FrameLayout) {
-					mCustomViewContainer = (FrameLayout) view;
-					mCustomViewCallback = callback;
-					if (mCustomViewContainer.getFocusedChild() instanceof VideoView) {
-						mVideoView = (VideoView) mCustomViewContainer.getFocusedChild();
-						mVideoView.setOnCompletionListener(new OnCompletionListener() {
+					mHarleyActivity.mCustomViewContainer = (FrameLayout) view;
+					mHarleyActivity.mCustomViewCallback = callback;
+					if (mHarleyActivity.mCustomViewContainer.getFocusedChild() instanceof VideoView) {
+						mHarleyActivity.mVideoView = (VideoView) mHarleyActivity.mCustomViewContainer.getFocusedChild();
+						mHarleyActivity.mVideoView.setOnCompletionListener(new OnCompletionListener() {
 							@Override
 							public void onCompletion(MediaPlayer mp) {
 								mp.stop();
 								onHideCustomView();
 							}
 						});
-						mVideoView.setOnErrorListener(new OnErrorListener() {
+						mHarleyActivity.mVideoView.setOnErrorListener(new OnErrorListener() {
 							@Override
 							public boolean onError(MediaPlayer mp, int what, int extra) {
 								mp.stop();
@@ -110,27 +118,27 @@ public class HarleyWebView extends MyWebView {
 								return true;
 							}
 						});
-						mVideoView.requestFocus();
-						mVideoView.start();
+						mHarleyActivity.mVideoView.requestFocus();
+						mHarleyActivity.mVideoView.start();
 					}
 					else ;//it is android.webkit.HTML5VideoFullScreen$VideoSurfaceView instead of VideoView
 					
-					browserView.setVisibility(View.GONE);
-                    setContentView(mCustomViewContainer);
+					mHarleyActivity.browserView.setVisibility(View.GONE);
+					mHarleyActivity.setContentView(mHarleyActivity.mCustomViewContainer);
 				}
 			}// API 7. http://www.w3.org/2010/05/video/mediaevents.html for verify
 
 			public void onHideCustomView() {
-				hideCustomView();
+				mHarleyActivity.hideCustomView();
 			}
 
 
 			@Override
 			public boolean onCreateWindow(WebView view, boolean isDialog,
 					boolean isUserGesture, android.os.Message resultMsg) {
-				if (openNewPage(null, webIndex+1, true, true)) {// open new page success
+				if (mAppstate.openNewPage(null, mAppstate.webIndex+1, true, true)) {// open new page success
 					((WebView.WebViewTransport) resultMsg.obj)
-							.setWebView(serverWebs.get(webIndex));
+							.setWebView(mAppstate.serverWebs.get(mAppstate.webIndex));
 					resultMsg.sendToTarget();
 					return true;
 				} else return false;
@@ -190,8 +198,8 @@ public class HarleyWebView extends MyWebView {
 			if (!this.isFocused()) {
 				this.setFocusableInTouchMode(true);
 				this.requestFocus();
-				webAddress.setFocusableInTouchMode(false);
-				webAddress.clearFocus();
+				mAppstate.webAddress.setFocusableInTouchMode(false);
+				mAppstate.webAddress.clearFocus();
 			}
             break;
         case MotionEvent.ACTION_MOVE: // when user stop to touch the screen
@@ -200,21 +208,21 @@ public class HarleyWebView extends MyWebView {
             if (!isScrolling && (Math.abs(oldY - event.getY()) < 50)) {
                 if ((event.getX() > oldX+100) && overScrollLeft && (oldX < 100)) {
                     // left action
-                	if (!reverted) {
-                		if (!bookmarkOpened) showBookmark();
+                	if (!mHarleyAppState.reverted) {
+                		if (!mHarleyAppState.bookmarkOpened) mHarleyAppState.showBookmark();
                 	}
                 	else {
-	                	if (!menuOpened) onMenuOpened(0, null);
+	                	if (!mHarleyAppState.menuOpened) mHarleyAppState.menuOpenAction();
                 	}
                 	dragEdge = true;
                 }
-                else if ((event.getX() < oldX-100) && overScrollRight && (oldX > dm.widthPixels-100)) {
+                else if ((event.getX() < oldX-100) && overScrollRight && (oldX > mHarleyAppState.dm.widthPixels-100)) {
                 	// right action
-                	if (!reverted) {
-                		if (!menuOpened) onMenuOpened(0, null);
+                	if (!mHarleyAppState.reverted) {
+                		if (!mHarleyAppState.menuOpened) mHarleyAppState.menuOpenAction();
                 	}
                 	else {
-                		if (!bookmarkOpened) showBookmark();
+                		if (!mHarleyAppState.bookmarkOpened) mHarleyAppState.showBookmark();
                 	}
                 	dragEdge = true;
                 }
@@ -222,13 +230,13 @@ public class HarleyWebView extends MyWebView {
             break;
         case MotionEvent.ACTION_UP:
             if (!dragEdge) {
-            	scrollToMain();
+            	mHarleyAppState.scrollToMain();
 
-            	if (webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
-					webControl.setVisibility(View.INVISIBLE);
+            	if (mHarleyAppState.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
+            		mHarleyAppState.webControl.setVisibility(View.INVISIBLE);
 								
-				if (!showUrl) setUrlHeight(false);
-				if (!showControlBar) setBarHeight(false);
+				if (!mHarleyAppState.showUrl) mHarleyAppState.setUrlHeight(false);
+				if (!mHarleyAppState.showControlBar) mHarleyAppState.setBarHeight(false);
             }
             break;
         default:

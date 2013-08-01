@@ -99,38 +99,33 @@ public class SimpleBrowser extends Activity {
 
 	ListView webList;
 
-	boolean reverted = false;
-
-
 	//boolean flashInstalled = false;
 	// settings
-	int statusBarHeight;
 	final int historyCount = 30;
 	int bookmarkIndex = -1;
 
 	// snap dialog
-	ImageView snapView;
-	Bitmap bmp;
-	AlertDialog snapDialog = null;
+	public ImageView snapView;
+	public Bitmap bmp;
+	public AlertDialog snapDialog = null;
 
 	// favo dialog
 	EditText titleText;
 
 	// source dialog
 	AlertDialog m_sourceDialog = null;
-	String sourceOrCookie = "";
-	String subFolder = "source";
+	public String sourceOrCookie = "";
+	public String subFolder = "source";
 	
 	// page up and down button
 	ImageView upButton, downButton;
 
 	// browser related
-	RelativeLayout browserView;
+	public RelativeLayout browserView;
 	LinearLayout imageBtnList;
 	
-	ListView historyList;
 	
-	ImageView imgBookmark, imgMenu;
+	ImageView imgMenu;
 	boolean shouldGo = false;
 	RelativeLayout webs;
 	Button btnNewpage;
@@ -149,7 +144,6 @@ public class SimpleBrowser extends Activity {
 	}
 
 	// bookmark and history
-	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean downloadsChanged = false;
 	ImageView imgAddFavo;
@@ -449,7 +443,7 @@ public class SimpleBrowser extends Activity {
 			lpUrl.height = LayoutParams.WRAP_CONTENT;
 		else lpUrl.height = 0;
 		appstate.urlLine.requestLayout();		
-		updateHistoryViewHeight();
+		appstate.updateHistoryViewHeight();
 	}
 	
 	void setBarHeight(boolean showBarNow) {
@@ -458,7 +452,7 @@ public class SimpleBrowser extends Activity {
 			lpBar.height = LayoutParams.WRAP_CONTENT;
 		else lpBar.height = 0;
 		appstate.webTools.requestLayout();
-		updateHistoryViewHeight();
+		appstate.updateHistoryViewHeight();
 	}
 	
 	@Override
@@ -540,19 +534,7 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (menuOpened) hideMenu();
-		else {
-			if ((appstate.urlLine.getLayoutParams().height == 0) || (appstate.webTools.getLayoutParams().height == 0)) {// show bars if hided 
-				if (!appstate.showUrl) setUrlHeight(true);
-				if (!appstate.showControlBar) setBarHeight(true);
-			}
-				
-			menuOpened = true;
-			if (menuGrid.getChildCount() == 0) initMenuDialog();
-			menuGrid.getLayoutParams().width = menuWidth;
-			menuGrid.requestLayout();
-			if (appstate.dm.widthPixels-menuWidth-bookmarkWidth < minWebControlWidth) hideBookmark();
-		}
+		appstate.menuOpenAction();
 		return false;// show system menu if return true.
 	}
 
@@ -560,21 +542,6 @@ public class SimpleBrowser extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add("menu");// must create one menu?
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	private SimpleAdapter getMenuAdapter(String[] menuNameArray,
-			int[] imageResourceArray) {
-		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
-		for (int i = 0; i < menuNameArray.length; i++) {
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("itemImage", imageResourceArray[i]);
-			map.put("itemText", menuNameArray[i]);
-			data.add(map);
-		}
-		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
-				R.layout.icon_list, new String[] { "itemImage", "itemText" },
-				new int[] { R.id.appicon, R.id.appname });
-		return simperAdapter;
 	}
 
 	public void initSnapDialog() {		
@@ -670,193 +637,7 @@ public class SimpleBrowser extends Activity {
 		}).create();
 	}
 	
-	public void initMenuDialog() {
-		// menu icon
-		int[] menu_image_array = {
-				R.drawable.exit,
-				R.drawable.recycle,
-				R.drawable.set_home,
-				R.drawable.pin,
-				R.drawable.search, 
-				R.drawable.copy,
-				R.drawable.downloads,
-				R.drawable.save,
-				R.drawable.capture,
-				R.drawable.html_w,
-				R.drawable.favorite,
-				R.drawable.link,
-				R.drawable.share,
-				R.drawable.about
-			};
-		// menu text
-		String[] menu_name_array = {
-				getString(R.string.exit),
-				"PDF",
-				getString(R.string.set_homepage),
-				getString(R.string.add_shortcut),
-				getString(R.string.search),
-				getString(R.string.copy),
-				getString(R.string.downloads),
-				getString(R.string.save),
-				getString(R.string.snap),
-				getString(R.string.source),
-				getString(R.string.bookmark),
-				"cookie",
-				getString(R.string.shareurl),
-				getString(R.string.settings)
-			};
-
-		final Context localContext = this;
-		menuGrid.setFadingEdgeLength(0);
-		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
-		menuGrid.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				switch (arg2) {
-				case 0:// exit
-					appstate.clearFile("pages");
-					appstate.ClearCache(); // clear cache when exit
-					finish();
-					break;
-				case 1:// pdf
-					scrollToMain();
-					appstate.serverWebs.get(appstate.webIndex).loadUrl("http://www.web2pdfconvert.com/engine?curl=" + appstate.serverWebs.get(appstate.webIndex).m_url);
-					break;
-				case 2:// set homepage
-					appstate.m_homepage = appstate.serverWebs.get(appstate.webIndex).getUrl();
-					if (!appstate.HOME_PAGE.equals(appstate.m_homepage)) {// not set asset/home.html as home page
-						appstate.sEdit.putString("homepage", appstate.m_homepage);
-						appstate.sEdit.commit();
-					}
-					Toast.makeText(mContext, appstate.serverWebs.get(appstate.webIndex).getTitle() + " " + getString(R.string.set_homepage), Toast.LENGTH_LONG).show();
-					break;
-				case 3:// add short cut
-					appstate.createShortcut(appstate.serverWebs.get(appstate.webIndex).getUrl(), appstate.serverWebs.get(appstate.webIndex).getTitle());
-					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + appstate.serverWebs.get(appstate.webIndex).getTitle(), Toast.LENGTH_LONG).show();
-					break;
-				case 4:// search
-					scrollToMain();
-					appstate.webControl.setVisibility(View.INVISIBLE);// hide webControl when search
-						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (appstate.searchBar == null) initSearchBar();
-					appstate.searchBar.bringToFront();
-					appstate.searchBar.setVisibility(View.VISIBLE);
-					appstate.etSearch.requestFocus();
-					appstate.toSearch = "";
-					appstate.imm.toggleSoftInput(0, 0);
-					break;
-				case 5:// copy
-					scrollToMain();
-					appstate.webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
-					try {
-						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
-							Toast.makeText(mContext,
-									getString(R.string.copy_hint),
-									Toast.LENGTH_LONG).show();
-					} catch (Exception e) {}
-
-					try {
-						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
-								KeyEvent.ACTION_DOWN,
-								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-						shiftPressEvent.dispatch(appstate.serverWebs.get(appstate.webIndex));
-					} catch (Exception e) {}
-					break;
-				case 6:// downloads
-					if (mDownloads.size() == 0) {
-						Toast.makeText(mContext, "no downloads recorded", Toast.LENGTH_LONG).show();
-						break;
-					}
-					
-					if (downloadsList == null) initDownloads();
-					
-					bookmarkView.setVisibility(View.GONE);
-					downloadsList.setVisibility(View.VISIBLE);
-					showBookmark();
-					break;
-				case 7:// save
-					appstate.startDownload(appstate.serverWebs.get(appstate.webIndex).m_url, "", "no");
-					break;
-				case 8:// view snap
-					try {// still got java.lang.RuntimeException: Canvas: trying
-							// to use a recycled bitmap android.graphics.Bitmap
-							// from one user. so catch it.
-						if (!appstate.snapFullWeb) {
-							// the snap will not refresh if not destroy cache
-							appstate.webpages.destroyDrawingCache();
-							appstate.webpages.setDrawingCacheEnabled(true);
-							bmp = appstate.webpages.getDrawingCache();
-						} else {
-							Picture pic = appstate.serverWebs.get(appstate.webIndex)
-									.capturePicture();
-
-							// bmp = Bitmap.createScaledBitmap(???,
-							// pic.getWidth(), pic.getHeight(), false);//check
-							// here http://stackoverflow.com/questions/477572
-							bmp = Bitmap.createBitmap(pic.getWidth(),
-									pic.getHeight(), Bitmap.Config.ARGB_4444);
-							// the size of the web page may be very large.
-
-							Canvas canvas = new Canvas(bmp);
-							pic.draw(canvas);
-						}
-						
-						if (snapDialog == null) initSnapDialog();
-						snapView.setImageBitmap(bmp);
-						snapDialog.setTitle(appstate.serverWebs.get(appstate.webIndex).getTitle());
-						if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl()))
-							snapDialog.setIcon(R.drawable.explorer);
-						else
-							snapDialog.setIcon(new BitmapDrawable(appstate.serverWebs.get(appstate.webIndex).getFavicon()));
-						snapDialog.show();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
-					}
-					break;
-				case 9:// view page source
-					try {
-						if ("".equals(appstate.serverWebs.get(appstate.webIndex).pageSource)) {
-							appstate.serverWebs.get(appstate.webIndex).pageSource = "Loading... Please try again later.";
-							appstate.serverWebs.get(appstate.webIndex).getPageSource();
-						}
-
-						sourceOrCookie = appstate.serverWebs.get(appstate.webIndex).pageSource;
-						subFolder = "source";
-						showSourceDialog();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
-					}
-					break;
-				case 10:// bookmark
-					String url = appstate.serverWebs.get(appstate.webIndex).m_url;
-					if (appstate.HOME_PAGE.equals(url)) return;// not add home page
-					appstate.addRemoveFavo(url, appstate.serverWebs.get(appstate.webIndex).getTitle());
-					break;
-				case 11:// cookie
-					CookieManager cookieManager = CookieManager.getInstance(); 
-					String cookie = cookieManager.getCookie(appstate.serverWebs.get(appstate.webIndex).m_url);
-					if (cookie != null)
-						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
-					else sourceOrCookie = "No cookie on this page.";
-					
-					subFolder = "cookie";
-					showSourceDialog();
-					break;
-				case 12:// share url
-					appstate.shareUrl(appstate.serverWebs.get(appstate.webIndex).getTitle(), appstate.serverWebs.get(appstate.webIndex).m_url);
-					break;
-				case 13:// settings
-					Intent intent = new Intent(getPackageName() + "about");
-					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
-					startActivityForResult(intent, appstate.SETTING_RESULTCODE);
-					break;
-				}
-			}
-		});
-	}
-	
-	void showSourceDialog() {
+	public void showSourceDialog() {
 		if (m_sourceDialog == null) initSourceDialog();
 		m_sourceDialog.setTitle(appstate.serverWebs.get(appstate.webIndex).getTitle());
 		if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl()))
@@ -976,49 +757,6 @@ public class SimpleBrowser extends Activity {
 	long lastTime = 0;
 	long timeInterval = 100;
 	
-	public void initSearchBar() {		
-		appstate.imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
-		appstate.imgSearchPrev.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				appstate.searchPrevAction();
-			}
-		});
-		appstate.imgSearchNext = (ImageView) findViewById(R.id.search_next);
-		appstate.imgSearchNext.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				appstate.searchNextAction();
-			}
-		});
-
-		appstate.imgSearchClose = (ImageView) findViewById(R.id.close_search);
-		appstate.imgSearchClose.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				appstate.hideSearchBox();
-			}
-		});
-
-		appstate.searchBar = (RelativeLayout) findViewById(R.id.search_bar);
-		appstate.searchHint = (TextView) findViewById(R.id.search_hint);
-		appstate.etSearch = (EditText) findViewById(R.id.search);
-		appstate.etSearch.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (event.getAction() == KeyEvent.ACTION_UP)
-					switch (keyCode) {
-					case KeyEvent.KEYCODE_SEARCH:
-					case KeyEvent.KEYCODE_ENTER:
-					case KeyEvent.KEYCODE_DPAD_CENTER:
-						appstate.imgSearchNext.performClick();
-						break;
-					}
-				return false;
-			}
-		});		
-	}
-	
 	public void initWebControl() {
 		// web control
 		appstate.webControl = (LinearLayout) findViewById(R.id.webcontrol);
@@ -1039,32 +777,20 @@ public class SimpleBrowser extends Activity {
 		webList.setAdapter(appstate.webAdapter);
 	}
 	
-	void initDownloads() {
-		downloadsAdapter = new MyListAdapter(mContext, mDownloads);
-		downloadsAdapter.type = 2;
-		downloadsList = (ListView) findViewById(R.id.downloads);
-		downloadsList.inflate(mContext, R.layout.web_list, null);
-		downloadsList.setAdapter(downloadsAdapter);
-		downloadsList.setOnKeyListener(new OnKeyListener() {
+	public void initDownloads() {
+		appstate.downloadsAdapter = new MyListAdapter(mContext, mDownloads, appstate);
+		appstate.downloadsAdapter.type = 2;
+		appstate.downloadsList = (ListView) findViewById(R.id.downloads);
+		appstate.downloadsList.inflate(mContext, R.layout.web_list, null);
+		appstate.downloadsList.setAdapter(appstate.downloadsAdapter);
+		appstate.downloadsList.setOnKeyListener(new OnKeyListener() {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
-					openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()));
+					appstate.openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()));
 				return false;
 			}
 		});		
-	}
-	
-	void openDownload(TitleUrl tu) {
-		Intent intent = new Intent("android.intent.action.VIEW");
-		
-		String ext = tu.m_title.substring(tu.m_title.lastIndexOf(".")+1, tu.m_title.length());
-		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-		String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
-		if (mimeType != null) intent.setDataAndType(Uri.parse(tu.m_url), mimeType);
-		else intent.setData(Uri.parse(tu.m_url));// we can open it now
-		
-		util.startActivity(intent, true, mContext);
 	}
 	
 	@Override
@@ -1099,9 +825,9 @@ public class SimpleBrowser extends Activity {
         
         browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
         setContentView(browserView);
-        bookmarkDownloads = browserView.findViewById(R.id.bookmarkDownloads);
-        bookmarkView = (LinearLayout) browserView.findViewById(R.id.bookmarkView);
-		menuGrid = (GridView) browserView.findViewById(R.id.grid_menu);
+        appstate.bookmarkDownloads = browserView.findViewById(R.id.bookmarkDownloads);
+        appstate.bookmarkView = (LinearLayout) browserView.findViewById(R.id.bookmarkView);
+        appstate.menuGrid = (GridView) browserView.findViewById(R.id.grid_menu);
 
 		initWebControl();
 
@@ -1274,24 +1000,24 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 		
-		imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
-		imgBookmark.setOnClickListener(new OnClickListener() {
+		appstate.imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
+		appstate.imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (bookmarkOpened) {
-					if ((downloadsList != null) && (downloadsList.getVisibility() == View.VISIBLE)) {
-						bookmarkView.setVisibility(View.VISIBLE);
-						downloadsList.setVisibility(View.GONE);
+				if (appstate.bookmarkOpened) {
+					if ((appstate.downloadsList != null) && (appstate.downloadsList.getVisibility() == View.VISIBLE)) {
+						appstate.bookmarkView.setVisibility(View.VISIBLE);
+						appstate.downloadsList.setVisibility(View.GONE);
 					}
-					else hideBookmark();
+					else appstate.hideBookmark();
 				}
-				else showBookmark(); 
+				else appstate.showBookmark(); 
 			}
 		});
-		imgBookmark.setOnLongClickListener(new OnLongClickListener() {
+		appstate.imgBookmark.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View arg0) {
-				if (!bookmarkOpened) showBookmark();
+				if (!appstate.bookmarkOpened) appstate.showBookmark();
 				exchangePosition();
 				return true;
 			}
@@ -1320,7 +1046,7 @@ public class SimpleBrowser extends Activity {
 				if (appstate.webControl.getVisibility() == View.INVISIBLE) {
 					if (appstate.urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
 				
-					if (appstate.webControl.getWidth() < minWebControlWidth) scrollToMain();// otherwise may not display weblist correctly
+					if (appstate.webControl.getWidth() < appstate.minWebControlWidth) appstate.scrollToMain();// otherwise may not display weblist correctly
 					appstate.webAdapter.notifyDataSetInvalidated();
 					appstate.webControl.setVisibility(View.VISIBLE);
 				} else appstate.webControl.setVisibility(View.INVISIBLE);
@@ -1350,8 +1076,8 @@ public class SimpleBrowser extends Activity {
 
 		appstate.createAd();
 		setLayout();
-		hideMenu();
-		hideBookmark();
+		appstate.hideMenu();
+		appstate.hideBookmark();
 		setWebpagesLayout();
 		//initMenuDialog();// if not init here, it will show blank on some device with scroll ball?
 		//initBookmarks();
@@ -1415,13 +1141,13 @@ public class SimpleBrowser extends Activity {
 			//return; // no need to change position of bookmark if not width enough
 		
 		//change position of bookmark and menu
-		lp1 = bookmarkDownloads.getLayoutParams();
-		lp2 = menuGrid.getLayoutParams();
+		lp1 = appstate.bookmarkDownloads.getLayoutParams();
+		lp2 = appstate.menuGrid.getLayoutParams();
 		int tmp = lp1.width;
 		lp1.width = lp2.width;
 		lp2.width = tmp;
-		bookmarkDownloads.setLayoutParams(lp2);
-		menuGrid.setLayoutParams(lp1);
+		appstate.bookmarkDownloads.setLayoutParams(lp2);
+		appstate.menuGrid.setLayoutParams(lp1);
 		
 		//revert toLeft and toRight of webControl
 		lp1 = appstate.webControl.getLayoutParams();
@@ -1436,8 +1162,8 @@ public class SimpleBrowser extends Activity {
 		else appstate.needRevert = false;
 		webList.invalidateViews();
 		
-		if (appstate.revertCount % 2 == 0) reverted = false;
-		else reverted = true;
+		if (appstate.revertCount % 2 == 0) appstate.reverted = false;
+		else appstate.reverted = true;
 		
 		// revert add bookmark and refresh button
 		lp1 = imgAddFavo.getLayoutParams();
@@ -1446,13 +1172,6 @@ public class SimpleBrowser extends Activity {
 		appstate.imgRefresh.setLayoutParams(lp1);
 	}
 
-	void getTitleHeight() {
-		Rect rectgle= new Rect();
-		Window window= getWindow();
-		window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
-		statusBarHeight = rectgle.top;
-	}
-	
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(screenLockReceiver);
@@ -1519,8 +1238,8 @@ public class SimpleBrowser extends Activity {
 	
 	void actionBack() {
 		if (browserView.getVisibility() == View.GONE) hideCustomView();// playing video. need wait it over?
-		else if (menuOpened) hideMenu();
-		else if (bookmarkOpened) hideBookmark();
+		else if (appstate.menuOpened) appstate.hideMenu();
+		else if (appstate.bookmarkOpened) appstate.hideBookmark();
 		else if (appstate.webControl.getVisibility() == View.VISIBLE)
 			appstate.webControl.setVisibility(View.GONE);// hide web control
 		else if ((appstate.searchBar != null) && appstate.searchBar.getVisibility() == View.VISIBLE)
@@ -1636,35 +1355,35 @@ public class SimpleBrowser extends Activity {
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(appstate.dm);
 		
-        bookmarkWidth = appstate.dm.widthPixels * 3 / 4;
+		appstate.bookmarkWidth = appstate.dm.widthPixels * 3 / 4;
         int minWidth = (int) (320 * appstate.dm.density);
-        if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
+        if (appstate.bookmarkWidth > minWidth) appstate.bookmarkWidth = minWidth;
         
 		int height = (int) (appstate.dm.heightPixels / appstate.dm.density);
 		height -= appstate.urlLine.getHeight();
 		height -= appstate.webTools.getHeight();
 		int size = height / 72;// 72 is the height of each menu item
 		if (size > 10) {
-			menuWidth = (int) (80*appstate.dm.density);// 80 dip for single column
-			menuGrid.setNumColumns(1);
+			appstate.menuWidth = (int) (80*appstate.dm.density);// 80 dip for single column
+			appstate.menuGrid.setNumColumns(1);
 		}
 		else {
-			menuWidth = (int) (120*appstate.dm.density);// 120 dip for 2 column
-			menuGrid.setNumColumns(2);
+			appstate.menuWidth = (int) (120*appstate.dm.density);// 120 dip for 2 column
+			appstate.menuGrid.setNumColumns(2);
 		}
 		
-		updateHistoryViewHeight();
-		if (bookmarkOpened) {
-			bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
-			bookmarkDownloads.requestLayout();
+		appstate.updateHistoryViewHeight();
+		if (appstate.bookmarkOpened) {
+			appstate.bookmarkDownloads.getLayoutParams().width = appstate.bookmarkWidth;
+			appstate.bookmarkDownloads.requestLayout();
 		}
 		
-		if (menuOpened) {
-			menuGrid.getLayoutParams().width = menuWidth;
-			menuGrid.requestLayout();
+		if (appstate.menuOpened) {
+			appstate.menuGrid.getLayoutParams().width = appstate.menuWidth;
+			appstate.menuGrid.requestLayout();
 		}
 		
-		if ((appstate.webControl.getVisibility() == View.VISIBLE) && (appstate.webControl.getWidth() < minWebControlWidth)) scrollToMain();
+		if ((appstate.webControl.getVisibility() == View.VISIBLE) && (appstate.webControl.getWidth() < appstate.minWebControlWidth)) appstate.scrollToMain();
 		
 		if (appstate.dm.widthPixels < 320*appstate.dm.density) {
 			imageBtnList.getLayoutParams().width = appstate.dm.widthPixels;
@@ -1681,22 +1400,4 @@ public class SimpleBrowser extends Activity {
 		}
 	}
 
-	void updateHistoryViewHeight() {
-		if (historyList == null) return;
-		//calculate height of history list so that it display not too many or too few items
-		getTitleHeight();
-		int height = appstate.dm.heightPixels - statusBarHeight - appstate.adContainer.getHeight();//browserView.getHeight() may not correct when rotate. so use this way. but not applicable for 4.x platform
-		
-		LayoutParams lp = appstate.urlLine.getLayoutParams();// urlLine.getHeight() may not correct here, so use lp
-		if (lp.height != 0) height -= appstate.urlHeight * appstate.dm.density;
-		lp = appstate.webTools.getLayoutParams();
-		if (lp.height != 0) height -= appstate.barHeight * appstate.dm.density;
-		
-		int maxSize = (int) Math.max(height/2, height- appstate.mBookMark.size()*42*appstate.dm.density);// 42 is the height of each history with divider. should display equal rows of history and bookmark
-		height = (int) (Math.min(maxSize, appstate.mHistory.size()*43*appstate.dm.density));//select a value from maxSize and mHistory.size().
-
-		lp = historyList.getLayoutParams();
-		lp.height = height;
-		historyList.requestLayout();
-	}
 }

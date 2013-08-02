@@ -28,7 +28,6 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
-import android.webkit.WebBackForwardList;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;

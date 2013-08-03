@@ -184,7 +184,7 @@ public class MyApp extends BaseApp {
 	public ProgressBar loadProgress;
 	public ImageView imgNext, imgPrev, imgRefresh, imgNew;
 	public WebAdapter webAdapter;
-	public LinearLayout webTools, webControl, fakeWebControl, urlLine;
+	public LinearLayout webTools, webControl, urlLine;
 	public MyViewFlipper webpages;
 
 	public WrapValueCallback mUploadMessage;

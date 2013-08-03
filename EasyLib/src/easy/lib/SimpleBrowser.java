@@ -1033,7 +1033,6 @@ public class SimpleBrowser extends Activity {
 	public void initWebControl() {// identical
 		// web control
 		appstate.webControl = (LinearLayout) findViewById(R.id.webcontrol);
-		//appstate.fakeWebControl = (LinearLayout) findViewById(R.id.fakeWebcontrol);///////////////////////////////build error////////////
 		
 		btnNewpage = (Button) findViewById(R.id.opennewpage);
 		btnNewpage.setOnClickListener(new OnClickListener() {

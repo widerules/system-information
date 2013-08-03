@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/adsParent"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#FFFFFFFF"
@@ -183,7 +182,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/webtools"
-        android:layout_below="@+id/urlline" >
+        android:layout_below="@id/urlline" >
 
         <common.lib.MyViewFlipper
             android:id="@+id/webpages"

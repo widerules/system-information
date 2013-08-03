@@ -936,7 +936,7 @@ public class SimpleBrowser extends Activity {
 		appstate.urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
-		//appstate.adContainer = (FrameLayout) findViewById(R.id.adContainer);
+		appstate.adContainer = (LinearLayout) findViewById(R.id.adContainer);
 		appstate.adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();

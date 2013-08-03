@@ -255,7 +255,7 @@
         android:layout_above="@id/webtools"
         android:layout_below="@id/urlline" >
 
-        <easy.lib.MyViewFlipper
+        <common.lib.MyViewFlipper
             android:id="@+id/webpages"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />

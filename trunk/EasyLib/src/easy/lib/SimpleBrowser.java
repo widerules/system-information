@@ -1075,8 +1075,6 @@ public class SimpleBrowser extends Activity {
 		setAsDefaultApp();
 		
 		appstate.nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		appstate.mContext = mContext;
-
 
 		appstate.imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(
@@ -1426,7 +1424,7 @@ public class SimpleBrowser extends Activity {
 	@Override
 	protected void onPause() {
 		appstate.pauseAction();
-		
+
 		try {
 			if (baiduPause != null) baiduPause.invoke(this, this);
 		} catch (Exception e) {}

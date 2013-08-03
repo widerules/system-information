@@ -290,7 +290,9 @@ public class SimpleBrowser extends Activity {
 			appstate.snapFullWeb = appstate.sp.getBoolean("full_web", false);
 
 			appstate.incognitoMode = appstate.sp.getBoolean("incognito", false);
-			
+			if (!appstate.incognitoMode) appstate.webAddress.setAdapter(appstate.urlAdapter);
+			else appstate.webAddress.setAdapter(appstate.emptyUrlAdapter);
+
 			appstate.updownButton = appstate.sp.getBoolean("up_down", false);
 			if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
 			else appstate.upAndDown.setVisibility(View.GONE);
@@ -1176,6 +1178,7 @@ public class SimpleBrowser extends Activity {
 		}
 		
 		appstate.urlAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+		appstate.emptyUrlAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
 		appstate.initSiteArray();
 
 		cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);

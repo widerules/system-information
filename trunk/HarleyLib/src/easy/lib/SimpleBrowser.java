@@ -938,6 +938,7 @@ public class SimpleBrowser extends Activity {
 		
 		appstate.adContainer = (LinearLayout) findViewById(R.id.adContainer);
 		appstate.adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
+		appstate.adContainer3 = (FrameLayout) findViewById(R.id.adContainer3);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
 		
@@ -1070,7 +1071,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		appstate.createAd();
+		appstate.createAd(appstate.dm.widthPixels / appstate.dm.density);
 		setLayout();
 		appstate.hideMenu();
 		appstate.hideBookmark();

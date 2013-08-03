@@ -30,6 +30,7 @@ import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +48,9 @@ public class HarleyApp extends MyApp {
 	public boolean menuOpened = true;
 	public boolean bookmarkOpened = true;
 	
+	public FrameLayout adContainer3;	
+	public WrapAdView adview3 = null;
+
 	public GridView menuGrid = null;
 	public LinearLayout bookmarkView;
 	public ListView downloadsList;
@@ -166,23 +170,41 @@ public class HarleyApp extends MyApp {
 		m_homepage = sp.getString("homepage", null);
 	}
 	
-	public void createAd() {
-		if (adview != null) return;// only create ad for one time.
-		
+	public void createAd(float width) {
 		if (mAdAvailable) {
-			adview = new WrapAdView(mActivity, 0, "a1502880ce4208b", null);// AdSize.BANNER require 320*50
-			if ((adview != null) && (adview.getInstance() != null)) {
+			removeAd();
+			if (width < 320) ;//do nothing for it is too narrow. 
+            // but it will cause force close if not create adview?
+            if (width < 468)// AdSize.BANNER require 320*50
+            	adview = new WrapAdView(mActivity, 0, "a1502880ce4208b", mAppHandler);
+            else if (width < 728)
+                 adview = new WrapAdView(mActivity, 1, "a1502880ce4208b", mAppHandler);
+                 // AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1.
+                 // return width = request width * density.
+            else    // AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
+                 adview = new WrapAdView(mActivity, 2, "a1502880ce4208b", mAppHandler);
+ 			if ((adview != null) && (adview.getInstance() != null)) {
 				adContainer.addView(adview.getInstance());
 				adview.loadAd();
 			}
 			
-			adview2 = new WrapAdView(mActivity, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
-			if ((adview2 != null) && (adview2.getInstance() != null)) {
-				adContainer2.addView(adview2.getInstance());
-				adview2.loadAd();
-			}
-			
-			interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
+ 			if (adview2 == null) {
+ 				adview2 = new WrapAdView(mActivity, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
+ 				if ((adview2 != null) && (adview2.getInstance() != null)) {
+ 					adContainer2.addView(adview2.getInstance());
+ 					adview2.loadAd();
+ 				}
+ 			}
+ 			
+ 			if (adview3 == null) {
+ 				adview3 = new WrapAdView(mActivity, 0, "a14a8e65a47d51f", null);// AdSize.BANNER require 320*50
+ 				if ((adview3 != null) && (adview3.getInstance() != null)) {
+ 					adContainer3.addView(adview3.getInstance());
+ 					adview3.loadAd();
+ 				}
+ 			}
+ 			
+			if (interstitialAd == null) interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
 		}
 	}
 	

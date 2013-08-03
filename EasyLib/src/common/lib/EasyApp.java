@@ -50,13 +50,13 @@ public class EasyApp extends MyApp {
 
  			if (adview2 == null) {
  				adview2 = new WrapAdView(mActivity, 0, "a14d662bba1e443", null);// AdSize.BANNER require 320*50
- 				if ((adview2 != null) && (adview2.getInstance() != null)) { 
+ 				if ((adview2 != null) && (adview2.getInstance() != null)) {
  					adContainer2.addView(adview2.getInstance());
  					adview2.loadAd();
  				}
  			}
-			
- 			if (interstitialAd == null) interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
+
+			if (interstitialAd == null) interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
 		}
 	}
 

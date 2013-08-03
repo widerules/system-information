@@ -64,7 +64,7 @@ public class HarleyApp extends MyApp {
 	ListView historyList;
 	public boolean reverted = false;
 
-	SimpleBrowser mHarleyActivity = (SimpleBrowser) mActivity;
+	public SimpleBrowser mHarleyActivity;
 
 	public void loadPage() {// load home page
 		super.loadPage();
@@ -187,7 +187,7 @@ public class HarleyApp extends MyApp {
 				adContainer.addView(adview.getInstance());
 				adview.loadAd();
 			}
-			
+
  			if (adview2 == null) {
  				adview2 = new WrapAdView(mActivity, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
  				if ((adview2 != null) && (adview2.getInstance() != null)) {
@@ -195,7 +195,7 @@ public class HarleyApp extends MyApp {
  					adview2.loadAd();
  				}
  			}
- 			
+
  			if (adview3 == null) {
  				adview3 = new WrapAdView(mActivity, 0, "a14a8e65a47d51f", null);// AdSize.BANNER require 320*50
  				if ((adview3 != null) && (adview3.getInstance() != null)) {
@@ -206,6 +206,33 @@ public class HarleyApp extends MyApp {
  			
 			if (interstitialAd == null) interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
 		}
+	}
+
+	public void actionBack() {
+		if (mHarleyActivity.browserView.getVisibility() == View.GONE) mHarleyActivity.hideCustomView();// playing video. need wait it over?
+		else if (menuOpened) hideMenu();
+		else if (bookmarkOpened) hideBookmark();
+		else if (webControl.getVisibility() == View.VISIBLE)
+			webControl.setVisibility(View.GONE);// hide web control
+		else if ((searchBar != null) && searchBar.getVisibility() == View.VISIBLE)
+			hideSearchBox();
+		else if (HOME_BLANK.equals(webAddress.getText().toString())) {
+			// hide browser when click back key on homepage.
+			// this is a singleTask activity, so if return
+			// super.onKeyDown(keyCode, event), app will exit.
+			// when use click browser icon again, it will call onCreate,
+			// user's page will not reopen.
+			// singleInstance will work here, but it will cause
+			// downloadControl not work? or select file not work?
+			if (serverWebs.size() == 1) {
+				if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
+				mActivity.moveTaskToBack(true);
+			}
+			else closePage(webIndex, false); // close blank page if more than one page
+		} else if (serverWebs.get(webIndex).canGoBack())
+			serverWebs.get(webIndex).goBack();
+		else
+			closePage(webIndex, false);// close current page if can't go back
 	}
 	
 	public void openDownload(TitleUrl tu) {
@@ -372,6 +399,7 @@ public class HarleyApp extends MyApp {
 				case 0:// exit
 					clearFile("pages");
 					ClearCache(); // clear cache when exit
+					if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
 					mActivity.finish();
 					break;
 				case 1:// pdf

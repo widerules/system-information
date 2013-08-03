@@ -796,6 +796,7 @@ public class SimpleBrowser extends Activity {
 		appstate = ((HarleyApp) getApplicationContext());
 		appstate.mContext = mContext;
 		appstate.mActivity = this;
+		appstate.mHarleyActivity = this;
 		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
 
 		appstate.dm = new DisplayMetrics();
@@ -1233,37 +1234,11 @@ public class SimpleBrowser extends Activity {
 		appstate.updateDownloads();
 	}
 	
-	void actionBack() {
-		if (browserView.getVisibility() == View.GONE) hideCustomView();// playing video. need wait it over?
-		else if (appstate.menuOpened) appstate.hideMenu();
-		else if (appstate.bookmarkOpened) appstate.hideBookmark();
-		else if (appstate.webControl.getVisibility() == View.VISIBLE)
-			appstate.webControl.setVisibility(View.GONE);// hide web control
-		else if ((appstate.searchBar != null) && appstate.searchBar.getVisibility() == View.VISIBLE)
-			appstate.hideSearchBox();
-		else if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString())) {
-			// hide browser when click back key on homepage.
-			// this is a singleTask activity, so if return
-			// super.onKeyDown(keyCode, event), app will exit.
-			// when use click browser icon again, it will call onCreate,
-			// user's page will not reopen.
-			// singleInstance will work here, but it will cause
-			// downloadControl not work? or select file not work?
-			if (appstate.serverWebs.size() == 1)
-				moveTaskToBack(true);
-			else appstate.closePage(appstate.webIndex, false); // close blank page if more than one page
-		} 
-		else if (appstate.serverWebs.get(appstate.webIndex).canGoBack())
-			appstate.serverWebs.get(appstate.webIndex).goBack();
-		else
-			appstate.closePage(appstate.webIndex, false);// close current page if can't go back		
-	}
-	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				actionBack();
+				appstate.actionBack();
 				return true;
 			}
 		}

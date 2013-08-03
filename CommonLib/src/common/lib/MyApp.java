@@ -179,7 +179,7 @@ public class MyApp extends BaseApp {
 	public ArrayList<TitleUrl> mSystemBookMark = new ArrayList<TitleUrl>();
 	public ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	public ArrayList<String> siteArray = new ArrayList<String>();
-	public ArrayAdapter<String> urlAdapter;
+	public ArrayAdapter<String> urlAdapter, emptyUrlAdapter;
 	public AutoCompleteTextView webAddress;
 	public ProgressBar loadProgress;
 	public ImageView imgNext, imgPrev, imgRefresh, imgNew;
@@ -469,6 +469,8 @@ public class MyApp extends BaseApp {
 				case 1:
 					incognitoMode = selected;
 					sEdit.putBoolean("incognito", incognitoMode);
+					if (!incognitoMode) webAddress.setAdapter(urlAdapter);
+					else webAddress.setAdapter(emptyUrlAdapter);
 					break;
 				case 2:
 					updownButton = selected;
@@ -1335,7 +1337,7 @@ public class MyApp extends BaseApp {
 		}
 
 		urlAdapter.sort(new StringComparator());
-		webAddress.setAdapter(urlAdapter);		
+		if (!incognitoMode) webAddress.setAdapter(urlAdapter);
 	}
 	
 	void getSystemHistory() {// read history and bookmark from native browser //identical

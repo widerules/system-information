@@ -306,7 +306,9 @@ public class SimpleBrowser extends Activity {
 			appstate.snapFullWeb = appstate.sp.getBoolean("full_web", false);
 
 			appstate.incognitoMode = appstate.sp.getBoolean("incognito", false);
-			
+			if (!appstate.incognitoMode) appstate.webAddress.setAdapter(appstate.urlAdapter);
+			else appstate.webAddress.setAdapter(appstate.emptyUrlAdapter);
+
 			appstate.updownButton = appstate.sp.getBoolean("up_down", false);
 			if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
 			else appstate.upAndDown.setVisibility(View.GONE);

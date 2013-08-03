@@ -793,6 +793,10 @@ public class SimpleBrowser extends Activity {
 		// mContext = getApplicationContext();//this will cause force close when
 		// select locale in google translate
 		mContext = this;
+		appstate = ((HarleyApp) getApplicationContext());
+		appstate.mContext = mContext;
+		appstate.mActivity = this;
+		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
 
 		appstate.dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(appstate.dm);
@@ -805,7 +809,6 @@ public class SimpleBrowser extends Activity {
 		appstate.readPreference();
 
 		appstate.nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		appstate = ((HarleyApp) getApplicationContext());
 
 		appstate.imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(
@@ -816,11 +819,11 @@ public class SimpleBrowser extends Activity {
 		
         LayoutInflater inflater = LayoutInflater.from(this);
         
-        browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
-        setContentView(browserView);
-        appstate.bookmarkDownloads = browserView.findViewById(R.id.bookmarkDownloads);
-        appstate.bookmarkView = (LinearLayout) browserView.findViewById(R.id.bookmarkView);
-        appstate.menuGrid = (GridView) browserView.findViewById(R.id.grid_menu);
+		setContentView(R.layout.browser);
+        browserView = (RelativeLayout) getCurrentFocus();
+        appstate.bookmarkDownloads = findViewById(R.id.bookmarkDownloads);
+        appstate.bookmarkView = (LinearLayout) findViewById(R.id.bookmarkView);
+        appstate.menuGrid = (GridView) findViewById(R.id.grid_menu);
 
 		initWebControl();
 
@@ -1078,7 +1081,7 @@ public class SimpleBrowser extends Activity {
 
 		appstate.urlLine.bringToFront();// set the z-order
 		appstate.webTools.bringToFront();
-		
+
 		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
 		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1274,27 +1277,12 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	protected void onPause() {
-		if (appstate.historyChanged) {
-			WriteTask wtask = appstate.new WriteTask();
-			wtask.execute("history");
-		}
-		if (appstate.bookmarkChanged) {
-			WriteTask wtask = appstate.new WriteTask();
-			wtask.execute("bookmark");
-		}
-		if (appstate.downloadsChanged) {
-			WriteTask wtask = appstate.new WriteTask();
-			wtask.execute("downloads");
-		}
+		appstate.pauseAction();
 
 		if (browserView.getVisibility() == View.GONE) {
 			if (mVideoView == null) hideCustomView();//hide VideoSurfaceView otherwise it will force close onResume
 			else mVideoView.pause();
 		}
-			
-		appstate.sEdit.putBoolean("show_zoom", appstate.serverWebs.get(appstate.webIndex).zoomVisible);
-		appstate.sEdit.putBoolean("html5", appstate.serverWebs.get(appstate.webIndex).html5);
-		appstate.sEdit.commit();
 
 		try {
 			if (baiduPause != null) baiduPause.invoke(this, this);

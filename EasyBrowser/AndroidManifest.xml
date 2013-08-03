@@ -32,7 +32,7 @@
         android:xlargeScreens="true" />
 
     <application
-        android:name="easy.lib.MyApp"
+        android:name="common.lib.HarleyApp"
         android:debuggable="false"
         android:description="@string/about_message"
         android:hardwareAccelerated="true"
@@ -115,14 +115,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="easy.lib.downloadControl"
+            android:name="common.lib.DownloadControl"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:excludeFromRecents="true"
             android:label="@string/browser_name"
             android:launchMode="singleInstance"
             android:noHistory="true" >
             <intent-filter>
-                <action android:name="easy.browser.downloadControl" />
+                <action android:name="downloadControl" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -135,7 +135,7 @@
             android:launchMode="singleInstance"
             android:noHistory="true" >
             <intent-filter>
-                <action android:name="easy.browser.crashControl" />
+                <action android:name="crashControl" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -144,7 +144,7 @@
             android:name="easy.lib.AboutBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale" >
             <intent-filter>
-                <action android:name="easy.browser.about" />
+                <action android:name="about" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

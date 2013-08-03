@@ -54,6 +54,7 @@ public class HarleyApp extends MyApp {
 	public int minWebControlWidth = 200;
 	public ImageView imgBookmark;
 	int statusBarHeight;
+	public LinearLayout fakeWebControl;
 
 	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
 	ListView historyList;

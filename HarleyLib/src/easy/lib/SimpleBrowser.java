@@ -819,8 +819,8 @@ public class SimpleBrowser extends Activity {
 		
         LayoutInflater inflater = LayoutInflater.from(this);
         
-		setContentView(R.layout.browser);
-        browserView = (RelativeLayout) getCurrentFocus();
+        browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
+		setContentView(browserView);
         appstate.bookmarkDownloads = findViewById(R.id.bookmarkDownloads);
         appstate.bookmarkView = (LinearLayout) findViewById(R.id.bookmarkView);
         appstate.menuGrid = (GridView) findViewById(R.id.grid_menu);

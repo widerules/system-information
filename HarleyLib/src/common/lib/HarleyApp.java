@@ -312,6 +312,13 @@ public class HarleyApp extends MyApp {
 		statusBarHeight = rectgle.top;
 	}
 	
+	public void imgNewClick() {
+		super.imgNewClick();
+		
+		if ((webControl.getVisibility() == View.VISIBLE) && (webControl.getWidth() < minWebControlWidth)) 
+			scrollToMain();// otherwise may not display weblist correctly
+}
+	
 	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
 		boolean weblink = super.openNewPage(url, newIndex, changeToNewPage, closeIfCannotBack);
 		if (!weblink) return false;

@@ -102,9 +102,6 @@ public class SimpleBrowser extends Activity {
 	public Bitmap bmp;
 	public AlertDialog snapDialog = null;
 
-	// favo dialog
-	EditText titleText;
-
 	// source dialog
 	AlertDialog m_sourceDialog = null;
 	public String sourceOrCookie = "";
@@ -1070,33 +1067,13 @@ public class SimpleBrowser extends Activity {
 		appstate.imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (appstate.webControl.getVisibility() == View.GONE) {
-					if (appstate.urlLine.getLayoutParams().height == 0) appstate.setUrlHeight(true);// show url if hided
-				
-					if (appstate.webControl.getWidth() < appstate.minWebControlWidth) appstate.scrollToMain();// otherwise may not display weblist correctly
-					appstate.webAdapter.notifyDataSetInvalidated();
-					appstate.webControl.setVisibility(View.VISIBLE);
-				} else appstate.webControl.setVisibility(View.GONE);
+				appstate.imgNewClick();
 			}
 		});
-		appstate.imgNew.setOnLongClickListener(new OnLongClickListener() {
+		appstate.imgNew.setOnLongClickListener(new OnLongClickListener() {// long click to show history
 			@Override
 			public boolean onLongClick(View arg0) {
-				CharSequence historys[] = new CharSequence[appstate.mHistory.size()];
-				for (int i = 0; i < appstate.mHistory.size(); i++)
-				{
-					historys[i] = appstate.mHistory.get(i).m_title;
-				}
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				builder.setTitle(getString(R.string.history));
-				builder.setItems(historys, new DialogInterface.OnClickListener() {
-				    @Override
-				    public void onClick(DialogInterface dialog, int which) {
-				        // the user clicked on engine[which]
-				    	appstate.serverWebs.get(appstate.webIndex).loadUrl(appstate.mHistory.get(which).m_url);
-				    }
-				});
-				builder.show();
+				appstate.listHistory();
 				return true;
 			}
 		});
@@ -1151,8 +1128,8 @@ public class SimpleBrowser extends Activity {
         browserView.removeView(bookmarkDownloads);
         bookmarkDownloads.setVisibility(View.VISIBLE);
         mMenuDrawer.setMenuView(bookmarkDownloads);*/
-}
-	
+	}
+
 	void exchangePosition() {
 		//reverse the position of buttons and ads
 		LayoutParams lp1 = imageBtnList.getLayoutParams();
@@ -1161,12 +1138,12 @@ public class SimpleBrowser extends Activity {
 		lp1.height = (int)(50 * appstate.dm.density);
 		lp2.height = (int)(40 * appstate.dm.density);
 		
-		imageBtnList.setLayoutParams(lp2);
 		appstate.adContainer2.setLayoutParams(lp1);
+		imageBtnList.setLayoutParams(lp2);
 		
-		//if (adContainer2.getVisibility() == View.GONE) // but maybe should open for change priorty of left/right hand? 
-			//return; // no need to change position of bookmark if not width enough
-		
+		if (appstate.adContainer2.getVisibility() == View.GONE) 
+			return; // no need to change position if not width enough
+
 		//change position of bookmark and menu
 		lp1 = appstate.bookmarkDownloads.getLayoutParams();
 		lp2 = appstate.menuGrid.getLayoutParams();

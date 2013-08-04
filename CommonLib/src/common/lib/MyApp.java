@@ -565,7 +565,6 @@ public class MyApp extends BaseApp {
 			if (urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
 			adContainer.setVisibility(View.VISIBLE);
 		
-			//if (webControl.getWidth() < minWebControlWidth) scrollToMain();/////////////////////////////////not identical////////////////////////////
 			webAdapter.notifyDataSetInvalidated();
 			webControl.setVisibility(View.VISIBLE);
 			webControl.bringToFront();

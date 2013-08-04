@@ -1000,6 +1000,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 		
+		appstate.bookmarkAdapter = null;// sometime it is not null when startup?
 		appstate.imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
 		appstate.imgBookmark.setOnClickListener(new OnClickListener() {
 			@Override

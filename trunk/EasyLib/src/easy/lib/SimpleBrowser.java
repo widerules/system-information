@@ -216,7 +216,6 @@ public class SimpleBrowser extends Activity {
 					appstate.clearFile("searchwords");
 					appstate.siteArray.clear();
 					appstate.urlAdapter.clear();
-					appstate.historyChanged = false;
 					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
 						shouldReload = true;
 				}
@@ -225,7 +224,6 @@ public class SimpleBrowser extends Activity {
 					appstate.mBookMark.clear();
 					WriteTask wtask = appstate.new WriteTask();
 					wtask.execute("bookmark");
-					appstate.bookmarkChanged = false;
 					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
 						shouldReload = true;
 				}
@@ -1293,23 +1291,7 @@ public class SimpleBrowser extends Activity {
 		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {//reverse the position of webtoolbutton and ad
-				LayoutParams lp1 = imageBtnList.getLayoutParams();
-				LayoutParams lp2 = appstate.adContainer2.getLayoutParams();
-				
-				lp1.height = (int)(50 * appstate.dm.density);
-				lp2.height = (int)(40 * appstate.dm.density);
-				
-				appstate.adContainer2.setLayoutParams(lp1);
-				imageBtnList.setLayoutParams(lp2);
-				
-				if (appstate.adContainer2.getVisibility() == View.GONE) 
-					return; // no need to change position if not width enough
-
-				appstate.revertCount++;
-				if ((appstate.revertCount > 1) && (appstate.revertCount % 2 == 0))
-					appstate.needRevert = true;
-				else appstate.needRevert = false;
-				webList.invalidateViews();
+				exchangePosition();
 			}
 		});
 
@@ -1334,6 +1316,27 @@ public class SimpleBrowser extends Activity {
 
 		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
 		registerReceiver(downloadReceiver, filter);
+	}
+
+	void exchangePosition() {
+		//reverse the position of buttons and ads
+		LayoutParams lp1 = imageBtnList.getLayoutParams();
+		LayoutParams lp2 = appstate.adContainer2.getLayoutParams();
+		
+		lp1.height = (int)(50 * appstate.dm.density);
+		lp2.height = (int)(40 * appstate.dm.density);
+		
+		appstate.adContainer2.setLayoutParams(lp1);
+		imageBtnList.setLayoutParams(lp2);
+		
+		if (appstate.adContainer2.getVisibility() == View.GONE) 
+			return; // no need to change position if not width enough
+
+		appstate.revertCount++;
+		if ((appstate.revertCount > 1) && (appstate.revertCount % 2 == 0))
+			appstate.needRevert = true;
+		else appstate.needRevert = false;
+		webList.invalidateViews();
 	}
 
 	@Override

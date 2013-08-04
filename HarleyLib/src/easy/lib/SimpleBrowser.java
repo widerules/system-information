@@ -1174,7 +1174,6 @@ public class SimpleBrowser extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(screenLockReceiver);
 		unregisterReceiver(downloadReceiver);
 		unregisterReceiver(packageReceiver);
 
@@ -1183,12 +1182,6 @@ public class SimpleBrowser extends Activity {
 
 		super.onDestroy();
 	}
-
-	BroadcastReceiver screenLockReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-		}
-	};
 
 	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		@Override

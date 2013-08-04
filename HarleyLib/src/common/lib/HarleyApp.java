@@ -93,6 +93,18 @@ public class HarleyApp extends MyApp {
 		}
 	}
 	
+	public void setUrlHeight(boolean showUrlNow) {
+		super.setUrlHeight(showUrlNow);
+		
+		updateHistoryViewHeight();
+	}
+	
+	public void setBarHeight(boolean showBarNow) {
+		super.setBarHeight(showBarNow);
+		
+		updateHistoryViewHeight();
+	}
+	
 	public void hideMenu() {
 		menuGrid.getLayoutParams().width = 0;
 		menuGrid.requestLayout();
@@ -422,7 +434,7 @@ public class HarleyApp extends MyApp {
 					scrollToMain();
 					webControl.setVisibility(View.GONE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (searchBar == null) initSearchBar();
+					if (searchBar == null) mHarleyActivity.initSearchBar();
 					searchBar.bringToFront();
 					searchBar.setVisibility(View.VISIBLE);
 					etSearch.requestFocus();
@@ -539,47 +551,4 @@ public class HarleyApp extends MyApp {
 			}
 		});
 	}
-	
-	public void initSearchBar() {		
-		imgSearchPrev = (ImageView) mActivity.findViewById(R.id.search_prev);
-		imgSearchPrev.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				searchPrevAction();
-			}
-		});
-		imgSearchNext = (ImageView) mActivity.findViewById(R.id.search_next);
-		imgSearchNext.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				searchNextAction();
-			}
-		});
-
-		imgSearchClose = (ImageView) mActivity.findViewById(R.id.close_search);
-		imgSearchClose.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				hideSearchBox();
-			}
-		});
-
-		searchBar = (RelativeLayout) mActivity.findViewById(R.id.search_bar);
-		searchHint = (TextView) mActivity.findViewById(R.id.search_hint);
-		etSearch = (EditText) mActivity.findViewById(R.id.search);
-		etSearch.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (event.getAction() == KeyEvent.ACTION_UP)
-					switch (keyCode) {
-					case KeyEvent.KEYCODE_SEARCH:
-					case KeyEvent.KEYCODE_ENTER:
-					case KeyEvent.KEYCODE_DPAD_CENTER:
-						imgSearchNext.performClick();
-						break;
-					}
-				return false;
-			}
-		});		
-	}	
 }

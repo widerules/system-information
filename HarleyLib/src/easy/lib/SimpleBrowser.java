@@ -110,8 +110,6 @@ public class SimpleBrowser extends Activity {
 	public String sourceOrCookie = "";
 	public String subFolder = "source";
 	
-	// page up and down button
-	ImageView upButton, downButton;
 
 	// browser related
 	public RelativeLayout browserView;
@@ -416,8 +414,8 @@ public class SimpleBrowser extends Activity {
 	}
 
 	public void setWebpagesLayout() {
-		setUrlHeight(appstate.showUrl);
-		setBarHeight(appstate.showControlBar);
+		appstate.setUrlHeight(appstate.showUrl);
+		appstate.setBarHeight(appstate.showControlBar);
 
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		if (appstate.showUrl)
@@ -430,24 +428,6 @@ public class SimpleBrowser extends Activity {
 			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		webs.setLayoutParams(lp);
 		webs.requestLayout();
-	}
-	
-	void setUrlHeight(boolean showUrlNow) {
-		LayoutParams lpUrl = appstate.urlLine.getLayoutParams();
-		if (showUrlNow) 
-			lpUrl.height = LayoutParams.WRAP_CONTENT;
-		else lpUrl.height = 0;
-		appstate.urlLine.requestLayout();		
-		appstate.updateHistoryViewHeight();
-	}
-	
-	void setBarHeight(boolean showBarNow) {
-		LayoutParams lpBar = appstate.webTools.getLayoutParams();
-		if (showBarNow) 
-			lpBar.height = LayoutParams.WRAP_CONTENT;
-		else lpBar.height = 0;
-		appstate.webTools.requestLayout();
-		appstate.updateHistoryViewHeight();
 	}
 	
 	@Override
@@ -660,8 +640,8 @@ public class SimpleBrowser extends Activity {
 				int offset = - appstate.urlLine.getHeight();
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN:// prepare for drag
-					if (!appstate.showUrl) setUrlHeight(appstate.showUrl);
-					if (!appstate.showControlBar) setBarHeight(appstate.showControlBar);
+					if (!appstate.showUrl) appstate.setUrlHeight(appstate.showUrl);
+					if (!appstate.showControlBar) appstate.setBarHeight(appstate.showControlBar);
 					temp[0] = (int) event.getX();
 					temp[1] = y;
 					break;
@@ -691,6 +671,8 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 		
+		// page up and down button
+		ImageView upButton, downButton;
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setAlpha(40);
 		Matrix matrix = new Matrix();
@@ -752,6 +734,49 @@ public class SimpleBrowser extends Activity {
 	long lastTime = 0;
 	long timeInterval = 100;
 	
+	public void initSearchBar() {		
+		appstate.imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
+		appstate.imgSearchPrev.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				appstate.searchPrevAction();
+			}
+		});
+		appstate.imgSearchNext = (ImageView) findViewById(R.id.search_next);
+		appstate.imgSearchNext.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				appstate.searchNextAction();
+			}
+		});
+
+		appstate.imgSearchClose = (ImageView) findViewById(R.id.close_search);
+		appstate.imgSearchClose.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				appstate.hideSearchBox();
+			}
+		});
+
+		appstate.searchBar = (RelativeLayout) findViewById(R.id.search_bar);
+		appstate.searchHint = (TextView) findViewById(R.id.search_hint);
+		appstate.etSearch = (EditText) findViewById(R.id.search);
+		appstate.etSearch.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (event.getAction() == KeyEvent.ACTION_UP)
+					switch (keyCode) {
+					case KeyEvent.KEYCODE_SEARCH:
+					case KeyEvent.KEYCODE_ENTER:
+					case KeyEvent.KEYCODE_DPAD_CENTER:
+						appstate.imgSearchNext.performClick();
+						break;
+					}
+				return false;
+			}
+		});		
+	}
+
 	public void initWebControl() {
 		// web control
 		appstate.webControl = (LinearLayout) findViewById(R.id.webcontrol);
@@ -912,6 +937,7 @@ public class SimpleBrowser extends Activity {
 		}
 		
 		appstate.urlAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+		appstate.emptyUrlAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
 		appstate.initSiteArray();
 
 		cm = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -1045,7 +1071,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				if (appstate.webControl.getVisibility() == View.GONE) {
-					if (appstate.urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
+					if (appstate.urlLine.getLayoutParams().height == 0) appstate.setUrlHeight(true);// show url if hided
 				
 					if (appstate.webControl.getWidth() < appstate.minWebControlWidth) appstate.scrollToMain();// otherwise may not display weblist correctly
 					appstate.webAdapter.notifyDataSetInvalidated();
@@ -1287,9 +1313,9 @@ public class SimpleBrowser extends Activity {
 		if (browserView.getVisibility() == View.GONE) 
 			if (mVideoView != null) mVideoView.start(); 
 		
-		if (appstate.interstitialAd != null && !appstate.interstitialAd.isReady()) appstate.interstitialAd.loadAd();
-
-		try {if (baiduResume != null) baiduResume.invoke(this, this);} catch (Exception e) {}
+		try {
+			if (baiduResume != null) baiduResume.invoke(this, this);
+		} catch (Exception e) {}
 	}
 
 	@Override
@@ -1307,7 +1333,8 @@ public class SimpleBrowser extends Activity {
 
 	void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(appstate.dm);
-		
+		appstate.createAd(appstate.dm.widthPixels / appstate.dm.density);
+
 		appstate.bookmarkWidth = appstate.dm.widthPixels * 3 / 4;
         int minWidth = (int) (320 * appstate.dm.density);
         if (appstate.bookmarkWidth > minWidth) appstate.bookmarkWidth = minWidth;

@@ -83,7 +83,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-//for get webpage source on cupcake
 public class SimpleBrowser extends Activity {
 	Context mContext;
 
@@ -95,6 +94,8 @@ public class SimpleBrowser extends Activity {
 	Bitmap bmp;
 	AlertDialog snapDialog = null;
 
+	// source dialog
+	AlertDialog m_sourceDialog = null;
 
 	// menu dialog
 	AlertDialog menuDialog;// menu Dialog
@@ -122,7 +123,6 @@ public class SimpleBrowser extends Activity {
 	}
 
 	// bookmark and history
-	AlertDialog m_sourceDialog = null;
 	ImageView imgAddFavo, imgGo, imgHome;
 
 	// baidu tongji
@@ -137,10 +137,6 @@ public class SimpleBrowser extends Activity {
 			baiduEvent = c.getMethod("onEvent", new Class[] { Context.class, String.class, String.class });
 		} catch (Exception e) {}
 	}
-	
-	boolean gotoSettings = false;// will set to true if open settings activity,
-									// and set to false again after exit
-									// settings. not remove ad is goto settings
 	
 	EasyApp appstate;
 
@@ -868,7 +864,6 @@ public class SimpleBrowser extends Activity {
 					appstate.imm.toggleSoftInput(0, 0);
 					break;
 				case 7:// settings
-					gotoSettings = true;
 					intent = new Intent("about");
 					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
 					startActivityForResult(intent, appstate.SETTING_RESULTCODE);
@@ -893,7 +888,7 @@ public class SimpleBrowser extends Activity {
 				int eventAction = event.getAction();
 				int x = (int) event.getRawX();
 				int y = (int) event.getRawY();
-				int offset = - appstate.urlLine.getHeight() - appstate.adContainer.getHeight();
+				int offset = - appstate.urlLine.getHeight();
 				switch (eventAction) {
 				case MotionEvent.ACTION_DOWN:// prepare for drag
 					if (!appstate.showUrl) appstate.setUrlHeight(appstate.showUrl);
@@ -927,6 +922,7 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 		
+		// page up and down button
 		ImageView upButton, downButton;
 		upButton = (ImageView) findViewById(R.id.page_up);
 		upButton.setAlpha(40);
@@ -1031,8 +1027,8 @@ public class SimpleBrowser extends Activity {
 			}
 		});		
 	}
-	
-	public void initWebControl() {// identical
+
+	public void initWebControl() {
 		// web control
 		appstate.webControl = (LinearLayout) findViewById(R.id.webcontrol);
 		
@@ -1316,16 +1312,7 @@ public class SimpleBrowser extends Activity {
 				webList.invalidateViews();
 			}
 		});
-		toolAndAd.setOnLongClickListener(new OnLongClickListener() {// long click tool bar to open menu
-			@Override
-			public boolean onLongClick(View arg0) {
-				if (menuDialog == null) initMenuDialog();
-				menuDialog.show();
-				//onMenuOpened(0, null);
-				return true;
-			}
-		});
-		
+
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
@@ -1347,14 +1334,10 @@ public class SimpleBrowser extends Activity {
 
 		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
 		registerReceiver(downloadReceiver, filter);
-
-		filter = new IntentFilter("android.intent.action.SCREEN_OFF");
-		registerReceiver(screenLockReceiver, filter);
 	}
 
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(screenLockReceiver);
 		unregisterReceiver(downloadReceiver);
 		unregisterReceiver(packageReceiver);
 
@@ -1363,12 +1346,6 @@ public class SimpleBrowser extends Activity {
 
 		super.onDestroy();
 	}
-
-	BroadcastReceiver screenLockReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context arg0, Intent intent) {
-		}
-	};
 
 	BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
 		@Override
@@ -1438,20 +1415,9 @@ public class SimpleBrowser extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		//if (gotoSettings) gotoSettings = false;
-		//else if (!clicked) createAd();
-
 		try {
 			if (baiduResume != null) baiduResume.invoke(this, this);
 		} catch (Exception e) {}
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-
-		//if (!gotoSettings) // will force close if removeAd in onResume. if transfer from activity A to activity B, then A.onPause()->B.onResume()->A.onStop()
-			//removeAd();// ad will occupy cpu and data quota even in background
 	}
 
 	@Override
@@ -1474,19 +1440,16 @@ public class SimpleBrowser extends Activity {
 		if (appstate.dm.widthPixels < 320*appstate.dm.density) {
 			imageBtnList.getLayoutParams().width = appstate.dm.widthPixels;
 			appstate.adContainer2.setVisibility(View.GONE);
-			appstate.adContainer.setVisibility(View.VISIBLE);
 		}
 		else if (appstate.dm.widthPixels <= 640*appstate.dm.density) {
 			imageBtnList.getLayoutParams().width = (int) (320 * appstate.dm.density);
 			appstate.adContainer2.setVisibility(View.GONE);			
-			appstate.adContainer.setVisibility(View.VISIBLE);
 		}
 		else {
 			imageBtnList.getLayoutParams().width = (int) (320 * appstate.dm.density);
 			if (appstate.adview2 != null) appstate.adview2.loadAd();
 			appstate.adContainer2.setVisibility(View.VISIBLE);
-			appstate.adContainer.setVisibility(View.GONE);
-		}		
+		}
 	}
 
 }

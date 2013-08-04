@@ -1044,13 +1044,13 @@ public class SimpleBrowser extends Activity {
 		appstate.imgNew.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				if (appstate.webControl.getVisibility() == View.INVISIBLE) {
+				if (appstate.webControl.getVisibility() == View.GONE) {
 					if (appstate.urlLine.getLayoutParams().height == 0) setUrlHeight(true);// show url if hided
 				
 					if (appstate.webControl.getWidth() < appstate.minWebControlWidth) appstate.scrollToMain();// otherwise may not display weblist correctly
 					appstate.webAdapter.notifyDataSetInvalidated();
 					appstate.webControl.setVisibility(View.VISIBLE);
-				} else appstate.webControl.setVisibility(View.INVISIBLE);
+				} else appstate.webControl.setVisibility(View.GONE);
 			}
 		});
 		appstate.imgNew.setOnLongClickListener(new OnLongClickListener() {

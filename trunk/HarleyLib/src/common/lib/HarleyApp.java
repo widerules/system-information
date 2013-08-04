@@ -420,7 +420,7 @@ public class HarleyApp extends MyApp {
 					break;
 				case 4:// search
 					scrollToMain();
-					webControl.setVisibility(View.INVISIBLE);// hide webControl when search
+					webControl.setVisibility(View.GONE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
 					if (searchBar == null) initSearchBar();
 					searchBar.bringToFront();
@@ -431,7 +431,7 @@ public class HarleyApp extends MyApp {
 					break;
 				case 5:// copy
 					scrollToMain();
-					webControl.setVisibility(View.INVISIBLE);// hide webControl when copy
+					webControl.setVisibility(View.GONE);// hide webControl when copy
 					try {
 						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
 							Toast.makeText(mContext,

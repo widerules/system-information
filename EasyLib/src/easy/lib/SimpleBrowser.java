@@ -1206,6 +1206,7 @@ public class SimpleBrowser extends Activity {
 		appstate.urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
 		
+		appstate.adContainer = (LinearLayout) findViewById(R.id.adContainer);
 		appstate.adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
@@ -1285,7 +1286,6 @@ public class SimpleBrowser extends Activity {
 			}
 		});
 
-		appstate.adContainer = (LinearLayout) findViewById(R.id.adContainer);
 		setLayout();
 		setWebpagesLayout();
 		initUpDown();

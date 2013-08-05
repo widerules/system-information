@@ -145,7 +145,7 @@ public class MyApp extends BaseApp {
 	public boolean blockPopup = false;
 	public boolean blockJs = false;
 	public TextSize textSize = TextSize.NORMAL;
-	final int historyCount = 16;
+	final int historyCount = 30;
 	public long html5cacheMaxSize = 1024 * 1024 * 8;
 	public int ua = 0;
 	public int searchEngine = 5;

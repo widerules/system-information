@@ -90,7 +90,7 @@
     <string name="block_popup">禁止弹窗</string>
     <string name="block_js">禁止JS, Flash</string>
     <string name="reset">恢复默认设置</string>
-    <string name="enable_proxy">使用代理，本地端口：</string>
+    <string name="enable_proxy">使用代理。本地端口：</string>
     <string name="overview_page">网页概览模式</string>
     <string name="share_to_friends">分享和关注</string>
     <string name="cache_prefer">缓存优先，节省流量</string>

@@ -23,6 +23,8 @@ public class WrapWebSettings {
 
 	static Method setDatabaseEnabled = null;
 	static Method setDatabasePath = null;
+	static Method setGeolocationEnabled = null;
+	static Method setGeolocationDatabasePath = null;
 	static Method setLoadWithOverviewMode = null;
 	static Method setAppCacheEnabled = null;
 	static Method setAppCachePath = null;
@@ -36,6 +38,8 @@ public class WrapWebSettings {
 			//API 5
 			setDatabaseEnabled = WebSettings.class.getMethod("setDatabaseEnabled", new Class[] { boolean.class });
 			setDatabasePath = WebSettings.class.getMethod("setDatabasePath", new Class[] { String.class });
+			setGeolocationEnabled = WebSettings.class.getMethod("setGeolocationEnabled", new Class[] { boolean.class });
+			setGeolocationDatabasePath = WebSettings.class.getMethod("setGeolocationDatabasePath", new Class[] { String.class });
 			
 			//API 7
 			setLoadWithOverviewMode = WebSettings.class.getMethod("setLoadWithOverviewMode", new Class[] { boolean.class });
@@ -61,6 +65,16 @@ public class WrapWebSettings {
 	public synchronized void setDatabasePath(String databasePath) {// API 5
 		if (setDatabasePath != null)
 			try {setDatabasePath.invoke(mInstance, databasePath);} catch (Exception e) {}
+	}
+
+	public synchronized void setGeolocationEnabled(boolean enabled) {// API 5
+		if (setGeolocationEnabled != null)
+			try {setGeolocationEnabled.invoke(mInstance, enabled);} catch (Exception e) {}
+	}
+
+	public synchronized void setGeolocationDatabasePath(String databasePath) {// API 5
+		if (setGeolocationDatabasePath != null)
+			try {setGeolocationDatabasePath.invoke(mInstance, databasePath);} catch (Exception e) {}
 	}
 
 	public synchronized void setLoadWithOverviewMode(boolean overview) {// API 7

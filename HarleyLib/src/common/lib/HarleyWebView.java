@@ -47,14 +47,13 @@ public class HarleyWebView extends MyWebView {
 		setWebChromeClient(new WebChromeClient() {
 			@Override
 			public void onProgressChanged(WebView view, int progress) {
-				if (progress == 100)
-					mProgress = 0;
+				if (progress == 100) mProgress = 0;
 				else mProgress = progress;
 
 				if (isForeground) {
 					mAppstate.loadProgress.setProgress(progress);
 					if (progress == 100)
-						mAppstate.loadProgress.setVisibility(View.INVISIBLE);
+						mAppstate.loadProgress.setVisibility(View.GONE);
 				}
 			}
 

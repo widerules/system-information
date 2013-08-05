@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import common.lib.ClearFolderTask;
 import common.lib.EasyApp;
@@ -31,10 +30,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -72,13 +68,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
@@ -90,8 +84,6 @@ public class SimpleBrowser extends Activity {
 
 	// source dialog
 	AlertDialog m_sourceDialog = null;
-
-
 
 	LinearLayout imageBtnList;
 	RelativeLayout webs;
@@ -579,8 +571,8 @@ public class SimpleBrowser extends Activity {
 				try {
 					String title = appstate.serverWebs.get(appstate.webIndex).getTitle();
 					if (title == null) title = WebUtil.getSite(appstate.serverWebs.get(appstate.webIndex).m_url);
-					title += "_" + subFolder + ".txt";
-					String site = appstate.downloadPath + subFolder + "/";
+					title += "_source.txt";
+					String site = appstate.downloadPath + "source/";
 					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);
 					fos.write(appstate.serverWebs.get(appstate.webIndex).pageSource.getBytes());
@@ -719,7 +711,7 @@ public class SimpleBrowser extends Activity {
 	long lastTime = 0;
 	long timeInterval = 100;
 	
-	public void initSearchBar() {		
+	public void initSearchBar() {
 		appstate.imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		appstate.imgSearchPrev.setOnClickListener(new OnClickListener() {
 			@Override
@@ -791,6 +783,7 @@ public class SimpleBrowser extends Activity {
 		appstate = ((EasyApp) getApplicationContext());
 		appstate.mContext = mContext;
 		appstate.mActivity = this;
+		appstate.mEasyActivity = this;
 		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
 
 		appstate.dm = new DisplayMetrics();

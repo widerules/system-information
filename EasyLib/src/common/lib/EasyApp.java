@@ -6,6 +6,12 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.AlertDialog;
+import easy.lib.AboutBrowser;
+import easy.lib.R;
+import easy.lib.SimpleBrowser;
+import base.lib.WrapAdView;
+import base.lib.WrapInterstitialAd;
+import base.lib.util;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,20 +24,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-import base.lib.WrapAdView;
-import base.lib.WrapInterstitialAd;
-import base.lib.util;
 
 import common.lib.MyApp;
-import easy.lib.AboutBrowser;
-import easy.lib.R;
-import easy.lib.SimpleBrowser;
 
 public class EasyApp extends MyApp {
 	public boolean collapse1 = false;// default open top list and bookmark
@@ -39,6 +37,8 @@ public class EasyApp extends MyApp {
 	public boolean collapse3 = true;
 	int countDown = 0;
 	
+	public SimpleBrowser mEasyActivity;
+
 	public void readPreference() {
 		super.readPreference();
 		
@@ -63,210 +63,8 @@ public class EasyApp extends MyApp {
 		}
 	}
 	
-	private SimpleAdapter getMenuAdapter(String[] menuNameArray,
-			int[] imageResourceArray) {
-		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
-		for (int i = 0; i < menuNameArray.length; i++) {
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("itemImage", imageResourceArray[i]);
-			map.put("itemText", menuNameArray[i]);
-			data.add(map);
-		}
-		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
-				R.layout.icon_list, new String[] { "itemImage", "itemText" },
-				new int[] { R.id.appicon, R.id.appname });
-		return simperAdapter;
-	}
-
 	View menuView;
-	public SimpleBrowser mEasyActivity;
 	AlertDialog downloadsDialog = null;
-	public void initMenuDialog() {		
-		// menu icon
-		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
-				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
-				R.drawable.share, R.drawable.search, R.drawable.about };
-		// menu text
-		String[] menu_name_array = { getString(R.string.source),
-				getString(R.string.snap), getString(R.string.copy),
-				getString(R.string.exit), getString(R.string.downloads),
-				getString(R.string.shareurl), getString(R.string.search),
-				getString(R.string.settings) };
-
-		// create AlertDialog
-		menuView = View.inflate(mContext, R.layout.grid_menu, null);
-		menuDialog = new AlertDialog.Builder(this).create();
-		menuDialog.setView(menuView);
-		WindowManager.LayoutParams params = menuDialog.getWindow()
-				.getAttributes();
-		// 240 for 1024h, 140 for 800h, 70 for 480h, to show menu dialog in
-		// correct position
-		if (dm.heightPixels <= 480)
-			params.y = 70;
-		else if (dm.heightPixels <= 800)
-			params.y = 140;
-		else
-			params.y = 240;
-		menuDialog.getWindow().setAttributes(params);
-
-		menuDialog.setCanceledOnTouchOutside(true);
-
-		menuDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-			@Override
-			public boolean onKey(DialogInterface dialog, int keyCode,
-					KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_MENU)
-					dialog.dismiss();
-				return false;
-			}
-
-		});
-
-		final Context localContext = this;
-		menuGrid = (GridView) menuView.findViewById(R.id.gridview);
-		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
-		menuGrid.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				switch (arg2) {
-				case 0:// view page source
-					try {
-						if ("".equals(serverWebs.get(webIndex).pageSource)) {
-							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
-							serverWebs.get(webIndex).getPageSource();
-						}
-
-						mEasyActivity.showSourceDialog();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
-					}
-					break;
-				case 1:// view snap
-					try {// still got java.lang.RuntimeException: Canvas: trying
-							// to use a recycled bitmap android.graphics.Bitmap
-							// from one user. so catch it.
-						if (!snapFullWeb) {
-							// the snap will not refresh if not destroy cache
-							webpages.destroyDrawingCache();
-							webpages.setDrawingCacheEnabled(true);
-							bmp = webpages.getDrawingCache();
-						} else {
-							Picture pic = serverWebs.get(webIndex)
-									.capturePicture();
-
-							// bmp = Bitmap.createScaledBitmap(???,
-							// pic.getWidth(), pic.getHeight(), false);//check
-							// here http://stackoverflow.com/questions/477572
-							bmp = Bitmap.createBitmap(pic.getWidth(),
-									pic.getHeight(), Bitmap.Config.ARGB_4444);
-							// the size of the web page may be very large.
-
-							Canvas canvas = new Canvas(bmp);
-							pic.draw(canvas);
-						}
-						
-						if (snapDialog == null) initSnapDialog(getString(R.string.browser_name));
-						snapView.setImageBitmap(bmp);
-						snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
-						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
-							snapDialog.setIcon(R.drawable.explorer);
-						else
-							snapDialog.setIcon(new BitmapDrawable(serverWebs
-									.get(webIndex).getFavicon()));
-						snapDialog.show();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
-					}
-					break;
-				case 2:// copy
-					webControl.setVisibility(View.GONE);// hide webControl when copy
-					try {
-						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
-							Toast.makeText(mContext,
-									getString(R.string.copy_hint),
-									Toast.LENGTH_LONG).show();
-					} catch (Exception e) {
-					}
-
-					try {
-						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
-								KeyEvent.ACTION_DOWN,
-								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-						shiftPressEvent.dispatch(serverWebs.get(webIndex));
-					} catch (Exception e) {
-					}
-					break;
-				case 3:// exit
-					clearFile("pages");
-					ClearCache(); // clear cache when exit
-					if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
-					mActivity.finish();
-					break;
-				case 4:// downloads
-					Intent intent = new Intent(
-							"com.estrongs.action.PICK_DIRECTORY");
-					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
-					if (!util.startActivity(intent, false, mContext)) {
-						if (downloadsDialog == null)
-							downloadsDialog = new AlertDialog.Builder(
-									localContext)
-									.setMessage(
-											getString(R.string.downloads_to)
-													+ downloadPath
-													+ getString(R.string.downloads_open))
-									.setPositiveButton(
-											R.string.ok,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-													Intent intent = new Intent(
-															Intent.ACTION_VIEW,
-															Uri.parse("market://details?id=com.estrongs.android.pop"));
-													util.startActivity(intent,
-															true,
-															getBaseContext());
-												}
-											})
-									.setNegativeButton(
-											R.string.cancel,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-												}
-											}).create();
-						downloadsDialog.show();
-					}
-					break;
-				case 5:// share url
-					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
-					break;
-				case 6:// search
-					webControl.setVisibility(View.GONE);// hide webControl when search
-						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (searchBar == null) mEasyActivity.initSearchBar();
-					searchBar.bringToFront();
-					searchBar.setVisibility(View.VISIBLE);
-					etSearch.requestFocus();
-					toSearch = "";
-					imm.toggleSoftInput(0, 0);
-					break;
-				case 7:// settings
-					intent = new Intent("about");
-					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
-					mActivity.startActivityForResult(intent, SETTING_RESULTCODE);
-					break;
-				}
-				menuDialog.dismiss();
-			}
-		});
-	}
-	
 	public void createAd(float width) {
 		if (mAdAvailable) {
 			removeAd();
@@ -517,5 +315,205 @@ public class EasyApp extends MyApp {
 		}
 
 		return true;
+	}
+
+	private SimpleAdapter getMenuAdapter(String[] menuNameArray,
+			int[] imageResourceArray) {
+		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
+		for (int i = 0; i < menuNameArray.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("itemImage", imageResourceArray[i]);
+			map.put("itemText", menuNameArray[i]);
+			data.add(map);
+		}
+		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
+				R.layout.icon_list, new String[] { "itemImage", "itemText" },
+				new int[] { R.id.appicon, R.id.appname });
+		return simperAdapter;
+	}
+
+	public void initMenuDialog() {
+		// menu icon
+		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
+				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
+				R.drawable.share, R.drawable.search, R.drawable.about };
+		// menu text
+		String[] menu_name_array = { getString(R.string.source),
+				getString(R.string.snap), getString(R.string.copy),
+				getString(R.string.exit), getString(R.string.downloads),
+				getString(R.string.shareurl), getString(R.string.search),
+				getString(R.string.settings) };
+
+		// create AlertDialog
+		menuView = View.inflate(mContext, R.layout.grid_menu, null);
+		menuDialog = new AlertDialog.Builder(this).create();
+		menuDialog.setView(menuView);
+		WindowManager.LayoutParams params = menuDialog.getWindow()
+				.getAttributes();
+		// 240 for 1024h, 140 for 800h, 70 for 480h, to show menu dialog in
+		// correct position
+		if (dm.heightPixels <= 480)
+			params.y = 70;
+		else if (dm.heightPixels <= 800)
+			params.y = 140;
+		else
+			params.y = 240;
+		menuDialog.getWindow().setAttributes(params);
+
+		menuDialog.setCanceledOnTouchOutside(true);
+
+		menuDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode,
+					KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_MENU)
+					dialog.dismiss();
+				return false;
+			}
+
+		});
+
+		final Context localContext = this;
+		menuGrid = (GridView) menuView.findViewById(R.id.gridview);
+		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
+		menuGrid.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				switch (arg2) {
+				case 0:// view page source
+					try {
+						if ("".equals(serverWebs.get(webIndex).pageSource)) {
+							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
+							serverWebs.get(webIndex).getPageSource();
+						}
+
+						mEasyActivity.showSourceDialog();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(),
+								Toast.LENGTH_LONG).show();
+					}
+					break;
+				case 1:// view snap
+					try {// still got java.lang.RuntimeException: Canvas: trying
+							// to use a recycled bitmap android.graphics.Bitmap
+							// from one user. so catch it.
+						if (!snapFullWeb) {
+							// the snap will not refresh if not destroy cache
+							webpages.destroyDrawingCache();
+							webpages.setDrawingCacheEnabled(true);
+							bmp = webpages.getDrawingCache();
+						} else {
+							Picture pic = serverWebs.get(webIndex)
+									.capturePicture();
+
+							// bmp = Bitmap.createScaledBitmap(???,
+							// pic.getWidth(), pic.getHeight(), false);//check
+							// here http://stackoverflow.com/questions/477572
+							bmp = Bitmap.createBitmap(pic.getWidth(),
+									pic.getHeight(), Bitmap.Config.ARGB_4444);
+							// the size of the web page may be very large.
+
+							Canvas canvas = new Canvas(bmp);
+							pic.draw(canvas);
+						}
+						
+						if (snapDialog == null) initSnapDialog(getString(R.string.browser_name));
+						snapView.setImageBitmap(bmp);
+						snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
+						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
+							snapDialog.setIcon(R.drawable.explorer);
+						else
+							snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+						snapDialog.show();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(),
+								Toast.LENGTH_LONG).show();
+					}
+					break;
+				case 2:// copy
+					webControl.setVisibility(View.GONE);// hide webControl when copy
+					try {
+						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
+							Toast.makeText(mContext,
+									getString(R.string.copy_hint),
+									Toast.LENGTH_LONG).show();
+					} catch (Exception e) {
+					}
+
+					try {
+						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
+								KeyEvent.ACTION_DOWN,
+								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+						shiftPressEvent.dispatch(serverWebs.get(webIndex));
+					} catch (Exception e) {
+					}
+					break;
+				case 3:// exit
+					clearFile("pages");
+					ClearCache(); // clear cache when exit
+					if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
+					mActivity.finish();
+					break;
+				case 4:// downloads
+					Intent intent = new Intent(
+							"com.estrongs.action.PICK_DIRECTORY");
+					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
+					if (!util.startActivity(intent, false, mContext)) {
+						if (downloadsDialog == null)
+							downloadsDialog = new AlertDialog.Builder(
+									localContext)
+									.setMessage(
+											getString(R.string.downloads_to)
+													+ downloadPath
+													+ getString(R.string.downloads_open))
+									.setPositiveButton(
+											R.string.ok,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													Intent intent = new Intent(
+															Intent.ACTION_VIEW,
+															Uri.parse("market://details?id=com.estrongs.android.pop"));
+													util.startActivity(intent,
+															true,
+															getBaseContext());
+												}
+											})
+									.setNegativeButton(
+											R.string.cancel,
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+												}
+											}).create();
+						downloadsDialog.show();
+					}
+					break;
+				case 5:// share url
+					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
+					break;
+				case 6:// search
+					webControl.setVisibility(View.GONE);// hide webControl when search
+						// serverWebs.get(webIndex).showFindDialog("e", false);
+					if (searchBar == null) mEasyActivity.initSearchBar();
+					searchBar.bringToFront();
+					searchBar.setVisibility(View.VISIBLE);
+					etSearch.requestFocus();
+					toSearch = "";
+					imm.toggleSoftInput(0, 0);
+					break;
+				case 7:// settings
+					intent = new Intent("about");
+					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
+					mActivity.startActivityForResult(intent, SETTING_RESULTCODE);
+					break;
+				}
+				menuDialog.dismiss();
+			}
+		});
 	}
 }

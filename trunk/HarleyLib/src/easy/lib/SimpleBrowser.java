@@ -7,12 +7,8 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-
-
-
 //import net.simonvt.menudrawer.MenuDrawer;
 //import net.simonvt.menudrawer.Position;
-
 import common.lib.ClearFolderTask;
 import common.lib.HarleyApp;
 import common.lib.HarleyWebView;
@@ -35,7 +31,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
@@ -96,12 +91,10 @@ public class SimpleBrowser extends Activity {
 	AlertDialog m_sourceDialog = null;
 	public String sourceOrCookie = "";
 	public String subFolder = "source";
-	
 
 	// browser related
 	public RelativeLayout browserView;
 	boolean shouldGo = false;
-
 
 	LinearLayout imageBtnList;
 	RelativeLayout webs;
@@ -1029,7 +1022,7 @@ public class SimpleBrowser extends Activity {
 		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
 		toolAndAd.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) {//reverse the position of webtoolbutton and ad
 				exchangePosition();
 			}
 		});

@@ -63,7 +63,9 @@ public class EasyWebView extends MyWebView {
 				Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 				i.addCategory(Intent.CATEGORY_OPENABLE);
 				i.setType("*/*");
-				mAppstate.mActivity.startActivityForResult(Intent.createChooser(i, mContext.getString(R.string.select_file)), mAppstate.FILECHOOSER_RESULTCODE);
+				mAppstate.mActivity.startActivityForResult(Intent.createChooser(i,
+						mContext.getString(R.string.select_file)),
+						mAppstate.FILECHOOSER_RESULTCODE);
 			}
 
 			// For Android < 3.0

@@ -23,21 +23,16 @@ import android.net.Uri;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -65,6 +60,15 @@ public class HarleyApp extends MyApp {
 
 	public SimpleBrowser mHarleyActivity;
 
+	public void readPreference() {
+		super.readPreference();
+		
+		if (Locale.CHINA.equals(mLocale)) 
+			HOME_PAGE = "file:///android_asset/home-ch.html";
+		
+		m_homepage = sp.getString("homepage", null);
+	}
+	
 	public void loadPage() {// load home page
 		super.loadPage();
 		if ((mBookMark.size() > 0) || (mHistory.size() > 0)) showBookmark();// show bookmark for load home page too slow
@@ -170,15 +174,6 @@ public class HarleyApp extends MyApp {
 		});
 		
 		updateHistory();
-	}
-	
-	public void readPreference() {
-		super.readPreference();
-		
-		if (Locale.CHINA.equals(mLocale)) 
-			HOME_PAGE = "file:///android_asset/home-ch.html";
-		
-		m_homepage = sp.getString("homepage", null);
 	}
 	
 	public void createAd(float width) {

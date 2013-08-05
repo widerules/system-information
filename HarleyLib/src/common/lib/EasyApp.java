@@ -36,7 +36,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class HarleyApp extends MyApp {
+public class EasyApp extends MyApp {
 	public View bookmarkDownloads;
 	public int bookmarkWidth = LayoutParams.WRAP_CONTENT;
 	public int menuWidth = LayoutParams.WRAP_CONTENT;
@@ -321,7 +321,7 @@ public class HarleyApp extends MyApp {
 			Toast.makeText(mContext, R.string.nomore_pages, Toast.LENGTH_LONG).show();
 			return false; // not open new page if got max pages
 		} else {
-			webAdapter.insert(new HarleyWebView(mContext, this), newIndex);
+			webAdapter.insert(new EasyWebView(mContext, this), newIndex);
 			webAdapter.notifyDataSetInvalidated();
 			webpages.addView(webAdapter.getItem(newIndex), newIndex);
 			imgNew.setImageBitmap(util.generatorCountIcon(

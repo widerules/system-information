@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -191,7 +193,67 @@ public class MyApp extends BaseApp {
 	public final int FILECHOOSER_RESULTCODE = 1001;
 
 	public InputMethodManager imm;
+	public GridView menuGrid = null;
 
+	// snap dialog
+	public ImageView snapView;
+	public Bitmap bmp;
+	public AlertDialog snapDialog = null;
+	public void initSnapDialog(String browserName) {
+		snapView = (ImageView) mActivity.getLayoutInflater().inflate(
+				R.layout.snap_browser, null);
+		snapDialog = new AlertDialog.Builder(this)
+				.setView(snapView)
+				.setTitle(browserName)
+				.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							String snap = downloadPath + "snap/" + serverWebs.get(webIndex).getTitle() + ".png";
+							FileOutputStream fos = new FileOutputStream(snap);
+
+							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+							fos.close();
+
+							Intent intent = new Intent(Intent.ACTION_SEND);
+							intent.setType("image/*");
+							intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
+							intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
+							util.startActivity(Intent.createChooser(
+									intent,
+									getString(R.string.sharemode)),
+									true, mContext);
+						} catch (Exception e) {
+							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+						}
+					}
+				})
+				.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						try {
+							String title = serverWebs.get(webIndex).getTitle();
+							if (title == null) title = WebUtil.getSite(serverWebs.get(webIndex).m_url);
+							title += "(snap).png";
+							String site = downloadPath + "snap/";
+							String snap = site + title;
+							FileOutputStream fos = new FileOutputStream(snap);
+							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+							fos.close();
+							Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+							addDownloads(new TitleUrl(title, "file://" + snap, serverWebs.get(webIndex).m_url));
+						} catch (Exception e) {
+							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+						}
+					}
+				})
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// cancel
+					@Override
+					public void onClick(DialogInterface dialog, int which) {}
+				}).create();
+	}
+	void addDownloads(TitleUrl tu) {}
+	
 	public int revertCount = 0;
 	public boolean needRevert = false;
 	public class WebAdapter extends ArrayAdapter<MyWebView> {

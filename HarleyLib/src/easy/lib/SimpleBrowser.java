@@ -92,12 +92,6 @@ public class SimpleBrowser extends Activity {
 
 	ListView webList;
 
-
-	// snap dialog
-	public ImageView snapView;
-	public Bitmap bmp;
-	public AlertDialog snapDialog = null;
-
 	// source dialog
 	AlertDialog m_sourceDialog = null;
 	public String sourceOrCookie = "";
@@ -454,7 +448,7 @@ public class SimpleBrowser extends Activity {
 				case 6:// open in background
 					appstate.openNewPage(url, appstate.webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
 					break;
-				case 9: // remove bookmark
+				case 8:// remove bookmark
 					appstate.removeFavo(item.getOrder());
 					break;
 				case 10:// add bookmark
@@ -479,23 +473,24 @@ public class SimpleBrowser extends Activity {
 		if (url != null) {
 			if (appstate.dm.heightPixels > appstate.dm.density*480) // only show this menu item on large screen
 				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
-			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
 			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
+			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
 
 			if (appstate.dm.heightPixels > appstate.dm.density*480) {// only show this menu item on large screen
 				boolean foundBookmark = false;
 				for (int i = appstate.mBookMark.size() - 1; i >= 0; i--)
-					if (appstate.mBookMark.get(i).m_url.equals(url)) {
+					if ((appstate.mBookMark.get(i).m_url.equals(url))
+							|| (url.equals(appstate.mBookMark.get(i).m_url + "/"))) {
 						foundBookmark = true;
-						menu.add(0, 9, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
+						menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
 						break;
 					}
 				if (!foundBookmark)
 					menu.add(0, 10, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
 			}
-			
+
 			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
-			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
 		}
 	}
 
@@ -509,60 +504,6 @@ public class SimpleBrowser extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add("menu");// must create one menu?
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	public void initSnapDialog() {		
-		snapView = (ImageView) getLayoutInflater().inflate(
-				R.layout.snap_browser, null);
-		snapDialog = new AlertDialog.Builder(this)
-				.setView(snapView)
-				.setTitle(R.string.browser_name)
-				.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						try {
-							String snap = appstate.downloadPath + "snap/" + appstate.serverWebs.get(appstate.webIndex).getTitle() + ".png";
-							FileOutputStream fos = new FileOutputStream(snap);
-
-							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
-							fos.close();
-
-							Intent intent = new Intent(Intent.ACTION_SEND);
-							intent.setType("image/*");
-							intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-							intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
-							util.startActivity(Intent.createChooser(
-									intent,
-									getString(R.string.sharemode)),
-									true, mContext);
-						} catch (Exception e) {
-							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-						}
-					}
-				})
-				.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						try {
-							String title = appstate.serverWebs.get(appstate.webIndex).getTitle();
-							if (title == null) title = WebUtil.getSite(appstate.serverWebs.get(appstate.webIndex).m_url);
-							title += "(snap).png";
-							String site = appstate.downloadPath + "snap/";
-							String snap = site + title;
-							FileOutputStream fos = new FileOutputStream(snap);
-							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
-							fos.close();
-							Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
-							addDownloads(new TitleUrl(title, "file://" + snap, appstate.serverWebs.get(appstate.webIndex).m_url));
-						} catch (Exception e) {
-							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-						}
-					}
-				})
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// cancel
-					@Override
-					public void onClick(DialogInterface dialog, int which) {}
-				}).create();
 	}
 
 	public void initSourceDialog() {		
@@ -614,7 +555,7 @@ public class SimpleBrowser extends Activity {
 		m_sourceDialog.setMessage(sourceOrCookie);
 		m_sourceDialog.show();
 	}
-	
+
 	public void initUpDown() {
 		appstate.upAndDown = (LinearLayout) findViewById(R.id.up_down);
 		if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);
@@ -726,7 +667,7 @@ public class SimpleBrowser extends Activity {
 	long lastTime = 0;
 	long timeInterval = 100;
 	
-	public void initSearchBar() {		
+	public void initSearchBar() {
 		appstate.imgSearchPrev = (ImageView) findViewById(R.id.search_prev);
 		appstate.imgSearchPrev.setOnClickListener(new OnClickListener() {
 			@Override

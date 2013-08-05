@@ -92,10 +92,6 @@ public class SimpleBrowser extends Activity {
 
 	ListView webList;
 
-	//boolean flashInstalled = false;
-	// settings
-	final int historyCount = 30;
-	int bookmarkIndex = -1;
 
 	// snap dialog
 	public ImageView snapView;
@@ -434,7 +430,7 @@ public class SimpleBrowser extends Activity {
 
 		final HitTestResult result = ((WebView) v).getHitTestResult();
 		final String url = result.getExtra();
-
+		
 		MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
 			public boolean onMenuItemClick(MenuItem item) {// do the menu action
 				switch (item.getItemId()) {
@@ -459,7 +455,7 @@ public class SimpleBrowser extends Activity {
 					appstate.openNewPage(url, appstate.webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
 					break;
 				case 9: // remove bookmark
-					appstate.removeFavo(bookmarkIndex);
+					appstate.removeFavo(item.getOrder());
 					break;
 				case 10:// add bookmark
 					int historyIndex = -1;
@@ -491,8 +487,7 @@ public class SimpleBrowser extends Activity {
 				for (int i = appstate.mBookMark.size() - 1; i >= 0; i--)
 					if (appstate.mBookMark.get(i).m_url.equals(url)) {
 						foundBookmark = true;
-						bookmarkIndex = i;
-						menu.add(0, 9, 0, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
+						menu.add(0, 9, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
 						break;
 					}
 				if (!foundBookmark)

@@ -20,10 +20,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-public class HarleyWebView extends MyWebView {
+public class EasyWebView extends MyWebView {
 	SimpleBrowser mHarleyActivity;
-	HarleyApp mHarleyAppState;
-	public HarleyWebView(Context context, HarleyApp appstate) {
+	EasyApp mHarleyAppState;
+	public EasyWebView(Context context, EasyApp appstate) {
 		super(context, appstate);
 		
 		mHarleyActivity = (SimpleBrowser) appstate.mActivity;

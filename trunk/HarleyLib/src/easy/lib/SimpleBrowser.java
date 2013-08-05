@@ -10,8 +10,8 @@ import java.util.Collections;
 //import net.simonvt.menudrawer.MenuDrawer;
 //import net.simonvt.menudrawer.Position;
 import common.lib.ClearFolderTask;
-import common.lib.HarleyApp;
-import common.lib.HarleyWebView;
+import common.lib.EasyApp;
+import common.lib.EasyWebView;
 import common.lib.MyApp.WriteTask;
 import common.lib.MyComparator;
 import common.lib.MyViewFlipper;
@@ -131,7 +131,7 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {}
 	}
 	
-	HarleyApp appstate;
+	EasyApp appstate;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -746,7 +746,7 @@ public class SimpleBrowser extends Activity {
 		// mContext = getApplicationContext();//this will cause force close when
 		// select locale in google translate
 		mContext = this;
-		appstate = ((HarleyApp) getApplicationContext());
+		appstate = ((EasyApp) getApplicationContext());
 		appstate.mContext = mContext;
 		appstate.mActivity = this;
 		appstate.mHarleyActivity = this;
@@ -870,7 +870,7 @@ public class SimpleBrowser extends Activity {
 		WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
 
 		while (appstate.serverWebs.size() > 0) {
-			HarleyWebView tmp = (HarleyWebView) appstate.webpages.getChildAt(0);
+			EasyWebView tmp = (EasyWebView) appstate.webpages.getChildAt(0);
 			if (tmp == null) break;//sometime it is null if close page very quick
 			appstate.webAdapter.remove(tmp);
 			appstate.webAdapter.notifyDataSetInvalidated();
@@ -883,7 +883,7 @@ public class SimpleBrowser extends Activity {
 		}
 
 		appstate.webIndex = 0;
-		appstate.serverWebs.add(new HarleyWebView(mContext, appstate));
+		appstate.serverWebs.add(new EasyWebView(mContext, appstate));
 		appstate.webpages = (MyViewFlipper) findViewById(R.id.webpages);
 		appstate.webpages.addView(appstate.serverWebs.get(appstate.webIndex));
 

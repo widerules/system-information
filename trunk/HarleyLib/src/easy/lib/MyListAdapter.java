@@ -17,16 +17,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import base.lib.WebUtil;
 
-import common.lib.HarleyApp;
+import common.lib.EasyApp;
 import common.lib.TitleUrl;
 
 public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 	Context mContext;
-	HarleyApp mAppstate;
+	EasyApp mAppstate;
 	ArrayList localList;
 	public int type = 0;// 0:bookmark, 1:history, 2:downloads
 
-	public MyListAdapter(Context context, List<TitleUrl> titles, HarleyApp appstate) {
+	public MyListAdapter(Context context, List<TitleUrl> titles, EasyApp appstate) {
 		super(context, 0, titles);
 		mContext = context;
 		mAppstate = appstate;

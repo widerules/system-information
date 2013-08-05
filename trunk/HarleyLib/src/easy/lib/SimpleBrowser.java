@@ -106,11 +106,10 @@ public class SimpleBrowser extends Activity {
 
 	// browser related
 	public RelativeLayout browserView;
-	LinearLayout imageBtnList;
-	
-	
-	ImageView imgMenu;
 	boolean shouldGo = false;
+
+
+	LinearLayout imageBtnList;
 	RelativeLayout webs;
 	Button btnNewpage;
 
@@ -130,7 +129,7 @@ public class SimpleBrowser extends Activity {
 	// bookmark and history
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean downloadsChanged = false;
-	ImageView imgAddFavo;
+	ImageView imgAddFavo, imgMenu;
 
 	// baidu tongji
 	static Method baiduResume = null;
@@ -356,7 +355,6 @@ public class SimpleBrowser extends Activity {
 
 			WrapWebSettings webSettings = new WrapWebSettings(localSettings);
 			appstate.overviewPage = appstate.sp.getBoolean("overview_page", false);
-			//localSettings.setUseWideViewPort(overviewPage);
 			localSettings.setLoadWithOverviewMode(appstate.overviewPage);
 
 			boolean showZoom = appstate.sp.getBoolean("show_zoom", false);
@@ -382,12 +380,14 @@ public class SimpleBrowser extends Activity {
 			appstate.serverWebs.get(appstate.webIndex).html5 = html5;
 			localSettings.setAppCacheEnabled(html5);// API7
 			localSettings.setDatabaseEnabled(html5);// API5
+			localSettings.setGeolocationEnabled(html5);//API5
 			if (html5) {
 				localSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());// API7
 				// it will cause crash on OPhone if not set the max size
 				localSettings.setAppCacheMaxSize(appstate.html5cacheMaxSize);
 				localSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
 						.getPath());// API5. how slow will it be if set path to sdcard?
+				localSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 			}
 
 			String tmpEncoding = WebUtil.getEncoding(appstate.sp.getInt("encoding", 0));
@@ -430,7 +430,7 @@ public class SimpleBrowser extends Activity {
 
 		final HitTestResult result = ((WebView) v).getHitTestResult();
 		final String url = result.getExtra();
-		
+
 		MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
 			public boolean onMenuItemClick(MenuItem item) {// do the menu action
 				switch (item.getItemId()) {

@@ -101,7 +101,6 @@ public class SimpleBrowser extends Activity {
 	AlertDialog menuDialog;// menu Dialog
 	GridView menuGrid;
 	View menuView;
-	int historyIndex = -1;
 	AlertDialog downloadsDialog = null;
 
 
@@ -339,7 +338,7 @@ public class SimpleBrowser extends Activity {
 			// localSettings.setSupportMultipleWindows(!blockPopup);
 
 			appstate.blockJs = appstate.sp.getBoolean("block_js", false);
-			//localSettings.setJavaScriptEnabled(!blockJs);
+			//localSettings.setJavaScriptEnabled(!appstate.blockJs);
 
 			WrapWebSettings webSettings = new WrapWebSettings(localSettings);
 			appstate.overviewPage = appstate.sp.getBoolean("overview_page", false);
@@ -368,17 +367,14 @@ public class SimpleBrowser extends Activity {
 			appstate.serverWebs.get(appstate.webIndex).html5 = html5;
 			webSettings.setAppCacheEnabled(html5);// API7
 			webSettings.setDatabaseEnabled(html5);// API5
-			// webSettings.setGeolocationEnabled(html5);//API5
+			webSettings.setGeolocationEnabled(html5);//API5
 			if (html5) {
-				webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE)
-						.getPath());// API7
+				webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());// API7
 				// it will cause crash on OPhone if not set the max size
 				webSettings.setAppCacheMaxSize(appstate.html5cacheMaxSize);
 				webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
-						.getPath());// API5. how slow will it be if set path to
-				// sdcard?
-				// webSettings.setGeolocationDatabasePath(getDir("databases",
-				// MODE_PRIVATE).getPath());//API5
+						.getPath());// API5. how slow will it be if set path to sdcard?
+				webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
 			}
 
 			String tmpEncoding = WebUtil.getEncoding(appstate.sp.getInt("encoding", 0));
@@ -451,11 +447,6 @@ public class SimpleBrowser extends Activity {
 				case 9:// remove history
 					appstate.removeHistory(item.getOrder());
 					break;
-				case 10:// add bookmark. not use now
-					if (historyIndex > -1)
-						appstate.addFavo(url, appstate.mHistory.get(historyIndex).m_title);
-					else appstate.addFavo(url, url);
-					break;
 				case 11://set homepage
 					appstate.m_homepage = url;
 					appstate.sEdit.putString("homepage", url);
@@ -492,11 +483,9 @@ public class SimpleBrowser extends Activity {
 					}
 				//if (!foundBookmark) menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);// no add bookmark on long click?
 
-				historyIndex = -1;
 				for (int i = appstate.mHistory.size() - 1; i >= 0; i--)
 					if ((appstate.mHistory.get(i).m_url.equals(url))
 							|| (url.equals(appstate.mHistory.get(i).m_url + "/"))) {
-						historyIndex = i;
 						menu.add(0, 9, i, R.string.remove_history)
 								.setOnMenuItemClickListener(handler);
 						break;

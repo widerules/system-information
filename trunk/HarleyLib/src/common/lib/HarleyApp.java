@@ -51,7 +51,6 @@ public class HarleyApp extends MyApp {
 	public FrameLayout adContainer3;	
 	public WrapAdView adview3 = null;
 
-	public GridView menuGrid = null;
 	public LinearLayout bookmarkView;
 	public ListView downloadsList;
 	public MyListAdapter bookmarkAdapter, historyAdapter, downloadsAdapter;
@@ -488,7 +487,7 @@ public class HarleyApp extends MyApp {
 							// the snap will not refresh if not destroy cache
 							webpages.destroyDrawingCache();
 							webpages.setDrawingCacheEnabled(true);
-							mHarleyActivity.bmp = webpages.getDrawingCache();
+							bmp = webpages.getDrawingCache();
 						} else {
 							Picture pic = serverWebs.get(webIndex)
 									.capturePicture();
@@ -496,22 +495,22 @@ public class HarleyApp extends MyApp {
 							// bmp = Bitmap.createScaledBitmap(???,
 							// pic.getWidth(), pic.getHeight(), false);//check
 							// here http://stackoverflow.com/questions/477572
-							mHarleyActivity.bmp = Bitmap.createBitmap(pic.getWidth(),
+							bmp = Bitmap.createBitmap(pic.getWidth(),
 									pic.getHeight(), Bitmap.Config.ARGB_4444);
 							// the size of the web page may be very large.
 
-							Canvas canvas = new Canvas(mHarleyActivity.bmp);
+							Canvas canvas = new Canvas(bmp);
 							pic.draw(canvas);
 						}
 						
-						if (mHarleyActivity.snapDialog == null) mHarleyActivity.initSnapDialog();
-						mHarleyActivity.snapView.setImageBitmap(mHarleyActivity.bmp);
-						mHarleyActivity.snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
+						if (snapDialog == null) initSnapDialog(getString(R.string.browser_name));
+						snapView.setImageBitmap(bmp);
+						snapDialog.setTitle(serverWebs.get(webIndex).getTitle());
 						if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl()))
-							mHarleyActivity.snapDialog.setIcon(R.drawable.explorer);
+							snapDialog.setIcon(R.drawable.explorer);
 						else
-							mHarleyActivity.snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
-						mHarleyActivity.snapDialog.show();
+							snapDialog.setIcon(new BitmapDrawable(serverWebs.get(webIndex).getFavicon()));
+						snapDialog.show();
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(),
 								Toast.LENGTH_LONG).show();

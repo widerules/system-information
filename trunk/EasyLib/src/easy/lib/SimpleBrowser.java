@@ -88,20 +88,9 @@ public class SimpleBrowser extends Activity {
 
 	ListView webList;
 
-
-	// snap dialog
-	ImageView snapView;
-	Bitmap bmp;
-	AlertDialog snapDialog = null;
-
 	// source dialog
 	AlertDialog m_sourceDialog = null;
 
-	// menu dialog
-	AlertDialog menuDialog;// menu Dialog
-	GridView menuGrid;
-	View menuView;
-	AlertDialog downloadsDialog = null;
 
 
 	LinearLayout imageBtnList;
@@ -428,6 +417,9 @@ public class SimpleBrowser extends Activity {
 						ext = ".jpg";
 					appstate.startDownload(url, ext, "yes");
 					break;
+				case 3:// open in foreground
+					appstate.openNewPage(url, appstate.webIndex+1, true, true); 
+					break;
 				case 4:// copy url
 					ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 					ClipMan.setText(url);
@@ -436,7 +428,7 @@ public class SimpleBrowser extends Activity {
 					appstate.shareUrl("", url);
 					break;
 				case 6:// open in background
-					appstate.openNewPage(url, appstate.webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true) for open in new tab 
+					appstate.openNewPage(url, appstate.webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
 					break;
 				case 7:// add short cut
 					appstate.createShortcut(url, appstate.mBookMark.get(item.getOrder()).m_title);
@@ -446,6 +438,18 @@ public class SimpleBrowser extends Activity {
 					break;
 				case 9:// remove history
 					appstate.removeHistory(item.getOrder());
+					break;
+				case 10:// add bookmark
+					int historyIndex = -1;
+					for (int i = 0; i < appstate.mHistory.size(); i++) {
+						if (appstate.mHistory.get(i).m_url.equals(url)) {
+							historyIndex = i;
+							break;
+						}
+					}
+					if (historyIndex > -1)
+						appstate.addFavo(url, appstate.mHistory.get(historyIndex).m_title);
+					else appstate.addFavo(url, url);
 					break;
 				case 11://set homepage
 					appstate.m_homepage = url;
@@ -460,14 +464,13 @@ public class SimpleBrowser extends Activity {
 		// set the title to the url
 		menu.setHeaderTitle(result.getExtra());
 		if (url != null) {
-			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(
-					handler);
-			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(
-					handler);
+			if (appstate.dm.heightPixels > appstate.dm.density*480) // only show this menu item on large screen
+				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
+			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
+			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
 
 			if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl())) {// only operate bookmark/history in home page
-				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
-				
 				boolean foundBookmark = false;
 				for (int i = appstate.mBookMark.size() - 1; i >= 0; i--)
 					if ((appstate.mBookMark.get(i).m_url.equals(url))
@@ -477,11 +480,11 @@ public class SimpleBrowser extends Activity {
 							menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);// only work in pro version
 							menu.add(0, 11, i, R.string.set_homepage).setOnMenuItemClickListener(handler);// only work in pro version
 						}
-						menu.add(0, 8, i, R.string.remove_bookmark)
-								.setOnMenuItemClickListener(handler);
+						menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
 						break;
 					}
-				//if (!foundBookmark) menu.add(0, 7, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);// no add bookmark on long click?
+				if (!foundBookmark)
+					menu.add(0, 10, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
 
 				for (int i = appstate.mHistory.size() - 1; i >= 0; i--)
 					if ((appstate.mHistory.get(i).m_url.equals(url))
@@ -491,26 +494,14 @@ public class SimpleBrowser extends Activity {
 						break;
 					}
 			}
-			else {
-				menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
-				menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
-			}
+
+			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
 		}
 	}
 
 	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
-		if (menuDialog == null) initMenuDialog();
-		
-		if (menuDialog.isShowing()) menuDialog.dismiss();
-		else {
-			appstate.setUrlHeight(true);
-			appstate.setBarHeight(true);
-			appstate.adContainer.setVisibility(View.VISIBLE);
-			
-			menuDialog.show();
-		}
-
+		appstate.menuOpenAction();
 		return false;// show system menu if return true.
 	}
 
@@ -518,21 +509,6 @@ public class SimpleBrowser extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add("menu");// must create one menu?
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	private SimpleAdapter getMenuAdapter(String[] menuNameArray,
-			int[] imageResourceArray) {
-		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
-		for (int i = 0; i < menuNameArray.length; i++) {
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("itemImage", imageResourceArray[i]);
-			map.put("itemText", menuNameArray[i]);
-			data.add(map);
-		}
-		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
-				R.layout.icon_list, new String[] { "itemImage", "itemText" },
-				new int[] { R.id.appicon, R.id.appname });
-		return simperAdapter;
 	}
 
 
@@ -583,55 +559,6 @@ public class SimpleBrowser extends Activity {
 		} 
 	}
 
-	public void initSnapDialog() {		
-		snapView = (ImageView) getLayoutInflater().inflate(
-				R.layout.snap_browser, null);
-		snapDialog = new AlertDialog.Builder(this)
-				.setView(snapView)
-				.setTitle(R.string.browser_name)
-				.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						try {
-							String snap = appstate.downloadPath + "snap/" + appstate.serverWebs.get(appstate.webIndex).getTitle() + ".png";
-							FileOutputStream fos = new FileOutputStream(snap);
-
-							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
-							fos.close();
-
-							Intent intent = new Intent(Intent.ACTION_SEND);
-							intent.setType("image/*");
-							intent.putExtra(Intent.EXTRA_SUBJECT, R.string.share);
-							intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(snap)));
-							util.startActivity(Intent.createChooser(
-									intent,
-									getString(R.string.sharemode)),
-									true, mContext);
-						} catch (Exception e) {
-							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-						}
-					}
-				})
-				.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						try {
-							String snap = appstate.downloadPath + "snap/" + appstate.serverWebs.get(appstate.webIndex).getTitle() + ".png";
-							FileOutputStream fos = new FileOutputStream(snap);
-							bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
-							fos.close();
-							Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
-						} catch (Exception e) {
-							Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
-						}
-					}
-				})
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {// cancel
-					@Override
-					public void onClick(DialogInterface dialog, int which) {}
-				}).create();
-	}
-
 	public void initSourceDialog() {		
 		m_sourceDialog = new AlertDialog.Builder(this)
 		.setTitle(R.string.browser_name)
@@ -650,7 +577,11 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				try {
-					String snap = appstate.downloadPath + "source/" + appstate.serverWebs.get(appstate.webIndex).getTitle() + ".txt";
+					String title = appstate.serverWebs.get(appstate.webIndex).getTitle();
+					if (title == null) title = WebUtil.getSite(appstate.serverWebs.get(appstate.webIndex).m_url);
+					title += "_" + subFolder + ".txt";
+					String site = appstate.downloadPath + subFolder + "/";
+					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);
 					fos.write(appstate.serverWebs.get(appstate.webIndex).pageSource.getBytes());
 					fos.close();
@@ -666,201 +597,17 @@ public class SimpleBrowser extends Activity {
 		}).create();
 	}
 	
-	public void initMenuDialog() {		
-		// menu icon
-		int[] menu_image_array = { R.drawable.html_w, R.drawable.capture,
-				R.drawable.copy, R.drawable.exit, R.drawable.downloads,
-				R.drawable.share, R.drawable.search, R.drawable.about };
-		// menu text
-		String[] menu_name_array = { getString(R.string.source),
-				getString(R.string.snap), getString(R.string.copy),
-				getString(R.string.exit), getString(R.string.downloads),
-				getString(R.string.shareurl), getString(R.string.search),
-				getString(R.string.settings) };
-
-		// create AlertDialog
-		menuView = View.inflate(mContext, R.layout.grid_menu, null);
-		menuDialog = new AlertDialog.Builder(this).create();
-		menuDialog.setView(menuView);
-		WindowManager.LayoutParams params = menuDialog.getWindow()
-				.getAttributes();
-		// 240 for 1024h, 140 for 800h, 70 for 480h, to show menu dialog in
-		// correct position
-		if (appstate.dm.heightPixels <= 480)
-			params.y = 70;
-		else if (appstate.dm.heightPixels <= 800)
-			params.y = 140;
+	public void showSourceDialog() {
+		if (m_sourceDialog == null) initSourceDialog();
+		m_sourceDialog.setTitle(appstate.serverWebs.get(appstate.webIndex).getTitle());
+		if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl()))
+			m_sourceDialog.setIcon(R.drawable.explorer);
 		else
-			params.y = 240;
-		menuDialog.getWindow().setAttributes(params);
-
-		menuDialog.setCanceledOnTouchOutside(true);
-
-		menuDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-			@Override
-			public boolean onKey(DialogInterface dialog, int keyCode,
-					KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_MENU)
-					dialog.dismiss();
-				return false;
-			}
-
-		});
-
-		final Context localContext = this;
-		menuGrid = (GridView) menuView.findViewById(R.id.gridview);
-		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
-		menuGrid.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				switch (arg2) {
-				case 0:// view page source
-					try {
-						if ("".equals(appstate.serverWebs.get(appstate.webIndex).pageSource)) {
-							appstate.serverWebs.get(appstate.webIndex).pageSource = "Loading... Please try again later.";
-							appstate.serverWebs.get(appstate.webIndex).getPageSource();
-						}
-
-						if (m_sourceDialog == null) initSourceDialog();
-						m_sourceDialog.setTitle(appstate.serverWebs.get(appstate.webIndex)
-								.getTitle());
-						if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl()))
-							m_sourceDialog.setIcon(R.drawable.explorer);
-						else
-							m_sourceDialog.setIcon(new BitmapDrawable(
-									appstate.serverWebs.get(appstate.webIndex).getFavicon()));
-						m_sourceDialog.setMessage(appstate.serverWebs.get(appstate.webIndex).pageSource);
-						m_sourceDialog.show();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
-					}
-					break;
-				case 1:// view snap
-					try {// still got java.lang.RuntimeException: Canvas: trying
-							// to use a recycled bitmap android.graphics.Bitmap
-							// from one user. so catch it.
-						if (!appstate.snapFullWeb) {
-							// the snap will not refresh if not destroy cache
-							appstate.webpages.destroyDrawingCache();
-							appstate.webpages.setDrawingCacheEnabled(true);
-							bmp = appstate.webpages.getDrawingCache();
-						} else {
-							Picture pic = appstate.serverWebs.get(appstate.webIndex)
-									.capturePicture();
-
-							// bmp = Bitmap.createScaledBitmap(???,
-							// pic.getWidth(), pic.getHeight(), false);//check
-							// here http://stackoverflow.com/questions/477572
-							bmp = Bitmap.createBitmap(pic.getWidth(),
-									pic.getHeight(), Bitmap.Config.ARGB_4444);
-							// the size of the web page may be very large.
-
-							Canvas canvas = new Canvas(bmp);
-							pic.draw(canvas);
-						}
-						
-						if (snapDialog == null) initSnapDialog();
-						snapView.setImageBitmap(bmp);
-						snapDialog.setTitle(appstate.serverWebs.get(appstate.webIndex).getTitle());
-						if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl()))
-							snapDialog.setIcon(R.drawable.explorer);
-						else
-							snapDialog.setIcon(new BitmapDrawable(appstate.serverWebs
-									.get(appstate.webIndex).getFavicon()));
-						snapDialog.show();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
-					}
-					break;
-				case 2:// copy
-					appstate.webControl.setVisibility(View.GONE);// hide webControl when copy
-					try {
-						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
-							Toast.makeText(mContext,
-									getString(R.string.copy_hint),
-									Toast.LENGTH_LONG).show();
-					} catch (Exception e) {
-					}
-
-					try {
-						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
-								KeyEvent.ACTION_DOWN,
-								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-						shiftPressEvent.dispatch(appstate.serverWebs.get(appstate.webIndex));
-					} catch (Exception e) {
-					}
-					break;
-				case 3:// exit
-					appstate.clearFile("pages");
-					appstate.ClearCache(); // clear cache when exit
-					if (appstate.interstitialAd != null && appstate.interstitialAd.isReady()) appstate.interstitialAd.show();
-					finish();
-					break;
-				case 4:// downloads
-					Intent intent = new Intent(
-							"com.estrongs.action.PICK_DIRECTORY");
-					intent.setData(Uri.parse("file:///sdcard/simpleHome/"));
-					if (!util.startActivity(intent, false, mContext)) {
-						if (downloadsDialog == null)
-							downloadsDialog = new AlertDialog.Builder(
-									localContext)
-									.setMessage(
-											getString(R.string.downloads_to)
-													+ appstate.downloadPath
-													+ getString(R.string.downloads_open))
-									.setPositiveButton(
-											R.string.ok,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-													Intent intent = new Intent(
-															Intent.ACTION_VIEW,
-															Uri.parse("market://details?id=com.estrongs.android.pop"));
-													util.startActivity(intent,
-															true,
-															getBaseContext());
-												}
-											})
-									.setNegativeButton(
-											R.string.cancel,
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-												}
-											}).create();
-						downloadsDialog.show();
-					}
-					break;
-				case 5:// share url
-					appstate.shareUrl(appstate.serverWebs.get(appstate.webIndex).getTitle(), appstate.serverWebs.get(appstate.webIndex).m_url);
-					break;
-				case 6:// search
-					appstate.webControl.setVisibility(View.GONE);// hide webControl when search
-						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (appstate.searchBar == null) initSearchBar();
-					appstate.searchBar.bringToFront();
-					appstate.searchBar.setVisibility(View.VISIBLE);
-					appstate.etSearch.requestFocus();
-					appstate.toSearch = "";
-					appstate.imm.toggleSoftInput(0, 0);
-					break;
-				case 7:// settings
-					intent = new Intent("about");
-					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
-					startActivityForResult(intent, appstate.SETTING_RESULTCODE);
-					break;
-				}
-				menuDialog.dismiss();
-			}
-		});
+			m_sourceDialog.setIcon(new BitmapDrawable(appstate.serverWebs.get(appstate.webIndex).getFavicon()));
+		m_sourceDialog.setMessage(appstate.serverWebs.get(appstate.webIndex).pageSource);
+		m_sourceDialog.show();
 	}
-	
+
 	public void initUpDown() {
 		appstate.upAndDown = (LinearLayout) findViewById(R.id.up_down);
 		if (appstate.updownButton) appstate.upAndDown.setVisibility(View.VISIBLE);

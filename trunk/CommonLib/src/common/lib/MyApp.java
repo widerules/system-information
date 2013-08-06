@@ -202,7 +202,7 @@ public class MyApp extends BaseApp {
 	public void initSnapDialog(String browserName) {
 		snapView = (ImageView) mActivity.getLayoutInflater().inflate(
 				R.layout.snap_browser, null);
-		snapDialog = new AlertDialog.Builder(this)
+		snapDialog = new AlertDialog.Builder(mContext)
 				.setView(snapView)
 				.setTitle(browserName)
 				.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
@@ -1205,7 +1205,7 @@ public class MyApp extends BaseApp {
 	}
 
 	public void createShortcut(String url, String title) {//identical
-		Intent i = new Intent(this, mActivity.getClass());
+		Intent i = new Intent(mContext, mActivity.getClass());
 		i.setData(Uri.parse(url));
 	    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

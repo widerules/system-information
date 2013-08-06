@@ -360,7 +360,7 @@ public class EasyApp extends MyApp {
 			map.put("itemText", menuNameArray[i]);
 			data.add(map);
 		}
-		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
+		SimpleAdapter simperAdapter = new SimpleAdapter(mContext, data,
 				R.layout.icon_list, new String[] { "itemImage", "itemText" },
 				new int[] { R.id.appicon, R.id.appname });
 		return simperAdapter;
@@ -402,7 +402,6 @@ public class EasyApp extends MyApp {
 				getString(R.string.settings)
 			};
 
-		final Context localContext = this;
 		menuGrid.setFadingEdgeLength(0);
 		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
 		menuGrid.setOnItemClickListener(new OnItemClickListener() {

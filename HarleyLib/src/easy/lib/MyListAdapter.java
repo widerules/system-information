@@ -56,10 +56,10 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 				btnIcon.setImageURI(Uri.parse(filename));
 				btnIcon.setVisibility(View.VISIBLE);
 			} catch (Exception e) {}// catch an null pointer exception on 1.6
-		else btnIcon.setVisibility(View.INVISIBLE);
+		else btnIcon.setVisibility(View.GONE);
 
 		final ImageView btnDelete = (ImageView) convertView.findViewById(R.id.webclose);
-		btnDelete.setVisibility(View.INVISIBLE);
+		btnDelete.setVisibility(View.GONE);
 		btnDelete.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -77,7 +77,7 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 					mAppstate.mDownloads.remove(position);
 					mAppstate.updateDownloads();
 				}
-				btnDelete.setVisibility(View.INVISIBLE);
+				btnDelete.setVisibility(View.GONE);
 			}
 		});
 
@@ -100,9 +100,9 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 		webname.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
-				if (btnDelete.getVisibility() == View.INVISIBLE) 
+				if (btnDelete.getVisibility() == View.GONE) 
 					btnDelete.setVisibility(View.VISIBLE);
-				else btnDelete.setVisibility(View.INVISIBLE);
+				else btnDelete.setVisibility(View.GONE);
 				return true;
 			}
 		});

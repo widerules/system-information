@@ -231,7 +231,7 @@ public class EasyWebView extends MyWebView {
             	mHarleyAppState.scrollToMain();
 
             	if (mHarleyAppState.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
-            		mHarleyAppState.webControl.setVisibility(View.INVISIBLE);
+            		mHarleyAppState.webControl.setVisibility(View.GONE);
 								
 				if (!mHarleyAppState.showUrl) mHarleyAppState.setUrlHeight(false);
 				if (!mHarleyAppState.showControlBar) mHarleyAppState.setBarHeight(false);

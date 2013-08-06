@@ -79,7 +79,7 @@
                     android:layout_gravity="center_vertical"
                     android:max="100"
                     android:progress="0"
-                    android:visibility="invisible" />
+                    android:visibility="gone" />
             </FrameLayout>
         </RelativeLayout>
 
@@ -334,7 +334,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/round_corner"
         android:orientation="horizontal"
-        android:visibility="invisible" >
+        android:visibility="gone" >
 
         <ImageView
             android:id="@+id/close_search"
@@ -399,7 +399,7 @@
         android:background="@drawable/panel_background"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/webcontrol"
@@ -412,7 +412,7 @@
         android:background="@drawable/panel_background"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:visibility="invisible" >
+        android:visibility="gone" >
 
         <ListView
             android:id="@+id/weblist"

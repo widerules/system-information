@@ -1275,10 +1275,12 @@ public class MyApp extends BaseApp {
 			if ("history".equals(params[0])) {
 				writeBookmark("history", mHistory);
 				historyChanged = false;
-			} else if ("bookmark".equals(params[0])) {
+			} 
+			if ("bookmark".equals(params[1])) {
 				writeBookmark("bookmark", mBookMark);
 				bookmarkChanged = false;
-			} else {
+			}
+			if ("downloads".equals(params[2])) {
 				writeBookmark("downloads", mDownloads);
 				downloadsChanged = false;
 			}
@@ -1475,17 +1477,13 @@ public class MyApp extends BaseApp {
 	}
 	
 	public void pauseAction() {
-		if (historyChanged) {
+		String[] paras = {"", "", ""};
+		if (historyChanged) paras[0] = "history";
+		if (bookmarkChanged) paras[1] = "bookmark";
+		if (downloadsChanged) paras[2] = "downloads";
+		if (historyChanged || bookmarkChanged || downloadsChanged) {
 			WriteTask wtask = new WriteTask();
-			wtask.execute("history");
-		}
-		if (bookmarkChanged) {
-			WriteTask wtask = new WriteTask();
-			wtask.execute("bookmark");
-		}
-		if (downloadsChanged) {
-			WriteTask wtask = new WriteTask();
-			wtask.execute("downloads");
+			wtask.execute(paras);
 		}
 
 		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);

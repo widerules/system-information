@@ -189,10 +189,10 @@ public class SimpleBrowser extends Activity {
 							getDir("databases", MODE_PRIVATE).getAbsolutePath());
 				}
 
+				String[] paras = {"", "", ""};
 				if (clearHistory) {
 					appstate.mHistory.clear();
-					WriteTask wtask = appstate.new WriteTask();
-					wtask.execute("history");
+					paras[0] = "history";
 					appstate.clearFile("searchwords");
 					appstate.siteArray.clear();
 					appstate.urlAdapter.clear();
@@ -202,10 +202,14 @@ public class SimpleBrowser extends Activity {
 
 				if (clearBookmark) {
 					appstate.mBookMark.clear();
-					WriteTask wtask = appstate.new WriteTask();
-					wtask.execute("bookmark");
+					paras[1] = "bookmark";
 					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
 						shouldReload = true;
+				}
+
+				if (clearHistory || clearBookmark) {
+					WriteTask wtask = appstate.new WriteTask();
+					wtask.execute(paras);
 				}
 
 				String message = "";

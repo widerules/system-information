@@ -1027,6 +1027,13 @@ public class SimpleBrowser extends Activity {
 				exchangePosition();
 			}
 		});
+		toolAndAd.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				onMenuOpened(0, null);
+				return false;
+			}
+		});
 
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test

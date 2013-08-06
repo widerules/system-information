@@ -326,7 +326,7 @@ public class EasyApp extends MyApp {
 			map.put("itemText", menuNameArray[i]);
 			data.add(map);
 		}
-		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
+		SimpleAdapter simperAdapter = new SimpleAdapter(mContext, data,
 				R.layout.icon_list, new String[] { "itemImage", "itemText" },
 				new int[] { R.id.appicon, R.id.appname });
 		return simperAdapter;
@@ -346,7 +346,7 @@ public class EasyApp extends MyApp {
 
 		// create AlertDialog
 		menuView = View.inflate(mContext, R.layout.grid_menu, null);
-		menuDialog = new AlertDialog.Builder(this).create();
+		menuDialog = new AlertDialog.Builder(mContext).create();
 		menuDialog.setView(menuView);
 		WindowManager.LayoutParams params = menuDialog.getWindow()
 				.getAttributes();
@@ -373,7 +373,6 @@ public class EasyApp extends MyApp {
 
 		});
 
-		final Context localContext = this;
 		menuGrid = (GridView) menuView.findViewById(R.id.gridview);
 		menuGrid.setAdapter(getMenuAdapter(menu_name_array, menu_image_array));
 		menuGrid.setOnItemClickListener(new OnItemClickListener() {
@@ -461,7 +460,7 @@ public class EasyApp extends MyApp {
 					if (!util.startActivity(intent, false, mContext)) {
 						if (downloadsDialog == null)
 							downloadsDialog = new AlertDialog.Builder(
-									localContext)
+									mContext)
 									.setMessage(
 											getString(R.string.downloads_to)
 													+ downloadPath

@@ -196,19 +196,19 @@ public class SimpleBrowser extends Activity {
 					appstate.clearFile("searchwords");
 					appstate.siteArray.clear();
 					appstate.urlAdapter.clear();
-					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
-						shouldReload = true;
 				}
 
 				if (clearBookmark) {
 					appstate.mBookMark.clear();
 					paras[1] = "bookmark";
+				}
+
+				if (clearHistory || clearBookmark) { 
+					appstate.executeWtask(paras);
+
 					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
 						shouldReload = true;
 				}
-
-				if (clearHistory || clearBookmark) 
-					appstate.executeWtask(paras);
 
 				String message = "";
 				if (clearCache)

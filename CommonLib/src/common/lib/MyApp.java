@@ -1273,22 +1273,26 @@ public class MyApp extends BaseApp {
 
 		@Override
 		protected String doInBackground(String... params) {
-			for (int i = 0; i < params.length; i++) {
-				if ("history".equals(params[i])) {
-					writeBookmark("history", mHistory);
-					historyChanged = false;
-				} 
-				else if ("bookmark".equals(params[i])) {
-					writeBookmark("bookmark", mBookMark);
-					bookmarkChanged = false;
-				}
-				else if ("downloads".equals(params[i])) {
-					writeBookmark("downloads", mDownloads);
-					downloadsChanged = false;
-				}
-			}
+			writeFiles(params);
 
 			return null;
+		}
+	}
+	
+	void writeFiles(String... params) {
+		for (int i = 0; i < params.length; i++) {
+			if ("history".equals(params[i])) {
+				writeBookmark("history", mHistory);
+				historyChanged = false;
+			} 
+			else if ("bookmark".equals(params[i])) {
+				writeBookmark("bookmark", mBookMark);
+				bookmarkChanged = false;
+			}
+			else if ("downloads".equals(params[i])) {
+				writeBookmark("downloads", mDownloads);
+				downloadsChanged = false;
+			}
 		}
 	}
 
@@ -1482,7 +1486,10 @@ public class MyApp extends BaseApp {
 	public void executeWtask(String... paras) {
 		WriteTask wtask = new WriteTask();
 		try {wtask.execute(paras);}
-		catch(Exception e) {e.printStackTrace();}// why no exception before reorg?
+		catch(Exception e) {
+			e.printStackTrace();
+			writeFiles(paras);
+		}// why no exception before reorg?
 	}
 	
 	public void pauseAction() {

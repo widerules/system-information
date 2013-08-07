@@ -1272,17 +1272,19 @@ public class MyApp extends BaseApp {
 
 		@Override
 		protected String doInBackground(String... params) {
-			if ("history".equals(params[0])) {
-				writeBookmark("history", mHistory);
-				historyChanged = false;
-			} 
-			if ("bookmark".equals(params[1])) {
-				writeBookmark("bookmark", mBookMark);
-				bookmarkChanged = false;
-			}
-			if ("downloads".equals(params[2])) {
-				writeBookmark("downloads", mDownloads);
-				downloadsChanged = false;
+			for (int i = 0; i < params.length; i++) {
+				if ("history".equals(params[i])) {
+					writeBookmark("history", mHistory);
+					historyChanged = false;
+				} 
+				else if ("bookmark".equals(params[i])) {
+					writeBookmark("bookmark", mBookMark);
+					bookmarkChanged = false;
+				}
+				else if ("downloads".equals(params[i])) {
+					writeBookmark("downloads", mDownloads);
+					downloadsChanged = false;
+				}
 			}
 
 			return null;
@@ -1476,15 +1478,19 @@ public class MyApp extends BaseApp {
 		return bookmark;
 	}
 	
+	public void executeWtask(String... paras) {
+		WriteTask wtask = new WriteTask();
+		try {wtask.execute(paras);}
+		catch(Exception e) {e.printStackTrace();}// why no exception before reorg?
+	}
+	
 	public void pauseAction() {
 		String[] paras = {"", "", ""};
 		if (historyChanged) paras[0] = "history";
 		if (bookmarkChanged) paras[1] = "bookmark";
 		if (downloadsChanged) paras[2] = "downloads";
-		if (historyChanged || bookmarkChanged || downloadsChanged) {
-			WriteTask wtask = new WriteTask();
-			wtask.execute(paras);
-		}
+		if (historyChanged || bookmarkChanged || downloadsChanged)
+			executeWtask(paras);
 
 		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);
 		sEdit.putBoolean("html5", serverWebs.get(webIndex).html5);

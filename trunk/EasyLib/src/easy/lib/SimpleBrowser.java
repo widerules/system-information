@@ -207,10 +207,8 @@ public class SimpleBrowser extends Activity {
 						shouldReload = true;
 				}
 
-				if (clearHistory || clearBookmark) {
-					WriteTask wtask = appstate.new WriteTask();
-					wtask.execute(paras);
-				}
+				if (clearHistory || clearBookmark) 
+					appstate.executeWtask(paras);
 
 				String message = "";
 				if (clearCache)

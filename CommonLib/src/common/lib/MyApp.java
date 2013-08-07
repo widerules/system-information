@@ -58,6 +58,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import base.lib.BaseApp;
@@ -1495,5 +1496,20 @@ public class MyApp extends BaseApp {
 		sEdit.putBoolean("show_zoom", serverWebs.get(webIndex).zoomVisible);
 		sEdit.putBoolean("html5", serverWebs.get(webIndex).html5);
 		sEdit.commit();
+	}
+	
+	public SimpleAdapter getMenuAdapter(String[] menuNameArray,
+			int[] imageResourceArray) {
+		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
+		for (int i = 0; i < menuNameArray.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("itemImage", imageResourceArray[i]);
+			map.put("itemText", menuNameArray[i]);
+			data.add(map);
+		}
+		SimpleAdapter simperAdapter = new SimpleAdapter(mContext, data,
+				R.layout.icon_list, new String[] { "itemImage", "itemText" },
+				new int[] { R.id.appicon, R.id.appname });
+		return simperAdapter;
 	}
 }

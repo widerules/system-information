@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.RejectedExecutionException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -1486,7 +1487,7 @@ public class MyApp extends BaseApp {
 	public void executeWtask(String... paras) {
 		WriteTask wtask = new WriteTask();
 		try {wtask.execute(paras);}
-		catch(Exception e) {
+		catch(RejectedExecutionException e) {
 			e.printStackTrace();
 			writeFiles(paras);
 		}// why no exception before reorg?

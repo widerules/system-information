@@ -1,8 +1,6 @@
 package common.lib;
 
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.AlertDialog;
@@ -12,7 +10,6 @@ import easy.lib.SimpleBrowser;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,7 +22,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 

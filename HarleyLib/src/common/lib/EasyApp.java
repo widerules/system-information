@@ -2,7 +2,6 @@ package common.lib;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 
 import easy.lib.AboutBrowser;
@@ -12,7 +11,6 @@ import easy.lib.SimpleBrowser;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,7 +30,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import easy.lib.AboutBrowser;
-import easy.lib.MyListAdapter;
 import easy.lib.R;
 import easy.lib.SimpleBrowser;
 import base.lib.WrapAdView;
@@ -45,7 +44,7 @@ public class EasyApp extends MyApp {
 
 	public LinearLayout bookmarkView;
 	public ListView downloadsList;
-	public MyListAdapter bookmarkAdapter, historyAdapter, downloadsAdapter;
+	public MyListAdapter bookmarkAdapter, historyAdapter;
 	public int minWebControlWidth = 200;
 	public ImageView imgBookmark;
 	int statusBarHeight;
@@ -55,7 +54,7 @@ public class EasyApp extends MyApp {
 	ListView historyList;
 	public boolean reverted = false;
 
-	public SimpleBrowser mHarleyActivity;
+	public SimpleBrowser mBrowserActivity;
 
 	public void readPreference() {
 		super.readPreference();
@@ -212,7 +211,7 @@ public class EasyApp extends MyApp {
 	}
 
 	public void actionBack() {
-		if (mHarleyActivity.browserView.getVisibility() == View.GONE) mHarleyActivity.hideCustomView();// playing video. need wait it over?
+		if (mBrowserActivity.browserView.getVisibility() == View.GONE) mBrowserActivity.hideCustomView();// playing video. need wait it over?
 		else if (menuOpened) hideMenu();
 		else if (bookmarkOpened) hideBookmark();
 		else if (webControl.getVisibility() == View.VISIBLE)
@@ -236,25 +235,6 @@ public class EasyApp extends MyApp {
 			serverWebs.get(webIndex).goBack();
 		else
 			closePage(webIndex, false);// close current page if can't go back
-	}
-	
-	public void openDownload(TitleUrl tu) {
-		Intent intent = new Intent("android.intent.action.VIEW");
-		
-		String ext = tu.m_title.substring(tu.m_title.lastIndexOf(".")+1, tu.m_title.length());
-		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-		String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
-		if (mimeType != null) intent.setDataAndType(Uri.parse(tu.m_url), mimeType);
-		else intent.setData(Uri.parse(tu.m_url));// we can open it now
-		
-		util.startActivity(intent, true, mContext);
-	}
-	
-	public void updateDownloads() {
-		if (downloadsAdapter != null) {
-			downloadsAdapter.notifyDataSetChanged();
-		}
-		downloadsChanged = true;
 	}
 	
 	public void updateBookmark() {
@@ -390,70 +370,29 @@ public class EasyApp extends MyApp {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				switch (arg2) {
-				case 0:// exit
-					clearFile("pages");
-					ClearCache(); // clear cache when exit
-					if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
-					mActivity.finish();
-					break;
-				case 1:// pdf
-					scrollToMain();
-					serverWebs.get(webIndex).loadUrl("http://www.web2pdfconvert.com/engine?curl=" + serverWebs.get(webIndex).m_url);
-					break;
-				case 2:// set homepage
-					m_homepage = serverWebs.get(webIndex).getUrl();
-					if (!HOME_PAGE.equals(m_homepage)) {// not set asset/home.html as home page
-						sEdit.putString("homepage", m_homepage);
-						sEdit.commit();
-					}
-					Toast.makeText(mContext, serverWebs.get(webIndex).getTitle() + " " + getString(R.string.set_homepage), Toast.LENGTH_LONG).show();
-					break;
-				case 3:// add short cut
-					createShortcut(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
-					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
-					break;
-				case 4:// search
-					scrollToMain();
-					webControl.setVisibility(View.GONE);// hide webControl when search
-						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (searchBar == null) mHarleyActivity.initSearchBar();
-					searchBar.bringToFront();
-					searchBar.setVisibility(View.VISIBLE);
-					etSearch.requestFocus();
-					toSearch = "";
-					imm.toggleSoftInput(0, 0);
-					break;
-				case 5:// copy
-					scrollToMain();
-					webControl.setVisibility(View.GONE);// hide webControl when copy
+				case 9:// view page source
 					try {
-						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
-							Toast.makeText(mContext,
-									getString(R.string.copy_hint),
-									Toast.LENGTH_LONG).show();
-					} catch (Exception e) {}
+						if ("".equals(serverWebs.get(webIndex).pageSource)) {
+							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
+							serverWebs.get(webIndex).getPageSource();
+						}
 
-					try {
-						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
-								KeyEvent.ACTION_DOWN,
-								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
-						shiftPressEvent.dispatch(serverWebs.get(webIndex));
-					} catch (Exception e) {}
-					break;
-				case 6:// downloads
-					if (mDownloads.size() == 0) {
-						Toast.makeText(mContext, "no downloads recorded", Toast.LENGTH_LONG).show();
-						break;
+						mBrowserActivity.sourceOrCookie = serverWebs.get(webIndex).pageSource;
+						mBrowserActivity.subFolder = "source";
+						mBrowserActivity.showSourceDialog();
+					} catch (Exception e) {
+						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}
-					
-					if (downloadsList == null) mHarleyActivity.initDownloads();
-					
-					bookmarkView.setVisibility(View.GONE);
-					downloadsList.setVisibility(View.VISIBLE);
-					showBookmark();
 					break;
-				case 7:// save
-					startDownload(serverWebs.get(webIndex).m_url, "", "no");
+				case 11:// cookie
+					CookieManager cookieManager = CookieManager.getInstance(); 
+					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
+					if (cookie != null)
+						mBrowserActivity.sourceOrCookie = cookie.replaceAll("; ", "\n\n");
+					else mBrowserActivity.sourceOrCookie = "No cookie on this page.";
+					
+					mBrowserActivity.subFolder = "cookie";
+					mBrowserActivity.showSourceDialog();
 					break;
 				case 8:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
@@ -492,42 +431,83 @@ public class EasyApp extends MyApp {
 								Toast.LENGTH_LONG).show();
 					}
 					break;
-				case 9:// view page source
+				case 5:// copy
+					scrollToMain();
+					webControl.setVisibility(View.GONE);// hide webControl when copy
 					try {
-						if ("".equals(serverWebs.get(webIndex).pageSource)) {
-							serverWebs.get(webIndex).pageSource = "Loading... Please try again later.";
-							serverWebs.get(webIndex).getPageSource();
-						}
+						if (Integer.decode(android.os.Build.VERSION.SDK) > 10)
+							Toast.makeText(mContext,
+									getString(R.string.copy_hint),
+									Toast.LENGTH_LONG).show();
+					} catch (Exception e) {}
 
-						mHarleyActivity.sourceOrCookie = serverWebs.get(webIndex).pageSource;
-						mHarleyActivity.subFolder = "source";
-						mHarleyActivity.showSourceDialog();
-					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+					try {
+						KeyEvent shiftPressEvent = new KeyEvent(0, 0,
+								KeyEvent.ACTION_DOWN,
+								KeyEvent.KEYCODE_SHIFT_LEFT, 0, 0);
+						shiftPressEvent.dispatch(serverWebs.get(webIndex));
+					} catch (Exception e) {}
+					break;
+				case 0:// exit
+					clearFile("pages");
+					ClearCache(); // clear cache when exit
+					if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
+					mActivity.finish();
+					break;
+				case 6:// downloads
+					if (mDownloads.size() == 0) {
+						Toast.makeText(mContext, "no downloads recorded", Toast.LENGTH_LONG).show();
+						break;
 					}
-					break;
-				case 10:// bookmark
-					String url = serverWebs.get(webIndex).m_url;
-					if (HOME_PAGE.equals(url)) return;// not add home page
-					addRemoveFavo(url, serverWebs.get(webIndex).getTitle());
-					break;
-				case 11:// cookie
-					CookieManager cookieManager = CookieManager.getInstance(); 
-					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
-					if (cookie != null)
-						mHarleyActivity.sourceOrCookie = cookie.replaceAll("; ", "\n\n");
-					else mHarleyActivity.sourceOrCookie = "No cookie on this page.";
 					
-					mHarleyActivity.subFolder = "cookie";
-					mHarleyActivity.showSourceDialog();
+					if (downloadsList == null) mBrowserActivity.initDownloads();
+					
+					bookmarkView.setVisibility(View.GONE);
+					downloadsList.setVisibility(View.VISIBLE);
+					showBookmark();
 					break;
 				case 12:// share url
 					shareUrl(serverWebs.get(webIndex).getTitle(), serverWebs.get(webIndex).m_url);
+					break;
+				case 4:// search
+					scrollToMain();
+					webControl.setVisibility(View.GONE);// hide webControl when search
+						// serverWebs.get(webIndex).showFindDialog("e", false);
+					if (searchBar == null) mBrowserActivity.initSearchBar();
+					searchBar.bringToFront();
+					searchBar.setVisibility(View.VISIBLE);
+					etSearch.requestFocus();
+					toSearch = "";
+					imm.toggleSoftInput(0, 0);
 					break;
 				case 13:// settings
 					Intent intent = new Intent(getPackageName() + "about");
 					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
 					mActivity.startActivityForResult(intent, SETTING_RESULTCODE);
+					break;
+				case 1:// pdf
+					scrollToMain();
+					serverWebs.get(webIndex).loadUrl("http://www.web2pdfconvert.com/engine?curl=" + serverWebs.get(webIndex).m_url);
+					break;
+				case 2:// set homepage
+					m_homepage = serverWebs.get(webIndex).getUrl();
+					if (!HOME_PAGE.equals(m_homepage)) {// not set asset/home.html as home page
+						sEdit.putString("homepage", m_homepage);
+						sEdit.commit();
+					}
+					Toast.makeText(mContext, serverWebs.get(webIndex).getTitle() + " " + getString(R.string.set_homepage), Toast.LENGTH_LONG).show();
+					break;
+				case 3:// add short cut
+					createShortcut(serverWebs.get(webIndex).getUrl(), serverWebs.get(webIndex).getTitle());
+					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
+					break;
+				case 7:// save
+					startDownload(serverWebs.get(webIndex).m_url, "", "no");
+					break;
+				case 10:// bookmark
+					String url = serverWebs.get(webIndex).m_url;
+					if (HOME_PAGE.equals(url)) return;// not add home page
+					addRemoveFavo(url, serverWebs.get(webIndex).getTitle());
 					break;
 				}
 			}

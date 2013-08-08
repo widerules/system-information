@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -33,7 +34,9 @@ public class EasyApp extends MyApp {
 	public boolean collapse3 = true;
 	int countDown = 0;
 	
-	public SimpleBrowser mEasyActivity;
+	public ListView downloadsList;
+
+	public SimpleBrowser mBrowserActivity;
 
 	public void readPreference() {
 		super.readPreference();
@@ -367,10 +370,11 @@ public class EasyApp extends MyApp {
 							serverWebs.get(webIndex).getPageSource();
 						}
 
-						mEasyActivity.showSourceDialog();
+						mBrowserActivity.sourceOrCookie = serverWebs.get(webIndex).pageSource;
+						mBrowserActivity.subFolder = "source";
+						mBrowserActivity.showSourceDialog();
 					} catch (Exception e) {
-						Toast.makeText(mContext, e.toString(),
-								Toast.LENGTH_LONG).show();
+						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}
 					break;
 				case 1:// view snap
@@ -479,7 +483,7 @@ public class EasyApp extends MyApp {
 				case 6:// search
 					webControl.setVisibility(View.GONE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (searchBar == null) mEasyActivity.initSearchBar();
+					if (searchBar == null) mBrowserActivity.initSearchBar();
 					searchBar.bringToFront();
 					searchBar.setVisibility(View.VISIBLE);
 					etSearch.requestFocus();

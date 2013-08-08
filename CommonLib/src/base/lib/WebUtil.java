@@ -2,7 +2,13 @@ package base.lib;
 
 import java.net.URLDecoder;
 
+import common.lib.TitleUrl;
+
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.webkit.MimeTypeMap;
 import android.webkit.WebSettings.TextSize;
 
 public class WebUtil extends util {
@@ -119,4 +125,18 @@ public class WebUtil extends util {
 
 		return apkName;
 	}
+	
+	static public void openDownload(TitleUrl tu, Context context) {
+		Intent intent = new Intent("android.intent.action.VIEW");
+		
+		String ext = tu.m_title.substring(tu.m_title.lastIndexOf(".")+1, tu.m_title.length());
+		MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+		String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
+		if (mimeType != null) intent.setDataAndType(Uri.parse(tu.m_url), mimeType);
+		else intent.setData(Uri.parse(tu.m_url));// we can open it now
+		
+		util.startActivity(intent, true, context);
+	}
+	
+
 }

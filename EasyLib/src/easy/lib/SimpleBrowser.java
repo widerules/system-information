@@ -6,13 +6,17 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import common.lib.ClearFolderTask;
 import common.lib.EasyApp;
 import common.lib.EasyWebView;
 import common.lib.MyApp.WriteTask;
+import common.lib.MyComparator;
+import common.lib.MyListAdapter;
 import common.lib.MyViewFlipper;
 import common.lib.ProxySettings;
+import common.lib.TitleUrl;
 import common.lib.WrapValueCallback;
 import common.lib.WrapWebSettings;
 import base.lib.WebUtil;
@@ -84,6 +88,8 @@ public class SimpleBrowser extends Activity {
 
 	// source dialog
 	AlertDialog m_sourceDialog = null;
+	public String sourceOrCookie = "";
+	public String subFolder = "source";
 
 	LinearLayout imageBtnList;
 	RelativeLayout webs;
@@ -103,6 +109,8 @@ public class SimpleBrowser extends Activity {
 	}
 
 	// bookmark and history
+	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
+	boolean downloadsChanged = false;
 	ImageView imgAddFavo, imgGo, imgHome;
 
 	// baidu tongji
@@ -203,11 +211,19 @@ public class SimpleBrowser extends Activity {
 					paras[1] = "bookmark";
 				}
 
-				if (clearHistory || clearBookmark) { 
+				boolean clearDownloads = appstate.sp.getBoolean("clear_downloads", false);
+				if (clearDownloads) {
+					mDownloads.clear();
+					paras[2] = "downloads";
+					appstate.updateDownloads();
+				}
+
+				if (clearHistory || clearBookmark || clearDownloads) {
 					appstate.executeWtask(paras);
 
-					if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
-						shouldReload = true;
+					if (clearHistory || clearBookmark)
+						if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
+							shouldReload = true;
 				}
 
 				String message = "";
@@ -561,10 +577,10 @@ public class SimpleBrowser extends Activity {
 			public void onClick(DialogInterface dialog,	int which) {
 				Intent intent = new Intent(Intent.ACTION_SENDTO);
 				intent.setData(Uri.fromParts("mailto", "", null));
-				intent.putExtra(Intent.EXTRA_TEXT, appstate.serverWebs.get(appstate.webIndex).pageSource);
+				intent.putExtra(Intent.EXTRA_TEXT, sourceOrCookie);
 				intent.putExtra(Intent.EXTRA_SUBJECT, appstate.serverWebs.get(appstate.webIndex).getTitle());
 				if (!util.startActivity(intent, false, getBaseContext())) 
-					appstate.shareUrl("", appstate.serverWebs.get(appstate.webIndex).pageSource);
+					appstate.shareUrl("", sourceOrCookie);
 			}
 		})
 		.setNeutralButton(R.string.save, new DialogInterface.OnClickListener() {// save
@@ -573,13 +589,14 @@ public class SimpleBrowser extends Activity {
 				try {
 					String title = appstate.serverWebs.get(appstate.webIndex).getTitle();
 					if (title == null) title = WebUtil.getSite(appstate.serverWebs.get(appstate.webIndex).m_url);
-					title += "_source.txt";
-					String site = appstate.downloadPath + "source/";
+					title += "_" + subFolder + ".txt";
+					String site = appstate.downloadPath + subFolder + "/";
 					String snap = site + title;
 					FileOutputStream fos = new FileOutputStream(snap);
-					fos.write(appstate.serverWebs.get(appstate.webIndex).pageSource.getBytes());
+					fos.write(sourceOrCookie.getBytes());
 					fos.close();
 					Toast.makeText(getBaseContext(), getString(R.string.save) + " " + snap, Toast.LENGTH_LONG).show();
+					addDownloads(new TitleUrl(title, "file://" + snap, appstate.serverWebs.get(appstate.webIndex).m_url));
 				} catch (Exception e) {
 					Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 				}
@@ -775,6 +792,22 @@ public class SimpleBrowser extends Activity {
 		webList.setAdapter(appstate.webAdapter);
 	}
 	
+	public void initDownloads() {
+		appstate.downloadsAdapter = new MyListAdapter(mContext, mDownloads, appstate);
+		appstate.downloadsAdapter.type = 2;
+		//appstate.downloadsList = (ListView) findViewById(R.id.downloads);
+		appstate.downloadsList.inflate(mContext, R.layout.web_list, null);
+		appstate.downloadsList.setAdapter(appstate.downloadsAdapter);
+		appstate.downloadsList.setOnKeyListener(new OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
+					WebUtil.openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()), mContext);
+				return false;
+			}
+		});		
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -785,7 +818,7 @@ public class SimpleBrowser extends Activity {
 		appstate = ((EasyApp) getApplicationContext());
 		appstate.mContext = mContext;
 		appstate.mActivity = this;
-		appstate.mEasyActivity = this;
+		appstate.mBrowserActivity = this;
 		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
 
 		appstate.dm = new DisplayMetrics();
@@ -1124,6 +1157,16 @@ public class SimpleBrowser extends Activity {
 		super.onNewIntent(intent);
 	}
 
+	void addDownloads(TitleUrl tu) {
+		for (int i = 0; i < mDownloads.size(); i++)
+			if (mDownloads.get(i).m_url.equals(tu.m_url))
+				return;
+		
+		mDownloads.add(tu);
+		Collections.sort(mDownloads, new MyComparator());// sort by name
+		appstate.updateDownloads();
+	}
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getRepeatCount() == 0) {

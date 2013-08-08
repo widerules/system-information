@@ -12,7 +12,6 @@ import java.util.Collections;
 import common.lib.ClearFolderTask;
 import common.lib.EasyApp;
 import common.lib.EasyWebView;
-import common.lib.MyApp.WriteTask;
 import common.lib.MyComparator;
 import common.lib.MyListAdapter;
 import common.lib.MyViewFlipper;

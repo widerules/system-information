@@ -1,4 +1,4 @@
-package easy.lib;
+package common.lib;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,16 +17,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import base.lib.WebUtil;
 
-import common.lib.EasyApp;
-import common.lib.TitleUrl;
 
 public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 	Context mContext;
-	EasyApp mAppstate;
+	MyApp mAppstate;
 	ArrayList localList;
 	public int type = 0;// 0:bookmark, 1:history, 2:downloads
 
-	public MyListAdapter(Context context, List<TitleUrl> titles, EasyApp appstate) {
+	public MyListAdapter(Context context, List<TitleUrl> titles, MyApp appstate) {
 		super(context, 0, titles);
 		mContext = context;
 		mAppstate = appstate;
@@ -91,10 +89,10 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 			public void onClick(View arg0) {
 				if (type != 2) {// bookmark and history
 					mAppstate.serverWebs.get(mAppstate.webIndex).loadUrl(tu.m_url);
-					mAppstate.imgBookmark.performClick();
+					mAppstate.hideBookmark();
 				}
 				else // open downloads file
-					mAppstate.openDownload(tu);
+					WebUtil.openDownload(tu, mContext);
 			}
 		});
 		webname.setOnLongClickListener(new OnLongClickListener() {

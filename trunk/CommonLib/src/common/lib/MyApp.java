@@ -407,7 +407,8 @@ public class MyApp extends BaseApp {
 		super.onCreate();
 	}
 	
-	public void updateBookmark(){}
+	public void hideBookmark() {}
+	public void updateBookmark() {}
 	public void updateHistory() {}
 	public void updateHomePage() {}
 	
@@ -1519,5 +1520,13 @@ public class MyApp extends BaseApp {
 				R.layout.icon_list, new String[] { "itemImage", "itemText" },
 				new int[] { R.id.appicon, R.id.appname });
 		return simperAdapter;
+	}
+	
+	public MyListAdapter downloadsAdapter;
+	public void updateDownloads() {
+		if (downloadsAdapter != null) {
+			downloadsAdapter.notifyDataSetChanged();
+		}
+		downloadsChanged = true;
 	}
 }

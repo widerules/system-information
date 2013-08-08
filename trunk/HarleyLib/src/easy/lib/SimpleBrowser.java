@@ -14,6 +14,7 @@ import common.lib.EasyApp;
 import common.lib.EasyWebView;
 import common.lib.MyApp.WriteTask;
 import common.lib.MyComparator;
+import common.lib.MyListAdapter;
 import common.lib.MyViewFlipper;
 import common.lib.ProxySettings;
 import common.lib.TitleUrl;
@@ -734,7 +735,7 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
-					appstate.openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()));
+					WebUtil.openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()), mContext);
 				return false;
 			}
 		});		
@@ -750,7 +751,7 @@ public class SimpleBrowser extends Activity {
 		appstate = ((EasyApp) getApplicationContext());
 		appstate.mContext = mContext;
 		appstate.mActivity = this;
-		appstate.mHarleyActivity = this;
+		appstate.mBrowserActivity = this;
 		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
 
 		appstate.dm = new DisplayMetrics();

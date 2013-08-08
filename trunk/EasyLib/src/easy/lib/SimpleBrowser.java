@@ -11,7 +11,6 @@ import java.util.List;
 import common.lib.ClearFolderTask;
 import common.lib.EasyApp;
 import common.lib.EasyWebView;
-import common.lib.MyApp.WriteTask;
 import common.lib.MyComparator;
 import common.lib.MyListAdapter;
 import common.lib.MyViewFlipper;
@@ -615,7 +614,7 @@ public class SimpleBrowser extends Activity {
 			m_sourceDialog.setIcon(R.drawable.explorer);
 		else
 			m_sourceDialog.setIcon(new BitmapDrawable(appstate.serverWebs.get(appstate.webIndex).getFavicon()));
-		m_sourceDialog.setMessage(appstate.serverWebs.get(appstate.webIndex).pageSource);
+		m_sourceDialog.setMessage(sourceOrCookie);
 		m_sourceDialog.show();
 	}
 

@@ -26,8 +26,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-import common.lib.MyApp;
-
 public class EasyApp extends MyApp {
 	public boolean collapse1 = false;// default open top list and bookmark
 	public boolean collapse2 = false;

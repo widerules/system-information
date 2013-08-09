@@ -91,7 +91,7 @@ public class SimpleBrowser extends Activity {
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean downloadsChanged = false;
 	ImageView imgAddFavo;
-	ImageView imgGo;
+	public ImageView imgGo;
 
 	// baidu tongji
 	static Method baiduResume = null;

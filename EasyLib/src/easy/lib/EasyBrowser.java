@@ -10,15 +10,61 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.widget.ImageView;
 import common.lib.SimpleBrowser;
 
 public class EasyBrowser extends SimpleBrowser {
+	ImageView imgHome;
+
+	void initImgHome() {
+		imgHome = (ImageView) findViewById(R.id.home);
+		imgHome.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if ((appstate.m_homepage != null) && (!"".equals(appstate.m_homepage))) appstate.serverWebs.get(appstate.webIndex).loadUrl(appstate.m_homepage);
+				else if (!appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).m_url)) appstate.loadPage();
+			}
+		});
+		imgHome.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				appstate.globalSetting();
+				return true;
+			}
+		});
+	}
+
+	void initImgGo() {
+		imgGo = (ImageView) findViewById(R.id.go);
+		imgGo.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				appstate.gotoUrl(appstate.webAddress.getText().toString().toLowerCase());
+			}
+		});
+		imgGo.setOnLongClickListener(new OnLongClickListener() {// long click to select search engine
+			@Override
+			public boolean onLongClick(View arg0) {
+				CharSequence engine[] = new CharSequence[] {getString(R.string.bing), getString(R.string.baidu), getString(R.string.google), getString(R.string.yandex), getString(R.string.duckduckgo)};
+				appstate.selectEngine(engine);
+				return true;
+			}
+		});
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		appstate.browserName = getString(R.string.browser_name);
+		
 		setAsDefaultApp();
+		
+		initImgHome();
+		initImgGo();
 	}
 	
 	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {

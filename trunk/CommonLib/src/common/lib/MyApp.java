@@ -1525,4 +1525,8 @@ public class MyApp extends BaseApp {
 		}
 		downloadsChanged = true;
 	}
+	
+	public void actionBack() {}
+	public void createAd(float width) {}
+	public void menuOpenAction() {}
 }

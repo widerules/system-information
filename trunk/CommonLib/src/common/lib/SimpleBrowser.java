@@ -1,4 +1,4 @@
-package easy.lib;
+package common.lib;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,31 +7,17 @@ import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import common.lib.ClearFolderTask;
-import common.lib.EasyApp;
-import common.lib.EasyWebView;
-import common.lib.MyComparator;
-import common.lib.MyListAdapter;
-import common.lib.MyViewFlipper;
-import common.lib.ProxySettings;
-import common.lib.TitleUrl;
-import common.lib.WrapValueCallback;
-import common.lib.WrapWebSettings;
 import base.lib.WebUtil;
 import base.lib.util;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
@@ -39,15 +25,11 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.ClipboardManager;
 import android.util.DisplayMetrics;
-import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
@@ -61,8 +43,6 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebIconDatabase;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewDatabase;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -81,7 +61,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class SimpleBrowser extends Activity {
-	Context mContext;
+	public Context mContext;
 
 	ListView webList;
 
@@ -110,7 +90,8 @@ public class SimpleBrowser extends Activity {
 	// bookmark and history
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean downloadsChanged = false;
-	ImageView imgAddFavo, imgGo, imgHome;
+	ImageView imgAddFavo;
+	ImageView imgGo;
 
 	// baidu tongji
 	static Method baiduResume = null;
@@ -125,7 +106,7 @@ public class SimpleBrowser extends Activity {
 		} catch (Exception e) {}
 	}
 	
-	EasyApp appstate;
+	public MyApp appstate;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -217,13 +198,8 @@ public class SimpleBrowser extends Activity {
 					appstate.updateDownloads();
 				}
 
-				if (clearHistory || clearBookmark || clearDownloads) {
+				if (clearHistory || clearBookmark || clearDownloads) 
 					appstate.executeWtask(paras);
-
-					if (clearHistory || clearBookmark)
-						if (appstate.HOME_BLANK.equals(appstate.webAddress.getText().toString()))
-							shouldReload = true;
-				}
 
 				String message = "";
 				if (clearCache)
@@ -336,11 +312,9 @@ public class SimpleBrowser extends Activity {
 			// localSettings.setSupportMultipleWindows(!blockPopup);
 
 			appstate.blockJs = appstate.sp.getBoolean("block_js", false);
-			//localSettings.setJavaScriptEnabled(!appstate.blockJs);
 
 			WrapWebSettings webSettings = new WrapWebSettings(localSettings);
 			appstate.overviewPage = appstate.sp.getBoolean("overview_page", false);
-			webSettings.setLoadWithOverviewMode(appstate.overviewPage);
 
 			boolean showZoom = appstate.sp.getBoolean("show_zoom", false);
 			if (webSettings.setDisplayZoomControls(showZoom)) {// hide zoom
@@ -363,17 +337,6 @@ public class SimpleBrowser extends Activity {
 
 			boolean html5 = appstate.sp.getBoolean("html5", false);
 			appstate.serverWebs.get(appstate.webIndex).html5 = html5;
-			webSettings.setAppCacheEnabled(html5);// API7
-			webSettings.setDatabaseEnabled(html5);// API5
-			webSettings.setGeolocationEnabled(html5);//API5
-			if (html5) {
-				webSettings.setAppCachePath(getDir("databases", MODE_PRIVATE).getPath());// API7
-				// it will cause crash on OPhone if not set the max size
-				webSettings.setAppCacheMaxSize(appstate.html5cacheMaxSize);
-				webSettings.setDatabasePath(getDir("databases", MODE_PRIVATE)
-						.getPath());// API5. how slow will it be if set path to sdcard?
-				webSettings.setGeolocationDatabasePath(getDir("databases", MODE_PRIVATE).getPath());//API5
-			}
 
 			String tmpEncoding = WebUtil.getEncoding(appstate.sp.getInt("encoding", 0));
 			if (!tmpEncoding.equals(localSettings.getDefaultTextEncodingName())) {
@@ -409,106 +372,6 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-
-		final HitTestResult result = ((WebView) v).getHitTestResult();
-		final String url = result.getExtra();
-
-		MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
-			public boolean onMenuItemClick(MenuItem item) {// do the menu action
-				switch (item.getItemId()) {
-				case 0:// download
-					String ext = null;
-					if (result.getType() == HitTestResult.IMAGE_TYPE
-							|| result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
-						ext = ".jpg";
-					appstate.startDownload(url, ext, "yes");
-					break;
-				case 3:// open in foreground
-					appstate.openNewPage(url, appstate.webIndex+1, true, true); 
-					break;
-				case 4:// copy url
-					ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-					ClipMan.setText(url);
-					break;
-				case 5:// share url
-					appstate.shareUrl("", url);
-					break;
-				case 6:// open in background
-					appstate.openNewPage(url, appstate.webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
-					break;
-				case 7:// add short cut
-					appstate.createShortcut(url, appstate.mBookMark.get(item.getOrder()).m_title);
-					break;
-				case 8:// remove bookmark
-					appstate.removeFavo(item.getOrder());
-					break;
-				case 9:// remove history
-					appstate.removeHistory(item.getOrder());
-					break;
-				case 10:// add bookmark
-					int historyIndex = -1;
-					for (int i = 0; i < appstate.mHistory.size(); i++) {
-						if (appstate.mHistory.get(i).m_url.equals(url)) {
-							historyIndex = i;
-							break;
-						}
-					}
-					if (historyIndex > -1)
-						appstate.addFavo(url, appstate.mHistory.get(historyIndex).m_title);
-					else appstate.addFavo(url, url);
-					break;
-				case 11://set homepage
-					appstate.m_homepage = url;
-					appstate.sEdit.putString("homepage", url);
-					appstate.sEdit.commit();
-					break;
-				}
-				return true;
-			}
-		};
-
-		// set the title to the url
-		menu.setHeaderTitle(result.getExtra());
-		if (url != null) {
-			if (appstate.dm.heightPixels > appstate.dm.density*480) // only show this menu item on large screen
-				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
-			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
-			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
-			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
-
-			if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl())) {// only operate bookmark/history in home page
-				boolean foundBookmark = false;
-				for (int i = appstate.mBookMark.size() - 1; i >= 0; i--)
-					if ((appstate.mBookMark.get(i).m_url.equals(url))
-							|| (url.equals(appstate.mBookMark.get(i).m_url + "/"))) {
-						foundBookmark = true;
-						if (!appstate.mAdAvailable) {
-							menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);// only work in pro version
-							menu.add(0, 11, i, R.string.set_homepage).setOnMenuItemClickListener(handler);// only work in pro version
-						}
-						menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
-						break;
-					}
-				if (!foundBookmark)
-					menu.add(0, 10, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
-
-				for (int i = appstate.mHistory.size() - 1; i >= 0; i--)
-					if ((appstate.mHistory.get(i).m_url.equals(url))
-							|| (url.equals(appstate.mHistory.get(i).m_url + "/"))) {
-						menu.add(0, 9, i, R.string.remove_history)
-								.setOnMenuItemClickListener(handler);
-						break;
-					}
-			}
-
-			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
-		}
-	}
-
-	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		appstate.menuOpenAction();
 		return false;// show system menu if return true.
@@ -520,57 +383,9 @@ public class SimpleBrowser extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 
-
-	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {
-		List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, PackageManager.GET_INTENT_FILTERS);
-		int size = resolveInfoList.size();
-		ComponentName[] arrayOfComponentName = new ComponentName[size];
-		boolean seted = false;
-		for (int i = 0; i < size; i++) {
-			ActivityInfo activityInfo = resolveInfoList.get(i).activityInfo;
-			String packageName = activityInfo.packageName;
-			String className = activityInfo.name;
-			//clear default browser
-			if (packageName.equals(mContext.getPackageName())) {
-				seted = true;
-				break;
-			}
-			try{pm.clearPackagePreferredActivities(packageName);} catch(Exception e) {}
-			ComponentName componentName = new ComponentName(packageName, className);
-			arrayOfComponentName[i] = componentName;
-		}
-		
-		if (!seted) {
-			ComponentName component = new ComponentName(mContext.getPackageName(), "easy.lib.SimpleBrowser");
-			pm.addPreferredActivity(filter,	IntentFilter.MATCH_CATEGORY_SCHEME, arrayOfComponentName, component);
-		}
-	}
-
-	public void setAsDefaultApp() {
-		PackageManager pm = getPackageManager();
-		
-		try {pm.addPackageToPreferred(getPackageName());}// for 1.5 platform 
-		catch(Exception e) {
-			// set default browser for 1.6-2.1 platform. not work for 2.2 and up platform
-			Intent intent = new Intent("android.intent.action.VIEW");
-			intent.addCategory("android.intent.category.BROWSABLE");
-			intent.addCategory("android.intent.category.DEFAULT");
-			
-			IntentFilter filter = new IntentFilter();
-			filter.addAction("android.intent.action.VIEW");
-			filter.addCategory("android.intent.category.BROWSABLE");
-			filter.addCategory("android.intent.category.DEFAULT");
-			filter.addDataScheme("http");
-			
-			Uri uri = Uri.parse("http://");
-			intent.setDataAndType(uri, null);
-			setDefault(pm, intent, filter);			
-		} 
-	}
-
-	public void initSourceDialog() {		
+	public void initSourceDialog(String browserName) {		
 		m_sourceDialog = new AlertDialog.Builder(this)
-		.setTitle(R.string.browser_name)
+		.setTitle(browserName)
 		.setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {// share
 			@Override
 			public void onClick(DialogInterface dialog,	int which) {
@@ -607,8 +422,8 @@ public class SimpleBrowser extends Activity {
 		}).create();
 	}
 	
-	public void showSourceDialog() {
-		if (m_sourceDialog == null) initSourceDialog();
+	public void showSourceDialog(String browserName) {
+		if (m_sourceDialog == null) initSourceDialog(browserName);
 		m_sourceDialog.setTitle(appstate.serverWebs.get(appstate.webIndex).getTitle());
 		if (appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).getUrl()))
 			m_sourceDialog.setIcon(R.drawable.explorer);
@@ -791,62 +606,7 @@ public class SimpleBrowser extends Activity {
 		webList.setAdapter(appstate.webAdapter);
 	}
 	
-	public void initDownloads() {
-		appstate.downloadsAdapter = new MyListAdapter(mContext, mDownloads, appstate);
-		appstate.downloadsAdapter.type = 2;
-		//appstate.downloadsList = (ListView) findViewById(R.id.downloads);
-		appstate.downloadsList.inflate(mContext, R.layout.web_list, null);
-		appstate.downloadsList.setAdapter(appstate.downloadsAdapter);
-		appstate.downloadsList.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
-					WebUtil.openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()), mContext);
-				return false;
-			}
-		});		
-	}
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		// mContext = getApplicationContext();//this will cause force close when
-		// select locale in google translate
-		mContext = this;
-		appstate = ((EasyApp) getApplicationContext());
-		appstate.mContext = mContext;
-		appstate.mActivity = this;
-		appstate.mBrowserActivity = this;
-		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
-
-		appstate.dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(appstate.dm);
-
-		appstate.browserName = getString(R.string.browser_name);
-		
-		// init settings
-		appstate.sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-		appstate.sEdit = appstate.sp.edit();
-		appstate.readPreference();
-
-		setAsDefaultApp();
-		
-		appstate.nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-		appstate.imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-		getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-		// hide titlebar of application, must be before setting the layout
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
-		setContentView(R.layout.browser);
-        
-		initWebControl();
-
-		appstate.loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
-
+	public void initAddFavo() {
 		imgAddFavo = (ImageView) findViewById(R.id.addfavorite);
 		imgAddFavo.setOnClickListener(new OnClickListener() {
 			@Override
@@ -864,23 +624,72 @@ public class SimpleBrowser extends Activity {
 				return true;
 			}
 		});
+	}
 
-		imgGo = (ImageView) findViewById(R.id.go);
-		imgGo.setOnClickListener(new OnClickListener() {
+	public void initImgNext() {
+		appstate.imgNext = (ImageView) findViewById(R.id.next);
+		appstate.imgNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				appstate.gotoUrl(appstate.webAddress.getText().toString().toLowerCase());
+				if (appstate.serverWebs.get(appstate.webIndex).canGoForward())
+					appstate.serverWebs.get(appstate.webIndex).goForward();
 			}
 		});
-		imgGo.setOnLongClickListener(new OnLongClickListener() {// long click to select search engine
+		appstate.imgNext.setOnLongClickListener(new OnLongClickListener() {
 			@Override
-			public boolean onLongClick(View arg0) {
-				CharSequence engine[] = new CharSequence[] {getString(R.string.bing), getString(R.string.baidu), getString(R.string.google), getString(R.string.yandex), getString(R.string.duckduckgo)};
-				appstate.selectEngine(engine);
+			public boolean onLongClick(View v) {
+				appstate.updownAction();
 				return true;
 			}
 		});
+	}
 
+	public void initImgPrev() {
+		appstate.imgPrev = (ImageView) findViewById(R.id.prev);
+		appstate.imgPrev.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				appstate.imgPrevClick();
+			}
+		});
+		appstate.imgPrev.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				appstate.listPageHistory();
+				return true;
+			}
+		});
+	}
+	
+	public void initImgNew() {
+		appstate.imgNew = (ImageView) findViewById(R.id.newpage);
+		appstate.imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), 1, 2, appstate.dm.density, mContext));
+		appstate.imgNew.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				appstate.imgNewClick();
+			}
+		});
+		appstate.imgNew.setOnLongClickListener(new OnLongClickListener() {// long click to show history
+			@Override
+			public boolean onLongClick(View arg0) {
+				appstate.listHistory();
+				return true;
+			}
+		});
+	}
+
+	public void initToolbar() {
+		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
+		toolAndAd.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {//reverse the position of webtoolbutton and ad
+				exchangePosition();
+			}
+		});
+	}
+	
+	public void initWebAddress() {
 		appstate.webAddress = (AutoCompleteTextView) findViewById(R.id.url);
 		appstate.webAddress.bringToFront();
 		appstate.webAddress.setOnItemClickListener(new OnItemClickListener() {
@@ -907,6 +716,54 @@ public class SimpleBrowser extends Activity {
 				return false;
 			}
 		});
+	}
+	
+	public void initImgRefresh() {
+		appstate.imgRefresh = (ImageView) findViewById(R.id.refresh);
+		appstate.imgRefresh.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				appstate.reloadPage();
+			}
+		});
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// mContext = getApplicationContext();//this will cause force close when
+		// select locale in google translate
+		mContext = this;
+		appstate = ((MyApp) getApplicationContext());
+		appstate.mContext = mContext;
+		appstate.mActivity = this;
+		appstate.webAdapter = appstate.new WebAdapter(mContext, appstate.serverWebs);
+
+		appstate.dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(appstate.dm);
+
+		// init settings
+		appstate.sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+		appstate.sEdit = appstate.sp.edit();
+		appstate.readPreference();
+
+		appstate.nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+		appstate.imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+		// hide titlebar of application, must be before setting the layout
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
+		setContentView(R.layout.browser);
+        
+		initWebControl();
+		appstate.loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
+		initAddFavo();
+		
+		initWebAddress();
 
 		appstate.downloadPath = util.preparePath(mContext);
 		appstate.dataPath = "/data/data/" + getPackageName() + "/";
@@ -942,7 +799,7 @@ public class SimpleBrowser extends Activity {
 		WebIconDatabase.getInstance().open(getDir("databases", MODE_PRIVATE).getPath());
 
 		while (appstate.serverWebs.size() > 0) {
-			EasyWebView tmp = (EasyWebView) appstate.webpages.getChildAt(0);
+			MyWebView tmp = (MyWebView) appstate.webpages.getChildAt(0);
 			if (tmp == null) break;//sometime it is null if close page very quick
 			appstate.webAdapter.remove(tmp);
 			appstate.webAdapter.notifyDataSetInvalidated();
@@ -955,7 +812,7 @@ public class SimpleBrowser extends Activity {
 		}
 
 		appstate.webIndex = 0;
-		appstate.serverWebs.add(new EasyWebView(mContext, appstate));
+		appstate.serverWebs.add(new MyWebView(mContext, appstate));
 		appstate.webpages = (MyViewFlipper) findViewById(R.id.webpages);
 		appstate.webpages.addView(appstate.serverWebs.get(appstate.webIndex));
 
@@ -972,76 +829,10 @@ public class SimpleBrowser extends Activity {
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		appstate.imgNext = (ImageView) findViewById(R.id.next);
-		appstate.imgNext.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (appstate.serverWebs.get(appstate.webIndex).canGoForward())
-					appstate.serverWebs.get(appstate.webIndex).goForward();
-			}
-		});
-		appstate.imgNext.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				appstate.updownAction();
-				return true;
-			}
-		});
-
-		appstate.imgPrev = (ImageView) findViewById(R.id.prev);
-		appstate.imgPrev.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				appstate.imgPrevClick();
-			}
-		});
-		appstate.imgPrev.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				appstate.listPageHistory();
-				return true;
-			}
-		});
-
-		appstate.imgRefresh = (ImageView) findViewById(R.id.refresh);
-		appstate.imgRefresh.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				appstate.reloadPage();
-			}
-		});
-		
-		imgHome = (ImageView) findViewById(R.id.home);
-		imgHome.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if ((appstate.m_homepage != null) && (!"".equals(appstate.m_homepage))) appstate.serverWebs.get(appstate.webIndex).loadUrl(appstate.m_homepage);
-				else if (!appstate.HOME_PAGE.equals(appstate.serverWebs.get(appstate.webIndex).m_url)) appstate.loadPage();
-			}
-		});
-		imgHome.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View arg0) {
-				appstate.globalSetting();
-				return true;
-			}
-		});
-
-		appstate.imgNew = (ImageView) findViewById(R.id.newpage);
-		appstate.imgNew.setImageBitmap(util.generatorCountIcon(util.getResIcon(getResources(), R.drawable.newpage), 1, 2, appstate.dm.density, mContext));
-		appstate.imgNew.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				appstate.imgNewClick();
-			}
-		});
-		appstate.imgNew.setOnLongClickListener(new OnLongClickListener() {// long click to show history
-			@Override
-			public boolean onLongClick(View arg0) {
-				appstate.listHistory();
-				return true;
-			}
-		});
+		initImgNext();
+		initImgPrev();
+		initImgRefresh();
+		initImgNew();
 
 		setLayout();
 		setWebpagesLayout();
@@ -1050,20 +841,7 @@ public class SimpleBrowser extends Activity {
 		appstate.urlLine.bringToFront();// set the z-order
 		appstate.webTools.bringToFront();
 
-		final FrameLayout toolAndAd = (FrameLayout) findViewById(R.id.webtoolnad);
-		toolAndAd.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {//reverse the position of webtoolbutton and ad
-				exchangePosition();
-			}
-		});
-		toolAndAd.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View arg0) {
-				onMenuOpened(0, null);
-				return false;
-			}
-		});
+		initToolbar();
 
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test

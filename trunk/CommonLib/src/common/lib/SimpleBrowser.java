@@ -687,6 +687,13 @@ public class SimpleBrowser extends Activity {
 				exchangePosition();
 			}
 		});
+		
+		LinearLayout buttonList = (LinearLayout) findViewById(R.id.imagebtn_list);
+		buttonList.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {// do nothing when click imagebtn_list
+			}
+		});
 	}
 	
 	public void initWebAddress() {

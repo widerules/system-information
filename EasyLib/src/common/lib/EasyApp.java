@@ -6,7 +6,6 @@ import java.util.Locale;
 import android.app.AlertDialog;
 import easy.lib.AboutBrowser;
 import easy.lib.R;
-import easy.lib.SimpleBrowser;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
@@ -370,7 +369,7 @@ public class EasyApp extends MyApp {
 
 						mBrowserActivity.sourceOrCookie = serverWebs.get(webIndex).pageSource;
 						mBrowserActivity.subFolder = "source";
-						mBrowserActivity.showSourceDialog();
+						mBrowserActivity.showSourceDialog(browserName);
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}

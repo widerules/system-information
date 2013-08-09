@@ -49,5 +49,11 @@
     <string name="scroll_bottom">Scroll to bottom</string>
     
     <string name="search_engine">Engine</string>
+    <string name="newpage">New Page</string>
+    <string name="formdata">Form Data</string>
+    <string name="password">Password</string>
+    <string name="icon">Icon</string>
+    <string name="home">Home</string>
+    <string name="data_cleared">cleared.</string>
     
 </resources>

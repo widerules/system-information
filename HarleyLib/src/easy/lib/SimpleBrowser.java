@@ -116,7 +116,8 @@ public class SimpleBrowser extends Activity {
 	// bookmark and history
 	ArrayList<TitleUrl> mDownloads = new ArrayList<TitleUrl>();
 	boolean downloadsChanged = false;
-	ImageView imgAddFavo, imgMenu;
+	ImageView imgAddFavo;
+	ImageView imgMenu;
 
 	// baidu tongji
 	static Method baiduResume = null;
@@ -412,83 +413,6 @@ public class SimpleBrowser extends Activity {
 	}
 	
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-
-		final HitTestResult result = ((WebView) v).getHitTestResult();
-		final String url = result.getExtra();
-
-		MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
-			public boolean onMenuItemClick(MenuItem item) {// do the menu action
-				switch (item.getItemId()) {
-				case 0:// download
-					String ext = null;
-					if (result.getType() == HitTestResult.IMAGE_TYPE
-							|| result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
-						ext = ".jpg";
-					appstate.startDownload(url, ext, "yes");
-					break;
-				case 3:// open in foreground
-					appstate.openNewPage(url, appstate.webIndex+1, true, true); 
-					break;
-				case 4:// copy url
-					ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-					ClipMan.setText(url);
-					break;
-				case 5:// share url
-					appstate.shareUrl("", url);
-					break;
-				case 6:// open in background
-					appstate.openNewPage(url, appstate.webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
-					break;
-				case 8:// remove bookmark
-					appstate.removeFavo(item.getOrder());
-					break;
-				case 10:// add bookmark
-					int historyIndex = -1;
-					for (int i = 0; i < appstate.mHistory.size(); i++) {
-						if (appstate.mHistory.get(i).m_url.equals(url)) {
-							historyIndex = i;
-							break;
-						}
-					}
-					if (historyIndex > -1)
-						appstate.addFavo(url, appstate.mHistory.get(historyIndex).m_title);
-					else appstate.addFavo(url, url);
-					break;
-				}
-				return true;
-			}
-		};
-
-		// set the title to the url
-		menu.setHeaderTitle(result.getExtra());
-		if (url != null) {
-			if (appstate.dm.heightPixels > appstate.dm.density*480) // only show this menu item on large screen
-				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
-			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
-			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
-			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
-
-			if (appstate.dm.heightPixels > appstate.dm.density*480) {// only show this menu item on large screen
-				boolean foundBookmark = false;
-				for (int i = appstate.mBookMark.size() - 1; i >= 0; i--)
-					if ((appstate.mBookMark.get(i).m_url.equals(url))
-							|| (url.equals(appstate.mBookMark.get(i).m_url + "/"))) {
-						foundBookmark = true;
-						menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
-						break;
-					}
-				if (!foundBookmark)
-					menu.add(0, 10, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
-			}
-
-			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
-		}
-	}
-
-	@Override
 	public boolean onMenuOpened(int featureId, Menu menu) {
 		appstate.menuOpenAction();
 		return false;// show system menu if return true.
@@ -724,22 +648,6 @@ public class SimpleBrowser extends Activity {
 		webList.setAdapter(appstate.webAdapter);
 	}
 	
-	public void initDownloads() {
-		appstate.downloadsAdapter = new MyListAdapter(mContext, mDownloads, appstate);
-		appstate.downloadsAdapter.type = 2;
-		appstate.downloadsList = (ListView) findViewById(R.id.downloads);
-		appstate.downloadsList.inflate(mContext, R.layout.web_list, null);
-		appstate.downloadsList.setAdapter(appstate.downloadsAdapter);
-		appstate.downloadsList.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
-					WebUtil.openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()), mContext);
-				return false;
-			}
-		});		
-	}
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -772,14 +680,6 @@ public class SimpleBrowser extends Activity {
 		// hide titlebar of application, must be before setting the layout
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
-        LayoutInflater inflater = LayoutInflater.from(this);
-        
-        browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
-		setContentView(browserView);
-        appstate.bookmarkDownloads = findViewById(R.id.bookmarkDownloads);
-        appstate.bookmarkView = (LinearLayout) findViewById(R.id.bookmarkView);
-        appstate.menuGrid = (GridView) findViewById(R.id.grid_menu);
-
 		initWebControl();
 
 		appstate.loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
@@ -799,41 +699,6 @@ public class SimpleBrowser extends Activity {
 			public boolean onLongClick(View arg0) {
 				appstate.listBookmark();
 				return true;
-			}
-		});
-
-		appstate.webAddress = (AutoCompleteTextView) findViewById(R.id.url);
-		appstate.webAddress.bringToFront();
-		appstate.webAddress.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				appstate.gotoUrl(appstate.urlAdapter.getItem(position));
-			}
-
-		});
-		appstate.webAddress.setOnEditorActionListener(new OnEditorActionListener() {
-			@Override
-			public boolean onEditorAction(TextView view, int actionId,
-					KeyEvent event) {
-				appstate.gotoUrl(appstate.webAddress.getText().toString().toLowerCase());
-				return false;
-			}
-		});
-		appstate.webAddress.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View view, MotionEvent event) {
-				view.setFocusableInTouchMode(true);
-				appstate.serverWebs.get(appstate.webIndex).setFocusable(false);
-				return false;
-			}
-		});
-		appstate.webAddress.setOnKeyListener(new OnKeyListener() {
-			@Override
-			public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
-				appstate.imgRefresh.setImageResource(R.drawable.go);
-				shouldGo = true;
-				return false;
 			}
 		});
 
@@ -894,7 +759,6 @@ public class SimpleBrowser extends Activity {
 		
 		appstate.adContainer = (LinearLayout) findViewById(R.id.adContainer);
 		appstate.adContainer2 = (LinearLayout) findViewById(R.id.adContainer2);
-		appstate.adContainer3 = (FrameLayout) findViewById(R.id.adContainer3);
 		imageBtnList = (LinearLayout) findViewById(R.id.imagebtn_list);
 		imageBtnList.bringToFront();
 		
@@ -929,65 +793,6 @@ public class SimpleBrowser extends Activity {
 			@Override
 			public boolean onLongClick(View v) {
 				appstate.listPageHistory();
-				return true;
-			}
-		});
-
-		appstate.imgRefresh = (ImageView) findViewById(R.id.refresh);
-		appstate.imgRefresh.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (shouldGo) {
-					shouldGo = false;
-					appstate.gotoUrl(appstate.webAddress.getText().toString().toLowerCase());
-				}
-				else appstate.reloadPage();
-			}
-		});
-		appstate.imgRefresh.setOnLongClickListener(new OnLongClickListener() {// long click to select search engine
-			@Override
-			public boolean onLongClick(View arg0) {
-				CharSequence engine[] = new CharSequence[] {getString(R.string.bing), getString(R.string.baidu), getString(R.string.google), getString(R.string.yandex), getString(R.string.duckduckgo)};
-				appstate.selectEngine(engine);
-				return true;
-			}
-		});
-		
-		appstate.bookmarkAdapter = null;// sometime it is not null when startup?
-		appstate.imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
-		appstate.imgBookmark.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				if (appstate.bookmarkOpened) {
-					if ((appstate.downloadsList != null) && (appstate.downloadsList.getVisibility() == View.VISIBLE)) {
-						appstate.bookmarkView.setVisibility(View.VISIBLE);
-						appstate.downloadsList.setVisibility(View.GONE);
-					}
-					else appstate.hideBookmark();
-				}
-				else appstate.showBookmark(); 
-			}
-		});
-		appstate.imgBookmark.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View arg0) {
-				if (!appstate.bookmarkOpened) appstate.showBookmark();
-				exchangePosition();
-				return true;
-			}
-		});
-		
-		imgMenu = (ImageView) findViewById(R.id.menu);
-		imgMenu.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				onMenuOpened(0, null);
-			}
-		});
-		imgMenu.setOnLongClickListener(new OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View arg0) {
-				appstate.globalSetting();
 				return true;
 			}
 		});

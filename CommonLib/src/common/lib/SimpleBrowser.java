@@ -1073,7 +1073,7 @@ public class SimpleBrowser extends Activity {
 		registerReceiver(downloadReceiver, filter);
 	}
 
-	void exchangePosition() {
+	public void exchangePosition() {
 		//reverse the position of buttons and ads
 		LayoutParams lp1 = imageBtnList.getLayoutParams();
 		LayoutParams lp2 = adContainer2.getLayoutParams();
@@ -1209,7 +1209,7 @@ public class SimpleBrowser extends Activity {
 		setLayout();
 	}
 
-	void setLayout() {
+	public void setLayout() {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		createAd(dm.widthPixels / dm.density);
 

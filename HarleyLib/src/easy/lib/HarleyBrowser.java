@@ -1,61 +1,214 @@
-package common.lib;
+package easy.lib;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import easy.lib.AboutBrowser;
-import easy.lib.R;
-import easy.lib.SimpleBrowser;
+import base.lib.WebUtil;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.VideoView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import common.lib.EasyWebView;
+import common.lib.MyListAdapter;
+import common.lib.SimpleBrowser;
+import common.lib.TitleUrl;
 
-public class EasyApp extends MyApp {
-	public View bookmarkDownloads;
+public class HarleyBrowser extends SimpleBrowser {
 	public int bookmarkWidth = LayoutParams.WRAP_CONTENT;
 	public int menuWidth = LayoutParams.WRAP_CONTENT;
-	public boolean menuOpened = true;
-	public boolean bookmarkOpened = true;
 	
 	public FrameLayout adContainer3;	
 	public WrapAdView adview3 = null;
 
+	// browser related
+	public RelativeLayout browserView;
+	boolean shouldGo = false;
+	
+	ImageView imgMenu;
+	public boolean menuOpened = true;
+	public boolean bookmarkOpened = true;
+	public View bookmarkDownloads;
 	public LinearLayout bookmarkView;
 	public ListView downloadsList;
 	public MyListAdapter bookmarkAdapter, historyAdapter;
 	public int minWebControlWidth = 200;
-	public ImageView imgBookmark;
+	public ImageView imgBookmark, imgAddFavo;
 	int statusBarHeight;
-	public LinearLayout fakeWebControl;
 
+	public LinearLayout fakeWebControl;
 	ArrayList<TitleUrl> mHistoryForAdapter = new ArrayList<TitleUrl>();// the revert for mHistory.
 	ListView historyList;
 	public boolean reverted = false;
 
-	public SimpleBrowser mBrowserActivity;
+	public void initWebControl() {
+		super.initWebControl();
+		
+		fakeWebControl = (LinearLayout) findViewById(R.id.fakeWebcontrol);
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		browserName = getString(R.string.browser_name);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        
+        browserView = (RelativeLayout) inflater.inflate(R.layout.browser, null);
+		setContentView(browserView);
+        bookmarkDownloads = findViewById(R.id.bookmarkDownloads);
+        bookmarkView = (LinearLayout) findViewById(R.id.bookmarkView);
+        menuGrid = (GridView) findViewById(R.id.grid_menu);
+		adContainer3 = (FrameLayout) findViewById(R.id.adContainer3);
 
+		hideMenu();
+		hideBookmark();
+	}
+	
+	public void hideMenu() {
+		menuGrid.getLayoutParams().width = 0;
+		menuGrid.requestLayout();
+		menuOpened = false;
+	}
+
+	public void hideBookmark() {
+		bookmarkDownloads.getLayoutParams().width = 0;
+		bookmarkDownloads.requestLayout();
+		bookmarkView.setVisibility(View.VISIBLE);
+		if (downloadsList != null) downloadsList.setVisibility(View.GONE);
+		bookmarkOpened = false;
+	}
+
+	public void exchangePosition() {
+		super.exchangePosition();
+		
+		//change position of bookmark and menu
+		LayoutParams lp1 = bookmarkDownloads.getLayoutParams();
+		LayoutParams lp2 = menuGrid.getLayoutParams();
+		int tmp = lp1.width;
+		lp1.width = lp2.width;
+		lp2.width = tmp;
+		bookmarkDownloads.setLayoutParams(lp2);
+		menuGrid.setLayoutParams(lp1);
+		
+		//revert toLeft and toRight of webControl
+		lp1 = webControl.getLayoutParams();
+		lp2 = fakeWebControl.getLayoutParams();
+		webControl.setLayoutParams(lp2);
+		fakeWebControl.setLayoutParams(lp1);
+
+		if (revertCount % 2 == 0) reverted = false;
+		else reverted = true;
+		
+		// revert add bookmark and refresh button
+		lp1 = imgAddFavo.getLayoutParams();
+		lp2 = imgRefresh.getLayoutParams();
+		imgAddFavo.setLayoutParams(lp2);
+		imgRefresh.setLayoutParams(lp1);
+	}
+	
+	@Override
+	protected void onPause() {
+		if (browserView.getVisibility() == View.GONE) {
+			if (mVideoView == null) hideCustomView();//hide VideoSurfaceView otherwise it will force close onResume
+			else mVideoView.pause();
+		}
+
+		super.onPause();
+	}
+	
+	public WebChromeClient.CustomViewCallback mCustomViewCallback = null;
+	public FrameLayout mCustomViewContainer = null;
+	public VideoView mVideoView = null;
+	public void hideCustomView() {
+		browserView.setVisibility(View.VISIBLE);
+		if (mCustomViewContainer == null) return;
+		
+		if (mVideoView != null) {
+			// Remove the custom view from its container.
+			mCustomViewContainer.removeView(mVideoView);
+			mVideoView = null;
+		}
+		mCustomViewCallback.onCustomViewHidden();
+		// Show the browser view.
+		setContentView(browserView);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		if (browserView.getVisibility() == View.GONE) 
+			if (mVideoView != null) mVideoView.start();
+	}
+	
+	public void setLayout() {
+		super.setLayout();
+		
+		bookmarkWidth = dm.widthPixels * 3 / 4;
+        int minWidth = (int) (320 * dm.density);
+        if (bookmarkWidth > minWidth) bookmarkWidth = minWidth;
+        
+		int height = (int) (dm.heightPixels / dm.density);
+		height -= urlLine.getHeight();
+		height -= webTools.getHeight();
+		int size = height / 72;// 72 is the height of each menu item
+		if (size > 10) {
+			menuWidth = (int) (80*dm.density);// 80 dip for single column
+			menuGrid.setNumColumns(1);
+		}
+		else {
+			menuWidth = (int) (120*dm.density);// 120 dip for 2 column
+			menuGrid.setNumColumns(2);
+		}
+		
+		updateHistoryViewHeight();
+		if (bookmarkOpened) {
+			bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
+			bookmarkDownloads.requestLayout();
+		}
+		
+		if (menuOpened) {
+			menuGrid.getLayoutParams().width = menuWidth;
+			menuGrid.requestLayout();
+		}
+		
+		if ((webControl.getVisibility() == View.VISIBLE) && (webControl.getWidth() < minWebControlWidth)) scrollToMain();
+	}
+	
 	public void readPreference() {
-		super.readPreference();
+		readPreference();
 		
 		if (Locale.CHINA.equals(mLocale)) 
 			HOME_PAGE = "file:///android_asset/home-ch.html";
@@ -64,12 +217,12 @@ public class EasyApp extends MyApp {
 	}
 	
 	public void loadPage() {// load home page
-		super.loadPage();
+		loadPage();
 		if ((mBookMark.size() > 0) || (mHistory.size() > 0)) showBookmark();// show bookmark for load home page too slow
 	}
 
 	public void shareUrl(String title, String url) {
-		super.shareUrl(title, url);
+		shareUrl(title, url);
 
 		if (shareMode != 1) scrollToMain();
 	}
@@ -91,30 +244,18 @@ public class EasyApp extends MyApp {
 	}
 	
 	public void setUrlHeight(boolean showUrlNow) {
-		super.setUrlHeight(showUrlNow);
+		setUrlHeight(showUrlNow);
 		
 		updateHistoryViewHeight();
 	}
 	
 	public void setBarHeight(boolean showBarNow) {
-		super.setBarHeight(showBarNow);
+		setBarHeight(showBarNow);
 		
 		updateHistoryViewHeight();
 	}
 	
-	public void hideMenu() {
-		menuGrid.getLayoutParams().width = 0;
-		menuGrid.requestLayout();
-		menuOpened = false;
-	}
 	
-	public void hideBookmark() {
-		bookmarkDownloads.getLayoutParams().width = 0;
-		bookmarkDownloads.requestLayout();
-		bookmarkView.setVisibility(View.VISIBLE);
-		if (downloadsList != null) downloadsList.setVisibility(View.GONE);
-		bookmarkOpened = false;
-	}
 
 	public void showBookmark() {
 		bookmarkDownloads.getLayoutParams().width = bookmarkWidth;
@@ -133,9 +274,9 @@ public class EasyApp extends MyApp {
 	}
 	
 	public void initBookmarks() {
-		bookmarkAdapter = new MyListAdapter(mContext, mBookMark, this);
+		bookmarkAdapter = new MyListAdapter(this, mBookMark);
 		bookmarkAdapter.type = 0;
-		ListView bookmarkList = (ListView) mActivity.findViewById(R.id.bookmark);
+		ListView bookmarkList = (ListView) findViewById(R.id.bookmark);
 		bookmarkList.inflate(mContext, R.layout.web_list, null);
 		bookmarkList.setAdapter(bookmarkAdapter);
 		bookmarkList.setOnKeyListener(new OnKeyListener() {
@@ -150,9 +291,9 @@ public class EasyApp extends MyApp {
 			}
 		});
 
-		historyAdapter = new MyListAdapter(mContext, mHistoryForAdapter, this);
+		historyAdapter = new MyListAdapter(this, mHistoryForAdapter);
 		historyAdapter.type = 1;
-		historyList = (ListView) mActivity.findViewById(R.id.history);
+		historyList = (ListView) findViewById(R.id.history);
 		historyList.inflate(mContext, R.layout.web_list, null);
 		historyList.setAdapter(historyAdapter);
 		historyList.setOnKeyListener(new OnKeyListener() {
@@ -176,20 +317,20 @@ public class EasyApp extends MyApp {
 			if (width < 320) ;//do nothing for it is too narrow. 
             // but it will cause force close if not create adview?
             if (width < 468)// AdSize.BANNER require 320*50
-            	adview = new WrapAdView(mActivity, 0, "a1502880ce4208b", mAppHandler);
+            	adview = new WrapAdView(this, 0, "a1502880ce4208b", mAppHandler);
             else if (width < 728)
-                 adview = new WrapAdView(mActivity, 1, "a1502880ce4208b", mAppHandler);
+            	adview = new WrapAdView(this, 1, "a1502880ce4208b", mAppHandler);
                  // AdSize.IAB_BANNER require 468*60 but return 702*90 on BKB(1024*600) and S1.
                  // return width = request width * density.
             else    // AdSize.IAB_LEADERBOARD require 728*90, return 1092*135 on BKB
-                 adview = new WrapAdView(mActivity, 2, "a1502880ce4208b", mAppHandler);
+            	adview = new WrapAdView(this, 2, "a1502880ce4208b", mAppHandler);
  			if ((adview != null) && (adview.getInstance() != null)) {
-				adContainer.addView(adview.getInstance());
-				adview.loadAd();
+ 				adContainer.addView(adview.getInstance());
+ 				adview.loadAd();
 			}
 
  			if (adview2 == null) {
- 				adview2 = new WrapAdView(mActivity, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
+ 				adview2 = new WrapAdView(this, 0, "a1517e34883f8ce", null);// AdSize.BANNER require 320*50
  				if ((adview2 != null) && (adview2.getInstance() != null)) {
  					adContainer2.addView(adview2.getInstance());
  					adview2.loadAd();
@@ -197,19 +338,19 @@ public class EasyApp extends MyApp {
  			}
 
  			if (adview3 == null) {
- 				adview3 = new WrapAdView(mActivity, 0, "a14a8e65a47d51f", null);// AdSize.BANNER require 320*50
+ 				adview3 = new WrapAdView(this, 0, "a14a8e65a47d51f", null);// AdSize.BANNER require 320*50
  				if ((adview3 != null) && (adview3.getInstance() != null)) {
  					adContainer3.addView(adview3.getInstance());
  					adview3.loadAd();
  				}
  			}
  			
-			if (interstitialAd == null) interstitialAd = new WrapInterstitialAd(mActivity, "a14be3f4ec2bb11", mAppHandler);
+			if (interstitialAd == null) interstitialAd = new WrapInterstitialAd(this, "a14be3f4ec2bb11", mAppHandler);
 		}
 	}
 
 	public void actionBack() {
-		if (mBrowserActivity.browserView.getVisibility() == View.GONE) mBrowserActivity.hideCustomView();// playing video. need wait it over?
+		if (browserView.getVisibility() == View.GONE) hideCustomView();// playing video. need wait it over?
 		else if (menuOpened) hideMenu();
 		else if (bookmarkOpened) hideBookmark();
 		else if (webControl.getVisibility() == View.VISIBLE)
@@ -226,7 +367,7 @@ public class EasyApp extends MyApp {
 			// downloadControl not work? or select file not work?
 			if (serverWebs.size() == 1) {
 				if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
-				mActivity.moveTaskToBack(true);
+				moveTaskToBack(true);
 			}
 			else closePage(webIndex, false); // close blank page if more than one page
 		} else if (serverWebs.get(webIndex).canGoBack())
@@ -276,20 +417,20 @@ public class EasyApp extends MyApp {
 
 	void getTitleHeight() {
 		Rect rectgle= new Rect();
-		Window window= mActivity.getWindow();
+		Window window= getWindow();
 		window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
 		statusBarHeight = rectgle.top;
 	}
 	
 	public void imgNewClick() {
-		super.imgNewClick();
+		imgNewClick();
 		
 		if ((webControl.getVisibility() == View.VISIBLE) && (webControl.getWidth() < minWebControlWidth)) 
 			scrollToMain();// otherwise may not display weblist correctly
 }
 	
 	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
-		boolean weblink = super.openNewPage(url, newIndex, changeToNewPage, closeIfCannotBack);
+		boolean weblink = openNewPage(url, newIndex, changeToNewPage, closeIfCannotBack);
 		if (!weblink) return false;
 
 		if (webAdapter.getCount() == 9) {// max pages is 9
@@ -375,9 +516,9 @@ public class EasyApp extends MyApp {
 							serverWebs.get(webIndex).getPageSource();
 						}
 
-						mBrowserActivity.sourceOrCookie = serverWebs.get(webIndex).pageSource;
-						mBrowserActivity.subFolder = "source";
-						mBrowserActivity.showSourceDialog();
+						sourceOrCookie = serverWebs.get(webIndex).pageSource;
+						subFolder = "source";
+						showSourceDialog(browserName);
 					} catch (Exception e) {
 						Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
 					}
@@ -386,11 +527,11 @@ public class EasyApp extends MyApp {
 					CookieManager cookieManager = CookieManager.getInstance(); 
 					String cookie = cookieManager.getCookie(serverWebs.get(webIndex).m_url);
 					if (cookie != null)
-						mBrowserActivity.sourceOrCookie = cookie.replaceAll("; ", "\n\n");
-					else mBrowserActivity.sourceOrCookie = "No cookie on this page.";
+						sourceOrCookie = cookie.replaceAll("; ", "\n\n");
+					else sourceOrCookie = "No cookie on this page.";
 					
-					mBrowserActivity.subFolder = "cookie";
-					mBrowserActivity.showSourceDialog();
+					subFolder = "cookie";
+					showSourceDialog(browserName);
 					break;
 				case 8:// view snap
 					try {// still got java.lang.RuntimeException: Canvas: trying
@@ -450,7 +591,7 @@ public class EasyApp extends MyApp {
 					clearFile("pages");
 					ClearCache(); // clear cache when exit
 					if (interstitialAd != null && interstitialAd.isReady()) interstitialAd.show();
-					mActivity.finish();
+					finish();
 					break;
 				case 6:// downloads
 					if (mDownloads.size() == 0) {
@@ -458,7 +599,7 @@ public class EasyApp extends MyApp {
 						break;
 					}
 					
-					if (downloadsList == null) mBrowserActivity.initDownloads();
+					if (downloadsList == null) initDownloads();
 					
 					bookmarkView.setVisibility(View.GONE);
 					downloadsList.setVisibility(View.VISIBLE);
@@ -471,7 +612,7 @@ public class EasyApp extends MyApp {
 					scrollToMain();
 					webControl.setVisibility(View.GONE);// hide webControl when search
 						// serverWebs.get(webIndex).showFindDialog("e", false);
-					if (searchBar == null) mBrowserActivity.initSearchBar();
+					if (searchBar == null) initSearchBar();
 					searchBar.bringToFront();
 					searchBar.setVisibility(View.VISIBLE);
 					etSearch.requestFocus();
@@ -481,7 +622,7 @@ public class EasyApp extends MyApp {
 				case 13:// settings
 					Intent intent = new Intent(getPackageName() + "about");
 					intent.setClassName(getPackageName(), AboutBrowser.class.getName());
-					mActivity.startActivityForResult(intent, SETTING_RESULTCODE);
+					startActivityForResult(intent, SETTING_RESULTCODE);
 					break;
 				case 1:// pdf
 					scrollToMain();
@@ -500,7 +641,7 @@ public class EasyApp extends MyApp {
 					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
 					break;
 				case 7:// save
-					startDownload(serverWebs.get(webIndex).m_url, "", "no");
+					appstate.startDownload(serverWebs.get(webIndex).m_url, "", "no");
 					break;
 				case 10:// bookmark
 					String url = serverWebs.get(webIndex).m_url;
@@ -511,4 +652,98 @@ public class EasyApp extends MyApp {
 			}
 		});
 	}
+	
+    public void initDownloads() {
+        downloadsAdapter = new MyListAdapter(this, mDownloads);
+        downloadsAdapter.type = 2;
+        downloadsList = (ListView) findViewById(R.id.downloads);
+        downloadsList.inflate(mContext, R.layout.web_list, null);
+        downloadsList.setAdapter(downloadsAdapter);
+        downloadsList.setOnKeyListener(new OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER)
+                        	WebUtil.openDownload(mDownloads.get(((ListView) v).getSelectedItemPosition()), mContext);
+                        return false;
+                }
+        });
+    }
+    
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+
+		final HitTestResult result = ((WebView) v).getHitTestResult();
+		final String url = result.getExtra();
+
+		MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
+			public boolean onMenuItemClick(MenuItem item) {// do the menu action
+				switch (item.getItemId()) {
+				case 0:// download
+					String ext = null;
+					if (result.getType() == HitTestResult.IMAGE_TYPE
+							|| result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
+						ext = ".jpg";
+					appstate.startDownload(url, ext, "yes");
+					break;
+				case 3:// open in foreground
+					openNewPage(url, webIndex+1, true, true); 
+					break;
+				case 4:// copy url
+					ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+					ClipMan.setText(url);
+					break;
+				case 5:// share url
+					shareUrl("", url);
+					break;
+				case 6:// open in background
+					openNewPage(url, webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
+					break;
+				case 8:// remove bookmark
+					removeFavo(item.getOrder());
+					break;
+				case 10:// add bookmark
+					int historyIndex = -1;
+					for (int i = 0; i < mHistory.size(); i++) {
+						if (mHistory.get(i).m_url.equals(url)) {
+							historyIndex = i;
+							break;
+						}
+					}
+					if (historyIndex > -1)
+						addFavo(url, mHistory.get(historyIndex).m_title);
+					else addFavo(url, url);
+					break;
+				}
+				return true;
+			}
+		};
+
+		// set the title to the url
+		menu.setHeaderTitle(result.getExtra());
+		if (url != null) {
+			if (dm.heightPixels > dm.density*480) // only show this menu item on large screen
+				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
+			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
+			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+
+			if (dm.heightPixels > dm.density*480) {// only show this menu item on large screen
+				boolean foundBookmark = false;
+				for (int i = mBookMark.size() - 1; i >= 0; i--)
+					if ((mBookMark.get(i).m_url.equals(url))
+							|| (url.equals(mBookMark.get(i).m_url + "/"))) {
+						foundBookmark = true;
+						menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
+						break;
+					}
+				if (!foundBookmark)
+					menu.add(0, 10, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
+			}
+
+			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
+		}
+	}
+
 }

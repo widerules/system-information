@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,7 +34,7 @@ import base.lib.util;
 
 public class MyWebView extends WebView {
 	Context mContext;
-	MyApp mAppstate;
+	SimpleBrowser mActivity;
 	
 	public String pageSource = "", m_url = "";
 
@@ -114,20 +115,20 @@ public class MyWebView extends WebView {
 		int eventAction = event.getAction();
 		switch (eventAction) {
 		case MotionEvent.ACTION_DOWN:
-			if (mAppstate.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
-				mAppstate.webControl.setVisibility(View.GONE);
+			if (mActivity.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
+				mActivity.webControl.setVisibility(View.GONE);
 			
-			if (mAppstate.adContainer.getVisibility() == View.VISIBLE)
-				mAppstate.adContainer.setVisibility(View.GONE);
+			if (mActivity.adContainer.getVisibility() == View.VISIBLE)
+				mActivity.adContainer.setVisibility(View.GONE);
 
-			if (!mAppstate.showUrl) mAppstate.setUrlHeight(false);
-			if (!mAppstate.showControlBar) mAppstate.setBarHeight(false);
+			if (!mActivity.showUrl) mActivity.setUrlHeight(false);
+			if (!mActivity.showControlBar) mActivity.setBarHeight(false);
 
 			if (!this.isFocused()) {
 				this.setFocusableInTouchMode(true);
 				this.requestFocus();
-				mAppstate.webAddress.setFocusableInTouchMode(false);
-				mAppstate.webAddress.clearFocus();
+				mActivity.webAddress.setFocusableInTouchMode(false);
+				mActivity.webAddress.clearFocus();
 			}
 			break;
 		case MotionEvent.ACTION_UP:
@@ -138,17 +139,17 @@ public class MyWebView extends WebView {
 		return super.onTouchEvent(event);
 	}
 
-	public MyWebView(Context context, MyApp appstate) {
+	public MyWebView(Context context, SimpleBrowser activity) {
 		super(context);
 
 		mContext = context;
-		mAppstate = appstate;
+		mActivity = activity;
 
 		setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);// no white blank on the right of webview
 		
 		WebSettings localSettings = getSettings();
 		localSettings.setSaveFormData(true);
-		localSettings.setTextSize(mAppstate.textSize);
+		localSettings.setTextSize(mActivity.textSize);
 		localSettings.setSupportZoom(true);
 		localSettings.setBuiltInZoomControls(true);
 
@@ -159,26 +160,26 @@ public class MyWebView extends WebView {
 		// localSettings.setPluginState(WebSettings.PluginState.ON);
 		// setInitialScale(1);
 		localSettings.setSupportMultipleWindows(true);
-		localSettings.setJavaScriptCanOpenWindowsAutomatically(mAppstate.blockPopup);
-		localSettings.setBlockNetworkImage(mAppstate.blockImage);
-		if (mAppstate.cachePrefer)
+		localSettings.setJavaScriptCanOpenWindowsAutomatically(mActivity.blockPopup);
+		localSettings.setBlockNetworkImage(mActivity.blockImage);
+		if (mActivity.cachePrefer)
 			localSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-		localSettings.setJavaScriptEnabled(!appstate.blockJs);
+		localSettings.setJavaScriptEnabled(!mActivity.blockJs);
 
-		if (mAppstate.ua <= 1)
-			localSettings.setUserAgent(mAppstate.ua);
+		if (mActivity.ua <= 1)
+			localSettings.setUserAgent(mActivity.ua);
 		else
-			localSettings.setUserAgentString(WebUtil.selectUA(mAppstate.ua));
+			localSettings.setUserAgentString(WebUtil.selectUA(mActivity.ua));
 
 		webSettings = new WrapWebSettings(localSettings);
 		if (!webSettings.setDisplayZoomControls(false)) 
 			// hide zoom button by default on API 11 and above
 			setZoomControl(View.GONE);// default not show zoom control in new page
 
-		mAppstate.mActivity.registerForContextMenu(this);
+		mActivity.registerForContextMenu(this);
 
 		// to get page source, part 2
-		addJavascriptInterface(new MyJavaScriptInterface(this, mAppstate), "JSinterface");
+		addJavascriptInterface(new MyJavaScriptInterface(this, mActivity), "JSinterface");
 
 		setDownloadListener(new DownloadListener() {
 			@Override
@@ -204,32 +205,32 @@ public class MyWebView extends WebView {
 				m_url = url;
 				pageSource = "";
 				
-				if (mAppstate.HOME_PAGE.equals(url)) view.getSettings().setJavaScriptEnabled(true);// not block js on homepage
-				else view.getSettings().setJavaScriptEnabled(!mAppstate.blockJs);
+				if (mActivity.HOME_PAGE.equals(url)) view.getSettings().setJavaScriptEnabled(true);// not block js on homepage
+				else view.getSettings().setJavaScriptEnabled(!mActivity.blockJs);
 
 
 				if (isForeground) {
 					// close soft keyboard
-					mAppstate.imm.hideSoftInputFromWindow(getWindowToken(), 0);
-					mAppstate.loadProgress.setVisibility(View.VISIBLE);
+					mActivity.imm.hideSoftInputFromWindow(getWindowToken(), 0);
+					mActivity.loadProgress.setVisibility(View.VISIBLE);
 					
-					if (mAppstate.HOME_PAGE.equals(url)) mAppstate.webAddress.setText(mAppstate.HOME_BLANK);
-					else mAppstate.webAddress.setText(url);
+					if (mActivity.HOME_PAGE.equals(url)) mActivity.webAddress.setText(mActivity.HOME_BLANK);
+					else mActivity.webAddress.setText(url);
 					
-					if ((mAppstate.adview != null) && (mAppstate.adview.isReady())) mAppstate.adContainer.setVisibility(View.VISIBLE);
-					if ((mAppstate.adview2 != null) && (mAppstate.adContainer2.getVisibility() != View.GONE)) mAppstate.adview2.loadAd();
-					if (mAppstate.interstitialAd != null && !mAppstate.interstitialAd.isReady()) mAppstate.interstitialAd.loadAd();
+					if ((mActivity.adview != null) && (mActivity.adview.isReady())) mActivity.adContainer.setVisibility(View.VISIBLE);
+					if ((mActivity.adview2 != null) && (mActivity.adContainer2.getVisibility() != View.GONE)) mActivity.adview2.loadAd();
+					if (mActivity.interstitialAd != null && !mActivity.interstitialAd.isReady()) mActivity.interstitialAd.loadAd();
 					
-					mAppstate.imgRefresh.setImageResource(R.drawable.stop);
+					mActivity.imgRefresh.setImageResource(R.drawable.stop);
 
-					if (!mAppstate.showUrl) mAppstate.setUrlHeight(true);
-					if (!mAppstate.showControlBar) mAppstate.setBarHeight(true);
+					if (!mActivity.showUrl) mActivity.setUrlHeight(true);
+					if (!mActivity.showControlBar) mActivity.setBarHeight(true);
 				}
 
 				//try {if (baiduEvent != null) baiduEvent.invoke(mContext, mContext, "1", url);
 				//} catch (Exception e) {}
 				
-				if (!mAppstate.incognitoMode) mAppstate.recordPages();
+				if (!mActivity.incognitoMode) mActivity.recordPages();
 			}
 
 			@Override
@@ -242,7 +243,7 @@ public class MyWebView extends WebView {
 
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (mAppstate.HOME_BLANK.equals(url)) {// some site such as weibo and
+				if (mActivity.HOME_BLANK.equals(url)) {// some site such as weibo and
 					// mysilkbaby will send
 					// BLANK_PAGE when login.
 					return true;// we should do nothing but return true,
@@ -287,7 +288,7 @@ public class MyWebView extends WebView {
 			//show chooser if it can open, otherwise download it.
 			//download apk and mp3 directly without confirm. 
 			intent.setDataAndType(Uri.parse(url), mimetype);
-			List<ResolveInfo> list = mAppstate.getPackageManager().queryIntentActivities(intent, 0);
+			List<ResolveInfo> list = mActivity.getPackageManager().queryIntentActivities(intent, 0);
 			if ((list != null) && !list.isEmpty()) canOpen = true;
 		}
 
@@ -302,7 +303,7 @@ public class MyWebView extends WebView {
 						public void onClick(DialogInterface dialog,
 								int which) {
 							if (!util.startActivity(intent, false, mContext))
-								mAppstate.startDownload(url, contentDisposition, "yes");//download if open fail
+								mActivity.appstate.startDownload(url, contentDisposition, "yes");//download if open fail
 						}
 					})
 			.setNeutralButton(mContext.getString(R.string.download),
@@ -310,7 +311,7 @@ public class MyWebView extends WebView {
 						@Override
 						public void onClick(DialogInterface dialog,
 								int which) {
-							mAppstate.startDownload(url, contentDisposition, "yes");
+							mActivity.appstate.startDownload(url, contentDisposition, "yes");
 						}
 					})
 			.setNegativeButton(mContext.getString(R.string.cancel),
@@ -320,7 +321,7 @@ public class MyWebView extends WebView {
 								int which) {
 						}
 					}).show();} catch(Exception e) {}
-		} else mAppstate.startDownload(url, contentDisposition, "yes");
+		} else mActivity.appstate.startDownload(url, contentDisposition, "yes");
 	}
 	
 	void overloadAction(String url) {
@@ -368,53 +369,53 @@ public class MyWebView extends WebView {
 	void pageFinishAction(WebView view, String url, boolean isForeground) {
 		if (isForeground) {
 			// hide progressbar anyway
-			mAppstate.loadProgress.setVisibility(View.GONE);
-			mAppstate.imgRefresh.setImageResource(R.drawable.refresh);
-			mAppstate.webControl.setVisibility(View.GONE);
-			if (mAppstate.HOME_PAGE.equals(url)) mAppstate.webAddress.setText(mAppstate.HOME_BLANK);
-			else mAppstate.webAddress.setText(url);
+			mActivity.loadProgress.setVisibility(View.GONE);
+			mActivity.imgRefresh.setImageResource(R.drawable.refresh);
+			mActivity.webControl.setVisibility(View.GONE);
+			if (mActivity.HOME_PAGE.equals(url)) mActivity.webAddress.setText(mActivity.HOME_BLANK);
+			else mActivity.webAddress.setText(url);
 		}
 		// update the page title in webList
-		mAppstate.webAdapter.notifyDataSetChanged();
+		mActivity.webAdapter.notifyDataSetChanged();
 
 		String title = view.getTitle();
 		if (title == null) title = url;
 
-		if (mAppstate.HOME_PAGE.equals(url)) ;// do nothing
+		if (mActivity.HOME_PAGE.equals(url)) ;// do nothing
 		else {
-			if (mAppstate.browserName.equals(title)) ;
+			if (mActivity.browserName.equals(title)) ;
 				// if title and url not sync, then sync it
 				//webAddress.setText(HOME_BLANK);
-			else if (!mAppstate.incognitoMode) {// handle the bookmark/history after load new page
-				if ((mAppstate.mHistory.size() > 0) && (mAppstate.mHistory.get(mAppstate.mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
+			else if (!mActivity.incognitoMode) {// handle the bookmark/history after load new page
+				if ((mActivity.mHistory.size() > 0) && (mActivity.mHistory.get(mActivity.mHistory.size() - 1).m_url.equals(url))) return;// already the latest, no need to update history list
 
 				String site = WebUtil.getSite(url);
 				TitleUrl titleUrl = new TitleUrl(title, url, site);
-				mAppstate.mHistory.add(titleUrl);// always add it to history if visit any page.
-				mAppstate.historyChanged = true;
+				mActivity.mHistory.add(titleUrl);// always add it to history if visit any page.
+				mActivity.historyChanged = true;
 
-				for (int i = mAppstate.mHistory.size() - 2; i >= 0; i--) {
-					if (mAppstate.mHistory.get(i).m_url.equals(url)) {
+				for (int i = mActivity.mHistory.size() - 2; i >= 0; i--) {
+					if (mActivity.mHistory.get(i).m_url.equals(url)) {
 						if (title.equals(url)) {// use meaningful title to replace title with url content
-							String meaningfulTitle = mAppstate.mHistory.get(i).m_title;
+							String meaningfulTitle = mActivity.mHistory.get(i).m_title;
 							if (!meaningfulTitle.equals(url)) 
-								mAppstate.mHistory.set(mAppstate.mHistory.size()-1, mAppstate.mHistory.get(i));
+								mActivity.mHistory.set(mActivity.mHistory.size()-1, mActivity.mHistory.get(i));
 						}
-						mAppstate.mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
-						mAppstate.updateHistory();
+						mActivity.mHistory.remove(i);// record one url only once in the history list. clear old duplicate history if any
+						mActivity.updateHistory();
 						return;
 					} 
-					else if (title.equals(mAppstate.mHistory.get(i).m_title)) {
-						mAppstate.mHistory.remove(i);// only keep the latest history of the same title. display multi item with same title is not useful to user
+					else if (title.equals(mActivity.mHistory.get(i).m_title)) {
+						mActivity.mHistory.remove(i);// only keep the latest history of the same title. display multi item with same title is not useful to user
 						break;
 					}
 				}
 
-				if (mAppstate.siteArray.indexOf(site) < 0) {
+				if (mActivity.siteArray.indexOf(site) < 0) {
 					// update the auto-complete edittext without duplicate
-					mAppstate.urlAdapter.add(site);
+					mActivity.urlAdapter.add(site);
 					// the adapter will always return 0 when get count or search, so we use an array to store the site.
-					mAppstate.siteArray.add(site);
+					mActivity.siteArray.add(site);
 				}
 
 				try {// try to open the png, if can't open, then need save
@@ -447,12 +448,12 @@ public class MyWebView extends WebView {
 					} catch (Exception e) {}
 				}
 
-				while (mAppstate.mHistory.size() > mAppstate.historyCount) 
+				while (mActivity.mHistory.size() > mActivity.historyCount) 
 					// delete from the first history until the list is not larger than historyCount;
 					 //not delete icon here. it can be clear when clear all 
-					mAppstate.mHistory.remove(0);
+					mActivity.mHistory.remove(0);
 				
-				mAppstate.updateHistory();
+				mActivity.updateHistory();
 			}
 		}
 	}	

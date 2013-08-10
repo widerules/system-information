@@ -19,15 +19,13 @@ import base.lib.WebUtil;
 
 
 public class MyListAdapter extends ArrayAdapter<TitleUrl> {
-	Context mContext;
-	MyApp mAppstate;
+	SimpleBrowser mActivity;
 	ArrayList localList;
 	public int type = 0;// 0:bookmark, 1:history, 2:downloads
 
-	public MyListAdapter(Context context, List<TitleUrl> titles, MyApp appstate) {
-		super(context, 0, titles);
-		mContext = context;
-		mAppstate = appstate;
+	public MyListAdapter(SimpleBrowser activity, List<TitleUrl> titles) {
+		super(activity, 0, titles);
+		mActivity = activity;
 		localList = (ArrayList) titles;
 	}
 
@@ -37,7 +35,7 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 		final TitleUrl tu = (TitleUrl) localList.get(position);
 
 		if (convertView == null) {
-			final LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+			final LayoutInflater inflater = mActivity.getLayoutInflater();
 			convertView = inflater.inflate(R.layout.web_list, parent, false);
 			
 			convertView.setBackgroundResource(R.drawable.webname_layout);
@@ -45,8 +43,8 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 
 		final ImageView btnIcon = (ImageView) convertView.findViewById(R.id.webicon);
 		String filename;
-		if (type != 2) filename = mContext.getFilesDir().getAbsolutePath() + "/" + tu.m_site + ".png";
-		else filename = mContext.getFilesDir().getAbsolutePath() + "/" + WebUtil.getSite(tu.m_site) + ".png";
+		if (type != 2) filename = mActivity.getFilesDir().getAbsolutePath() + "/" + tu.m_site + ".png";
+		else filename = mActivity.getFilesDir().getAbsolutePath() + "/" + WebUtil.getSite(tu.m_site) + ".png";
 		
 		File f = new File(filename);
 		if (f.exists())
@@ -62,18 +60,18 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 			@Override
 			public void onClick(View arg0) {
 				if (type == 0) {// bookmark
-					File favicon = new File(mAppstate.dataPath + "files/" + mAppstate.mBookMark.get(position).m_site + ".png");
+					File favicon = new File(mActivity.appstate.dataPath + "files/" + mActivity.mBookMark.get(position).m_site + ".png");
 					favicon.delete();//delete favicon of the site
-					mAppstate.mBookMark.remove(position);
-					mAppstate.updateBookmark();
+					mActivity.mBookMark.remove(position);
+					mActivity.updateBookmark();
 				}
 				else if (type == 1) {// history
-					mAppstate.mHistory.remove(mAppstate.mHistory.size() - 1 - position);
-					mAppstate.updateHistory();
+					mActivity.mHistory.remove(mActivity.mHistory.size() - 1 - position);
+					mActivity.updateHistory();
 				}
 				else {// downloads
-					mAppstate.mDownloads.remove(position);
-					mAppstate.updateDownloads();
+					mActivity.mDownloads.remove(position);
+					mActivity.updateDownloads();
 				}
 				btnDelete.setVisibility(View.GONE);
 			}
@@ -88,11 +86,11 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 			@Override
 			public void onClick(View arg0) {
 				if (type != 2) {// bookmark and history
-					mAppstate.serverWebs.get(mAppstate.webIndex).loadUrl(tu.m_url);
-					mAppstate.hideBookmark();
+					mActivity.serverWebs.get(mActivity.webIndex).loadUrl(tu.m_url);
+					mActivity.hideBookmark();
 				}
 				else // open downloads file
-					WebUtil.openDownload(tu, mContext);
+					WebUtil.openDownload(tu, mActivity);
 			}
 		});
 		webname.setOnLongClickListener(new OnLongClickListener() {

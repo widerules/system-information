@@ -1,7 +1,7 @@
 package common.lib;
 
+import easy.lib.HarleyBrowser;
 import easy.lib.R;
-import easy.lib.SimpleBrowser;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -21,13 +21,11 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 public class EasyWebView extends MyWebView {
-	SimpleBrowser mHarleyActivity;
-	EasyApp mHarleyAppState;
-	public EasyWebView(Context context, EasyApp appstate) {
-		super(context, appstate);
+	HarleyBrowser mHarleyActivity;
+	public EasyWebView(Context context, HarleyBrowser activity) {
+		super(context, activity);
 		
-		mHarleyActivity = (SimpleBrowser) appstate.mActivity;
-		mHarleyAppState = appstate;
+		mHarleyActivity = activity;
 		
 		setScrollbarFadingEnabled(true);// hide scroll bar when not scroll. from API5, not work on cupcake.
 
@@ -42,7 +40,7 @@ public class EasyWebView extends MyWebView {
 
 		// loads the WebView completely zoomed out. fit for hao123, but not fit for homepage. from API7
 		//localSettings.setUseWideViewPort(overviewPage);
-		localSettings.setLoadWithOverviewMode(mAppstate.overviewPage);
+		localSettings.setLoadWithOverviewMode(mActivity.overviewPage);
 		
 		setWebChromeClient(new WebChromeClient() {
 			@Override
@@ -51,24 +49,24 @@ public class EasyWebView extends MyWebView {
 				else mProgress = progress;
 
 				if (isForeground) {
-					mAppstate.loadProgress.setProgress(progress);
+					mActivity.loadProgress.setProgress(progress);
 					if (progress == 100)
-						mAppstate.loadProgress.setVisibility(View.GONE);
+						mActivity.loadProgress.setVisibility(View.GONE);
 				}
 			}
 
 			// For Android 3.0+
 			public void openFileChooser(ValueCallback<Uri> uploadMsg,
 					String acceptType) {
-				if (null == mAppstate.mUploadMessage)
-					mAppstate.mUploadMessage = new WrapValueCallback();
-				mAppstate.mUploadMessage.mInstance = uploadMsg;
+				if (null == mActivity.mUploadMessage)
+					mActivity.mUploadMessage = new WrapValueCallback();
+				mActivity.mUploadMessage.mInstance = uploadMsg;
 				Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 				i.addCategory(Intent.CATEGORY_OPENABLE);
 				i.setType("*/*");
 				mHarleyActivity.startActivityForResult(Intent.createChooser(i,
 						mContext.getString(R.string.select_file)),
-						mAppstate.FILECHOOSER_RESULTCODE);
+						mActivity.FILECHOOSER_RESULTCODE);
 			}
 
 			// For Android < 3.0
@@ -134,9 +132,9 @@ public class EasyWebView extends MyWebView {
 			@Override
 			public boolean onCreateWindow(WebView view, boolean isDialog,
 					boolean isUserGesture, android.os.Message resultMsg) {
-				if (mAppstate.openNewPage(null, mAppstate.webIndex+1, true, true)) {// open new page success
+				if (mActivity.openNewPage(null, mActivity.webIndex+1, true, true)) {// open new page success
 					((WebView.WebViewTransport) resultMsg.obj)
-							.setWebView(mAppstate.serverWebs.get(mAppstate.webIndex));
+							.setWebView(mActivity.serverWebs.get(mActivity.webIndex));
 					resultMsg.sendToTarget();
 					return true;
 				} else return false;
@@ -196,8 +194,8 @@ public class EasyWebView extends MyWebView {
 			if (!this.isFocused()) {
 				this.setFocusableInTouchMode(true);
 				this.requestFocus();
-				mAppstate.webAddress.setFocusableInTouchMode(false);
-				mAppstate.webAddress.clearFocus();
+				mActivity.webAddress.setFocusableInTouchMode(false);
+				mActivity.webAddress.clearFocus();
 			}
             break;
         case MotionEvent.ACTION_MOVE: // when user stop to touch the screen
@@ -206,21 +204,21 @@ public class EasyWebView extends MyWebView {
             if (!isScrolling && (Math.abs(oldY - event.getY()) < 50)) {
                 if ((event.getX() > oldX+100) && overScrollLeft && (oldX < 100)) {
                     // left action
-                	if (!mHarleyAppState.reverted) {
-                		if (!mHarleyAppState.bookmarkOpened) mHarleyAppState.showBookmark();
+                	if (!mHarleyActivity.reverted) {
+                		if (!mHarleyActivity.bookmarkOpened) mHarleyActivity.showBookmark();
                 	}
                 	else {
-	                	if (!mHarleyAppState.menuOpened) mHarleyAppState.menuOpenAction();
+	                	if (!mHarleyActivity.menuOpened) mActivity.menuOpenAction();
                 	}
                 	dragEdge = true;
                 }
-                else if ((event.getX() < oldX-100) && overScrollRight && (oldX > mHarleyAppState.dm.widthPixels-100)) {
+                else if ((event.getX() < oldX-100) && overScrollRight && (oldX > mActivity.dm.widthPixels-100)) {
                 	// right action
-                	if (!mHarleyAppState.reverted) {
-                		if (!mHarleyAppState.menuOpened) mHarleyAppState.menuOpenAction();
+                	if (!mHarleyActivity.reverted) {
+                		if (!mHarleyActivity.menuOpened) mActivity.menuOpenAction();
                 	}
                 	else {
-                		if (!mHarleyAppState.bookmarkOpened) mHarleyAppState.showBookmark();
+                		if (!mHarleyActivity.bookmarkOpened) mHarleyActivity.showBookmark();
                 	}
                 	dragEdge = true;
                 }
@@ -228,13 +226,13 @@ public class EasyWebView extends MyWebView {
             break;
         case MotionEvent.ACTION_UP:
             if (!dragEdge) {
-            	mHarleyAppState.scrollToMain();
+            	mHarleyActivity.scrollToMain();
 
-            	if (mHarleyAppState.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
-            		mHarleyAppState.webControl.setVisibility(View.GONE);
+            	if (mActivity.webControl.getVisibility() == View.VISIBLE)// close webcontrol page if it is open.
+            		mActivity.webControl.setVisibility(View.GONE);
 								
-				if (!mHarleyAppState.showUrl) mHarleyAppState.setUrlHeight(false);
-				if (!mHarleyAppState.showControlBar) mHarleyAppState.setBarHeight(false);
+				if (!mActivity.showUrl) mActivity.setUrlHeight(false);
+				if (!mActivity.showControlBar) mActivity.setBarHeight(false);
             }
             break;
         default:

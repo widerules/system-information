@@ -1,10 +1,14 @@
 package common.lib;
 
 import common.lib.MyJavaScriptInterface;
+import easy.lib.EasyBrowser;
 
 public class EasyJavaScriptInterface extends MyJavaScriptInterface {
-	EasyJavaScriptInterface(EasyWebView webview, EasyApp appstate) {
-		super(webview, appstate);
+	EasyBrowser mActivity;
+	EasyJavaScriptInterface(EasyWebView webview, EasyBrowser activity) {
+		super(webview, activity);
+		
+		mActivity = activity;
 	}
 
 	@SuppressWarnings("unused")
@@ -15,11 +19,11 @@ public class EasyJavaScriptInterface extends MyJavaScriptInterface {
 	@SuppressWarnings("unused")
 	public void saveCollapseState(String item, boolean state) {
 		if ("1".equals(item))
-			((EasyApp)mAppstate).collapse1 = state;
+			mActivity.collapse1 = state;
 		if ("2".equals(item))
-			((EasyApp)mAppstate).collapse2 = state;
+			mActivity.collapse2 = state;
 		if ("3".equals(item))
-			((EasyApp)mAppstate).collapse3 = state;
+			mActivity.collapse3 = state;
 	}
 	
 	@SuppressWarnings("unused")
@@ -27,25 +31,25 @@ public class EasyJavaScriptInterface extends MyJavaScriptInterface {
 		if (!"".equals(historys) && !",,,,".equals(historys)) {
 			String[] tmp1 = historys.split(",,,,");
 			for (int i = 0; i < tmp1.length; i++) {// the display of history is in revert order, so delete in revert order
-				int index = mAppstate.mHistory.size() - 1 + i - (Integer.valueOf(tmp1[i]) - mAppstate.mBookMark.size());
-				if ((index >= 0) && (index < mAppstate.mHistory.size()))// sometime the index is -1? 
-					mAppstate.mHistory.remove(index);
+				int index = mActivity.mHistory.size() - 1 + i - (Integer.valueOf(tmp1[i]) - mActivity.mBookMark.size());
+				if ((index >= 0) && (index < mActivity.mHistory.size()))// sometime the index is -1? 
+					mActivity.mHistory.remove(index);
 			}
-			((EasyApp)mAppstate).updateHistory();
-			mAppstate.historyChanged = true;
+			mActivity.updateHistory();
+			mActivity.historyChanged = true;
 		}
 		
 		if (!"".equals(bookmarks) && !",,,,".equals(bookmarks)) {
 			String[] tmp2 = bookmarks.split(",,,,");
 			for (int i = tmp2.length-1; i >= 0; i--) 
-				try{mAppstate.mBookMark.remove(Integer.valueOf(tmp2[i]) + 0);} catch(Exception e) {}// it will not treat as integer if not add 0
-			((EasyApp)mAppstate).updateBookmark();
-			mAppstate.bookmarkChanged = true;
+				try{mActivity.mBookMark.remove(Integer.valueOf(tmp2[i]) + 0);} catch(Exception e) {}// it will not treat as integer if not add 0
+			mActivity.updateBookmark();
+			mActivity.bookmarkChanged = true;
 		}
 	}
 	
 	@SuppressWarnings("unused")
 	public void updateHome() {
-		((EasyApp)mAppstate).updateHomePage();
+		mActivity.updateHomePage();
 	}
 }

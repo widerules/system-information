@@ -136,7 +136,7 @@ public class SimpleBrowser extends Activity {
 			}
 		}
 	}
-	AppHandler mAppHandler = new AppHandler();
+	public AppHandler mAppHandler = new AppHandler();
 	public DisplayMetrics dm;
 
 	// search
@@ -182,7 +182,7 @@ public class SimpleBrowser extends Activity {
 	public boolean enableProxy = false;
 	public int localPort;
 	public boolean overviewPage = false;
-	Locale mLocale;
+	public Locale mLocale;
 
 	ImageView imgAddFavo;
 	public ImageView imgGo;
@@ -1537,7 +1537,7 @@ public class SimpleBrowser extends Activity {
 		serverWebs.get(webIndex).loadUrl(HOME_PAGE);
 	}
 
-	void changePage(int position) {//identical
+	public void changePage(int position) {//identical
 		while (webpages.getDisplayedChild() != position)
 			webpages.showNext();
 		for (int i = 0; i < serverWebs.size(); i++) {
@@ -1779,7 +1779,7 @@ public class SimpleBrowser extends Activity {
 		webTools.requestLayout();		
 	}
 
-	void removeAd() {
+	public void removeAd() {
 		if (adview != null) {
 			adContainer.setVisibility(View.GONE);
 			adContainer.removeAllViews();

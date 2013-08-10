@@ -45,9 +45,9 @@ public class MyWebView extends WebView {
 	public boolean html5 = false;
 
 	int mProgress = 0;
-	boolean isForeground = true;
-	boolean closeToBefore = true;
-	boolean shouldCloseIfCannotBack = false;
+	public boolean isForeground = true;
+	public boolean closeToBefore = true;
+	public boolean shouldCloseIfCannotBack = false;
 
 	static Method setScrollbarFadingEnabled = null;
 	static Method canScrollVerticallyMethod = null;

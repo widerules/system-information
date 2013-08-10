@@ -5,10 +5,10 @@ import android.widget.Toast;
 
 public class MyJavaScriptInterface {
 	MyWebView mWebView;
-	MyApp mAppstate;
-	MyJavaScriptInterface(MyWebView webview, MyApp appstate) {
+	SimpleBrowser mActivity;
+	MyJavaScriptInterface(MyWebView webview, SimpleBrowser activity) {
 		mWebView = webview;
-		mAppstate = appstate;
+		mActivity = activity;
 	}
 	
 	@SuppressWarnings("unused")
@@ -18,15 +18,15 @@ public class MyJavaScriptInterface {
 
 	@SuppressWarnings("unused")
 	public void showInterstitialAd() {
-		if (mAppstate.interstitialAd.isReady()) mAppstate.interstitialAd.show();
+		if (mActivity.interstitialAd.isReady()) mActivity.interstitialAd.show();
 		else {
-			Toast.makeText(mAppstate.mContext, "Admob is loading", Toast.LENGTH_SHORT).show();
-			mAppstate.interstitialAdClicked = true;
+			Toast.makeText(mActivity.mContext, "Admob is loading", Toast.LENGTH_SHORT).show();
+			mActivity.interstitialAdClicked = true;
 		}
 		
 		// try to load interstitialAd
-		Message fail = mAppstate.mAppHandler.obtainMessage();
+		Message fail = mActivity.mAppHandler.obtainMessage();
 		fail.what = -3;
-		mAppstate.mAppHandler.sendMessage(fail);
+		mActivity.mAppHandler.sendMessage(fail);
 	}
 }

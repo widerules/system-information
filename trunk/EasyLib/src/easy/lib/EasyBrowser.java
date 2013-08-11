@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import common.lib.EasyWebView;
+import common.lib.MyWebView;
 import common.lib.SimpleBrowser;
 
 public class EasyBrowser extends SimpleBrowser {
@@ -89,9 +90,11 @@ public class EasyBrowser extends SimpleBrowser {
 		browserName = getString(R.string.browser_name);
 		
 		setAsDefaultApp();
-		
+
 		initImgHome();
 		initImgGo();
+		
+		initFirstPage(new EasyWebView(mContext, this));
 	}
 	
 	public void setDefault(PackageManager pm, Intent intent, IntentFilter filter) {

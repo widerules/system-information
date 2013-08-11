@@ -1018,11 +1018,6 @@ public class SimpleBrowser extends Activity {
 			System.gc();
 		}
 
-		webIndex = 0;
-		serverWebs.add(new MyWebView(mContext, this));
-		webpages = (MyViewFlipper) findViewById(R.id.webpages);
-		webpages.addView(serverWebs.get(webIndex));
-
 		webTools = (LinearLayout) findViewById(R.id.webtools);
 		urlLine = (LinearLayout) findViewById(R.id.urlline);
 		webs = (RelativeLayout) findViewById(R.id.webs);
@@ -1050,6 +1045,21 @@ public class SimpleBrowser extends Activity {
 
 		initToolbar();
 
+		// for package added
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+		filter.addDataScheme("package");
+		registerReceiver(packageReceiver, filter);
+
+		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
+		registerReceiver(downloadReceiver, filter);
+	}
+
+	public void initFirstPage(MyWebView myWebView) {
+		webIndex = 0;
+		serverWebs.add(myWebView);
+		webpages = (MyViewFlipper) findViewById(R.id.webpages);
+		webpages.addView(serverWebs.get(webIndex));
 		try {// there are a null pointer error reported for the if line below,
 				// hard to reproduce, maybe someone use instrument tool to test
 				// it. so just catch it.
@@ -1062,17 +1072,8 @@ public class SimpleBrowser extends Activity {
 			}
 			else serverWebs.get(webIndex).loadUrl(getIntent().getDataString());
 		} catch (Exception e) {}
-
-		// for package added
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
-		filter.addDataScheme("package");
-		registerReceiver(packageReceiver, filter);
-
-		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
-		registerReceiver(downloadReceiver, filter);
 	}
-
+	
 	public void exchangePosition() {
 		//reverse the position of buttons and ads
 		LayoutParams lp1 = imageBtnList.getLayoutParams();
@@ -1231,7 +1232,6 @@ public class SimpleBrowser extends Activity {
 	public void hideBookmark() {}
 	public void updateBookmark() {}
 	public void updateHistory() {}
-	public void updateHomePage() {}
 	public void actionBack() {}
 	public void createAd(float width) {}
 	public void menuOpenAction() {}

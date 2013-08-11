@@ -75,6 +75,9 @@ public class MyListAdapter extends ArrayAdapter<TitleUrl> {
 			}
 		});
 
+		TextView webIndex = (TextView) convertView.findViewById(R.id.webindex);
+		webIndex.setText(position+1 + ".");
+		
 		TextView webname = (TextView) convertView.findViewById(R.id.webname);
 		webname.setText(tu.m_title);
 		if (type == 1) webname.setTextColor(0xffddddff);

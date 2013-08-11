@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,6 +31,7 @@ public class DownloadControl extends Activity {
 	MyApp appstate;
 	String url;
 	DownloadTask dlt;
+	int nid;
 	
 	NotificationManager nManager;
 
@@ -61,10 +63,10 @@ public class DownloadControl extends Activity {
 		btnStop = (Button) findViewById(R.id.stop);
 		btnStop.setText(getString(R.string.stop));
 		
-		url = intent.getStringExtra("url");
-		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
 		String errorMsg = intent.getStringExtra("errorMsg");
+		url = intent.getStringExtra("url");
+		nid = intent.getIntExtra("nid", -1);
+		nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		
 		appstate = (MyApp) getApplicationContext();
 		if (url != null) dlt = appstate.downloadState.get(url);
@@ -76,15 +78,13 @@ public class DownloadControl extends Activity {
 			
 			tv.setText(getString(R.string.download_hint) + "\n" + intent.getStringExtra("name") + "\n");
 		} 
-		else if (errorMsg != null) {
+		else {
+			if (errorMsg == null) errorMsg = "unknown error";
+			Log.d("================", errorMsg);
 			failed = true;
 			pause = false;
 			
 			tv.setText(intent.getStringExtra("name") + " " + getString(R.string.download_fail) + "\n\n" + errorMsg + "\n");
-		}
-		else {// the corresponding download state is deleted, so can't control it.
-			finish();
-			return;
 		}
 
 		if (pause)
@@ -97,9 +97,8 @@ public class DownloadControl extends Activity {
 		if (failed) {
 			btnPause.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View arg0) {// start new task to download. why?
-					nManager.cancel(dlt.NOTIFICATION_ID);
-					try {appstate.downloadState.remove(url);} catch(Exception e) {}
+				public void onClick(View arg0) {// start new task to download.
+					removeNotification();
 					
 					Intent intent = new Intent(
 							"simpleHome.action.START_DOWNLOAD");
@@ -112,8 +111,7 @@ public class DownloadControl extends Activity {
 			btnStop.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {// remove notification
-					nManager.cancel(dlt.NOTIFICATION_ID);
-					try {appstate.downloadState.remove(url);} catch(Exception e) {}
+					removeNotification();
 					
 					finish();
 				}
@@ -133,9 +131,18 @@ public class DownloadControl extends Activity {
 				public void onClick(View arg0) {
 					if (dlt != null)
 						dlt.stopDownload = !stop;
+					removeNotification();
 					finish();
 				}
 			});
 		}
+	}
+	
+	void removeNotification() {
+		try {
+			nManager.cancel(nid);
+			appstate.downloadState.remove(url);
+			} 
+		catch(Exception e) {e.printStackTrace();}
 	}
 }

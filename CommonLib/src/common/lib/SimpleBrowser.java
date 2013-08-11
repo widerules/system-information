@@ -945,6 +945,8 @@ public class SimpleBrowser extends Activity {
 		// select locale in google translate
 		mContext = this;
 		appstate = ((MyApp) getApplicationContext());
+		appstate.mActivity = this;
+		appstate.mContext = this;
 		webAdapter = new WebAdapter(this, serverWebs);
 
 		dm = new DisplayMetrics();

@@ -14,7 +14,7 @@ import android.webkit.WebView;
 public class EasyWebView extends MyWebView {
 
 	public String m_ready = "";
-	public EasyWebView(Context context, EasyBrowser activity) {
+	public EasyWebView(Context context, final EasyBrowser activity) {
 		super(context, activity);
 
 		try {
@@ -45,7 +45,7 @@ public class EasyWebView extends MyWebView {
 					// the progress is not continuous from 0, 1, 2... 100. it always looks like 10, 13, 15, 16, 100
 					if ("".equals(m_ready)) {//must update the page on after some progress(like 13), other wise it will not update success
 						Log.d("=================", progress+"");
-						mActivity.updateHomePage();
+						activity.updateHomePage();
 					}
 				}
 

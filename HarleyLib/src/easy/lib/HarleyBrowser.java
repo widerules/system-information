@@ -94,6 +94,8 @@ public class HarleyBrowser extends SimpleBrowser {
 
 		hideMenu();
 		hideBookmark();
+		
+		initFirstPage(new EasyWebView(mContext, this));
 	}
 	
 	public void hideMenu() {

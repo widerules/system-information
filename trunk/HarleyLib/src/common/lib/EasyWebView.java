@@ -1,6 +1,6 @@
 package common.lib;
 
-import easy.lib.HarleyBrowser;
+import harley.lib.HarleyBrowser;
 import easy.lib.R;
 import android.content.Context;
 import android.content.Intent;

@@ -1,10 +1,11 @@
-package easy.lib;
+package harley.lib;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 
 import common.lib.SimpleBrowser;
+import easy.lib.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

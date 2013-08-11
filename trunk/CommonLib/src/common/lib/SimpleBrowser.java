@@ -964,8 +964,17 @@ public class SimpleBrowser extends Activity {
 		// hide titlebar of application, must be before setting the layout
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
-		setContentView(R.layout.browser);
-        
+		// for package added
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+		filter.addDataScheme("package");
+		registerReceiver(packageReceiver, filter);
+
+		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
+		registerReceiver(downloadReceiver, filter);
+	}
+
+	public void initViews() {
 		initWebControl();
 		loadProgress = (ProgressBar) findViewById(R.id.loadprogress);
 		initAddFavo();
@@ -1044,17 +1053,8 @@ public class SimpleBrowser extends Activity {
 		webTools.bringToFront();
 
 		initToolbar();
-
-		// for package added
-		IntentFilter filter = new IntentFilter();
-		filter.addAction(Intent.ACTION_PACKAGE_ADDED);
-		filter.addDataScheme("package");
-		registerReceiver(packageReceiver, filter);
-
-		filter = new IntentFilter("simpleHome.action.START_DOWNLOAD");
-		registerReceiver(downloadReceiver, filter);
 	}
-
+	
 	public void initFirstPage(MyWebView myWebView) {
 		webIndex = 0;
 		serverWebs.add(myWebView);

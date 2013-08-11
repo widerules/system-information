@@ -65,7 +65,7 @@ public class HarleyBrowser extends SimpleBrowser {
 	public ListView downloadsList;
 	public MyListAdapter bookmarkAdapter, historyAdapter;
 	public int minWebControlWidth = 200;
-	public ImageView imgBookmark, imgAddFavo;
+	public ImageView imgBookmark;
 	int statusBarHeight;
 
 	public LinearLayout fakeWebControl;
@@ -434,7 +434,7 @@ public class HarleyBrowser extends SimpleBrowser {
 }
 	
 	public boolean openNewPage(String url, int newIndex, boolean changeToNewPage, boolean closeIfCannotBack) {
-		boolean weblink = openNewPage(url, newIndex, changeToNewPage, closeIfCannotBack);
+		boolean weblink = super.openNewPage(url, newIndex, changeToNewPage, closeIfCannotBack);
 		if (!weblink) return false;
 
 		if (webAdapter.getCount() == 9) {// max pages is 9

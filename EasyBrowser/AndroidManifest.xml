@@ -32,7 +32,7 @@
         android:xlargeScreens="true" />
 
     <application
-        android:name="common.lib.EasyApp"
+        android:name="common.lib.MyApp"
         android:debuggable="false"
         android:description="@string/about_message"
         android:hardwareAccelerated="true"
@@ -49,7 +49,7 @@
             android:value="428da1b5ed" />
 
         <activity
-            android:name="easy.lib.SimpleBrowser"
+            android:name="harley.lib.HarleyBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale"
             android:hardwareAccelerated="true"
             android:icon="@drawable/explorer"
@@ -141,7 +141,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="easy.lib.AboutBrowser"
+            android:name="harley.lib.AboutBrowser"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|locale" >
             <intent-filter>
                 <action android:name="about" />

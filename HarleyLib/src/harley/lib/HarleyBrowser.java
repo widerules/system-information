@@ -1,4 +1,4 @@
-package easy.lib;
+package harley.lib;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import base.lib.WebUtil;
 import base.lib.WrapAdView;
 import base.lib.WrapInterstitialAd;
 import base.lib.util;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +16,7 @@ import android.graphics.Picture;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -44,6 +44,7 @@ import common.lib.EasyWebView;
 import common.lib.MyListAdapter;
 import common.lib.SimpleBrowser;
 import common.lib.TitleUrl;
+import easy.lib.R;
 
 public class HarleyBrowser extends SimpleBrowser {
 	public int bookmarkWidth = LayoutParams.WRAP_CONTENT;
@@ -92,6 +93,7 @@ public class HarleyBrowser extends SimpleBrowser {
         menuGrid = (GridView) findViewById(R.id.grid_menu);
 		adContainer3 = (FrameLayout) findViewById(R.id.adContainer3);
 
+		initViews();
 		hideMenu();
 		hideBookmark();
 		
@@ -210,7 +212,7 @@ public class HarleyBrowser extends SimpleBrowser {
 	}
 	
 	public void readPreference() {
-		readPreference();
+		super.readPreference();
 		
 		if (Locale.CHINA.equals(mLocale)) 
 			HOME_PAGE = "file:///android_asset/home-ch.html";
@@ -219,12 +221,12 @@ public class HarleyBrowser extends SimpleBrowser {
 	}
 	
 	public void loadPage() {// load home page
-		loadPage();
+		super.loadPage();
 		if ((mBookMark.size() > 0) || (mHistory.size() > 0)) showBookmark();// show bookmark for load home page too slow
 	}
 
 	public void shareUrl(String title, String url) {
-		shareUrl(title, url);
+		super.shareUrl(title, url);
 
 		if (shareMode != 1) scrollToMain();
 	}
@@ -246,13 +248,13 @@ public class HarleyBrowser extends SimpleBrowser {
 	}
 	
 	public void setUrlHeight(boolean showUrlNow) {
-		setUrlHeight(showUrlNow);
+		super.setUrlHeight(showUrlNow);
 		
 		updateHistoryViewHeight();
 	}
 	
 	public void setBarHeight(boolean showBarNow) {
-		setBarHeight(showBarNow);
+		super.setBarHeight(showBarNow);
 		
 		updateHistoryViewHeight();
 	}
@@ -339,7 +341,7 @@ public class HarleyBrowser extends SimpleBrowser {
  				}
  			}
 
- 			if (adview3 == null) {
+ 			if ((adview3 == null) && (adContainer3 != null)) {
  				adview3 = new WrapAdView(this, 0, "a14a8e65a47d51f", null);// AdSize.BANNER require 320*50
  				if ((adview3 != null) && (adview3.getInstance() != null)) {
  					adContainer3.addView(adview3.getInstance());
@@ -425,7 +427,7 @@ public class HarleyBrowser extends SimpleBrowser {
 	}
 	
 	public void imgNewClick() {
-		imgNewClick();
+		super.imgNewClick();
 		
 		if ((webControl.getVisibility() == View.VISIBLE) && (webControl.getWidth() < minWebControlWidth)) 
 			scrollToMain();// otherwise may not display weblist correctly

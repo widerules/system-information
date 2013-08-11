@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.text.ClipboardManager;
+import android.util.Log;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
@@ -49,6 +50,9 @@ public class WebAdapter extends ArrayAdapter<MyWebView> {
 		} catch (Exception e) {
 		}// catch an null pointer exception on 1.6}
 
+		TextView webIndex = (TextView) convertView.findViewById(R.id.webindex);
+		webIndex.setText(position+1 + ".");
+		
 		final TextView webname = (TextView) convertView
 				.findViewById(R.id.webname);
 		if ((wv.getTitle() != null) && (!"".equals(wv.getTitle())))

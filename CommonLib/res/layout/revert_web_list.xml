@@ -7,29 +7,6 @@
     >
 
         <ImageView
-            android:id="@+id/webicon"
-            android:layout_width="36dip"
-            android:layout_height="16dip"
-            android:paddingRight="10dip"
-            android:paddingLeft="10dip"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:scaleType="centerCrop" />
-
-        <TextView
-            android:id="@+id/webname"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingLeft="40dip"
-            android:paddingRight="36dip"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:scrollHorizontally="true"
-		    android:background="@drawable/webname_layout"
-            android:textColor="#FFFFFFFF"
-            android:textSize="14dip" />
-
-        <ImageView
             android:id="@+id/webclose"
             android:layout_width="40dip"
             android:layout_height="40dip"
@@ -42,5 +19,38 @@
             android:scaleType="centerCrop"
             android:src="@drawable/stop"
             />
+
+        <TextView
+            android:id="@+id/webindex"
+            android:layout_toRightOf="@id/webclose"
+            android:layout_width="20dip"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
+		    android:background="@drawable/webname_layout"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14dip" />
+
+        <TextView
+            android:id="@+id/webname"
+            android:layout_toRightOf="@id/webindex"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingRight="36dip"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:scrollHorizontally="true"
+		    android:background="@drawable/webname_layout"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14dip" />
+
+        <ImageView
+            android:id="@+id/webicon"
+            android:layout_width="36dip"
+            android:layout_height="16dip"
+            android:paddingRight="10dip"
+            android:paddingLeft="10dip"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:scaleType="centerCrop" />
 
 </RelativeLayout>

@@ -43,10 +43,9 @@ public class EasyWebView extends MyWebView {
 				if (mActivity.HOME_PAGE.equals(view.getUrl())) {
 					getPageReadyState();
 					// the progress is not continuous from 0, 1, 2... 100. it always looks like 10, 13, 15, 16, 100
-					if ("".equals(m_ready)) {//must update the page on after some progress(like 13), other wise it will not update success
+					if ("".equals(m_ready)) //must update the page on after some progress(like 13), other wise it will not update success
 						Log.d("=================", progress+"");
-						activity.updateHomePage();
-					}
+					activity.updateHomePage();
 				}
 
 				if (isForeground) {

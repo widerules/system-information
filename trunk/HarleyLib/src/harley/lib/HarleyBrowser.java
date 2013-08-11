@@ -23,6 +23,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
@@ -98,6 +100,48 @@ public class HarleyBrowser extends SimpleBrowser {
 		hideBookmark();
 		
 		initFirstPage(new EasyWebView(mContext, this));
+	}
+	
+	public void initViews() {
+		super.initViews();
+		
+		imgBookmark = (ImageView) findViewById(R.id.bookmark_icon);
+		imgBookmark.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (bookmarkOpened) {
+					if ((downloadsList != null) && (downloadsList.getVisibility() == View.VISIBLE)) {
+						bookmarkView.setVisibility(View.VISIBLE);
+						downloadsList.setVisibility(View.GONE);
+					}
+					else hideBookmark();
+				}
+				else showBookmark(); 
+			}
+		});
+		imgBookmark.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				if (!bookmarkOpened) showBookmark();
+				exchangePosition();
+				return true;
+			}
+		});
+		
+		imgMenu = (ImageView) findViewById(R.id.menu);
+		imgMenu.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				onMenuOpened(0, null);
+			}
+		});
+		imgMenu.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View arg0) {
+				globalSetting();
+				return true;
+			}
+		});
 	}
 	
 	public void hideMenu() {

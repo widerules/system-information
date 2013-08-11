@@ -74,6 +74,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 		intent.setClassName(appstate.mContext.getPackageName(), DownloadControl.class.getName());
 		intent.putExtra("name", apkName);
 		intent.putExtra("url", URL_str);
+		intent.putExtra("nid", NOTIFICATION_ID);
 		// request_code will help to diff different thread
 		contentIntent = PendingIntent.getActivity(appstate.mContext,
 				NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -204,12 +205,6 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 							progress + "%");
 					appstate.nManager.notify(NOTIFICATION_ID, notification);
 				}
-			}
-			// stop download by user. clear notification here for the
-			// close() and shutdown() may be very slow
-			if (stopDownload) {
-				appstate.nManager.cancel(NOTIFICATION_ID);
-				appstate.downloadState.remove(URL_str);
 			}
 
 			try { fos.close();

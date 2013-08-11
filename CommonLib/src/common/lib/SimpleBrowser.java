@@ -184,7 +184,7 @@ public class SimpleBrowser extends Activity {
 	public boolean overviewPage = false;
 	public Locale mLocale;
 
-	ImageView imgAddFavo;
+	public ImageView imgAddFavo;
 	public ImageView imgGo;
 
 	public int revertCount = 0;

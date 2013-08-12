@@ -80,7 +80,6 @@ public class DownloadControl extends Activity {
 		} 
 		else {
 			if (errorMsg == null) errorMsg = "unknown error";
-			Log.d("================", errorMsg);
 			failed = true;
 			pause = false;
 			
@@ -140,9 +139,8 @@ public class DownloadControl extends Activity {
 	
 	void removeNotification() {
 		try {
-			nManager.cancel(nid);
 			appstate.downloadState.remove(url);
-			} 
-		catch(Exception e) {e.printStackTrace();}
+			nManager.cancel(nid);
+		} catch(Exception e) {e.printStackTrace();}
 	}
 }

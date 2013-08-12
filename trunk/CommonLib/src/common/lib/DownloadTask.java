@@ -25,7 +25,6 @@ import android.os.AsyncTask;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
 import android.widget.RemoteViews;
-import base.lib.CrashControl;
 import base.lib.util;
 
 @TargetApi(3)
@@ -151,8 +150,8 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 			if (download_file.length() == apk_length) {
 				// found local file with same name and length,
 				// no need to download, just send intent to view it
+				appstate.downloadState.remove(URL_str);
 				downloadSuccessRoutine(notification, apk_length, intent, download_file, NOTIFICATION_ID, mimeType, params[3]);
-				appstate.downloadState.remove(NOTIFICATION_ID);
 				return appstate.downloadPath + apkName;
 			} else if (download_file.length() < apk_length) {
 				// local file size < need to download,
@@ -220,6 +219,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
 			if (!stopDownload) {// download success. change notification,
 								// start package manager to install package
+				appstate.downloadState.remove(URL_str);
 				downloadSuccessRoutine(notification, total_read, intent, download_file, NOTIFICATION_ID, mimeType, params[3]);
 			}
 
@@ -249,7 +249,7 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
 
 		// remove download id whether download success nor fail, otherwise
 		// can't download again on fail
-		appstate.downloadState.remove(NOTIFICATION_ID);
+		appstate.downloadState.remove(URL_str);
 
 		return null;
 	}

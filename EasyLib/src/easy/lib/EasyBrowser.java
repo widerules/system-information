@@ -10,6 +10,7 @@ import base.lib.util;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -22,11 +23,17 @@ import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.ClipboardManager;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -607,5 +614,106 @@ public class EasyBrowser extends SimpleBrowser {
 				menuDialog.dismiss();
 			}
 		});
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+
+		final HitTestResult result = ((WebView) v).getHitTestResult();
+		final String url = result.getExtra();
+
+		MenuItem.OnMenuItemClickListener handler = new MenuItem.OnMenuItemClickListener() {
+			public boolean onMenuItemClick(MenuItem item) {// do the menu action
+				switch (item.getItemId()) {
+				case 0:// download
+					String ext = null;
+					if (result.getType() == HitTestResult.IMAGE_TYPE
+							|| result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE)
+						ext = ".jpg";
+					appstate.startDownload(url, ext, "yes");
+					break;
+				case 3:// open in foreground
+					openNewPage(url, webIndex+1, true, true); 
+					break;
+				case 4:// copy url
+					ClipboardManager ClipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+					ClipMan.setText(url);
+					break;
+				case 5:// share url
+					shareUrl("", url);
+					break;
+				case 6:// open in background
+					openNewPage(url, webAdapter.getCount(), false, true);// use openNewPage(url, webIndex+1, true, true) for open in new tab 
+					break;
+				case 7:// add short cut
+					createShortcut(url, serverWebs.get(item.getOrder()).getTitle());
+					Toast.makeText(mContext, getString(R.string.add_shortcut) + " " + serverWebs.get(webIndex).getTitle(), Toast.LENGTH_LONG).show();
+					break;
+				case 8:// remove bookmark
+					removeFavo(item.getOrder());
+					break;
+				case 9:// remove history
+					removeHistory(item.getOrder());
+					break;
+				case 10:// add bookmark
+					int historyIndex = -1;
+					for (int i = 0; i < mHistory.size(); i++) {
+						if (mHistory.get(i).m_url.equals(url)) {
+							historyIndex = i;
+							break;
+						}
+					}
+					if (historyIndex > -1)
+						addFavo(url, mHistory.get(historyIndex).m_title);
+					else addFavo(url, url);
+					break;
+				case 11://set homepage
+					m_homepage = url;
+					sEdit.putString("homepage", url);
+					sEdit.commit();
+					break;
+				}
+				return true;
+			}
+		};
+
+		// set the title to the url
+		menu.setHeaderTitle(result.getExtra());
+		if (url != null) {
+			if (dm.heightPixels > dm.density*480) // only show this menu item on large screen
+				menu.add(0, 3, 0, R.string.open_new).setOnMenuItemClickListener(handler);
+			menu.add(0, 4, 0, R.string.copy_url).setOnMenuItemClickListener(handler);
+			menu.add(0, 5, 0, R.string.shareurl).setOnMenuItemClickListener(handler);
+			menu.add(0, 6, 0, R.string.open_background).setOnMenuItemClickListener(handler);
+
+			if (HOME_PAGE.equals(serverWebs.get(webIndex).getUrl())) {// only operate bookmark/history in home page
+				boolean foundBookmark = false;
+				for (int i = mBookMark.size() - 1; i >= 0; i--)
+					if ((mBookMark.get(i).m_url.equals(url))
+							|| (url.equals(mBookMark.get(i).m_url + "/"))) {
+						foundBookmark = true;
+						if (!mAdAvailable) {
+							menu.add(0, 7, i, R.string.add_shortcut).setOnMenuItemClickListener(handler);// only work in pro version
+							menu.add(0, 11, i, R.string.set_homepage).setOnMenuItemClickListener(handler);// only work in pro version
+						}
+						menu.add(0, 8, i, R.string.remove_bookmark).setOnMenuItemClickListener(handler);
+						break;
+					}
+				if (!foundBookmark)
+					menu.add(0, 10, 0, R.string.add_bookmark).setOnMenuItemClickListener(handler);
+
+				for (int i = mHistory.size() - 1; i >= 0; i--)
+					if ((mHistory.get(i).m_url.equals(url))
+							|| (url.equals(mHistory.get(i).m_url + "/"))) {
+						menu.add(0, 9, i, R.string.remove_history)
+								.setOnMenuItemClickListener(handler);
+						break;
+					}
+			}
+
+			menu.add(0, 0, 0, R.string.save).setOnMenuItemClickListener(handler);
+		}
 	}
 }

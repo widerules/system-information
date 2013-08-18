@@ -1,0 +1,12 @@
+#! /usr/bin/perl
+
+@input = <STDIN>;
+
+$offset = shift(@input);
+chomp($offset);
+$offset = "%".$offset."s";
+print $offset."\n";
+
+foreach (@input) {
+	printf $offset, $_;
+}

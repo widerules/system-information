@@ -1,0 +1,5 @@
+#! /usr/bin/perl
+
+@input = <STDIN>;
+
+print reverse(@input);

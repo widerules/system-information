@@ -1,0 +1,15 @@
+#! /usr/bin/perl
+
+my %last_name = (
+	"fred" => "flintstone",
+	"dino" => undef,
+	"barney" => "rubble",
+	"betty" => "rubble",
+);
+
+print %last_name;
+
+chomp(@input = <STDIN>);
+foreach (@input) {
+	print $last_name{$_}."\n";
+}

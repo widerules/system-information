@@ -1,0 +1,10 @@
+#! /usr/bin/perl
+
+chomp($r = <STDIN>);
+$pie = 3.141592654;
+if ($r < 0) {
+	print 0 ."\n";
+}
+else {
+	print 2 * $pie * $r ."\n";
+}

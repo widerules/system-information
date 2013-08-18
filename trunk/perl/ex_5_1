@@ -1,0 +1,4 @@
+#! /usr/bin/perl
+
+@input = reverse(<>);
+print @input;

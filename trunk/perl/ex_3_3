@@ -1,0 +1,15 @@
+#! /usr/bin/perl
+
+chomp(@input = <STDIN>);
+
+@output = sort(@input);
+
+foreach (@output) {
+	print $_ . ", ";
+}
+
+print "\n";
+
+foreach (@output) {
+	print $_ . "\n";
+}

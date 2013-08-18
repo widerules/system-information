@@ -1,0 +1,11 @@
+#! /usr/bin/perl
+
+my %last_name;
+
+chomp(@input = <STDIN>);
+foreach (@input) {
+	$last_name{$_} += 1;
+}
+
+@array = %last_name;
+print @array;

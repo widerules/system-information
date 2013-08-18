@@ -1,0 +1,13 @@
+#! /usr/bin/perl
+
+chomp(@input = <STDIN>);
+
+@names = qw(fred betty barney dino Wilma pebbles bamm-bamm);
+
+foreach $index(@input) {
+	print @names[$index] . "\n";
+}
+
+foreach (@input) {
+	print @names[$_] . "\n";
+}

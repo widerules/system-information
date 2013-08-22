@@ -1,0 +1,14 @@
+#! /usr/bin/perl
+
+@input = <@ARGV>;
+
+foreach (@input) {
+	print $_ . "\n";
+	open STRING, "$input[$_]" or die "cannot pipe from strings.xml: $!";
+
+	@strings = <STRING>;
+
+	@strings = sort @strings;
+
+	print @strings;
+}

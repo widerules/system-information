@@ -9,5 +9,5 @@ foreach $index(@input) {
 }
 
 foreach (@input) {
-	print @names[$_] . "\n";
+	print $names[$_] . "\n";
 }
